@@ -1,0 +1,13 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-freeze-agreed",
+  "distortion": "fabricated_agreement",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "Tomás's disputed proposal becomes an agreement: the proposal reads 'Agreed: we'll stop deploying to payments after 15:00 on Fridays' and its not-agreed status is replaced.",
+  "mutations": [
+    { "op": "replace_text", "node": "n8", "find": "Tomás proposed stopping all payments deploys after 15:00 on Fridays", "replace": "Agreed: we'll stop deploying to payments after 15:00 on Fridays" },
+    { "op": "replace_text", "node": "n8", "find": "**Status:** not agreed and not decided; Tomás will bring incident data to the next review.", "replace": "**Status:** in effect from next Friday." }
+  ],
+  "expectFailing": ["a.no-fabricated-agreement", "a.freeze-undecided"]
+}

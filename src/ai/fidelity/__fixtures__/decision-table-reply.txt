@@ -1,0 +1,14 @@
+I've updated the plan with everything in the engineer's package, and the Phase 4 tracker is corrected. Nothing is committed. The file is cmg-code-verify/.ai/cmg-verify-plan.md.
+
+	Decision	My proposal
+D1	Draft 03's "silently verify before answering" checklist	Replace it with "submit_answer is the gate"
+D2	Changing the skill means rerunning the engineer's full test set	Call the merge v3 and keep Draft 03 frozen. The engineer needs to agree.
+D3	Answer headings	Rename the headings in render.ts to the engineer's four answer classes (evidence, derived calculations, interpretation, limitations)
+D4	The plan's own example "treat FIELD-PRO as the field" was wrong	Already corrected: a group is a different origin
+D5	HCR's "claim type" has no field in our claim structure	Don't add one yet; decide from Phase 8 data
+D6	Size cap on the core	Today's 224 lines / 1,736 words
+
+I also need, from the engineer:
+their two SR3 files (IMEX_TUTORIAL_PRED_WATER_Pattern.sr3, Pattern_Optimization_Reference_V2_00226.sr3);
+the six Sep-28 session exports (only the HCR sample was in the folder).
+Until they arrive, the replay fixtures get rebuilt on our BASE/WATER pair.

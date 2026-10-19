@@ -1,0 +1,188 @@
+{
+  "recorded": "2026-10-11",
+  "model": "typesafe/jev-1.13",
+  "capUsd": 0.005,
+  "spentUsdReported": 0.002622186,
+  "results": [
+    {
+      "step": "1 cold A",
+      "sentAt": 1,
+      "ms": 1050,
+      "status": 200,
+      "requestChars": 20019,
+      "usage": {
+        "input_tokens": 12134,
+        "output_tokens": 388,
+        "cost": 0.000509628
+      },
+      "cacheFields": {},
+      "cost": 0.000509628,
+      "answer": {
+        "choice": "t11",
+        "confidence": 0.79,
+        "top": [
+          [
+            "t11",
+            0.8
+          ],
+          [
+            "t1",
+            0.19
+          ],
+          [
+            "new",
+            0.01
+          ]
+        ]
+      },
+      "headers": {
+        "x-generation-id": "gen-dec-1791684137-1QjnqkAcbPDY3Zc8zCVG",
+        "x-provider-name": "TypeSafe"
+      }
+    },
+    {
+      "step": "2 warm B",
+      "sentAt": 1061,
+      "ms": 531,
+      "status": 200,
+      "requestChars": 20333,
+      "usage": {
+        "input_tokens": 12321,
+        "output_tokens": 387,
+        "cost": 0.000517482
+      },
+      "cacheFields": {},
+      "cost": 0.000517482,
+      "answer": {
+        "choice": "t1",
+        "confidence": 0.31,
+        "top": [
+          [
+            "t1",
+            0.33
+          ],
+          [
+            "new",
+            0.19
+          ],
+          [
+            "t12",
+            0.18000000000000002
+          ]
+        ]
+      },
+      "headers": {
+        "x-generation-id": "gen-dec-1791684138-AjQCbb3u9BQv1NRgHcmP",
+        "x-provider-name": "TypeSafe"
+      }
+    },
+    {
+      "step": "3 control A (first topic changed)",
+      "sentAt": 1597,
+      "ms": 552,
+      "status": 200,
+      "requestChars": 20019,
+      "usage": {
+        "input_tokens": 12132,
+        "output_tokens": 388,
+        "cost": 0.000509544
+      },
+      "cacheFields": {},
+      "cost": 0.000509544,
+      "answer": {
+        "choice": "t11",
+        "confidence": 0.88,
+        "top": [
+          [
+            "t11",
+            0.88
+          ],
+          [
+            "t1",
+            0.12
+          ],
+          [
+            "t2",
+            0
+          ]
+        ]
+      },
+      "headers": {
+        "x-generation-id": "gen-dec-1791684138-o8dcxxFBtwkPo9l2tfe0",
+        "x-provider-name": "TypeSafe"
+      }
+    },
+    {
+      "step": "4 burst A repeat",
+      "sentAt": 2152,
+      "ms": 538,
+      "status": 200,
+      "requestChars": 20019,
+      "usage": {
+        "input_tokens": 12134,
+        "output_tokens": 388,
+        "cost": 0.000509628
+      },
+      "cacheFields": {},
+      "cost": 0.000509628,
+      "answer": {
+        "choice": "t11",
+        "confidence": 0.89,
+        "top": [
+          [
+            "t11",
+            0.89
+          ],
+          [
+            "t1",
+            0.11
+          ],
+          [
+            "t2",
+            0
+          ]
+        ]
+      },
+      "headers": {
+        "x-generation-id": "gen-dec-1791684139-vF9yJiOBHEerUdQTes5m",
+        "x-provider-name": "TypeSafe"
+      }
+    },
+    {
+      "step": "5 burst C",
+      "sentAt": 2154,
+      "ms": 705,
+      "status": 200,
+      "requestChars": 22430,
+      "usage": {
+        "input_tokens": 13712,
+        "output_tokens": 387,
+        "cost": 0.000575904
+      },
+      "cacheFields": {},
+      "cost": 0.000575904,
+      "answer": {
+        "choice": "t1",
+        "confidence": 0.61,
+        "top": [
+          [
+            "t1",
+            0.62
+          ],
+          [
+            "t17",
+            0.17
+          ],
+          [
+            "new",
+            0.09999999999999999
+          ]
+        ]
+      },
+      "headers": {
+        "x-generation-id": "gen-dec-1791684139-FdlItPtetobhvktcevfc",
+        "x-provider-name": "TypeSafe"
+      }
+    }
+  ]
+}

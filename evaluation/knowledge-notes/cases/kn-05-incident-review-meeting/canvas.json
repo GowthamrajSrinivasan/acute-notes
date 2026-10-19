@@ -1,0 +1,280 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-05-incident-review-meeting",
+  "template": "sectioned",
+  "templateNote": "Meeting notes are organised by outcome, not by speaking order: what happened, what was agreed, what was only proposed, who does what, and what is still unknown. Agreements and proposals never share a frame.",
+  "frames": [
+    {
+      "id": "f.what-happened",
+      "title": "What happened",
+      "titleMatch": { "all": [["what happened", "timeline", "incident", "outage"]] },
+      "purpose": "The cause, timeline and impact, and the three gaps the meeting found.",
+      "rationale": "The findings explain the decisions; they are facts, not outcomes of the meeting.",
+      "children": ["e.incident", "e.alert-gap", "e.status-gap", "e.config-gap"],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.decisions",
+      "title": "Agreed decisions",
+      "titleMatch": { "all": [["decisions", "decided", "what we agreed", "agreed changes"]] },
+      "purpose": "Only what the meeting explicitly agreed.",
+      "rationale": "A reader must be able to trust that everything here was agreed.",
+      "children": ["e.decision-alert", "e.decision-status-page", "e.decision-config"],
+      "arrangement": "grid",
+      "separateFrom": [{ "frame": "f.proposals", "reason": "Agreed and unagreed items must never be mixed." }],
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.proposals",
+      "title": "Proposed, not agreed",
+      "titleMatch": { "all": [["proposal", "proposed", "not agreed", "undecided", "without agreement"]] },
+      "purpose": "Proposals that were discussed but not agreed, with the disagreement and their status.",
+      "rationale": "Keeping them apart from decisions is the point of the case.",
+      "children": ["e.freeze-proposal", "e.rollback-proposal"],
+      "arrangement": "compare",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.actions",
+      "title": "Action items",
+      "titleMatch": { "all": [["action", "next step", "to-do", "todo", "follow-up"]] },
+      "purpose": "Who does what, by when — exactly as stated.",
+      "rationale": "A checklist is the natural form for action items.",
+      "children": ["e.actions"],
+      "arrangement": "stack",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.open-questions",
+      "title": "Open questions",
+      "titleMatch": { "all": [["open question", "unresolved", "unanswered", "unknown"]] },
+      "purpose": "Questions the meeting raised and left unanswered.",
+      "rationale": "An unanswered question must look unanswered, not be folded into a finding.",
+      "children": ["e.retry-question"],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e.incident",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "cause, timeline and impact",
+      "content": "A 16:40 config typo set the connection pool from 50 to 5 (meant 55); alert 17:02, rollback 17:15, recovered 17:27 — 47 minutes, about 2,300 failed checkouts, 140 tickets",
+      "knowledge": ["ku.incident", "ku.timeline", "ku.impact"],
+      "match": { "all": [["connection pool", "pool"], ["typo", "55"]] },
+      "hierarchy": "primary",
+      "frame": "f.what-happened",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.alert-gap",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "finding",
+      "content": "The alert fired as configured (10% for 15 minutes), which is too slow for checkout",
+      "knowledge": ["ku.alert-gap"],
+      "match": { "all": [["10%"], ["15 minutes", "15 min"], ["16:47", "earliest", "as configured", "too slow"]] },
+      "hierarchy": "secondary",
+      "frame": "f.what-happened",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.status-gap",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "finding",
+      "content": "The status page went up at 17:20, 40 minutes after errors began, because the incident commander posts it when they remember",
+      "knowledge": ["ku.status-gap"],
+      "match": { "all": [["status page"], ["17:20", "40 minutes"]] },
+      "hierarchy": "secondary",
+      "frame": "f.what-happened",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.config-gap",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "finding",
+      "content": "Config changes skip code review: code needs two approvals, config none",
+      "knowledge": ["ku.config-gap"],
+      "match": { "all": [["config"], ["review"], ["two approvals", "needs none", "no approval", "dashboard"]] },
+      "hierarchy": "secondary",
+      "frame": "f.what-happened",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.decision-alert",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "decision",
+      "content": "Agreed: checkout error-rate alert at 5% over 5 minutes",
+      "knowledge": ["ku.decision-alert"],
+      "match": { "all": [["5%"], ["5 minutes", "5 min"], ["agreed", "decided", "decision"]] },
+      "hierarchy": "primary",
+      "frame": "f.decisions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.decision-status-page",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "decision",
+      "content": "Agreed: support can post status-page updates directly, without waiting for the incident commander",
+      "knowledge": ["ku.decision-status-page"],
+      "match": { "all": [["support"], ["status"], ["agreed", "decided", "decision"], ["incident commander", "directly", "without waiting"]] },
+      "hierarchy": "primary",
+      "frame": "f.decisions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.decision-config",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "decision",
+      "content": "Agreed: payments config moves into the repo; every change gets a pull request and one payments-team approval",
+      "knowledge": ["ku.decision-config"],
+      "match": { "all": [["config"], ["pull request", "pull-request", "review"], ["agreed", "decided", "decision"], ["one approval", "payments-team approval", "payments team"]] },
+      "hierarchy": "primary",
+      "frame": "f.decisions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.freeze-proposal",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "proposal with its disagreement and status",
+      "content": "Tomás proposed no payments deploys after 15:00 on Fridays; Leila disagreed (it moves the risk to Monday; the cause was the missing review); not agreed and not decided",
+      "knowledge": ["ku.freeze-proposal", "ku.freeze-objection", "ku.freeze-undecided"],
+      "match": { "all": [["freeze", "stop deploying", "no deploys", "no payments deploys"], ["friday"], ["15:00", "3 pm", "3pm"]] },
+      "hierarchy": "primary",
+      "frame": "f.proposals",
+      "layout": "One card: the proposal, both sides of the disagreement, and its status. The status is not a separate card.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.rollback-proposal",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "proposal with its open question",
+      "content": "Marcus proposed automatic rollback when checkout errors double within 10 minutes of a deploy; Leila is wary of database migrations; left open",
+      "knowledge": ["ku.rollback-proposal", "ku.rollback-open"],
+      "match": { "all": [["rollback", "roll back", "rolling back", "rolls back"], ["automatic", "auto-rollback", "auto rollback", "on its own"], ["migration"]] },
+      "hierarchy": "primary",
+      "frame": "f.proposals",
+      "layout": "May equally sit in the open-questions frame; never with the decisions.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.actions",
+      "element": "todo",
+      "planNodeTypes": ["todo"],
+      "role": "action items",
+      "content": "Marcus: alert change by Wednesday, March 19 · Leila: config into the repo with an approval rule by Friday, March 21 · Tomás: six months of incident data for the review on April 2 · Kenji: draft the customer email (no deadline given)",
+      "knowledge": ["ku.action-alert", "ku.action-config", "ku.action-freeze-data", "ku.action-email"],
+      "match": { "all": [["marcus", "leila", "kenji", "tomás", "tomas"], ["march", "april", "email"]] },
+      "hierarchy": "primary",
+      "frame": "f.actions",
+      "layout": "A checklist; owners and dates live in the item text (canvas.todo has no owner or due-date fields).",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.retry-question",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "open question",
+      "content": "Unknown: were any of the 2,300 failed checkouts retried successfully? Nobody has checked the payment logs; the answer changes the customer email",
+      "knowledge": ["ku.retry-question"],
+      "match": { "all": [["retried", "retry", "retries"], ["2300"]] },
+      "hierarchy": "primary",
+      "frame": "f.open-questions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r.alert-decision-from-gap",
+      "from": "e.decision-alert",
+      "to": "e.alert-gap",
+      "type": "derived_from",
+      "acceptableTypes": ["derived_from", "caused_by", "supports", "explained_by", "references", "relates_to"],
+      "label": { "required": false, "text": "fixes slow detection" },
+      "direction": "bidirectional",
+      "explanation": "The new threshold answers the 22-minute detection.",
+      "evidence": ["u17", "u20", "u23", "u27"],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.config-decision-from-gap",
+      "from": "e.decision-config",
+      "to": "e.config-gap",
+      "type": "derived_from",
+      "acceptableTypes": ["derived_from", "caused_by", "supports", "explained_by", "references", "relates_to"],
+      "label": { "required": false, "text": "closes the review gap" },
+      "direction": "bidirectional",
+      "explanation": "The review rule answers the unreviewed config change.",
+      "evidence": ["u41", "u44", "u45", "u49"],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.status-decision-from-gap",
+      "from": "e.decision-status-page",
+      "to": "e.status-gap",
+      "type": "derived_from",
+      "acceptableTypes": ["derived_from", "caused_by", "supports", "explained_by", "references", "relates_to"],
+      "label": { "required": false, "text": "status page was late" },
+      "direction": "bidirectional",
+      "explanation": "Letting support post answers the late status page.",
+      "evidence": ["u31", "u34", "u36", "u39"],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    }
+  ],
+  "together": [
+    { "elements": ["e.decision-alert", "e.decision-status-page", "e.decision-config"], "reason": "The three explicit agreements form one list a reader can trust." },
+    { "elements": ["e.freeze-proposal", "e.rollback-proposal"], "reason": "Both are proposals without agreement." }
+  ],
+  "keepSeparate": [
+    { "elements": ["e.decision-config", "e.freeze-proposal"], "reason": "Both are about preventing a repeat, and Leila argued review, not the day, was the cause; merging them would make the freeze read as agreed." },
+    { "elements": ["e.decision-alert", "e.freeze-proposal"], "reason": "Decisions vs a disputed proposal." },
+    { "elements": ["e.decision-alert", "e.rollback-proposal"], "reason": "Both concern the error rate; only the threshold was agreed." },
+    { "elements": ["e.decision-config", "e.rollback-proposal"], "reason": "Leila said auto-rollback might suit config; that is not part of the config decision." }
+  ],
+  "hierarchy": [
+    { "main": "e.decision-alert", "supporting": ["e.alert-gap"], "reason": "The finding explains the decision; it is not weighted above it." }
+  ],
+  "unsupported": [
+    { "capability": "ai.cites", "ideal": "Each card cites its turns; the todo cites u28–u29, u50–u51, u63–u65 and u79–u80.", "expectedToday": "Not checkable; matching is by content." },
+    { "capability": "canvas.node-kinds", "ideal": "Decision cards carry project kind 'decision' and open questions 'open_question', coloured accordingly.", "expectedToday": "A VisualPlan node or shape can only carry architecture NODE_KINDS (diagramSchema nodeKindSchema), so the distinction is carried by frames and wording; element_kind can't check project kinds." },
+    { "capability": "canvas.todo", "ideal": "Action items with owner and due-date fields.", "expectedToday": "Owners and dates live in the item text." }
+  ]
+}

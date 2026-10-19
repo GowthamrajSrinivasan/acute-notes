@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-discount-read-asserted",
+  "distortion": "mislabeled_architecture_edge",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The inferred discounts edge loses its hedge: 'probably reads (unconfirmed)' becomes a confident 'reads discounts'.",
+  "mutations": [
+    { "op": "set_label", "from": "s_price", "to": "s_disc", "label": "reads discounts" }
+  ],
+  "expectFailing": ["a.rel-discount-hedged", "a.no-confident-discount"]
+}

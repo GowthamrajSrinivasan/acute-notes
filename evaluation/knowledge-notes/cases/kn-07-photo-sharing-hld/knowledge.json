@@ -1,0 +1,648 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-07-photo-sharing-hld",
+  "units": [
+    {
+      "id": "ku.purpose",
+      "title": "Pinhole lets people post photos and follow others' photos in a feed",
+      "claim": "Pinhole lets people post photos and see the photos of accounts they follow in a feed; it is sized for about 2 million daily active users at launch.",
+      "explanation": "What the system is for, and its stated scale.",
+      "type": "concept",
+      "importance": "important",
+      "sourceUnits": [
+        "u1",
+        "u2"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "2 million"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": true,
+        "reason": "Context; the canvas is about the parts, but the scale stays exact if shown."
+      }
+    },
+    {
+      "id": "ku.hld-only",
+      "title": "The design stops at service level: no code, modules or operations",
+      "claim": "The document is a high-level design only: it names the parts, their responsibilities, how they talk and why; code, internal modules and individual operations are left to later low-level designs.",
+      "explanation": "Sets the depth of everything else. A faithful result must not invent internals, flows below service level, operations or code; Lens L3-L5 are unavailable.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u3",
+        "u4"
+      ],
+      "provenance": "explicit",
+      "mustPreserve": [
+        "high-level design only",
+        "no code, internal modules or operations"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.clients",
+      "title": "Two thin clients share one public HTTPS API",
+      "claim": "Users reach Pinhole through a mobile app (iOS and Android) and a web app in the browser; both use the same public HTTPS API and hold no business rules beyond simple input checks.",
+      "explanation": "The client container(s) at the top of the diagram.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u5",
+        "u6"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.direct-upload",
+      "title": "Clients upload originals straight to object storage with a signed URL",
+      "claim": "Clients upload a photo directly to object storage with a short-lived signed URL, so large files never pass through Pinhole's own services.",
+      "explanation": "A client-to-storage edge that bypasses the gateway; easy to get wrong by routing uploads through the upload service.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u7",
+        "u29"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.gateway",
+      "title": "Every request enters through the API gateway",
+      "claim": "The API gateway is the single entry for client requests: it terminates TLS, checks the caller's access token with the auth service, applies a rate limit of 120 requests per minute per account and routes to the right service.",
+      "explanation": "The edge container and its responsibilities.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u8",
+        "u9"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "120 requests per minute"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.gateway-fails-closed",
+      "title": "If auth is unreachable the gateway rejects requests",
+      "claim": "If the auth service cannot be reached, the gateway rejects the request instead of letting it through unchecked.",
+      "explanation": "A condition on the gateway's token check. It stays with the gateway, not on a card of its own.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u10"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.gateway",
+      "mustPreserve": [
+        "rejects",
+        "cannot be reached"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.cdn",
+      "title": "The external CDN serves photo bytes, never the gateway",
+      "claim": "The CDN reads photos and thumbnails from object storage and serves them to clients from locations close to the user; photo bytes are never served by the gateway.",
+      "explanation": "An external dependency with a read edge into object storage.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u11",
+        "u26"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.auth",
+      "title": "The auth service issues and verifies tokens and owns accounts",
+      "claim": "The auth service issues and verifies access tokens and owns accounts and sessions.",
+      "explanation": "Core service called by the gateway.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u12"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.upload-service",
+      "title": "The upload service signs URLs, records photos and publishes PhotoUploaded",
+      "claim": "The upload service hands the client a signed upload URL, records the photo in the metadata database as \"processing\" once the upload completes, and publishes a PhotoUploaded event to the message queue.",
+      "explanation": "Core service; its two outgoing edges (writes metadata, publishes to the queue) are mandatory and directed.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u13",
+        "u30"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "PhotoUploaded"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.feed-service",
+      "title": "The feed service builds feeds from metadata and caches pages",
+      "claim": "The feed service builds each person's feed from the photos of the accounts they follow: it reads photo metadata from the metadata database and keeps ready-made feed pages in the cache.",
+      "explanation": "Core service with a read edge to the database and a write edge to the cache.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u14"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.message-queue",
+      "title": "A message queue carries PhotoUploaded and PhotoReady between services",
+      "claim": "The message queue carries PhotoUploaded events from the upload service to the media processing workers and PhotoReady events from the workers to the feed service.",
+      "explanation": "The asynchronous backbone; publishers point at it, subscribers point at it.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u13",
+        "u15",
+        "u17",
+        "u18"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "PhotoUploaded",
+        "PhotoReady"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.queue-retention",
+      "title": "Events are kept 7 days, so a worker outage loses no uploads within that window",
+      "claim": "The queue keeps an event for up to 7 days, so a worker outage delays thumbnails but does not lose uploads.",
+      "explanation": "Bounds the 'no upload is lost' property; it must sit on the queue element, never alone.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": [
+        "u19"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.message-queue",
+      "exactDetails": [
+        "7 days"
+      ],
+      "mustPreserve": [
+        "up to 7 days"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.workers",
+      "title": "Media processing workers turn originals into three thumbnail sizes",
+      "claim": "Media processing workers subscribe to PhotoUploaded, read the original from object storage, create thumbnails 150, 640 and 1080 pixels wide, write them back to object storage, mark the photo ready in the metadata database and publish PhotoReady.",
+      "explanation": "The async container with four edges: subscribes (queue), reads/writes (object storage), writes (metadata), publishes (queue).",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u15",
+        "u16",
+        "u17",
+        "u31"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "150",
+        "640",
+        "1080",
+        "PhotoReady"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.stuck-photos",
+      "title": "A photo that keeps failing processing stays hidden in 'processing'",
+      "claim": "A photo whose processing keeps failing stays in the processing state and is not shown in any feed.",
+      "explanation": "Known gap of the design; it qualifies the processing claim and stays with the workers.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": [
+        "u20"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.workers",
+      "mustPreserve": [
+        "stays in processing",
+        "not shown in any feed"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.photo-ready-fanout",
+      "title": "On PhotoReady the feed service updates feeds and asks the push provider to alert followers",
+      "claim": "The feed service subscribes to PhotoReady events to add the photo to followers' feeds, and asks the push-notification provider to alert followers who have notifications turned on.",
+      "explanation": "Two edges: feed service subscribes to the queue; feed service calls the external push provider.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u18",
+        "u32"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "PhotoReady"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.object-storage",
+      "title": "Object storage keeps originals unchanged plus thumbnails",
+      "claim": "Object storage holds the original photos and their thumbnails; originals are kept unchanged and never overwritten.",
+      "explanation": "Store container.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u21"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.metadata-db",
+      "title": "The metadata database is the source of truth for photos",
+      "claim": "The metadata database holds follow relationships and photo records with their processing status, and is the source of truth for whether a photo exists.",
+      "explanation": "Store container. Its two stated record kinds are the only component-level detail in the source.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u22"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.cache",
+      "title": "The cache keeps feed pages for 60 seconds and is only a copy",
+      "claim": "The cache holds ready-made feed pages for 60 seconds; it is only a copy kept for speed, so losing it makes feeds slower, never wrong.",
+      "explanation": "Store container, explicitly not a source of truth.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u23",
+        "u24"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "60 seconds"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.system-boundary",
+      "title": "CDN and push provider are third parties outside the boundary",
+      "claim": "The CDN and the push-notification provider are run by third parties outside the Pinhole system boundary; the gateway, the three services, the workers, the queue and the three stores are inside and operated by the Pinhole team.",
+      "explanation": "Drives the frame split: external systems are kept apart from internal containers.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u25",
+        "u28"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.push-provider",
+      "title": "The push provider delivers alerts; Pinhole doesn't control timing",
+      "claim": "The push-notification provider delivers alerts to phones; Pinhole only sends it requests and does not control when an alert arrives.",
+      "explanation": "External dependency; the caveat on delivery timing stays with it.",
+      "type": "component",
+      "importance": "important",
+      "sourceUnits": [
+        "u27"
+      ],
+      "provenance": "explicit",
+      "mustPreserve": [
+        "does not control when an alert arrives"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.posting-flow",
+      "title": "Posting a photo: upload, record, publish, thumbnail, fan out",
+      "claim": "Posting runs: the client uploads the original to object storage with a signed URL; the upload service records the photo and publishes PhotoUploaded; a worker creates thumbnails and marks it ready; the worker publishes PhotoReady; the feed service updates feeds and alerts followers; followers fetch the feed through the gateway and thumbnails from the CDN.",
+      "explanation": "The end-to-end flow at service level. It is carried by the labelled edges, not by step cards.",
+      "type": "process",
+      "importance": "important",
+      "sourceUnits": [
+        "u29",
+        "u30",
+        "u31",
+        "u32",
+        "u33"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": true,
+        "reason": "Represented by the labelled edges between containers; a separate flow frame is optional."
+      }
+    },
+    {
+      "id": "ku.decision-queue",
+      "title": "Decision: decouple upload from processing with a queue",
+      "claim": "A slow or failed thumbnail job must never block or fail an upload, so the upload service and the workers only meet through the message queue; the cost is that a new photo takes a few seconds to appear in feeds.",
+      "explanation": "The main design decision and its trade-off; it justifies the queue.",
+      "type": "decision",
+      "importance": "critical",
+      "sourceUnits": [
+        "u34"
+      ],
+      "provenance": "explicit",
+      "mustPreserve": [
+        "a few seconds to appear"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.decision-signed-urls",
+      "title": "Decision: signed-URL direct upload keeps 25 MB files off the gateway",
+      "claim": "Originals can be up to 25 MB and routing them through the gateway would make it the bottleneck, so clients send bytes straight to object storage and the upload service only signs the URL and records the result.",
+      "explanation": "Justifies the client-to-storage edge and the upload service's narrow role.",
+      "type": "decision",
+      "importance": "critical",
+      "sourceUnits": [
+        "u35"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "25 MB"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.decision-metadata-apart",
+      "title": "Decision: keep metadata apart from photo bytes",
+      "claim": "Photo bytes live in object storage and everything queried lives in the metadata database, because the two grow at very different rates and need different backups.",
+      "explanation": "Justifies two separate stores.",
+      "type": "decision",
+      "importance": "important",
+      "sourceUnits": [
+        "u36"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.decision-disposable-cache",
+      "title": "Decision: the cache is disposable",
+      "claim": "Feed pages are cached for speed only and the metadata database stays the source of truth, so the cache can be flushed at any time.",
+      "explanation": "Justifies treating the cache as a copy.",
+      "type": "decision",
+      "importance": "important",
+      "sourceUnits": [
+        "u37"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.decision-buy",
+      "title": "Decision: buy CDN and push delivery, accept their outages",
+      "claim": "Pinhole uses a third-party CDN and push-notification provider instead of running its own, and accepts that their outages are outside its control.",
+      "explanation": "Justifies the external dependencies and the boundary.",
+      "type": "decision",
+      "importance": "important",
+      "sourceUnits": [
+        "u38"
+      ],
+      "provenance": "explicit",
+      "mustPreserve": [
+        "outages are outside our control"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.open-retry",
+      "title": "Open: retry and clean-up of failed processing is undecided",
+      "claim": "How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet.",
+      "explanation": "Must stay an open question; no retry policy may be invented.",
+      "type": "question",
+      "importance": "critical",
+      "sourceUnits": [
+        "u39"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.open-precompute",
+      "title": "Open: feed precomputation for very large accounts is deferred",
+      "claim": "Whether the feed service should precompute feeds for accounts with very many followers is left to the feed service's own low-level design.",
+      "explanation": "Must stay an open question owned by a later LLD.",
+      "type": "question",
+      "importance": "critical",
+      "sourceUnits": [
+        "u40"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    }
+  ],
+  "mustNotClaim": [
+    {
+      "claim": "Photo uploads pass through the API gateway or the upload service.",
+      "why": "Clients upload straight to object storage with a signed URL; the gateway never carries photo bytes.",
+      "units": [
+        "u7",
+        "u11",
+        "u35"
+      ]
+    },
+    {
+      "claim": "The message queue calls the upload service, or the workers call the upload service directly.",
+      "why": "The upload service publishes to the queue and the workers subscribe; the two only meet through the queue.",
+      "units": [
+        "u13",
+        "u15",
+        "u34"
+      ]
+    },
+    {
+      "claim": "The cache is the source of truth for feeds or photos.",
+      "why": "The metadata database is the source of truth; the cache is a disposable copy.",
+      "units": [
+        "u22",
+        "u24",
+        "u37"
+      ]
+    },
+    {
+      "claim": "Uploads are never lost, whatever the length of an outage.",
+      "why": "Only within the queue's 7-day retention.",
+      "units": [
+        "u19"
+      ]
+    },
+    {
+      "claim": "Failed processing is retried a fixed number of times with backoff.",
+      "why": "Retry and clean-up are explicitly undecided.",
+      "units": [
+        "u39"
+      ]
+    },
+    {
+      "claim": "Named technologies (for example Kafka, S3, Postgres, Redis), internal modules, functions or file paths of any service.",
+      "why": "The source is HLD only and names no technology, module, operation or path; any such detail is invented.",
+      "units": [
+        "u3",
+        "u4"
+      ]
+    },
+    {
+      "claim": "The CDN or the push-notification provider is part of the Pinhole system.",
+      "why": "Both are third parties outside the boundary.",
+      "units": [
+        "u25"
+      ]
+    }
+  ]
+}

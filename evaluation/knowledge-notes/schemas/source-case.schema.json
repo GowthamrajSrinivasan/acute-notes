@@ -1,0 +1,396 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "datasetVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^kn-\\d{2}-[a-z0-9-]+$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scenario": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceType": {
+      "type": "string",
+      "enum": [
+        "article",
+        "technical_documentation",
+        "meeting_transcript",
+        "tutorial",
+        "design_specification",
+        "codebase_description",
+        "architecture_proposal"
+      ]
+    },
+    "audience": {
+      "type": "string",
+      "minLength": 1
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1
+    },
+    "complexity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "sourceFiles": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "words": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "version",
+          "path",
+          "words",
+          "title"
+        ]
+      }
+    },
+    "sections": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^s\\d+$"
+          },
+          "heading": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "id",
+          "heading"
+        ]
+      }
+    },
+    "units": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^u\\d+$"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "section": {
+            "type": "string",
+            "pattern": "^s\\d+$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "sentence",
+              "list_item",
+              "table_row",
+              "table",
+              "code",
+              "quote",
+              "heading",
+              "speaker_turn"
+            ]
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1
+          },
+          "occurrence": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "terminology",
+                "definition",
+                "formula",
+                "numeric",
+                "assumption",
+                "condition",
+                "limitation",
+                "example",
+                "decision",
+                "proposal",
+                "action_item",
+                "question",
+                "disagreement",
+                "ambiguous",
+                "conflict",
+                "repetition",
+                "irrelevant",
+                "user_edit"
+              ]
+            }
+          },
+          "critical": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string",
+                "enum": [
+                  "limitation",
+                  "requirement",
+                  "condition",
+                  "takeaway",
+                  "protected",
+                  "decision",
+                  "action_item",
+                  "open_question",
+                  "conflict"
+                ]
+              },
+              "note": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "reason"
+            ]
+          },
+          "protected": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tier": {
+                  "type": "string",
+                  "enum": [
+                    "exact",
+                    "warn"
+                  ]
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "number",
+                    "identifier",
+                    "path",
+                    "quote",
+                    "item_id",
+                    "action_item",
+                    "formula",
+                    "version",
+                    "named_term"
+                  ]
+                },
+                "value": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "tier",
+                "kind",
+                "value"
+              ]
+            }
+          },
+          "omittable": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string",
+                "enum": [
+                  "filler",
+                  "duplicate",
+                  "superseded",
+                  "meta"
+                ]
+              },
+              "of": {
+                "type": "string",
+                "pattern": "^u\\d+$"
+              },
+              "note": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "reason"
+            ]
+          },
+          "ambiguity": {
+            "type": "object",
+            "properties": {
+              "note": {
+                "type": "string",
+                "minLength": 1
+              },
+              "conflictsWith": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^u\\d+$"
+                }
+              }
+            },
+            "required": [
+              "note"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "section",
+          "kind",
+          "quote"
+        ]
+      }
+    },
+    "safeToOmit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "units": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^u\\d+$"
+            }
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "units",
+          "why"
+        ]
+      }
+    },
+    "capabilities": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "synthetic": {
+          "type": "boolean",
+          "const": true
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "synthetic",
+        "note"
+      ]
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "reviewed",
+            "approved"
+          ]
+        },
+        "authoredBy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "approvedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "authoredBy",
+        "reviewers",
+        "approvedAt"
+      ]
+    }
+  },
+  "required": [
+    "datasetVersion",
+    "id",
+    "title",
+    "scenario",
+    "sourceType",
+    "audience",
+    "objective",
+    "complexity",
+    "sourceFiles",
+    "sections",
+    "units",
+    "safeToOmit",
+    "capabilities",
+    "provenance",
+    "review"
+  ]
+}

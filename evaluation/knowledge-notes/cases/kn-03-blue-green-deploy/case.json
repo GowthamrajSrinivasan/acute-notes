@@ -1,0 +1,586 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "kn-03-blue-green-deploy",
+  "title": "Blue-green deployment for the orders service",
+  "scenario": "Tutorial / procedural workflow: prerequisites (one a hard requirement with an exception), eight numbered steps with expected results, three branch conditions with numeric thresholds, a shell command that must stay code, and failure handling.",
+  "sourceType": "tutorial",
+  "audience": "Engineers releasing a web service behind a load balancer",
+  "objective": "Run a blue-green release in the right order, know exactly when to stop or switch back, and what must be true before starting.",
+  "complexity": "medium",
+  "sourceFiles": [
+    {
+      "version": 1,
+      "path": "source.md",
+      "words": 721,
+      "title": "Blue-green deployment for the orders service"
+    }
+  ],
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "Blue-green deployment for the orders service"
+    },
+    {
+      "id": "s2",
+      "heading": "How blue-green works"
+    },
+    {
+      "id": "s3",
+      "heading": "Before you start"
+    },
+    {
+      "id": "s4",
+      "heading": "Steps"
+    },
+    {
+      "id": "s5",
+      "heading": "When things go wrong"
+    }
+  ],
+  "units": [
+    {
+      "id": "u1",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "This tutorial walks through a blue-green release of `orders-api`, a fictional web service, from a fresh build to a cleaned-up environment.",
+      "tags": [
+        "irrelevant"
+      ],
+      "omittable": {
+        "reason": "meta",
+        "note": "Says what the tutorial covers."
+      }
+    },
+    {
+      "id": "u2",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "It assumes you already run the service behind a load balancer.",
+      "tags": [
+        "assumption"
+      ]
+    },
+    {
+      "id": "u3",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "You keep two identical production environments, called blue and green.",
+      "tags": [
+        "definition",
+        "terminology"
+      ]
+    },
+    {
+      "id": "u4",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "One of them serves all live traffic while the other sits idle; you deploy the new version to the idle one, test it there, and then move traffic over in one step."
+    },
+    {
+      "id": "u5",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "Because the old environment is still running, going back is the same one-step switch."
+    },
+    {
+      "id": "u6",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "The cost is running twice the infrastructure during a release, which is why the idle environment is scaled down between releases."
+    },
+    {
+      "id": "u7",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "You need the following in place before the first release:",
+      "tags": [
+        "irrelevant"
+      ],
+      "omittable": {
+        "reason": "meta",
+        "note": "Introduces the list."
+      }
+    },
+    {
+      "id": "u8",
+      "section": "s3",
+      "kind": "list_item",
+      "quote": "Two identical environments, `orders-blue` and `orders-green`, with the same instance count, instance size and configuration.",
+      "critical": {
+        "reason": "requirement",
+        "note": "Prerequisite."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "orders-blue"
+        },
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "orders-green"
+        }
+      ]
+    },
+    {
+      "id": "u9",
+      "section": "s3",
+      "kind": "list_item",
+      "quote": "A health endpoint, `GET /healthz`, that returns `200` only when the service can reach its database and its queue.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "Prerequisite; the health check in step 3 relies on it."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "GET /healthz"
+        },
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "id": "u10",
+      "section": "s3",
+      "kind": "list_item",
+      "quote": "Database migrations that are backward compatible, so the old version keeps working against the new schema. This is a hard requirement: both versions share one database, and a rollback does not undo a migration.",
+      "tags": [
+        "condition",
+        "limitation"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "The hard requirement; without it a rollback is unsafe."
+      }
+    },
+    {
+      "id": "u11",
+      "section": "s3",
+      "kind": "list_item",
+      "quote": "Access to the load balancer's listener rules, because the switch is a change to which target group the listener forwards to.",
+      "critical": {
+        "reason": "requirement",
+        "note": "Prerequisite for step 5."
+      }
+    },
+    {
+      "id": "u12",
+      "section": "s3",
+      "kind": "list_item",
+      "quote": "A dashboard or query that shows the 5xx error rate per environment, so you can tell green's errors from blue's.",
+      "critical": {
+        "reason": "requirement",
+        "note": "Prerequisite for step 6."
+      }
+    },
+    {
+      "id": "u13",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "If any migration is not backward compatible, do not use this procedure; split the migration into an additive release first and a cleanup release later.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "When not to use the procedure at all."
+      }
+    },
+    {
+      "id": "u14",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "In this walkthrough blue is live and green is idle.",
+      "tags": [
+        "assumption"
+      ]
+    },
+    {
+      "id": "u15",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "**Deploy to the idle environment.** Deploy version `2.8.0` to `orders-green`, using the same build artifact that passed staging rather than a fresh build.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "version",
+          "value": "2.8.0"
+        }
+      ]
+    },
+    {
+      "id": "u16",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "Expected result: all green instances report the new version, and blue still serves 100% of traffic.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "100%"
+        }
+      ]
+    },
+    {
+      "id": "u17",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "**Run the migrations.** Apply the database migrations from the new release, once, from a single job rather than from every green instance at startup."
+    },
+    {
+      "id": "u18",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "Expected result: the migration job exits with code 0, and blue keeps serving requests without new errors, which confirms the change is backward compatible."
+    },
+    {
+      "id": "u19",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "**Check health on green.** Poll the health endpoint on every green instance until all of them return `200`."
+    },
+    {
+      "id": "u20",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "If any instance is still failing health checks after 10 minutes, stop here and roll back: tear down green and leave blue serving traffic.",
+      "tags": [
+        "condition",
+        "numeric"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "First branch: the 10-minute health timeout and what to do."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "10 minutes"
+        }
+      ]
+    },
+    {
+      "id": "u21",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "Nothing has been switched yet, so customers are unaffected."
+    },
+    {
+      "id": "u22",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "**Smoke-test green.** Send the smoke-test suite to green's internal address."
+    },
+    {
+      "id": "u23",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "Expected result: all smoke tests pass."
+    },
+    {
+      "id": "u24",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "If one fails, treat it like a failed health check and stop.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "Second branch: a failing smoke test stops the release."
+      }
+    },
+    {
+      "id": "u25",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "**Switch traffic.** Point the listener at the green target group:"
+    },
+    {
+      "id": "u26",
+      "section": "s4",
+      "kind": "code",
+      "quote": "aws elbv2 modify-listener \\\n     --listener-arn \"$ORDERS_LISTENER_ARN\" \\\n     --default-actions Type=forward,TargetGroupArn=\"$GREEN_TG_ARN\"",
+      "critical": {
+        "reason": "protected",
+        "note": "The command must stay code, exactly."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "modify-listener"
+        },
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "--default-actions"
+        },
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "$GREEN_TG_ARN"
+        },
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "$ORDERS_LISTENER_ARN"
+        }
+      ]
+    },
+    {
+      "id": "u27",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "Expected result: within about 30 seconds, new requests are served by green, and blue receives no new connections.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "30 seconds"
+        }
+      ]
+    },
+    {
+      "id": "u28",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "**Watch the error rate.** Observe the 5xx error rate on green for 15 minutes after the switch.",
+      "tags": [
+        "condition",
+        "numeric"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "The observation window."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "15 minutes"
+        }
+      ]
+    },
+    {
+      "id": "u29",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "If the error rate rises above 2% at any point in that window, switch back: run the same command with `$BLUE_TG_ARN`, which returns all traffic to blue within about 30 seconds.",
+      "tags": [
+        "condition",
+        "numeric"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "Third branch: the 2% switch-back threshold."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "2%"
+        },
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "$BLUE_TG_ARN"
+        }
+      ]
+    },
+    {
+      "id": "u30",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "If it stays at or below 2%, continue.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "The other side of the 2% branch."
+      }
+    },
+    {
+      "id": "u31",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "**Keep blue as a standby.** Leave blue running, unchanged, for 24 hours.",
+      "tags": [
+        "numeric"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "The standby window."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "24 hours"
+        }
+      ]
+    },
+    {
+      "id": "u32",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "It is your rollback target until then."
+    },
+    {
+      "id": "u33",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "**Retire blue.** After 24 hours without a switch-back, scale blue down."
+    },
+    {
+      "id": "u34",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "Blue becomes the idle environment for the next release, with the roles reversed."
+    },
+    {
+      "id": "u35",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "A rollback before step 5 is cheap, because customers never saw green."
+    },
+    {
+      "id": "u36",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "A switch-back after step 5 is also fast, but requests that were in flight on green during the switch may fail and need a client retry.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "The cost of a switch-back."
+      }
+    },
+    {
+      "id": "u37",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Neither kind of rollback reverts the database, which is why the backward-compatible migration requirement matters.",
+      "tags": [
+        "repetition"
+      ],
+      "omittable": {
+        "reason": "duplicate",
+        "of": "u10",
+        "note": "Restates u10's 'a rollback does not undo a migration'."
+      }
+    },
+    {
+      "id": "u38",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Whichever way you roll back, record what failed before trying again, because a second attempt with the same build tends to fail the same way.",
+      "tags": [
+        "action_item"
+      ]
+    },
+    {
+      "id": "u39",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Do not run the next release's migrations while blue is still on standby.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "Keeps the standby usable."
+      }
+    },
+    {
+      "id": "u40",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "If you do, the standby may no longer work against the schema, and the switch-back stops being a safe option.",
+      "tags": [
+        "limitation"
+      ]
+    },
+    {
+      "id": "u41",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "That's all there is to it.",
+      "tags": [
+        "irrelevant"
+      ],
+      "omittable": {
+        "reason": "filler"
+      }
+    },
+    {
+      "id": "u42",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Happy deploying!",
+      "tags": [
+        "irrelevant"
+      ],
+      "omittable": {
+        "reason": "filler"
+      }
+    }
+  ],
+  "safeToOmit": [
+    {
+      "units": [
+        "u37"
+      ],
+      "why": "Repeats the prerequisite's 'a rollback does not undo a migration' (u10)."
+    },
+    {
+      "units": [
+        "u1",
+        "u7"
+      ],
+      "why": "Meta: what the tutorial covers; the list's lead-in."
+    },
+    {
+      "units": [
+        "u41",
+        "u42"
+      ],
+      "why": "Sign-off filler."
+    }
+  ],
+  "capabilities": [
+    "canvas.text-card",
+    "canvas.shape",
+    "canvas.code",
+    "canvas.frame",
+    "canvas.arrow-labeled",
+    "canvas.relation-types",
+    "ai.sectioned-template",
+    "ai.takeaway",
+    "ai.cites",
+    "ai.unit-accounting",
+    "ai.source-unit-ids"
+  ],
+  "provenance": {
+    "synthetic": true,
+    "note": "Original text written for this dataset. orders-api, the environment names, version 2.8.0, the environment variables and every threshold (10 minutes, 15 minutes, 2%, 30 seconds, 24 hours) are invented for the example; the CLI command is illustrative."
+  },
+  "review": {
+    "status": "draft",
+    "authoredBy": "Claude Code (assistant-drafted by hand; not produced by the Acute pipeline)",
+    "reviewers": [],
+    "approvedAt": null
+  }
+}

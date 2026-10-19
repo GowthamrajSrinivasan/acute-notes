@@ -1,0 +1,206 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": { "title": "Ledgerline billing: invoice path" },
+  "nodes": [
+    {
+      "id": "h0",
+      "type": "heading",
+      "role": "title",
+      "importance": "high",
+      "content": { "text": "Ledgerline billing: invoice path at commit a41c9e2 (refunds, dunning and the customer portal are out of scope)" }
+    },
+    {
+      "id": "g1",
+      "type": "group",
+      "content": {
+        "label": "Invoice generation path (verified code)",
+        "arrangement": "tree",
+        "diagram": "architecture",
+        "takeaway": "Verified: usage → pricing → tax → one-transaction write → publish. Not verified: the discounts read is only probable, and tax retries are unknown."
+      }
+    },
+    {
+      "id": "s_gen",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "kind": "function",
+        "label": "generateInvoice(accountId, period)",
+        "sublabel": "billing/invoices/generate.ts · lines 12–58",
+        "details": [
+          "Only exported function in the file",
+          "Also called by the admin Regenerate invoice action (billing/admin/regenerate.ts)",
+          "Fixed order: collect usage → price → quote tax → write → publish",
+          "Adds the returned tax to the draft before saving"
+        ]
+      }
+    },
+    {
+      "id": "s_col",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": {
+        "shape": "rectangle",
+        "kind": "function",
+        "label": "collectUsage(accountId, period)",
+        "sublabel": "billing/usage/collect.ts",
+        "details": ["Selects the account's rows whose occurred_at is in the period", "Skips is_test events; groups rows by meter into usage lines", "Writes to no table"]
+      }
+    },
+    {
+      "id": "s_usage",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": { "shape": "cylinder", "kind": "database", "label": "usage_events", "sublabel": "table" }
+    },
+    {
+      "id": "s_price",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": {
+        "shape": "rectangle",
+        "kind": "function",
+        "label": "priceUsage(lines, plan)",
+        "sublabel": "billing/pricing/priceUsage.ts",
+        "details": ["Loads the plan with loadPlan(planId)", "Quantity × unit price, in integer cents (never floating point)", "Imports discountFor: probably also reads a discount table — unconfirmed, no call site found"]
+      }
+    },
+    {
+      "id": "s_plans",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": { "shape": "cylinder", "kind": "database", "label": "price_plans", "sublabel": "table" }
+    },
+    {
+      "id": "s_disc",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "low",
+      "content": { "shape": "cylinder", "kind": "database", "label": "discounts", "sublabel": "table · link unconfirmed" }
+    },
+    {
+      "id": "s_tax",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": {
+        "shape": "rectangle",
+        "kind": "function",
+        "label": "TaxClient.quote(draft)",
+        "sublabel": "billing/tax/client.ts",
+        "details": ["Sends the draft to the external tax provider over HTTPS", "Timeout 8 seconds (line 21)", "Returns a tax amount per line", "Retries: unknown — not documented; quote() has no retry code"]
+      }
+    },
+    {
+      "id": "s_taxwell",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": { "shape": "rectangle", "kind": "external", "label": "Taxwell", "sublabel": "external tax provider", "details": ["API key read from the TAXWELL_API_KEY environment variable"] }
+    },
+    {
+      "id": "s_inv",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": { "shape": "cylinder", "kind": "database", "label": "invoices + invoice_lines", "sublabel": "tables, written in one transaction", "details": ["invoices rows are always written with status finalized"] }
+    },
+    {
+      "id": "s_pub",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": {
+        "shape": "rectangle",
+        "kind": "function",
+        "label": "publishInvoiceFinalized(invoice)",
+        "sublabel": "billing/events/publish.ts",
+        "details": ["Called only after the transaction commits", "On failure: logs the error and returns, so an invoice can exist without its event", "Re-sending missed events: unknown — no re-send job found"]
+      }
+    },
+    {
+      "id": "s_topic",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": { "shape": "parallelogram", "kind": "messagebus", "label": "billing-events", "sublabel": "topic", "details": ["Message: invoice.finalized", "Subscribers: payment and email services (code not read)"] }
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "content": { "label": "Modules and data contract (LLD)", "arrangement": "grid", "takeaway": "Five modules behind index files; one draft type; one transactional write." }
+    },
+    {
+      "id": "t_mod",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Five modules on the invoice path",
+      "content": { "markdown": "- `billing/invoices`: entry point, draft type, invoice write\n- `billing/usage`: raw usage events → usage lines\n- `billing/pricing`: usage lines → priced lines\n- `billing/tax`: wraps the external tax provider\n- `billing/events`: publishes billing events for other services\n\nEach module exposes its functions through its own `index.ts`; modules import each other only through those files." }
+    },
+    {
+      "id": "c_draft",
+      "type": "code",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "InvoiceDraft (billing/invoices/types.ts): taxCents stays undefined until the tax quote returns; BillingPeriod and PricedLine were not read",
+      "content": { "language": "ts", "source": "export interface InvoiceDraft {\n  accountId: string;\n  period: BillingPeriod;\n  lines: PricedLine[];\n  subtotalCents: number;\n  taxCents?: number;\n}" }
+    },
+    {
+      "id": "t_txn",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "The invoice and its lines are written in one transaction",
+      "content": { "markdown": "`generateInvoice` inserts into `invoices` and `invoice_lines` inside one database transaction (`billing/invoices/generate.ts`, lines 44–52). If either insert fails, the transaction rolls back and neither row is kept." }
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "content": { "label": "Interpretation and open questions", "arrangement": "grid", "takeaway": "The author's reading and what could not be found out; none of it is a verified code fact." }
+    },
+    {
+      "id": "t_boundary",
+      "type": "text",
+      "parent": "g3",
+      "importance": "medium",
+      "title": "Author's reading: billing/pricing is the pricing boundary",
+      "content": { "markdown": "In effect, no code outside `billing/pricing` was seen reading `price_plans`, so a pricing change should only need edits there.\n\n**Interpretation, not enforced:** nothing in the code stops another module from querying `price_plans` directly." }
+    },
+    {
+      "id": "t_orch",
+      "type": "text",
+      "parent": "g3",
+      "importance": "low",
+      "title": "Author's reading: the entry point is an orchestrator",
+      "content": { "markdown": "`generateInvoice` holds no pricing or tax logic of its own and only sequences the calls." }
+    },
+    {
+      "id": "t_q",
+      "type": "text",
+      "parent": "g3",
+      "importance": "medium",
+      "title": "Open questions (unknown in the source)",
+      "content": { "markdown": "- **Monthly run:** unknown. The admin action is clear, but no scheduler that calls `generateInvoice` for every account was found.\n- **Owner of billing-events:** unknown; none is listed in the repository.\n- **invoices status column:** purpose unknown; every row is written as `finalized` (it may be reserved for drafts)." }
+    }
+  ],
+  "relationships": [
+    { "from": "s_gen", "to": "s_col", "type": "calls", "label": "1. collect usage" },
+    { "from": "s_gen", "to": "s_price", "type": "calls", "label": "2. price usage lines" },
+    { "from": "s_gen", "to": "s_tax", "type": "calls", "label": "3. quote tax" },
+    { "from": "s_gen", "to": "s_inv", "type": "writes", "label": "4. insert invoice + lines (one transaction)" },
+    { "from": "s_gen", "to": "s_pub", "type": "calls", "label": "5. publish after commit" },
+    { "from": "s_col", "to": "s_usage", "type": "reads", "label": "reads account rows in period" },
+    { "from": "s_price", "to": "s_plans", "type": "reads", "label": "reads via loadPlan(planId)" },
+    { "from": "s_price", "to": "s_disc", "type": "reads", "label": "probably reads (unconfirmed)", "confidence": 0.4, "explanation": "discountFor is imported, but no call site was found." },
+    { "from": "s_tax", "to": "s_taxwell", "type": "calls", "label": "HTTPS quote, 8 s timeout" },
+    { "from": "s_pub", "to": "s_topic", "type": "publishes", "label": "publishes invoice.finalized" }
+  ]
+}

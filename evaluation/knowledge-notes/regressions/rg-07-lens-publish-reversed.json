@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-lens-publish-reversed",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "lens",
+  "description": "In the L1 Lens frame the upload service → message queue edge is reversed.",
+  "mutations": [
+    {
+      "op": "lens_reverse_edge",
+      "level": 1,
+      "from": "upload-service",
+      "to": "message-queue"
+    }
+  ],
+  "expectFailing": [
+    "a.lens-edge-l1-upload-queue"
+  ]
+}

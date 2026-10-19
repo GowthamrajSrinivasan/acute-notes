@@ -1,0 +1,63 @@
+{
+  "datasetVersion": "1.0.0",
+  "dimension": "grouping",
+  "title": "C. Grouping and hierarchy",
+  "definition": "Frames group ideas by meaning, are titled accurately, keep unrelated concepts apart, and make the main idea vs supporting detail visible. Frames are not word-count buckets.",
+  "questions": [
+    "Are concepts grouped by meaning?",
+    "Are frame titles accurate?",
+    "Are unrelated concepts improperly combined?",
+    "Are important relationships between frames visible?",
+    "Is the hierarchy (main idea → supporting detail) useful for understanding?"
+  ],
+  "severity": {
+    "critical": "An expected frame is missing, or two concepts the case requires apart share a frame; a limit sits in a different frame from its claim.",
+    "major": "A card in the wrong frame; over-fragmentation (frame_count above the case's bound); an example weighted above its main idea.",
+    "minor": "A frame title that is vague but not wrong."
+  },
+  "methods": {
+    "deterministic": [
+      "frame_present, frame_count",
+      "element_in_frame",
+      "together, apart",
+      "hierarchy"
+    ],
+    "model_judge": [
+      "Rubric score 1–5: 'Does each frame hold one coherent subject, titled by what it is about?'"
+    ],
+    "human": [
+      "Reviewer confirms frame boundaries in the canvas spec make sense for the audience"
+    ]
+  },
+  "requiredAssertions": [
+    "frame_present for every mandatory frame",
+    "together/apart for each pair in canvas.together / keepSeparate",
+    "hierarchy for each canvas.hierarchy entry"
+  ],
+  "passCriteria": "All critical grouping assertions pass and the judged score is ≥ 4.",
+  "failCriteria": "A critical grouping assertion fails, or the judged score is ≤ 2.",
+  "passExample": "RAG source: frames 'Retrieval signals', 'Fusion and candidates', 'Reranking', 'Generation', 'Trade-offs'; the RRF formula sits in Fusion; the trade-off table stands alone.",
+  "failExample": "Frames 'Part 1', 'Part 2', 'Part 3' cut every 300 words; reranking and BM25 share a frame; the example is the biggest card.",
+  "judgeScale": [
+    {
+      "score": 1,
+      "meaning": "Frames are arbitrary or misleading."
+    },
+    {
+      "score": 2,
+      "meaning": "Between 1 and 3: several serious problems."
+    },
+    {
+      "score": 3,
+      "meaning": "Mostly coherent; one misplaced idea or one vague title."
+    },
+    {
+      "score": 4,
+      "meaning": "Between 3 and 5: one minor problem."
+    },
+    {
+      "score": 5,
+      "meaning": "Every frame is one coherent subject with an accurate title; the main idea of each is obvious."
+    }
+  ]
+}

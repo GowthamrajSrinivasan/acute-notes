@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "datasetVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "caseId": {
+      "type": "string",
+      "pattern": "^kn-\\d{2}-[a-z0-9-]+$"
+    },
+    "units": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^ku\\.[a-z0-9-]+$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "explanation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "concept",
+              "definition",
+              "principle",
+              "component",
+              "process",
+              "example",
+              "evidence",
+              "assumption",
+              "constraint",
+              "caveat",
+              "trade_off",
+              "decision",
+              "question",
+              "action_item"
+            ]
+          },
+          "importance": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "important",
+              "supplementary"
+            ]
+          },
+          "sourceUnits": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^u\\d+$"
+            }
+          },
+          "provenance": {
+            "type": "string",
+            "enum": [
+              "explicit",
+              "inferred",
+              "conflicting",
+              "unknown"
+            ]
+          },
+          "related": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "to": {
+                  "type": "string",
+                  "pattern": "^ku\\.[a-z0-9-]+$"
+                },
+                "relation": {
+                  "type": "string",
+                  "enum": [
+                    "relates_to",
+                    "flows_to",
+                    "caused_by",
+                    "depends_on",
+                    "supports",
+                    "blocks",
+                    "implements",
+                    "derived_from",
+                    "references",
+                    "explained_by",
+                    "supersedes",
+                    "deviates_from",
+                    "option_of",
+                    "calls",
+                    "reads",
+                    "writes",
+                    "publishes",
+                    "subscribes",
+                    "contains",
+                    "contrasts_with",
+                    "refines",
+                    "part_of",
+                    "evidenced_by",
+                    "causes",
+                    "uses",
+                    "proposed_by"
+                  ]
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "to",
+                "relation"
+              ]
+            }
+          },
+          "limits": {
+            "type": "string",
+            "pattern": "^ku\\.[a-z0-9-]+$"
+          },
+          "exactDetails": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "mustPreserve": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "paraphrase": {
+            "type": "object",
+            "properties": {
+              "allowed": {
+                "type": "boolean"
+              },
+              "note": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "allowed"
+            ]
+          },
+          "omission": {
+            "type": "object",
+            "properties": {
+              "allowed": {
+                "type": "boolean"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "allowed"
+            ]
+          },
+          "review": {
+            "type": "object",
+            "properties": {
+              "required": {
+                "type": "boolean"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "required"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "claim",
+          "explanation",
+          "type",
+          "importance",
+          "sourceUnits",
+          "provenance",
+          "paraphrase",
+          "omission"
+        ]
+      }
+    },
+    "mustNotClaim": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^u\\d+$"
+            }
+          }
+        },
+        "required": [
+          "claim",
+          "why"
+        ]
+      }
+    }
+  },
+  "required": [
+    "datasetVersion",
+    "caseId",
+    "units",
+    "mustNotClaim"
+  ]
+}

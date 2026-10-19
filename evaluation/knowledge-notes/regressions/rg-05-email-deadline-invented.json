@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-email-deadline-invented",
+  "distortion": "invented_detail",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "A deadline nobody stated is attached to Kenji's email: '(no deadline set)' becomes 'by Friday, March 21'.",
+  "mutations": [
+    { "op": "replace_text", "node": "n10", "find": "(no deadline set)", "replace": "by Friday, March 21" }
+  ],
+  "expectFailing": ["a.no-email-deadline"]
+}

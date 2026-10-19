@@ -1,0 +1,10 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-fallback-certain",
+  "distortion": "correlation_to_causation",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "'The 8 passages may be less relevant' becomes 'skipping reranking produces wrong answers'.",
+  "mutations": [{ "op": "replace_text", "node": "f4", "find": "Faster, but the 8 passages may be less relevant", "replace": "Skipping reranking produces wrong answers" }],
+  "expectFailing": ["a.fallback-hedged", "a.no-wrong-answers"]
+}

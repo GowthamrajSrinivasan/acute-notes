@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-idempotency-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The managed queue's condition (at-least-once delivery, so every handler must be idempotent first) is dropped from its trade-off card, leaving only the benefit.",
+  "mutations": [
+    { "op": "replace_text", "node": "n3", "find": "\n- Delivers each message at least once, so every job handler must be made idempotent before switching; today only the email handler is.", "replace": "" }
+  ],
+  "expectFailing": ["a.idempotent-with-a"]
+}

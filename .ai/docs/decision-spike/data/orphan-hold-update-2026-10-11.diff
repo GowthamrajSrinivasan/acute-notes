@@ -1,0 +1,196 @@
+--- C:/Users/GOWTHA~1.SRI/AppData/Local/Temp/claude/c--Users-gowthamraj-srinivasa-source-repos-canvas-notes/d93e458f-250e-4760-9a75-a442c5ca737c/scratchpad/update.reconstructed-old.ts	2026-10-11 15:33:49.651111900 +0530
++++ src/ai/reconcile/update.ts	2026-10-11 15:01:42.191152300 +0530
+@@ -133,6 +133,21 @@
+     /** Each changed section: its stored nodes, whether the check counted them, and why. (At most 40.) */
+     sections: { section: string; nodes: number; counted: boolean; why: string }[];
+     /**
++     * Every orphan (a changed section with no stored nodes of its own, whose earlier text a page holds): was it a pure append (the only kind that can be
++     * skipped), was it held back until the other replies were in, and what became of it: `skipped` (no plan call, decided before any reply),
++     * `skipped_after_hold` (held, then the plan was full), `planned` (asked at once), `planned_after_hold` (held, then the plan had room or was not
++     * known to be full). Present only with this record; empty when there is no orphan.
++     */
++    orphans: { section: string; pureAppend: boolean; held: boolean; outcome: "skipped" | "skipped_after_hold" | "planned" | "planned_after_hold" }[];
++    /** What the plan was expected to hold once the regenerated sections reply: the first count plus their previous nodes. Absent when the first check was not judged. */
++    orphanExpectation?: number;
++    /**
++     * Present only when orphans were held back (it needs a pure-append orphan, a regenerated section outstanding and `orphanExpectation` at the cap):
++     * how many, how long they waited (until the other replies were in and the plan checked), and the check made then (`answer` `folds`: the held
++     * orphans were skipped; anything else: they were planned).
++     */
++    hold?: { held: number; expectation: number; heldMs: number; answer: "folds" | "room" | "unsupported"; check?: CapacityCheck & { planned: number } };
++    /**
+      * Whether the second check ran, as a stable value: `asked` (see `afterReplies`), `not_needed_first_answer_full` (the first check already said full),
+      * `not_needed_no_new_sections` (nothing new was to be planned), `not_applicable` (new sections, but no changed section or title whose reply could
+      * change the count). A merge that is not economy and append-only has no `capacity` record at all, so no status either.
+@@ -474,8 +489,9 @@
+     const countedKeys = new Set(changedFacts.flatMap((f) => (f.counted ? [f.section] : [])));
+     const countedTitles = previousPlan.nodes.filter((n) => n.stableKey?.endsWith(UNIT_SECTION_SUFFIX) && countedKeys.has(unitOfKey(n.stableKey) ?? ""));
+     const retained = [...reused, ...changedSections.flatMap((s, i) => (changedFacts[i]!.counted ? sectionNodes(s.key) : [])), ...countedTitles];
++    const previousKeys = new Set(previousPlan.nodes.flatMap((n) => (n.stableKey ? [n.stableKey] : [])));
+     let check: CapacityCheck | undefined;
+-    const noRoom = !!options.economy && !!options.appendOnly && everyAddedNodeFolds(retained, new Set(previousPlan.nodes.flatMap((n) => (n.stableKey ? [n.stableKey] : []))), (c) => (check = c));
++    const noRoom = !!options.economy && !!options.appendOnly && everyAddedNodeFolds(retained, previousKeys, (c) => (check = c));
+     if (check) {
+       const changedKeys = new Set(changedSections.map((s) => s.key));
+       capacity = {
+@@ -485,57 +501,109 @@
+         // The titles of the changed sections are made again with the same keys, so the fold counts them as existing, but they are not in `retained`.
+         titlesCounted: countedTitles.length,
+         recheck: "not_needed_no_new_sections",
++        orphans: [],
+         changedTitles: previousPlan.nodes.filter((n) => n.stableKey?.endsWith(UNIT_SECTION_SUFFIX) && changedKeys.has(unitOfKey(n.stableKey) ?? "")).length,
+       };
+     }
+     if (changedSections.length || titleChanged) {
+       onProgress?.({ stage: "analyzing", label: "Analyzing changes…" });
+       const failures: string[] = [];
+-      const replies = await Promise.all(
+-        changedSections.map(async (s, i) => {
+-          // Economy mode: text only appended to a section that is already drawn becomes verbatim cards, without a model call. So does a grown
+-          // section of the notes that no stored section holds (an "orphan": the first import folded it into a page) when the plan has no room
+-          // left for anything planned for it, and only when it is a pure append. Only the appended paragraphs are added: the page that holds its
+-          // earlier text stays on the canvas (a merge adds overflow pages under keys of their own, `foldOverflow`, and never replaces an existing
+-          // one), so adding the whole text would show it twice.
+-          const orphan = !reps[i] && s.was.length > 0 && s.was.every((k) => before.has(k));
+-          const appended = options.economy && (reps[i] || (noRoom && orphan)) ? appendedParagraphs(beforeText(s), sectionText(s, units)) : null;
+-          if (appended) {
+-            const cards = economyCards(appended);
+-            // An orphan is reported as a skipped plan, not as economy cards: economy mode was not what decided it (the full plan was).
+-            if (reps[i]) economyDone.push({ section: s.key, cards: cards.nodes.length });
+-            else planSkips.push({ section: s.key, path: "orphan", units: s.units.length, cards: cards.nodes.length });
+-            return { data: cards, result: null };
+-          }
+-          const asked = changedInput(beforeText(s), sectionText(s, units), reps[i]!);
+-          // Only appended paragraphs are numbered, so a block that is a new concept can be placed by reference (`appendedRefs.ts`).
+-          const refs = asked.appended ? await numberAppended(asked.text) : null;
+-          const r = await generateSection(
+-            runtime,
+-            {
+-              template: "sectioned",
+-              section: { label: s.label, kind: s.kind },
+-              ...asked,
+-              ...(refs?.numbered ? { numbered: refs.numbered } : {}),
+-            },
+-            failures,
+-            signal,
+-          );
+-          return refs && r.result ? { ...r, data: await resolveAppendedRefs(r.data, refs.blocks, asked.text) } : r;
+-        }),
+-      );
++      const orphan = changedSections.map((s, i) => !reps[i] && s.was.length > 0 && s.was.every((k) => before.has(k)));
++      const pure = changedSections.map((s) => !!appendedParagraphs(beforeText(s), sectionText(s, units)));
++      // A section that was edited (not only appended to) is regenerated by the model: its reply decides how many nodes the plan holds, and the first
++      // check cannot count them (the model may change or drop them). An orphan that could be skipped is therefore held back, but only when what the
++      // plan holds now plus what those sections held before (what it expects them to return) reaches the cap. Whether it is skipped is then decided
++      // from their actual replies (`planIsFull`), as it is for the new sections: a hold is only a delay, and an orphan is never skipped while the
++      // plan has room.
++      const regenerated = changedSections.map((_s, i) => !!reps[i] && !pure[i]);
++      const regeneratedNodes = changedSections.reduce((n, _s, i) => n + (regenerated[i] ? changedFacts[i]!.nodes : 0), 0);
++      const expectation = capacity?.counted !== undefined ? capacity.counted + regeneratedNodes : undefined;
++      const held = changedSections.map((_s, i) => !!capacity && !noRoom && orphan[i] && pure[i] && regenerated.some(Boolean) && expectation !== undefined && expectation >= capacity.cap);
++      const facts: (NonNullable<OutlinedUpdate["capacity"]>["orphans"][number] | undefined)[] = changedSections.map(() => undefined);
++      const settle = async (i: number, skipOrphan: boolean, afterHold: boolean) => {
++        const s = changedSections[i]!;
++        // Economy mode: text only appended to a section that is already drawn becomes verbatim cards, without a model call. So does a grown
++        // section of the notes that no stored section holds (an "orphan": the first import folded it into a page) when the plan has no room
++        // left for anything planned for it, and only when it is a pure append. Only the appended paragraphs are added: the page that holds its
++        // earlier text stays on the canvas (a merge adds overflow pages under keys of their own, `foldOverflow`, and never replaces an existing
++        // one), so adding the whole text would show it twice.
++        const appended = options.economy && (reps[i] || (skipOrphan && orphan[i])) ? appendedParagraphs(beforeText(s), sectionText(s, units)) : null;
++        if (orphan[i]) facts[i] = { section: s.key, pureAppend: pure[i]!, held: held[i]!, outcome: appended ? (afterHold ? "skipped_after_hold" : "skipped") : afterHold ? "planned_after_hold" : "planned" };
++        if (appended) {
++          const cards = economyCards(appended);
++          // An orphan is reported as a skipped plan, not as economy cards: economy mode was not what decided it (the full plan was).
++          if (reps[i]) economyDone.push({ section: s.key, cards: cards.nodes.length });
++          else planSkips.push({ section: s.key, path: "orphan", units: s.units.length, cards: cards.nodes.length });
++          return { data: cards as unknown, result: null };
++        }
++        const asked = changedInput(beforeText(s), sectionText(s, units), reps[i]!);
++        // Only appended paragraphs are numbered, so a block that is a new concept can be placed by reference (`appendedRefs.ts`).
++        const refs = asked.appended ? await numberAppended(asked.text) : null;
++        const r = await generateSection(
++          runtime,
++          {
++            template: "sectioned",
++            section: { label: s.label, kind: s.kind },
++            ...asked,
++            ...(refs?.numbered ? { numbered: refs.numbered } : {}),
++          },
++          failures,
++          signal,
++        );
++        return refs && r.result ? { ...r, data: await resolveAppendedRefs(r.data, refs.blocks, asked.text) } : r;
++      };
++      type Reply = Awaited<ReturnType<typeof settle>>;
++      const replies: (Reply | undefined)[] = changedSections.map(() => undefined);
++      const settleAll = async (idx: number[], skipOrphan: boolean, afterHold: boolean) => {
++        const done = await Promise.all(idx.map((i) => settle(i, skipOrphan, afterHold)));
++        idx.forEach((i, k) => (replies[i] = done[k]));
++      };
++      /** The nodes of the changed sections in `idx` (their replies are in) as the plan will hold them, titles made again. */
++      const assemble = (idx: number[], copy: boolean) =>
++        wrapSections(
++          mergeUnitPlans(
++            "sectioned",
++            [
++              ...(titleChanged ? [{ unitKey: title!.key, raw: headingOnlyReply(title!, "sectioned") }] : []),
++              ...idx.map((i) => ({ unitKey: changedSections[i]!.key, raw: keptReply(copy ? structuredClone(replies[i]!.data) : replies[i]!.data, reps[i]!, beforeText(changedSections[i]!), sectionText(changedSections[i]!, units)) })),
++            ],
++            prefix,
++          ),
++          idx.map((i) => changedSections[i]!),
++          { idPrefix: prefix, flat: true, titleKey: titleChanged ? title!.key : null },
++        ) as typeof fresh;
++      const startedAt = Date.now();
++      const heldIdx = changedSections.flatMap((_s, i) => (held[i] ? [i] : []));
++      const nowIdx = changedSections.flatMap((_s, i) => (held[i] ? [] : [i]));
++      await settleAll(nowIdx, noRoom, false);
+       if (failures.length) throw new Error(failures.join(" "));
+       throwIfAborted(signal);
+-      const merged = mergeUnitPlans(
+-        "sectioned",
+-        [
+-          ...(titleChanged ? [{ unitKey: title!.key, raw: headingOnlyReply(title!, "sectioned") }] : []),
+-          ...changedSections.map((s, i) => ({ unitKey: s.key, raw: keptReply(replies[i]!.data, reps[i]!, beforeText(s), sectionText(s, units)) })),
+-        ],
+-        prefix,
++      let hold: NonNullable<OutlinedUpdate["capacity"]>["hold"];
++      if (heldIdx.length) {
++        // With every other reply in, is the plan full? Anything that goes wrong in finding out means "not known to be full": the orphans are planned.
++        let full = false;
++        let seen: CapacityCheck | undefined;
++        let planned = 0;
++        try {
++          const so_far = [...reused, ...(assemble(nowIdx, true).nodes ?? [])];
++          planned = so_far.length;
++          full = planIsFull(so_far, previousKeys, (c) => (seen = c));
++        } catch {
++          full = false;
++        }
++        const heldMs = Date.now() - startedAt;
++        await settleAll(heldIdx, full, true);
++        if (failures.length) throw new Error(failures.join(" "));
++        throwIfAborted(signal);
++        const check2 = seen as CapacityCheck | undefined;
++        hold = { held: heldIdx.length, expectation: expectation!, heldMs, answer: check2?.answer ?? "unsupported", ...(check2 ? { check: { ...check2, planned } } : {}) };
++      }
++      if (capacity) capacity = { ...capacity, orphans: facts.flatMap((f) => (f ? [f] : [])).slice(0, 40), ...(expectation !== undefined ? { orphanExpectation: expectation } : {}), ...(hold ? { hold } : {}) };
++      fresh = assemble(
++        changedSections.map((_s, i) => i),
++        false,
+       );
+-      fresh = wrapSections(merged, changedSections, { idPrefix: prefix, flat: true, titleKey: titleChanged ? title!.key : null }) as typeof fresh;
+-      const last = replies.flatMap((r) => (r.result ? [r.result] : [])).at(-1);
++      const last = replies.flatMap((r) => (r?.result ? [r.result] : [])).at(-1);
+       if (last) provenance = { providerId: last.providerId, role: last.role, model: last.usage.model };
+     }
+     // The new parts' own sections (G2.3), without that run's document-level nodes (the notes keep their own subtitle).
+@@ -562,7 +630,7 @@
+       if (capacity && generated.length) capacity = { ...capacity, recheck: noRoom ? "not_needed_first_answer_full" : changedSections.length || titleChanged ? "asked" : "not_applicable" };
+       if (generated.length && !noRoom && options.economy && options.appendOnly && (changedSections.length || titleChanged)) {
+         let again: CapacityCheck | undefined;
+-        fullNow = planIsFull([...reused, ...(fresh.nodes ?? [])], new Set(previousPlan.nodes.flatMap((n) => (n.stableKey ? [n.stableKey] : []))), (c) => (again = c));
++        fullNow = planIsFull([...reused, ...(fresh.nodes ?? [])], previousKeys, (c) => (again = c));
+         if (capacity && again) capacity = { ...capacity, afterReplies: { ...again, planned: reused.length + (fresh.nodes?.length ?? 0) } };
+       }
+       if (generated.length && fullNow) {

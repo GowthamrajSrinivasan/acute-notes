@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-alert-deadline-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "Marcus's action item loses the deadline he committed to (Wednesday, March 19).",
+  "mutations": [
+    { "op": "replace_text", "node": "n10", "find": ", by Wednesday, March 19", "replace": "" }
+  ],
+  "expectFailing": ["a.action-alert-deadline"]
+}

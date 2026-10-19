@@ -1,0 +1,230 @@
+--- C:/Users/GOWTHA~1.SRI/AppData/Local/Temp/claude/c--Users-gowthamraj-srinivasa-source-repos-canvas-notes/d93e458f-250e-4760-9a75-a442c5ca737c/scratchpad/VisualizeDialog.before.tsx	2026-10-11 17:44:19.740270500 +0530
++++ src/components/ai/VisualizeDialog.tsx	2026-10-11 17:44:19.873189100 +0530
+@@ -29,22 +29,17 @@
+ import { createPortal } from "react-dom";
+ import { getPendingChanges } from "@/ai/changes/pendingChanges";
+ import type { ChangeSet } from "@/ai/changes/changeSet";
+-import { ChangeSetTooLargeError, splitIntoSectionParts } from "@/ai/changes/sectionParts";
++import { ChangeSetTooLargeError } from "@/ai/changes/sectionParts";
+ import { SparkleIcon } from "@/components/common/icons";
+ import { getDescriptor, getPrimaryId } from "@/ai/connections";
+ import type { AIConnectionAccessType } from "@/ai/providers/registry";
+ import { AIError } from "@/ai/errors";
+-import { newId } from "@/domain/ids";
+ import { AIRuntime } from "@/ai/runtime";
+ import { InvalidVisualPlanError } from "@/ai/visual-plan/validate";
+ import { ContentTooLargeError } from "@/ai/content/parser";
+ import { NoProviderConfiguredError, NothingToVisualizeLocallyError, ReadsFineAsTextError, type VisualizeProgress } from "@/ai/visualize/types";
+-import { visualizeContent } from "@/ai/visualize/visualize";
+-import { loadLatest } from "@/ai/content/sources";
+-import { existingConnections, existingObjects } from "@/ai/reconcile/existing";
+-import { updateFromNewContent, type UpdateInput } from "@/ai/reconcile/update";
+-import { mergeIntoSource } from "@/ai/merge/merge";
+-import { ECONOMY_LABEL, ECONOMY_NOTICE, withEconomy } from "./economyOption";
++import { ingestContent, prepareProposal, SourceUnavailableError, sceneSourceObjects, type IngestPorts } from "@/ai/ingest/ingest";
++import { ECONOMY_LABEL, ECONOMY_NOTICE } from "./economyOption";
+ import { isTopicMergeEnabled } from "@/config/features";
+ import type { SceneElement } from "@/domain/canvas/adapter";
+ import { getPersistence } from "@/persistence";
+@@ -70,14 +65,6 @@
+   anyway?: ChangeSet;
+ }
+ 
+-/** The content source isn't on this device (e.g. the objects came in a workspace import). */
+-class SourceUnavailableError extends Error {
+-  override name = "SourceUnavailableError";
+-  constructor() {
+-    super("The original content for these objects isn't on this device, so it can't be compared. Use Visualize to start again.");
+-  }
+-}
+-
+ /** How an AI failure of Visualize (and "Visualize better") is told to the user. */
+ export function errorInfo(err: unknown): ErrorInfo {
+   if (err instanceof SourceUnavailableError) return { message: err.message, offerLocal: false, offerSettings: false };
+@@ -179,38 +166,21 @@
+   /** The text as Visualize reads it: timestamps and citation numbers removed per AI settings → Clean pasted answers. */
+   const cleanText = () => cleanupAIText(text, getUiPref("aiCleanup"));
+ 
+-  /** A source's latest version and its objects on this canvas, as an update (or a merge) into it needs them. */
+-  const sourceInput = async (sourceId: string, title: string): Promise<UpdateInput> => {
+-    const latest = await loadLatest(getPersistence().contentSources, sourceId);
+-    if (!latest) throw new SourceUnavailableError();
+-    const elements = api.getSceneElements() as unknown as readonly SceneElement[];
+-    const existing = existingObjects(elements, (id) => getDocumentStore().get(id), sourceId);
+-    const ids = new Set(existing.map((o) => o.objectId));
+-    const boxes = elements.filter((el) => ids.has(el.id));
+-    const context = gatherRenderContext(api);
+-    // New objects are placed beside the ones this source already has.
+-    const anchor = boxes.length
+-      ? {
+-          x: Math.min(...boxes.map((b) => b.x)),
+-          y: Math.min(...boxes.map((b) => b.y)),
+-          width: Math.max(...boxes.map((b) => b.x + b.width)) - Math.min(...boxes.map((b) => b.x)),
+-          height: Math.max(...boxes.map((b) => b.y + b.height)) - Math.min(...boxes.map((b) => b.y)),
+-        }
+-      : context.anchor;
+-    return { source: latest.source, previous: latest.version, text: cleanText(), existing, connections: existingConnections(elements, sourceId), operationId: newId("op"), title, context: { ...context, ...(anchor ? { anchor } : {}) } };
+-  };
++  /** What the ingest service needs from this canvas (the same service the MCP import tools use). */
++  const ports = (): IngestPorts => ({
++    runtime: AIRuntime,
++    contentSources: getPersistence().contentSources,
++    renderContext: () => gatherRenderContext(api),
++    sourceObjects: sceneSourceObjects(() => api.getSceneElements() as unknown as readonly SceneElement[], (id) => getDocumentStore().get(id)),
++  });
+ 
+   /** "Update from new content" (F39): reconcile the source's objects on this canvas with the new text. */
+-  const runUpdate = async (sourceId: string, signal: AbortSignal) => {
+-    const result = await updateFromNewContent(await sourceInput(sourceId, store.autoRun?.title ?? "Update from new content"), AIRuntime, { signal, onProgress: setRunning });
+-    return { changeSet: result.changeSet, notices: result.notices };
+-  };
++  const runUpdate = (sourceId: string, signal: AbortSignal) =>
++    ingestContent({ mode: "update", sourceId, text: cleanText(), title: store.autoRun?.title ?? "Update from new content" }, ports(), { signal, onProgress: setRunning });
+ 
+   /** "Merge into existing notes" (G2.2): file the new content under the target notes' topics. */
+-  const runMerge = async (sourceId: string, signal: AbortSignal) => {
+-    const result = await mergeIntoSource(withEconomy(await sourceInput(sourceId, "Merge into existing notes"), economy), AIRuntime, { signal, onProgress: setRunning });
+-    return { changeSet: result.changeSet, notices: result.notices };
+-  };
++  const runMerge = (sourceId: string, signal: AbortSignal) =>
++    ingestContent({ mode: "merge", sourceId, text: cleanText(), economy, title: "Merge into existing notes" }, ports(), { signal, onProgress: setRunning });
+ 
+   const run = async (forceLocalOnly = false) => {
+     const controller = new AbortController();
+@@ -225,16 +195,9 @@
+       if (store.updateSourceId) ({ changeSet, notices } = await runUpdate(store.updateSourceId, controller.signal));
+       else if (merging && !forceLocalOnly) ({ changeSet, notices } = await runMerge(targetId!, controller.signal));
+       else {
+-        const result = await visualizeContent(
+-          {
+-            text: cleanText(),
+-            template: template === "auto" ? undefined : template,
+-            forceLocalOnly,
+-            operationId: newId("op"),
+-            title: store.label ? `Visualize: ${store.label}` : "Visualize",
+-            context: gatherRenderContext(api),
+-          },
+-          AIRuntime,
++        const result = await ingestContent(
++          { mode: "new", text: cleanText(), template: template === "auto" ? undefined : template, forceLocalOnly, title: store.label ? `Visualize: ${store.label}` : "Visualize" },
++          ports(),
+           { signal: controller.signal, onProgress: setRunning },
+         );
+         changeSet = result.changeSet;
+@@ -245,9 +208,9 @@
+       finished = true;
+       if (changeSet) {
+         // A long document can create more than one review holds: it is reviewed section by section (never truncated).
+-        const proposal = splitIntoSectionParts(changeSet);
+-        if (proposal.parts && !changeSet.parts) notices = [...notices, `This is a large result (${proposal.changes.length.toLocaleString("en-US")} objects), so it is split into ${proposal.parts.length} sections to review. Accepting only some sections still records the whole content version, so the sections you skip show up as additions on the next update.`];
+-        getPendingChanges().propose(home.canvasId, proposal);
++        const prepared = prepareProposal(changeSet, notices);
++        notices = prepared.notices;
++        getPendingChanges().propose(home.canvasId, prepared.proposal);
+         // Where AI fell short (a section shown from its own structure), or a split was kept: said once, never silently.
+         if (notices.length) api.setToast({ message: notices.join(" "), closable: true, duration: 10000 });
+       } else if (notices.length) api.setToast({ message: notices.join(" "), closable: true, duration: 10000 });
+--- C:/Users/GOWTHA~1.SRI/AppData/Local/Temp/claude/c--Users-gowthamraj-srinivasa-source-repos-canvas-notes/d93e458f-250e-4760-9a75-a442c5ca737c/scratchpad/index.before.ts	2026-10-11 17:52:39.399120100 +0530
++++ src/mcp/tools/index.ts	2026-10-11 17:52:39.600723100 +0530
+@@ -25,6 +25,7 @@
+ import { getRepoMapHost, REPO_MAP_READ_TOOLS, REPO_MAP_TOOL_NAMES, registerRepoMapTools, type MapSectionWriter, type RepoMapHost, type RepoMapServices } from "./repoMap";
+ import { WorkspaceScan } from "../resources/workspaceScan";
+ import { registerWriteTools, sanitizeClientName, WRITE_TOOL_NAMES } from "./writeTools";
++import { INGEST_TOOL_NAMES, registerIngestTools, type IngestToolOptions } from "./ingestTools";
+ import { PROJECT_READ_TOOLS, PROJECT_WRITE_TOOLS, registerProjectTools } from "./projectTools";
+ import { PROJECT_RESOURCE_TEMPLATES, registerProjectResources, SETUP_RESOURCE_TEMPLATE } from "./projectResources";
+ import { OBJECT_READ_TOOLS, OBJECT_WRITE_TOOLS, registerObjectTools } from "./objectTools";
+@@ -38,6 +39,7 @@
+ export { getLiveCanvasActions, registerLiveCanvasActions, type LiveCanvasActions } from "./liveCanvas";
+ export { READ_TOOL_NAMES } from "./readTools";
+ export { WRITE_TOOL_NAMES } from "./writeTools";
++export { INGEST_TOOL_NAMES, type IngestToolOptions } from "./ingestTools";
+ export { PROJECT_READ_TOOLS, PROJECT_TOOL_NAMES, PROJECT_WRITE_TOOLS } from "./projectTools";
+ export { OBJECT_READ_TOOLS, OBJECT_WRITE_TOOLS } from "./objectTools";
+ export { LENS_READ_TOOLS, LENS_WRITE_TOOLS } from "./lensTools";
+@@ -57,6 +59,8 @@
+   parseMarkdown?: ParseMarkdown;
+   /** F43's repo-map tools are served only with their store. */
+   repoMap?: RepoMapToolOptions;
++  /** The content-import tools (`find_import_targets`, `import_content`) are served only with the app's AI runtime and sources, to local sessions. */
++  ingest?: IngestToolOptions;
+   /** This connection's MCP session id; one is made when not given (D40, D32). */
+   sessionId?: string;
+   /** Agent State (D31): the change log and session records the Phase 7B tools read and `sync_session` writes. */
+@@ -104,10 +108,11 @@
+ }
+ 
+ /** The tools a client may call under `policy` (for `acute://context/current`'s `availableTools`). */
+-export function availableToolNames(policy?: ToolPolicySource, options: { repoMap?: boolean } = {}): string[] {
++export function availableToolNames(policy?: ToolPolicySource, options: { repoMap?: boolean; ingest?: boolean } = {}): string[] {
+   const writes = resolvePolicy(policy).allowWrites;
++  const ingest = options.ingest ? (writes ? [...INGEST_TOOL_NAMES] : [INGEST_TOOL_NAMES[0]]) : [];
+   const repoMap = options.repoMap ? (writes ? [...REPO_MAP_TOOL_NAMES] : [...REPO_MAP_READ_TOOLS]) : [];
+-  return [...READ_TOOL_NAMES, ...(writes ? WRITE_TOOL_NAMES : []), ...repoMap, ...PROJECT_READ_TOOLS, ...(writes ? PROJECT_WRITE_TOOLS : []), ...OBJECT_READ_TOOLS, ...(writes ? OBJECT_WRITE_TOOLS : []), ...LENS_READ_TOOLS, ...(writes ? LENS_WRITE_TOOLS : [])];
++  return [...READ_TOOL_NAMES, ...(writes ? WRITE_TOOL_NAMES : []), ...repoMap, ...ingest, ...PROJECT_READ_TOOLS, ...(writes ? PROJECT_WRITE_TOOLS : []), ...OBJECT_READ_TOOLS, ...(writes ? OBJECT_WRITE_TOOLS : []), ...LENS_READ_TOOLS, ...(writes ? LENS_WRITE_TOOLS : [])];
+ }
+ 
+ export function registerAcuteTools(server: McpServer, deps: AcuteToolDeps): void {
+@@ -133,6 +138,17 @@
+     sessionId: () => sessionId,
+     ...(deps.parseMarkdown ? { parseMarkdown: deps.parseMarkdown } : {}),
+   });
++  if (deps.ingest) {
++    registerIngestTools(server, {
++      workspaceId: deps.workspaceId,
++      liveCanvas: deps.liveCanvas,
++      policy: () => resolvePolicy(deps.policy),
++      clientName: () => server.server.getClientVersion()?.name,
++      sessionId: () => sessionId,
++      ingest: deps.ingest,
++      ...(deps.parseMarkdown ? { parseMarkdown: deps.parseMarkdown } : {}),
++    });
++  }
+   let upsertMapSection: MapSectionWriter | undefined;
+   if (deps.repoMap) {
+     const options = deps.repoMap;
+--- C:/Users/GOWTHA~1.SRI/AppData/Local/Temp/claude/c--Users-gowthamraj-srinivasa-source-repos-canvas-notes/d93e458f-250e-4760-9a75-a442c5ca737c/scratchpad/server.before.ts	2026-10-11 17:52:39.477878300 +0530
++++ src/mcp/server.ts	2026-10-11 17:52:54.312079000 +0530
+@@ -29,7 +29,7 @@
+ import { sessionAutoAccept } from "@/ai/changes/autoAccept";
+ import { resolvePolicy } from "./tools/common";
+ import type { AgentStateRepository } from "@/persistence/repositories/types";
+-import { availableToolNames, getLiveCanvasActions, registerAcuteTools, type LensFocusHost, type LiveCanvasActions, type RepoMapToolOptions, type ToolCallUsage, type ToolPolicySource } from "./tools";
++import { availableToolNames, getLiveCanvasActions, registerAcuteTools, type IngestToolOptions, type LensFocusHost, type LiveCanvasActions, type RepoMapToolOptions, type ToolCallUsage, type ToolPolicySource } from "./tools";
+ 
+ export const MCP_SERVER_NAME = "acute-notes";
+ export const MCP_SERVER_VERSION = "0.1.0";
+@@ -55,6 +55,8 @@
+   parseMarkdown?: ParseMarkdown;
+   /** F43: serve the repo-map tools and the `map_repo` prompt, with their store. */
+   repoMap?: RepoMapToolOptions;
++  /** Serve the content-import tools (AI imports, guarded by the user's setting); never to a remote session, as the repo-map tools. */
++  ingest?: IngestToolOptions;
+   /** Agent State (D46): told about every tool call, for the session's usage. */
+   onToolCall?: (call: ToolCallUsage) => void;
+   /** Agent State (D31): the change log and session records (Phase 7B's history tools, `sync_session`). */
+@@ -111,6 +113,7 @@
+ export function createAcuteMcpServer(deps: AcuteMcpServerDeps): McpServer {
+   if (deps.remote && deps.sessionId) sessionAutoAccept.markRemote(deps.sessionId);
+   const repoMap = deps.remote ? undefined : deps.repoMap;
++  const ingest = deps.remote ? undefined : deps.ingest;
+   const reader = new ResourceReader(deps.services, deps.workspaceId);
+   const currentContext = deps.getCurrentContext ?? (() => liveCurrentContext(deps.services));
+   const scopedContext = async () => {
+@@ -165,7 +168,7 @@
+   const currentPayload = async (): Promise<CurrentContext | CurrentContextUnavailable> => {
+     const ctx = await scopedContext();
+     return ctx
+-      ? { ...ctx, availableTools: availableToolNames(deps.toolPolicy, { repoMap: !!repoMap }) }
++      ? { ...ctx, availableTools: availableToolNames(deps.toolPolicy, { repoMap: !!repoMap, ingest: !!ingest }) }
+       : { uri: CURRENT_CONTEXT_URI, version: CURRENT_CONTEXT_VERSION, available: false };
+   };
+ 
+@@ -200,6 +203,7 @@
+     ...(deps.toolPolicy ? { policy: deps.toolPolicy } : {}),
+     ...(deps.parseMarkdown ? { parseMarkdown: deps.parseMarkdown } : {}),
+     ...(repoMap ? { repoMap } : {}),
++    ...(ingest ? { ingest } : {}),
+     ...(deps.sessionId ? { sessionId: deps.sessionId } : {}),
+     ...(deps.onToolCall ? { onToolCall: deps.onToolCall } : {}),
+     ...(deps.agentState ? { agentState: deps.agentState } : {}),

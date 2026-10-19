@@ -1,0 +1,62 @@
+{
+  "datasetVersion": "1.0.0",
+  "dimension": "relationships",
+  "title": "E. Relationship correctness",
+  "definition": "Required relationships exist between the right endpoints, in the right direction, with the right type and a label wherever the label carries meaning. Inferred relationships are marked as such; unsupported connections are absent.",
+  "questions": [
+    "Are required relationships present?",
+    "Are endpoints correct?",
+    "Are direction and labels correct?",
+    "Are inferred relationships distinguished from source-explicit facts?",
+    "Are unsupported connections avoided?"
+  ],
+  "severity": {
+    "critical": "A dependency reversed; a required architecture edge missing or unlabeled; a calls/reads/writes type swapped; an inferred link presented as fact.",
+    "major": "A sequence edge missing; a label that is vague ('relates').",
+    "minor": "An extra harmless relates_to link."
+  },
+  "methods": {
+    "deterministic": [
+      "relationship_present (direction, type, required label, label terms)",
+      "relationship_absent for reversed or forbidden edges",
+      "architecture_edges_labeled"
+    ],
+    "model_judge": [
+      "'Does every arrow say something true that the source supports?'"
+    ],
+    "human": [
+      "Reviewer checks every inferred relationship's justification"
+    ]
+  },
+  "requiredAssertions": [
+    "relationship_present for every mandatory relationship",
+    "relationship_absent for each plausible reversal",
+    "architecture_edges_labeled in architecture cases"
+  ],
+  "passCriteria": "All critical relationship assertions pass on every run. An unlabeled arrow never counts as an architecture relationship where the label is needed.",
+  "failCriteria": "Any reversed dependency, missing required edge, or unlabeled architecture edge.",
+  "passExample": "'Retrieval service —reads passages→ Vector store'; 'Orchestrator —writes answer + citations→ Answer log'.",
+  "failExample": "'Vector store → Retrieval service' with no label; 'Orchestrator —reads→ Answer log'.",
+  "judgeScale": [
+    {
+      "score": 1,
+      "meaning": "Many wrong, reversed or unlabeled edges."
+    },
+    {
+      "score": 2,
+      "meaning": "Between 1 and 3: several serious problems."
+    },
+    {
+      "score": 3,
+      "meaning": "Required edges present; one vague label or one questionable inference unmarked."
+    },
+    {
+      "score": 4,
+      "meaning": "Between 3 and 5: one minor problem."
+    },
+    {
+      "score": 5,
+      "meaning": "Every edge correct, directed, typed and labelled; inferences marked."
+    }
+  ]
+}

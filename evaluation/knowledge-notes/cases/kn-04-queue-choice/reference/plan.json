@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": { "title": "Choosing a queue for background jobs" },
+  "nodes": [
+    {
+      "id": "g1",
+      "type": "group",
+      "content": { "label": "Why the billing queue is changing", "arrangement": "grid", "takeaway": "In-process workers lose queued jobs on every deploy or crash." }
+    },
+    {
+      "id": "n1",
+      "type": "text",
+      "parent": "g1",
+      "importance": "medium",
+      "title": "Deploys and crashes lose queued jobs",
+      "content": { "markdown": "About 40,000 background jobs a day (invoice PDFs, receipt emails, webhook retries) run in an in-process worker pool. A deploy or a crash loses any job queued but not yet started: last quarter, 37 invoice emails.\n\nPeak load is 600 jobs per minute, during the month-end billing run." }
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "content": { "label": "Three options compared", "arrangement": "grid", "takeaway": "Costs differ in kind: per-request pricing, fixed machines, or spare database capacity." }
+    },
+    {
+      "id": "n2",
+      "type": "table",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Monthly cost and effort by option",
+      "content": {
+        "columns": ["Option", "How it works", "Monthly infrastructure", "Monthly team effort", "Notes"],
+        "rows": [
+          ["A: Managed cloud queue", "The provider handles storage, scaling and redelivery; workers poll for messages", "$310", "about 2 hours", "Priced per million requests; assumes current volume, roughly $900 a month at three times today's volume"],
+          ["B: Self-hosted broker", "Three virtual machines we install, patch and monitor", "$540", "about 12 hours (an estimate: no one on the team has run this broker in production)", "Flat until the cluster needs a fourth machine"],
+          ["C: Database job table", "A jobs table in the billing Postgres database; workers claim rows with SELECT ... FOR UPDATE SKIP LOCKED", "$0 extra", "about 4 hours", "Uses spare capacity on the existing primary"]
+        ]
+      }
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "content": { "label": "Trade-offs by option", "arrangement": "compare", "takeaway": "Each option's main benefit comes with a condition the team would have to meet." }
+    },
+    {
+      "id": "n3",
+      "type": "text",
+      "parent": "g3",
+      "importance": "high",
+      "title": "Managed queue: least operational work, at-least-once delivery",
+      "content": { "markdown": "Almost no operational work; failed messages move to a dead-letter queue automatically.\n\n**Conditions**\n- Delivers each message at least once, so every job handler must be made idempotent before switching; today only the email handler is.\n- Ties us to one provider's API; the local emulator doesn't support dead-lettering." }
+    },
+    {
+      "id": "n4",
+      "type": "text",
+      "parent": "g3",
+      "importance": "high",
+      "title": "Self-hosted broker: priorities and delays, unproven to run",
+      "content": { "markdown": "Priority queues and delayed delivery would let month-end invoices jump ahead of webhook retries.\n\n**Conditions**\n- No one on the team has run this broker in production.\n- Upgrades need a maintenance window." }
+    },
+    {
+      "id": "n5",
+      "type": "text",
+      "parent": "g3",
+      "importance": "high",
+      "title": "Job table: enqueue in the same transaction, extra load on the primary",
+      "content": { "markdown": "A job is written in the same transaction as the billing change that causes it, so it can't be lost between commit and enqueue.\n\n**Conditions**\n- Only covers jobs created inside the billing database transaction; jobs from the reporting service, which has its own database, don't get it.\n- Polling adds read load to the primary database, the main risk at month-end." }
+    },
+    {
+      "id": "g4",
+      "type": "group",
+      "content": { "label": "Selection criteria", "arrangement": "grid", "takeaway": "Two must-haves gate every option; four weighted criteria score the rest." }
+    },
+    {
+      "id": "n6",
+      "type": "text",
+      "parent": "g4",
+      "importance": "high",
+      "title": "Must-haves: no lost jobs, 1,800 jobs per minute",
+      "content": { "markdown": "An option that fails either is out, regardless of its score:\n1. No job is lost when a worker crashes or the service is deployed.\n2. Absorbs 1,800 jobs per minute (three times today's peak) without manual intervention." }
+    },
+    {
+      "id": "n7",
+      "type": "text",
+      "parent": "g4",
+      "importance": "medium",
+      "title": "Operational effort weighs most",
+      "content": { "markdown": "- Operational effort: 40%\n- Monthly cost: 30%\n- Developer experience, including local testing: 20%\n- Portability away from our cloud provider: 10%" }
+    },
+    {
+      "id": "g5",
+      "type": "group",
+      "content": { "label": "Evidence so far", "arrangement": "grid", "takeaway": "Only the job table has been load-tested, and not at the required rate." }
+    },
+    {
+      "id": "n8",
+      "type": "text",
+      "parent": "g5",
+      "importance": "high",
+      "title": "Job table held 1,200 a minute, strained at 2,000",
+      "content": { "markdown": "On a staging copy with synthetic jobs: 1,200 jobs per minute sustained at a p95 claim latency of 18 ms. At 2,000 jobs per minute, primary CPU reached 85% and p95 latency rose to 240 ms.\n\n**Limits**\n- 1,800 jobs per minute was not tested.\n- Staging is about a quarter of production size, so the results may not carry over." }
+    },
+    {
+      "id": "n9",
+      "type": "text",
+      "parent": "g5",
+      "importance": "medium",
+      "title": "Managed queue and broker are untested by us",
+      "content": { "markdown": "Neither was load-tested. The provider documents throughput far above our peak for the managed queue, but that is the provider's figure, not ours." }
+    },
+    {
+      "id": "g6",
+      "type": "group",
+      "content": { "label": "Decision status: deferred", "arrangement": "grid", "takeaway": "No option is chosen until the job table is load-tested at the required rate." }
+    },
+    {
+      "id": "n10",
+      "type": "text",
+      "parent": "g6",
+      "importance": "high",
+      "title": "Decision deferred until the 1,800 a minute measurement",
+      "content": { "markdown": "This note does not recommend an option. The decision waits until the job table is measured at 1,800 jobs per minute on a production-sized database.\n\n**Open requirement per option**\n- Managed queue: every job handler made idempotent.\n- Self-hosted broker: a named owner for broker on-call and upgrades.\n- Job table: a passing load test at 1,800 jobs per minute." }
+    },
+    {
+      "id": "n11",
+      "type": "todo",
+      "parent": "g6",
+      "importance": "medium",
+      "title": "Next step",
+      "content": { "items": [{ "text": "Priya: bring the load-test result to the next architecture review", "checked": false }] }
+    }
+  ],
+  "relationships": [
+    { "from": "n8", "to": "n5", "type": "supports", "label": "measured polling load" },
+    { "from": "n10", "to": "n8", "type": "derived_from", "label": "1,800 a minute not yet tested" },
+    { "from": "n10", "to": "n6", "type": "derived_from", "label": "throughput must-have" }
+  ]
+}

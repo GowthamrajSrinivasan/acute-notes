@@ -1,0 +1,730 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "datasetVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "caseId": {
+      "type": "string",
+      "pattern": "^kn-\\d{2}-[a-z0-9-]+$"
+    },
+    "assertions": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^a\\.[a-z0-9-]+$"
+          },
+          "dimension": {
+            "type": "string",
+            "enum": [
+              "source_fidelity",
+              "coverage",
+              "grouping",
+              "element_selection",
+              "relationships",
+              "architecture_lens",
+              "traceability",
+              "visual"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "major",
+              "minor"
+            ]
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "deterministic",
+              "model_judge",
+              "human"
+            ]
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "plan",
+              "lens",
+              "reconcile",
+              "render"
+            ]
+          },
+          "support": {
+            "type": "string",
+            "enum": [
+              "implemented",
+              "partial",
+              "future"
+            ]
+          },
+          "requires": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "regression": {
+            "type": "string",
+            "enum": [
+              "possibility_to_guarantee",
+              "condition_dropped",
+              "correlation_to_causation",
+              "critical_exception_omitted",
+              "dependency_reversed",
+              "unlabeled_architecture_edge",
+              "mislabeled_architecture_edge",
+              "inconsistent_identity_across_levels",
+              "user_edit_overwritten",
+              "invented_detail",
+              "fabricated_agreement",
+              "unsupported_recommendation"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "check": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "element_present"
+                  },
+                  "element": {
+                    "type": "string",
+                    "pattern": "^e\\.[a-z0-9-]+$"
+                  }
+                },
+                "required": [
+                  "check",
+                  "element"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "element_in_frame"
+                  },
+                  "element": {
+                    "type": "string",
+                    "pattern": "^e\\.[a-z0-9-]+$"
+                  },
+                  "frame": {
+                    "type": "string",
+                    "pattern": "^f\\.[a-z0-9-]+$"
+                  }
+                },
+                "required": [
+                  "check",
+                  "element",
+                  "frame"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "element_kind"
+                  },
+                  "element": {
+                    "type": "string",
+                    "pattern": "^e\\.[a-z0-9-]+$"
+                  },
+                  "kinds": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "frontend",
+                        "backend",
+                        "database",
+                        "cloud",
+                        "security",
+                        "messagebus",
+                        "external",
+                        "endpoint",
+                        "step",
+                        "function",
+                        "event",
+                        "store"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "check",
+                  "element",
+                  "kinds"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "frame_present"
+                  },
+                  "frame": {
+                    "type": "string",
+                    "pattern": "^f\\.[a-z0-9-]+$"
+                  }
+                },
+                "required": [
+                  "check",
+                  "frame"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "frame_level"
+                  },
+                  "frame": {
+                    "type": "string",
+                    "pattern": "^f\\.[a-z0-9-]+$"
+                  },
+                  "level": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5
+                  }
+                },
+                "required": [
+                  "check",
+                  "frame",
+                  "level"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "frame_count"
+                  },
+                  "min": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "max": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "check",
+                  "min",
+                  "max"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "together"
+                  },
+                  "elements": {
+                    "minItems": 2,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^e\\.[a-z0-9-]+$"
+                    }
+                  },
+                  "why": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "check",
+                  "elements",
+                  "why"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "apart"
+                  },
+                  "elements": {
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^e\\.[a-z0-9-]+$"
+                    }
+                  },
+                  "why": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "check",
+                  "elements",
+                  "why"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "hierarchy"
+                  },
+                  "main": {
+                    "type": "string",
+                    "pattern": "^e\\.[a-z0-9-]+$"
+                  },
+                  "supporting": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^e\\.[a-z0-9-]+$"
+                    }
+                  },
+                  "why": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "check",
+                  "main",
+                  "supporting",
+                  "why"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "relationship_present"
+                  },
+                  "relationship": {
+                    "type": "string",
+                    "pattern": "^r\\.[a-z0-9-]+$"
+                  }
+                },
+                "required": [
+                  "check",
+                  "relationship"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "relationship_absent"
+                  },
+                  "from": {
+                    "type": "string",
+                    "pattern": "^e\\.[a-z0-9-]+$"
+                  },
+                  "to": {
+                    "type": "string",
+                    "pattern": "^e\\.[a-z0-9-]+$"
+                  },
+                  "types": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "relates_to",
+                        "flows_to",
+                        "caused_by",
+                        "depends_on",
+                        "supports",
+                        "blocks",
+                        "implements",
+                        "derived_from",
+                        "references",
+                        "explained_by",
+                        "supersedes",
+                        "deviates_from",
+                        "option_of",
+                        "calls",
+                        "reads",
+                        "writes",
+                        "publishes",
+                        "subscribes",
+                        "contains"
+                      ]
+                    }
+                  },
+                  "why": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "check",
+                  "from",
+                  "to",
+                  "why"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "architecture_edges_labeled"
+                  },
+                  "types": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "relates_to",
+                        "flows_to",
+                        "caused_by",
+                        "depends_on",
+                        "supports",
+                        "blocks",
+                        "implements",
+                        "derived_from",
+                        "references",
+                        "explained_by",
+                        "supersedes",
+                        "deviates_from",
+                        "option_of",
+                        "calls",
+                        "reads",
+                        "writes",
+                        "publishes",
+                        "subscribes",
+                        "contains"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "check",
+                  "types"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "text_present"
+                  },
+                  "element": {
+                    "type": "string",
+                    "pattern": "^e\\.[a-z0-9-]+$"
+                  },
+                  "all": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "why": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "check",
+                  "all",
+                  "why"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "text_absent"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "why": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "check",
+                  "pattern",
+                  "why"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "lens_node"
+                  },
+                  "key": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+                  }
+                },
+                "required": [
+                  "check",
+                  "key"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "lens_edge"
+                  },
+                  "edge": {
+                    "type": "string",
+                    "pattern": "^r\\.[a-z0-9-]+$"
+                  }
+                },
+                "required": [
+                  "check",
+                  "edge"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "lens_drill"
+                  },
+                  "from": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+                  },
+                  "to": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+                  }
+                },
+                "required": [
+                  "check",
+                  "from",
+                  "to"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "lens_identity"
+                  },
+                  "key": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+                  }
+                },
+                "required": [
+                  "check",
+                  "key"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "lens_no_children"
+                  },
+                  "key": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+                  },
+                  "why": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "check",
+                  "key",
+                  "why"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "lens_path"
+                  },
+                  "path": {
+                    "type": "string",
+                    "pattern": "^p\\.[a-z0-9-]+$"
+                  }
+                },
+                "required": [
+                  "check",
+                  "path"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "reconcile_state"
+                  },
+                  "item": {
+                    "type": "string",
+                    "pattern": "^i\\.[a-z0-9-]+$"
+                  }
+                },
+                "required": [
+                  "check",
+                  "item"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "layout_no_fatal"
+                  }
+                },
+                "required": [
+                  "check"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "layout_crossings_max"
+                  },
+                  "max": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "check",
+                  "max"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "cards_no_overlap"
+                  }
+                },
+                "required": [
+                  "check"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "children_inside_frames"
+                  }
+                },
+                "required": [
+                  "check"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "check": {
+                    "type": "string",
+                    "const": "frames_no_overlap"
+                  }
+                },
+                "required": [
+                  "check"
+                ]
+              }
+            ]
+          },
+          "judge": {
+            "type": "object",
+            "properties": {
+              "question": {
+                "type": "string",
+                "minLength": 1
+              },
+              "pass": {
+                "type": "string",
+                "minLength": 1
+              },
+              "fail": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "question",
+              "pass",
+              "fail"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "dimension",
+          "severity",
+          "method",
+          "target",
+          "support",
+          "description"
+        ]
+      }
+    }
+  },
+  "required": [
+    "datasetVersion",
+    "caseId",
+    "assertions"
+  ]
+}

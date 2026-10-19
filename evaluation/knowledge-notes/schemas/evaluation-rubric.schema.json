@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "datasetVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "dimension": {
+      "type": "string",
+      "enum": [
+        "source_fidelity",
+        "coverage",
+        "grouping",
+        "element_selection",
+        "relationships",
+        "architecture_lens",
+        "traceability",
+        "visual"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "definition": {
+      "type": "string",
+      "minLength": 1
+    },
+    "questions": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "severity": {
+      "type": "object",
+      "properties": {
+        "critical": {
+          "type": "string",
+          "minLength": 1
+        },
+        "major": {
+          "type": "string",
+          "minLength": 1
+        },
+        "minor": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "critical",
+        "major",
+        "minor"
+      ]
+    },
+    "methods": {
+      "type": "object",
+      "properties": {
+        "deterministic": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "model_judge": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "human": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "deterministic",
+        "model_judge",
+        "human"
+      ]
+    },
+    "requiredAssertions": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "passCriteria": {
+      "type": "string",
+      "minLength": 1
+    },
+    "failCriteria": {
+      "type": "string",
+      "minLength": 1
+    },
+    "passExample": {
+      "type": "string",
+      "minLength": 1
+    },
+    "failExample": {
+      "type": "string",
+      "minLength": 1
+    },
+    "judgeScale": {
+      "minItems": 5,
+      "maxItems": 5,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "score",
+          "meaning"
+        ]
+      }
+    }
+  },
+  "required": [
+    "datasetVersion",
+    "dimension",
+    "title",
+    "definition",
+    "questions",
+    "severity",
+    "methods",
+    "requiredAssertions",
+    "passCriteria",
+    "failCriteria",
+    "passExample",
+    "failExample"
+  ]
+}

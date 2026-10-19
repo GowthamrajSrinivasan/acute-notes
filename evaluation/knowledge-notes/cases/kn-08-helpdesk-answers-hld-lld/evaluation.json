@@ -1,0 +1,2300 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "assertions": [
+    {
+      "support": "implemented",
+      "id": "a.frame-system",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L0 System: Helpdesk Answers is a frame.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.system"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.level-system",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L0 System: Helpdesk Answers carries Lens level 0.",
+      "check": {
+        "check": "frame_level",
+        "frame": "f.system",
+        "level": 0
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.frame-architecture",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L1 Architecture: services and stores is a frame.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.level-architecture",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L1 Architecture: services and stores carries Lens level 1.",
+      "check": {
+        "check": "frame_level",
+        "frame": "f.architecture",
+        "level": 1
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.frame-orchestrator-parts",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L2 Orchestrator components is a frame.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.orchestrator-parts"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.level-orchestrator-parts",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L2 Orchestrator components carries Lens level 2.",
+      "check": {
+        "check": "frame_level",
+        "frame": "f.orchestrator-parts",
+        "level": 2
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.frame-retrieval-parts",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L2 Retrieval service components is a frame.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.retrieval-parts"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.level-retrieval-parts",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L2 Retrieval service components carries Lens level 2.",
+      "check": {
+        "check": "frame_level",
+        "frame": "f.retrieval-parts",
+        "level": 2
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.frame-answer-flow",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L3 Flow: answering a question is a frame.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.answer-flow"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.level-answer-flow",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L3 Flow: answering a question carries Lens level 3.",
+      "check": {
+        "check": "frame_level",
+        "frame": "f.answer-flow",
+        "level": 3
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.frame-compose-op",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L4 Operation: composeAnswer is a frame.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.compose-op"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.level-compose-op",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L4 Operation: composeAnswer carries Lens level 4.",
+      "check": {
+        "check": "frame_level",
+        "frame": "f.compose-op",
+        "level": 4
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.frame-compose-source",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L5 Source: composeAnswer code is a frame.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.compose-source"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.level-compose-source",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L5 Source: composeAnswer code carries Lens level 5.",
+      "check": {
+        "check": "frame_level",
+        "frame": "f.compose-source",
+        "level": 5
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-system",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Helpdesk Answers is in f.system.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.system",
+        "frame": "f.system"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-system",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Helpdesk Answers has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.system",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-cms",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Help Center CMS is in f.system.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.cms",
+        "frame": "f.system"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-cms",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Help Center CMS has kind external.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.cms",
+        "kinds": [
+          "external"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-llm",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Language model provider is in f.system.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.llm",
+        "frame": "f.system"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-llm",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Language model provider has kind external.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.llm",
+        "kinds": [
+          "external"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-console",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Agent Console (web client) is in f.architecture.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.console",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-console",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Agent Console (web client) has kind frontend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.console",
+        "kinds": [
+          "frontend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-api",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Answers API: checks the session is in f.architecture.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.api",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-api",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Answers API: checks the session has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.api",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-orchestrator",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Orchestrator: owns the answering logic is in f.architecture.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.orchestrator",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-orchestrator",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Orchestrator: owns the answering logic has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.orchestrator",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-retrieval",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Retrieval service is in f.architecture.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.retrieval",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-retrieval",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Retrieval service has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.retrieval",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-reranker",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Reranker is in f.architecture.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.reranker",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-reranker",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Reranker has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.reranker",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-gateway",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Model Gateway: the only path to the model provider is in f.architecture.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.gateway",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-gateway",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Model Gateway: the only path to the model provider has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.gateway",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-vector-store",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Vector store (Postgres + pgvector); partitioning not decided is in f.architecture.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.vector-store",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-vector-store",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Vector store (Postgres + pgvector); partitioning not decided has kind database.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.vector-store",
+        "kinds": [
+          "database"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-answer-log",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Answer log (answers with citations) is in f.architecture.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.answer-log",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-answer-log",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Answer log (answers with citations) has kind database.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.answer-log",
+        "kinds": [
+          "database"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-ingestion",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Ingestion worker: every 15 minutes, CMS → passages → embeddings is in f.architecture.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.ingestion",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-ingestion",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Ingestion worker: every 15 minutes, CMS → passages → embeddings has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.ingestion",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-unknowns",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Not specified: Ingestion worker internals, Vector store partitioning, code locations for the Ingestion worker and the Reranker is in f.architecture.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.unknowns",
+        "frame": "f.architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-rerank-client",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Rerank client: sends candidates, applies fallback is in f.orchestrator-parts.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.rerank-client",
+        "frame": "f.orchestrator-parts"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-rerank-client",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Rerank client: sends candidates, applies fallback has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.rerank-client",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-context-builder",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Context builder: passages → prompt is in f.orchestrator-parts.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.context-builder",
+        "frame": "f.orchestrator-parts"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-context-builder",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Context builder: passages → prompt has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.context-builder",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-answer-composer",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Answer composer: runs the request end to end is in f.orchestrator-parts.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.answer-composer",
+        "frame": "f.orchestrator-parts"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-answer-composer",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Answer composer: runs the request end to end has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.answer-composer",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-citation-checker",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Citation checker: each citation must point to a supplied passage is in f.orchestrator-parts.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.citation-checker",
+        "frame": "f.orchestrator-parts"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-citation-checker",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Citation checker: each citation must point to a supplied passage has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.citation-checker",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-query-embedder",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Query embedder: same embedding model as ingestion is in f.retrieval-parts.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.query-embedder",
+        "frame": "f.retrieval-parts"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-query-embedder",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Query embedder: same embedding model as ingestion has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.query-embedder",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-vector-search",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Vector search: 50 nearest passages (search.ts) is in f.retrieval-parts.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.vector-search",
+        "frame": "f.retrieval-parts"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-vector-search",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Vector search: 50 nearest passages (search.ts) has kind backend.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.vector-search",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-step-post",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "POST /v1/answers (question + ticket id), session checked and forwarded is in f.answer-flow.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.step-post",
+        "frame": "f.answer-flow"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-step-post",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "POST /v1/answers (question + ticket id), session checked and forwarded has kind step.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.step-post",
+        "kinds": [
+          "step"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-step-retrieve",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Fetch 50 candidate passages is in f.answer-flow.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.step-retrieve",
+        "frame": "f.answer-flow"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-step-retrieve",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Fetch 50 candidate passages has kind step.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.step-retrieve",
+        "kinds": [
+          "step"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-step-rerank",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Rerank 50, keep top 8 — no reply in 800 ms: skip, keep first 8 by similarity, log rerank_skipped = true is in f.answer-flow.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.step-rerank",
+        "frame": "f.answer-flow"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-step-rerank",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Rerank 50, keep top 8 — no reply in 800 ms: skip, keep first 8 by similarity, log rerank_skipped = true has kind step.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.step-rerank",
+        "kinds": [
+          "step"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-step-compose",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "composeAnswer(question, 8 passages) is in f.answer-flow.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.step-compose",
+        "frame": "f.answer-flow"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-step-compose",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "composeAnswer(question, 8 passages) has kind step.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.step-compose",
+        "kinds": [
+          "step"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-compose-fn",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "composeAnswer(question, passages): prompt ≤ 6,000 tokens, Model Gateway, Citation checker is in f.compose-op.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.compose-fn",
+        "frame": "f.compose-op"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-compose-fn",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "composeAnswer(question, passages): prompt ≤ 6,000 tokens, Model Gateway, Citation checker has kind function.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.compose-fn",
+        "kinds": [
+          "function"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-op-timeout",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Model call timeout (20 s): error, HTTP 504, no partial answer is in f.compose-op.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.op-timeout",
+        "frame": "f.compose-op"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-op-timeout",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Model call timeout (20 s): error, HTTP 504, no partial answer has kind event.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.op-timeout",
+        "kinds": [
+          "event"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-op-citation-mismatch",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Unmatched citation: remove the sentence, mark the answer partial is in f.compose-op.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.op-citation-mismatch",
+        "frame": "f.compose-op"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-op-citation-mismatch",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Unmatched citation: remove the sentence, mark the answer partial has kind step.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.op-citation-mismatch",
+        "kinds": [
+          "step"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-src-compose",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "services/orchestrator/src/compose.ts, lines 40–118 is in f.compose-source.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.src-compose",
+        "frame": "f.compose-source"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-src-compose",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "services/orchestrator/src/compose.ts, lines 40–118 has kind function.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.src-compose",
+        "kinds": [
+          "function"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.in-src-citations",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "checkCitations in services/orchestrator/src/citations.ts is in f.compose-source.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.src-citations",
+        "frame": "f.compose-source"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.kind-src-citations",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "checkCitations in services/orchestrator/src/citations.ts has kind function.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.src-citations",
+        "kinds": [
+          "function"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-system-cms",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.system reads e.cms, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.system-cms"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-system-llm",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.system calls e.llm, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.system-llm"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-console-api",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.console calls e.api, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.console-api"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-api-orchestrator",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.api calls e.orchestrator, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.api-orchestrator"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-orchestrator-retrieval",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.orchestrator calls e.retrieval, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.orchestrator-retrieval"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-orchestrator-reranker",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.orchestrator calls e.reranker, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.orchestrator-reranker"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-orchestrator-gateway",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.orchestrator calls e.gateway, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.orchestrator-gateway"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-retrieval-store",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.retrieval reads e.vector-store, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.retrieval-store"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-orchestrator-log",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.orchestrator writes e.answer-log, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.orchestrator-log"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-ingestion-store",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.ingestion writes e.vector-store, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.ingestion-store"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-composer-context-builder",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.answer-composer calls e.context-builder, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.composer-context-builder"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-composer-citation-checker",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.answer-composer calls e.citation-checker, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.composer-citation-checker"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-embedder-search",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.query-embedder flows_to e.vector-search, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.embedder-search"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-flow-3-4",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.step-retrieve flows_to e.step-rerank, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.flow-3-4"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-flow-4-5",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.step-rerank flows_to e.step-compose, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.flow-4-5"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-compose-timeout",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.compose-fn flows_to e.op-timeout, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.compose-timeout"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rel-compose-mismatch",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "e.compose-fn flows_to e.op-citation-mismatch, labelled.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.compose-mismatch"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.arch-labeled",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "unlabeled_architecture_edge",
+      "description": "Every calls/reads/writes/flows_to edge says what it does.",
+      "check": {
+        "check": "architecture_edges_labeled",
+        "types": [
+          "calls",
+          "reads",
+          "writes",
+          "publishes",
+          "subscribes",
+          "flows_to",
+          "depends_on"
+        ]
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.no-store-to-retrieval",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "dependency_reversed",
+      "description": "The read dependency is not reversed.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.vector-store",
+        "to": "e.retrieval",
+        "why": "Retrieval reads the Vector store, not the reverse (u6)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.no-api-to-console",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "dependency_reversed",
+      "description": "The client calls the API, not the reverse.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.api",
+        "to": "e.console",
+        "types": [
+          "calls"
+        ],
+        "why": "the Agent Console sends questions to the Answers API (u3)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.frame-count",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "One frame per described level and component: 7 (no frame for undescribed internals).",
+      "check": {
+        "check": "frame_count",
+        "min": 7,
+        "max": 7
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.levels-apart",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "The L3 step and the L4 operation stay in different frames.",
+      "check": {
+        "check": "apart",
+        "elements": [
+          "e.step-compose",
+          "e.compose-fn"
+        ],
+        "why": "merging them removes a level of the drill-down"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.hierarchy-log",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "The Answer log hangs off the Orchestrator and isn't weighted above it.",
+      "check": {
+        "check": "hierarchy",
+        "main": "e.orchestrator",
+        "supporting": [
+          "e.answer-log"
+        ],
+        "why": "the Orchestrator writes the log"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.gateway-only",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "critical_exception_omitted",
+      "description": "The 'only path to the model provider' constraint is on the Gateway.",
+      "check": {
+        "check": "text_present",
+        "element": "e.gateway",
+        "all": [
+          [
+            "only"
+          ]
+        ],
+        "why": "the Model Gateway is the only component allowed to call the provider (u5)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.rerank-fallback",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "condition_dropped",
+      "description": "Step 4 carries its fallback: 800 ms, skip, rerank_skipped = true.",
+      "check": {
+        "check": "text_present",
+        "element": "e.step-rerank",
+        "all": [
+          [
+            "800 ms",
+            "800ms"
+          ],
+          [
+            "rerank_skipped"
+          ],
+          [
+            "skip"
+          ]
+        ],
+        "why": "the fallback limits step 4 and must sit with it (u25)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.fallback-hedged",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "possibility_to_guarantee",
+      "description": "The fallback's cost stays hedged ('may be less relevant').",
+      "check": {
+        "check": "text_present",
+        "element": "e.step-rerank",
+        "all": [
+          [
+            "may",
+            "might",
+            "can be"
+          ],
+          [
+            "less relevant"
+          ]
+        ],
+        "why": "u26 says the passages may be less relevant"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.no-wrong-answers",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "correlation_to_causation",
+      "description": "Skipping reranking isn't said to produce wrong answers.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(skip\\w*|fallback)[^.]{0,60}(wrong|incorrect|inaccurate) answer",
+        "why": "the source only says less relevant passages (u26)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.compose-tokens",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "The 6,000-token prompt limit survives.",
+      "check": {
+        "check": "text_present",
+        "element": "e.compose-fn",
+        "all": [
+          [
+            "6000"
+          ]
+        ],
+        "why": "protected number (u27)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.timeout-path",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "condition_dropped",
+      "description": "Timeout: 20 s, HTTP 504, no partial answer.",
+      "check": {
+        "check": "text_present",
+        "element": "e.op-timeout",
+        "all": [
+          [
+            "20 s",
+            "20s",
+            "20-second",
+            "20 second"
+          ],
+          [
+            "504"
+          ],
+          [
+            "no partial"
+          ]
+        ],
+        "why": "u28, u29"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.mismatch-path",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "Unmatched citation: remove the sentence, mark partial.",
+      "check": {
+        "check": "text_present",
+        "element": "e.op-citation-mismatch",
+        "all": [
+          [
+            "remove",
+            "drop"
+          ],
+          [
+            "partial"
+          ]
+        ],
+        "why": "u30; the opposite of the timeout path"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.no-partial-on-timeout",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "No card claims a timed-out request returns a partial answer.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(?<!no )partial answer (is )?(returned|shown) (on|after|when)[^.]{0,20}time",
+        "why": "a timeout shows no partial answer (u29)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.same-model",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "The Query embedder's same-model requirement is kept.",
+      "check": {
+        "check": "text_present",
+        "element": "e.query-embedder",
+        "all": [
+          [
+            "same"
+          ],
+          [
+            "model"
+          ]
+        ],
+        "why": "u16"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.exact-endpoint",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "The endpoint is exact.",
+      "check": {
+        "check": "text_present",
+        "element": "e.step-post",
+        "all": [
+          [
+            "post /v1/answers"
+          ]
+        ],
+        "why": "protected identifier (u18)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.ingestion-interval",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "The 15-minute ingestion interval survives.",
+      "check": {
+        "check": "text_present",
+        "element": "e.ingestion",
+        "all": [
+          [
+            "15 min"
+          ]
+        ],
+        "why": "protected number (u8)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.unknowns-kept",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "invented_detail",
+      "description": "What the design doesn't specify is said on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.unknowns"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.no-invented-paths",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "invented_detail",
+      "description": "No code location for the Ingestion worker or the Reranker.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "services/(ingestion|reranker|rerank)|(ingestion|reranker)[^\\n]{0,40}\\.(ts|js|py)\\b",
+        "why": "the design gives no code locations for them (u34)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.no-invented-code",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "invented_detail",
+      "description": "No invented code for composeAnswer.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(async )?function composeanswer|composeanswer\\s*=|=>\\s*\\{|return await",
+        "why": "the source gives a location, not code (u31)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.no-partitioning",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "regression": "invented_detail",
+      "description": "No invented partitioning scheme.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(?<!not |no |un)(partitioned|sharded) by",
+        "why": "partitioning has not been decided (u9)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.src-compose-exact",
+      "dimension": "traceability",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "description": "L5 names compose.ts and lines 40–118.",
+      "check": {
+        "check": "element_present",
+        "element": "e.src-compose"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-helpdesk",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "helpdesk is at L0.",
+      "check": {
+        "check": "lens_node",
+        "key": "helpdesk"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-arch-orchestrator",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "arch.orchestrator is at L1.",
+      "check": {
+        "check": "lens_node",
+        "key": "arch.orchestrator"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-arch-retrieval",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "arch.retrieval is at L1.",
+      "check": {
+        "check": "lens_node",
+        "key": "arch.retrieval"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-arch-gateway",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "arch.gateway is at L1.",
+      "check": {
+        "check": "lens_node",
+        "key": "arch.gateway"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-arch-vector-store",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "arch.vector-store is at L1.",
+      "check": {
+        "check": "lens_node",
+        "key": "arch.vector-store"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-orch-answer-composer",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "orch.answer-composer is at L2.",
+      "check": {
+        "check": "lens_node",
+        "key": "orch.answer-composer"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-orch-citation-checker",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "orch.citation-checker is at L2.",
+      "check": {
+        "check": "lens_node",
+        "key": "orch.citation-checker"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-retr-vector-search",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "retr.vector-search is at L2.",
+      "check": {
+        "check": "lens_node",
+        "key": "retr.vector-search"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-flow-rerank",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "flow.rerank is at L3.",
+      "check": {
+        "check": "lens_node",
+        "key": "flow.rerank"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-flow-compose",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "flow.compose is at L3.",
+      "check": {
+        "check": "lens_node",
+        "key": "flow.compose"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-op-compose",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "op.compose is at L4.",
+      "check": {
+        "check": "lens_node",
+        "key": "op.compose"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-op-timeout",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "op.timeout is at L4.",
+      "check": {
+        "check": "lens_node",
+        "key": "op.timeout"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-op-citation-mismatch",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "op.citation-mismatch is at L4.",
+      "check": {
+        "check": "lens_node",
+        "key": "op.citation-mismatch"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-node-src-compose",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "src.compose is at L5.",
+      "check": {
+        "check": "lens_node",
+        "key": "src.compose"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-edge-system-llm",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "r.system-llm keeps its direction, relation and label in Lens.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.system-llm"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-edge-api-orchestrator",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "r.api-orchestrator keeps its direction, relation and label in Lens.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.api-orchestrator"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-edge-orchestrator-retrieval",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "r.orchestrator-retrieval keeps its direction, relation and label in Lens.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.orchestrator-retrieval"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-edge-orchestrator-gateway",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "r.orchestrator-gateway keeps its direction, relation and label in Lens.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.orchestrator-gateway"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-edge-retrieval-store",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "r.retrieval-store keeps its direction, relation and label in Lens.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.retrieval-store"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-edge-orchestrator-log",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "r.orchestrator-log keeps its direction, relation and label in Lens.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.orchestrator-log"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-edge-composer-citation-checker",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "r.composer-citation-checker keeps its direction, relation and label in Lens.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.composer-citation-checker"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-edge-flow-4-5",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "r.flow-4-5 keeps its direction, relation and label in Lens.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.flow-4-5"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-edge-compose-timeout",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "r.compose-timeout keeps its direction, relation and label in Lens.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.compose-timeout"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-drill-helpdesk",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "helpdesk drills down to lens.l1-architecture.",
+      "check": {
+        "check": "lens_drill",
+        "from": "helpdesk",
+        "to": "lens.l1-architecture"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-drill-arch-orchestrator",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "arch.orchestrator drills down to lens.l2-orchestrator.",
+      "check": {
+        "check": "lens_drill",
+        "from": "arch.orchestrator",
+        "to": "lens.l2-orchestrator"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-drill-arch-retrieval",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "arch.retrieval drills down to lens.l2-retrieval.",
+      "check": {
+        "check": "lens_drill",
+        "from": "arch.retrieval",
+        "to": "lens.l2-retrieval"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-drill-orch-answer-composer",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "orch.answer-composer drills down to lens.l3-answer-flow.",
+      "check": {
+        "check": "lens_drill",
+        "from": "orch.answer-composer",
+        "to": "lens.l3-answer-flow"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-drill-flow-compose",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "flow.compose drills down to lens.l4-compose-answer.",
+      "check": {
+        "check": "lens_drill",
+        "from": "flow.compose",
+        "to": "lens.l4-compose-answer"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-drill-op-compose",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "op.compose drills down to lens.l5-compose-source.",
+      "check": {
+        "check": "lens_drill",
+        "from": "op.compose",
+        "to": "lens.l5-compose-source"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-identity-arch-orchestrator",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "regression": "inconsistent_identity_across_levels",
+      "description": "arch.orchestrator has one identity at every level.",
+      "check": {
+        "check": "lens_identity",
+        "key": "arch.orchestrator"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-identity-arch-vector-store",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "regression": "inconsistent_identity_across_levels",
+      "description": "arch.vector-store has one identity at every level.",
+      "check": {
+        "check": "lens_identity",
+        "key": "arch.vector-store"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-identity-orch-answer-composer",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "regression": "inconsistent_identity_across_levels",
+      "description": "orch.answer-composer has one identity at every level.",
+      "check": {
+        "check": "lens_identity",
+        "key": "orch.answer-composer"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-identity-arch-gateway",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "regression": "inconsistent_identity_across_levels",
+      "description": "arch.gateway has one identity at every level.",
+      "check": {
+        "check": "lens_identity",
+        "key": "arch.gateway"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-no-ingestion-detail",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "regression": "invented_detail",
+      "description": "The Ingestion worker has no lower level and no code evidence.",
+      "check": {
+        "check": "lens_no_children",
+        "key": "arch.ingestion",
+        "why": "its internals and code location are not described (u9, u34)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-no-reranker-detail",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "regression": "invented_detail",
+      "description": "The Reranker has no lower level and no code evidence.",
+      "check": {
+        "check": "lens_no_children",
+        "key": "arch.reranker",
+        "why": "no code location is given (u34)"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-question-to-code",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "HLD to LLD: from the system, through the Orchestrator and the Answer composer, to the flow step that composes the answer, the operation, and its code.",
+      "check": {
+        "check": "lens_path",
+        "path": "p.question-to-code"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-request-flow",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "Follow the request through its seven steps.",
+      "check": {
+        "check": "lens_path",
+        "path": "p.request-flow"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.lens-retrieval-drill",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "description": "From the Retrieval service down to vector search.",
+      "check": {
+        "check": "lens_path",
+        "path": "p.retrieval-drill"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.layout",
+      "dimension": "visual",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "render",
+      "description": "No link runs through a card.",
+      "check": {
+        "check": "layout_no_fatal"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.no-overlap",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "description": "Cards don't overlap.",
+      "check": {
+        "check": "cards_no_overlap"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.inside-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "description": "Every level frame fits its cards.",
+      "check": {
+        "check": "children_inside_frames"
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.frames-apart",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "description": "Level frames don't overlap.",
+      "check": {
+        "check": "frames_no_overlap"
+      }
+    },
+    {
+      "support": "future",
+      "id": "a.cites",
+      "dimension": "traceability",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "requires": [
+        "ai.cites"
+      ],
+      "description": "Each node cites its units (e.g. Rerank step: u21, u25, u26; composeAnswer: u27; compose.ts: u31). An inferred edge cites the units it was inferred from."
+    },
+    {
+      "support": "partial",
+      "id": "a.drill-links",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "requires": [
+        "lens.drill-from-plan"
+      ],
+      "description": "Generation sets the six drill links itself (today they come from set_lens, so a plan alone can't satisfy them).",
+      "check": {
+        "check": "lens_drill",
+        "from": "orch.answer-composer",
+        "to": "lens.l3-answer-flow"
+      }
+    },
+    {
+      "support": "future",
+      "id": "a.unknown-marker",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "requires": [
+        "lens.confidence-marking"
+      ],
+      "description": "Lens marks the Ingestion worker and the Vector store as having unknown detail, with the reason."
+    },
+    {
+      "support": "future",
+      "id": "a.inferred-edge-flag",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "requires": [
+        "ai.review-queue"
+      ],
+      "description": "The inferred Answer composer → Rerank client edge is in Needs review and is never styled like a verified edge."
+    },
+    {
+      "support": "implemented",
+      "id": "a.judge-levels",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "human",
+      "target": "lens",
+      "description": "Each level shows the right abstraction.",
+      "judge": {
+        "question": "Walk L0 → L5. Does each level show only what belongs at that level, and does each drill reveal the detail of exactly the node you opened?",
+        "pass": "L0 has only the system and externals; L1 the services; L2 one service's parts; L3 a flow; L4 one operation with its failure paths; L5 locations only.",
+        "fail": "Services at L0, flow steps mixed into L1, an operation's internals at L2, or code at L5 that the source never gave."
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.judge-no-invention",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "model_judge",
+      "target": "plan",
+      "description": "Nothing is invented below the level the source describes.",
+      "judge": {
+        "question": "List every fact on the canvas that the source doesn't state (component internals, code, numbers, partitioning, owners). Is each one absent, or explicitly marked as inferred?",
+        "pass": "Only the inferred composer → rerank-client edge goes beyond the text, and it is marked.",
+        "fail": "Any invented internal, path, number or scheme presented as fact."
+      }
+    },
+    {
+      "support": "implemented",
+      "id": "a.judge-failure-paths",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "model_judge",
+      "target": "plan",
+      "description": "Failure paths are readable.",
+      "judge": {
+        "question": "Can a reader tell, from L3 and L4 alone, what happens when the reranker is slow, when the model times out, and when a citation is wrong, and that the last two behave oppositely?",
+        "pass": "Three distinct, labelled paths with their outcomes.",
+        "fail": "Failure paths buried in prose, merged, or missing."
+      }
+    }
+  ]
+}

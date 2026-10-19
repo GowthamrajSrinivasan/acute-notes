@@ -1,0 +1,10 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-orchestrator-duplicated",
+  "distortion": "inconsistent_identity_across_levels",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "lens",
+  "description": "The L2 view redraws the Orchestrator as a new component with its own identity, next to its parts.",
+  "mutations": [{ "op": "lens_add_node", "level": 2, "node": { "key": "orchestrator-service-2", "label": "Orchestrator service", "kind": "backend" } }],
+  "expectFailing": ["a.lens-identity-arch-orchestrator"]
+}

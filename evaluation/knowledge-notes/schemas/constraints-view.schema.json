@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^kn-\\d{2}-[a-z0-9-]+$"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "article",
+        "technical_documentation",
+        "meeting_transcript",
+        "tutorial",
+        "design_specification",
+        "codebase_description",
+        "architecture_proposal"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "critical": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quote": {
+            "type": "string",
+            "minLength": 1
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "quote",
+          "why"
+        ]
+      }
+    },
+    "exact": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "groups": {
+      "type": "object",
+      "properties": {
+        "together": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "apart": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      },
+      "required": [
+        "together",
+        "apart"
+      ]
+    },
+    "hierarchy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "main": {
+            "type": "string",
+            "minLength": 1
+          },
+          "supporting": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "main",
+          "supporting"
+        ]
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "minLength": 1
+          },
+          "to": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "type"
+        ]
+      }
+    },
+    "mustNotSay": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "text",
+          "why"
+        ]
+      }
+    },
+    "update": {
+      "type": "object",
+      "properties": {
+        "v2": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expect": {
+          "type": "object",
+          "properties": {
+            "unchanged": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "changed": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "added": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "removed": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "userEdited": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "unchanged",
+            "changed",
+            "added",
+            "removed",
+            "userEdited"
+          ]
+        }
+      },
+      "required": [
+        "v2",
+        "expect"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "kind",
+    "source",
+    "critical",
+    "exact",
+    "groups",
+    "hierarchy",
+    "relations",
+    "mustNotSay"
+  ]
+}

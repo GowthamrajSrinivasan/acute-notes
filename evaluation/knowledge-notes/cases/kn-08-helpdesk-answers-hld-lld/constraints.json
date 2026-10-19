@@ -1,0 +1,196 @@
+{
+  "id": "kn-08-helpdesk-answers-hld-lld",
+  "kind": "design_specification",
+  "source": "# Helpdesk Answers: design from system to code\n\n## 1. The system\n\nHelpdesk Answers lets support agents ask a question about a customer's problem and get a short answer drawn from the company's help articles, with a citation for every claim. It depends on two external systems: the Help Center CMS, where the articles are written, and an external language model provider, which generates the answer text.\n\n## 2. Architecture\n\nAgents use the Agent Console, a web client, which sends each question to the Answers API over HTTPS. The Answers API checks the agent's session and forwards the question to the Orchestrator, the service that owns the answering logic. The Orchestrator calls the Retrieval service to find candidate passages, sends those candidates to the Reranker service, and calls the Model Gateway, which is the only component allowed to talk to the external model provider. The Retrieval service reads from the Vector store, a Postgres database with the pgvector extension. The Orchestrator writes every answer, with its citations, to the Answer log table.\n\nArticles reach the Vector store through the Ingestion worker, which reads published articles from the Help Center CMS every 15 minutes, splits them into passages and writes their embeddings to the Vector store. This document does not describe the Ingestion worker's internals, and how the Vector store is partitioned has not been decided.\n\n## 3. Inside the Orchestrator\n\nThe Orchestrator has four parts. The Rerank client sends candidates to the Reranker and applies its fallback rule. The Context builder turns the chosen passages into a prompt. The Answer composer runs the request from start to finish. The Citation checker verifies that each citation in a draft answer points to one of the passages that were supplied.\n\n## 4. Inside the Retrieval service\n\nThe Retrieval service has two parts. The Query embedder turns the question into a vector using the same embedding model as the Ingestion worker. Vector search then asks the Vector store for the 50 passages closest to that vector.\n\n## 5. Flow: answering a question\n\n1. The Agent Console posts the question to `POST /v1/answers` with the ticket id.\n2. The Answers API checks the session and forwards the question to the Answer composer.\n3. The Answer composer asks the Retrieval service for 50 candidate passages.\n4. The Rerank client sends the 50 candidates to the Reranker and keeps the top 8.\n5. The Answer composer calls `composeAnswer` with the question and the 8 passages.\n6. The Orchestrator writes the answer and its citations to the Answer log.\n7. The Answers API returns the answer to the Agent Console.\n\nIf the Reranker does not respond within 800 ms, the Rerank client skips reranking, keeps the first 8 candidates in vector-similarity order and records `rerank_skipped = true` in the Answer log. Skipping reranking keeps the request fast, but the 8 passages may then be less relevant.\n\n## 6. Operation: composeAnswer\n\n`composeAnswer(question, passages)` builds the prompt with the Context builder, limited to 6,000 tokens, calls the Model Gateway, and passes the draft to the Citation checker. The model call has a 20-second timeout. If it times out, `composeAnswer` returns an error and the API responds with HTTP 504; no partial answer is shown. If the Citation checker finds a citation that does not match any supplied passage, `composeAnswer` removes the sentence that carries it and marks the answer as partial, rather than rejecting the whole answer.\n\n## 7. Where the code is\n\n`composeAnswer` is in `services/orchestrator/src/compose.ts`, lines 40–118. The citation check is `checkCitations` in `services/orchestrator/src/citations.ts`. Vector search is `search` in `services/retrieval/src/search.ts`. The design does not give code locations for the Ingestion worker or the Reranker.\n",
+  "critical": [
+    {
+      "quote": "Helpdesk Answers lets support agents ask a question about a customer's problem and get a short answer drawn from the company's help articles, with a citation for every claim.",
+      "why": "What the system is for."
+    },
+    {
+      "quote": "The Orchestrator calls the Retrieval service to find candidate passages, sends those candidates to the Reranker service, and calls the Model Gateway, which is the only component allowed to talk to the external model provider.",
+      "why": "Only the Model Gateway may call the model provider."
+    },
+    {
+      "quote": "This document does not describe the Ingestion worker's internals, and how the Vector store is partitioned has not been decided.",
+      "why": "Known unknowns: nothing below L1 may be invented for these."
+    },
+    {
+      "quote": "The Query embedder turns the question into a vector using the same embedding model as the Ingestion worker.",
+      "why": "Query and passages must be embedded with the same model."
+    },
+    {
+      "quote": "If the Reranker does not respond within 800 ms, the Rerank client skips reranking, keeps the first 8 candidates in vector-similarity order and records `rerank_skipped = true` in the Answer log.",
+      "why": "The failure path of step 4."
+    },
+    {
+      "quote": "Skipping reranking keeps the request fast, but the 8 passages may then be less relevant.",
+      "why": "The cost of the fallback; hedged with 'may'."
+    },
+    {
+      "quote": "If it times out, `composeAnswer` returns an error and the API responds with HTTP 504; no partial answer is shown.",
+      "why": "Timeout failure path: an error, never a partial answer."
+    },
+    {
+      "quote": "If the Citation checker finds a citation that does not match any supplied passage, `composeAnswer` removes the sentence that carries it and marks the answer as partial, rather than rejecting the whole answer.",
+      "why": "Citation failure path: partial answer, not rejection."
+    },
+    {
+      "quote": "The design does not give code locations for the Ingestion worker or the Reranker.",
+      "why": "No L5 evidence may be invented for these two."
+    }
+  ],
+  "exact": [
+    "15 minutes",
+    "50",
+    "POST /v1/answers",
+    "top 8",
+    "composeAnswer",
+    "800 ms",
+    "rerank_skipped = true",
+    "6,000 tokens",
+    "composeAnswer(question, passages)",
+    "20-second",
+    "HTTP 504",
+    "services/orchestrator/src/compose.ts",
+    "40–118",
+    "services/orchestrator/src/citations.ts",
+    "checkCitations",
+    "services/retrieval/src/search.ts",
+    "pgvector"
+  ],
+  "groups": {
+    "together": [],
+    "apart": [
+      [
+        "composeAnswer(question, 8 passages)",
+        "composeAnswer(question, passages): prompt ≤ 6,000 tokens, Model Gateway, Citation checker"
+      ],
+      [
+        "Helpdesk Answers",
+        "Orchestrator: owns the answering logic"
+      ]
+    ]
+  },
+  "hierarchy": [
+    {
+      "main": "Orchestrator: owns the answering logic",
+      "supporting": [
+        "Answer log (answers with citations)"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "Helpdesk Answers",
+      "to": "Help Center CMS",
+      "type": "reads"
+    },
+    {
+      "from": "Helpdesk Answers",
+      "to": "Language model provider",
+      "type": "calls"
+    },
+    {
+      "from": "Agent Console (web client)",
+      "to": "Answers API: checks the session",
+      "type": "calls"
+    },
+    {
+      "from": "Answers API: checks the session",
+      "to": "Orchestrator: owns the answering logic",
+      "type": "calls"
+    },
+    {
+      "from": "Orchestrator: owns the answering logic",
+      "to": "Retrieval service",
+      "type": "calls"
+    },
+    {
+      "from": "Orchestrator: owns the answering logic",
+      "to": "Reranker",
+      "type": "calls"
+    },
+    {
+      "from": "Orchestrator: owns the answering logic",
+      "to": "Model Gateway: the only path to the model provider",
+      "type": "calls"
+    },
+    {
+      "from": "Retrieval service",
+      "to": "Vector store (Postgres + pgvector); partitioning not decided",
+      "type": "reads"
+    },
+    {
+      "from": "Orchestrator: owns the answering logic",
+      "to": "Answer log (answers with citations)",
+      "type": "writes"
+    },
+    {
+      "from": "Ingestion worker: every 15 minutes, CMS → passages → embeddings",
+      "to": "Vector store (Postgres + pgvector); partitioning not decided",
+      "type": "writes"
+    },
+    {
+      "from": "Answer composer: runs the request end to end",
+      "to": "Context builder: passages → prompt",
+      "type": "calls"
+    },
+    {
+      "from": "Answer composer: runs the request end to end",
+      "to": "Citation checker: each citation must point to a supplied passage",
+      "type": "calls"
+    },
+    {
+      "from": "Query embedder: same embedding model as ingestion",
+      "to": "Vector search: 50 nearest passages (search.ts)",
+      "type": "flows_to"
+    },
+    {
+      "from": "Fetch 50 candidate passages",
+      "to": "Rerank 50, keep top 8 — no reply in 800 ms: skip, keep first 8 by similarity, log rerank_skipped = true",
+      "type": "flows_to"
+    },
+    {
+      "from": "Rerank 50, keep top 8 — no reply in 800 ms: skip, keep first 8 by similarity, log rerank_skipped = true",
+      "to": "composeAnswer(question, 8 passages)",
+      "type": "flows_to"
+    },
+    {
+      "from": "composeAnswer(question, passages): prompt ≤ 6,000 tokens, Model Gateway, Citation checker",
+      "to": "Model call timeout (20 s): error, HTTP 504, no partial answer",
+      "type": "flows_to"
+    },
+    {
+      "from": "composeAnswer(question, passages): prompt ≤ 6,000 tokens, Model Gateway, Citation checker",
+      "to": "Unmatched citation: remove the sentence, mark the answer partial",
+      "type": "flows_to"
+    }
+  ],
+  "mustNotSay": [
+    {
+      "text": "Any code path for the Ingestion worker or the Reranker (e.g. services/ingestion/…, services/reranker/…).",
+      "why": "The source says no code locations are given for them."
+    },
+    {
+      "text": "A partitioning or sharding scheme for the Vector store.",
+      "why": "Not decided."
+    },
+    {
+      "text": "Code for composeAnswer (a function body or signature beyond composeAnswer(question, passages)).",
+      "why": "The source gives a location, not code."
+    },
+    {
+      "text": "Components other than the Model Gateway call the model provider.",
+      "why": "The Gateway is the only allowed path."
+    },
+    {
+      "text": "A timed-out request returns a partial answer, or an unmatched citation rejects the whole answer.",
+      "why": "The two failure paths are opposite; swapping them is a distortion."
+    },
+    {
+      "text": "Skipping reranking makes the answer wrong.",
+      "why": "The source only says the passages may be less relevant."
+    }
+  ]
+}

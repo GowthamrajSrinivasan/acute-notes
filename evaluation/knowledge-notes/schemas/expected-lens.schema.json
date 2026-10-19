@@ -1,0 +1,417 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "datasetVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "caseId": {
+      "type": "string",
+      "pattern": "^kn-\\d{2}-[a-z0-9-]+$"
+    },
+    "profile": {
+      "type": "string",
+      "const": "architecture"
+    },
+    "levels": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "name": {
+            "type": "string",
+            "enum": [
+              "System",
+              "Architecture",
+              "Component",
+              "Flow",
+              "Operation",
+              "Source"
+            ]
+          },
+          "frameKey": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "availability": {
+            "type": "string",
+            "enum": [
+              "available",
+              "partial",
+              "unavailable"
+            ]
+          },
+          "unavailableReason": {
+            "type": "string"
+          },
+          "reveals": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^r\\.[a-z0-9-]+$"
+            }
+          }
+        },
+        "required": [
+          "level",
+          "name",
+          "frameKey",
+          "title",
+          "availability",
+          "reveals",
+          "nodes",
+          "edges"
+        ]
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "match": {
+            "type": "object",
+            "properties": {
+              "all": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "required": [
+              "all"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "frontend",
+              "backend",
+              "database",
+              "cloud",
+              "security",
+              "messagebus",
+              "external",
+              "endpoint",
+              "step",
+              "function",
+              "event",
+              "store"
+            ]
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "parent": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+          },
+          "expandsTo": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+          },
+          "canvasElement": {
+            "type": "string",
+            "pattern": "^e\\.[a-z0-9-]+$"
+          },
+          "knowledge": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^ku\\.[a-z0-9-]+$"
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "source_unit",
+                    "code",
+                    "none"
+                  ]
+                },
+                "unit": {
+                  "type": "string",
+                  "pattern": "^u\\d+$"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "lines": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "availability": {
+                  "type": "string",
+                  "enum": [
+                    "available",
+                    "unavailable"
+                  ]
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "availability"
+              ]
+            }
+          },
+          "uncertainty": {
+            "type": "object",
+            "properties": {
+              "note": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reviewRequired": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "note",
+              "reviewRequired"
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "match",
+          "kind",
+          "level",
+          "knowledge",
+          "evidence"
+        ]
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^r\\.[a-z0-9-]+$"
+          },
+          "from": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+          },
+          "relation": {
+            "type": "string",
+            "enum": [
+              "relates_to",
+              "flows_to",
+              "caused_by",
+              "depends_on",
+              "supports",
+              "blocks",
+              "implements",
+              "derived_from",
+              "references",
+              "explained_by",
+              "supersedes",
+              "deviates_from",
+              "option_of",
+              "calls",
+              "reads",
+              "writes",
+              "publishes",
+              "subscribes",
+              "contains"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "explanation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^u\\d+$"
+            }
+          },
+          "provenance": {
+            "type": "string",
+            "enum": [
+              "explicit",
+              "inferred"
+            ]
+          },
+          "rollsUpTo": {
+            "type": "string",
+            "pattern": "^r\\.[a-z0-9-]+$"
+          }
+        },
+        "required": [
+          "id",
+          "from",
+          "to",
+          "relation",
+          "label",
+          "level",
+          "explanation",
+          "evidence",
+          "provenance"
+        ]
+      }
+    },
+    "navigationPaths": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^p\\.[a-z0-9-]+$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)*$"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "path"
+        ]
+      }
+    },
+    "invariants": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "interactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "support": {
+            "type": "string",
+            "enum": [
+              "implemented",
+              "partial",
+              "future"
+            ]
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "support",
+          "evidence"
+        ]
+      }
+    }
+  },
+  "required": [
+    "datasetVersion",
+    "caseId",
+    "profile",
+    "levels",
+    "nodes",
+    "edges",
+    "navigationPaths",
+    "invariants",
+    "interactions"
+  ]
+}

@@ -1,0 +1,1066 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "assertions": [
+    {
+      "id": "a.ttl",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "TTL expiry is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.ttl"
+      }
+    },
+    {
+      "id": "a.ttl-tradeoff",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The TTL trade-off is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.ttl-tradeoff"
+      }
+    },
+    {
+      "id": "a.purge-url",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Purge by URL is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.purge-url"
+      }
+    },
+    {
+      "id": "a.surrogate",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Surrogate-key purge is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.surrogate"
+      }
+    },
+    {
+      "id": "a.swr",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Stale-while-revalidate is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.swr"
+      }
+    },
+    {
+      "id": "a.stale-if-error",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "stale-if-error is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.stale-if-error"
+      }
+    },
+    {
+      "id": "a.versioned",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Versioned asset URLs are on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.versioned"
+      }
+    },
+    {
+      "id": "a.takeaway",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The layer-the-techniques takeaway appears (frame takeaway or card).",
+      "check": {
+        "check": "element_present",
+        "element": "e.takeaway"
+      }
+    },
+    {
+      "id": "a.page",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The step-by-step purge walkthrough is a page, not a card.",
+      "check": {
+        "check": "element_present",
+        "element": "e.purge-walkthrough"
+      }
+    },
+    {
+      "id": "a.table",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The comparison is a table.",
+      "check": {
+        "check": "element_present",
+        "element": "e.comparison"
+      }
+    },
+    {
+      "id": "a.table-rows",
+      "dimension": "element_selection",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The table covers all five techniques.",
+      "check": {
+        "check": "text_present",
+        "element": "e.comparison",
+        "all": [
+          [
+            "ttl",
+            "expiry"
+          ],
+          [
+            "url"
+          ],
+          [
+            "surrogate",
+            "tag"
+          ],
+          [
+            "stale-while-revalidate",
+            "stale while revalidate"
+          ],
+          [
+            "version"
+          ]
+        ],
+        "why": "one row per technique (u55–u59)"
+      }
+    },
+    {
+      "id": "a.ttl-window",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The TTL card says a cached copy's TTL can't be shortened, with the 240-second example.",
+      "check": {
+        "check": "text_present",
+        "element": "e.ttl",
+        "all": [
+          [
+            "240"
+          ],
+          [
+            "guess",
+            "in advance",
+            "cannot shorten",
+            "can't shorten",
+            "can not shorten",
+            "cannot be shortened",
+            "can't be shortened",
+            "nothing the origin"
+          ]
+        ],
+        "why": "the stale window limits the TTL claim (u10, u11)"
+      }
+    },
+    {
+      "id": "a.purge-eventual",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "possibility_to_guarantee",
+      "description": "The purge card itself says a purge is eventually consistent.",
+      "check": {
+        "check": "text_present",
+        "element": "e.purge-url",
+        "all": [
+          [
+            "eventual",
+            "not instant",
+            "not at the same moment",
+            "not everywhere at once",
+            "propagat",
+            "some locations",
+            "own schedule"
+          ]
+        ],
+        "why": "eventual consistency limits the purge claim (u16–u18)"
+      }
+    },
+    {
+      "id": "a.purge-scope",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "critical_exception_omitted",
+      "description": "The purge card says it removes only the exact URL.",
+      "check": {
+        "check": "text_present",
+        "element": "e.purge-url",
+        "all": [
+          [
+            "exact url",
+            "only the url",
+            "only that url",
+            "only the named",
+            "only the exact"
+          ],
+          [
+            "home page",
+            "other pages",
+            "section page",
+            "rss",
+            "query string",
+            "query-string",
+            "feed"
+          ]
+        ],
+        "why": "the scope limit (u19–u21)"
+      }
+    },
+    {
+      "id": "a.purge-rate",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The purge rate limit stays on the purge card.",
+      "check": {
+        "check": "text_present",
+        "element": "e.purge-url",
+        "all": [
+          [
+            "1000",
+            "rate limit",
+            "rate-limit"
+          ]
+        ],
+        "why": "operational limit (u22)"
+      }
+    },
+    {
+      "id": "a.walkthrough-numbers",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The walkthrough keeps its numbers exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.purge-walkthrough",
+        "all": [
+          [
+            "150 milliseconds",
+            "150 ms"
+          ],
+          [
+            "90"
+          ],
+          [
+            "2 seconds",
+            "2 s"
+          ],
+          [
+            "20 seconds",
+            "20 s"
+          ]
+        ],
+        "why": "protected numbers (u23, u24, u26)"
+      }
+    },
+    {
+      "id": "a.tag-discipline",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "critical_exception_omitted",
+      "description": "The surrogate-key card says an untagged page stays stale silently.",
+      "check": {
+        "check": "text_present",
+        "element": "e.surrogate",
+        "all": [
+          [
+            "untagged",
+            "missing tag",
+            "missing the tag",
+            "not tagged",
+            "must tag",
+            "only if the origin tag",
+            "forgot"
+          ],
+          [
+            "stale",
+            "old"
+          ]
+        ],
+        "why": "the tag-discipline caveat limits the surrogate claim (u32, u33)"
+      }
+    },
+    {
+      "id": "a.tag-burst",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The surrogate card keeps the 12,000-object burst.",
+      "check": {
+        "check": "text_present",
+        "element": "e.surrogate",
+        "all": [
+          [
+            "12000",
+            "12 000",
+            "12k"
+          ]
+        ],
+        "why": "protected number (u36)"
+      }
+    },
+    {
+      "id": "a.swr-bound",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The stale-while-revalidate card keeps its 60-second bound.",
+      "check": {
+        "check": "text_present",
+        "element": "e.swr",
+        "all": [
+          [
+            "60 seconds",
+            "60-second",
+            "one minute",
+            "60 s past",
+            "60s past"
+          ],
+          [
+            "at most",
+            "up to",
+            "no more than",
+            "bounded",
+            "only for"
+          ]
+        ],
+        "why": "the stale bound limits the claim (u41)"
+      }
+    },
+    {
+      "id": "a.stale-tolerance",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The stale card says it trades freshness for tolerance.",
+      "check": {
+        "check": "text_present",
+        "element": "e.swr",
+        "all": [
+          [
+            "tolerance",
+            "not a way to make",
+            "not fresher",
+            "older than",
+            "not a freshness"
+          ]
+        ],
+        "why": "caveat on the claim (u43, u44)"
+      }
+    },
+    {
+      "id": "a.stale-if-error-condition",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "stale-if-error keeps its condition and its bound.",
+      "check": {
+        "check": "text_present",
+        "element": "e.stale-if-error",
+        "all": [
+          [
+            "error"
+          ],
+          [
+            "86400",
+            "one day",
+            "1 day",
+            "a day"
+          ]
+        ],
+        "why": "only while the origin returns errors, up to a day (u42)"
+      }
+    },
+    {
+      "id": "a.html-caveat",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "critical_exception_omitted",
+      "description": "The versioning card says it does not help for HTML entry pages.",
+      "check": {
+        "check": "text_present",
+        "element": "e.versioned",
+        "all": [
+          [
+            "html"
+          ],
+          [
+            "does not help",
+            "doesn't help",
+            "not help",
+            "not cover",
+            "doesn't cover",
+            "does not cover",
+            "still need"
+          ]
+        ],
+        "why": "scope limit of versioning (u49, u50)"
+      }
+    },
+    {
+      "id": "a.old-assets",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The versioning card keeps the old-asset retention rule.",
+      "check": {
+        "check": "text_present",
+        "element": "e.versioned",
+        "all": [
+          [
+            "old asset",
+            "previous asset",
+            "old version",
+            "old files",
+            "older asset"
+          ],
+          [
+            "longest html ttl",
+            "as long as",
+            "at least"
+          ]
+        ],
+        "why": "requirement (u51, u52)"
+      }
+    },
+    {
+      "id": "a.exact-ids",
+      "dimension": "source_fidelity",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Header names and directives survive exactly somewhere on the canvas.",
+      "check": {
+        "check": "text_present",
+        "all": [
+          [
+            "surrogate-key"
+          ],
+          [
+            "stale-while-revalidate=60"
+          ],
+          [
+            "stale-if-error=86400"
+          ],
+          [
+            "max-age=31536000"
+          ]
+        ],
+        "why": "protected identifiers (u29, u38, u42, u47)"
+      }
+    },
+    {
+      "id": "a.no-instant",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "possibility_to_guarantee",
+      "description": "Nothing says a purge is instant.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(?<!not )(?<!isn't )\\binstant(ly|aneous|aneously)?\\b",
+        "why": "the source says purging is eventually consistent, not instant"
+      }
+    },
+    {
+      "id": "a.no-unbounded-stale",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "Nothing says stale content is served without bound.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "\\b(indefinitely|forever|unbounded|unlimited|without (a )?limit)\\b",
+        "why": "both stale directives carry explicit bounds (u41, u42)"
+      }
+    },
+    {
+      "id": "a.frame-expiry",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Expiry (TTL).",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.expiry"
+      }
+    },
+    {
+      "id": "a.frame-purge",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Explicit purges.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.purge"
+      }
+    },
+    {
+      "id": "a.frame-stale",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Serving stale on purpose.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.stale"
+      }
+    },
+    {
+      "id": "a.frame-versioning",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Versioned asset URLs.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.versioning"
+      }
+    },
+    {
+      "id": "a.frame-compare",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Comparing the techniques.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.compare"
+      }
+    },
+    {
+      "id": "a.frame-count",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Several technique frames, but not one per paragraph.",
+      "check": {
+        "check": "frame_count",
+        "min": 4,
+        "max": 7
+      }
+    },
+    {
+      "id": "a.in-ttl",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.ttl sits in f.expiry.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.ttl",
+        "frame": "f.expiry"
+      }
+    },
+    {
+      "id": "a.in-ttl-tradeoff",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.ttl-tradeoff sits in f.expiry.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.ttl-tradeoff",
+        "frame": "f.expiry"
+      }
+    },
+    {
+      "id": "a.in-purge-url",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.purge-url sits in f.purge.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.purge-url",
+        "frame": "f.purge"
+      }
+    },
+    {
+      "id": "a.in-purge-walkthrough",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.purge-walkthrough sits in f.purge.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.purge-walkthrough",
+        "frame": "f.purge"
+      }
+    },
+    {
+      "id": "a.in-surrogate",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.surrogate sits in f.purge.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.surrogate",
+        "frame": "f.purge"
+      }
+    },
+    {
+      "id": "a.in-swr",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.swr sits in f.stale.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.swr",
+        "frame": "f.stale"
+      }
+    },
+    {
+      "id": "a.in-stale-if-error",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.stale-if-error sits in f.stale.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.stale-if-error",
+        "frame": "f.stale"
+      }
+    },
+    {
+      "id": "a.in-versioned",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.versioned sits in f.versioning.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.versioned",
+        "frame": "f.versioning"
+      }
+    },
+    {
+      "id": "a.in-comparison",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.comparison sits in f.compare.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.comparison",
+        "frame": "f.compare"
+      }
+    },
+    {
+      "id": "a.together-purges",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "URL and tag purges share a frame.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.purge-url",
+          "e.surrogate"
+        ],
+        "why": "both are explicit purges"
+      }
+    },
+    {
+      "id": "a.together-stale",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Both stale directives share a frame.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.swr",
+          "e.stale-if-error"
+        ],
+        "why": "both serve expired copies deliberately"
+      }
+    },
+    {
+      "id": "a.apart-stale-purge",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Serving stale is not grouped with purging.",
+      "check": {
+        "check": "apart",
+        "elements": [
+          "e.swr",
+          "e.purge-url"
+        ],
+        "why": "opposite intents: keep a copy vs remove it"
+      }
+    },
+    {
+      "id": "a.apart-version-ttl",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Versioning is not grouped with TTL expiry.",
+      "check": {
+        "check": "apart",
+        "elements": [
+          "e.versioned",
+          "e.ttl"
+        ],
+        "why": "versioning replaces expiry for static assets only"
+      }
+    },
+    {
+      "id": "a.hierarchy-walkthrough",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The walkthrough page hangs off the purge card and isn't weighted above it.",
+      "check": {
+        "check": "hierarchy",
+        "main": "e.purge-url",
+        "supporting": [
+          "e.purge-walkthrough"
+        ],
+        "why": "detail of the purge mechanism"
+      }
+    },
+    {
+      "id": "a.hierarchy-ttl",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The TTL trade-off sits with the TTL card, below it.",
+      "check": {
+        "check": "hierarchy",
+        "main": "e.ttl",
+        "supporting": [
+          "e.ttl-tradeoff"
+        ],
+        "why": "the trade-off qualifies TTL choice"
+      }
+    },
+    {
+      "id": "a.hierarchy-stale",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "stale-if-error sits with stale-while-revalidate, below it.",
+      "check": {
+        "check": "hierarchy",
+        "main": "e.swr",
+        "supporting": [
+          "e.stale-if-error"
+        ],
+        "why": "introduced as a related directive"
+      }
+    },
+    {
+      "id": "a.rel-swr-ttl",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: Stale-while-revalidate extends TTL expiry: it only applies after max-age has passed. Crosses the stale and expiry frames.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.swr-ttl"
+      }
+    },
+    {
+      "id": "a.rel-url-surrogate",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: Surrogate keys solve purge-by-URL's listing problem (u19–u20, u28).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.url-surrogate"
+      }
+    },
+    {
+      "id": "a.rel-versioned-html",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: HTML entry pages are outside versioning and still need a TTL or a purge (u50). Crosses the versioning and purge frames; the label must say it is about HTML.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.versioned-html"
+      }
+    },
+    {
+      "id": "a.rel-purge-walkthrough",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: The page details how one purge propagates.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.purge-walkthrough"
+      }
+    },
+    {
+      "id": "a.no-walkthrough-to-purge-dependency",
+      "dimension": "relationships",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The walkthrough doesn't become a prerequisite of the purge.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.purge-url",
+        "to": "e.purge-walkthrough",
+        "types": [
+          "depends_on",
+          "blocks"
+        ],
+        "why": "the page explains the purge; the purge doesn't depend on it"
+      }
+    },
+    {
+      "id": "a.layout",
+      "dimension": "visual",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No link runs through a card.",
+      "check": {
+        "check": "layout_no_fatal"
+      }
+    },
+    {
+      "id": "a.no-overlap",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Cards don't overlap.",
+      "check": {
+        "check": "cards_no_overlap"
+      }
+    },
+    {
+      "id": "a.inside-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames are large enough for their cards, the page and the table.",
+      "check": {
+        "check": "children_inside_frames"
+      }
+    },
+    {
+      "id": "a.frames-apart",
+      "dimension": "visual",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames don't overlap.",
+      "check": {
+        "check": "frames_no_overlap"
+      }
+    },
+    {
+      "id": "a.cites",
+      "dimension": "traceability",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "future",
+      "requires": [
+        "ai.cites"
+      ],
+      "description": "Every card cites its units: TTL u6–u11; trade-off u12; purge u13–u22; walkthrough u23–u27; surrogate u28–u33, u35–u36; stale u37–u44; versioning u45–u52; table u54–u59; takeaway u60–u62."
+    },
+    {
+      "id": "a.accounting",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "future",
+      "requires": [
+        "ai.unit-accounting",
+        "ai.source-unit-ids"
+      ],
+      "description": "Every unit is Represented or Omitted with its reason: u4, u34, u63 duplicate; u1, u5, u53 meta; u64 filler. No critical unit is omitted."
+    },
+    {
+      "id": "a.judge-no-repetition",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "model_judge",
+      "target": "plan",
+      "support": "implemented",
+      "judge": {
+        "question": "Does any idea appear on more than one card or frame because the article repeated it (the eventual-consistency caveat, the 'combine techniques' takeaway)?",
+        "pass": "Eventual consistency is stated once, on the purge card (the walkthrough page may show the timings); the takeaway appears once.",
+        "fail": "A separate card, frame or second paragraph repeats the eventual-consistency caveat or the takeaway."
+      },
+      "description": "The repeated caveat and the previewed takeaway appear once."
+    },
+    {
+      "id": "a.judge-hierarchy",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "model_judge",
+      "target": "plan",
+      "support": "implemented",
+      "judge": {
+        "question": "Can a reader see at a glance the four technique families, each with its limits on the same card, and the comparison as a summary rather than a fifth technique?",
+        "pass": "Frames are named by technique family; limits sit in each card; the table and takeaway close the canvas.",
+        "fail": "Limits are scattered on their own cards, frames mix techniques, or the table reads as another technique."
+      },
+      "description": "The canvas reads top-down: techniques, their limits, then the comparison."
+    },
+    {
+      "id": "a.judge-meaning",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "human",
+      "target": "plan",
+      "support": "implemented",
+      "judge": {
+        "question": "Compare each card with the units it covers. Is any bound, condition or scope limit weakened, widened or dropped?",
+        "pass": "240-second window, eventual consistency (20 s worst case), exact-URL scope, missing-tag silence, 60-second stale bound, error-only stale-if-error and the HTML exception all survive with their claim.",
+        "fail": "Any card implies a purge is instant, stale content is unbounded, or versioning covers HTML pages."
+      },
+      "description": "Each card keeps the meaning of what it covers."
+    }
+  ]
+}

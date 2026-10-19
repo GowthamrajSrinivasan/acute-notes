@@ -1,0 +1,710 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "template": "sectioned",
+  "templateNote": "Five frames: four technique families plus the comparison. Each technique is one card carrying its own limits; the propagation walkthrough is a page; the comparison is a table. Repetition (u4, u34, u63) yields no extra card.",
+  "frames": [
+    {
+      "id": "f.expiry",
+      "title": "Expiry (TTL)",
+      "titleMatch": {
+        "all": [
+          [
+            "ttl",
+            "time to live",
+            "time-to-live",
+            "expiry"
+          ]
+        ]
+      },
+      "purpose": "Time-based invalidation and its limit.",
+      "rationale": "Copies that expire on their own are the baseline; the limit (can't be shortened) and the trade-off (origin traffic) qualify it.",
+      "children": [
+        "e.ttl",
+        "e.ttl-tradeoff"
+      ],
+      "arrangement": "grid",
+      "separateFrom": [
+        {
+          "frame": "f.versioning",
+          "reason": "Versioning replaces expiry only for static assets; mixing them suggests it replaces TTLs for pages too."
+        }
+      ],
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.purge",
+      "title": "Explicit purges",
+      "titleMatch": {
+        "all": [
+          [
+            "purg"
+          ]
+        ]
+      },
+      "purpose": "On-demand removal: by URL and by tag, with the propagation walkthrough.",
+      "rationale": "Both are explicit purge calls with the same eventual-consistency behaviour; surrogate keys exist to fix purge-by-URL's scope.",
+      "children": [
+        "e.purge-url",
+        "e.purge-walkthrough",
+        "e.surrogate"
+      ],
+      "arrangement": "grid",
+      "separateFrom": [
+        {
+          "frame": "f.stale",
+          "reason": "A purge removes a copy; serving stale deliberately keeps one. Putting them together blurs the opposite intents."
+        }
+      ],
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.stale",
+      "title": "Serving stale on purpose",
+      "titleMatch": {
+        "all": [
+          [
+            "stale"
+          ]
+        ]
+      },
+      "purpose": "Deliberately answering from an expired copy, and its bounds.",
+      "rationale": "stale-while-revalidate and stale-if-error are both tolerance choices with explicit bounds.",
+      "children": [
+        "e.swr",
+        "e.stale-if-error"
+      ],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.versioning",
+      "title": "Versioned asset URLs",
+      "titleMatch": {
+        "all": [
+          [
+            "version",
+            "fingerprint",
+            "hash",
+            "cache bust",
+            "cache-bust"
+          ]
+        ]
+      },
+      "purpose": "Invalidation by renaming static assets.",
+      "rationale": "A different mechanism (new name, not removal) with its own scope limit.",
+      "children": [
+        "e.versioned"
+      ],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.compare",
+      "title": "Comparing the techniques",
+      "titleMatch": {
+        "all": [
+          [
+            "compar",
+            "trade-off",
+            "tradeoff",
+            "choos",
+            "at a glance",
+            "summary"
+          ]
+        ]
+      },
+      "purpose": "The side-by-side comparison and the article's takeaway.",
+      "rationale": "The table only makes sense once the techniques are known; it closes the canvas.",
+      "children": [
+        "e.comparison"
+      ],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e.ttl",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "technique with its limit",
+      "content": "Copies expire after a TTL set in advance (max-age=300); no coordination needed; but a correction can stay invisible for the remaining 240 seconds",
+      "knowledge": [
+        "ku.ttl",
+        "ku.ttl-window",
+        "ku.revalidation"
+      ],
+      "match": {
+        "all": [
+          [
+            "ttl",
+            "time to live",
+            "time-to-live"
+          ],
+          [
+            "no coordination",
+            "without coordination",
+            "default",
+            "simplest",
+            "guess",
+            "in advance"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.expiry",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.ttl-tradeoff",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "trade-off",
+      "content": "Shorter TTLs cost origin traffic (300 → 30 seconds: about eightfold)",
+      "knowledge": [
+        "ku.ttl-tradeoff"
+      ],
+      "match": {
+        "all": [
+          [
+            "shorter ttl",
+            "shortening",
+            "shorten the ttl",
+            "lower ttl",
+            "dropping the ttl",
+            "dropped"
+          ],
+          [
+            "origin traffic",
+            "origin load",
+            "more requests",
+            "eightfold",
+            "8x",
+            "8 times",
+            "eight times"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.expiry",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.purge-url",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "technique with its limits",
+      "content": "Purge by URL removes one cached address on demand — eventually consistent, only the exact URL, rate limited",
+      "knowledge": [
+        "ku.purge-url",
+        "ku.purge-eventual",
+        "ku.url-scope",
+        "ku.purge-rate-limit"
+      ],
+      "match": {
+        "all": [
+          [
+            "purg"
+          ],
+          [
+            "url"
+          ],
+          [
+            "exact url",
+            "only the url",
+            "only that url",
+            "query string",
+            "query-string",
+            "other pages",
+            "home page",
+            "rss"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.purge",
+      "layout": "The three limits belong on this card, not on cards of their own.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.purge-walkthrough",
+      "element": "page",
+      "planNodeTypes": [
+        "page"
+      ],
+      "role": "long step-by-step explanation",
+      "content": "Walkthrough: what happens after a purge (150 ms queued, 90 locations, half in 2 s, slowest 20 s, old copy until then)",
+      "knowledge": [
+        "ku.purge-walkthrough"
+      ],
+      "match": {
+        "all": [
+          [
+            "150",
+            "queued"
+          ],
+          [
+            "20 seconds",
+            "20 s",
+            "slowest"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.purge",
+      "layout": "A page linked from the purge card: five ordered steps with numbers are too long for a card.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.surrogate",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "technique with its limits",
+      "content": "Surrogate keys: one tag purge removes every page carrying the tag — if the origin tagged it; broad tags cause a burst of misses",
+      "knowledge": [
+        "ku.surrogate",
+        "ku.tag-discipline",
+        "ku.tag-burst"
+      ],
+      "match": {
+        "all": [
+          [
+            "surrogate-key",
+            "surrogate key",
+            "tag purge",
+            "purge by tag",
+            "purging by tag",
+            "tag-based purg"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.purge",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.swr",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "technique with its limits",
+      "content": "Stale-while-revalidate serves the expired copy while refreshing — for at most 60 seconds past the TTL; a tolerance choice, not freshness",
+      "knowledge": [
+        "ku.swr",
+        "ku.swr-bound",
+        "ku.stale-tolerance",
+        "ku.swr-usage"
+      ],
+      "match": {
+        "all": [
+          [
+            "stale-while-revalidate",
+            "stale while revalidate"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.stale",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.stale-if-error",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "related technique",
+      "content": "stale-if-error=86400 keeps serving for up to a day, only while the origin returns errors",
+      "knowledge": [
+        "ku.stale-if-error"
+      ],
+      "match": {
+        "all": [
+          [
+            "stale-if-error",
+            "stale if error"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.stale",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.versioned",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "technique with its limits",
+      "content": "Versioned asset names (content hash) make old copies irrelevant — but not for HTML entry pages; keep old assets as long as the longest HTML TTL",
+      "knowledge": [
+        "ku.versioned",
+        "ku.html-caveat",
+        "ku.old-assets"
+      ],
+      "match": {
+        "all": [
+          [
+            "hash",
+            "version",
+            "fingerprint"
+          ],
+          [
+            "asset",
+            "file name",
+            "filename",
+            ".js"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.versioning",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.comparison",
+      "element": "table",
+      "planNodeTypes": [
+        "table"
+      ],
+      "role": "comparison",
+      "content": "Table: technique × freshness after a change, main cost, main caveat",
+      "knowledge": [
+        "ku.comparison"
+      ],
+      "match": {
+        "all": [
+          [
+            "purg"
+          ],
+          [
+            "stale"
+          ],
+          [
+            "version"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.compare",
+      "layout": "One row per technique; the article gives comparable attributes, so a table, not five cards.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.takeaway",
+      "element": "takeaway",
+      "planNodeTypes": [
+        "group",
+        "text",
+        "heading"
+      ],
+      "role": "article takeaway",
+      "content": "No single technique is enough: layer them so each covers the gaps of the others",
+      "knowledge": [
+        "ku.takeaway"
+      ],
+      "match": {
+        "all": [
+          [
+            "no single",
+            "layer",
+            "combin",
+            "together"
+          ],
+          [
+            "gaps",
+            "trade-off",
+            "tradeoff",
+            "no single"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": null,
+      "outsideFrameReason": "Shown as a frame's own takeaway line (group.content.takeaway), typically the comparison frame's, or as a card; not tied to one technique.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r.swr-ttl",
+      "from": "e.swr",
+      "to": "e.ttl",
+      "type": "refines",
+      "acceptableTypes": [
+        "depends_on",
+        "derived_from",
+        "explained_by",
+        "relates_to",
+        "supports"
+      ],
+      "label": {
+        "required": false,
+        "text": "starts once the TTL has passed"
+      },
+      "direction": "bidirectional",
+      "explanation": "Stale-while-revalidate extends TTL expiry: it only applies after max-age has passed. Crosses the stale and expiry frames.",
+      "evidence": [
+        "u37",
+        "u38"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.url-surrogate",
+      "from": "e.purge-url",
+      "to": "e.surrogate",
+      "type": "relates_to",
+      "acceptableTypes": [
+        "relates_to",
+        "flows_to",
+        "supports",
+        "derived_from",
+        "explained_by",
+        "supersedes"
+      ],
+      "label": {
+        "required": true,
+        "text": "tags reach the other pages",
+        "match": {
+          "all": [
+            [
+              "other pages",
+              "every page",
+              "all pages",
+              "listing",
+              "tag",
+              "home page"
+            ]
+          ]
+        }
+      },
+      "direction": "bidirectional",
+      "explanation": "Surrogate keys solve purge-by-URL's listing problem (u19–u20, u28).",
+      "evidence": [
+        "u19",
+        "u20",
+        "u28"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.versioned-html",
+      "from": "e.versioned",
+      "to": "e.purge-url",
+      "type": "depends_on",
+      "acceptableTypes": [
+        "depends_on",
+        "relates_to",
+        "references"
+      ],
+      "label": {
+        "required": true,
+        "text": "HTML entry pages still need a purge",
+        "match": {
+          "all": [
+            [
+              "html",
+              "entry page"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "HTML entry pages are outside versioning and still need a TTL or a purge (u50). Crosses the versioning and purge frames; the label must say it is about HTML.",
+      "evidence": [
+        "u50"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.purge-walkthrough",
+      "from": "e.purge-url",
+      "to": "e.purge-walkthrough",
+      "type": "explained_by",
+      "acceptableTypes": [
+        "explained_by",
+        "references",
+        "relates_to",
+        "supports"
+      ],
+      "label": {
+        "required": false,
+        "text": "step by step"
+      },
+      "direction": "bidirectional",
+      "explanation": "The page details how one purge propagates.",
+      "evidence": [
+        "u23",
+        "u26"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.ttl-tradeoff",
+      "from": "e.ttl",
+      "to": "e.ttl-tradeoff",
+      "type": "relates_to",
+      "acceptableTypes": [
+        "relates_to",
+        "explained_by",
+        "caused_by",
+        "supports"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "bidirectional",
+      "explanation": "The trade-off of choosing a TTL.",
+      "evidence": [
+        "u12"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "r.swr-sie",
+      "from": "e.swr",
+      "to": "e.stale-if-error",
+      "type": "relates_to",
+      "acceptableTypes": [
+        "relates_to",
+        "explained_by",
+        "references"
+      ],
+      "label": {
+        "required": false,
+        "text": "related directive"
+      },
+      "direction": "bidirectional",
+      "explanation": "stale-if-error is introduced as a related directive.",
+      "evidence": [
+        "u42"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    }
+  ],
+  "together": [
+    {
+      "elements": [
+        "e.purge-url",
+        "e.surrogate"
+      ],
+      "reason": "Both are explicit purges; surrogate keys fix purge-by-URL's scope."
+    },
+    {
+      "elements": [
+        "e.swr",
+        "e.stale-if-error"
+      ],
+      "reason": "Both deliberately serve an expired copy, each with a bound."
+    },
+    {
+      "elements": [
+        "e.purge-url",
+        "e.purge-walkthrough"
+      ],
+      "reason": "The walkthrough explains the purge card it hangs off."
+    }
+  ],
+  "keepSeparate": [
+    {
+      "elements": [
+        "e.swr",
+        "e.purge-url"
+      ],
+      "reason": "Serving stale keeps a copy; a purge removes one. One frame would blur opposite intents."
+    },
+    {
+      "elements": [
+        "e.versioned",
+        "e.ttl"
+      ],
+      "reason": "Versioning is for static assets only; side by side in one frame it reads as a replacement for TTLs on pages."
+    }
+  ],
+  "hierarchy": [
+    {
+      "main": "e.purge-url",
+      "supporting": [
+        "e.purge-walkthrough"
+      ],
+      "reason": "The walkthrough is detail of the purge card."
+    },
+    {
+      "main": "e.ttl",
+      "supporting": [
+        "e.ttl-tradeoff"
+      ],
+      "reason": "The trade-off qualifies the TTL technique."
+    },
+    {
+      "main": "e.swr",
+      "supporting": [
+        "e.stale-if-error"
+      ],
+      "reason": "stale-if-error is introduced as a related directive."
+    }
+  ],
+  "unsupported": [
+    {
+      "capability": "ai.cites",
+      "ideal": "Each card cites its units (e.g. purge card u13–u22; walkthrough page u23–u27).",
+      "expectedToday": "Not checkable; matching is by content."
+    },
+    {
+      "capability": "ai.unit-accounting",
+      "ideal": "u4, u34, u63 are reported as omitted duplicates and u1, u5, u53, u64 as meta/filler; nothing else is omitted.",
+      "expectedToday": "Not checkable; a judged assertion looks for a duplicated eventual-consistency card instead."
+    }
+  ]
+}

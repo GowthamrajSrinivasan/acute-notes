@@ -1,0 +1,906 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "kn-02-edge-cache-invalidation",
+  "title": "Invalidating cached content at the edge",
+  "scenario": "Long technical article: five related invalidation techniques, each with its own caveats and invented numbers, a step-by-step walkthrough too long for a card, a comparison table, a caveat repeated three times, an intro that pre-announces the conclusion, and meta/filler sentences.",
+  "sourceType": "article",
+  "audience": "Web engineers running a content site behind a CDN",
+  "objective": "Know which invalidation technique to use for which content, and the limit of each: how long a stale copy can survive, and what a purge does not reach.",
+  "complexity": "high",
+  "sourceFiles": [
+    {
+      "version": 1,
+      "path": "source.md",
+      "words": 1429,
+      "title": "Invalidating cached content at the edge"
+    }
+  ],
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "Invalidating cached content at the edge"
+    },
+    {
+      "id": "s2",
+      "heading": "Letting copies expire"
+    },
+    {
+      "id": "s3",
+      "heading": "Purging by URL"
+    },
+    {
+      "id": "s4",
+      "heading": "What happens after a purge"
+    },
+    {
+      "id": "s5",
+      "heading": "Purging by tag with surrogate keys"
+    },
+    {
+      "id": "s6",
+      "heading": "Serving stale on purpose"
+    },
+    {
+      "id": "s7",
+      "heading": "Versioned asset URLs"
+    },
+    {
+      "id": "s8",
+      "heading": "Comparing the techniques"
+    },
+    {
+      "id": "s9",
+      "heading": "Conclusion"
+    }
+  ],
+  "units": [
+    {
+      "id": "u1",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "This is the third article in our series on running a content-heavy site behind a CDN.",
+      "tags": [
+        "irrelevant"
+      ],
+      "omittable": {
+        "reason": "meta",
+        "note": "Series navigation, not content."
+      }
+    },
+    {
+      "id": "u2",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "Caching at the edge makes pages fast, but every cached copy is a copy that can go out of date.",
+      "tags": [
+        "terminology"
+      ]
+    },
+    {
+      "id": "u3",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "The hard part is not storing copies; it is deciding how an outdated copy gets replaced, and how quickly."
+    },
+    {
+      "id": "u4",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "No single technique is enough here, and a dependable setup layers several of them.",
+      "tags": [
+        "repetition"
+      ],
+      "omittable": {
+        "reason": "duplicate",
+        "of": "u61",
+        "note": "The intro announces the conclusion's takeaway (u61), which says it in full."
+      }
+    },
+    {
+      "id": "u5",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "We use Larkspur Media, a fictional news site, as the running example throughout.",
+      "tags": [
+        "irrelevant"
+      ],
+      "omittable": {
+        "reason": "meta",
+        "note": "Introduces the example site; the examples themselves carry the name where it matters."
+      }
+    },
+    {
+      "id": "u6",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "The simplest form of invalidation is not to invalidate at all: every cached object carries a time to live (TTL), and the edge discards or rechecks its copy once the TTL has passed.",
+      "tags": [
+        "definition",
+        "terminology"
+      ]
+    },
+    {
+      "id": "u7",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "The origin sets the TTL with the `Cache-Control` header; for example, `Cache-Control: max-age=300` lets an edge location keep a copy for 300 seconds.",
+      "tags": [
+        "example",
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "max-age=300"
+        },
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "300 seconds"
+        }
+      ]
+    },
+    {
+      "id": "u8",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "TTL expiry needs no coordination between the origin and the edge, which is why every CDN uses it as the default."
+    },
+    {
+      "id": "u9",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "When a TTL runs out, the edge does not always download the whole object again: if the origin sent an `ETag`, the edge can ask whether the copy changed and receive a short `304 Not Modified` answer when it has not.",
+      "tags": [
+        "condition"
+      ],
+      "protected": [
+        {
+          "tier": "warn",
+          "kind": "named_term",
+          "value": "ETag"
+        },
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "304 Not Modified"
+        }
+      ]
+    },
+    {
+      "id": "u10",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "Its weakness is that the TTL is a guess made in advance.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "The TTL can't be changed once a copy is cached."
+      }
+    },
+    {
+      "id": "u11",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "If an editor corrects a headline 60 seconds after publishing, readers can keep seeing the old headline for up to the remaining 240 seconds of a 300-second TTL, and nothing the origin does will shorten that wait.",
+      "tags": [
+        "limitation",
+        "numeric",
+        "example"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "The concrete stale window (240 seconds) and that the origin can't shorten it."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "240 seconds"
+        },
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "60 seconds"
+        }
+      ]
+    },
+    {
+      "id": "u12",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "Shortening the TTL narrows the window but sends more requests back to the origin: when Larkspur dropped its article TTL from 300 to 30 seconds, origin traffic rose roughly eightfold.",
+      "tags": [
+        "numeric",
+        "example"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "30 seconds"
+        }
+      ]
+    },
+    {
+      "id": "u13",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "When content must change now, the origin can ask the CDN to purge a specific URL.",
+      "tags": [
+        "definition"
+      ]
+    },
+    {
+      "id": "u14",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "The purge removes the cached copy, so the next request for that URL is fetched fresh from the origin."
+    },
+    {
+      "id": "u15",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "Larkspur's publishing system sends a purge for the article URL every time an editor saves a correction.",
+      "tags": [
+        "example"
+      ]
+    },
+    {
+      "id": "u16",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "A purge request is accepted quickly, but it is not applied everywhere at the same moment.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "Acceptance of a purge is not completion."
+      }
+    },
+    {
+      "id": "u17",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "The CDN has to deliver the purge to every edge location, and each location removes its copy on its own schedule, so for a short time some locations serve the new version while others still serve the old one.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "The original explanation of why a purge is eventually consistent; repeated twice later (u34, u63)."
+      }
+    },
+    {
+      "id": "u18",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "Purging is eventually consistent, not instant.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "The one-line statement of the caveat."
+      }
+    },
+    {
+      "id": "u19",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "Purging by URL has a second limit: it removes only the exact URL you name.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "URL purge misses every other page showing the same content."
+      }
+    },
+    {
+      "id": "u20",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "A corrected headline also appears on the home page, the section page and the RSS feed, and each of those cached pages keeps the old headline until it is purged separately or expires.",
+      "tags": [
+        "limitation",
+        "example"
+      ]
+    },
+    {
+      "id": "u21",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "Query strings make this worse, because `/story/417?ref=social` is a different cache entry from `/story/417` and is not removed by purging it.",
+      "tags": [
+        "limitation",
+        "example"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "/story/417?ref=social"
+        }
+      ]
+    },
+    {
+      "id": "u22",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "Purge APIs are also rate limited; Larkspur's plan allows 1,000 purge calls per minute, which a bulk correction across the archive can exhaust.",
+      "tags": [
+        "limitation",
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "1,000 purge calls per minute"
+        }
+      ]
+    },
+    {
+      "id": "u23",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "The origin calls the purge API with the URL. The API answers within about 150 milliseconds, but the answer only means the request was queued.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "150 milliseconds"
+        }
+      ]
+    },
+    {
+      "id": "u24",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "The CDN's control plane fans the purge out to all 90 edge locations.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "90 edge locations"
+        }
+      ]
+    },
+    {
+      "id": "u25",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "Each location marks its cached copy invalid, so the next request there is a cache miss that goes to the origin."
+    },
+    {
+      "id": "u26",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "In Larkspur's measurements, half of the locations had applied a purge within 2 seconds, and the slowest location took 20 seconds.",
+      "tags": [
+        "numeric",
+        "limitation"
+      ],
+      "critical": {
+        "reason": "protected",
+        "note": "The measured propagation bound (20 seconds worst case) is what 'eventually' means here."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "2 seconds"
+        },
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "20 seconds"
+        }
+      ]
+    },
+    {
+      "id": "u27",
+      "section": "s4",
+      "kind": "list_item",
+      "quote": "Until the last location has applied the purge, a reader routed to that location still gets the old copy.",
+      "tags": [
+        "limitation"
+      ]
+    },
+    {
+      "id": "u28",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Surrogate keys solve the listing problem by letting the origin label each response with tags.",
+      "tags": [
+        "definition",
+        "terminology"
+      ]
+    },
+    {
+      "id": "u29",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "The origin sends a header such as `Surrogate-Key: story-417 section-politics`, and the CDN records which cached objects carry which keys.",
+      "tags": [
+        "example"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "Surrogate-Key"
+        }
+      ]
+    },
+    {
+      "id": "u30",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "A single purge of the key `story-417` then removes every cached page that included that story: the article itself, the home page, the section page and the feed.",
+      "tags": [
+        "example"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "story-417"
+        }
+      ]
+    },
+    {
+      "id": "u31",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Keys can be as coarse or as fine as you like, but every key a page carries makes the header longer, and Larkspur keeps it under 50 keys per response.",
+      "tags": [
+        "numeric"
+      ]
+    },
+    {
+      "id": "u32",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "The responsibility moves to the origin.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "Correctness now depends on the origin's tagging."
+      }
+    },
+    {
+      "id": "u33",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "A page is only purged by a key if the origin tagged it with that key, and a missing tag produces a stale page with no error anywhere.",
+      "tags": [
+        "limitation",
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "A missing tag fails silently."
+      }
+    },
+    {
+      "id": "u34",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "As with purging by URL, a tag purge is delivered to each edge location separately, so for a few seconds some locations serve the updated pages while others still serve the old ones.",
+      "tags": [
+        "repetition"
+      ],
+      "omittable": {
+        "reason": "duplicate",
+        "of": "u17",
+        "note": "Repeats the eventual-consistency explanation of u17 for tag purges."
+      }
+    },
+    {
+      "id": "u35",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Tag purges can also be large.",
+      "tags": [
+        "limitation"
+      ]
+    },
+    {
+      "id": "u36",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Purging `section-politics` at Larkspur removes about 12,000 cached objects at once, and the origin has to absorb the burst of cache misses that follows.",
+      "tags": [
+        "limitation",
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "12,000"
+        }
+      ]
+    },
+    {
+      "id": "u37",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "Stale-while-revalidate turns expiry from a wait into a background task.",
+      "tags": [
+        "definition",
+        "terminology"
+      ]
+    },
+    {
+      "id": "u38",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "With `Cache-Control: max-age=300, stale-while-revalidate=60`, an edge location that receives a request after the 300 seconds have passed returns the expired copy immediately and fetches a fresh one from the origin in the background.",
+      "tags": [
+        "example",
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "stale-while-revalidate=60"
+        }
+      ]
+    },
+    {
+      "id": "u39",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "The reader gets a fast response, and the next reader gets the refreshed copy."
+    },
+    {
+      "id": "u40",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "Larkspur uses it on article pages, where a minute of staleness is acceptable, but not on live election results.",
+      "tags": [
+        "example",
+        "decision"
+      ]
+    },
+    {
+      "id": "u41",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "The bound matters: an expired copy is served for at most 60 seconds past its TTL, and after that the edge waits for the origin as it would on an ordinary miss.",
+      "tags": [
+        "condition",
+        "numeric"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "The stale bound: 60 seconds, then an ordinary miss."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "60 seconds"
+        }
+      ]
+    },
+    {
+      "id": "u42",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "A related directive, `stale-if-error=86400`, lets the edge keep serving the expired copy for up to 86,400 seconds, or one day, while the origin is returning errors.",
+      "tags": [
+        "condition",
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "stale-if-error=86400"
+        },
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "86,400 seconds"
+        }
+      ]
+    },
+    {
+      "id": "u43",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "Serving stale is a choice about tolerance, not a way to make content fresher.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "Stale serving is not a freshness mechanism."
+      }
+    },
+    {
+      "id": "u44",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "It hides a slow origin from readers, but it also means some readers see a copy that is older than the TTL alone would suggest.",
+      "tags": [
+        "limitation"
+      ]
+    },
+    {
+      "id": "u45",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "For static assets, the cleanest invalidation is a new name.",
+      "tags": [
+        "definition"
+      ]
+    },
+    {
+      "id": "u46",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "The build puts a hash of each file's contents into its name, such as `app.3f9c2e.js`, so a changed file gets a new URL and the old cached copy is simply never requested again.",
+      "tags": [
+        "example"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "app.3f9c2e.js"
+        }
+      ]
+    },
+    {
+      "id": "u47",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Because a versioned URL never changes its content, it can be cached for a very long time; Larkspur serves its versioned assets with `max-age=31536000`, which is one year.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "max-age=31536000"
+        }
+      ]
+    },
+    {
+      "id": "u48",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Most build tools can add the hash automatically, so the cost is a one-time change to the build configuration."
+    },
+    {
+      "id": "u49",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Versioning does not help for HTML entry pages.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "The technique's scope: static assets only, never the HTML that references them."
+      }
+    },
+    {
+      "id": "u50",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "The home page and article pages are requested at fixed addresses such as `/` and `/story/417`, and they are the pages that point to the new asset names, so they still need a TTL, a purge or both.",
+      "tags": [
+        "limitation",
+        "condition"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "HTML still needs a TTL and/or a purge."
+      }
+    },
+    {
+      "id": "u51",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "If an HTML page stays cached longer than the origin keeps the old asset files, it can send readers to files that no longer exist.",
+      "tags": [
+        "limitation"
+      ]
+    },
+    {
+      "id": "u52",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Old asset versions should therefore stay available for at least as long as the longest HTML TTL.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "Retention rule for old assets."
+      }
+    },
+    {
+      "id": "u53",
+      "section": "s8",
+      "kind": "sentence",
+      "quote": "The table below summarises how the techniques compare.",
+      "tags": [
+        "irrelevant"
+      ],
+      "omittable": {
+        "reason": "meta",
+        "note": "Announces the table."
+      }
+    },
+    {
+      "id": "u54",
+      "section": "s8",
+      "kind": "table_row",
+      "quote": "| Technique | Freshness after a change | Main cost | Main caveat |"
+    },
+    {
+      "id": "u55",
+      "section": "s8",
+      "kind": "table_row",
+      "quote": "| TTL expiry | Up to the full TTL (300 seconds at Larkspur) | More origin traffic as the TTL shrinks | Cannot be shortened after the fact |",
+      "tags": [
+        "numeric"
+      ]
+    },
+    {
+      "id": "u56",
+      "section": "s8",
+      "kind": "table_row",
+      "quote": "| Purge by URL | Seconds (20 seconds worst case measured) | One purge call per URL | Misses other pages that show the same content |",
+      "tags": [
+        "numeric"
+      ]
+    },
+    {
+      "id": "u57",
+      "section": "s8",
+      "kind": "table_row",
+      "quote": "| Surrogate-key purge | Seconds, for every tagged page | Tagging discipline at the origin | Untagged pages stay stale |"
+    },
+    {
+      "id": "u58",
+      "section": "s8",
+      "kind": "table_row",
+      "quote": "| Stale-while-revalidate | Up to the TTL plus 60 seconds | Nothing at request time | Readers knowingly get expired copies |",
+      "tags": [
+        "numeric"
+      ]
+    },
+    {
+      "id": "u59",
+      "section": "s8",
+      "kind": "table_row",
+      "quote": "| Versioned URLs | Immediate for pages that reference the new name | A build step | Does not cover HTML entry pages |"
+    },
+    {
+      "id": "u60",
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "Invalidation at the edge is a set of trade-offs rather than a single switch.",
+      "critical": {
+        "reason": "takeaway",
+        "note": "The article's conclusion."
+      }
+    },
+    {
+      "id": "u61",
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "A reliable setup combines expiry times, explicit purges, deliberate stale serving and versioned file names, each covering the gaps of the others.",
+      "critical": {
+        "reason": "takeaway",
+        "note": "The conclusion's recommendation; the intro's u4 says the same thing first."
+      }
+    },
+    {
+      "id": "u62",
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "Short TTLs are the safety net, purges handle urgent corrections, stale serving keeps the site fast when the origin struggles, and versioned names take static assets out of the problem entirely."
+    },
+    {
+      "id": "u63",
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "Whatever the mix, remember that a purge reaches some edge locations before others, so plan for a window of several seconds in which some readers still see the old version.",
+      "tags": [
+        "repetition"
+      ],
+      "omittable": {
+        "reason": "duplicate",
+        "of": "u17",
+        "note": "Third statement of the eventual-consistency caveat (first u17, then u34)."
+      }
+    },
+    {
+      "id": "u64",
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "Thanks for reading; the next article in the series covers cache keys and personalisation.",
+      "tags": [
+        "irrelevant"
+      ],
+      "omittable": {
+        "reason": "filler",
+        "note": "Sign-off."
+      }
+    }
+  ],
+  "safeToOmit": [
+    {
+      "units": [
+        "u4"
+      ],
+      "why": "The intro's one-line preview of the conclusion's takeaway (u61)."
+    },
+    {
+      "units": [
+        "u34",
+        "u63"
+      ],
+      "why": "Restate the eventual-consistency explanation first given in u17; one card carrying it is enough."
+    },
+    {
+      "units": [
+        "u1",
+        "u5",
+        "u53"
+      ],
+      "why": "Meta: series navigation, introducing the example site, announcing the table."
+    },
+    {
+      "units": [
+        "u64"
+      ],
+      "why": "Sign-off filler."
+    }
+  ],
+  "capabilities": [
+    "canvas.text-card",
+    "canvas.frame",
+    "canvas.table",
+    "canvas.page",
+    "canvas.arrow-labeled",
+    "ai.takeaway",
+    "ai.sectioned-template",
+    "ai.cites",
+    "ai.unit-accounting",
+    "ai.source-unit-ids"
+  ],
+  "provenance": {
+    "synthetic": true,
+    "note": "Original text written for this dataset. Larkspur Media is a fictional site; every number (TTLs, 150 ms, 90 locations, 2 and 20 seconds, 1,000 calls per minute, 12,000 objects, 50 keys, the eightfold rise) and every identifier (story-417, app.3f9c2e.js) is invented for the example."
+  },
+  "review": {
+    "status": "draft",
+    "authoredBy": "Claude Code (assistant-drafted by hand; not produced by the Acute pipeline)",
+    "reviewers": [],
+    "approvedAt": null
+  }
+}

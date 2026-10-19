@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-rollback-agreed",
+  "distortion": "fabricated_agreement",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "The open auto-rollback question is reported as decided.",
+  "mutations": [
+    { "op": "replace_text", "node": "n9", "find": "**Status:** left open; nobody knows how many releases include migrations.", "replace": "**Status:** automatic rollback was approved, excluding releases with migrations." }
+  ],
+  "expectFailing": ["a.no-fabricated-agreement", "a.rollback-open"]
+}

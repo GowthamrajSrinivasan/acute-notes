@@ -1,0 +1,13 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-invented-code-location",
+  "distortion": "invented_detail",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "A plausible code path is invented for the Ingestion worker, and the 'not specified' card is dropped.",
+  "mutations": [
+    { "op": "replace_text", "node": "a-ing", "find": "Internals not described in the design", "replace": "Code: services/ingestion/src/worker.ts" },
+    { "op": "remove_node", "node": "a-unknown" }
+  ],
+  "expectFailing": ["a.no-invented-paths", "a.unknowns-kept"]
+}

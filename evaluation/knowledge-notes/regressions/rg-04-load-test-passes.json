@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-load-test-passes",
+  "distortion": "invented_detail",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The untested load becomes a result: '1,800 jobs per minute was not tested.' becomes 'The job table handles 1,800 jobs per minute.'",
+  "mutations": [
+    { "op": "replace_text", "node": "n8", "find": "1,800 jobs per minute was not tested.", "replace": "The job table handles 1,800 jobs per minute." }
+  ],
+  "expectFailing": ["a.no-unmeasured-pass", "a.load-test-limits"]
+}

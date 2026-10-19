@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-reporting-exception-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The job table's transactional guarantee loses its exception: the reporting service's jobs are no longer excluded.",
+  "mutations": [
+    { "op": "replace_text", "node": "n5", "find": "\n- Only covers jobs created inside the billing database transaction; jobs from the reporting service, which has its own database, don't get it.", "replace": "" }
+  ],
+  "expectFailing": ["a.reporting-exception-with-c"]
+}

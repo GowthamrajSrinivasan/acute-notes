@@ -1,0 +1,400 @@
+{
+  "levels": [
+    {
+      "level": 0,
+      "frameKey": "lens.l0-system",
+      "nodes": [
+        {
+          "key": "helpdesk",
+          "label": "Helpdesk Answers",
+          "kind": "backend"
+        },
+        {
+          "key": "helpdesk.cms",
+          "label": "Help Center CMS",
+          "kind": "external"
+        },
+        {
+          "key": "helpdesk.llm",
+          "label": "Language model provider",
+          "kind": "external"
+        }
+      ],
+      "edges": [
+        {
+          "from": "helpdesk",
+          "to": "helpdesk.cms",
+          "relation": "reads",
+          "label": "imports published articles"
+        },
+        {
+          "from": "helpdesk",
+          "to": "helpdesk.llm",
+          "relation": "calls",
+          "label": "generates answer text"
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "frameKey": "lens.l1-architecture",
+      "nodes": [
+        {
+          "key": "arch.console",
+          "label": "Agent Console",
+          "kind": "frontend"
+        },
+        {
+          "key": "arch.api",
+          "label": "Answers API",
+          "kind": "backend"
+        },
+        {
+          "key": "arch.orchestrator",
+          "label": "Orchestrator",
+          "kind": "backend"
+        },
+        {
+          "key": "arch.retrieval",
+          "label": "Retrieval service",
+          "kind": "backend"
+        },
+        {
+          "key": "arch.reranker",
+          "label": "Reranker",
+          "kind": "backend"
+        },
+        {
+          "key": "arch.gateway",
+          "label": "Model Gateway (only path to the model provider)",
+          "kind": "backend"
+        },
+        {
+          "key": "arch.vector-store",
+          "label": "Vector store (Postgres + pgvector)",
+          "kind": "database"
+        },
+        {
+          "key": "arch.answer-log",
+          "label": "Answer log (answers with citations)",
+          "kind": "database"
+        },
+        {
+          "key": "arch.ingestion",
+          "label": "Ingestion worker (every 15 min)",
+          "kind": "backend"
+        }
+      ],
+      "edges": [
+        {
+          "from": "arch.console",
+          "to": "arch.api",
+          "relation": "calls",
+          "label": "sends question (HTTPS)"
+        },
+        {
+          "from": "arch.api",
+          "to": "arch.orchestrator",
+          "relation": "calls",
+          "label": "forwards question"
+        },
+        {
+          "from": "arch.orchestrator",
+          "to": "arch.retrieval",
+          "relation": "calls",
+          "label": "finds candidate passages"
+        },
+        {
+          "from": "arch.orchestrator",
+          "to": "arch.reranker",
+          "relation": "calls",
+          "label": "reranks candidates"
+        },
+        {
+          "from": "arch.orchestrator",
+          "to": "arch.gateway",
+          "relation": "calls",
+          "label": "generates the answer"
+        },
+        {
+          "from": "arch.retrieval",
+          "to": "arch.vector-store",
+          "relation": "reads",
+          "label": "reads passages"
+        },
+        {
+          "from": "arch.orchestrator",
+          "to": "arch.answer-log",
+          "relation": "writes",
+          "label": "writes answer + citations"
+        },
+        {
+          "from": "arch.ingestion",
+          "to": "arch.vector-store",
+          "relation": "writes",
+          "label": "writes embeddings"
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "frameKey": "lens.l2-orchestrator",
+      "nodes": [
+        {
+          "key": "orch.rerank-client",
+          "label": "Rerank client (applies the fallback)",
+          "kind": "backend"
+        },
+        {
+          "key": "orch.context-builder",
+          "label": "Context builder (turns passages into a prompt)",
+          "kind": "backend"
+        },
+        {
+          "key": "orch.answer-composer",
+          "label": "Answer composer (runs the request end to end)",
+          "kind": "backend"
+        },
+        {
+          "key": "orch.citation-checker",
+          "label": "Citation checker (each citation must match a supplied passage)",
+          "kind": "backend",
+          "evidence": [
+            {
+              "path": "services/orchestrator/src/citations.ts"
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "from": "orch.answer-composer",
+          "to": "orch.rerank-client",
+          "relation": "calls",
+          "label": "gets top 8 passages (inferred)"
+        },
+        {
+          "from": "orch.answer-composer",
+          "to": "orch.context-builder",
+          "relation": "calls",
+          "label": "builds the prompt"
+        },
+        {
+          "from": "orch.answer-composer",
+          "to": "orch.citation-checker",
+          "relation": "calls",
+          "label": "checks the draft's citations"
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "frameKey": "lens.l2-retrieval",
+      "nodes": [
+        {
+          "key": "retr.query-embedder",
+          "label": "Query embedder",
+          "kind": "backend"
+        },
+        {
+          "key": "retr.vector-search",
+          "label": "Vector search (50 nearest)",
+          "kind": "backend",
+          "evidence": [
+            {
+              "path": "services/retrieval/src/search.ts"
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "from": "retr.query-embedder",
+          "to": "retr.vector-search",
+          "relation": "flows_to",
+          "label": "query vector"
+        }
+      ]
+    },
+    {
+      "level": 3,
+      "frameKey": "lens.l3-answer-flow",
+      "nodes": [
+        {
+          "key": "flow.post",
+          "label": "1 · POST /v1/answers",
+          "kind": "step"
+        },
+        {
+          "key": "flow.forward",
+          "label": "2 · Check session, forward",
+          "kind": "step"
+        },
+        {
+          "key": "flow.retrieve",
+          "label": "3 · Fetch 50 candidates",
+          "kind": "step"
+        },
+        {
+          "key": "flow.rerank",
+          "label": "4 · Rerank 50, keep top 8",
+          "kind": "step"
+        },
+        {
+          "key": "flow.compose",
+          "label": "5 · composeAnswer(question, 8 passages)",
+          "kind": "step"
+        },
+        {
+          "key": "flow.log",
+          "label": "6 · Log answer + citations",
+          "kind": "step"
+        },
+        {
+          "key": "flow.respond",
+          "label": "7 · Return the answer",
+          "kind": "step"
+        }
+      ],
+      "edges": [
+        {
+          "from": "flow.post",
+          "to": "flow.forward",
+          "relation": "flows_to",
+          "label": "question"
+        },
+        {
+          "from": "flow.forward",
+          "to": "flow.retrieve",
+          "relation": "flows_to",
+          "label": "forwarded question"
+        },
+        {
+          "from": "flow.retrieve",
+          "to": "flow.rerank",
+          "relation": "flows_to",
+          "label": "50 candidates"
+        },
+        {
+          "from": "flow.rerank",
+          "to": "flow.compose",
+          "relation": "flows_to",
+          "label": "top 8 passages"
+        },
+        {
+          "from": "flow.compose",
+          "to": "flow.log",
+          "relation": "flows_to",
+          "label": "answer + citations"
+        },
+        {
+          "from": "flow.log",
+          "to": "flow.respond",
+          "relation": "flows_to",
+          "label": "logged answer"
+        }
+      ]
+    },
+    {
+      "level": 4,
+      "frameKey": "lens.l4-compose-answer",
+      "nodes": [
+        {
+          "key": "op.compose",
+          "label": "composeAnswer(question, passages) · prompt ≤ 6000 tokens",
+          "kind": "function",
+          "evidence": [
+            {
+              "path": "services/orchestrator/src/compose.ts",
+              "lines": [
+                40,
+                118
+              ]
+            }
+          ]
+        },
+        {
+          "key": "op.timeout",
+          "label": "Model call timeout (20 s) → HTTP 504",
+          "kind": "event"
+        },
+        {
+          "key": "op.citation-mismatch",
+          "label": "Citation matches no passage → remove sentence, mark partial",
+          "kind": "step"
+        }
+      ],
+      "edges": [
+        {
+          "from": "op.compose",
+          "to": "op.timeout",
+          "relation": "flows_to",
+          "label": "after 20 s without a reply"
+        },
+        {
+          "from": "op.compose",
+          "to": "op.citation-mismatch",
+          "relation": "flows_to",
+          "label": "a citation matches no passage"
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "frameKey": "lens.l5-compose-source",
+      "nodes": [
+        {
+          "key": "src.compose",
+          "label": "services/orchestrator/src/compose.ts lines 40-118",
+          "kind": "function",
+          "evidence": [
+            {
+              "path": "services/orchestrator/src/compose.ts",
+              "lines": [
+                40,
+                118
+              ]
+            }
+          ]
+        },
+        {
+          "key": "src.citations",
+          "label": "services/orchestrator/src/citations.ts · checkCitations",
+          "kind": "function",
+          "evidence": [
+            {
+              "path": "services/orchestrator/src/citations.ts"
+            }
+          ]
+        }
+      ],
+      "edges": []
+    }
+  ],
+  "drills": [
+    {
+      "from": "helpdesk",
+      "toFrameKey": "lens.l1-architecture"
+    },
+    {
+      "from": "arch.orchestrator",
+      "toFrameKey": "lens.l2-orchestrator"
+    },
+    {
+      "from": "arch.retrieval",
+      "toFrameKey": "lens.l2-retrieval"
+    },
+    {
+      "from": "orch.answer-composer",
+      "toFrameKey": "lens.l3-answer-flow"
+    },
+    {
+      "from": "flow.compose",
+      "toFrameKey": "lens.l4-compose-answer"
+    },
+    {
+      "from": "op.compose",
+      "toFrameKey": "lens.l5-compose-source"
+    }
+  ]
+}

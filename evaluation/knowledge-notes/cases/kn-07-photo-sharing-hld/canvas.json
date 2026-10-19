@@ -1,0 +1,1585 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-07-photo-sharing-hld",
+  "template": "sectioned",
+  "templateNote": "Sectioned: the only template with frames and calls/reads/writes/publishes/subscribes. One architecture frame per responsibility group (clients, edge, core services, async processing, storage, external), plus a decisions frame and an open-questions frame. The source is HLD only, so no frame below container level is expected.",
+  "frames": [
+    {
+      "id": "f.clients",
+      "title": "Clients",
+      "titleMatch": {
+        "all": [
+          [
+            "client"
+          ]
+        ]
+      },
+      "purpose": "The two apps people use.",
+      "rationale": "Clients are Pinhole's own apps but live on users' devices; they are the entry of every flow.",
+      "children": [
+        "e.mobile-app",
+        "e.web-app"
+      ],
+      "arrangement": "grid",
+      "diagram": "architecture",
+      "level": 0,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.edge",
+      "title": "Edge & API",
+      "titleMatch": {
+        "all": [
+          [
+            "edge",
+            "gateway",
+            "entry"
+          ]
+        ]
+      },
+      "purpose": "The single entry point for client requests.",
+      "rationale": "The gateway has its own responsibilities (TLS, token check, rate limit, routing) and sits between clients and services.",
+      "children": [
+        "e.api-gateway"
+      ],
+      "arrangement": "grid",
+      "diagram": "architecture",
+      "level": 1,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.core",
+      "title": "Core services",
+      "titleMatch": {
+        "all": [
+          [
+            "core",
+            "application service",
+            "business service"
+          ]
+        ]
+      },
+      "purpose": "The synchronous services: auth, upload, feed.",
+      "rationale": "Grouped by role: each owns a piece of the request path.",
+      "children": [
+        "e.auth",
+        "e.upload",
+        "e.feed"
+      ],
+      "arrangement": "grid",
+      "diagram": "architecture",
+      "level": 1,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.async",
+      "title": "Asynchronous processing",
+      "titleMatch": {
+        "all": [
+          [
+            "async",
+            "background",
+            "event-driven",
+            "event driven"
+          ]
+        ]
+      },
+      "purpose": "The queue and the workers that consume it.",
+      "rationale": "The source's main decision is to decouple processing behind a queue; the queue and its consumers form one group.",
+      "children": [
+        "e.queue",
+        "e.workers"
+      ],
+      "arrangement": "grid",
+      "diagram": "architecture",
+      "level": 1,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.storage",
+      "title": "Storage",
+      "titleMatch": {
+        "all": [
+          [
+            "storage",
+            "stores",
+            "data store",
+            "persistence"
+          ]
+        ]
+      },
+      "purpose": "The three stores: object storage, metadata database, cache.",
+      "rationale": "Stores are grouped so the source-of-truth vs copy distinction is visible side by side.",
+      "children": [
+        "e.object-storage",
+        "e.metadata-db",
+        "e.cache"
+      ],
+      "arrangement": "grid",
+      "diagram": "architecture",
+      "level": 1,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.external",
+      "title": "External (outside the Pinhole boundary)",
+      "titleMatch": {
+        "all": [
+          [
+            "external",
+            "third part",
+            "outside"
+          ]
+        ]
+      },
+      "purpose": "Third-party dependencies outside the system boundary.",
+      "rationale": "The source draws the boundary explicitly (u25, u28); external systems must not share a frame with internal containers.",
+      "children": [
+        "e.cdn",
+        "e.push"
+      ],
+      "arrangement": "grid",
+      "diagram": "architecture",
+      "level": 0,
+      "separateFrom": [
+        {
+          "frame": "f.storage",
+          "reason": "The CDN reads from object storage but is not part of Pinhole."
+        },
+        {
+          "frame": "f.core",
+          "reason": "The push provider is called by the feed service but is a third party."
+        }
+      ],
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.decisions",
+      "title": "Design decisions",
+      "titleMatch": {
+        "all": [
+          [
+            "decision",
+            "rationale",
+            "trade-off"
+          ]
+        ]
+      },
+      "purpose": "The five decisions with their reasons and costs.",
+      "rationale": "Decisions are evidence for the shape of the diagram; each card is linked to the component it justifies.",
+      "children": [
+        "e.dec-queue",
+        "e.dec-signed-url",
+        "e.dec-metadata-apart",
+        "e.dec-cache",
+        "e.dec-buy"
+      ],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.open-questions",
+      "title": "Open questions",
+      "titleMatch": {
+        "all": [
+          [
+            "open question",
+            "open issue",
+            "unresolved",
+            "undecided"
+          ]
+        ]
+      },
+      "purpose": "What the HLD leaves undecided.",
+      "rationale": "Kept visibly open, apart from decisions, so nobody reads them as settled.",
+      "children": [
+        "e.open-retry",
+        "e.open-precompute"
+      ],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e.scope",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text",
+        "heading"
+      ],
+      "role": "scope note",
+      "content": "HLD only: parts, responsibilities, connections and reasons; no code, modules or operations",
+      "knowledge": [
+        "ku.hld-only",
+        "ku.purpose"
+      ],
+      "match": {
+        "all": [
+          [
+            "high-level",
+            "hld",
+            "high level"
+          ],
+          [
+            "code",
+            "module",
+            "operation",
+            "low-level",
+            "low level"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": null,
+      "outsideFrameReason": "A scope note for the whole canvas, above the frames; it belongs to no single group.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.mobile-app",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "client container",
+      "content": "Mobile app (iOS and Android); uploads originals with a signed URL",
+      "knowledge": [
+        "ku.clients",
+        "ku.direct-upload"
+      ],
+      "match": {
+        "all": [
+          [
+            "mobile",
+            "ios",
+            "android"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.clients",
+      "kind": "frontend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.web-app",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "client container",
+      "content": "Web app in the browser",
+      "knowledge": [
+        "ku.clients"
+      ],
+      "match": {
+        "all": [
+          [
+            "web app",
+            "web client",
+            "browser",
+            "web ui"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.clients",
+      "kind": "frontend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.api-gateway",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "edge container with its fail-closed condition",
+      "content": "API gateway: TLS, token check, 120 requests per minute per account, routing; rejects requests when auth can't be reached",
+      "knowledge": [
+        "ku.gateway",
+        "ku.gateway-fails-closed"
+      ],
+      "match": {
+        "all": [
+          [
+            "gateway"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.edge",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.auth",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "core service",
+      "content": "Auth service: issues and verifies tokens, owns accounts and sessions",
+      "knowledge": [
+        "ku.auth"
+      ],
+      "match": {
+        "all": [
+          [
+            "auth",
+            "identity"
+          ],
+          [
+            "issue",
+            "session",
+            "account"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.core",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.upload",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "core service",
+      "content": "Upload service: signs URLs, records new photos, publishes PhotoUploaded",
+      "knowledge": [
+        "ku.upload-service"
+      ],
+      "match": {
+        "all": [
+          [
+            "upload service",
+            "upload api",
+            "uploads service"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.core",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.feed",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "core service",
+      "content": "Feed service: builds feeds, caches pages, fans out on PhotoReady",
+      "knowledge": [
+        "ku.feed-service",
+        "ku.photo-ready-fanout"
+      ],
+      "match": {
+        "all": [
+          [
+            "feed service",
+            "feed api"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.core",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.queue",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "message bus with its retention bound",
+      "content": "Message queue: PhotoUploaded, PhotoReady; keeps events up to 7 days",
+      "knowledge": [
+        "ku.message-queue",
+        "ku.queue-retention"
+      ],
+      "match": {
+        "all": [
+          [
+            "queue",
+            "message bus",
+            "broker",
+            "event bus"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.async",
+      "kind": "messagebus",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.workers",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "async container with its known gap",
+      "content": "Media processing workers: thumbnails 150, 640 and 1080 px; failing photos stay 'processing'",
+      "knowledge": [
+        "ku.workers",
+        "ku.stuck-photos"
+      ],
+      "match": {
+        "all": [
+          [
+            "worker",
+            "media processing",
+            "media processor",
+            "processing service"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.async",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.object-storage",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "store",
+      "content": "Object storage: originals (never overwritten) and thumbnails",
+      "knowledge": [
+        "ku.object-storage"
+      ],
+      "match": {
+        "all": [
+          [
+            "object storage",
+            "object store",
+            "blob storage",
+            "bucket"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.storage",
+      "kind": "store",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.metadata-db",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "store, source of truth",
+      "content": "Metadata database: follow relationships, photo records and status; source of truth",
+      "knowledge": [
+        "ku.metadata-db"
+      ],
+      "match": {
+        "all": [
+          [
+            "metadata"
+          ],
+          [
+            "database",
+            "db",
+            "store"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.storage",
+      "kind": "database",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.cache",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "store, disposable copy",
+      "content": "Cache: ready-made feed pages for 60 seconds; only a copy",
+      "knowledge": [
+        "ku.cache"
+      ],
+      "match": {
+        "all": [
+          [
+            "cache"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.storage",
+      "kind": "store",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.cdn",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "external system",
+      "content": "CDN (third party): serves photos and thumbnails near the user",
+      "knowledge": [
+        "ku.cdn"
+      ],
+      "match": {
+        "all": [
+          [
+            "cdn",
+            "content delivery"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.external",
+      "kind": "external",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.push",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "external system",
+      "content": "Push-notification provider (third party): delivers alerts; Pinhole doesn't control timing",
+      "knowledge": [
+        "ku.push-provider"
+      ],
+      "match": {
+        "all": [
+          [
+            "push",
+            "notification provider"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.external",
+      "kind": "external",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.boundary",
+      "element": "takeaway",
+      "planNodeTypes": [
+        "group",
+        "text"
+      ],
+      "role": "boundary statement",
+      "content": "Run by third parties, outside the Pinhole boundary",
+      "knowledge": [
+        "ku.system-boundary"
+      ],
+      "match": {
+        "all": [
+          [
+            "outside",
+            "third part",
+            "external"
+          ],
+          [
+            "boundary",
+            "third part"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": null,
+      "outsideFrameReason": "Shown as the External frame's own title/takeaway (group.content), not as a card inside it.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.dec-queue",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "decision with its cost",
+      "content": "A queue keeps slow or failed thumbnail jobs from blocking uploads; cost: a few seconds before a photo appears",
+      "knowledge": [
+        "ku.decision-queue"
+      ],
+      "match": {
+        "all": [
+          [
+            "queue"
+          ],
+          [
+            "block",
+            "fail",
+            "never",
+            "decoupl"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.decisions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.dec-signed-url",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "decision",
+      "content": "Signed-URL direct upload keeps 25 MB originals off the gateway",
+      "knowledge": [
+        "ku.decision-signed-urls"
+      ],
+      "match": {
+        "all": [
+          [
+            "signed url",
+            "signed-url",
+            "presigned",
+            "pre-signed",
+            "direct upload"
+          ],
+          [
+            "gateway",
+            "bottleneck",
+            "25 mb"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.decisions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.dec-metadata-apart",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "decision",
+      "content": "Metadata kept apart from photo bytes: different growth and backups",
+      "knowledge": [
+        "ku.decision-metadata-apart"
+      ],
+      "match": {
+        "all": [
+          [
+            "metadata"
+          ],
+          [
+            "bytes",
+            "object storage"
+          ],
+          [
+            "grow",
+            "backup"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.decisions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.dec-cache",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "decision",
+      "content": "The cache is disposable: the metadata database stays the source of truth",
+      "knowledge": [
+        "ku.decision-disposable-cache"
+      ],
+      "match": {
+        "all": [
+          [
+            "cache"
+          ],
+          [
+            "flush",
+            "disposable",
+            "source of truth"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.decisions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.dec-buy",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "decision with its accepted risk",
+      "content": "Buy CDN and push delivery; accept their outages",
+      "knowledge": [
+        "ku.decision-buy"
+      ],
+      "match": {
+        "all": [
+          [
+            "cdn",
+            "push"
+          ],
+          [
+            "third",
+            "buy",
+            "outage"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.decisions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.open-retry",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "open question",
+      "content": "Open: how failed processing is retried and stuck photos cleaned up",
+      "knowledge": [
+        "ku.open-retry"
+      ],
+      "match": {
+        "all": [
+          [
+            "retr",
+            "clean"
+          ],
+          [
+            "not decided",
+            "undecided",
+            "open",
+            "tbd",
+            "unresolved"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.open-questions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.open-precompute",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "open question",
+      "content": "Open: precomputing feeds for very large accounts, left to the feed service's LLD",
+      "knowledge": [
+        "ku.open-precompute"
+      ],
+      "match": {
+        "all": [
+          [
+            "precompute",
+            "pre-compute",
+            "precomputed"
+          ],
+          [
+            "follower"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.open-questions",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r.mobile-gateway",
+      "from": "e.mobile-app",
+      "to": "e.api-gateway",
+      "type": "calls",
+      "acceptableTypes": [
+        "calls",
+        "flows_to"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "https",
+              "api",
+              "request"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The mobile app sends every request through the gateway.",
+      "evidence": [
+        "u6",
+        "u8"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.web-gateway",
+      "from": "e.web-app",
+      "to": "e.api-gateway",
+      "type": "calls",
+      "acceptableTypes": [
+        "calls",
+        "flows_to"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "https",
+              "api",
+              "request"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The web app sends every request through the gateway.",
+      "evidence": [
+        "u6",
+        "u8"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.mobile-objstore",
+      "from": "e.mobile-app",
+      "to": "e.object-storage",
+      "type": "writes",
+      "acceptableTypes": [
+        "writes",
+        "flows_to"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "upload",
+              "signed"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Clients upload the original straight to object storage with a signed URL, bypassing the gateway.",
+      "evidence": [
+        "u7",
+        "u29"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.gateway-auth",
+      "from": "e.api-gateway",
+      "to": "e.auth",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "token",
+              "verif",
+              "auth"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The gateway checks the caller's access token with the auth service.",
+      "evidence": [
+        "u9"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.gateway-upload",
+      "from": "e.api-gateway",
+      "to": "e.upload",
+      "type": "calls",
+      "acceptableTypes": [
+        "calls",
+        "flows_to"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "route",
+              "post",
+              "upload"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The gateway routes photo posts to the upload service.",
+      "evidence": [
+        "u9",
+        "u29"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.gateway-feed",
+      "from": "e.api-gateway",
+      "to": "e.feed",
+      "type": "calls",
+      "acceptableTypes": [
+        "calls",
+        "flows_to"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "route",
+              "feed"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The gateway routes feed requests to the feed service.",
+      "evidence": [
+        "u9",
+        "u33"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.upload-metadata",
+      "from": "e.upload",
+      "to": "e.metadata-db",
+      "type": "writes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "record",
+              "processing",
+              "write",
+              "insert"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The upload service records the new photo as processing.",
+      "evidence": [
+        "u13"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.upload-queue",
+      "from": "e.upload",
+      "to": "e.queue",
+      "type": "publishes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "photouploaded",
+              "photo uploaded"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The upload service publishes PhotoUploaded to the queue (never the reverse).",
+      "evidence": [
+        "u13",
+        "u30"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.workers-subscribe",
+      "from": "e.workers",
+      "to": "e.queue",
+      "type": "subscribes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "photouploaded",
+              "photo uploaded"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Workers consume PhotoUploaded from the queue (consumer → topic, as RELATION_TYPES defines subscribes).",
+      "evidence": [
+        "u15"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.workers-objstore",
+      "from": "e.workers",
+      "to": "e.object-storage",
+      "type": "writes",
+      "acceptableTypes": [
+        "writes",
+        "reads"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "thumbnail"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Workers read the original and write the thumbnails back.",
+      "evidence": [
+        "u16"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.workers-metadata",
+      "from": "e.workers",
+      "to": "e.metadata-db",
+      "type": "writes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "ready"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Workers mark the photo ready.",
+      "evidence": [
+        "u16"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.workers-publish",
+      "from": "e.workers",
+      "to": "e.queue",
+      "type": "publishes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "photoready",
+              "photo ready"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Workers publish PhotoReady.",
+      "evidence": [
+        "u17"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.feed-subscribe",
+      "from": "e.feed",
+      "to": "e.queue",
+      "type": "subscribes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "photoready",
+              "photo ready"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The feed service consumes PhotoReady.",
+      "evidence": [
+        "u18"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.feed-metadata",
+      "from": "e.feed",
+      "to": "e.metadata-db",
+      "type": "reads",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "metadata",
+              "read",
+              "follow"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The feed service reads photo metadata.",
+      "evidence": [
+        "u14"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.feed-cache",
+      "from": "e.feed",
+      "to": "e.cache",
+      "type": "writes",
+      "acceptableTypes": [
+        "writes",
+        "reads"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "page",
+              "cache",
+              "feed"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The feed service keeps ready-made feed pages in the cache.",
+      "evidence": [
+        "u14"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.feed-push",
+      "from": "e.feed",
+      "to": "e.push",
+      "type": "calls",
+      "acceptableTypes": [
+        "calls",
+        "depends_on"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "alert",
+              "notif",
+              "push"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The feed service asks the push provider to alert followers.",
+      "evidence": [
+        "u18"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.cdn-objstore",
+      "from": "e.cdn",
+      "to": "e.object-storage",
+      "type": "reads",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "photo",
+              "thumbnail",
+              "serve"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The CDN reads photos and thumbnails from object storage.",
+      "evidence": [
+        "u26"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.mobile-cdn",
+      "from": "e.mobile-app",
+      "to": "e.cdn",
+      "type": "reads",
+      "acceptableTypes": [
+        "reads",
+        "depends_on",
+        "calls"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "thumbnail",
+              "photo",
+              "load"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Clients load thumbnails from the CDN.",
+      "evidence": [
+        "u33"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "r.dec-queue",
+      "from": "e.dec-queue",
+      "to": "e.queue",
+      "type": "supports",
+      "acceptableTypes": [
+        "supports",
+        "derived_from",
+        "explained_by",
+        "references",
+        "relates_to"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "bidirectional",
+      "explanation": "The decoupling decision justifies the queue.",
+      "evidence": [
+        "u34"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.dec-signed-url",
+      "from": "e.dec-signed-url",
+      "to": "e.upload",
+      "type": "supports",
+      "acceptableTypes": [
+        "supports",
+        "derived_from",
+        "explained_by",
+        "references",
+        "relates_to"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "bidirectional",
+      "explanation": "The signed-URL decision justifies the upload service's narrow role and the direct upload.",
+      "evidence": [
+        "u35"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.dec-metadata-apart",
+      "from": "e.dec-metadata-apart",
+      "to": "e.metadata-db",
+      "type": "supports",
+      "acceptableTypes": [
+        "supports",
+        "derived_from",
+        "explained_by",
+        "references",
+        "relates_to"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "bidirectional",
+      "explanation": "Keeping metadata apart justifies a separate metadata database.",
+      "evidence": [
+        "u36"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.dec-cache",
+      "from": "e.dec-cache",
+      "to": "e.cache",
+      "type": "supports",
+      "acceptableTypes": [
+        "supports",
+        "derived_from",
+        "explained_by",
+        "references",
+        "relates_to"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "bidirectional",
+      "explanation": "The disposable-cache decision explains the cache's role.",
+      "evidence": [
+        "u37"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.dec-buy",
+      "from": "e.dec-buy",
+      "to": "e.cdn",
+      "type": "supports",
+      "acceptableTypes": [
+        "supports",
+        "derived_from",
+        "explained_by",
+        "references",
+        "relates_to"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "bidirectional",
+      "explanation": "The buy-not-build decision justifies the external CDN (and push provider).",
+      "evidence": [
+        "u38"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "together": [
+    {
+      "elements": [
+        "e.queue",
+        "e.workers"
+      ],
+      "reason": "The queue and its consumers are the asynchronous part decided in u34."
+    },
+    {
+      "elements": [
+        "e.object-storage",
+        "e.metadata-db",
+        "e.cache"
+      ],
+      "reason": "The three stores side by side make the source-of-truth vs copy distinction visible."
+    },
+    {
+      "elements": [
+        "e.auth",
+        "e.upload",
+        "e.feed"
+      ],
+      "reason": "The three core services."
+    }
+  ],
+  "keepSeparate": [
+    {
+      "elements": [
+        "e.cdn",
+        "e.object-storage"
+      ],
+      "reason": "The CDN is a third party outside the boundary; object storage is inside."
+    },
+    {
+      "elements": [
+        "e.push",
+        "e.feed"
+      ],
+      "reason": "The push provider is external; the feed service only sends it requests."
+    },
+    {
+      "elements": [
+        "e.open-retry",
+        "e.dec-queue"
+      ],
+      "reason": "An open question must not read as one of the decisions."
+    }
+  ],
+  "hierarchy": [
+    {
+      "main": "e.upload",
+      "supporting": [
+        "e.dec-signed-url"
+      ],
+      "reason": "The decision explains the component; it must not outrank it."
+    },
+    {
+      "main": "e.queue",
+      "supporting": [
+        "e.dec-queue"
+      ],
+      "reason": "The decision explains the component; it must not outrank it."
+    }
+  ],
+  "unsupported": [
+    {
+      "capability": "canvas.frame-nesting",
+      "ideal": "An outer 'Pinhole system boundary' frame containing the internal frames, with External outside it.",
+      "expectedToday": "Frames can't nest: the boundary is expressed by a separate External frame whose title or takeaway says it is outside the boundary."
+    },
+    {
+      "capability": "lens.drill-from-plan",
+      "ideal": "The metadata database shape expands to a component frame listing its two record kinds.",
+      "expectedToday": "A VisualPlan can't set expandsTo; the drill is added in the UI or through MCP. No such frame is expected on the generated canvas."
+    },
+    {
+      "capability": "ai.cites",
+      "ideal": "Every card and edge cites its units (e.g. upload→queue u13; queue retention u19).",
+      "expectedToday": "Not checkable; matching is by content."
+    }
+  ]
+}

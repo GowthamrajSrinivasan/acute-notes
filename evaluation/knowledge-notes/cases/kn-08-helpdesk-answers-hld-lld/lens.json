@@ -1,0 +1,1387 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "profile": "architecture",
+  "levels": [
+    {
+      "level": 0,
+      "name": "System",
+      "frameKey": "lens.l0-system",
+      "title": "L0 System: Helpdesk Answers",
+      "availability": "available",
+      "reveals": "The system boundary: Helpdesk Answers and the two external systems it depends on.",
+      "nodes": [
+        "helpdesk",
+        "helpdesk.cms",
+        "helpdesk.llm"
+      ],
+      "edges": [
+        "r.system-cms",
+        "r.system-llm"
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Architecture",
+      "frameKey": "lens.l1-architecture",
+      "title": "L1 Architecture: services and stores",
+      "availability": "available",
+      "reveals": "Nine services and stores with labelled calls, reads and writes, plus what is not specified.",
+      "nodes": [
+        "arch.console",
+        "arch.api",
+        "arch.orchestrator",
+        "arch.retrieval",
+        "arch.reranker",
+        "arch.gateway",
+        "arch.vector-store",
+        "arch.answer-log",
+        "arch.ingestion"
+      ],
+      "edges": [
+        "r.console-api",
+        "r.api-orchestrator",
+        "r.orchestrator-retrieval",
+        "r.orchestrator-reranker",
+        "r.orchestrator-gateway",
+        "r.retrieval-store",
+        "r.orchestrator-log",
+        "r.ingestion-store"
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Component",
+      "frameKey": "lens.l2-orchestrator",
+      "title": "L2 Orchestrator components",
+      "availability": "available",
+      "reveals": "The Orchestrator's four parts and who calls whom.",
+      "nodes": [
+        "orch.rerank-client",
+        "orch.context-builder",
+        "orch.answer-composer",
+        "orch.citation-checker"
+      ],
+      "edges": [
+        "r.composer-rerank-client",
+        "r.composer-context-builder",
+        "r.composer-citation-checker"
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Component",
+      "frameKey": "lens.l2-retrieval",
+      "title": "L2 Retrieval service components",
+      "availability": "available",
+      "reveals": "Retrieval's two parts: embedding the query, then vector search for 50 passages.",
+      "nodes": [
+        "retr.query-embedder",
+        "retr.vector-search"
+      ],
+      "edges": [
+        "r.embedder-search"
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Flow",
+      "frameKey": "lens.l3-answer-flow",
+      "title": "L3 Flow: answering a question",
+      "availability": "available",
+      "reveals": "The seven-step request flow, with the 800 ms reranker fallback on step 4.",
+      "nodes": [
+        "flow.post",
+        "flow.forward",
+        "flow.retrieve",
+        "flow.rerank",
+        "flow.compose",
+        "flow.log",
+        "flow.respond"
+      ],
+      "edges": [
+        "r.flow-1-2",
+        "r.flow-2-3",
+        "r.flow-3-4",
+        "r.flow-4-5",
+        "r.flow-5-6",
+        "r.flow-6-7"
+      ]
+    },
+    {
+      "level": 4,
+      "name": "Operation",
+      "frameKey": "lens.l4-compose-answer",
+      "title": "L4 Operation: composeAnswer",
+      "availability": "available",
+      "reveals": "composeAnswer's behaviour and its two opposite failure paths.",
+      "nodes": [
+        "op.compose",
+        "op.timeout",
+        "op.citation-mismatch"
+      ],
+      "edges": [
+        "r.compose-timeout",
+        "r.compose-mismatch"
+      ]
+    },
+    {
+      "level": 5,
+      "name": "Source",
+      "frameKey": "lens.l5-compose-source",
+      "title": "L5 Source: composeAnswer code",
+      "availability": "available",
+      "reveals": "The code locations behind composeAnswer (the design gives no code).",
+      "nodes": [
+        "src.compose",
+        "src.citations"
+      ],
+      "edges": []
+    }
+  ],
+  "nodes": [
+    {
+      "key": "helpdesk",
+      "label": "Helpdesk Answers",
+      "match": {
+        "all": [
+          [
+            "helpdesk answers"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 0,
+      "expandsTo": "lens.l1-architecture",
+      "canvasElement": "e.system",
+      "knowledge": [
+        "ku.system"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u1",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "helpdesk.cms",
+      "label": "Help Center CMS",
+      "match": {
+        "all": [
+          [
+            "help center cms"
+          ]
+        ]
+      },
+      "kind": "external",
+      "level": 0,
+      "canvasElement": "e.cms",
+      "knowledge": [
+        "ku.externals"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u2",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "helpdesk.llm",
+      "label": "Language model provider",
+      "match": {
+        "all": [
+          [
+            "language model provider",
+            "llm provider"
+          ]
+        ]
+      },
+      "kind": "external",
+      "level": 0,
+      "canvasElement": "e.llm",
+      "knowledge": [
+        "ku.externals"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u2",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "arch.console",
+      "label": "Agent Console",
+      "match": {
+        "all": [
+          [
+            "agent console"
+          ]
+        ]
+      },
+      "kind": "frontend",
+      "level": 1,
+      "parent": "helpdesk",
+      "canvasElement": "e.console",
+      "knowledge": [
+        "ku.console"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u3",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "arch.api",
+      "label": "Answers API",
+      "match": {
+        "all": [
+          [
+            "answers api"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "helpdesk",
+      "canvasElement": "e.api",
+      "knowledge": [
+        "ku.answers-api"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u4",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "arch.orchestrator",
+      "label": "Orchestrator",
+      "match": {
+        "all": [
+          [
+            "orchestrator"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "helpdesk",
+      "expandsTo": "lens.l2-orchestrator",
+      "canvasElement": "e.orchestrator",
+      "knowledge": [
+        "ku.orchestrator"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u4",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "arch.retrieval",
+      "label": "Retrieval service",
+      "match": {
+        "all": [
+          [
+            "retrieval service"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "helpdesk",
+      "expandsTo": "lens.l2-retrieval",
+      "canvasElement": "e.retrieval",
+      "knowledge": [
+        "ku.retrieval"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u5",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "arch.reranker",
+      "label": "Reranker",
+      "match": {
+        "all": [
+          [
+            "reranker"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "helpdesk",
+      "canvasElement": "e.reranker",
+      "knowledge": [
+        "ku.reranker"
+      ],
+      "evidence": [
+        {
+          "type": "none",
+          "availability": "unavailable",
+          "note": "No code location in the design (u34)."
+        }
+      ]
+    },
+    {
+      "key": "arch.gateway",
+      "label": "Model Gateway (only path to the model provider)",
+      "match": {
+        "all": [
+          [
+            "model gateway"
+          ],
+          [
+            "provider"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "helpdesk",
+      "canvasElement": "e.gateway",
+      "knowledge": [
+        "ku.gateway-only"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u5",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "arch.vector-store",
+      "label": "Vector store (Postgres + pgvector)",
+      "match": {
+        "all": [
+          [
+            "vector store"
+          ],
+          [
+            "pgvector",
+            "postgres"
+          ]
+        ]
+      },
+      "kind": "database",
+      "level": 1,
+      "parent": "helpdesk",
+      "canvasElement": "e.vector-store",
+      "knowledge": [
+        "ku.vector-store"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u6",
+          "availability": "available"
+        }
+      ],
+      "uncertainty": {
+        "note": "Partitioning has not been decided (u9).",
+        "reviewRequired": false
+      }
+    },
+    {
+      "key": "arch.answer-log",
+      "label": "Answer log (answers with citations)",
+      "match": {
+        "all": [
+          [
+            "answer log"
+          ],
+          [
+            "citation"
+          ]
+        ]
+      },
+      "kind": "database",
+      "level": 1,
+      "parent": "helpdesk",
+      "canvasElement": "e.answer-log",
+      "knowledge": [
+        "ku.answer-log"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u7",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "arch.ingestion",
+      "label": "Ingestion worker (every 15 min)",
+      "match": {
+        "all": [
+          [
+            "ingestion worker"
+          ],
+          [
+            "15 min"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "helpdesk",
+      "canvasElement": "e.ingestion",
+      "knowledge": [
+        "ku.ingestion"
+      ],
+      "evidence": [
+        {
+          "type": "none",
+          "availability": "unavailable",
+          "note": "No internals and no code location in the design (u9, u34)."
+        }
+      ]
+    },
+    {
+      "key": "orch.rerank-client",
+      "label": "Rerank client (applies the fallback)",
+      "match": {
+        "all": [
+          [
+            "rerank client"
+          ],
+          [
+            "fallback"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 2,
+      "parent": "arch.orchestrator",
+      "canvasElement": "e.rerank-client",
+      "knowledge": [
+        "ku.rerank-client"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u11",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "orch.context-builder",
+      "label": "Context builder (turns passages into a prompt)",
+      "match": {
+        "all": [
+          [
+            "context builder"
+          ],
+          [
+            "turns",
+            "passages into a prompt",
+            "passages → prompt",
+            "passages -> prompt"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 2,
+      "parent": "arch.orchestrator",
+      "canvasElement": "e.context-builder",
+      "knowledge": [
+        "ku.context-builder"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u12",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "orch.answer-composer",
+      "label": "Answer composer (runs the request end to end)",
+      "match": {
+        "all": [
+          [
+            "answer composer"
+          ],
+          [
+            "start to finish",
+            "end to end",
+            "runs the request"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 2,
+      "parent": "arch.orchestrator",
+      "expandsTo": "lens.l3-answer-flow",
+      "canvasElement": "e.answer-composer",
+      "knowledge": [
+        "ku.answer-composer"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u13",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "orch.citation-checker",
+      "label": "Citation checker (each citation must match a supplied passage)",
+      "match": {
+        "all": [
+          [
+            "citation checker"
+          ],
+          [
+            "supplied passage",
+            "each citation"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 2,
+      "parent": "arch.orchestrator",
+      "canvasElement": "e.citation-checker",
+      "knowledge": [
+        "ku.citation-checker"
+      ],
+      "evidence": [
+        {
+          "type": "code",
+          "path": "services/orchestrator/src/citations.ts",
+          "unit": "u32",
+          "availability": "available",
+          "note": "checkCitations; no line range."
+        }
+      ]
+    },
+    {
+      "key": "retr.query-embedder",
+      "label": "Query embedder",
+      "match": {
+        "all": [
+          [
+            "query embedder"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 2,
+      "parent": "arch.retrieval",
+      "canvasElement": "e.query-embedder",
+      "knowledge": [
+        "ku.query-embedder"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u16",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "retr.vector-search",
+      "label": "Vector search (50 nearest)",
+      "match": {
+        "all": [
+          [
+            "vector search"
+          ],
+          [
+            "50"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 2,
+      "parent": "arch.retrieval",
+      "canvasElement": "e.vector-search",
+      "knowledge": [
+        "ku.vector-search",
+        "ku.code-search"
+      ],
+      "evidence": [
+        {
+          "type": "code",
+          "path": "services/retrieval/src/search.ts",
+          "unit": "u33",
+          "availability": "available",
+          "note": "search; no line range."
+        }
+      ]
+    },
+    {
+      "key": "flow.post",
+      "label": "1 · POST /v1/answers",
+      "match": {
+        "all": [
+          [
+            "post /v1/answers"
+          ]
+        ]
+      },
+      "kind": "step",
+      "level": 3,
+      "parent": "orch.answer-composer",
+      "canvasElement": "e.step-post",
+      "knowledge": [
+        "ku.flow-request"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u18",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "flow.forward",
+      "label": "2 · Check session, forward",
+      "match": {
+        "all": [
+          [
+            "session"
+          ],
+          [
+            "forward"
+          ]
+        ]
+      },
+      "kind": "step",
+      "level": 3,
+      "parent": "orch.answer-composer",
+      "canvasElement": "e.step-forward",
+      "knowledge": [
+        "ku.flow-request"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u18",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "flow.retrieve",
+      "label": "3 · Fetch 50 candidates",
+      "match": {
+        "all": [
+          [
+            "50"
+          ],
+          [
+            "candidate"
+          ],
+          [
+            "fetch",
+            "retriev",
+            "ask"
+          ]
+        ]
+      },
+      "kind": "step",
+      "level": 3,
+      "parent": "orch.answer-composer",
+      "canvasElement": "e.step-retrieve",
+      "knowledge": [
+        "ku.flow-retrieve"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u20",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "flow.rerank",
+      "label": "4 · Rerank 50, keep top 8",
+      "match": {
+        "all": [
+          [
+            "rerank"
+          ],
+          [
+            "top 8"
+          ]
+        ]
+      },
+      "kind": "step",
+      "level": 3,
+      "parent": "orch.answer-composer",
+      "canvasElement": "e.step-rerank",
+      "knowledge": [
+        "ku.flow-rerank",
+        "ku.rerank-fallback"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u21",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "flow.compose",
+      "label": "5 · composeAnswer(question, 8 passages)",
+      "match": {
+        "all": [
+          [
+            "composeanswer"
+          ],
+          [
+            "8 passages"
+          ]
+        ]
+      },
+      "kind": "step",
+      "level": 3,
+      "parent": "orch.answer-composer",
+      "expandsTo": "lens.l4-compose-answer",
+      "canvasElement": "e.step-compose",
+      "knowledge": [
+        "ku.flow-compose"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u22",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "flow.log",
+      "label": "6 · Log answer + citations",
+      "match": {
+        "all": [
+          [
+            "answer + citations",
+            "answer and citations",
+            "answer and its citations"
+          ]
+        ]
+      },
+      "kind": "step",
+      "level": 3,
+      "parent": "orch.answer-composer",
+      "canvasElement": "e.step-log",
+      "knowledge": [
+        "ku.flow-finish"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u23",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "flow.respond",
+      "label": "7 · Return the answer",
+      "match": {
+        "all": [
+          [
+            "return"
+          ],
+          [
+            "answer"
+          ]
+        ]
+      },
+      "kind": "step",
+      "level": 3,
+      "parent": "orch.answer-composer",
+      "canvasElement": "e.step-respond",
+      "knowledge": [
+        "ku.flow-finish"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u23",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "op.compose",
+      "label": "composeAnswer(question, passages) · prompt ≤ 6000 tokens",
+      "match": {
+        "all": [
+          [
+            "composeanswer(question, passages)"
+          ],
+          [
+            "6000"
+          ]
+        ]
+      },
+      "kind": "function",
+      "level": 4,
+      "parent": "flow.compose",
+      "expandsTo": "lens.l5-compose-source",
+      "canvasElement": "e.compose-fn",
+      "knowledge": [
+        "ku.compose-op"
+      ],
+      "evidence": [
+        {
+          "type": "code",
+          "path": "services/orchestrator/src/compose.ts",
+          "lines": [
+            40,
+            118
+          ],
+          "unit": "u31",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "op.timeout",
+      "label": "Model call timeout (20 s) → HTTP 504",
+      "match": {
+        "all": [
+          [
+            "timeout",
+            "times out",
+            "timed out"
+          ],
+          [
+            "504"
+          ]
+        ]
+      },
+      "kind": "event",
+      "level": 4,
+      "parent": "flow.compose",
+      "canvasElement": "e.op-timeout",
+      "knowledge": [
+        "ku.model-timeout"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u28",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "op.citation-mismatch",
+      "label": "Citation matches no passage → remove sentence, mark partial",
+      "match": {
+        "all": [
+          [
+            "citation"
+          ],
+          [
+            "partial"
+          ],
+          [
+            "remove",
+            "drop"
+          ]
+        ]
+      },
+      "kind": "step",
+      "level": 4,
+      "parent": "flow.compose",
+      "canvasElement": "e.op-citation-mismatch",
+      "knowledge": [
+        "ku.citation-mismatch"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u30",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "src.compose",
+      "label": "services/orchestrator/src/compose.ts lines 40-118",
+      "match": {
+        "all": [
+          [
+            "services/orchestrator/src/compose.ts"
+          ],
+          [
+            "40-118"
+          ]
+        ]
+      },
+      "kind": "function",
+      "level": 5,
+      "parent": "op.compose",
+      "canvasElement": "e.src-compose",
+      "knowledge": [
+        "ku.code-compose"
+      ],
+      "evidence": [
+        {
+          "type": "code",
+          "path": "services/orchestrator/src/compose.ts",
+          "lines": [
+            40,
+            118
+          ],
+          "unit": "u31",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "src.citations",
+      "label": "services/orchestrator/src/citations.ts · checkCitations",
+      "match": {
+        "all": [
+          [
+            "services/orchestrator/src/citations.ts"
+          ],
+          [
+            "checkcitations"
+          ]
+        ]
+      },
+      "kind": "function",
+      "level": 5,
+      "parent": "op.compose",
+      "canvasElement": "e.src-citations",
+      "knowledge": [
+        "ku.code-citations"
+      ],
+      "evidence": [
+        {
+          "type": "code",
+          "path": "services/orchestrator/src/citations.ts",
+          "unit": "u32",
+          "availability": "available",
+          "note": "No line range is given."
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "r.system-cms",
+      "from": "helpdesk",
+      "to": "helpdesk.cms",
+      "relation": "reads",
+      "label": "imports published articles",
+      "level": 0,
+      "explanation": "Articles come from the CMS (through the Ingestion worker, at L1).",
+      "evidence": [
+        "u2",
+        "u8"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.system-llm",
+      "from": "helpdesk",
+      "to": "helpdesk.llm",
+      "relation": "calls",
+      "label": "generates answer text",
+      "level": 0,
+      "explanation": "The provider generates the answer text.",
+      "evidence": [
+        "u2"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.console-api",
+      "from": "arch.console",
+      "to": "arch.api",
+      "relation": "calls",
+      "label": "sends question (HTTPS)",
+      "level": 1,
+      "explanation": "Each question goes to the API over HTTPS.",
+      "evidence": [
+        "u3"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.api-orchestrator",
+      "from": "arch.api",
+      "to": "arch.orchestrator",
+      "relation": "calls",
+      "label": "forwards question",
+      "level": 1,
+      "explanation": "After the session check.",
+      "evidence": [
+        "u4"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.orchestrator-retrieval",
+      "from": "arch.orchestrator",
+      "to": "arch.retrieval",
+      "relation": "calls",
+      "label": "finds candidate passages",
+      "level": 1,
+      "explanation": "To find candidate passages.",
+      "evidence": [
+        "u5"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.orchestrator-reranker",
+      "from": "arch.orchestrator",
+      "to": "arch.reranker",
+      "relation": "calls",
+      "label": "reranks candidates",
+      "level": 1,
+      "explanation": "Candidates go to the Reranker.",
+      "evidence": [
+        "u5"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.orchestrator-gateway",
+      "from": "arch.orchestrator",
+      "to": "arch.gateway",
+      "relation": "calls",
+      "label": "generates the answer",
+      "level": 1,
+      "explanation": "The only route to the model provider.",
+      "evidence": [
+        "u5"
+      ],
+      "provenance": "explicit",
+      "rollsUpTo": "r.system-llm"
+    },
+    {
+      "id": "r.retrieval-store",
+      "from": "arch.retrieval",
+      "to": "arch.vector-store",
+      "relation": "reads",
+      "label": "reads passages",
+      "level": 1,
+      "explanation": "Retrieval reads from the Vector store.",
+      "evidence": [
+        "u6"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.orchestrator-log",
+      "from": "arch.orchestrator",
+      "to": "arch.answer-log",
+      "relation": "writes",
+      "label": "writes answer + citations",
+      "level": 1,
+      "explanation": "Every answer with its citations.",
+      "evidence": [
+        "u7"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.ingestion-store",
+      "from": "arch.ingestion",
+      "to": "arch.vector-store",
+      "relation": "writes",
+      "label": "writes embeddings",
+      "level": 1,
+      "explanation": "Passage embeddings every 15 minutes.",
+      "evidence": [
+        "u8"
+      ],
+      "provenance": "explicit",
+      "rollsUpTo": "r.system-cms"
+    },
+    {
+      "id": "r.composer-rerank-client",
+      "from": "orch.answer-composer",
+      "to": "orch.rerank-client",
+      "relation": "calls",
+      "label": "gets top 8 passages (inferred)",
+      "level": 2,
+      "explanation": "The composer runs the request; step 4 is done by the Rerank client. That the composer is the caller is a reading of 'runs the request from start to finish', not a stated call.",
+      "evidence": [
+        "u13",
+        "u21"
+      ],
+      "provenance": "inferred"
+    },
+    {
+      "id": "r.composer-context-builder",
+      "from": "orch.answer-composer",
+      "to": "orch.context-builder",
+      "relation": "calls",
+      "label": "builds the prompt",
+      "level": 2,
+      "explanation": "composeAnswer, called by the composer, builds the prompt with the Context builder.",
+      "evidence": [
+        "u22",
+        "u27"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.composer-citation-checker",
+      "from": "orch.answer-composer",
+      "to": "orch.citation-checker",
+      "relation": "calls",
+      "label": "checks the draft's citations",
+      "level": 2,
+      "explanation": "composeAnswer passes the draft to the Citation checker.",
+      "evidence": [
+        "u22",
+        "u27"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.embedder-search",
+      "from": "retr.query-embedder",
+      "to": "retr.vector-search",
+      "relation": "flows_to",
+      "label": "query vector",
+      "level": 2,
+      "explanation": "'Vector search then…' uses the query vector.",
+      "evidence": [
+        "u16",
+        "u17"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.flow-1-2",
+      "from": "flow.post",
+      "to": "flow.forward",
+      "relation": "flows_to",
+      "label": "question",
+      "level": 3,
+      "explanation": "Step order.",
+      "evidence": [
+        "u18",
+        "u19"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.flow-2-3",
+      "from": "flow.forward",
+      "to": "flow.retrieve",
+      "relation": "flows_to",
+      "label": "forwarded question",
+      "level": 3,
+      "explanation": "Step order.",
+      "evidence": [
+        "u19",
+        "u20"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.flow-3-4",
+      "from": "flow.retrieve",
+      "to": "flow.rerank",
+      "relation": "flows_to",
+      "label": "50 candidates",
+      "level": 3,
+      "explanation": "50 candidates go to reranking.",
+      "evidence": [
+        "u20",
+        "u21"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.flow-4-5",
+      "from": "flow.rerank",
+      "to": "flow.compose",
+      "relation": "flows_to",
+      "label": "top 8 passages",
+      "level": 3,
+      "explanation": "8 passages go to composeAnswer.",
+      "evidence": [
+        "u21",
+        "u22"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.flow-5-6",
+      "from": "flow.compose",
+      "to": "flow.log",
+      "relation": "flows_to",
+      "label": "answer + citations",
+      "level": 3,
+      "explanation": "Step order.",
+      "evidence": [
+        "u22",
+        "u23"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.flow-6-7",
+      "from": "flow.log",
+      "to": "flow.respond",
+      "relation": "flows_to",
+      "label": "logged answer",
+      "level": 3,
+      "explanation": "Step order.",
+      "evidence": [
+        "u23",
+        "u24"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.compose-timeout",
+      "from": "op.compose",
+      "to": "op.timeout",
+      "relation": "flows_to",
+      "label": "after 20 s without a reply",
+      "level": 4,
+      "explanation": "The timeout failure path.",
+      "evidence": [
+        "u28",
+        "u29"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.compose-mismatch",
+      "from": "op.compose",
+      "to": "op.citation-mismatch",
+      "relation": "flows_to",
+      "label": "a citation matches no passage",
+      "level": 4,
+      "explanation": "The citation failure path.",
+      "evidence": [
+        "u30"
+      ],
+      "provenance": "explicit"
+    }
+  ],
+  "navigationPaths": [
+    {
+      "id": "p.question-to-code",
+      "description": "HLD to LLD: from the system, through the Orchestrator and the Answer composer, to the flow step that composes the answer, the operation, and its code.",
+      "path": [
+        "helpdesk",
+        "arch.orchestrator",
+        "orch.answer-composer",
+        "flow.compose",
+        "op.compose",
+        "src.compose"
+      ]
+    },
+    {
+      "id": "p.request-flow",
+      "description": "Follow the request through its seven steps.",
+      "path": [
+        "flow.post",
+        "flow.forward",
+        "flow.retrieve",
+        "flow.rerank",
+        "flow.compose",
+        "flow.log",
+        "flow.respond"
+      ]
+    },
+    {
+      "id": "p.retrieval-drill",
+      "description": "From the Retrieval service down to vector search.",
+      "path": [
+        "arch.retrieval",
+        "retr.query-embedder",
+        "retr.vector-search"
+      ]
+    }
+  ],
+  "invariants": [
+    "Each component has one Lens key wherever it appears; no level redraws a component from another level with a new identity.",
+    "Every edge keeps its direction and relation at every level it is shown (Retrieval reads the Vector store, never the reverse).",
+    "L1 edges that cross the system boundary roll up to the L0 edge they are part of (Orchestrator → Model Gateway is part of Helpdesk Answers → model provider).",
+    "A node with no detail in the source (Ingestion worker, Reranker) has no child level and no code evidence; the gap is explained, not filled.",
+    "L5 shows only locations the source states, never code the source does not contain.",
+    "Every Lens node maps to one canonical canvas element; Lens holds no fact that is not on the canvas."
+  ],
+  "interactions": [
+    {
+      "id": "drill-down",
+      "description": "Double-click Orchestrator (L1) → L2 Orchestrator components; Answer composer → L3 flow; step 5 → L4 composeAnswer; composeAnswer → L5 source card.",
+      "support": "partial",
+      "evidence": "lens.drill is implemented (domain/lens/lensView.ts drillTarget), but the links can't come from a VisualPlan (lens.drill-from-plan): set_lens / MCP link_lens_detail / 'Link to detail frame' sets them."
+    },
+    {
+      "id": "roll-up",
+      "description": "Breadcrumbs return along the same path, with the parent node selected.",
+      "support": "implemented",
+      "evidence": "lens.drill: crumbs in domain/lens/lensView.ts; deep links in components/lens/lensHash.ts"
+    },
+    {
+      "id": "reveal-on-canvas",
+      "description": "Selecting a Lens node reveals the canonical canvas element it comes from.",
+      "support": "implemented",
+      "evidence": "lens.canvas-reveal: LensEvidence.ref {canvasId, elementId}; components/lens/lensReveal.ts"
+    },
+    {
+      "id": "trace",
+      "description": "Trace from Agent Console to Vector store names each hop and its relation (calls, calls, calls, reads).",
+      "support": "implemented",
+      "evidence": "lens.trace: domain/lens/trace.ts tracePath"
+    },
+    {
+      "id": "evidence-l5",
+      "description": "L5 for composeAnswer opens compose.ts at lines 40-118; the Ingestion worker and the Reranker offer no L5.",
+      "support": "implemented",
+      "evidence": "lens.evidence-code: domain/lens/evidence.ts lensEvidence; domain/lens/repoLinks.ts"
+    },
+    {
+      "id": "unknown-marker",
+      "description": "The Ingestion worker and the Vector store show an 'unknown detail' marker, and their empty lower levels say why.",
+      "support": "future",
+      "evidence": "lens.confidence-marking: only edge confidence exists today."
+    },
+    {
+      "id": "proposed-not-verified",
+      "description": "The inferred edge (Answer composer → Rerank client) shows its confidence and is never presented as verified; an unaccepted change is a ghost until accepted.",
+      "support": "partial",
+      "evidence": "lens.pending-ghosts and EdgeSemantics.confidence are implemented; there is no distinct 'inferred' style in Lens."
+    }
+  ]
+}

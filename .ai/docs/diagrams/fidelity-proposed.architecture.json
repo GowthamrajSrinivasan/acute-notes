@@ -1,0 +1,394 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Visualize pipeline · Proposed",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1200,
+      640
+    ],
+    "views": [
+      {
+        "id": "ledger-path",
+        "label": "Ledger → mapping → coverage",
+        "focus": [
+          "units",
+          "outline",
+          "generate",
+          "coverage",
+          "merge"
+        ],
+        "note": "Source units are numbered, the model lists facts then nodes, and the app verifies coverage."
+      },
+      {
+        "id": "no-silent-loss",
+        "label": "No silent loss",
+        "focus": [
+          "coverage",
+          "merge",
+          "validate",
+          "review"
+        ],
+        "note": "Uncovered facts are attached as detail, the validator converts instead of dropping, and the review shows the count."
+      },
+      {
+        "id": "other-producers",
+        "label": "Other plan producers",
+        "focus": [
+          "analyze",
+          "mcp",
+          "validate"
+        ],
+        "note": "The local tier and MCP clients keep sharing the validator, which now never removes content."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "dialog",
+      "type": "frontend",
+      "label": "Visualize dialog",
+      "sublabel": "Visualize ≠ Summarize",
+      "tag": "summarize is explicit",
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "analyze",
+      "type": "backend",
+      "label": "Parse + local tier",
+      "sublabel": "analyze · localPlanner",
+      "tag": "no AI if structured",
+      "pos": [
+        280,
+        60
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "units",
+      "type": "backend",
+      "label": "Units + numbering",
+      "sublabel": "fidelity/units.ts",
+      "tag": "[s1] … [sN]",
+      "pos": [
+        520,
+        60
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "outline",
+      "type": "cloud",
+      "label": "Outline document",
+      "sublabel": "outline_document",
+      "tag": "section kinds",
+      "pos": [
+        760,
+        60
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "select",
+      "type": "cloud",
+      "label": "Select template",
+      "sublabel": "select_template",
+      "tag": "one template",
+      "pos": [
+        760,
+        230
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "generate",
+      "type": "cloud",
+      "label": "Ledger + plan",
+      "sublabel": "generate_visual_plan",
+      "tag": "facts · covers · level",
+      "pos": [
+        1000,
+        150
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "coverage",
+      "type": "security",
+      "label": "Coverage check",
+      "sublabel": "fidelity/coverage.ts",
+      "tag": "3 deterministic checks",
+      "pos": [
+        1000,
+        380
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "merge",
+      "type": "backend",
+      "label": "Merge + safety net",
+      "sublabel": "mergeUnitPlans",
+      "tag": "attach uncovered",
+      "pos": [
+        760,
+        380
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "validate",
+      "type": "security",
+      "label": "Validate plan",
+      "sublabel": "convert, never drop",
+      "tag": "info out ≥ info in",
+      "pos": [
+        520,
+        380
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "render",
+      "type": "backend",
+      "label": "Render change set",
+      "sublabel": "renderer/render.ts",
+      "tag": "level 1 · 2 · 3",
+      "pos": [
+        280,
+        380
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "review",
+      "type": "frontend",
+      "label": "Review + coverage",
+      "sublabel": "ChangeSetReview",
+      "tag": "42/42 facts placed",
+      "pos": [
+        40,
+        380
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "mcp",
+      "type": "external",
+      "label": "MCP client",
+      "sublabel": "render_visual_plan",
+      "tag": "Claude Code etc.",
+      "pos": [
+        520,
+        505
+      ],
+      "size": [
+        150,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "AI tier · per section, parallel",
+      "wraps": [
+        "outline",
+        "select",
+        "generate"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Fidelity guarantee · new",
+      "wraps": [
+        "coverage",
+        "merge"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Deterministic render",
+      "wraps": [
+        "validate",
+        "render"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "dialog-to-analyze",
+      "from": "dialog",
+      "to": "analyze",
+      "label": "text",
+      "variant": "emphasis"
+    },
+    {
+      "id": "analyze-to-units",
+      "from": "analyze",
+      "to": "units",
+      "label": "AI needed",
+      "variant": "emphasis"
+    },
+    {
+      "id": "units-to-outline",
+      "from": "units",
+      "to": "outline",
+      "label": "2+ sections",
+      "variant": "emphasis"
+    },
+    {
+      "id": "units-to-select",
+      "from": "units",
+      "to": "select",
+      "label": "< 2 sections",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "outline-to-generate",
+      "from": "outline",
+      "to": "generate",
+      "label": "numbered units",
+      "variant": "emphasis"
+    },
+    {
+      "id": "select-to-generate",
+      "from": "select",
+      "to": "generate",
+      "label": "template"
+    },
+    {
+      "id": "generate-to-coverage",
+      "from": "generate",
+      "to": "coverage",
+      "label": "ledger",
+      "variant": "emphasis",
+      "labelAt": [
+        1075,
+        290
+      ]
+    },
+    {
+      "id": "coverage-to-merge",
+      "from": "coverage",
+      "to": "merge",
+      "label": "gaps flagged",
+      "variant": "emphasis"
+    },
+    {
+      "id": "merge-to-validate",
+      "from": "merge",
+      "to": "validate",
+      "label": "complete plan",
+      "variant": "emphasis"
+    },
+    {
+      "id": "validate-to-render",
+      "from": "validate",
+      "to": "render",
+      "label": "every node",
+      "variant": "emphasis"
+    },
+    {
+      "id": "render-to-review",
+      "from": "render",
+      "to": "review",
+      "variant": "emphasis"
+    },
+    {
+      "id": "analyze-to-validate",
+      "from": "analyze",
+      "to": "validate",
+      "label": "local plan",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          355,
+          330
+        ],
+        [
+          595,
+          330
+        ]
+      ]
+    },
+    {
+      "id": "mcp-to-validate",
+      "from": "mcp",
+      "to": "validate",
+      "label": "external plan",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "amber",
+      "title": "Steps 1–2 · Quick wins",
+      "items": [
+        "Prompts: short labels, complete details",
+        "Every section kind gets a detail channel",
+        "Validator converts, splits, overflows"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Steps 3–4 · Guarantee",
+      "items": [
+        "Model lists facts citing [sN], then nodes",
+        "App checks units, facts, key terms",
+        "Uncovered facts attached, count shown"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Step 5+ · Later",
+      "items": [
+        "Level tags enable Compact ↔ Detailed",
+        "Optional AI placement repair",
+        "Same ledger for Update and MCP"
+      ]
+    }
+  ]
+}

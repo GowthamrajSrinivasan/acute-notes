@@ -1,0 +1,10 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-lens-invented-ingestion-detail",
+  "distortion": "invented_detail",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "lens",
+  "description": "The Ingestion worker gets a drill-down into a detail frame (here by taking over a key that drills), inventing internals the source never described.",
+  "mutations": [{ "op": "lens_rekey", "level": 1, "key": "arch.ingestion", "newKey": "arch.orchestrator" }],
+  "expectFailing": ["a.lens-no-ingestion-detail"]
+}

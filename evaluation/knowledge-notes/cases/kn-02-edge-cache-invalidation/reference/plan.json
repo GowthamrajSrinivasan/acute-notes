@@ -1,0 +1,220 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": {
+    "title": "Invalidating cached content at the edge"
+  },
+  "nodes": [
+    {
+      "id": "g1",
+      "type": "group",
+      "content": {
+        "label": "Expiry: time to live (TTL)",
+        "arrangement": "grid",
+        "takeaway": "Copies expire on their own after a TTL chosen in advance; simple, but it can't be shortened once a copy is cached."
+      }
+    },
+    {
+      "id": "n1",
+      "type": "text",
+      "parent": "g1",
+      "importance": "high",
+      "title": "Copies expire after a TTL set in advance",
+      "content": {
+        "markdown": "Every cached object carries a time to live. The origin sets it with `Cache-Control: max-age=300` (300 seconds); once it has passed, the edge discards or rechecks its copy (with an `ETag`, a `304 Not Modified` answer avoids a full download). It needs no coordination, which is why it is the default.\n\n**Limit:** the TTL is a guess made in advance. A headline corrected 60 seconds after publishing can stay old for up to the remaining 240 seconds, and nothing the origin does shortens that wait."
+      }
+    },
+    {
+      "id": "n2",
+      "type": "text",
+      "parent": "g1",
+      "importance": "medium",
+      "title": "Shorter TTLs cost origin traffic",
+      "content": {
+        "markdown": "Shortening the TTL narrows the stale window but sends more requests to the origin: Larkspur's drop from 300 to 30 seconds raised origin traffic roughly eightfold."
+      }
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "content": {
+        "label": "Explicit purges: by URL and by tag",
+        "arrangement": "grid",
+        "takeaway": "Purges remove copies on demand, but they reach edge locations one by one and only remove what they name."
+      }
+    },
+    {
+      "id": "n3",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Purge by URL removes one cached address on demand",
+      "content": {
+        "markdown": "The origin asks the CDN to purge a specific URL; the next request for it is fetched fresh. Larkspur purges the article URL on every saved correction.\n\n**Limits**\n- Eventually consistent, not instant: each edge location applies the purge on its own schedule, so for a while some serve the new version and others the old one.\n- Only the exact URL is removed: the home page, section page and RSS feed showing the same headline stay stale, and `/story/417?ref=social` is a different entry from `/story/417`.\n- Purge calls are rate limited (1,000 per minute on Larkspur's plan), which a bulk archive correction can exhaust."
+      }
+    },
+    {
+      "id": "n4",
+      "type": "page",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Walkthrough: what happens after a purge",
+      "content": {
+        "title": "Walkthrough: what happens after a purge",
+        "markdown": "1. The origin calls the purge API with the URL. The API answers within about 150 milliseconds, but that only means the request was queued.\n2. The control plane fans the purge out to all 90 edge locations.\n3. Each location marks its copy invalid; the next request there is a cache miss that goes to the origin.\n4. Measured at Larkspur: half of the locations had applied it within 2 seconds; the slowest took 20 seconds.\n5. Until the last location has applied it, readers routed there still get the old copy."
+      }
+    },
+    {
+      "id": "n5",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Surrogate keys purge every page that carries a tag",
+      "content": {
+        "markdown": "The origin labels responses with tags, e.g. `Surrogate-Key: story-417 section-politics`. One purge of `story-417` removes the article, home page, section page and feed together.\n\n**Limits**\n- The origin must tag every page: a page missing the tag stays stale, with no error anywhere.\n- Tag purges can be large: purging `section-politics` at Larkspur removes about 12,000 cached objects, and the origin absorbs the burst of misses."
+      }
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "content": {
+        "label": "Serving stale on purpose",
+        "arrangement": "grid",
+        "takeaway": "Old copies are served for a bounded time to keep responses fast; it trades freshness for speed."
+      }
+    },
+    {
+      "id": "n6",
+      "type": "text",
+      "parent": "g3",
+      "importance": "high",
+      "title": "Stale-while-revalidate answers from the old copy while refreshing",
+      "content": {
+        "markdown": "With `stale-while-revalidate=60` on a `max-age=300` response, a request arriving after the 300 seconds gets the expired copy immediately while the edge fetches a fresh one in the background; the next reader gets the refreshed copy. Larkspur uses it on article pages but not on live election results.\n\n**Limits**\n- Bounded: an expired copy is served for at most 60 seconds past its TTL; after that the edge waits for the origin as on an ordinary miss.\n- A choice about tolerance, not a way to make content fresher: some readers see a copy older than the TTL alone suggests."
+      }
+    },
+    {
+      "id": "n7",
+      "type": "text",
+      "parent": "g3",
+      "importance": "medium",
+      "title": "stale-if-error keeps serving during origin errors",
+      "content": {
+        "markdown": "`stale-if-error=86400` lets the edge keep serving an expired copy for up to 86,400 seconds (one day), but only while the origin is returning errors."
+      }
+    },
+    {
+      "id": "g4",
+      "type": "group",
+      "content": {
+        "label": "Versioned asset URLs",
+        "arrangement": "grid",
+        "takeaway": "A new file name per content change makes old copies irrelevant, for static assets only."
+      }
+    },
+    {
+      "id": "n8",
+      "type": "text",
+      "parent": "g4",
+      "importance": "high",
+      "title": "Versioned file names make old copies irrelevant",
+      "content": {
+        "markdown": "The build puts a content hash in each asset's name (`app.3f9c2e.js`), so a changed file gets a new URL and the old copy is never requested again. Such files can be cached for a year (`max-age=31536000`); most build tools add the hash automatically.\n\n**Limits**\n- Does not help for HTML entry pages: `/` and `/story/417` keep fixed addresses and point to the new names, so they still need a TTL, a purge or both.\n- Keep old asset versions available at least as long as the longest HTML TTL, or cached pages send readers to missing files."
+      }
+    },
+    {
+      "id": "g5",
+      "type": "group",
+      "content": {
+        "label": "Comparing the techniques",
+        "arrangement": "grid",
+        "takeaway": "No single technique is enough; layer them so each covers the gaps of the others."
+      }
+    },
+    {
+      "id": "n9",
+      "type": "table",
+      "parent": "g5",
+      "importance": "medium",
+      "title": "How the techniques compare",
+      "content": {
+        "columns": [
+          "Technique",
+          "Freshness after a change",
+          "Main cost",
+          "Main caveat"
+        ],
+        "rows": [
+          [
+            "TTL expiry",
+            "Up to the full TTL (300 seconds at Larkspur)",
+            "More origin traffic as the TTL shrinks",
+            "Cannot be shortened after the fact"
+          ],
+          [
+            "Purge by URL",
+            "Seconds (20 seconds worst case measured)",
+            "One purge call per URL",
+            "Misses other pages that show the same content"
+          ],
+          [
+            "Surrogate-key purge",
+            "Seconds, for every tagged page",
+            "Tagging discipline at the origin",
+            "Untagged pages stay stale"
+          ],
+          [
+            "Stale-while-revalidate",
+            "Up to the TTL plus 60 seconds",
+            "Nothing at request time",
+            "Readers knowingly get expired copies"
+          ],
+          [
+            "Versioned URLs",
+            "Immediate for pages that reference the new name",
+            "A build step",
+            "Does not cover HTML entry pages"
+          ]
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "n1",
+      "to": "n2",
+      "type": "relates_to",
+      "label": "trade-off"
+    },
+    {
+      "from": "n3",
+      "to": "n4",
+      "type": "explained_by",
+      "label": "step by step"
+    },
+    {
+      "from": "n3",
+      "to": "n5",
+      "type": "relates_to",
+      "label": "tags reach the other pages"
+    },
+    {
+      "from": "n6",
+      "to": "n7",
+      "type": "relates_to",
+      "label": "related directive"
+    },
+    {
+      "from": "n6",
+      "to": "n1",
+      "type": "depends_on",
+      "label": "starts once the TTL has passed"
+    },
+    {
+      "from": "n8",
+      "to": "n3",
+      "type": "depends_on",
+      "label": "HTML entry pages still need a purge"
+    }
+  ]
+}

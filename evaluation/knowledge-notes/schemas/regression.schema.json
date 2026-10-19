@@ -1,0 +1,372 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "datasetVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^rg-\\d{2}-[a-z0-9-]+$"
+    },
+    "distortion": {
+      "type": "string",
+      "enum": [
+        "possibility_to_guarantee",
+        "condition_dropped",
+        "correlation_to_causation",
+        "critical_exception_omitted",
+        "dependency_reversed",
+        "unlabeled_architecture_edge",
+        "mislabeled_architecture_edge",
+        "inconsistent_identity_across_levels",
+        "user_edit_overwritten",
+        "invented_detail",
+        "fabricated_agreement",
+        "unsupported_recommendation"
+      ]
+    },
+    "caseId": {
+      "type": "string",
+      "pattern": "^kn-\\d{2}-[a-z0-9-]+$"
+    },
+    "target": {
+      "type": "string",
+      "enum": [
+        "plan",
+        "lens",
+        "reconcile"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mutations": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "replace_text"
+              },
+              "node": {
+                "type": "string",
+                "minLength": 1
+              },
+              "find": {
+                "type": "string",
+                "minLength": 1
+              },
+              "replace": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "op",
+              "node",
+              "find",
+              "replace"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "remove_node"
+              },
+              "node": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "op",
+              "node"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "reverse_relationship"
+              },
+              "from": {
+                "type": "string",
+                "minLength": 1
+              },
+              "to": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "op",
+              "from",
+              "to"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "set_label"
+              },
+              "from": {
+                "type": "string",
+                "minLength": 1
+              },
+              "to": {
+                "type": "string",
+                "minLength": 1
+              },
+              "label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "op",
+              "from",
+              "to",
+              "label"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "set_relation_type"
+              },
+              "from": {
+                "type": "string",
+                "minLength": 1
+              },
+              "to": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "relates_to",
+                  "flows_to",
+                  "caused_by",
+                  "depends_on",
+                  "supports",
+                  "blocks",
+                  "implements",
+                  "derived_from",
+                  "references",
+                  "explained_by",
+                  "supersedes",
+                  "deviates_from",
+                  "option_of",
+                  "calls",
+                  "reads",
+                  "writes",
+                  "publishes",
+                  "subscribes",
+                  "contains"
+                ]
+              }
+            },
+            "required": [
+              "op",
+              "from",
+              "to",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "lens_rekey"
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "key": {
+                "type": "string",
+                "minLength": 1
+              },
+              "newKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "newLabel": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "op",
+              "level",
+              "key",
+              "newKey"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "lens_add_node"
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "node": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "kind": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "key",
+                  "label"
+                ]
+              }
+            },
+            "required": [
+              "op",
+              "level",
+              "node"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "lens_remove_edge"
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "from": {
+                "type": "string",
+                "minLength": 1
+              },
+              "to": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "op",
+              "level",
+              "from",
+              "to"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "lens_reverse_edge"
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "from": {
+                "type": "string",
+                "minLength": 1
+              },
+              "to": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "op",
+              "level",
+              "from",
+              "to"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "reconcile_set"
+              },
+              "item": {
+                "type": "string",
+                "minLength": 1
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "unchanged",
+                  "update_clean",
+                  "update_conflict",
+                  "add",
+                  "remove",
+                  "review"
+                ]
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "op",
+              "item",
+              "state"
+            ]
+          }
+        ]
+      }
+    },
+    "expectFailing": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^a\\.[a-z0-9-]+$"
+      }
+    }
+  },
+  "required": [
+    "datasetVersion",
+    "id",
+    "distortion",
+    "caseId",
+    "target",
+    "description",
+    "mutations",
+    "expectFailing"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-unlabeled-publish",
+  "distortion": "unlabeled_architecture_edge",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The upload service → message queue arrow loses its label: the reader can't tell which event flows.",
+  "mutations": [
+    {
+      "op": "set_label",
+      "from": "n-upload",
+      "to": "n-queue",
+      "label": null
+    }
+  ],
+  "expectFailing": [
+    "a.rel-upload-queue",
+    "a.arch-labeled"
+  ]
+}

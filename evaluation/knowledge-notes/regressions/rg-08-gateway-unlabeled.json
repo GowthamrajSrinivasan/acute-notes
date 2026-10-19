@@ -1,0 +1,10 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-gateway-unlabeled",
+  "distortion": "unlabeled_architecture_edge",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "The Orchestrator → Model Gateway arrow loses its label.",
+  "mutations": [{ "op": "set_label", "from": "a-orch", "to": "a-gw", "label": null }],
+  "expectFailing": ["a.rel-orchestrator-gateway", "a.arch-labeled"]
+}

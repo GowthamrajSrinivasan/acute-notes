@@ -1,0 +1,60 @@
+{
+  "datasetVersion": "1.0.0",
+  "dimension": "coverage",
+  "title": "B. Coverage and omission",
+  "definition": "Every critical unit is represented or explicitly flagged; important units are kept; supplementary detail is dropped only for an allowed reason (filler, duplicate, superseded, meta), and an omission can be told apart from an accident.",
+  "questions": [
+    "Are all critical units represented or explicitly flagged?",
+    "Are important units preserved?",
+    "Are supplementary details omitted only when appropriate (and only for the four allowed reasons)?",
+    "Are omissions distinguishable from accidental missing content?"
+  ],
+  "severity": {
+    "critical": "A critical unit (limitation, requirement, condition, takeaway, decision, action item, open question) is missing and not flagged.",
+    "major": "An important unit is missing; a duplicate omission names a unit that isn't itself represented.",
+    "minor": "A supplementary detail is missing without a stated reason."
+  },
+  "methods": {
+    "deterministic": [
+      "element_present for every element carrying critical knowledge",
+      "dataset accounting: every unit cited by knowledge or omittable (validateDataset)",
+      "future: unit accounting on generated output — Represented / Intentionally omitted / Needs review (ai.unit-accounting)"
+    ],
+    "model_judge": [
+      "'Is anything a practitioner would need missing?' over the whole canvas"
+    ],
+    "human": [
+      "Reviewer checks the safeToOmit list and the omitted units' reasons"
+    ]
+  },
+  "requiredAssertions": [
+    "element_present for each mandatory element carrying critical knowledge",
+    "A future unit-accounting assertion per case"
+  ],
+  "passCriteria": "All critical knowledge present (every run); no important unit missing without a reason. A word-count ratio is never a pass criterion.",
+  "failCriteria": "Any critical unit missing and unflagged on any run.",
+  "passExample": "A 40-unit article: 33 represented, 6 omitted as duplicates of represented units, 1 filler greeting omitted. The one-line 'does not work for HTML entry pages' caveat is on its card.",
+  "failExample": "Same article: 38 units represented, but the short caveat is the one left out — high coverage, critical omission.",
+  "judgeScale": [
+    {
+      "score": 1,
+      "meaning": "Critical content missing."
+    },
+    {
+      "score": 2,
+      "meaning": "Between 1 and 3: several serious problems."
+    },
+    {
+      "score": 3,
+      "meaning": "All critical content present; some important detail missing."
+    },
+    {
+      "score": 4,
+      "meaning": "Between 3 and 5: one minor problem."
+    },
+    {
+      "score": 5,
+      "meaning": "Everything important present; only filler and duplicates left out."
+    }
+  ]
+}

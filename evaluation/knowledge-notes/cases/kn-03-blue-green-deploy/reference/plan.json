@@ -1,0 +1,318 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": {
+    "title": "Blue-green deployment for the orders service"
+  },
+  "nodes": [
+    {
+      "id": "g1",
+      "type": "group",
+      "content": {
+        "label": "How blue-green works",
+        "arrangement": "grid",
+        "takeaway": "Deploy to the idle twin, then move traffic over at once, and back the same way if needed."
+      }
+    },
+    {
+      "id": "n1",
+      "type": "text",
+      "parent": "g1",
+      "importance": "medium",
+      "title": "Two identical environments, one live",
+      "content": {
+        "markdown": "Blue and green are identical production environments. One serves all live traffic while the other sits idle; you deploy to the idle one, test it, then move traffic in one step. Because the old one keeps running, going back is the same one-step switch. The cost: twice the infrastructure during a release."
+      }
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "content": {
+        "label": "Before you start: prerequisites",
+        "arrangement": "grid",
+        "takeaway": "All five must hold first; backward-compatible migrations are a hard requirement."
+      }
+    },
+    {
+      "id": "n2",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Two identical environments",
+      "content": {
+        "markdown": "`orders-blue` and `orders-green`, with the same instance count, instance size and configuration."
+      }
+    },
+    {
+      "id": "n3",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "A health endpoint that checks dependencies",
+      "content": {
+        "markdown": "`GET /healthz` returns `200` only when the service can reach its database and its queue."
+      }
+    },
+    {
+      "id": "n4",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Migrations must be backward compatible",
+      "content": {
+        "markdown": "The old version must keep working against the new schema. Hard requirement: both versions share one database, and a rollback does not undo a migration.\n\n**If a migration is not backward compatible, do not use this procedure:** split it into an additive release first and a cleanup release later."
+      }
+    },
+    {
+      "id": "n5",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Access to the load balancer's listener rules",
+      "content": {
+        "markdown": "The service runs behind a load balancer; the switch changes which target group its listener forwards to."
+      }
+    },
+    {
+      "id": "n17",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "A per-environment error dashboard",
+      "content": {
+        "markdown": "A dashboard or query showing the 5xx error rate per environment, so green's errors can be told from blue's."
+      }
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "content": {
+        "label": "Release steps",
+        "arrangement": "tree",
+        "takeaway": "Blue is live: deploy and verify green, switch, watch for 15 minutes, keep blue for 24 hours."
+      }
+    },
+    {
+      "id": "n6",
+      "type": "shape",
+      "parent": "g3",
+      "importance": "medium",
+      "content": {
+        "shape": "rectangle",
+        "label": "1. Deploy 2.8.0 to orders-green",
+        "details": [
+          "Use the build artifact that passed staging",
+          "Expected: all green instances report 2.8.0; blue still serves 100% of traffic"
+        ]
+      }
+    },
+    {
+      "id": "n7",
+      "type": "shape",
+      "parent": "g3",
+      "importance": "medium",
+      "content": {
+        "shape": "rectangle",
+        "label": "2. Run the database migrations once",
+        "details": [
+          "From a single job, not from every instance",
+          "Expected: the job exits with code 0; blue keeps serving without new errors"
+        ]
+      }
+    },
+    {
+      "id": "n8",
+      "type": "shape",
+      "parent": "g3",
+      "importance": "medium",
+      "content": {
+        "shape": "diamond",
+        "label": "3. All green instances return 200 within 10 minutes?",
+        "details": [
+          "Poll /healthz on every green instance"
+        ]
+      }
+    },
+    {
+      "id": "n9",
+      "type": "shape",
+      "parent": "g3",
+      "importance": "medium",
+      "content": {
+        "shape": "diamond",
+        "label": "4. Smoke tests pass on green?",
+        "details": [
+          "Run the suite against green's internal address"
+        ]
+      }
+    },
+    {
+      "id": "n10",
+      "type": "shape",
+      "parent": "g3",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "5. Switch traffic to green",
+        "details": [
+          "Point the listener at the green target group",
+          "Expected: within about 30 seconds new requests go to green; blue gets no new connections"
+        ]
+      }
+    },
+    {
+      "id": "n11",
+      "type": "code",
+      "parent": "g3",
+      "importance": "low",
+      "title": "Switch command",
+      "content": {
+        "language": "bash",
+        "source": "aws elbv2 modify-listener \\\n  --listener-arn \"$ORDERS_LISTENER_ARN\" \\\n  --default-actions Type=forward,TargetGroupArn=\"$GREEN_TG_ARN\""
+      }
+    },
+    {
+      "id": "n12",
+      "type": "shape",
+      "parent": "g3",
+      "importance": "medium",
+      "content": {
+        "shape": "diamond",
+        "label": "6. 5xx error rate above 2% within 15 minutes?",
+        "details": [
+          "Watch green from the moment of the switch"
+        ]
+      }
+    },
+    {
+      "id": "n13",
+      "type": "shape",
+      "parent": "g3",
+      "importance": "medium",
+      "content": {
+        "shape": "rectangle",
+        "label": "7. Keep blue on standby for 24 hours",
+        "details": [
+          "It is the rollback target until then",
+          "Do not run the next release's migrations while blue is on standby, or rolling back stops being safe"
+        ]
+      }
+    },
+    {
+      "id": "n14",
+      "type": "shape",
+      "parent": "g3",
+      "importance": "medium",
+      "content": {
+        "shape": "rectangle",
+        "label": "8. Retire blue: scale it down",
+        "details": [
+          "After 24 hours with no rollback; blue becomes the idle environment for the next release"
+        ]
+      }
+    },
+    {
+      "id": "g4",
+      "type": "group",
+      "content": {
+        "label": "When things go wrong: rolling back",
+        "arrangement": "stack",
+        "takeaway": "Going back is fast; the database stays as migrated."
+      }
+    },
+    {
+      "id": "n15",
+      "type": "text",
+      "parent": "g4",
+      "importance": "medium",
+      "title": "Before the switch: tear down green",
+      "content": {
+        "markdown": "If green fails its health checks or tests, stop, tear down green and leave blue serving traffic. Nothing was switched, so customers are unaffected: this rollback is cheap."
+      }
+    },
+    {
+      "id": "n16",
+      "type": "text",
+      "parent": "g4",
+      "importance": "medium",
+      "title": "After the switch: switch back to blue",
+      "content": {
+        "markdown": "Run the same command with `$BLUE_TG_ARN`; all traffic returns to blue within about 30 seconds.\n\n**Caveat:** requests in flight on green during the switch may fail and need a client retry."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "n6",
+      "to": "n7",
+      "type": "flows_to",
+      "label": "then"
+    },
+    {
+      "from": "n7",
+      "to": "n8",
+      "type": "flows_to",
+      "label": "then"
+    },
+    {
+      "from": "n8",
+      "to": "n9",
+      "type": "flows_to",
+      "label": "yes: all return 200"
+    },
+    {
+      "from": "n8",
+      "to": "n15",
+      "type": "flows_to",
+      "label": "no: still failing after 10 minutes"
+    },
+    {
+      "from": "n9",
+      "to": "n10",
+      "type": "flows_to",
+      "label": "yes: all pass"
+    },
+    {
+      "from": "n9",
+      "to": "n15",
+      "type": "flows_to",
+      "label": "no: a test fails"
+    },
+    {
+      "from": "n10",
+      "to": "n11",
+      "type": "explained_by",
+      "label": "command"
+    },
+    {
+      "from": "n10",
+      "to": "n12",
+      "type": "flows_to",
+      "label": "then watch"
+    },
+    {
+      "from": "n12",
+      "to": "n16",
+      "type": "flows_to",
+      "label": "yes: above 2%, switch back"
+    },
+    {
+      "from": "n12",
+      "to": "n13",
+      "type": "flows_to",
+      "label": "no: at or below 2%, continue"
+    },
+    {
+      "from": "n13",
+      "to": "n14",
+      "type": "flows_to",
+      "label": "after 24 hours"
+    },
+    {
+      "from": "n7",
+      "to": "n4",
+      "type": "depends_on",
+      "label": "needs backward-compatible migrations"
+    }
+  ]
+}

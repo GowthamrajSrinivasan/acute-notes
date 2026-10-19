@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-01-retries-always-safe",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-01-idempotency-keys",
+  "target": "plan",
+  "description": "The bounded window becomes a guarantee: 'only while results are kept (24 hours)' turns into 'retries are always safe'.",
+  "mutations": [
+    { "op": "replace_text", "node": "n2", "find": "Only while results are kept: they expire after 24 hours, so a later retry is treated as a new payment.", "replace": "Retries are always safe, however late they arrive." }
+  ],
+  "expectFailing": ["a.window-with-claim", "a.no-absolute"]
+}

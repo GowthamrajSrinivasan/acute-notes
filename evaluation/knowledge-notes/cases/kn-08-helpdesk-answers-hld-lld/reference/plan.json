@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": { "title": "Helpdesk Answers: system to code" },
+  "nodes": [
+    { "id": "gL0", "type": "group", "content": { "label": "L0 System: Helpdesk Answers", "arrangement": "tree", "takeaway": "Cited answers for support agents, built on two external systems.", "diagram": "architecture", "level": 0 } },
+    { "id": "s-sys", "type": "shape", "parent": "gL0", "importance": "high", "stableKey": "helpdesk", "content": { "shape": "rectangle", "label": "Helpdesk Answers", "kind": "backend", "sublabel": "cited answers for support agents" } },
+    { "id": "s-cms", "type": "shape", "parent": "gL0", "stableKey": "helpdesk.cms", "content": { "shape": "rectangle", "label": "Help Center CMS", "kind": "external", "sublabel": "where articles are written" } },
+    { "id": "s-llm", "type": "shape", "parent": "gL0", "stableKey": "helpdesk.llm", "content": { "shape": "rectangle", "label": "Language model provider", "kind": "external", "sublabel": "generates the answer text" } },
+
+    { "id": "gL1", "type": "group", "content": { "label": "L1 Architecture: services and stores", "arrangement": "tree", "takeaway": "One service owns answering; a single gateway is the only route to the model.", "diagram": "architecture", "level": 1 } },
+    { "id": "a-console", "type": "shape", "parent": "gL1", "stableKey": "arch.console", "content": { "shape": "rectangle", "label": "Agent Console", "kind": "frontend", "sublabel": "web client" } },
+    { "id": "a-api", "type": "shape", "parent": "gL1", "stableKey": "arch.api", "content": { "shape": "rectangle", "label": "Answers API", "kind": "backend", "sublabel": "checks the agent's session" } },
+    { "id": "a-orch", "type": "shape", "parent": "gL1", "importance": "high", "stableKey": "arch.orchestrator", "content": { "shape": "rectangle", "label": "Orchestrator", "kind": "backend", "sublabel": "owns the answering logic" } },
+    { "id": "a-retr", "type": "shape", "parent": "gL1", "stableKey": "arch.retrieval", "content": { "shape": "rectangle", "label": "Retrieval service", "kind": "backend", "sublabel": "finds candidate passages" } },
+    { "id": "a-rerank", "type": "shape", "parent": "gL1", "stableKey": "arch.reranker", "content": { "shape": "rectangle", "label": "Reranker", "kind": "backend", "sublabel": "reranks candidate passages" } },
+    { "id": "a-gw", "type": "shape", "parent": "gL1", "stableKey": "arch.gateway", "content": { "shape": "rectangle", "label": "Model Gateway", "kind": "backend", "sublabel": "the only path to the external model provider" } },
+    { "id": "a-vs", "type": "shape", "parent": "gL1", "stableKey": "arch.vector-store", "content": { "shape": "cylinder", "label": "Vector store", "kind": "database", "sublabel": "Postgres + pgvector", "details": ["Partitioning not decided yet"] } },
+    { "id": "a-log", "type": "shape", "parent": "gL1", "importance": "low", "stableKey": "arch.answer-log", "content": { "shape": "cylinder", "label": "Answer log", "kind": "database", "sublabel": "every answer with its citations" } },
+    { "id": "a-ing", "type": "shape", "parent": "gL1", "stableKey": "arch.ingestion", "content": { "shape": "rectangle", "label": "Ingestion worker", "kind": "backend", "sublabel": "every 15 min: articles → passages → embeddings", "details": ["Internals not described in the design"] } },
+    { "id": "a-unknown", "type": "text", "parent": "gL1", "title": "Not specified yet", "content": { "markdown": "- How the Ingestion worker works inside\n- How the Vector store is partitioned (not decided)\n- Code locations for the Ingestion worker and the Reranker" } },
+
+    { "id": "gL2a", "type": "group", "content": { "label": "L2 Orchestrator components", "arrangement": "radial", "takeaway": "The Answer composer drives the other three parts.", "diagram": "architecture", "level": 2 } },
+    { "id": "o-rc", "type": "shape", "parent": "gL2a", "stableKey": "orch.rerank-client", "content": { "shape": "rectangle", "label": "Rerank client", "kind": "backend", "sublabel": "sends candidates, applies the fallback rule" } },
+    { "id": "o-cb", "type": "shape", "parent": "gL2a", "stableKey": "orch.context-builder", "content": { "shape": "rectangle", "label": "Context builder", "kind": "backend", "sublabel": "turns the chosen passages into a prompt" } },
+    { "id": "o-ac", "type": "shape", "parent": "gL2a", "importance": "high", "stableKey": "orch.answer-composer", "content": { "shape": "rectangle", "label": "Answer composer", "kind": "backend", "sublabel": "runs the request from start to finish" } },
+    { "id": "o-cc", "type": "shape", "parent": "gL2a", "stableKey": "orch.citation-checker", "content": { "shape": "rectangle", "label": "Citation checker", "kind": "backend", "sublabel": "each citation must point to a supplied passage" } },
+
+    { "id": "gL2b", "type": "group", "content": { "label": "L2 Retrieval service components", "arrangement": "chain", "diagram": "architecture", "level": 2 } },
+    { "id": "r-qe", "type": "shape", "parent": "gL2b", "stableKey": "retr.query-embedder", "content": { "shape": "rectangle", "label": "Query embedder", "kind": "backend", "sublabel": "same embedding model as the Ingestion worker" } },
+    { "id": "r-vsearch", "type": "shape", "parent": "gL2b", "stableKey": "retr.vector-search", "content": { "shape": "rectangle", "label": "Vector search", "kind": "backend", "sublabel": "the 50 nearest passages", "details": ["Code: search in services/retrieval/src/search.ts"] } },
+
+    { "id": "gL3", "type": "group", "content": { "label": "L3 Flow: answering a question", "arrangement": "chain", "takeaway": "Seven steps; step 4 has a fallback when reranking is slow.", "diagram": "architecture", "level": 3 } },
+    { "id": "f1", "type": "shape", "parent": "gL3", "stableKey": "flow.post", "content": { "shape": "rectangle", "label": "1 · POST /v1/answers", "kind": "step", "sublabel": "question + ticket id" } },
+    { "id": "f2", "type": "shape", "parent": "gL3", "stableKey": "flow.forward", "content": { "shape": "rectangle", "label": "2 · Check session, forward", "kind": "step" } },
+    { "id": "f3", "type": "shape", "parent": "gL3", "stableKey": "flow.retrieve", "content": { "shape": "rectangle", "label": "3 · Fetch 50 candidates", "kind": "step" } },
+    { "id": "f4", "type": "shape", "parent": "gL3", "stableKey": "flow.rerank", "content": { "shape": "rectangle", "label": "4 · Rerank 50, keep top 8", "kind": "step", "details": ["No reply within 800 ms: skip reranking, keep the first 8 by vector similarity, log rerank_skipped = true", "Faster, but the 8 passages may be less relevant"] } },
+    { "id": "f5", "type": "shape", "parent": "gL3", "stableKey": "flow.compose", "content": { "shape": "rectangle", "label": "5 · composeAnswer(question, 8 passages)", "kind": "step" } },
+    { "id": "f6", "type": "shape", "parent": "gL3", "stableKey": "flow.log", "content": { "shape": "rectangle", "label": "6 · Log answer + citations", "kind": "step" } },
+    { "id": "f7", "type": "shape", "parent": "gL3", "stableKey": "flow.respond", "content": { "shape": "rectangle", "label": "7 · Return the answer", "kind": "step" } },
+
+    { "id": "gL4", "type": "group", "content": { "label": "L4 Operation: composeAnswer", "arrangement": "tree", "takeaway": "A timeout fails the request; an unmatched citation only trims the answer.", "diagram": "architecture", "level": 4 } },
+    { "id": "c-fn", "type": "shape", "parent": "gL4", "importance": "high", "stableKey": "op.compose", "content": { "shape": "rectangle", "label": "composeAnswer(question, passages)", "kind": "function", "details": ["Prompt via the Context builder, at most 6,000 tokens", "Calls the Model Gateway", "Draft goes to the Citation checker"] } },
+    { "id": "c-timeout", "type": "shape", "parent": "gL4", "stableKey": "op.timeout", "content": { "shape": "rectangle", "label": "Model call timeout (20 s)", "kind": "event", "sublabel": "error → HTTP 504; no partial answer" } },
+    { "id": "c-mismatch", "type": "shape", "parent": "gL4", "stableKey": "op.citation-mismatch", "content": { "shape": "rectangle", "label": "Citation matches no passage", "kind": "step", "sublabel": "remove that sentence; mark the answer partial" } },
+
+    { "id": "gL5", "type": "group", "content": { "label": "L5 Source: composeAnswer code", "arrangement": "grid", "takeaway": "Locations only; the design gives no code.", "diagram": "architecture", "level": 5 } },
+    { "id": "src-compose", "type": "shape", "parent": "gL5", "stableKey": "src.compose", "content": { "shape": "document", "label": "services/orchestrator/src/compose.ts", "kind": "function", "sublabel": "lines 40–118 · composeAnswer" } },
+    { "id": "src-citations", "type": "shape", "parent": "gL5", "stableKey": "src.citations", "content": { "shape": "document", "label": "services/orchestrator/src/citations.ts", "kind": "function", "sublabel": "checkCitations" } }
+  ],
+  "relationships": [
+    { "from": "s-sys", "to": "s-cms", "type": "reads", "label": "imports published articles" },
+    { "from": "s-sys", "to": "s-llm", "type": "calls", "label": "generates answer text" },
+
+    { "from": "a-console", "to": "a-api", "type": "calls", "label": "sends question (HTTPS)" },
+    { "from": "a-api", "to": "a-orch", "type": "calls", "label": "forwards question" },
+    { "from": "a-orch", "to": "a-retr", "type": "calls", "label": "finds candidate passages" },
+    { "from": "a-orch", "to": "a-rerank", "type": "calls", "label": "reranks candidates" },
+    { "from": "a-orch", "to": "a-gw", "type": "calls", "label": "generates the answer" },
+    { "from": "a-retr", "to": "a-vs", "type": "reads", "label": "reads passages" },
+    { "from": "a-orch", "to": "a-log", "type": "writes", "label": "writes answer + citations" },
+    { "from": "a-ing", "to": "a-vs", "type": "writes", "label": "writes embeddings" },
+
+    { "from": "o-ac", "to": "o-rc", "type": "calls", "label": "gets top 8 passages (inferred)", "confidence": 0.6 },
+    { "from": "o-ac", "to": "o-cb", "type": "calls", "label": "builds the prompt" },
+    { "from": "o-ac", "to": "o-cc", "type": "calls", "label": "checks the draft's citations" },
+    { "from": "r-qe", "to": "r-vsearch", "type": "flows_to", "label": "query vector" },
+
+    { "from": "f1", "to": "f2", "type": "flows_to", "label": "question" },
+    { "from": "f2", "to": "f3", "type": "flows_to", "label": "forwarded question" },
+    { "from": "f3", "to": "f4", "type": "flows_to", "label": "50 candidates" },
+    { "from": "f4", "to": "f5", "type": "flows_to", "label": "top 8 passages" },
+    { "from": "f5", "to": "f6", "type": "flows_to", "label": "answer + citations" },
+    { "from": "f6", "to": "f7", "type": "flows_to", "label": "logged answer" },
+
+    { "from": "c-fn", "to": "c-timeout", "type": "flows_to", "label": "after 20 s without a reply" },
+    { "from": "c-fn", "to": "c-mismatch", "type": "flows_to", "label": "a citation matches no passage" }
+  ]
+}

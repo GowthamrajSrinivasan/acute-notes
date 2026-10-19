@@ -1,0 +1,61 @@
+{
+  "datasetVersion": "1.0.0",
+  "dimension": "traceability",
+  "title": "G. Traceability and maintenance",
+  "definition": "Every card can be traced to the source units it represents; source-unit ids and semantic ids are stable across wording changes; source updates are reconciled correctly; user edits are preserved; ambiguous matches go to review.",
+  "questions": [
+    "Can a note be traced back to its source?",
+    "Are source-unit IDs and semantic IDs stable?",
+    "Are source updates reconciled correctly (unchanged untouched, edited updated, new added, removed proposed)?",
+    "Are user edits preserved?",
+    "Are ambiguous matches routed to review?"
+  ],
+  "severity": {
+    "critical": "A user edit overwritten; a card bound to the wrong passage; a removal applied silently; a card citing a unit it doesn't represent.",
+    "major": "An unchanged card regenerated (unnecessary churn); a renamed heading creating new identities.",
+    "minor": "A citation to a neighbouring unit that also supports the card."
+  },
+  "methods": {
+    "deterministic": [
+      "reconcile_state on the update outcome",
+      "element_present for evidence elements (paths, line ranges)",
+      "future: cites on every card (ai.cites), unit lineage (reconcile.card-level)"
+    ],
+    "model_judge": [
+      "'Does each cited passage support its card?' (offline)"
+    ],
+    "human": [
+      "Reviewer spot-checks citations and the update outcome"
+    ]
+  },
+  "requiredAssertions": [
+    "A future citation assertion per case",
+    "reconcile_state for the user-edited item in update cases (critical)"
+  ],
+  "passCriteria": "User edits survive every update; reconcile states match; once citations exist, every card's citations resolve to supporting units.",
+  "failCriteria": "Any user edit lost, any silent removal, any wrong binding.",
+  "passExample": "v2 rewords one paragraph: only the card citing it is updated; the user's edited card comes back as a conflict with 'Keep mine'.",
+  "failExample": "v2 rewords one paragraph: the whole section is regenerated and the user's note is replaced by the new wording.",
+  "judgeScale": [
+    {
+      "score": 1,
+      "meaning": "Cards untraceable or edits lost."
+    },
+    {
+      "score": 2,
+      "meaning": "Between 1 and 3: several serious problems."
+    },
+    {
+      "score": 3,
+      "meaning": "Traceable; some unnecessary regeneration."
+    },
+    {
+      "score": 4,
+      "meaning": "Between 3 and 5: one minor problem."
+    },
+    {
+      "score": 5,
+      "meaning": "Every card traceable to its units; only what changed changes; edits always kept."
+    }
+  ]
+}

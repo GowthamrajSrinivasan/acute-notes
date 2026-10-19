@@ -1,0 +1,62 @@
+{
+  "datasetVersion": "1.0.0",
+  "dimension": "visual",
+  "title": "H. Visual correctness and usability",
+  "definition": "Nothing is clipped, nothing overlaps unintentionally, frames fit their contents, the layout is readable and navigable, key concepts stand out from supporting detail, and source evidence can be found.",
+  "questions": [
+    "Is any content clipped?",
+    "Are there unintended overlaps?",
+    "Are frames appropriately sized for their contents?",
+    "Is the layout readable and navigable?",
+    "Can users distinguish key concepts from supporting details?",
+    "Can users locate the source evidence when needed?"
+  ],
+  "severity": {
+    "critical": "A link runs through a card (fatal layout issue); content clipped; a card outside its frame.",
+    "major": "Overlapping cards or frames; many link crossings.",
+    "minor": "Uneven spacing."
+  },
+  "methods": {
+    "deterministic": [
+      "layout_no_fatal, layout_crossings_max (the product's layoutCheck on the rendered plan)",
+      "cards_no_overlap, children_inside_frames, frames_no_overlap",
+      "future: text clipping, measured in a browser (e2e) — not available in the offline suite"
+    ],
+    "model_judge": [
+      "Screenshot rubric 1–5: readability, emphasis on key ideas"
+    ],
+    "human": [
+      "By-hand look at the canvas at overview and 100% zoom"
+    ]
+  },
+  "requiredAssertions": [
+    "layout_no_fatal (critical) per case",
+    "cards_no_overlap and children_inside_frames per case"
+  ],
+  "passCriteria": "No fatal layout issue, no overlaps, every card inside its frame; screenshot score ≥ 4 on approved runs.",
+  "failCriteria": "Any fatal layout issue or overlap.",
+  "passExample": "Seven level frames side by side, each sized to its cards, arrows routed around cards, the main card in each frame larger.",
+  "failExample": "An arrow cutting through the Reranker card; the L3 flow's last step sticking out of its frame.",
+  "judgeScale": [
+    {
+      "score": 1,
+      "meaning": "Unreadable: overlaps, clipping, tangled arrows."
+    },
+    {
+      "score": 2,
+      "meaning": "Between 1 and 3: several serious problems."
+    },
+    {
+      "score": 3,
+      "meaning": "Readable with effort; a few crossings or cramped frames."
+    },
+    {
+      "score": 4,
+      "meaning": "Between 3 and 5: one minor problem."
+    },
+    {
+      "score": 5,
+      "meaning": "Clean, navigable, the main ideas stand out, evidence one click away."
+    }
+  ]
+}

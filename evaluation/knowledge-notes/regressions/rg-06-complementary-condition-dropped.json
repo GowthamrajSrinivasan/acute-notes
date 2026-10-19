@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-complementary-condition-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "The hedge survives but the condition is cut: the hybrid card says it 'can improve recall' with no mention of complementary signals.",
+  "mutations": [
+    { "op": "replace_text", "node": "n3", "find": "can improve recall when lexical and semantic signals are complementary**: each retriever finds relevant passages the other misses.", "replace": "can improve recall**." }
+  ],
+  "expectFailing": ["a.complementary-with-hybrid"]
+}

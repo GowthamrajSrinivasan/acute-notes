@@ -1,0 +1,59 @@
+{
+  "datasetVersion": "1.0.0",
+  "dimension": "element_selection",
+  "title": "D. Element selection",
+  "definition": "Each piece of content uses the native element that fits it: tables for comparisons, code blocks for code, todos for action items, pages for long detail, shapes and labelled arrows for structure. The canvas is neither fragmented nor cluttered.",
+  "questions": [
+    "Are the chosen native elements appropriate for their content?",
+    "Are tables, code blocks, pages, arrows and todos used where useful?",
+    "Is the canvas unnecessarily fragmented or cluttered?",
+    "Are long explanations handled without losing essential context (a page, not a truncated card)?"
+  ],
+  "severity": {
+    "critical": "Code retyped as prose with values lost; action items not extractable as todos; a long procedure truncated to fit a card.",
+    "major": "A comparison flattened into paragraphs; an image expected where the product can't render one.",
+    "minor": "A text card where a shape would read slightly better."
+  },
+  "methods": {
+    "deterministic": [
+      "planNodeTypes on each expected element (element_present only matches allowed types)",
+      "frame_count bounds against fragmentation"
+    ],
+    "model_judge": [
+      "'Would a different element type make this content clearer?' per frame"
+    ],
+    "human": [
+      "Reviewer checks unsupported element expectations (images) are labelled future"
+    ]
+  },
+  "requiredAssertions": [
+    "element_present for each table / code / todo / page element",
+    "A judged element-fit question per case"
+  ],
+  "passCriteria": "Every structured element appears as its type; judged score ≥ 4.",
+  "failCriteria": "A structured element (table, code, todo, page) appears as the wrong type or not at all.",
+  "passExample": "Meeting notes: decisions as cards in a Decisions frame, action items as one todo list with owners and dates, the open question as its own card.",
+  "failExample": "The same meeting as eleven text cards, one per speaker turn.",
+  "judgeScale": [
+    {
+      "score": 1,
+      "meaning": "Wrong element types throughout."
+    },
+    {
+      "score": 2,
+      "meaning": "Between 1 and 3: several serious problems."
+    },
+    {
+      "score": 3,
+      "meaning": "Mostly right; one structured element flattened."
+    },
+    {
+      "score": 4,
+      "meaning": "Between 3 and 5: one minor problem."
+    },
+    {
+      "score": 5,
+      "meaning": "Every element type fits its content; nothing cluttered or fragmented."
+    }
+  ]
+}

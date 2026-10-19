@@ -1,0 +1,30 @@
+{
+  "datasetVersion": "1.0.0",
+  "name": "Acute Notes golden dataset: knowledge notes",
+  "description": "Source-to-notes golden cases that define what good AI-generated notes, frames, relationships and Lens views look like. Each case states constraints, not one ideal canvas.",
+  "cases": [
+    { "id": "kn-01-idempotency-keys", "directory": "cases/kn-01-idempotency-keys", "scenario": "Short conceptual explanation", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "referencePlan": "reference/plan.json" } },
+    { "id": "kn-02-edge-cache-invalidation", "directory": "cases/kn-02-edge-cache-invalidation", "scenario": "Long technical article", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "referencePlan": "reference/plan.json" } },
+    { "id": "kn-03-blue-green-deploy", "directory": "cases/kn-03-blue-green-deploy", "scenario": "Tutorial / procedural workflow", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "referencePlan": "reference/plan.json" } },
+    { "id": "kn-04-queue-choice", "directory": "cases/kn-04-queue-choice", "scenario": "Comparison and decision-making", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "referencePlan": "reference/plan.json" } },
+    { "id": "kn-05-incident-review-meeting", "directory": "cases/kn-05-incident-review-meeting", "scenario": "Meeting transcript", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "referencePlan": "reference/plan.json" } },
+    { "id": "kn-06-hybrid-search-reranking", "directory": "cases/kn-06-hybrid-search-reranking", "scenario": "RAG, hybrid search and reranking", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "referencePlan": "reference/plan.json" } },
+    { "id": "kn-07-photo-sharing-hld", "directory": "cases/kn-07-photo-sharing-hld", "scenario": "System design (HLD only)", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "lens": "lens.json", "referencePlan": "reference/plan.json", "referenceLens": "reference/lens.json" } },
+    { "id": "kn-08-helpdesk-answers-hld-lld", "directory": "cases/kn-08-helpdesk-answers-hld-lld", "scenario": "HLD-to-LLD architecture exploration (L0–L5)", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "lens": "lens.json", "referencePlan": "reference/plan.json", "referenceLens": "reference/lens.json" } },
+    { "id": "kn-09-billing-codebase-map", "directory": "cases/kn-09-billing-codebase-map", "scenario": "Codebase architecture and source mapping", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "referencePlan": "reference/plan.json" } },
+    { "id": "kn-10-inventory-architecture-frames", "directory": "cases/kn-10-inventory-architecture-frames", "scenario": "Code architecture inside semantic frames", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "referencePlan": "reference/plan.json" } },
+    { "id": "kn-11-ambiguous-analytics-proposal", "directory": "cases/kn-11-ambiguous-analytics-proposal", "scenario": "Ambiguous or incomplete source", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "referencePlan": "reference/plan.json" } },
+    { "id": "kn-12-flag-rollout-update", "directory": "cases/kn-12-flag-rollout-update", "scenario": "Source update and reconciliation", "files": { "case": "case.json", "knowledge": "knowledge.json", "canvas": "canvas.json", "evaluation": "evaluation.json", "constraints": "constraints.json", "reconcile": "reconcile.json", "referencePlan": "reference/plan.json", "referenceReconcile": "reference/reconcile.json" } }
+  ],
+  "rubrics": [
+    "rubrics/source-fidelity.json",
+    "rubrics/coverage.json",
+    "rubrics/grouping.json",
+    "rubrics/element-selection.json",
+    "rubrics/relationships.json",
+    "rubrics/architecture-lens.json",
+    "rubrics/traceability.json",
+    "rubrics/visual.json"
+  ],
+  "regressionsDir": "regressions"
+}

@@ -1,0 +1,23 @@
+{
+  "_doc": "The complete renderer->main storage API: service -> method -> argument kinds. Single source of truth read by electron/storage/ipc.cjs (validation + allowlist) and src/persistence/repositories/ipcContract.ts. Kinds: id (non-empty string), optId (id or undefined), ids (array of id), int (safe integer), ints (array of int), bytes (Uint8Array), record (plain object), records (array of records), asset (record with id, mimeType, createdAt and bytes `data`), any (structured-cloneable value).",
+  "workspaces": { "get": ["id"], "put": ["record"], "delete": ["id"], "list": [] },
+  "canvases": { "get": ["id"], "put": ["record"], "delete": ["id"], "listByWorkspace": ["id"] },
+  "documents": { "get": ["id"], "getMany": ["ids"], "put": ["record"], "delete": ["id"], "listByWorkspace": ["id", "optId"] },
+  "assets": { "put": ["asset"], "get": ["id"], "has": ["id"] },
+  "meta": { "get": ["id"], "set": ["id", "any"], "delete": ["id"] },
+  "aiConnections": { "get": ["id"], "put": ["record"], "delete": ["id"], "list": [] },
+  "aiConversations": { "listByWorkspace": ["id"], "get": ["id"], "append": ["record", "records"], "delete": ["id"], "deleteAll": ["optId"] },
+  "contentSources": { "get": ["id"], "getVersion": ["id", "int"], "append": ["record", "record"], "listByCanvas": ["id"], "delete": ["id"] },
+  "repoMaps": { "get": ["id"], "findByRepo": ["id", "id"], "listByWorkspace": ["id"], "put": ["record"], "delete": ["id"] },
+  "agentState": {
+    "putChange": ["record"],
+    "getChange": ["id"],
+    "listChanges": ["id"],
+    "deleteChanges": ["ids"],
+    "putSession": ["record"],
+    "getSession": ["id"],
+    "listSessions": ["id"],
+    "deleteByWorkspace": ["id"]
+  },
+  "yupdates": { "load": ["id"], "append": ["id", "bytes"], "compact": ["id", "ints", "bytes"], "clear": ["id"] }
+}

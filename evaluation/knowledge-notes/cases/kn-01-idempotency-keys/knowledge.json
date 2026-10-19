@@ -1,0 +1,91 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-01-idempotency-keys",
+  "units": [
+    {
+      "id": "ku.definition",
+      "title": "An idempotency key lets the server recognise a retry",
+      "claim": "An idempotency key is a unique value a client attaches to a request so the server can tell a retry of the same operation from a new one.",
+      "explanation": "The core concept. Everything else in the source is how it is used and where it stops working.",
+      "type": "definition",
+      "importance": "critical",
+      "sourceUnits": ["u1"],
+      "provenance": "explicit",
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": false, "reason": "It is the subject of the source." }
+    },
+    {
+      "id": "ku.replay",
+      "title": "A completed key gets its stored result back",
+      "claim": "When a request with the key has already completed, the server returns the stored result instead of running the operation again.",
+      "explanation": "The mechanism that makes a retry harmless.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": ["u2"],
+      "provenance": "explicit",
+      "mustPreserve": ["only for a request that already completed"],
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": false }
+    },
+    {
+      "id": "ku.expiry-window",
+      "title": "Protection lasts only while results are kept (24 hours)",
+      "claim": "Keys protect against duplicates only while the server remembers them; stored results expire after 24 hours, after which a retry is treated as a new payment.",
+      "explanation": "The bound on the mechanism. Without it the reader would believe retries are always safe.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": ["u6", "u7"],
+      "provenance": "explicit",
+      "limits": "ku.replay",
+      "exactDetails": ["24 hours"],
+      "paraphrase": { "allowed": true, "note": "The number and its unit stay exact." },
+      "omission": { "allowed": false, "reason": "A critical limitation of the main claim." }
+    },
+    {
+      "id": "ku.key-reuse",
+      "title": "A reused key with a different amount must be rejected",
+      "claim": "A key does not make two different requests safe: a reused key with a different amount must be rejected, not answered with the old result.",
+      "explanation": "The second bound on the mechanism: the key identifies one operation, not any request.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": ["u8"],
+      "provenance": "explicit",
+      "limits": "ku.replay",
+      "mustPreserve": ["must reject", "different amount"],
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": false }
+    },
+    {
+      "id": "ku.example",
+      "title": "Example: a dropped checkout response is retried safely",
+      "claim": "A checkout client sends Idempotency-Key 7f3c-91ab, the connection drops, the client retries with the same key, and the server returns the original confirmation, so the customer is charged once.",
+      "explanation": "Illustrates ku.replay. Supporting, not a separate idea.",
+      "type": "example",
+      "importance": "important",
+      "sourceUnits": ["u3", "u4", "u5"],
+      "provenance": "explicit",
+      "related": [{ "to": "ku.replay", "relation": "explained_by", "note": "The example illustrates the mechanism (edge runs mechanism → example)." }],
+      "exactDetails": ["Idempotency-Key", "7f3c-91ab"],
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": true, "reason": "Supporting; may be shortened, but if shown the identifiers stay exact." }
+    },
+    {
+      "id": "ku.takeaway",
+      "title": "Retries are safe within a bounded window, not always",
+      "claim": "Idempotency keys make retries safe within a bounded window; they are not a general guarantee against duplicate operations.",
+      "explanation": "The takeaway, which carries its own limit.",
+      "type": "principle",
+      "importance": "critical",
+      "sourceUnits": ["u9"],
+      "provenance": "explicit",
+      "mustPreserve": ["within a bounded window", "not a general guarantee"],
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": false }
+    }
+  ],
+  "mustNotClaim": [
+    { "claim": "Idempotency keys always prevent duplicate charges.", "why": "The source bounds the protection to a 24-hour window and to identical requests.", "units": ["u6", "u7", "u9"] },
+    { "claim": "A reused key returns the original result even if the amount differs.", "why": "The source says such a request must be rejected.", "units": ["u8"] },
+    { "claim": "Idempotency keys guarantee exactly-once processing.", "why": "Not stated; the source explicitly denies a general guarantee.", "units": ["u9"] }
+  ]
+}

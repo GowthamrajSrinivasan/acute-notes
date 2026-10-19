@@ -1,0 +1,22 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-lens-upload-internals",
+  "distortion": "invented_detail",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "lens",
+  "description": "Lens invents an L2 internal for the upload service ('Upload service resize handler') that the HLD never states.",
+  "mutations": [
+    {
+      "op": "lens_add_node",
+      "level": 2,
+      "node": {
+        "key": "upload-service.resize-handler",
+        "label": "Upload service resize handler",
+        "kind": "backend"
+      }
+    }
+  ],
+  "expectFailing": [
+    "a.lens-identity-upload-service"
+  ]
+}

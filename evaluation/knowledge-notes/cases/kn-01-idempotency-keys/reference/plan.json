@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": { "title": "Idempotency keys" },
+  "nodes": [
+    {
+      "id": "g1",
+      "type": "group",
+      "content": { "label": "Idempotency keys", "arrangement": "grid", "takeaway": "Retries are safe within a bounded window; keys are not a general guarantee against duplicates." }
+    },
+    {
+      "id": "n1",
+      "type": "text",
+      "parent": "g1",
+      "importance": "high",
+      "title": "An idempotency key lets the server recognise a retry",
+      "content": { "markdown": "A unique value the client attaches to a request, so the server can tell a retry of the same operation from a new one." }
+    },
+    {
+      "id": "n2",
+      "type": "text",
+      "parent": "g1",
+      "importance": "high",
+      "title": "A completed key gets its stored result back",
+      "content": { "markdown": "If a request with the key already completed, the server returns the stored result instead of running the operation again.\n\n**Limits**\n- Only while results are kept: they expire after 24 hours, so a later retry is treated as a new payment.\n- A reused key with a different amount must be rejected, not answered with the old result." }
+    },
+    {
+      "id": "n3",
+      "type": "text",
+      "parent": "g1",
+      "importance": "medium",
+      "title": "Example: a dropped checkout response",
+      "content": { "markdown": "The client sends `Idempotency-Key: 7f3c-91ab` with a payment. The connection drops, the client retries with the same key, and the server returns the original confirmation, so the customer is charged once." }
+    }
+  ],
+  "relationships": [
+    { "from": "n1", "to": "n2", "type": "flows_to", "label": "server looks up the key" },
+    { "from": "n2", "to": "n3", "type": "explained_by", "label": "for example" }
+  ]
+}

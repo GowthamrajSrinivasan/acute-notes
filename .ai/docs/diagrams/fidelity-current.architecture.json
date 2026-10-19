@@ -1,0 +1,369 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Visualize pipeline · Current",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1200,
+      640
+    ],
+    "views": [
+      {
+        "id": "ai-path",
+        "label": "AI generation path",
+        "focus": [
+          "dialog",
+          "analyze",
+          "units",
+          "outline",
+          "generate",
+          "merge",
+          "validate",
+          "render",
+          "review"
+        ],
+        "note": "Documents with 2+ sections: outline once, generate each section in parallel, merge, validate, render."
+      },
+      {
+        "id": "loss-points",
+        "label": "Where content is lost",
+        "focus": [
+          "generate",
+          "select",
+          "validate",
+          "review"
+        ],
+        "note": "Prompts ask to condense, the validator drops nodes, and its warnings never reach the review."
+      },
+      {
+        "id": "other-producers",
+        "label": "Other plan producers",
+        "focus": [
+          "analyze",
+          "mcp",
+          "validate"
+        ],
+        "note": "The local tier and MCP clients skip the model but share the same validator."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "dialog",
+      "type": "frontend",
+      "label": "Visualize dialog",
+      "sublabel": "VisualizeDialog.tsx",
+      "tag": "paste / selection",
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "analyze",
+      "type": "backend",
+      "label": "Parse + local tier",
+      "sublabel": "analyze · localPlanner",
+      "tag": "no AI if structured",
+      "pos": [
+        280,
+        60
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "units",
+      "type": "backend",
+      "label": "Analysis units",
+      "sublabel": "reconcile/units.ts",
+      "tag": "≤ 12k chars each",
+      "pos": [
+        520,
+        60
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "outline",
+      "type": "cloud",
+      "label": "Outline document",
+      "sublabel": "outline_document",
+      "tag": "section kinds",
+      "pos": [
+        760,
+        60
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "select",
+      "type": "cloud",
+      "label": "Select template",
+      "sublabel": "select_template",
+      "tag": "one template",
+      "pos": [
+        760,
+        230
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "generate",
+      "type": "cloud",
+      "label": "Generate section plan",
+      "sublabel": "generate_visual_plan",
+      "tag": "⚠ short · compact · ≤60",
+      "pos": [
+        1000,
+        150
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "merge",
+      "type": "backend",
+      "label": "Merge + frame",
+      "sublabel": "mergeUnitPlans",
+      "tag": "sectioned plan",
+      "pos": [
+        1000,
+        380
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "validate",
+      "type": "security",
+      "label": "Validate plan",
+      "sublabel": "validate.ts",
+      "tag": "⚠ drops nodes",
+      "pos": [
+        760,
+        380
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "render",
+      "type": "backend",
+      "label": "Render change set",
+      "sublabel": "renderer/render.ts",
+      "tag": "layout + map",
+      "pos": [
+        520,
+        380
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "review",
+      "type": "frontend",
+      "label": "Review + accept",
+      "sublabel": "ChangeSetReview",
+      "tag": "⚠ warnings hidden",
+      "pos": [
+        280,
+        380
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "mcp",
+      "type": "external",
+      "label": "MCP client",
+      "sublabel": "render_visual_plan",
+      "tag": "Claude Code etc.",
+      "pos": [
+        760,
+        505
+      ],
+      "size": [
+        150,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "AI tier · per section, parallel",
+      "wraps": [
+        "outline",
+        "select",
+        "generate"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Deterministic · app-owned",
+      "wraps": [
+        "merge",
+        "validate",
+        "render"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "dialog-to-analyze",
+      "from": "dialog",
+      "to": "analyze",
+      "label": "text",
+      "variant": "emphasis"
+    },
+    {
+      "id": "analyze-to-units",
+      "from": "analyze",
+      "to": "units",
+      "label": "AI needed",
+      "variant": "emphasis"
+    },
+    {
+      "id": "units-to-outline",
+      "from": "units",
+      "to": "outline",
+      "label": "2+ sections",
+      "variant": "emphasis"
+    },
+    {
+      "id": "units-to-select",
+      "from": "units",
+      "to": "select",
+      "label": "< 2 sections",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "outline-to-generate",
+      "from": "outline",
+      "to": "generate",
+      "label": "section + kind",
+      "variant": "emphasis"
+    },
+    {
+      "id": "select-to-generate",
+      "from": "select",
+      "to": "generate",
+      "label": "template"
+    },
+    {
+      "id": "generate-to-merge",
+      "from": "generate",
+      "to": "merge",
+      "label": "raw plans",
+      "variant": "emphasis",
+      "labelAt": [
+        1075,
+        290
+      ]
+    },
+    {
+      "id": "merge-to-validate",
+      "from": "merge",
+      "to": "validate",
+      "variant": "emphasis"
+    },
+    {
+      "id": "validate-to-render",
+      "from": "validate",
+      "to": "render",
+      "label": "surviving nodes",
+      "variant": "emphasis"
+    },
+    {
+      "id": "render-to-review",
+      "from": "render",
+      "to": "review",
+      "variant": "emphasis"
+    },
+    {
+      "id": "analyze-to-validate",
+      "from": "analyze",
+      "to": "validate",
+      "label": "local plan",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          355,
+          330
+        ],
+        [
+          835,
+          330
+        ]
+      ]
+    },
+    {
+      "id": "mcp-to-validate",
+      "from": "mcp",
+      "to": "validate",
+      "label": "external plan",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Loss 1 · Prompts condense",
+      "items": [
+        "cards: a few words or bullets",
+        "supporting: one short node of key points",
+        "flow / tree: short labels, no detail channel",
+        "at most 60 nodes"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Loss 2 · Validator drops",
+      "items": [
+        "Disallowed node type removed",
+        "Nodes past 60 cut off",
+        "Oversized node removed, not split"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Loss 3 · Nothing checks",
+      "items": [
+        "No source-to-plan coverage check",
+        "Warnings never reach the user",
+        "sourceSpan exists but is unused"
+      ]
+    }
+  ]
+}

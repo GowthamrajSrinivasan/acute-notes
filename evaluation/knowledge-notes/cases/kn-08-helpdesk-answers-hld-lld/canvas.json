@@ -1,0 +1,1666 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "template": "sectioned",
+  "templateNote": "One interactive architecture frame per Lens level (Excalidraw frames can't nest, so levels are sibling frames linked by drill-down). 'sectioned' is required: the 'architecture' template has no frames and drops calls/reads/writes.",
+  "frames": [
+    {
+      "id": "f.system",
+      "title": "L0 System: Helpdesk Answers",
+      "titleMatch": {
+        "all": [
+          [
+            "system"
+          ],
+          [
+            "helpdesk"
+          ]
+        ]
+      },
+      "purpose": "The system boundary: the system and the two external systems it depends on.",
+      "rationale": "Section 1 describes only the system and its externals.",
+      "children": [
+        "e.system",
+        "e.cms",
+        "e.llm"
+      ],
+      "arrangement": "tree",
+      "diagram": "architecture",
+      "level": 0,
+      "separateFrom": [
+        {
+          "frame": "f.architecture",
+          "reason": "Externals sit at the boundary, not among the services."
+        }
+      ],
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.architecture",
+      "title": "L1 Architecture: services and stores",
+      "titleMatch": {
+        "all": [
+          [
+            "architecture"
+          ]
+        ]
+      },
+      "purpose": "The major services, stores and their labelled dependencies.",
+      "rationale": "Section 2.",
+      "children": [
+        "e.console",
+        "e.api",
+        "e.orchestrator",
+        "e.retrieval",
+        "e.reranker",
+        "e.gateway",
+        "e.vector-store",
+        "e.answer-log",
+        "e.ingestion",
+        "e.unknowns"
+      ],
+      "arrangement": "tree",
+      "diagram": "architecture",
+      "level": 1,
+      "expansion": "Nine components is the upper end for one level; more would need a sub-frame per tier.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.orchestrator-parts",
+      "title": "L2 Orchestrator components",
+      "titleMatch": {
+        "all": [
+          [
+            "orchestrator"
+          ],
+          [
+            "component",
+            "parts",
+            "inside",
+            "internals"
+          ]
+        ]
+      },
+      "purpose": "The Orchestrator's four parts.",
+      "rationale": "Section 3; the detail of one L1 node.",
+      "children": [
+        "e.rerank-client",
+        "e.context-builder",
+        "e.answer-composer",
+        "e.citation-checker"
+      ],
+      "arrangement": "radial",
+      "diagram": "architecture",
+      "level": 2,
+      "separateFrom": [
+        {
+          "frame": "f.retrieval-parts",
+          "reason": "Different L1 parents."
+        }
+      ],
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.retrieval-parts",
+      "title": "L2 Retrieval service components",
+      "titleMatch": {
+        "all": [
+          [
+            "retrieval"
+          ],
+          [
+            "component",
+            "parts",
+            "inside",
+            "internals"
+          ]
+        ]
+      },
+      "purpose": "The Retrieval service's two parts.",
+      "rationale": "Section 4.",
+      "children": [
+        "e.query-embedder",
+        "e.vector-search"
+      ],
+      "arrangement": "chain",
+      "diagram": "architecture",
+      "level": 2,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.answer-flow",
+      "title": "L3 Flow: answering a question",
+      "titleMatch": {
+        "all": [
+          [
+            "flow"
+          ],
+          [
+            "answer",
+            "question"
+          ]
+        ]
+      },
+      "purpose": "The request flow, step by step, with the reranker fallback on its step.",
+      "rationale": "Section 5.",
+      "children": [
+        "e.step-post",
+        "e.step-forward",
+        "e.step-retrieve",
+        "e.step-rerank",
+        "e.step-compose",
+        "e.step-log",
+        "e.step-respond"
+      ],
+      "arrangement": "chain",
+      "diagram": "architecture",
+      "level": 3,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.compose-op",
+      "title": "L4 Operation: composeAnswer",
+      "titleMatch": {
+        "all": [
+          [
+            "composeanswer"
+          ],
+          [
+            "operation"
+          ]
+        ]
+      },
+      "purpose": "What composeAnswer does and its two failure paths.",
+      "rationale": "Section 6.",
+      "children": [
+        "e.compose-fn",
+        "e.op-timeout",
+        "e.op-citation-mismatch"
+      ],
+      "arrangement": "tree",
+      "diagram": "architecture",
+      "level": 4,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.compose-source",
+      "title": "L5 Source: composeAnswer code",
+      "titleMatch": {
+        "all": [
+          [
+            "source",
+            "code"
+          ],
+          [
+            "composeanswer",
+            "compose.ts"
+          ]
+        ]
+      },
+      "purpose": "Where the code behind the L4 operation is.",
+      "rationale": "Section 7. Locations only: the source gives no code.",
+      "children": [
+        "e.src-compose",
+        "e.src-citations"
+      ],
+      "arrangement": "grid",
+      "diagram": "architecture",
+      "level": 5,
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e.system",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "system",
+      "content": "Helpdesk Answers",
+      "knowledge": [
+        "ku.system"
+      ],
+      "match": {
+        "all": [
+          [
+            "helpdesk answers"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.system",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.cms",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "external system",
+      "content": "Help Center CMS",
+      "knowledge": [
+        "ku.externals"
+      ],
+      "match": {
+        "all": [
+          [
+            "help center cms"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.system",
+      "kind": "external",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.llm",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "external system",
+      "content": "Language model provider",
+      "knowledge": [
+        "ku.externals"
+      ],
+      "match": {
+        "all": [
+          [
+            "language model provider",
+            "llm provider"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.system",
+      "kind": "external",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.console",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "client",
+      "content": "Agent Console (web client)",
+      "knowledge": [
+        "ku.console"
+      ],
+      "match": {
+        "all": [
+          [
+            "agent console"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.architecture",
+      "kind": "frontend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.api",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "API",
+      "content": "Answers API: checks the session",
+      "knowledge": [
+        "ku.answers-api"
+      ],
+      "match": {
+        "all": [
+          [
+            "answers api"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.architecture",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.orchestrator",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "core service",
+      "content": "Orchestrator: owns the answering logic",
+      "knowledge": [
+        "ku.orchestrator"
+      ],
+      "match": {
+        "all": [
+          [
+            "orchestrator"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.architecture",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.retrieval",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "service",
+      "content": "Retrieval service",
+      "knowledge": [
+        "ku.retrieval"
+      ],
+      "match": {
+        "all": [
+          [
+            "retrieval service"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.architecture",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.reranker",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "service",
+      "content": "Reranker",
+      "knowledge": [
+        "ku.reranker"
+      ],
+      "match": {
+        "all": [
+          [
+            "reranker"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.architecture",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.gateway",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "gateway",
+      "content": "Model Gateway: the only path to the model provider",
+      "knowledge": [
+        "ku.gateway-only"
+      ],
+      "match": {
+        "all": [
+          [
+            "model gateway"
+          ],
+          [
+            "provider"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.architecture",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.vector-store",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "store",
+      "content": "Vector store (Postgres + pgvector); partitioning not decided",
+      "knowledge": [
+        "ku.vector-store"
+      ],
+      "match": {
+        "all": [
+          [
+            "vector store"
+          ],
+          [
+            "pgvector",
+            "postgres"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.architecture",
+      "kind": "database",
+      "layout": "A cylinder.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.answer-log",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "store",
+      "content": "Answer log (answers with citations)",
+      "knowledge": [
+        "ku.answer-log"
+      ],
+      "match": {
+        "all": [
+          [
+            "answer log"
+          ],
+          [
+            "citation"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.architecture",
+      "kind": "database",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.ingestion",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "worker",
+      "content": "Ingestion worker: every 15 minutes, CMS → passages → embeddings",
+      "knowledge": [
+        "ku.ingestion"
+      ],
+      "match": {
+        "all": [
+          [
+            "ingestion worker"
+          ],
+          [
+            "15 min"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.architecture",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.unknowns",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "known unknowns",
+      "content": "Not specified: Ingestion worker internals, Vector store partitioning, code locations for the Ingestion worker and the Reranker",
+      "knowledge": [
+        "ku.unknowns"
+      ],
+      "match": {
+        "all": [
+          [
+            "partition"
+          ],
+          [
+            "ingestion"
+          ],
+          [
+            "code location",
+            "no code",
+            "location"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.architecture",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.rerank-client",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "component",
+      "content": "Rerank client: sends candidates, applies fallback",
+      "knowledge": [
+        "ku.rerank-client"
+      ],
+      "match": {
+        "all": [
+          [
+            "rerank client"
+          ],
+          [
+            "fallback"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.orchestrator-parts",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.context-builder",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "component",
+      "content": "Context builder: passages → prompt",
+      "knowledge": [
+        "ku.context-builder"
+      ],
+      "match": {
+        "all": [
+          [
+            "context builder"
+          ],
+          [
+            "turns",
+            "passages into a prompt",
+            "passages → prompt",
+            "passages -> prompt"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.orchestrator-parts",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.answer-composer",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "component",
+      "content": "Answer composer: runs the request end to end",
+      "knowledge": [
+        "ku.answer-composer"
+      ],
+      "match": {
+        "all": [
+          [
+            "answer composer"
+          ],
+          [
+            "start to finish",
+            "end to end",
+            "runs the request"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.orchestrator-parts",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.citation-checker",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "component",
+      "content": "Citation checker: each citation must point to a supplied passage",
+      "knowledge": [
+        "ku.citation-checker"
+      ],
+      "match": {
+        "all": [
+          [
+            "citation checker"
+          ],
+          [
+            "supplied passage",
+            "each citation"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.orchestrator-parts",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.query-embedder",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "component",
+      "content": "Query embedder: same embedding model as ingestion",
+      "knowledge": [
+        "ku.query-embedder"
+      ],
+      "match": {
+        "all": [
+          [
+            "query embedder"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.retrieval-parts",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.vector-search",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "component",
+      "content": "Vector search: 50 nearest passages (search.ts)",
+      "knowledge": [
+        "ku.vector-search",
+        "ku.code-search"
+      ],
+      "match": {
+        "all": [
+          [
+            "vector search"
+          ],
+          [
+            "50"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.retrieval-parts",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.step-post",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "flow step 1–2",
+      "content": "POST /v1/answers (question + ticket id), session checked and forwarded",
+      "knowledge": [
+        "ku.flow-request"
+      ],
+      "match": {
+        "all": [
+          [
+            "post /v1/answers"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.answer-flow",
+      "kind": "step",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.step-forward",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "flow step 2",
+      "content": "Check session, forward",
+      "knowledge": [
+        "ku.flow-request"
+      ],
+      "match": {
+        "all": [
+          [
+            "session"
+          ],
+          [
+            "forward"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.answer-flow",
+      "kind": "step",
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "e.step-retrieve",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "flow step 3",
+      "content": "Fetch 50 candidate passages",
+      "knowledge": [
+        "ku.flow-retrieve"
+      ],
+      "match": {
+        "all": [
+          [
+            "50"
+          ],
+          [
+            "candidate"
+          ],
+          [
+            "fetch",
+            "retriev",
+            "ask"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.answer-flow",
+      "kind": "step",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.step-rerank",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "flow step 4 with its failure path",
+      "content": "Rerank 50, keep top 8 — no reply in 800 ms: skip, keep first 8 by similarity, log rerank_skipped = true",
+      "knowledge": [
+        "ku.flow-rerank",
+        "ku.rerank-fallback"
+      ],
+      "match": {
+        "all": [
+          [
+            "rerank"
+          ],
+          [
+            "top 8"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.answer-flow",
+      "kind": "step",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.step-compose",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "flow step 5",
+      "content": "composeAnswer(question, 8 passages)",
+      "knowledge": [
+        "ku.flow-compose"
+      ],
+      "match": {
+        "all": [
+          [
+            "composeanswer"
+          ],
+          [
+            "8 passages"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.answer-flow",
+      "kind": "step",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.step-log",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "flow step 6",
+      "content": "Log answer and citations",
+      "knowledge": [
+        "ku.flow-finish"
+      ],
+      "match": {
+        "all": [
+          [
+            "answer + citations",
+            "answer and citations",
+            "answer and its citations"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.answer-flow",
+      "kind": "step",
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "e.step-respond",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "flow step 7",
+      "content": "Return the answer",
+      "knowledge": [
+        "ku.flow-finish"
+      ],
+      "match": {
+        "all": [
+          [
+            "return"
+          ],
+          [
+            "answer"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.answer-flow",
+      "kind": "step",
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "e.compose-fn",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "operation",
+      "content": "composeAnswer(question, passages): prompt ≤ 6,000 tokens, Model Gateway, Citation checker",
+      "knowledge": [
+        "ku.compose-op"
+      ],
+      "match": {
+        "all": [
+          [
+            "composeanswer(question, passages)"
+          ],
+          [
+            "6000"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.compose-op",
+      "kind": "function",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.op-timeout",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "failure path",
+      "content": "Model call timeout (20 s): error, HTTP 504, no partial answer",
+      "knowledge": [
+        "ku.model-timeout"
+      ],
+      "match": {
+        "all": [
+          [
+            "timeout",
+            "times out",
+            "timed out"
+          ],
+          [
+            "504"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.compose-op",
+      "kind": "event",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.op-citation-mismatch",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "failure path",
+      "content": "Unmatched citation: remove the sentence, mark the answer partial",
+      "knowledge": [
+        "ku.citation-mismatch"
+      ],
+      "match": {
+        "all": [
+          [
+            "citation"
+          ],
+          [
+            "partial"
+          ],
+          [
+            "remove",
+            "drop"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.compose-op",
+      "kind": "step",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.src-compose",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape",
+        "text"
+      ],
+      "role": "source location",
+      "content": "services/orchestrator/src/compose.ts, lines 40–118",
+      "knowledge": [
+        "ku.code-compose"
+      ],
+      "match": {
+        "all": [
+          [
+            "services/orchestrator/src/compose.ts"
+          ],
+          [
+            "40-118"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.compose-source",
+      "kind": "function",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.src-citations",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape",
+        "text"
+      ],
+      "role": "source location",
+      "content": "checkCitations in services/orchestrator/src/citations.ts",
+      "knowledge": [
+        "ku.code-citations"
+      ],
+      "match": {
+        "all": [
+          [
+            "services/orchestrator/src/citations.ts"
+          ],
+          [
+            "checkcitations"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.compose-source",
+      "kind": "function",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r.system-cms",
+      "from": "e.system",
+      "to": "e.cms",
+      "type": "reads",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "article"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Articles come from the CMS (through the Ingestion worker, at L1).",
+      "evidence": [
+        "u2",
+        "u8"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.system-llm",
+      "from": "e.system",
+      "to": "e.llm",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "answer",
+              "generat"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The provider generates the answer text.",
+      "evidence": [
+        "u2"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.console-api",
+      "from": "e.console",
+      "to": "e.api",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "question"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Each question goes to the API over HTTPS.",
+      "evidence": [
+        "u3"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.api-orchestrator",
+      "from": "e.api",
+      "to": "e.orchestrator",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "forward"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "After the session check.",
+      "evidence": [
+        "u4"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.orchestrator-retrieval",
+      "from": "e.orchestrator",
+      "to": "e.retrieval",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "candidate",
+              "passage"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "To find candidate passages.",
+      "evidence": [
+        "u5"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.orchestrator-reranker",
+      "from": "e.orchestrator",
+      "to": "e.reranker",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "rerank",
+              "candidate"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Candidates go to the Reranker.",
+      "evidence": [
+        "u5"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.orchestrator-gateway",
+      "from": "e.orchestrator",
+      "to": "e.gateway",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "answer",
+              "generat"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The only route to the model provider.",
+      "evidence": [
+        "u5"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.retrieval-store",
+      "from": "e.retrieval",
+      "to": "e.vector-store",
+      "type": "reads",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "read",
+              "passage",
+              "query"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Retrieval reads from the Vector store.",
+      "evidence": [
+        "u6"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.orchestrator-log",
+      "from": "e.orchestrator",
+      "to": "e.answer-log",
+      "type": "writes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "answer",
+              "citation"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Every answer with its citations.",
+      "evidence": [
+        "u7"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.ingestion-store",
+      "from": "e.ingestion",
+      "to": "e.vector-store",
+      "type": "writes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "embedding"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Passage embeddings every 15 minutes.",
+      "evidence": [
+        "u8"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.composer-rerank-client",
+      "from": "e.answer-composer",
+      "to": "e.rerank-client",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "top 8",
+              "rerank",
+              "candidate"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The composer runs the request; step 4 is done by the Rerank client. That the composer is the caller is a reading of 'runs the request from start to finish', not a stated call.",
+      "evidence": [
+        "u13",
+        "u21"
+      ],
+      "provenance": "inferred",
+      "inferenceAllowed": true,
+      "reviewRequired": true,
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "r.composer-context-builder",
+      "from": "e.answer-composer",
+      "to": "e.context-builder",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "prompt"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "composeAnswer, called by the composer, builds the prompt with the Context builder.",
+      "evidence": [
+        "u22",
+        "u27"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.composer-citation-checker",
+      "from": "e.answer-composer",
+      "to": "e.citation-checker",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "citation",
+              "draft"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "composeAnswer passes the draft to the Citation checker.",
+      "evidence": [
+        "u22",
+        "u27"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.embedder-search",
+      "from": "e.query-embedder",
+      "to": "e.vector-search",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "vector"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "'Vector search then…' uses the query vector.",
+      "evidence": [
+        "u16",
+        "u17"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.flow-1-2",
+      "from": "e.step-post",
+      "to": "e.step-forward",
+      "type": "flows_to",
+      "label": {
+        "required": true
+      },
+      "direction": "directed",
+      "explanation": "Step order.",
+      "evidence": [
+        "u18",
+        "u19"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "r.flow-2-3",
+      "from": "e.step-forward",
+      "to": "e.step-retrieve",
+      "type": "flows_to",
+      "label": {
+        "required": true
+      },
+      "direction": "directed",
+      "explanation": "Step order.",
+      "evidence": [
+        "u19",
+        "u20"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "r.flow-3-4",
+      "from": "e.step-retrieve",
+      "to": "e.step-rerank",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "50"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "50 candidates go to reranking.",
+      "evidence": [
+        "u20",
+        "u21"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.flow-4-5",
+      "from": "e.step-rerank",
+      "to": "e.step-compose",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "8"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "8 passages go to composeAnswer.",
+      "evidence": [
+        "u21",
+        "u22"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.flow-5-6",
+      "from": "e.step-compose",
+      "to": "e.step-log",
+      "type": "flows_to",
+      "label": {
+        "required": true
+      },
+      "direction": "directed",
+      "explanation": "Step order.",
+      "evidence": [
+        "u22",
+        "u23"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "r.flow-6-7",
+      "from": "e.step-log",
+      "to": "e.step-respond",
+      "type": "flows_to",
+      "label": {
+        "required": true
+      },
+      "direction": "directed",
+      "explanation": "Step order.",
+      "evidence": [
+        "u23",
+        "u24"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "r.compose-timeout",
+      "from": "e.compose-fn",
+      "to": "e.op-timeout",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "20"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The timeout failure path.",
+      "evidence": [
+        "u28",
+        "u29"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.compose-mismatch",
+      "from": "e.compose-fn",
+      "to": "e.op-citation-mismatch",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "citation",
+              "passage"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The citation failure path.",
+      "evidence": [
+        "u30"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "keepSeparate": [
+    {
+      "elements": [
+        "e.step-compose",
+        "e.compose-fn"
+      ],
+      "reason": "The L3 step and the L4 operation are different levels; merging them collapses the drill-down."
+    },
+    {
+      "elements": [
+        "e.system",
+        "e.orchestrator"
+      ],
+      "reason": "The system node is L0; its services are L1."
+    }
+  ],
+  "hierarchy": [
+    {
+      "main": "e.orchestrator",
+      "supporting": [
+        "e.answer-log"
+      ],
+      "reason": "The log is written by the Orchestrator; it is not a peer entry point."
+    }
+  ],
+  "unsupported": [
+    {
+      "capability": "lens.drill-from-plan",
+      "ideal": "Each parent node links to its detail frame: Helpdesk Answers → L1, Orchestrator → L2 Orchestrator, Retrieval service → L2 Retrieval, Answer composer → L3, step 5 → L4, composeAnswer → L5 (acuteNode.expandsTo).",
+      "expectedToday": "A VisualPlan can't set expandsTo. Generation produces the level frames (group.content.level); the drill links come from set_lens (MCP link_lens_detail, 'Link to detail frame') and are checked on the Lens projection, not the plan."
+    },
+    {
+      "capability": "canvas.frame-nesting",
+      "ideal": "L2–L5 frames nested inside their parents.",
+      "expectedToday": "Sibling frames, one per level, linked by drill-down."
+    },
+    {
+      "capability": "lens.confidence-marking",
+      "ideal": "The Vector store and Ingestion worker show an 'unknown detail' marker at L1, and their empty lower levels say why.",
+      "expectedToday": "The unknowns are a text card in the L1 frame and in node details; Lens shows no children for them."
+    }
+  ]
+}

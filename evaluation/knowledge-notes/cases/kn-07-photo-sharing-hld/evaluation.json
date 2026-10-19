@@ -1,0 +1,1967 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-07-photo-sharing-hld",
+  "assertions": [
+    {
+      "id": "a.present-scope",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The canvas says it is HLD only (no code, modules or operations).",
+      "check": {
+        "check": "element_present",
+        "element": "e.scope"
+      }
+    },
+    {
+      "id": "a.present-mobile-app",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The mobile app client is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.mobile-app"
+      }
+    },
+    {
+      "id": "a.present-web-app",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The web app client is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.web-app"
+      }
+    },
+    {
+      "id": "a.present-auth",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The auth service is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.auth"
+      }
+    },
+    {
+      "id": "a.present-dec-queue",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The queue decision and its cost are kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.dec-queue"
+      }
+    },
+    {
+      "id": "a.present-dec-signed-url",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The signed-URL decision is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.dec-signed-url"
+      }
+    },
+    {
+      "id": "a.present-dec-metadata-apart",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The metadata-apart decision is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.dec-metadata-apart"
+      }
+    },
+    {
+      "id": "a.present-dec-cache",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The disposable-cache decision is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.dec-cache"
+      }
+    },
+    {
+      "id": "a.present-dec-buy",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The buy-not-build decision is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.dec-buy"
+      }
+    },
+    {
+      "id": "a.present-open-retry",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The retry/clean-up open question is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.open-retry"
+      }
+    },
+    {
+      "id": "a.present-open-precompute",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The feed precompute open question is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.open-precompute"
+      }
+    },
+    {
+      "id": "a.present-boundary",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The system boundary is stated (External frame title/takeaway or a card).",
+      "check": {
+        "check": "element_present",
+        "element": "e.boundary"
+      }
+    },
+    {
+      "id": "a.kind-mobile-app",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.mobile-app is drawn as a shape with an architecture kind (frontend).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.mobile-app",
+        "kinds": [
+          "frontend"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-web-app",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.web-app is drawn as a shape with an architecture kind (frontend).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.web-app",
+        "kinds": [
+          "frontend"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-api-gateway",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.api-gateway is drawn as a shape with an architecture kind (backend/endpoint/security).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.api-gateway",
+        "kinds": [
+          "backend",
+          "endpoint",
+          "security"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-auth",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.auth is drawn as a shape with an architecture kind (backend/security).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.auth",
+        "kinds": [
+          "backend",
+          "security"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-upload",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.upload is drawn as a shape with an architecture kind (backend).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.upload",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-feed",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.feed is drawn as a shape with an architecture kind (backend).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.feed",
+        "kinds": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-queue",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.queue is drawn as a shape with an architecture kind (messagebus/event).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.queue",
+        "kinds": [
+          "messagebus",
+          "event"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-workers",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.workers is drawn as a shape with an architecture kind (backend/function).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.workers",
+        "kinds": [
+          "backend",
+          "function"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-object-storage",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.object-storage is drawn as a shape with an architecture kind (store/database/cloud).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.object-storage",
+        "kinds": [
+          "store",
+          "database",
+          "cloud"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-metadata-db",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.metadata-db is drawn as a shape with an architecture kind (database/store).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.metadata-db",
+        "kinds": [
+          "database",
+          "store"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-cache",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.cache is drawn as a shape with an architecture kind (store/database).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.cache",
+        "kinds": [
+          "store",
+          "database"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-cdn",
+      "dimension": "element_selection",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.cdn is drawn as a shape with an architecture kind (external/cloud).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.cdn",
+        "kinds": [
+          "external",
+          "cloud"
+        ]
+      }
+    },
+    {
+      "id": "a.kind-push",
+      "dimension": "element_selection",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.push is drawn as a shape with an architecture kind (external/cloud).",
+      "check": {
+        "check": "element_kind",
+        "element": "e.push",
+        "kinds": [
+          "external",
+          "cloud"
+        ]
+      }
+    },
+    {
+      "id": "a.frame-clients",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for clients is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.clients"
+      }
+    },
+    {
+      "id": "a.frame-edge",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for edge is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.edge"
+      }
+    },
+    {
+      "id": "a.frame-core",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for core is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.core"
+      }
+    },
+    {
+      "id": "a.frame-async",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for async is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.async"
+      }
+    },
+    {
+      "id": "a.frame-storage",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for storage is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.storage"
+      }
+    },
+    {
+      "id": "a.frame-external",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for external is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.external"
+      }
+    },
+    {
+      "id": "a.frame-decisions",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for decisions is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.decisions"
+      }
+    },
+    {
+      "id": "a.frame-open-questions",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for open-questions is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.open-questions"
+      }
+    },
+    {
+      "id": "a.frame-count",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Responsibility groups, not one frame per box and not one giant frame.",
+      "check": {
+        "check": "frame_count",
+        "min": 6,
+        "max": 10
+      }
+    },
+    {
+      "id": "a.level-core",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The core services frame is marked as an L1 (Architecture) frame.",
+      "check": {
+        "check": "frame_level",
+        "frame": "f.core",
+        "level": 1
+      }
+    },
+    {
+      "id": "a.in-mobile-app",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.mobile-app sits in f.clients.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.mobile-app",
+        "frame": "f.clients"
+      }
+    },
+    {
+      "id": "a.in-api-gateway",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.api-gateway sits in f.edge.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.api-gateway",
+        "frame": "f.edge"
+      }
+    },
+    {
+      "id": "a.in-upload",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.upload sits in f.core.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.upload",
+        "frame": "f.core"
+      }
+    },
+    {
+      "id": "a.in-feed",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.feed sits in f.core.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.feed",
+        "frame": "f.core"
+      }
+    },
+    {
+      "id": "a.in-queue",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.queue sits in f.async.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.queue",
+        "frame": "f.async"
+      }
+    },
+    {
+      "id": "a.in-workers",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.workers sits in f.async.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.workers",
+        "frame": "f.async"
+      }
+    },
+    {
+      "id": "a.in-object-storage",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.object-storage sits in f.storage.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.object-storage",
+        "frame": "f.storage"
+      }
+    },
+    {
+      "id": "a.in-metadata-db",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.metadata-db sits in f.storage.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.metadata-db",
+        "frame": "f.storage"
+      }
+    },
+    {
+      "id": "a.in-cache",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.cache sits in f.storage.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.cache",
+        "frame": "f.storage"
+      }
+    },
+    {
+      "id": "a.in-cdn",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.cdn sits in f.external.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.cdn",
+        "frame": "f.external"
+      }
+    },
+    {
+      "id": "a.in-push",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.push sits in f.external.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.push",
+        "frame": "f.external"
+      }
+    },
+    {
+      "id": "a.in-dec-queue",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.dec-queue sits in f.decisions.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.dec-queue",
+        "frame": "f.decisions"
+      }
+    },
+    {
+      "id": "a.in-open-retry",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.open-retry sits in f.open-questions.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.open-retry",
+        "frame": "f.open-questions"
+      }
+    },
+    {
+      "id": "a.together-async",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Queue and workers share the async frame.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.queue",
+          "e.workers"
+        ],
+        "why": "the queue and its consumers are one decided unit (u34)"
+      }
+    },
+    {
+      "id": "a.together-stores",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The three stores share a frame.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.object-storage",
+          "e.metadata-db",
+          "e.cache"
+        ],
+        "why": "source of truth vs copy is visible side by side"
+      }
+    },
+    {
+      "id": "a.apart-cdn",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The CDN never shares a frame with object storage (boundary).",
+      "check": {
+        "check": "apart",
+        "elements": [
+          "e.cdn",
+          "e.object-storage"
+        ],
+        "why": "the CDN is outside the Pinhole boundary (u25)"
+      }
+    },
+    {
+      "id": "a.apart-push",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The push provider never shares a frame with the feed service (boundary).",
+      "check": {
+        "check": "apart",
+        "elements": [
+          "e.push",
+          "e.feed"
+        ],
+        "why": "the push provider is a third party (u25)"
+      }
+    },
+    {
+      "id": "a.apart-open",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Open questions are kept apart from decisions.",
+      "check": {
+        "check": "apart",
+        "elements": [
+          "e.open-retry",
+          "e.dec-queue"
+        ],
+        "why": "an undecided item must not read as decided (u39)"
+      }
+    },
+    {
+      "id": "a.hierarchy-upload",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The signed-URL decision hangs off the upload service and is not weighted above it.",
+      "check": {
+        "check": "hierarchy",
+        "main": "e.upload",
+        "supporting": [
+          "e.dec-signed-url"
+        ],
+        "why": "a decision is evidence for the component"
+      }
+    },
+    {
+      "id": "a.hierarchy-queue",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The queue decision hangs off the queue and is not weighted above it.",
+      "check": {
+        "check": "hierarchy",
+        "main": "e.queue",
+        "supporting": [
+          "e.dec-queue"
+        ],
+        "why": "a decision is evidence for the component"
+      }
+    },
+    {
+      "id": "a.rel-mobile-gateway",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The mobile app sends every request through the gateway.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.mobile-gateway"
+      }
+    },
+    {
+      "id": "a.rel-web-gateway",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The web app sends every request through the gateway.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.web-gateway"
+      }
+    },
+    {
+      "id": "a.rel-mobile-objstore",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Clients upload the original straight to object storage with a signed URL, bypassing the gateway.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.mobile-objstore"
+      }
+    },
+    {
+      "id": "a.rel-gateway-auth",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The gateway checks the caller's access token with the auth service.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.gateway-auth"
+      }
+    },
+    {
+      "id": "a.rel-gateway-upload",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The gateway routes photo posts to the upload service.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.gateway-upload"
+      }
+    },
+    {
+      "id": "a.rel-gateway-feed",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The gateway routes feed requests to the feed service.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.gateway-feed"
+      }
+    },
+    {
+      "id": "a.rel-upload-metadata",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The upload service records the new photo as processing.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.upload-metadata"
+      }
+    },
+    {
+      "id": "a.rel-upload-queue",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "The upload service publishes PhotoUploaded to the queue (never the reverse).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.upload-queue"
+      }
+    },
+    {
+      "id": "a.rel-workers-subscribe",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Workers consume PhotoUploaded from the queue (consumer → topic, as RELATION_TYPES defines subscribes).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.workers-subscribe"
+      }
+    },
+    {
+      "id": "a.rel-workers-objstore",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Workers read the original and write the thumbnails back.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.workers-objstore"
+      }
+    },
+    {
+      "id": "a.rel-workers-metadata",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Workers mark the photo ready.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.workers-metadata"
+      }
+    },
+    {
+      "id": "a.rel-workers-publish",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Workers publish PhotoReady.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.workers-publish"
+      }
+    },
+    {
+      "id": "a.rel-feed-subscribe",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The feed service consumes PhotoReady.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.feed-subscribe"
+      }
+    },
+    {
+      "id": "a.rel-feed-metadata",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The feed service reads photo metadata.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.feed-metadata"
+      }
+    },
+    {
+      "id": "a.rel-feed-cache",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The feed service keeps ready-made feed pages in the cache.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.feed-cache"
+      }
+    },
+    {
+      "id": "a.rel-feed-push",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The feed service asks the push provider to alert followers.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.feed-push"
+      }
+    },
+    {
+      "id": "a.rel-cdn-objstore",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The CDN reads photos and thumbnails from object storage.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.cdn-objstore"
+      }
+    },
+    {
+      "id": "a.rel-dec-queue",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The decoupling decision justifies the queue.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.dec-queue"
+      }
+    },
+    {
+      "id": "a.rel-dec-signed-url",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The signed-URL decision justifies the upload service's narrow role and the direct upload.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.dec-signed-url"
+      }
+    },
+    {
+      "id": "a.rel-dec-metadata-apart",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Keeping metadata apart justifies a separate metadata database.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.dec-metadata-apart"
+      }
+    },
+    {
+      "id": "a.rel-dec-cache",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The disposable-cache decision explains the cache's role.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.dec-cache"
+      }
+    },
+    {
+      "id": "a.rel-dec-buy",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The buy-not-build decision justifies the external CDN (and push provider).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.dec-buy"
+      }
+    },
+    {
+      "id": "a.no-queue-to-upload",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "The queue never points back at the upload service.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.queue",
+        "to": "e.upload",
+        "types": [
+          "publishes",
+          "calls",
+          "subscribes",
+          "flows_to"
+        ],
+        "why": "the upload service publishes to the queue; the reverse is a dependency flip"
+      }
+    },
+    {
+      "id": "a.no-queue-to-workers-publish",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "The queue does not subscribe to the workers (subscribes runs consumer → queue).",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.queue",
+        "to": "e.workers",
+        "types": [
+          "subscribes",
+          "publishes"
+        ],
+        "why": "the workers consume from the queue (u15)"
+      }
+    },
+    {
+      "id": "a.no-gateway-upload-bytes",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The mobile app does not upload photos through the gateway as a write.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.api-gateway",
+        "to": "e.object-storage",
+        "types": [
+          "writes",
+          "flows_to",
+          "calls"
+        ],
+        "why": "photo bytes bypass the gateway (u7, u35)"
+      }
+    },
+    {
+      "id": "a.arch-labeled",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "unlabeled_architecture_edge",
+      "description": "Every architecture edge says what it does.",
+      "check": {
+        "check": "architecture_edges_labeled",
+        "types": [
+          "calls",
+          "reads",
+          "writes",
+          "publishes",
+          "subscribes",
+          "depends_on"
+        ]
+      }
+    },
+    {
+      "id": "a.rate-limit",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The rate limit survives exactly on the gateway.",
+      "check": {
+        "check": "text_present",
+        "element": "e.api-gateway",
+        "all": [
+          [
+            "120"
+          ],
+          [
+            "minute",
+            "/min"
+          ]
+        ],
+        "why": "protected number (u9)"
+      }
+    },
+    {
+      "id": "a.fail-closed",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The fail-closed condition sits on the gateway itself.",
+      "check": {
+        "check": "text_present",
+        "element": "e.api-gateway",
+        "all": [
+          [
+            "reject",
+            "fail closed",
+            "fails closed",
+            "deny",
+            "denies",
+            "refuse"
+          ]
+        ],
+        "why": "the condition limits the gateway's token check (u10) and stays with it"
+      }
+    },
+    {
+      "id": "a.thumb-sizes",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The three thumbnail widths survive exactly on the workers.",
+      "check": {
+        "check": "text_present",
+        "element": "e.workers",
+        "all": [
+          [
+            "150"
+          ],
+          [
+            "640"
+          ],
+          [
+            "1080"
+          ]
+        ],
+        "why": "protected numbers (u16)"
+      }
+    },
+    {
+      "id": "a.retention-with-queue",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The 7-day retention bound sits on the queue itself.",
+      "check": {
+        "check": "text_present",
+        "element": "e.queue",
+        "all": [
+          [
+            "7 days",
+            "7-day",
+            "seven days",
+            "7 d"
+          ]
+        ],
+        "why": "the bound qualifies 'does not lose uploads' (u19)"
+      }
+    },
+    {
+      "id": "a.stuck-with-workers",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "critical_exception_omitted",
+      "description": "The stuck-photo caveat sits on the workers.",
+      "check": {
+        "check": "text_present",
+        "element": "e.workers",
+        "all": [
+          [
+            "fail"
+          ],
+          [
+            "processing"
+          ]
+        ],
+        "why": "a photo that keeps failing stays processing and hidden (u20)"
+      }
+    },
+    {
+      "id": "a.cache-ttl",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The cache's 60 seconds and copy status survive.",
+      "check": {
+        "check": "text_present",
+        "element": "e.cache",
+        "all": [
+          [
+            "60 seconds",
+            "60 s",
+            "60-second",
+            "60s"
+          ],
+          [
+            "copy",
+            "disposable",
+            "slower"
+          ]
+        ],
+        "why": "protected number and the not-source-of-truth caveat (u23, u24)"
+      }
+    },
+    {
+      "id": "a.upload-size",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The 25 MB figure survives on the signed-URL decision.",
+      "check": {
+        "check": "text_present",
+        "element": "e.dec-signed-url",
+        "all": [
+          [
+            "25 mb"
+          ]
+        ],
+        "why": "protected number (u35)"
+      }
+    },
+    {
+      "id": "a.queue-cost",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The queue decision keeps its cost.",
+      "check": {
+        "check": "text_present",
+        "element": "e.dec-queue",
+        "all": [
+          [
+            "few seconds",
+            "delay",
+            "seconds"
+          ]
+        ],
+        "why": "a decision without its trade-off reads as free (u34)"
+      }
+    },
+    {
+      "id": "a.no-invented-tech",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "No technology, module, function or path the source doesn't name.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "\\b(kafka|rabbitmq|sqs|sns|s3|gcs|postgres(ql)?|mysql|dynamodb|redis|memcached|cloudfront|fastly|akamai|firebase|apns|fcm|lambda|kubernetes)\\b|\\b[\\w/-]+\\.(ts|js|py|go|java|rb)\\b|\\bsrc/",
+        "why": "the source is HLD only and names none of these (u3, u4)"
+      }
+    },
+    {
+      "id": "a.no-cache-truth",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The cache is never called the source of truth.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "cache (is|as|stays|remains) the source of truth",
+        "why": "the metadata database is the source of truth (u22, u37)"
+      }
+    },
+    {
+      "id": "a.no-retry-policy",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "No retry policy is invented for failed processing.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "\\b(retried|retries|retry) (up to )?\\d+|\\b\\d+ (retries|attempts)\\b|exponential backoff|dead[- ]letter",
+        "why": "retry and clean-up are undecided (u39)"
+      }
+    },
+    {
+      "id": "a.no-never-lost",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "possibility_to_guarantee",
+      "description": "No unconditional 'never lost' claim.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "\\b(never (be )?lost|guaranteed delivery|exactly[- ]once)\\b",
+        "why": "uploads survive only within the 7-day retention (u19)"
+      }
+    },
+    {
+      "id": "a.layout",
+      "dimension": "visual",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No link runs through a card.",
+      "check": {
+        "check": "layout_no_fatal"
+      }
+    },
+    {
+      "id": "a.no-overlap",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Cards don't overlap.",
+      "check": {
+        "check": "cards_no_overlap"
+      }
+    },
+    {
+      "id": "a.inside-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames are large enough for their cards.",
+      "check": {
+        "check": "children_inside_frames"
+      }
+    },
+    {
+      "id": "a.frames-apart",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames don't overlap.",
+      "check": {
+        "check": "frames_no_overlap"
+      }
+    },
+    {
+      "id": "a.lens-node-pinhole",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens shows pinhole at its level.",
+      "check": {
+        "check": "lens_node",
+        "key": "pinhole"
+      }
+    },
+    {
+      "id": "a.lens-node-mobile-app",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens shows mobile-app at its level.",
+      "check": {
+        "check": "lens_node",
+        "key": "mobile-app"
+      }
+    },
+    {
+      "id": "a.lens-node-cdn",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens shows cdn at its level.",
+      "check": {
+        "check": "lens_node",
+        "key": "cdn"
+      }
+    },
+    {
+      "id": "a.lens-node-push-provider",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens shows push-provider at its level.",
+      "check": {
+        "check": "lens_node",
+        "key": "push-provider"
+      }
+    },
+    {
+      "id": "a.lens-node-api-gateway",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens shows api-gateway at its level.",
+      "check": {
+        "check": "lens_node",
+        "key": "api-gateway"
+      }
+    },
+    {
+      "id": "a.lens-node-upload-service",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens shows upload-service at its level.",
+      "check": {
+        "check": "lens_node",
+        "key": "upload-service"
+      }
+    },
+    {
+      "id": "a.lens-node-message-queue",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens shows message-queue at its level.",
+      "check": {
+        "check": "lens_node",
+        "key": "message-queue"
+      }
+    },
+    {
+      "id": "a.lens-node-media-workers",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens shows media-workers at its level.",
+      "check": {
+        "check": "lens_node",
+        "key": "media-workers"
+      }
+    },
+    {
+      "id": "a.lens-node-metadata-db",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens shows metadata-db at its level.",
+      "check": {
+        "check": "lens_node",
+        "key": "metadata-db"
+      }
+    },
+    {
+      "id": "a.lens-node-photo-records",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens shows photo-records at its level.",
+      "check": {
+        "check": "lens_node",
+        "key": "photo-records"
+      }
+    },
+    {
+      "id": "a.lens-edge-l0-mobile-pinhole",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens edge r.l0-mobile-pinhole with the right relation, direction and a label.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.l0-mobile-pinhole"
+      }
+    },
+    {
+      "id": "a.lens-edge-l0-pinhole-push",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens edge r.l0-pinhole-push with the right relation, direction and a label.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.l0-pinhole-push"
+      }
+    },
+    {
+      "id": "a.lens-edge-l0-cdn-pinhole",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens edge r.l0-cdn-pinhole with the right relation, direction and a label.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.l0-cdn-pinhole"
+      }
+    },
+    {
+      "id": "a.lens-edge-l1-gateway-upload",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens edge r.l1-gateway-upload with the right relation, direction and a label.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.l1-gateway-upload"
+      }
+    },
+    {
+      "id": "a.lens-edge-l1-upload-queue",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "Lens edge r.l1-upload-queue with the right relation, direction and a label.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.l1-upload-queue"
+      }
+    },
+    {
+      "id": "a.lens-edge-l1-workers-subscribe",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens edge r.l1-workers-subscribe with the right relation, direction and a label.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.l1-workers-subscribe"
+      }
+    },
+    {
+      "id": "a.lens-edge-l1-feed-subscribe",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens edge r.l1-feed-subscribe with the right relation, direction and a label.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.l1-feed-subscribe"
+      }
+    },
+    {
+      "id": "a.lens-edge-l1-upload-metadata",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "Lens edge r.l1-upload-metadata with the right relation, direction and a label.",
+      "check": {
+        "check": "lens_edge",
+        "edge": "r.l1-upload-metadata"
+      }
+    },
+    {
+      "id": "a.lens-drill-system",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "The Pinhole system node drills into the L1 architecture frame.",
+      "check": {
+        "check": "lens_drill",
+        "from": "pinhole",
+        "to": "pinhole.architecture"
+      }
+    },
+    {
+      "id": "a.lens-drill-metadata",
+      "dimension": "architecture_lens",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "The metadata database drills into its stated record kinds (the only L2 detail the source gives).",
+      "check": {
+        "check": "lens_drill",
+        "from": "metadata-db",
+        "to": "pinhole.metadata-db"
+      }
+    },
+    {
+      "id": "a.lens-identity-cdn",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "regression": "inconsistent_identity_across_levels",
+      "description": "cdn keeps one identity (key and kind) wherever it appears in Lens.",
+      "check": {
+        "check": "lens_identity",
+        "key": "cdn"
+      }
+    },
+    {
+      "id": "a.lens-identity-push-provider",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "push-provider keeps one identity (key and kind) wherever it appears in Lens.",
+      "check": {
+        "check": "lens_identity",
+        "key": "push-provider"
+      }
+    },
+    {
+      "id": "a.lens-identity-mobile-app",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "mobile-app keeps one identity (key and kind) wherever it appears in Lens.",
+      "check": {
+        "check": "lens_identity",
+        "key": "mobile-app"
+      }
+    },
+    {
+      "id": "a.lens-identity-upload-service",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "upload-service keeps one identity (key and kind) wherever it appears in Lens.",
+      "check": {
+        "check": "lens_identity",
+        "key": "upload-service"
+      }
+    },
+    {
+      "id": "a.lens-leaf-upload-service",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "upload-service has no drill-down and no code evidence: the source gives no internals for it.",
+      "check": {
+        "check": "lens_no_children",
+        "key": "upload-service",
+        "why": "HLD only: no component, flow, operation or code detail is stated (u4)"
+      }
+    },
+    {
+      "id": "a.lens-leaf-feed-service",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "feed-service has no drill-down and no code evidence: the source gives no internals for it.",
+      "check": {
+        "check": "lens_no_children",
+        "key": "feed-service",
+        "why": "HLD only: no component, flow, operation or code detail is stated (u4)"
+      }
+    },
+    {
+      "id": "a.lens-leaf-media-workers",
+      "dimension": "architecture_lens",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "media-workers has no drill-down and no code evidence: the source gives no internals for it.",
+      "check": {
+        "check": "lens_no_children",
+        "key": "media-workers",
+        "why": "HLD only: no component, flow, operation or code detail is stated (u4)"
+      }
+    },
+    {
+      "id": "a.lens-leaf-api-gateway",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "api-gateway has no drill-down and no code evidence: the source gives no internals for it.",
+      "check": {
+        "check": "lens_no_children",
+        "key": "api-gateway",
+        "why": "HLD only: no component, flow, operation or code detail is stated (u4)"
+      }
+    },
+    {
+      "id": "a.lens-leaf-auth-service",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "auth-service has no drill-down and no code evidence: the source gives no internals for it.",
+      "check": {
+        "check": "lens_no_children",
+        "key": "auth-service",
+        "why": "HLD only: no component, flow, operation or code detail is stated (u4)"
+      }
+    },
+    {
+      "id": "a.lens-path",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "lens",
+      "support": "implemented",
+      "description": "A reader can navigate client → system → upload service → metadata database → photo records.",
+      "check": {
+        "check": "lens_path",
+        "path": "p.post-photo"
+      }
+    },
+    {
+      "id": "a.lens-unavailable",
+      "dimension": "architecture_lens",
+      "severity": "major",
+      "method": "human",
+      "target": "lens",
+      "support": "partial",
+      "requires": [
+        "lens.confidence-marking"
+      ],
+      "description": "Lens marks L3 Flow, L4 Operation and L5 Source as unavailable with the reason (HLD only), instead of inventing or silently omitting them.",
+      "judge": {
+        "question": "Do the Flow, Operation and Source levels say that the source has no detail at that depth, without showing invented nodes?",
+        "pass": "Each of L3-L5 is empty and labelled unavailable (the source is HLD only); L2 shows only the metadata database's two stated record kinds and is marked partial.",
+        "fail": "Any of L3-L5 shows invented flows, functions or code, or the levels are silently missing so a reader can't tell why."
+      }
+    },
+    {
+      "id": "a.cites",
+      "dimension": "traceability",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "future",
+      "requires": [
+        "ai.cites"
+      ],
+      "description": "Every card and edge cites its units: e.g. upload→queue u13; workers subscribe u15; queue card u13, u15, u19; gateway card u8-u10; decisions u34-u38; open questions u39-u40. No card cites a unit it doesn't represent."
+    },
+    {
+      "id": "a.accounting",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "future",
+      "requires": [
+        "ai.unit-accounting",
+        "ai.source-unit-ids"
+      ],
+      "description": "All 40 units are Represented, or Intentionally omitted as duplicate (u29-u32 restate u7, u13, u16, u18); none of the 13 critical units is omitted."
+    },
+    {
+      "id": "a.judge-hld-depth",
+      "dimension": "element_selection",
+      "severity": "critical",
+      "method": "model_judge",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The canvas stays at HLD depth.",
+      "judge": {
+        "question": "Does the canvas stay at container level, adding no internal modules, functions, endpoints, schemas, technologies or retry policies that the source does not state?",
+        "pass": "Only the 13 stated parts appear, with responsibilities from the source; open questions stay open.",
+        "fail": "The canvas invents internals (a 'ThumbnailResizer' class, an S3 bucket, a Kafka topic, a retry count) or presents the open questions as decided."
+      }
+    },
+    {
+      "id": "a.judge-decisions",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "human",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Decisions keep their reasons and costs.",
+      "judge": {
+        "question": "Compare each decision card with u34-u38. Is each reason and accepted cost kept, and is each card linked to the component it justifies?",
+        "pass": "The queue keeps its few-seconds cost, signed URLs their 25 MB/bottleneck reason, buy-not-build its accepted outages; each card points at its component.",
+        "fail": "A reason or cost is dropped, swapped between decisions, or a decision floats unlinked."
+      }
+    },
+    {
+      "id": "a.judge-boundary",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "model_judge",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The system boundary reads clearly.",
+      "judge": {
+        "question": "Can a reader tell at a glance which parts Pinhole operates and which are third parties?",
+        "pass": "CDN and push provider sit in their own frame marked external/outside the boundary; everything else is inside.",
+        "fail": "External systems are mixed into internal frames, or nothing marks them as third parties."
+      }
+    }
+  ]
+}

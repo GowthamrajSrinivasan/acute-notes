@@ -1,0 +1,201 @@
+{
+  "id": "kn-03-blue-green-deploy",
+  "kind": "tutorial",
+  "source": "# Blue-green deployment for the orders service\n\nThis tutorial walks through a blue-green release of `orders-api`, a fictional web service, from a fresh build to a cleaned-up environment. It assumes you already run the service behind a load balancer.\n\n## How blue-green works\n\nYou keep two identical production environments, called blue and green. One of them serves all live traffic while the other sits idle; you deploy the new version to the idle one, test it there, and then move traffic over in one step. Because the old environment is still running, going back is the same one-step switch. The cost is running twice the infrastructure during a release, which is why the idle environment is scaled down between releases.\n\n## Before you start\n\nYou need the following in place before the first release:\n\n- Two identical environments, `orders-blue` and `orders-green`, with the same instance count, instance size and configuration.\n- A health endpoint, `GET /healthz`, that returns `200` only when the service can reach its database and its queue.\n- Database migrations that are backward compatible, so the old version keeps working against the new schema. This is a hard requirement: both versions share one database, and a rollback does not undo a migration.\n- Access to the load balancer's listener rules, because the switch is a change to which target group the listener forwards to.\n- A dashboard or query that shows the 5xx error rate per environment, so you can tell green's errors from blue's.\n\nIf any migration is not backward compatible, do not use this procedure; split the migration into an additive release first and a cleanup release later.\n\n## Steps\n\nIn this walkthrough blue is live and green is idle.\n\n1. **Deploy to the idle environment.** Deploy version `2.8.0` to `orders-green`, using the same build artifact that passed staging rather than a fresh build. Expected result: all green instances report the new version, and blue still serves 100% of traffic.\n\n2. **Run the migrations.** Apply the database migrations from the new release, once, from a single job rather than from every green instance at startup. Expected result: the migration job exits with code 0, and blue keeps serving requests without new errors, which confirms the change is backward compatible.\n\n3. **Check health on green.** Poll the health endpoint on every green instance until all of them return `200`. If any instance is still failing health checks after 10 minutes, stop here and roll back: tear down green and leave blue serving traffic. Nothing has been switched yet, so customers are unaffected.\n\n4. **Smoke-test green.** Send the smoke-test suite to green's internal address. Expected result: all smoke tests pass. If one fails, treat it like a failed health check and stop.\n\n5. **Switch traffic.** Point the listener at the green target group:\n\n   ```bash\n   aws elbv2 modify-listener \\\n     --listener-arn \"$ORDERS_LISTENER_ARN\" \\\n     --default-actions Type=forward,TargetGroupArn=\"$GREEN_TG_ARN\"\n   ```\n\n   Expected result: within about 30 seconds, new requests are served by green, and blue receives no new connections.\n\n6. **Watch the error rate.** Observe the 5xx error rate on green for 15 minutes after the switch. If the error rate rises above 2% at any point in that window, switch back: run the same command with `$BLUE_TG_ARN`, which returns all traffic to blue within about 30 seconds. If it stays at or below 2%, continue.\n\n7. **Keep blue as a standby.** Leave blue running, unchanged, for 24 hours. It is your rollback target until then.\n\n8. **Retire blue.** After 24 hours without a switch-back, scale blue down. Blue becomes the idle environment for the next release, with the roles reversed.\n\n## When things go wrong\n\nA rollback before step 5 is cheap, because customers never saw green. A switch-back after step 5 is also fast, but requests that were in flight on green during the switch may fail and need a client retry. Neither kind of rollback reverts the database, which is why the backward-compatible migration requirement matters. Whichever way you roll back, record what failed before trying again, because a second attempt with the same build tends to fail the same way.\n\nDo not run the next release's migrations while blue is still on standby. If you do, the standby may no longer work against the schema, and the switch-back stops being a safe option.\n\nThat's all there is to it. Happy deploying!\n",
+  "critical": [
+    {
+      "quote": "Two identical environments, `orders-blue` and `orders-green`, with the same instance count, instance size and configuration.",
+      "why": "Prerequisite."
+    },
+    {
+      "quote": "A health endpoint, `GET /healthz`, that returns `200` only when the service can reach its database and its queue.",
+      "why": "Prerequisite; the health check in step 3 relies on it."
+    },
+    {
+      "quote": "Database migrations that are backward compatible, so the old version keeps working against the new schema. This is a hard requirement: both versions share one database, and a rollback does not undo a migration.",
+      "why": "The hard requirement; without it a rollback is unsafe."
+    },
+    {
+      "quote": "Access to the load balancer's listener rules, because the switch is a change to which target group the listener forwards to.",
+      "why": "Prerequisite for step 5."
+    },
+    {
+      "quote": "A dashboard or query that shows the 5xx error rate per environment, so you can tell green's errors from blue's.",
+      "why": "Prerequisite for step 6."
+    },
+    {
+      "quote": "If any migration is not backward compatible, do not use this procedure; split the migration into an additive release first and a cleanup release later.",
+      "why": "When not to use the procedure at all."
+    },
+    {
+      "quote": "If any instance is still failing health checks after 10 minutes, stop here and roll back: tear down green and leave blue serving traffic.",
+      "why": "First branch: the 10-minute health timeout and what to do."
+    },
+    {
+      "quote": "If one fails, treat it like a failed health check and stop.",
+      "why": "Second branch: a failing smoke test stops the release."
+    },
+    {
+      "quote": "aws elbv2 modify-listener \\\n     --listener-arn \"$ORDERS_LISTENER_ARN\" \\\n     --default-actions Type=forward,TargetGroupArn=\"$GREEN_TG_ARN\"",
+      "why": "The command must stay code, exactly."
+    },
+    {
+      "quote": "**Watch the error rate.** Observe the 5xx error rate on green for 15 minutes after the switch.",
+      "why": "The observation window."
+    },
+    {
+      "quote": "If the error rate rises above 2% at any point in that window, switch back: run the same command with `$BLUE_TG_ARN`, which returns all traffic to blue within about 30 seconds.",
+      "why": "Third branch: the 2% switch-back threshold."
+    },
+    {
+      "quote": "If it stays at or below 2%, continue.",
+      "why": "The other side of the 2% branch."
+    },
+    {
+      "quote": "**Keep blue as a standby.** Leave blue running, unchanged, for 24 hours.",
+      "why": "The standby window."
+    },
+    {
+      "quote": "A switch-back after step 5 is also fast, but requests that were in flight on green during the switch may fail and need a client retry.",
+      "why": "The cost of a switch-back."
+    },
+    {
+      "quote": "Do not run the next release's migrations while blue is still on standby.",
+      "why": "Keeps the standby usable."
+    }
+  ],
+  "exact": [
+    "orders-blue",
+    "orders-green",
+    "GET /healthz",
+    "200",
+    "2.8.0",
+    "100%",
+    "10 minutes",
+    "modify-listener",
+    "--default-actions",
+    "$GREEN_TG_ARN",
+    "$ORDERS_LISTENER_ARN",
+    "30 seconds",
+    "15 minutes",
+    "2%",
+    "$BLUE_TG_ARN",
+    "24 hours"
+  ],
+  "groups": {
+    "together": [
+      [
+        "orders-blue and orders-green are identical",
+        "GET /healthz returns 200 only when database and queue are reachable",
+        "Migrations must be backward compatible (one shared database; rollback doesn't undo them) — otherwise don't use this procedure",
+        "Access to the load balancer's listener rules",
+        "A per-environment 5xx error-rate dashboard"
+      ],
+      [
+        "5. Switch traffic to green (expected within about 30 seconds)",
+        "aws elbv2 modify-listener … $GREEN_TG_ARN"
+      ],
+      [
+        "Before the switch: tear down green, blue keeps serving — customers unaffected",
+        "After the switch: switch back with $BLUE_TG_ARN (about 30 seconds); in-flight requests may fail"
+      ]
+    ],
+    "apart": [
+      [
+        "Migrations must be backward compatible (one shared database; rollback doesn't undo them) — otherwise don't use this procedure",
+        "2. Run migrations once (expected: exit code 0, blue unaffected)"
+      ]
+    ]
+  },
+  "hierarchy": [
+    {
+      "main": "5. Switch traffic to green (expected within about 30 seconds)",
+      "supporting": [
+        "aws elbv2 modify-listener … $GREEN_TG_ARN"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "1. Deploy 2.8.0 to orders-green (expected: blue still serves 100%)",
+      "to": "2. Run migrations once (expected: exit code 0, blue unaffected)",
+      "type": "flows_to"
+    },
+    {
+      "from": "2. Run migrations once (expected: exit code 0, blue unaffected)",
+      "to": "3. All green instances return 200 within 10 minutes?",
+      "type": "flows_to"
+    },
+    {
+      "from": "3. All green instances return 200 within 10 minutes?",
+      "to": "4. Smoke tests pass on green?",
+      "type": "flows_to",
+      "label": "all healthy (200)"
+    },
+    {
+      "from": "3. All green instances return 200 within 10 minutes?",
+      "to": "Before the switch: tear down green, blue keeps serving — customers unaffected",
+      "type": "flows_to",
+      "label": "still failing after 10 minutes"
+    },
+    {
+      "from": "4. Smoke tests pass on green?",
+      "to": "5. Switch traffic to green (expected within about 30 seconds)",
+      "type": "flows_to",
+      "label": "all pass"
+    },
+    {
+      "from": "4. Smoke tests pass on green?",
+      "to": "Before the switch: tear down green, blue keeps serving — customers unaffected",
+      "type": "flows_to",
+      "label": "a test fails"
+    },
+    {
+      "from": "5. Switch traffic to green (expected within about 30 seconds)",
+      "to": "aws elbv2 modify-listener … $GREEN_TG_ARN",
+      "type": "explained_by",
+      "label": "command"
+    },
+    {
+      "from": "5. Switch traffic to green (expected within about 30 seconds)",
+      "to": "6. 5xx error rate above 2% within 15 minutes?",
+      "type": "flows_to"
+    },
+    {
+      "from": "6. 5xx error rate above 2% within 15 minutes?",
+      "to": "After the switch: switch back with $BLUE_TG_ARN (about 30 seconds); in-flight requests may fail",
+      "type": "flows_to",
+      "label": "above 2%: switch back"
+    },
+    {
+      "from": "6. 5xx error rate above 2% within 15 minutes?",
+      "to": "7. Keep blue on standby for 24 hours — no next-release migrations meanwhile",
+      "type": "flows_to",
+      "label": "at or below 2%: continue"
+    },
+    {
+      "from": "7. Keep blue on standby for 24 hours — no next-release migrations meanwhile",
+      "to": "8. Retire blue: scale it down",
+      "type": "flows_to",
+      "label": "after 24 hours"
+    }
+  ],
+  "mustNotSay": [
+    {
+      "text": "Rolling back (or switching back) reverts the database migrations.",
+      "why": "The source says a rollback does not undo a migration; that is why migrations must be backward compatible."
+    },
+    {
+      "text": "Traffic can be switched before the health checks and smoke tests pass.",
+      "why": "Steps 3 and 4 gate step 5."
+    },
+    {
+      "text": "Any error after the switch means you must switch back.",
+      "why": "The threshold is a 5xx rate above 2% within 15 minutes."
+    },
+    {
+      "text": "A non-backward-compatible migration is acceptable because you can roll back.",
+      "why": "The source says not to use the procedure at all in that case."
+    }
+  ]
+}

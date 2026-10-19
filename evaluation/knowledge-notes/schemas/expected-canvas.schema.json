@@ -1,0 +1,606 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "datasetVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "caseId": {
+      "type": "string",
+      "pattern": "^kn-\\d{2}-[a-z0-9-]+$"
+    },
+    "template": {
+      "type": "string",
+      "enum": [
+        "flow",
+        "problem_cause_solution",
+        "concept_map",
+        "timeline",
+        "decision_tree",
+        "architecture",
+        "comparison",
+        "action_plan",
+        "sectioned",
+        "causal_map"
+      ]
+    },
+    "templateNote": {
+      "type": "string"
+    },
+    "frames": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^f\\.[a-z0-9-]+$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "titleMatch": {
+            "type": "object",
+            "properties": {
+              "all": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "required": [
+              "all"
+            ]
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "children": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^e\\.[a-z0-9-]+$"
+            }
+          },
+          "arrangement": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "chain",
+              "tree",
+              "compare",
+              "radial",
+              "stack"
+            ]
+          },
+          "diagram": {
+            "type": "string",
+            "const": "architecture"
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "expansion": {
+            "type": "string"
+          },
+          "separateFrom": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "frame": {
+                  "type": "string",
+                  "pattern": "^f\\.[a-z0-9-]+$"
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "frame",
+                "reason"
+              ]
+            }
+          },
+          "requirement": {
+            "type": "string",
+            "enum": [
+              "mandatory",
+              "optional",
+              "conditional"
+            ]
+          },
+          "support": {
+            "type": "string",
+            "enum": [
+              "implemented",
+              "partial",
+              "future"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "titleMatch",
+          "purpose",
+          "rationale",
+          "children",
+          "requirement",
+          "support"
+        ]
+      }
+    },
+    "elements": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^e\\.[a-z0-9-]+$"
+          },
+          "element": {
+            "type": "string",
+            "enum": [
+              "heading",
+              "text_card",
+              "takeaway",
+              "shape",
+              "table",
+              "code",
+              "todo",
+              "page",
+              "image",
+              "diagram_card"
+            ]
+          },
+          "planNodeTypes": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "heading",
+                "text",
+                "todo",
+                "table",
+                "code",
+                "page",
+                "shape",
+                "image",
+                "group"
+              ]
+            }
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          },
+          "knowledge": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^ku\\.[a-z0-9-]+$"
+            }
+          },
+          "match": {
+            "type": "object",
+            "properties": {
+              "all": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "required": [
+              "all"
+            ]
+          },
+          "hierarchy": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "secondary",
+              "detail"
+            ]
+          },
+          "frame": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^f\\.[a-z0-9-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "outsideFrameReason": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "frontend",
+              "backend",
+              "database",
+              "cloud",
+              "security",
+              "messagebus",
+              "external",
+              "endpoint",
+              "step",
+              "function",
+              "event",
+              "store",
+              "project",
+              "decision",
+              "constraint",
+              "finding",
+              "open_question",
+              "risk",
+              "milestone",
+              "progress_item",
+              "annotation"
+            ]
+          },
+          "layout": {
+            "type": "string"
+          },
+          "requirement": {
+            "type": "string",
+            "enum": [
+              "mandatory",
+              "optional",
+              "conditional"
+            ]
+          },
+          "condition": {
+            "type": "string"
+          },
+          "support": {
+            "type": "string",
+            "enum": [
+              "implemented",
+              "partial",
+              "future"
+            ]
+          },
+          "supportNote": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "element",
+          "planNodeTypes",
+          "role",
+          "content",
+          "knowledge",
+          "match",
+          "hierarchy",
+          "frame",
+          "requirement",
+          "support"
+        ]
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^r\\.[a-z0-9-]+$"
+          },
+          "from": {
+            "type": "string",
+            "pattern": "^e\\.[a-z0-9-]+$"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^e\\.[a-z0-9-]+$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "relates_to",
+              "flows_to",
+              "caused_by",
+              "depends_on",
+              "supports",
+              "blocks",
+              "implements",
+              "derived_from",
+              "references",
+              "explained_by",
+              "supersedes",
+              "deviates_from",
+              "option_of",
+              "calls",
+              "reads",
+              "writes",
+              "publishes",
+              "subscribes",
+              "contains",
+              "contrasts_with",
+              "refines",
+              "part_of",
+              "evidenced_by",
+              "causes",
+              "uses",
+              "proposed_by"
+            ]
+          },
+          "acceptableTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "relates_to",
+                "flows_to",
+                "caused_by",
+                "depends_on",
+                "supports",
+                "blocks",
+                "implements",
+                "derived_from",
+                "references",
+                "explained_by",
+                "supersedes",
+                "deviates_from",
+                "option_of",
+                "calls",
+                "reads",
+                "writes",
+                "publishes",
+                "subscribes",
+                "contains"
+              ]
+            }
+          },
+          "label": {
+            "type": "object",
+            "properties": {
+              "required": {
+                "type": "boolean"
+              },
+              "text": {
+                "type": "string"
+              },
+              "match": {
+                "type": "object",
+                "properties": {
+                  "all": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "all"
+                ]
+              }
+            },
+            "required": [
+              "required"
+            ]
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "directed",
+              "bidirectional"
+            ]
+          },
+          "explanation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^u\\d+$"
+            }
+          },
+          "provenance": {
+            "type": "string",
+            "enum": [
+              "explicit",
+              "inferred"
+            ]
+          },
+          "inferenceAllowed": {
+            "type": "boolean"
+          },
+          "reviewRequired": {
+            "type": "boolean"
+          },
+          "requirement": {
+            "type": "string",
+            "enum": [
+              "mandatory",
+              "optional",
+              "conditional"
+            ]
+          },
+          "support": {
+            "type": "string",
+            "enum": [
+              "implemented",
+              "partial",
+              "future"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "from",
+          "to",
+          "type",
+          "label",
+          "direction",
+          "explanation",
+          "evidence",
+          "provenance",
+          "inferenceAllowed",
+          "reviewRequired",
+          "requirement",
+          "support"
+        ]
+      }
+    },
+    "together": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "elements": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^e\\.[a-z0-9-]+$"
+            }
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "elements",
+          "reason"
+        ]
+      }
+    },
+    "keepSeparate": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "elements": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^e\\.[a-z0-9-]+$"
+            }
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "elements",
+          "reason"
+        ]
+      }
+    },
+    "hierarchy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "main": {
+            "type": "string",
+            "pattern": "^e\\.[a-z0-9-]+$"
+          },
+          "supporting": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^e\\.[a-z0-9-]+$"
+            }
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "main",
+          "supporting",
+          "reason"
+        ]
+      }
+    },
+    "unsupported": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "capability": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ideal": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expectedToday": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "capability",
+          "ideal",
+          "expectedToday"
+        ]
+      }
+    }
+  },
+  "required": [
+    "datasetVersion",
+    "caseId",
+    "template",
+    "frames",
+    "elements",
+    "relationships"
+  ]
+}

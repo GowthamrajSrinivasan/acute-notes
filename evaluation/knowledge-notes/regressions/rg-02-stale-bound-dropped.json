@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-stale-bound-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The 60-second bound on stale-while-revalidate disappears, so the card reads as if expired copies are served until a refresh happens to finish.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n6",
+      "find": "Bounded: an expired copy is served for at most 60 seconds past its TTL; after that the edge waits for the origin as on an ordinary miss.",
+      "replace": "An expired copy keeps being served while the edge refreshes it."
+    }
+  ],
+  "expectFailing": [
+    "a.swr-bound"
+  ]
+}

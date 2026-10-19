@@ -1,0 +1,23 @@
+A current (bold labels)
+  previous 24075 chars, incoming 100408
+  topics 95 (tiny <60 chars: 15; turn-label topics: 2); parts 365, repeats skipped 128, to assign 237
+  top-level parts (no parent): 88; parts with no sibling under their parent: 27; turn-label parts: 7; parts under 150 chars: 128
+  Jev per-part requests: 237, ~2451k input tokens (3 chars/token), ~0.103
+
+B question headings, answers demoted
+  previous 24332 chars, incoming 101424
+  topics 3 (tiny <60 chars: 0; turn-label topics: 0); parts 13, repeats skipped 4, to assign 9
+  top-level parts (no parent): 0; parts with no sibling under their parent: 0; turn-label parts: 0; parts under 150 chars: 0
+  Jev per-part requests: 9, ~56k input tokens (3 chars/token), ~0.002
+
+C quoted questions, no labels
+  previous 23950 chars, incoming 100019
+  topics 94 (tiny <60 chars: 15; turn-label topics: 0); parts 359, repeats skipped 128, to assign 231
+  top-level parts (no parent): 88; parts with no sibling under their parent: 28; turn-label parts: 0; parts under 150 chars: 124
+  Jev per-part requests: 231, ~2376k input tokens (3 chars/token), ~0.100
+
+D C + answer headings one level down (under the chat title)
+  previous 24042 chars, incoming 100350
+  topics 34 (tiny <60 chars: 0; turn-label topics: 0); parts 137, repeats skipped 21, to assign 116
+  top-level parts (no parent): 2; parts with no sibling under their parent: 0; turn-label parts: 0; parts under 150 chars: 16
+  Jev per-part requests: 116, ~886k input tokens (3 chars/token), ~0.037

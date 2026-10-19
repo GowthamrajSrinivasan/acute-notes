@@ -1,0 +1,478 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-03-blue-green-deploy",
+  "units": [
+    {
+      "id": "ku.concept",
+      "title": "Two identical environments; switch traffic in one step",
+      "claim": "Blue and green are identical production environments: one serves live traffic while the other is idle; you deploy to the idle one, test it, move traffic in one step, and go back with the same switch. The cost is twice the infrastructure during a release.",
+      "explanation": "Orients the reader before the procedure.",
+      "type": "concept",
+      "importance": "important",
+      "sourceUnits": [
+        "u3",
+        "u4",
+        "u5",
+        "u6"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.prereq-envs",
+      "title": "Two identical environments",
+      "claim": "orders-blue and orders-green must have the same instance count, instance size and configuration.",
+      "explanation": "Prerequisite.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u8"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "orders-blue",
+        "orders-green"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.prereq-health",
+      "title": "A health endpoint that checks dependencies",
+      "claim": "GET /healthz returns 200 only when the service can reach its database and its queue.",
+      "explanation": "Prerequisite for step 3.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u9"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "GET /healthz",
+        "200"
+      ],
+      "mustPreserve": [
+        "only when the service can reach its database and its queue"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.prereq-migrations",
+      "title": "Migrations must be backward compatible",
+      "claim": "Database migrations must be backward compatible so the old version keeps working on the new schema; both versions share one database and a rollback does not undo a migration.",
+      "explanation": "The hard requirement of the whole procedure.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u10"
+      ],
+      "provenance": "explicit",
+      "mustPreserve": [
+        "hard requirement",
+        "a rollback does not undo a migration"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.non-compatible",
+      "title": "Not backward compatible: don't use this procedure",
+      "claim": "If any migration is not backward compatible, do not use this procedure; split it into an additive release and a later cleanup release.",
+      "explanation": "The condition under which the procedure must not run; stays with the requirement.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": [
+        "u13"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.prereq-migrations",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.prereq-lb",
+      "title": "Access to the load balancer's listener rules",
+      "claim": "The service runs behind a load balancer and you need access to its listener rules, because the switch changes which target group the listener forwards to.",
+      "explanation": "Prerequisite for step 5.",
+      "type": "constraint",
+      "importance": "important",
+      "sourceUnits": [
+        "u2",
+        "u11"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.prereq-dashboard",
+      "title": "A per-environment 5xx error dashboard",
+      "claim": "A dashboard or query must show the 5xx error rate per environment so green's errors can be told from blue's.",
+      "explanation": "Prerequisite for step 6.",
+      "type": "constraint",
+      "importance": "important",
+      "sourceUnits": [
+        "u12"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.step-deploy",
+      "title": "Step 1: deploy the staged build to idle green",
+      "claim": "With blue live, deploy the new version to orders-green from the same artifact that passed staging; expected: all green instances report it and blue still serves 100% of traffic.",
+      "explanation": "First step.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u14",
+        "u15",
+        "u16"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "2.8.0",
+        "100%"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.step-migrate",
+      "title": "Step 2: run the migrations once",
+      "claim": "Apply the release's migrations once from a single job; expected: the job exits with code 0 and blue keeps serving without new errors.",
+      "explanation": "Second step; also a live check of backward compatibility.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u17",
+        "u18"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.step-health",
+      "title": "Step 3: all green instances must return 200",
+      "claim": "Poll the health endpoint on every green instance until all return 200.",
+      "explanation": "Third step: the first decision point.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u19"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.health-rollback",
+      "title": "Unhealthy after 10 minutes: tear down green",
+      "claim": "If any instance still fails health checks after 10 minutes, stop and roll back: tear down green and leave blue serving; nothing was switched, so customers are unaffected.",
+      "explanation": "The first branch; its threshold must stay on the branch.",
+      "type": "decision",
+      "importance": "critical",
+      "sourceUnits": [
+        "u20",
+        "u21"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "10 minutes"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.step-smoke",
+      "title": "Step 4: smoke tests must pass",
+      "claim": "Run the smoke-test suite against green's internal address; all must pass, and a failure stops the release like a failed health check.",
+      "explanation": "Second decision point.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u22",
+        "u23",
+        "u24"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.step-switch",
+      "title": "Step 5: point the listener at green",
+      "claim": "Point the listener at the green target group with the modify-listener command; expected: within about 30 seconds new requests go to green and blue gets no new connections.",
+      "explanation": "The switch; the command stays code.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u25",
+        "u26",
+        "u27"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "modify-listener",
+        "$GREEN_TG_ARN",
+        "30 seconds"
+      ],
+      "paraphrase": {
+        "allowed": true,
+        "note": "The command itself is never paraphrased."
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.step-watch",
+      "title": "Step 6: watch the 5xx rate for 15 minutes",
+      "claim": "Watch green's 5xx error rate for 15 minutes after the switch; if it stays at or below 2%, continue.",
+      "explanation": "Third decision point.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u28",
+        "u30"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "15 minutes",
+        "2%"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.switch-back",
+      "title": "Above 2%: switch back to blue",
+      "claim": "If the error rate rises above 2% at any point in the window, switch back by running the same command with $BLUE_TG_ARN; traffic returns to blue within about 30 seconds.",
+      "explanation": "The branch after the switch.",
+      "type": "decision",
+      "importance": "critical",
+      "sourceUnits": [
+        "u29"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "2%",
+        "$BLUE_TG_ARN"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.inflight",
+      "title": "A switch-back can fail in-flight requests",
+      "claim": "A switch-back after the switch is fast, but requests in flight on green during it may fail and need a client retry.",
+      "explanation": "Qualifies the switch-back.",
+      "type": "caveat",
+      "importance": "important",
+      "sourceUnits": [
+        "u36"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.switch-back",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.rollback-before",
+      "title": "A rollback before the switch is cheap",
+      "claim": "A rollback before step 5 is cheap because customers never saw green.",
+      "explanation": "Why stopping at steps 3–4 costs nothing.",
+      "type": "principle",
+      "importance": "important",
+      "sourceUnits": [
+        "u35"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.step-standby",
+      "title": "Step 7: keep blue as a standby for 24 hours",
+      "claim": "Leave blue running, unchanged, for 24 hours; it is the rollback target until then.",
+      "explanation": "Keeps the switch-back possible.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u31",
+        "u32"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "24 hours"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.no-next-migrations",
+      "title": "No next-release migrations while blue is on standby",
+      "claim": "Do not run the next release's migrations while blue is on standby, or the standby may no longer work against the schema and switching back stops being safe.",
+      "explanation": "Condition on the standby; stays with it.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u39",
+        "u40"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.step-standby",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.step-retire",
+      "title": "Step 8: retire blue after 24 quiet hours",
+      "claim": "After 24 hours without a switch-back, scale blue down; it becomes the idle environment for the next release.",
+      "explanation": "Last step.",
+      "type": "process",
+      "importance": "important",
+      "sourceUnits": [
+        "u33",
+        "u34"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.record-failure",
+      "title": "Record what failed before retrying",
+      "claim": "Whichever way you roll back, record what failed before trying again; a second attempt with the same build tends to fail the same way.",
+      "explanation": "Practice advice.",
+      "type": "action_item",
+      "importance": "supplementary",
+      "sourceUnits": [
+        "u38"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": true,
+        "reason": "Advice; may be dropped."
+      }
+    }
+  ],
+  "mustNotClaim": [
+    {
+      "claim": "Rolling back (or switching back) reverts the database migrations.",
+      "why": "The source says a rollback does not undo a migration; that is why migrations must be backward compatible.",
+      "units": [
+        "u10",
+        "u37"
+      ]
+    },
+    {
+      "claim": "Traffic can be switched before the health checks and smoke tests pass.",
+      "why": "Steps 3 and 4 gate step 5.",
+      "units": [
+        "u19",
+        "u20",
+        "u24"
+      ]
+    },
+    {
+      "claim": "Any error after the switch means you must switch back.",
+      "why": "The threshold is a 5xx rate above 2% within 15 minutes.",
+      "units": [
+        "u28",
+        "u29",
+        "u30"
+      ]
+    },
+    {
+      "claim": "A non-backward-compatible migration is acceptable because you can roll back.",
+      "why": "The source says not to use the procedure at all in that case.",
+      "units": [
+        "u13"
+      ]
+    }
+  ]
+}

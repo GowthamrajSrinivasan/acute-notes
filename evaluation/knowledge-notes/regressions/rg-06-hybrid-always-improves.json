@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-hybrid-always-improves",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "'Can improve recall when the signals are complementary' becomes 'always improves recall': the hedge and its condition are both gone.",
+  "mutations": [
+    { "op": "replace_text", "node": "n3", "find": "can improve recall when lexical and semantic signals are complementary**: each retriever finds relevant passages the other misses.", "replace": "always improves recall**: two retrievers beat one." }
+  ],
+  "expectFailing": ["a.complementary-with-hybrid", "a.hybrid-hedged", "a.no-always"]
+}

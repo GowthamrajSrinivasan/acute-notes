@@ -1,0 +1,269 @@
+{
+  "levels": [
+    {
+      "level": 0,
+      "frameKey": "pinhole.system",
+      "nodes": [
+        {
+          "key": "pinhole",
+          "label": "Pinhole",
+          "kind": "backend"
+        },
+        {
+          "key": "mobile-app",
+          "label": "Mobile app",
+          "kind": "frontend"
+        },
+        {
+          "key": "web-app",
+          "label": "Web app",
+          "kind": "frontend"
+        },
+        {
+          "key": "cdn",
+          "label": "CDN",
+          "kind": "external"
+        },
+        {
+          "key": "push-provider",
+          "label": "Push-notification provider",
+          "kind": "external"
+        }
+      ],
+      "edges": [
+        {
+          "from": "mobile-app",
+          "to": "pinhole",
+          "relation": "calls",
+          "label": "HTTPS API requests"
+        },
+        {
+          "from": "web-app",
+          "to": "pinhole",
+          "relation": "calls",
+          "label": "HTTPS API requests"
+        },
+        {
+          "from": "pinhole",
+          "to": "push-provider",
+          "relation": "calls",
+          "label": "asks to alert followers"
+        },
+        {
+          "from": "cdn",
+          "to": "pinhole",
+          "relation": "reads",
+          "label": "reads photos and thumbnails"
+        },
+        {
+          "from": "mobile-app",
+          "to": "cdn",
+          "relation": "reads",
+          "label": "loads thumbnails"
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "frameKey": "pinhole.architecture",
+      "nodes": [
+        {
+          "key": "mobile-app",
+          "label": "Mobile app",
+          "kind": "frontend"
+        },
+        {
+          "key": "web-app",
+          "label": "Web app",
+          "kind": "frontend"
+        },
+        {
+          "key": "api-gateway",
+          "label": "API gateway",
+          "kind": "backend"
+        },
+        {
+          "key": "auth-service",
+          "label": "Auth service",
+          "kind": "backend"
+        },
+        {
+          "key": "upload-service",
+          "label": "Upload service",
+          "kind": "backend"
+        },
+        {
+          "key": "feed-service",
+          "label": "Feed service",
+          "kind": "backend"
+        },
+        {
+          "key": "media-workers",
+          "label": "Media processing workers",
+          "kind": "backend"
+        },
+        {
+          "key": "message-queue",
+          "label": "Message queue",
+          "kind": "messagebus"
+        },
+        {
+          "key": "object-storage",
+          "label": "Object storage",
+          "kind": "store"
+        },
+        {
+          "key": "metadata-db",
+          "label": "Metadata database",
+          "kind": "database"
+        },
+        {
+          "key": "cache",
+          "label": "Cache",
+          "kind": "store"
+        },
+        {
+          "key": "cdn",
+          "label": "CDN",
+          "kind": "external"
+        },
+        {
+          "key": "push-provider",
+          "label": "Push-notification provider",
+          "kind": "external"
+        }
+      ],
+      "edges": [
+        {
+          "from": "mobile-app",
+          "to": "api-gateway",
+          "relation": "calls",
+          "label": "HTTPS API requests"
+        },
+        {
+          "from": "web-app",
+          "to": "api-gateway",
+          "relation": "calls",
+          "label": "HTTPS API requests"
+        },
+        {
+          "from": "mobile-app",
+          "to": "object-storage",
+          "relation": "writes",
+          "label": "uploads original via signed URL"
+        },
+        {
+          "from": "api-gateway",
+          "to": "auth-service",
+          "relation": "calls",
+          "label": "verifies access token"
+        },
+        {
+          "from": "api-gateway",
+          "to": "upload-service",
+          "relation": "calls",
+          "label": "routes photo posts"
+        },
+        {
+          "from": "api-gateway",
+          "to": "feed-service",
+          "relation": "calls",
+          "label": "routes feed requests"
+        },
+        {
+          "from": "upload-service",
+          "to": "metadata-db",
+          "relation": "writes",
+          "label": "records photo as processing"
+        },
+        {
+          "from": "upload-service",
+          "to": "message-queue",
+          "relation": "publishes",
+          "label": "publishes PhotoUploaded"
+        },
+        {
+          "from": "media-workers",
+          "to": "message-queue",
+          "relation": "subscribes",
+          "label": "subscribes to PhotoUploaded"
+        },
+        {
+          "from": "media-workers",
+          "to": "object-storage",
+          "relation": "writes",
+          "label": "reads originals, writes thumbnails"
+        },
+        {
+          "from": "media-workers",
+          "to": "metadata-db",
+          "relation": "writes",
+          "label": "marks photo ready"
+        },
+        {
+          "from": "media-workers",
+          "to": "message-queue",
+          "relation": "publishes",
+          "label": "publishes PhotoReady"
+        },
+        {
+          "from": "feed-service",
+          "to": "message-queue",
+          "relation": "subscribes",
+          "label": "subscribes to PhotoReady"
+        },
+        {
+          "from": "feed-service",
+          "to": "metadata-db",
+          "relation": "reads",
+          "label": "reads photo metadata"
+        },
+        {
+          "from": "feed-service",
+          "to": "cache",
+          "relation": "writes",
+          "label": "keeps feed pages"
+        },
+        {
+          "from": "feed-service",
+          "to": "push-provider",
+          "relation": "calls",
+          "label": "asks to alert followers"
+        },
+        {
+          "from": "cdn",
+          "to": "object-storage",
+          "relation": "reads",
+          "label": "reads photos and thumbnails"
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "frameKey": "pinhole.metadata-db",
+      "nodes": [
+        {
+          "key": "follow-relationships",
+          "label": "Follow relationships",
+          "kind": "store"
+        },
+        {
+          "key": "photo-records",
+          "label": "Photo records (with processing status)",
+          "kind": "store"
+        }
+      ],
+      "edges": []
+    }
+  ],
+  "drills": [
+    {
+      "from": "pinhole",
+      "toFrameKey": "pinhole.architecture"
+    },
+    {
+      "from": "metadata-db",
+      "toFrameKey": "pinhole.metadata-db"
+    }
+  ]
+}

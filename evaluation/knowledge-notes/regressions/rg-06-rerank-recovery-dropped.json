@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-rerank-recovery-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "The critical limitation 'the reranker can only reorder what retrieval found' is silently dropped from the reranking card.",
+  "mutations": [
+    { "op": "replace_text", "node": "n7", "find": "\n- It can only reorder what retrieval found: if the right passage is not among the candidates, reranking cannot recover it.", "replace": "" }
+  ],
+  "expectFailing": ["a.rerank-limit-with-claim"]
+}

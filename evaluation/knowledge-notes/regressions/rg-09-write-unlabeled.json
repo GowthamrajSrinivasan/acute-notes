@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-write-unlabeled",
+  "distortion": "unlabeled_architecture_edge",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The writes arrow from generateInvoice to the invoice tables loses its label, so the diagram no longer says what the arrow does.",
+  "mutations": [
+    { "op": "set_label", "from": "s_gen", "to": "s_inv", "label": null }
+  ],
+  "expectFailing": ["a.rel-generate-writes", "a.edges-labeled"]
+}

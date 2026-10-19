@@ -1,0 +1,1666 @@
+[
+ {
+  "i": 1,
+  "control": true,
+  "key": "AI App Builder Ecosystem (2026-10-08) › And the killer feature: apps can talk to each other",
+  "leaf": "And the killer feature: apps can talk to each other",
+  "chars": 124,
+  "choice": "t5",
+  "choiceLabel": "And the killer feature: apps can talk to each other",
+  "confidence": 0.99,
+  "pNew": 0,
+  "top": [
+   {
+    "label": "And the killer feature: apps can talk ",
+    "p": 0.99
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.01
+   },
+   {
+    "label": "The core idea",
+    "p": 0
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0
+   }
+  ],
+  "entropy": 0.08,
+  "localCoverage": 1,
+  "localBest": "And the killer feature: apps can talk "
+ },
+ {
+  "i": 3,
+  "control": true,
+  "key": "AI App Builder Ecosystem (2026-10-08) › Now imagine a marketplace",
+  "leaf": "Now imagine a marketplace",
+  "chars": 117,
+  "choice": "t9",
+  "choiceLabel": "Now imagine a marketplace",
+  "confidence": 0.98,
+  "pNew": 0,
+  "top": [
+   {
+    "label": "Now imagine a marketplace",
+    "p": 0.98
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.02
+   },
+   {
+    "label": "The core idea",
+    "p": 0
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0
+   }
+  ],
+  "entropy": 0.14,
+  "localCoverage": 1,
+  "localBest": "Now imagine a marketplace"
+ },
+ {
+  "i": 23,
+  "control": true,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › Don't actually copy the entire block",
+  "leaf": "Don't actually copy the entire block",
+  "chars": 330,
+  "choice": "t26",
+  "choiceLabel": "Then I'd introduce \"Fork\"",
+  "confidence": 0.95,
+  "pNew": 0,
+  "top": [
+   {
+    "label": "Then I'd introduce \"Fork\"",
+    "p": 0.95
+   },
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.03
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.01
+   },
+   {
+    "label": "Where today's AI still struggles",
+    "p": 0.01
+   }
+  ],
+  "entropy": 0.35,
+  "localCoverage": 0.21,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 51,
+  "control": true,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08)",
+  "leaf": "Branch · Branch · AI App Builder Ecosystem (2026-10-08)",
+  "chars": 1446,
+  "choice": "t1",
+  "choiceLabel": "AI App Builder Ecosystem (2026-10-08)",
+  "confidence": 0.73,
+  "pNew": 0.04,
+  "top": [
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.74
+   },
+   {
+    "label": "And this is where you could beat today",
+    "p": 0.11
+   },
+   {
+    "label": "And here's the business model I'd cons",
+    "p": 0.08
+   },
+   {
+    "label": "(new)",
+    "p": 0.04
+   }
+  ],
+  "entropy": 1.33,
+  "localCoverage": 0.24,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 60,
+  "control": true,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › That's where your marketplace economics get powerful",
+  "leaf": "That's where your marketplace economics get powerful",
+  "chars": 551,
+  "choice": "t19",
+  "choiceLabel": "And here's the business model I'd consider",
+  "confidence": 0.64,
+  "pNew": 0,
+  "top": [
+   {
+    "label": "And here's the business model I'd cons",
+    "p": 0.65
+   },
+   {
+    "label": "Now imagine a marketplace",
+    "p": 0.2
+   },
+   {
+    "label": "And this creates a potentially massive",
+    "p": 0.14
+   },
+   {
+    "label": "The Roblox-like flywheel",
+    "p": 0.01
+   }
+  ],
+  "entropy": 1.33,
+  "localCoverage": 0.31,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 32,
+  "control": true,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › And I'd make one architectural rule sacred",
+  "leaf": "And I'd make one architectural rule sacred",
+  "chars": 517,
+  "choice": "t14",
+  "choiceLabel": "This is technically possible today",
+  "confidence": 0.49,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "This is technically possible today",
+    "p": 0.5
+   },
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.38
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.07
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.03
+   }
+  ],
+  "entropy": 1.58,
+  "localCoverage": 0.21,
+  "localBest": "This is technically possible today"
+ },
+ {
+  "i": 14,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › The MVP I'd actually build",
+  "leaf": "The MVP I'd actually build",
+  "chars": 538,
+  "choice": "t3",
+  "choiceLabel": "The really interesting architecture",
+  "confidence": 0.27,
+  "pNew": 0.02,
+  "top": [
+   {
+    "label": "The really interesting architecture",
+    "p": 0.29
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.18
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.16
+   },
+   {
+    "label": "I'd actually change the original idea ",
+    "p": 0.15
+   }
+  ],
+  "entropy": 2.79,
+  "localCoverage": 0.3,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 15,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › The key architectural decision",
+  "leaf": "The key architectural decision",
+  "chars": 139,
+  "choice": "t28",
+  "choiceLabel": "But there is one gigantic difference from Roblox",
+  "confidence": 0.36,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.38
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.31
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.2
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.1
+   }
+  ],
+  "entropy": 1.92,
+  "localCoverage": 0.45,
+  "localBest": "This is technically possible today"
+ },
+ {
+  "i": 18,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › I would call this a Block Contract",
+  "leaf": "I would call this a Block Contract",
+  "chars": 570,
+  "choice": "t28",
+  "choiceLabel": "But there is one gigantic difference from Roblox",
+  "confidence": 0.43,
+  "pNew": 0.02,
+  "top": [
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.45
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.41
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.09
+   },
+   {
+    "label": "Where today's AI still struggles",
+    "p": 0.02
+   }
+  ],
+  "entropy": 1.65,
+  "localCoverage": 0.17,
+  "localBest": "This is technically possible today"
+ },
+ {
+  "i": 20,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › Now comes the really important part: testing",
+  "leaf": "Now comes the really important part: testing",
+  "chars": 582,
+  "choice": "t16",
+  "choiceLabel": "Where today's AI still struggles",
+  "confidence": 0.33,
+  "pNew": 0.15000000000000002,
+  "top": [
+   {
+    "label": "Where today's AI still struggles",
+    "p": 0.35
+   },
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.16
+   },
+   {
+    "label": "(new)",
+    "p": 0.15
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.09
+   }
+  ],
+  "entropy": 2.72,
+  "localCoverage": 0.22,
+  "localBest": "Where today's AI still struggles"
+ },
+ {
+  "i": 21,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › And give every block a test playground",
+  "leaf": "And give every block a test playground",
+  "chars": 770,
+  "choice": "t24",
+  "choiceLabel": "The Roblox-like flywheel",
+  "confidence": 0.29,
+  "pNew": 0.03,
+  "top": [
+   {
+    "label": "The Roblox-like flywheel",
+    "p": 0.31
+   },
+   {
+    "label": "And then AI becomes your \"Roblox Studi",
+    "p": 0.17
+   },
+   {
+    "label": "Imagine the equivalent of Roblox Studi",
+    "p": 0.16
+   },
+   {
+    "label": "And then something even more powerful ",
+    "p": 0.07
+   }
+  ],
+  "entropy": 3.15,
+  "localCoverage": 0.16,
+  "localBest": "And then something even more powerful "
+ },
+ {
+  "i": 25,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › But I'd actually use composition more than inheritance",
+  "leaf": "But I'd actually use composition more than inheritance",
+  "chars": 401,
+  "choice": "t28",
+  "choiceLabel": "But there is one gigantic difference from Roblox",
+  "confidence": 0.35,
+  "pNew": 0.02,
+  "top": [
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.37
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.34
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.16
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.03
+   }
+  ],
+  "entropy": 2.26,
+  "localCoverage": 0.13,
+  "localBest": "The really interesting architecture"
+ },
+ {
+  "i": 27,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › Here's what I would NOT build in the MVP",
+  "leaf": "Here's what I would NOT build in the MVP",
+  "chars": 567,
+  "choice": "t34",
+  "choiceLabel": "Roblox for software.",
+  "confidence": 0.24,
+  "pNew": 0.1,
+  "top": [
+   {
+    "label": "Roblox for software.",
+    "p": 0.26
+   },
+   {
+    "label": "Where today's AI still struggles",
+    "p": 0.2
+   },
+   {
+    "label": "I'd actually change the original idea ",
+    "p": 0.14
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.13
+   }
+  ],
+  "entropy": 2.89,
+  "localCoverage": 0.28,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 28,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › Realistic timeline for you",
+  "leaf": "Realistic timeline for you",
+  "chars": 657,
+  "choice": "t14",
+  "choiceLabel": "This is technically possible today",
+  "confidence": 0.47,
+  "pNew": 0.23,
+  "top": [
+   {
+    "label": "This is technically possible today",
+    "p": 0.49
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.24
+   },
+   {
+    "label": "(new)",
+    "p": 0.23
+   },
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.02
+   }
+  ],
+  "entropy": 1.73,
+  "localCoverage": 0.18,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 29,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › 35 days",
+  "leaf": "35 days",
+  "chars": 51,
+  "choice": "new",
+  "choiceLabel": "(new)",
+  "confidence": 0.37,
+  "pNew": 0.39,
+  "top": [
+   {
+    "label": "(new)",
+    "p": 0.39
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.2
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.18
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.16
+   }
+  ],
+  "entropy": 2.24,
+  "localCoverage": 0.17,
+  "localBest": "Roblox doesn't really sell games"
+ },
+ {
+  "i": 33,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › The 35-day roadmap I'd use",
+  "leaf": "The 35-day roadmap I'd use",
+  "chars": 872,
+  "choice": "t14",
+  "choiceLabel": "This is technically possible today",
+  "confidence": 0.41,
+  "pNew": 0.13,
+  "top": [
+   {
+    "label": "This is technically possible today",
+    "p": 0.43
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.29
+   },
+   {
+    "label": "(new)",
+    "p": 0.13
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.04
+   }
+  ],
+  "entropy": 2.19,
+  "localCoverage": 0.17,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 34,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › One thing I'd add from day one",
+  "leaf": "One thing I'd add from day one",
+  "chars": 666,
+  "choice": "t28",
+  "choiceLabel": "But there is one gigantic difference from Roblox",
+  "confidence": 0.33,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.35
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.31
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.22
+   },
+   {
+    "label": "Where today's AI still struggles",
+    "p": 0.08
+   }
+  ],
+  "entropy": 2.04,
+  "localCoverage": 0.22,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 35,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › And this is where I think the Roblox analogy becomes REALLY powerful",
+  "leaf": "And this is where I think the Roblox analogy becomes REALLY powerful",
+  "chars": 519,
+  "choice": "t21",
+  "choiceLabel": "Roblox doesn't really sell games",
+  "confidence": 0.4,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "Roblox doesn't really sell games",
+    "p": 0.42
+   },
+   {
+    "label": "The Roblox-like flywheel",
+    "p": 0.37
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.11
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.03
+   }
+  ],
+  "entropy": 2,
+  "localCoverage": 0.4,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 37,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › For example",
+  "leaf": "For example",
+  "chars": 717,
+  "choice": "t3",
+  "choiceLabel": "The really interesting architecture",
+  "confidence": 0.29,
+  "pNew": 0.09,
+  "top": [
+   {
+    "label": "The really interesting architecture",
+    "p": 0.31
+   },
+   {
+    "label": "But here's where it gets crazy",
+    "p": 0.13
+   },
+   {
+    "label": "The most interesting UX",
+    "p": 0.12
+   },
+   {
+    "label": "(new)",
+    "p": 0.09
+   }
+  ],
+  "entropy": 3.34,
+  "localCoverage": 0.22,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 38,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › But I'd go one step further",
+  "leaf": "But I'd go one step further",
+  "chars": 571,
+  "choice": "t3",
+  "choiceLabel": "The really interesting architecture",
+  "confidence": 0.58,
+  "pNew": 0.04,
+  "top": [
+   {
+    "label": "The really interesting architecture",
+    "p": 0.59
+   },
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.21
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.07
+   },
+   {
+    "label": "The most interesting UX",
+    "p": 0.05
+   }
+  ],
+  "entropy": 1.81,
+  "localCoverage": 0.15,
+  "localBest": "Where today's AI still struggles"
+ },
+ {
+  "i": 39,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › This solves your \"UI isn't the USP\" problem",
+  "leaf": "This solves your \"UI isn't the USP\" problem",
+  "chars": 659,
+  "choice": "t9",
+  "choiceLabel": "Now imagine a marketplace",
+  "confidence": 0.33,
+  "pNew": 0.11,
+  "top": [
+   {
+    "label": "Now imagine a marketplace",
+    "p": 0.35
+   },
+   {
+    "label": "An App Store for AI-generated mini-app",
+    "p": 0.18
+   },
+   {
+    "label": "(new)",
+    "p": 0.11
+   },
+   {
+    "label": "The most interesting UX",
+    "p": 0.06
+   }
+  ],
+  "entropy": 2.96,
+  "localCoverage": 0.28,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 40,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › The really powerful part: skins should be universal",
+  "leaf": "The really powerful part: skins should be universal",
+  "chars": 363,
+  "choice": "new",
+  "choiceLabel": "(new)",
+  "confidence": 0.31,
+  "pNew": 0.33,
+  "top": [
+   {
+    "label": "(new)",
+    "p": 0.33
+   },
+   {
+    "label": "The most interesting UX",
+    "p": 0.14
+   },
+   {
+    "label": "Now imagine a marketplace",
+    "p": 0.12
+   },
+   {
+    "label": "The Roblox-like flywheel",
+    "p": 0.07
+   }
+  ],
+  "entropy": 3.23,
+  "localCoverage": 0.29,
+  "localBest": "And apps could become social"
+ },
+ {
+  "i": 42,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › Layout should work similarly",
+  "leaf": "Layout should work similarly",
+  "chars": 426,
+  "choice": "t28",
+  "choiceLabel": "But there is one gigantic difference from Roblox",
+  "confidence": 0.47,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.49
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.41
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.04
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.03
+   }
+  ],
+  "entropy": 1.55,
+  "localCoverage": 0.22,
+  "localBest": "The really interesting architecture"
+ },
+ {
+  "i": 44,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › This gives you an amazing \"Restyle\" button",
+  "leaf": "This gives you an amazing \"Restyle\" button",
+  "chars": 368,
+  "choice": "t12",
+  "choiceLabel": "The most interesting UX",
+  "confidence": 0.47,
+  "pNew": 0.24000000000000002,
+  "top": [
+   {
+    "label": "The most interesting UX",
+    "p": 0.49
+   },
+   {
+    "label": "(new)",
+    "p": 0.24
+   },
+   {
+    "label": "Imagine the equivalent of Roblox Studi",
+    "p": 0.05
+   },
+   {
+    "label": "Then I'd introduce \"Fork\"",
+    "p": 0.05
+   }
+  ],
+  "entropy": 2.37,
+  "localCoverage": 0.23,
+  "localBest": "The really interesting architecture"
+ },
+ {
+  "i": 45,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › AI makes this even better",
+  "leaf": "AI makes this even better",
+  "chars": 404,
+  "choice": "t12",
+  "choiceLabel": "The most interesting UX",
+  "confidence": 0.44,
+  "pNew": 0.06,
+  "top": [
+   {
+    "label": "The most interesting UX",
+    "p": 0.46
+   },
+   {
+    "label": "Where today's AI still struggles",
+    "p": 0.18
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.11
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.06
+   }
+  ],
+  "entropy": 2.45,
+  "localCoverage": 0.24,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 48,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › But don't make themes just colors",
+  "leaf": "But don't make themes just colors",
+  "chars": 340,
+  "choice": "new",
+  "choiceLabel": "(new)",
+  "confidence": 0.28,
+  "pNew": 0.3,
+  "top": [
+   {
+    "label": "Where today's AI still struggles",
+    "p": 0.3
+   },
+   {
+    "label": "(new)",
+    "p": 0.3
+   },
+   {
+    "label": "The most interesting UX",
+    "p": 0.21
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.09
+   }
+  ],
+  "entropy": 2.21,
+  "localCoverage": 0.17,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 50,
+  "control": false,
+  "key": "Branch · AI App Builder Ecosystem (2026-10-08) › And this makes the Roblox analogy even stronger",
+  "leaf": "And this makes the Roblox analogy even stronger",
+  "chars": 1032,
+  "choice": "t34",
+  "choiceLabel": "Roblox for software.",
+  "confidence": 0.31,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "Roblox for software.",
+    "p": 0.33
+   },
+   {
+    "label": "Roblox doesn't really sell games",
+    "p": 0.25
+   },
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.17
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.08
+   }
+  ],
+  "entropy": 2.67,
+  "localCoverage": 0.36,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 52,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › Is it an Apple-level idea?",
+  "leaf": "Is it an Apple-level idea?",
+  "chars": 611,
+  "choice": "t1",
+  "choiceLabel": "AI App Builder Ecosystem (2026-10-08)",
+  "confidence": 0.3,
+  "pNew": 0.06,
+  "top": [
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.32
+   },
+   {
+    "label": "Roblox doesn't really sell games",
+    "p": 0.25
+   },
+   {
+    "label": "And this creates a potentially massive",
+    "p": 0.17
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.11
+   }
+  ],
+  "entropy": 2.48,
+  "localCoverage": 0.39,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 59,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › And there is a Roblox-style upside",
+  "leaf": "And there is a Roblox-style upside",
+  "chars": 485,
+  "choice": "t31",
+  "choiceLabel": "And this creates a potentially massive moat",
+  "confidence": 0.52,
+  "pNew": 0,
+  "top": [
+   {
+    "label": "And this creates a potentially massive",
+    "p": 0.53
+   },
+   {
+    "label": "The Roblox-like flywheel",
+    "p": 0.26
+   },
+   {
+    "label": "Roblox doesn't really sell games",
+    "p": 0.14
+   },
+   {
+    "label": "And here's the business model I'd cons",
+    "p": 0.03
+   }
+  ],
+  "entropy": 1.72,
+  "localCoverage": 0.4,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 64,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › Therefore, I'd change the launch strategy",
+  "leaf": "Therefore, I'd change the launch strategy",
+  "chars": 99,
+  "choice": "t17",
+  "choiceLabel": "The biggest opportunity I see",
+  "confidence": 0.37,
+  "pNew": 0.060000000000000005,
+  "top": [
+   {
+    "label": "The biggest opportunity I see",
+    "p": 0.39
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.25
+   },
+   {
+    "label": "I'd actually change the original idea ",
+    "p": 0.19
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.07
+   }
+  ],
+  "entropy": 2.24,
+  "localCoverage": 0.38,
+  "localBest": "AI App Builder Ecosystem (2026-10-08)"
+ },
+ {
+  "i": 69,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › And there's a fascinating endgame",
+  "leaf": "And there's a fascinating endgame",
+  "chars": 437,
+  "choice": "t31",
+  "choiceLabel": "And this creates a potentially massive moat",
+  "confidence": 0.24,
+  "pNew": 0.03,
+  "top": [
+   {
+    "label": "And this creates a potentially massive",
+    "p": 0.26
+   },
+   {
+    "label": "A platform for creating personal softw",
+    "p": 0.22
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.17
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.07
+   }
+  ],
+  "entropy": 3.13,
+  "localCoverage": 0.34,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 77,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › The real competitive moat",
+  "leaf": "The real competitive moat",
+  "chars": 3319,
+  "choice": "t31",
+  "choiceLabel": "And this creates a potentially massive moat",
+  "confidence": 0.52,
+  "pNew": 0.06,
+  "top": [
+   {
+    "label": "And this creates a potentially massive",
+    "p": 0.53
+   },
+   {
+    "label": "And this is where you could beat today",
+    "p": 0.24
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.1
+   },
+   {
+    "label": "(new)",
+    "p": 0.06
+   }
+  ],
+  "entropy": 1.94,
+  "localCoverage": 0.21,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 80,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › Where I'd want the company to move",
+  "leaf": "Where I'd want the company to move",
+  "chars": 2458,
+  "choice": "t34",
+  "choiceLabel": "Roblox for software.",
+  "confidence": 0.34,
+  "pNew": 0.04,
+  "top": [
+   {
+    "label": "Roblox for software.",
+    "p": 0.36
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.26
+   },
+   {
+    "label": "I'd actually change the original idea ",
+    "p": 0.1
+   },
+   {
+    "label": "And this is where you could beat today",
+    "p": 0.09
+   }
+  ],
+  "entropy": 2.69,
+  "localCoverage": 0.29,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 81,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 1. The conventional mental model",
+  "leaf": "1. The conventional mental model",
+  "chars": 606,
+  "choice": "t23",
+  "choiceLabel": "And this is where you could beat today's AI app builders",
+  "confidence": 0.28,
+  "pNew": 0.03,
+  "top": [
+   {
+    "label": "And this is where you could beat today",
+    "p": 0.3
+   },
+   {
+    "label": "The core idea",
+    "p": 0.24
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.16
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.15
+   }
+  ],
+  "entropy": 2.67,
+  "localCoverage": 0.28,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 82,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 2. Your proposed model is fundamentally different",
+  "leaf": "2. Your proposed model is fundamentally different",
+  "chars": 789,
+  "choice": "t3",
+  "choiceLabel": "The really interesting architecture",
+  "confidence": 0.28,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "The really interesting architecture",
+    "p": 0.3
+   },
+   {
+    "label": "The core idea",
+    "p": 0.15
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.12
+   },
+   {
+    "label": "I'd actually change the original idea ",
+    "p": 0.09
+   }
+  ],
+  "entropy": 3.06,
+  "localCoverage": 0.28,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 84,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 4. Your platform should behave differently",
+  "leaf": "4. Your platform should behave differently",
+  "chars": 642,
+  "choice": "t3",
+  "choiceLabel": "The really interesting architecture",
+  "confidence": 0.3,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "The really interesting architecture",
+    "p": 0.32
+   },
+   {
+    "label": "The core idea",
+    "p": 0.26
+   },
+   {
+    "label": "The most interesting UX",
+    "p": 0.09
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.07
+   }
+  ],
+  "entropy": 2.97,
+  "localCoverage": 0.28,
+  "localBest": "AI App Builder Ecosystem (2026-10-08)"
+ },
+ {
+  "i": 85,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 5. Now the magic happens",
+  "leaf": "5. Now the magic happens",
+  "chars": 357,
+  "choice": "t3",
+  "choiceLabel": "The really interesting architecture",
+  "confidence": 0.56,
+  "pNew": 0.02,
+  "top": [
+   {
+    "label": "The really interesting architecture",
+    "p": 0.57
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.1
+   },
+   {
+    "label": "The most interesting UX",
+    "p": 0.09
+   },
+   {
+    "label": "The really crazy possibility",
+    "p": 0.05
+   }
+  ],
+  "entropy": 2.3,
+  "localCoverage": 0.23,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 86,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 6. Then I discover Themes",
+  "leaf": "6. Then I discover Themes",
+  "chars": 316,
+  "choice": "t12",
+  "choiceLabel": "The most interesting UX",
+  "confidence": 0.47,
+  "pNew": 0.08,
+  "top": [
+   {
+    "label": "The most interesting UX",
+    "p": 0.49
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.16
+   },
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.09
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.08
+   }
+  ],
+  "entropy": 2.35,
+  "localCoverage": 0.17,
+  "localBest": "And the killer feature: apps can talk "
+ },
+ {
+  "i": 87,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 7. Now imagine I buy a skin",
+  "leaf": "7. Now imagine I buy a skin",
+  "chars": 405,
+  "choice": "new",
+  "choiceLabel": "(new)",
+  "confidence": 0.16,
+  "pNew": 0.18000000000000002,
+  "top": [
+   {
+    "label": "(new)",
+    "p": 0.18
+   },
+   {
+    "label": "Now imagine a marketplace",
+    "p": 0.17
+   },
+   {
+    "label": "The most interesting UX",
+    "p": 0.15
+   },
+   {
+    "label": "An App Store for AI-generated mini-app",
+    "p": 0.11
+   }
+  ],
+  "entropy": 3.3,
+  "localCoverage": 0.24,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 91,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 10. This is the crucial difference",
+  "leaf": "10. This is the crucial difference",
+  "chars": 612,
+  "choice": "t24",
+  "choiceLabel": "The Roblox-like flywheel",
+  "confidence": 0.37,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "The Roblox-like flywheel",
+    "p": 0.39
+   },
+   {
+    "label": "Then I'd introduce \"Fork\"",
+    "p": 0.21
+   },
+   {
+    "label": "Roblox doesn't really sell games",
+    "p": 0.17
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.07
+   }
+  ],
+  "entropy": 2.55,
+  "localCoverage": 0.3,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 94,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 13. Why this matters to creators",
+  "leaf": "13. Why this matters to creators",
+  "chars": 492,
+  "choice": "t19",
+  "choiceLabel": "And here's the business model I'd consider",
+  "confidence": 0.36,
+  "pNew": 0.03,
+  "top": [
+   {
+    "label": "And here's the business model I'd cons",
+    "p": 0.38
+   },
+   {
+    "label": "And this creates a potentially massive",
+    "p": 0.16
+   },
+   {
+    "label": "And then something even more powerful ",
+    "p": 0.15
+   },
+   {
+    "label": "Now imagine a marketplace",
+    "p": 0.11
+   }
+  ],
+  "entropy": 2.67,
+  "localCoverage": 0.34,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 95,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 14. This is where the architecture matters",
+  "leaf": "14. This is where the architecture matters",
+  "chars": 692,
+  "choice": "t28",
+  "choiceLabel": "But there is one gigantic difference from Roblox",
+  "confidence": 0.5,
+  "pNew": 0,
+  "top": [
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.51
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.31
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.17
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.01
+   }
+  ],
+  "entropy": 1.52,
+  "localCoverage": 0.21,
+  "localBest": "But there is one gigantic difference f"
+ },
+ {
+  "i": 97,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 16. And this is why I said \"UI isn't the USP\"",
+  "leaf": "16. And this is why I said \"UI isn't the USP\"",
+  "chars": 337,
+  "choice": "t12",
+  "choiceLabel": "The most interesting UX",
+  "confidence": 0.15,
+  "pNew": 0.05,
+  "top": [
+   {
+    "label": "The most interesting UX",
+    "p": 0.17
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.13
+   },
+   {
+    "label": "And this is where you could beat today",
+    "p": 0.09
+   },
+   {
+    "label": "The Roblox-like flywheel",
+    "p": 0.08
+   }
+  ],
+  "entropy": 3.94,
+  "localCoverage": 0.39,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 98,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 17. But there is an even bigger implication",
+  "leaf": "17. But there is an even bigger implication",
+  "chars": 465,
+  "choice": "t9",
+  "choiceLabel": "Now imagine a marketplace",
+  "confidence": 0.37,
+  "pNew": 0.02,
+  "top": [
+   {
+    "label": "Now imagine a marketplace",
+    "p": 0.39
+   },
+   {
+    "label": "And then something even more powerful ",
+    "p": 0.21
+   },
+   {
+    "label": "An App Store for AI-generated mini-app",
+    "p": 0.16
+   },
+   {
+    "label": "Then I'd introduce \"Fork\"",
+    "p": 0.04
+   }
+  ],
+  "entropy": 2.75,
+  "localCoverage": 0.33,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 99,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › 18. Now imagine AI as the compatibility layer",
+  "leaf": "18. Now imagine AI as the compatibility layer",
+  "chars": 412,
+  "choice": "t10",
+  "choiceLabel": "The AI shouldn't just be a chatbot",
+  "confidence": 0.18,
+  "pNew": 0.03,
+  "top": [
+   {
+    "label": "The AI shouldn't just be a chatbot",
+    "p": 0.2
+   },
+   {
+    "label": "The most interesting UX",
+    "p": 0.18
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.18
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.11
+   }
+  ],
+  "entropy": 3.18,
+  "localCoverage": 0.3,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 103,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › Here's a concrete example",
+  "leaf": "Here's a concrete example",
+  "chars": 518,
+  "choice": "t3",
+  "choiceLabel": "The really interesting architecture",
+  "confidence": 0.3,
+  "pNew": 0,
+  "top": [
+   {
+    "label": "The really interesting architecture",
+    "p": 0.32
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.22
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.18
+   },
+   {
+    "label": "But here's where it gets crazy",
+    "p": 0.15
+   }
+  ],
+  "entropy": 2.46,
+  "localCoverage": 0.21,
+  "localBest": "The AI shouldn't just be a chatbot"
+ },
+ {
+  "i": 104,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › This is where your idea becomes very different from \"LLM builds an app\"",
+  "leaf": "This is where your idea becomes very different from \"LLM builds an app\"",
+  "chars": 248,
+  "choice": "t23",
+  "choiceLabel": "And this is where you could beat today's AI app builders",
+  "confidence": 0.41,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "And this is where you could beat today",
+    "p": 0.43
+   },
+   {
+    "label": "The really wild possibility",
+    "p": 0.19
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.07
+   },
+   {
+    "label": "The really crazy possibility",
+    "p": 0.07
+   }
+  ],
+  "entropy": 2.76,
+  "localCoverage": 0.35,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 106,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › And now the really interesting part",
+  "leaf": "And now the really interesting part",
+  "chars": 309,
+  "choice": "t3",
+  "choiceLabel": "The really interesting architecture",
+  "confidence": 0.52,
+  "pNew": 0,
+  "top": [
+   {
+    "label": "The really interesting architecture",
+    "p": 0.53
+   },
+   {
+    "label": "The core idea",
+    "p": 0.12
+   },
+   {
+    "label": "The really wild possibility",
+    "p": 0.12
+   },
+   {
+    "label": "But here's where it gets crazy",
+    "p": 0.09
+   }
+  ],
+  "entropy": 2.29,
+  "localCoverage": 0.32,
+  "localBest": "AI App Builder Ecosystem (2026-10-08)"
+ },
+ {
+  "i": 108,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › But there's a critical distinction",
+  "leaf": "But there's a critical distinction",
+  "chars": 574,
+  "choice": "t14",
+  "choiceLabel": "This is technically possible today",
+  "confidence": 0.36,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "This is technically possible today",
+    "p": 0.38
+   },
+   {
+    "label": "But there is one gigantic difference f",
+    "p": 0.3
+   },
+   {
+    "label": "Where today's AI still struggles",
+    "p": 0.21
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.08
+   }
+  ],
+  "entropy": 2,
+  "localCoverage": 0.22,
+  "localBest": "This is technically possible today"
+ },
+ {
+  "i": 111,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › I'd actually build an \"App Planner\" model",
+  "leaf": "I'd actually build an \"App Planner\" model",
+  "chars": 429,
+  "choice": "t14",
+  "choiceLabel": "This is technically possible today",
+  "confidence": 0.24,
+  "pNew": 0.02,
+  "top": [
+   {
+    "label": "This is technically possible today",
+    "p": 0.26
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.2
+   },
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.14
+   },
+   {
+    "label": "But here's where it gets crazy",
+    "p": 0.11
+   }
+  ],
+  "entropy": 3.04,
+  "localCoverage": 0.37,
+  "localBest": "One more crazy direction"
+ },
+ {
+  "i": 114,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › One more thing I'd do",
+  "leaf": "One more thing I'd do",
+  "chars": 442,
+  "choice": "t12",
+  "choiceLabel": "The most interesting UX",
+  "confidence": 0.42,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "The most interesting UX",
+    "p": 0.44
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.22
+   },
+   {
+    "label": "Imagine the equivalent of Roblox Studi",
+    "p": 0.15
+   },
+   {
+    "label": "But here's where it gets crazy",
+    "p": 0.06
+   }
+  ],
+  "entropy": 2.41,
+  "localCoverage": 0.26,
+  "localBest": "This is technically possible today"
+ },
+ {
+  "i": 115,
+  "control": false,
+  "key": "Branch · Branch · AI App Builder Ecosystem (2026-10-08) › So is the LLM itself the game changer?",
+  "leaf": "So is the LLM itself the game changer?",
+  "chars": 844,
+  "choice": "t1",
+  "choiceLabel": "AI App Builder Ecosystem (2026-10-08)",
+  "confidence": 0.26,
+  "pNew": 0.01,
+  "top": [
+   {
+    "label": "AI App Builder Ecosystem (2026-10-08)",
+    "p": 0.28
+   },
+   {
+    "label": "This is technically possible today",
+    "p": 0.17
+   },
+   {
+    "label": "Roblox for software.",
+    "p": 0.15
+   },
+   {
+    "label": "The really interesting architecture",
+    "p": 0.13
+   }
+  ],
+  "entropy": 2.91,
+  "localCoverage": 0.27,
+  "localBest": "One more crazy direction"
+ }
+]

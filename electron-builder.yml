@@ -1,0 +1,28 @@
+appId: ca.cmgl.acutenotes
+productName: Acute Notes
+directories:
+  output: dist-desktop
+  buildResources: build
+# The Electron shell uses no npm packages; the Next server (with its own
+# node_modules) is copied in by scripts/after-pack.cjs.
+files:
+  - electron/**
+  - package.json
+  - "!**/node_modules/**"
+npmRebuild: false
+afterPack: scripts/after-pack.cjs
+asar: true
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch: [x64]
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+mac:
+  icon: build/icon.png
+  category: public.app-category.productivity
+  target:
+    - target: dmg

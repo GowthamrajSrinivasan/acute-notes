@@ -1,0 +1,11 @@
+A. previous layout (95 topics): Jev's confident answers as labels (78 parts: per-part and batched, confidence >= 0.5)
+  coverage  n=78  @1 10%  @3 26%  @5 32%  @8 42%  @12 50%  @20 54%  @30 67%   median rank 14
+  bm25      n=78  @1 21%  @3 35%  @5 42%  @8 50%  @12 54%  @20 63%  @30 67%   median rank 10
+  tfidf     n=78  @1 21%  @3 29%  @5 41%  @8 53%  @12 60%  @20 64%  @30 68%   median rank 8
+  bm25+ctx  n=78  @1 21%  @3 29%  @5 44%  @8 55%  @12 60%  @20 71%  @30 77%   median rank 6
+
+D. layout D (34 topics): parts that partly repeat one topic's exact passages, query = only their NEW text (9 parts)
+  coverage  n=9  @1 100%  @3 100%  @5 100%  @8 100%  @12 100%  @20 100%  @30 100%   median rank 1
+  bm25      n=9  @1 89%  @3 100%  @5 100%  @8 100%  @12 100%  @20 100%  @30 100%   median rank 1
+  tfidf     n=9  @1 78%  @3 100%  @5 100%  @8 100%  @12 100%  @20 100%  @30 100%   median rank 1
+  bm25+ctx  n=9  @1 100%  @3 100%  @5 100%  @8 100%  @12 100%  @20 100%  @30 100%   median rank 1

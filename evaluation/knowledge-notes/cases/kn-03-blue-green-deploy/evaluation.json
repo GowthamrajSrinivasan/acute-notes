@@ -1,0 +1,1273 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-03-blue-green-deploy",
+  "assertions": [
+    {
+      "id": "a.concept",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: Two identical environments; deploy to the idle one, switch in one step, switch back the same way.",
+      "check": {
+        "check": "element_present",
+        "element": "e.concept"
+      }
+    },
+    {
+      "id": "a.prereq-envs",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: orders-blue and orders-green are identical.",
+      "check": {
+        "check": "element_present",
+        "element": "e.prereq-envs"
+      }
+    },
+    {
+      "id": "a.prereq-health",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: GET /healthz returns 200 only when database and queue are reachable.",
+      "check": {
+        "check": "element_present",
+        "element": "e.prereq-health"
+      }
+    },
+    {
+      "id": "a.prereq-migrations",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: Migrations must be backward compatible (one shared database; rollback doesn't undo them) — otherwise don't use this procedure.",
+      "check": {
+        "check": "element_present",
+        "element": "e.prereq-migrations"
+      }
+    },
+    {
+      "id": "a.prereq-lb",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: Access to the load balancer's listener rules.",
+      "check": {
+        "check": "element_present",
+        "element": "e.prereq-lb"
+      }
+    },
+    {
+      "id": "a.prereq-dashboard",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: A per-environment 5xx error-rate dashboard.",
+      "check": {
+        "check": "element_present",
+        "element": "e.prereq-dashboard"
+      }
+    },
+    {
+      "id": "a.step-deploy",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: 1. Deploy 2.8.0 to orders-green (expected: blue still serves 100%).",
+      "check": {
+        "check": "element_present",
+        "element": "e.step-deploy"
+      }
+    },
+    {
+      "id": "a.step-migrate",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: 2. Run migrations once (expected: exit code 0, blue unaffected).",
+      "check": {
+        "check": "element_present",
+        "element": "e.step-migrate"
+      }
+    },
+    {
+      "id": "a.health-check",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: 3. All green instances return 200 within 10 minutes?.",
+      "check": {
+        "check": "element_present",
+        "element": "e.health-check"
+      }
+    },
+    {
+      "id": "a.smoke",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: 4. Smoke tests pass on green?.",
+      "check": {
+        "check": "element_present",
+        "element": "e.smoke"
+      }
+    },
+    {
+      "id": "a.switch",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: 5. Switch traffic to green (expected within about 30 seconds).",
+      "check": {
+        "check": "element_present",
+        "element": "e.switch"
+      }
+    },
+    {
+      "id": "a.switch-command",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: aws elbv2 modify-listener … $GREEN_TG_ARN.",
+      "check": {
+        "check": "element_present",
+        "element": "e.switch-command"
+      }
+    },
+    {
+      "id": "a.error-watch",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: 6. 5xx error rate above 2% within 15 minutes?.",
+      "check": {
+        "check": "element_present",
+        "element": "e.error-watch"
+      }
+    },
+    {
+      "id": "a.standby",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: 7. Keep blue on standby for 24 hours — no next-release migrations meanwhile.",
+      "check": {
+        "check": "element_present",
+        "element": "e.standby"
+      }
+    },
+    {
+      "id": "a.retire",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: 8. Retire blue: scale it down.",
+      "check": {
+        "check": "element_present",
+        "element": "e.retire"
+      }
+    },
+    {
+      "id": "a.rollback-before",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: Before the switch: tear down green, blue keeps serving — customers unaffected.",
+      "check": {
+        "check": "element_present",
+        "element": "e.rollback-before"
+      }
+    },
+    {
+      "id": "a.switch-back",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "On the canvas: After the switch: switch back with $BLUE_TG_ARN (about 30 seconds); in-flight requests may fail.",
+      "check": {
+        "check": "element_present",
+        "element": "e.switch-back"
+      }
+    },
+    {
+      "id": "a.health-endpoint",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The health endpoint keeps its path, status and condition.",
+      "check": {
+        "check": "text_present",
+        "element": "e.prereq-health",
+        "all": [
+          [
+            "/healthz"
+          ],
+          [
+            "200"
+          ],
+          [
+            "only when",
+            "only if"
+          ]
+        ],
+        "why": "exact values and the 'only when' condition (u9)"
+      }
+    },
+    {
+      "id": "a.migrations-why",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The migration requirement says why: one shared database, and a rollback does not undo a migration.",
+      "check": {
+        "check": "text_present",
+        "element": "e.prereq-migrations",
+        "all": [
+          [
+            "share",
+            "shared",
+            "one database",
+            "same database",
+            "not undo",
+            "doesn't undo",
+            "does not undo",
+            "not revert",
+            "doesn't revert",
+            "does not revert"
+          ]
+        ],
+        "why": "the reason the requirement is hard (u10)"
+      }
+    },
+    {
+      "id": "a.non-compatible-exception",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "critical_exception_omitted",
+      "description": "The exception stays on the requirement: not backward compatible means don't use the procedure.",
+      "check": {
+        "check": "text_present",
+        "element": "e.prereq-migrations",
+        "all": [
+          [
+            "not backward",
+            "isn't backward",
+            "not backwards",
+            "incompatible"
+          ],
+          [
+            "do not use",
+            "don't use",
+            "split",
+            "not use this"
+          ]
+        ],
+        "why": "condition on the requirement (u13)"
+      }
+    },
+    {
+      "id": "a.health-timeout",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The health decision keeps its 10-minute timeout.",
+      "check": {
+        "check": "text_present",
+        "element": "e.health-check",
+        "all": [
+          [
+            "10 minutes",
+            "10 min"
+          ]
+        ],
+        "why": "branch threshold (u20)"
+      }
+    },
+    {
+      "id": "a.error-threshold",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The error-rate decision keeps its 2% threshold and 15-minute window.",
+      "check": {
+        "check": "text_present",
+        "element": "e.error-watch",
+        "all": [
+          [
+            "2%",
+            "2 %",
+            "2 percent"
+          ],
+          [
+            "15 minutes",
+            "15 min"
+          ]
+        ],
+        "why": "branch threshold and window (u28, u29)"
+      }
+    },
+    {
+      "id": "a.code-exact",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The switch command is kept exactly, as code.",
+      "check": {
+        "check": "text_present",
+        "element": "e.switch-command",
+        "all": [
+          [
+            "aws elbv2 modify-listener"
+          ],
+          [
+            "--listener-arn"
+          ],
+          [
+            "$orders_listener_arn"
+          ],
+          [
+            "--default-actions type=forward,targetgrouparn="
+          ],
+          [
+            "$green_tg_arn"
+          ]
+        ],
+        "why": "protected code block (u26)"
+      }
+    },
+    {
+      "id": "a.switch-back-command",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The switch-back names $BLUE_TG_ARN.",
+      "check": {
+        "check": "text_present",
+        "element": "e.switch-back",
+        "all": [
+          [
+            "$blue_tg_arn"
+          ]
+        ],
+        "why": "protected identifier (u29)"
+      }
+    },
+    {
+      "id": "a.inflight",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The switch-back keeps its in-flight caveat.",
+      "check": {
+        "check": "text_present",
+        "element": "e.switch-back",
+        "all": [
+          [
+            "in flight",
+            "in-flight"
+          ],
+          [
+            "retry",
+            "fail"
+          ]
+        ],
+        "why": "caveat on the switch-back (u36)"
+      }
+    },
+    {
+      "id": "a.standby-window",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The standby keeps its 24 hours.",
+      "check": {
+        "check": "text_present",
+        "element": "e.standby",
+        "all": [
+          [
+            "24 hours",
+            "24 h"
+          ]
+        ],
+        "why": "protected number (u31)"
+      }
+    },
+    {
+      "id": "a.standby-condition",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "critical_exception_omitted",
+      "description": "The standby carries its condition: no next-release migrations meanwhile.",
+      "check": {
+        "check": "text_present",
+        "element": "e.standby",
+        "all": [
+          [
+            "migration"
+          ],
+          [
+            "don't run",
+            "do not run",
+            "no next",
+            "not run",
+            "never run"
+          ]
+        ],
+        "why": "condition on the standby (u39, u40)"
+      }
+    },
+    {
+      "id": "a.expected-deploy",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Step 1 keeps its version and expected result.",
+      "check": {
+        "check": "text_present",
+        "element": "e.step-deploy",
+        "all": [
+          [
+            "2.8.0"
+          ],
+          [
+            "100%"
+          ]
+        ],
+        "why": "exact version and expected result (u15, u16)"
+      }
+    },
+    {
+      "id": "a.expected-migrate",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Step 2 keeps its expected result.",
+      "check": {
+        "check": "text_present",
+        "element": "e.step-migrate",
+        "all": [
+          [
+            "code 0",
+            "exit 0",
+            "exits 0"
+          ]
+        ],
+        "why": "expected result (u18)"
+      }
+    },
+    {
+      "id": "a.expected-switch",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Step 5 keeps its expected result.",
+      "check": {
+        "check": "text_present",
+        "element": "e.switch",
+        "all": [
+          [
+            "30 seconds",
+            "30 s"
+          ]
+        ],
+        "why": "expected result (u27)"
+      }
+    },
+    {
+      "id": "a.rollback-unaffected",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The early rollback says customers are unaffected.",
+      "check": {
+        "check": "text_present",
+        "element": "e.rollback-before",
+        "all": [
+          [
+            "unaffected",
+            "never saw",
+            "not affected"
+          ]
+        ],
+        "why": "why it is cheap (u21, u35)"
+      }
+    },
+    {
+      "id": "a.no-db-revert",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Nothing says a rollback reverts the database.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(?<!not )(?<!n't )(?<!never )\\b(reverts?|undoes|undo|restores?|rolls? back) (the |a |its )?(database|schema|migrations?)\\b",
+        "why": "a rollback does not undo a migration (u10, u37)"
+      }
+    },
+    {
+      "id": "a.frame-prereqs",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A prerequisites frame.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.prereqs"
+      }
+    },
+    {
+      "id": "a.frame-procedure",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A steps frame.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.procedure"
+      }
+    },
+    {
+      "id": "a.frame-failure",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A failure-handling frame.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.failure"
+      }
+    },
+    {
+      "id": "a.frame-count",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Three or four frames: not one per step.",
+      "check": {
+        "check": "frame_count",
+        "min": 3,
+        "max": 5
+      }
+    },
+    {
+      "id": "a.in-concept",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.concept sits in f.overview.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.concept",
+        "frame": "f.overview"
+      }
+    },
+    {
+      "id": "a.in-prereq-envs",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.prereq-envs sits in f.prereqs.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.prereq-envs",
+        "frame": "f.prereqs"
+      }
+    },
+    {
+      "id": "a.in-prereq-health",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.prereq-health sits in f.prereqs.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.prereq-health",
+        "frame": "f.prereqs"
+      }
+    },
+    {
+      "id": "a.in-prereq-migrations",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.prereq-migrations sits in f.prereqs.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.prereq-migrations",
+        "frame": "f.prereqs"
+      }
+    },
+    {
+      "id": "a.in-prereq-lb",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.prereq-lb sits in f.prereqs.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.prereq-lb",
+        "frame": "f.prereqs"
+      }
+    },
+    {
+      "id": "a.in-prereq-dashboard",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.prereq-dashboard sits in f.prereqs.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.prereq-dashboard",
+        "frame": "f.prereqs"
+      }
+    },
+    {
+      "id": "a.in-step-deploy",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.step-deploy sits in f.procedure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.step-deploy",
+        "frame": "f.procedure"
+      }
+    },
+    {
+      "id": "a.in-step-migrate",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.step-migrate sits in f.procedure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.step-migrate",
+        "frame": "f.procedure"
+      }
+    },
+    {
+      "id": "a.in-health-check",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.health-check sits in f.procedure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.health-check",
+        "frame": "f.procedure"
+      }
+    },
+    {
+      "id": "a.in-smoke",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.smoke sits in f.procedure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.smoke",
+        "frame": "f.procedure"
+      }
+    },
+    {
+      "id": "a.in-switch",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.switch sits in f.procedure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.switch",
+        "frame": "f.procedure"
+      }
+    },
+    {
+      "id": "a.in-switch-command",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.switch-command sits in f.procedure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.switch-command",
+        "frame": "f.procedure"
+      }
+    },
+    {
+      "id": "a.in-error-watch",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.error-watch sits in f.procedure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.error-watch",
+        "frame": "f.procedure"
+      }
+    },
+    {
+      "id": "a.in-standby",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.standby sits in f.procedure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.standby",
+        "frame": "f.procedure"
+      }
+    },
+    {
+      "id": "a.in-retire",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.retire sits in f.procedure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.retire",
+        "frame": "f.procedure"
+      }
+    },
+    {
+      "id": "a.in-rollback-before",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.rollback-before sits in f.failure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.rollback-before",
+        "frame": "f.failure"
+      }
+    },
+    {
+      "id": "a.in-switch-back",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.switch-back sits in f.failure.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.switch-back",
+        "frame": "f.failure"
+      }
+    },
+    {
+      "id": "a.together-prereqs",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "All prerequisites share a frame.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.prereq-envs",
+          "e.prereq-health",
+          "e.prereq-migrations",
+          "e.prereq-lb",
+          "e.prereq-dashboard"
+        ],
+        "why": "requirements are checked together, before step 1"
+      }
+    },
+    {
+      "id": "a.together-command",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The command sits with step 5.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.switch",
+          "e.switch-command"
+        ],
+        "why": "the command performs the step"
+      }
+    },
+    {
+      "id": "a.together-ways-back",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Both ways back share a frame.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.rollback-before",
+          "e.switch-back"
+        ],
+        "why": "contrast before vs after the switch"
+      }
+    },
+    {
+      "id": "a.apart-requirement",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The migration requirement isn't folded into the step frame.",
+      "check": {
+        "check": "apart",
+        "elements": [
+          "e.prereq-migrations",
+          "e.step-migrate"
+        ],
+        "why": "a precondition must be visible before the steps"
+      }
+    },
+    {
+      "id": "a.hierarchy-command",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The command hangs off step 5 and isn't weighted above it.",
+      "check": {
+        "check": "hierarchy",
+        "main": "e.switch",
+        "supporting": [
+          "e.switch-command"
+        ],
+        "why": "detail of the step"
+      }
+    },
+    {
+      "id": "a.rel-deploy-migrate",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: Step 1 then step 2.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.deploy-migrate"
+      }
+    },
+    {
+      "id": "a.rel-migrate-health",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: Step 2 then step 3.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.migrate-health"
+      }
+    },
+    {
+      "id": "a.rel-health-smoke",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: The pass branch of the health decision.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.health-smoke"
+      }
+    },
+    {
+      "id": "a.rel-health-rollback",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: The fail branch: the 10-minute timeout leads to the cheap rollback.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.health-rollback"
+      }
+    },
+    {
+      "id": "a.rel-smoke-switch",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "Link: Step 5 only after the smoke tests pass.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.smoke-switch"
+      }
+    },
+    {
+      "id": "a.rel-smoke-rollback",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: A failing smoke test stops the release like a failed health check.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.smoke-rollback"
+      }
+    },
+    {
+      "id": "a.rel-switch-command",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: The command that performs step 5.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.switch-command"
+      }
+    },
+    {
+      "id": "a.rel-switch-watch",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: Step 5 then step 6.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.switch-watch"
+      }
+    },
+    {
+      "id": "a.rel-watch-switchback",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "Link: The fail branch after the switch; the 2% threshold must be on the edge.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.watch-switchback"
+      }
+    },
+    {
+      "id": "a.rel-watch-standby",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: The pass branch after the switch.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.watch-standby"
+      }
+    },
+    {
+      "id": "a.rel-standby-retire",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Link: Step 7 then step 8.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.standby-retire"
+      }
+    },
+    {
+      "id": "a.order-switch-after-smoke",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "The switch never leads into the smoke test (reversed order).",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.switch",
+        "to": "e.smoke",
+        "types": [
+          "flows_to",
+          "depends_on"
+        ],
+        "why": "traffic moves only after the smoke tests pass"
+      }
+    },
+    {
+      "id": "a.order-migrate-after-deploy",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "Migrations don't flow into the deploy (reversed order).",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.step-migrate",
+        "to": "e.step-deploy",
+        "types": [
+          "flows_to"
+        ],
+        "why": "deploy to green, then migrate"
+      }
+    },
+    {
+      "id": "a.order-watch-before-switch",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "The error watch doesn't come before the switch.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.error-watch",
+        "to": "e.switch",
+        "types": [
+          "flows_to"
+        ],
+        "why": "the window starts after the switch"
+      }
+    },
+    {
+      "id": "a.layout",
+      "dimension": "visual",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No link runs through a card.",
+      "check": {
+        "check": "layout_no_fatal"
+      }
+    },
+    {
+      "id": "a.no-overlap",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Cards and shapes don't overlap.",
+      "check": {
+        "check": "cards_no_overlap"
+      }
+    },
+    {
+      "id": "a.inside-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames hold their shapes and cards.",
+      "check": {
+        "check": "children_inside_frames"
+      }
+    },
+    {
+      "id": "a.frames-apart",
+      "dimension": "visual",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames don't overlap.",
+      "check": {
+        "check": "frames_no_overlap"
+      }
+    },
+    {
+      "id": "a.cites",
+      "dimension": "traceability",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "future",
+      "requires": [
+        "ai.cites"
+      ],
+      "description": "Every element cites its units: prerequisites u2, u8–u13; steps u14–u34 (step 3 u19–u21, step 6 u28–u30); failure handling u35, u36, u39, u40."
+    },
+    {
+      "id": "a.accounting",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "future",
+      "requires": [
+        "ai.unit-accounting",
+        "ai.source-unit-ids"
+      ],
+      "description": "Every unit is Represented or Omitted with its reason: u37 duplicate of u10; u1, u7 meta; u41, u42 filler. No critical unit is omitted."
+    },
+    {
+      "id": "a.judge-decisions",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "model_judge",
+      "target": "plan",
+      "support": "implemented",
+      "judge": {
+        "question": "Are the three decision points (health within 10 minutes, smoke tests, error rate above 2%) drawn as decisions — ideally diamonds — each with two labelled outgoing branches?",
+        "pass": "Three diamonds (or clearly marked decisions) with yes/no branches whose labels state the condition.",
+        "fail": "Decisions are plain steps, or a branch is unlabelled, or a failure path is missing."
+      },
+      "description": "Decisions look like decisions."
+    },
+    {
+      "id": "a.judge-sequence",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "model_judge",
+      "target": "plan",
+      "support": "implemented",
+      "judge": {
+        "question": "Following the arrows, does the flow go deploy → migrate → health → smoke → switch → watch → standby → retire, with the failure branches leaving the right decisions?",
+        "pass": "The order matches the source and every failure branch leaves the decision that triggers it.",
+        "fail": "Steps are out of order, the switch precedes a check, or a branch leaves the wrong step."
+      },
+      "description": "The flow reads in order."
+    },
+    {
+      "id": "a.judge-meaning",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "human",
+      "target": "plan",
+      "support": "implemented",
+      "judge": {
+        "question": "Compare each element with its units. Is any threshold, prerequisite, condition or expected result changed or dropped?",
+        "pass": "10 minutes, 2%, 15 minutes, 30 seconds and 24 hours survive on the right elements; the backward-compatibility requirement and its exception are intact; no rollback reverts the database.",
+        "fail": "A threshold is missing or wrong, a prerequisite is lost, or a rollback is said to undo migrations."
+      },
+      "description": "Each element keeps the meaning of what it covers."
+    }
+  ]
+}

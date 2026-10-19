@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-html-exception-omitted",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The HTML entry-page exception is dropped from the versioning card, so versioning reads as a complete answer.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n8",
+      "find": "- Does not help for HTML entry pages: `/` and `/story/417` keep fixed addresses and point to the new names, so they still need a TTL, a purge or both.\n",
+      "replace": ""
+    }
+  ],
+  "expectFailing": [
+    "a.html-caveat"
+  ]
+}

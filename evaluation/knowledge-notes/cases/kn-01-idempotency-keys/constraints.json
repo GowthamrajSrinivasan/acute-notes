@@ -1,0 +1,72 @@
+{
+  "id": "kn-01-idempotency-keys",
+  "kind": "technical_documentation",
+  "source": "# Idempotency keys\n\nAn idempotency key is a unique value that a client attaches to a request so that the server can recognise a retry of the same operation. If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.\n\nFor example, a checkout client sends `Idempotency-Key: 7f3c-91ab` with a payment request. The connection drops before the response arrives, so the client retries with the same key. The server finds the stored result for `7f3c-91ab` and returns the original confirmation, and the customer is charged once.\n\nKeys only protect against duplicates while the server still remembers them. In this design, stored results expire after 24 hours, so a retry sent after that window is treated as a new payment. Keys also do not make two different requests safe: if a client reuses a key with a different amount, the server must reject the request rather than return the old result.\n\nIn short, idempotency keys make retries safe within a bounded window; they are not a general guarantee against duplicate operations.\n",
+  "critical": [
+    {
+      "quote": "If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.",
+      "why": "The replay only happens for a key whose request already completed."
+    },
+    {
+      "quote": "Keys only protect against duplicates while the server still remembers them.",
+      "why": "Protection is bounded by how long the server keeps results."
+    },
+    {
+      "quote": "In this design, stored results expire after 24 hours, so a retry sent after that window is treated as a new payment.",
+      "why": "The 24-hour window is the concrete bound; after it a retry charges again."
+    },
+    {
+      "quote": "Keys also do not make two different requests safe: if a client reuses a key with a different amount, the server must reject the request rather than return the old result.",
+      "why": "A reused key with a different payload must be rejected."
+    },
+    {
+      "quote": "In short, idempotency keys make retries safe within a bounded window; they are not a general guarantee against duplicate operations.",
+      "why": "The section's takeaway, including its own limit."
+    }
+  ],
+  "exact": [
+    "Idempotency-Key",
+    "7f3c-91ab",
+    "24 hours"
+  ],
+  "groups": {
+    "together": [
+      [
+        "An idempotency key is a unique value that lets the server recognise a retry",
+        "The server returns the stored result for a completed key — only within 24 hours, and never for a different amount",
+        "Example: a dropped checkout response retried with key 7f3c-91ab is charged once"
+      ]
+    ],
+    "apart": []
+  },
+  "hierarchy": [
+    {
+      "main": "An idempotency key is a unique value that lets the server recognise a retry",
+      "supporting": [
+        "Example: a dropped checkout response retried with key 7f3c-91ab is charged once"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "The server returns the stored result for a completed key — only within 24 hours, and never for a different amount",
+      "to": "Example: a dropped checkout response retried with key 7f3c-91ab is charged once",
+      "type": "explained_by",
+      "label": "for example"
+    }
+  ],
+  "mustNotSay": [
+    {
+      "text": "Idempotency keys always prevent duplicate charges.",
+      "why": "The source bounds the protection to a 24-hour window and to identical requests."
+    },
+    {
+      "text": "A reused key returns the original result even if the amount differs.",
+      "why": "The source says such a request must be rejected."
+    },
+    {
+      "text": "Idempotency keys guarantee exactly-once processing.",
+      "why": "Not stated; the source explicitly denies a general guarantee."
+    }
+  ]
+}

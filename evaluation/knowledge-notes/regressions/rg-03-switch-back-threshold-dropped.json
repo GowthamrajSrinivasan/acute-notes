@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-switch-back-threshold-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The 2% threshold disappears from the switch-back branch: any error now reads as a reason to switch back.",
+  "mutations": [
+    {
+      "op": "set_label",
+      "from": "n12",
+      "to": "n16",
+      "label": "errors rise: switch back"
+    }
+  ],
+  "expectFailing": [
+    "a.rel-watch-switchback"
+  ]
+}

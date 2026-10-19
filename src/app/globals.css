@@ -1,0 +1,5894 @@
+/*
+ * Tailwind without Preflight: Excalidraw ships its own component styles and a
+ * global reset (svg display:block, button resets…) would disturb its toolbar.
+ */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+:root {
+  --acute-bg: #ffffff;
+  --acute-surface: #ffffff;
+  --acute-surface-muted: #f5f5f7;
+  --acute-border: #e4e4e8;
+  --acute-text: #1b1b1f;
+  --acute-text-muted: #6b6b76;
+  --acute-accent: #6965db; /* Excalidraw primary */
+  --acute-accent-soft: #e0dfff;
+  /* Segmented toggle: a soft accent track; every text pair is ≥ 4.5:1. */
+  --acute-toggle-track: #ecebfd;
+  --acute-toggle-border: #d9d7f7;
+  --acute-toggle-text: #4b4895;
+  --acute-toggle-thumb: #ffffff;
+  --acute-toggle-thumb-text: #4f4bc4;
+  /* Filled call-to-action pill + status colours (settings dialogs). */
+  --acute-cta: #5b57d1;
+  --acute-cta-hover: #4c48c2;
+  --acute-cta-text: #ffffff;
+  --acute-success: #2b8a3e;
+  --acute-danger: #c92a2a;
+  --acute-danger-soft: #fdecec;
+  --acute-warning: #e67700;
+  --acute-header-h: 44px;
+  --acute-radius: 8px;
+  --acute-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 20px rgba(0, 0, 0, 0.06);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --acute-bg: #121212;
+  --acute-surface: #232329;
+  --acute-surface-muted: #1c1c21;
+  --acute-border: #34343c;
+  --acute-text: #e3e3e8;
+  --acute-text-muted: #9a9aa6;
+  --acute-accent: #a8a5ff;
+  --acute-accent-soft: #3a3862;
+  --acute-toggle-track: #2d2b4d;
+  --acute-toggle-border: #3d3a66;
+  --acute-toggle-text: #cdcbfa;
+  --acute-toggle-thumb: #5b58c9;
+  --acute-toggle-thumb-text: #ffffff;
+  --acute-cta: #5b58c9;
+  --acute-cta-hover: #6a67d8;
+  --acute-cta-text: #ffffff;
+  --acute-success: #69db7c;
+  --acute-danger: #ff8787;
+  --acute-danger-soft: #3b2224;
+  --acute-warning: #ffc078;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--acute-bg);
+  color: var(--acute-text);
+  font-family: "Assistant", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* No browser pinch-zoom on touchscreens: the canvas zooms itself (see PinchZoomGuard). */
+html {
+  touch-action: pan-x pan-y;
+}
+
+:focus-visible {
+  outline: 2px solid var(--acute-accent);
+  outline-offset: 2px;
+}
+
+/* ---- Excalidraw integration ------------------------------------------- */
+
+/* Tools the PRD does not include in the MVP main toolbar. */
+.excalidraw .App-toolbar [data-testid="toolbar-eraser"],
+.excalidraw .App-toolbar label:has(> [data-testid="toolbar-eraser"]) {
+  display: none;
+}
+
+/* Our Block tool slot sits inline with the native tool buttons. */
+/* The ▾ beside Excalidraw's arrow tool (ArrowToolMenu). */
+.acute-arrow-mode {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: var(--lg-button-size, 2.25rem);
+  margin-left: -4px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--icon-fill-color, #1b1b1f);
+  cursor: pointer;
+}
+.acute-arrow-mode:hover,
+.acute-arrow-mode[aria-expanded="true"] {
+  background: var(--button-hover-bg, #f1f0ff);
+}
+.acute-arrow-mode[data-mode="architecture"] {
+  color: var(--color-primary, #6965db);
+}
+.acute-arrow-mode__menu {
+  position: fixed;
+  z-index: 50;
+  width: 260px;
+  padding: 6px;
+  transform: translateX(-50%);
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  box-shadow: var(--acute-shadow);
+}
+.acute-arrow-mode__item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text);
+  text-align: left;
+  cursor: pointer;
+}
+.acute-arrow-mode__item:hover,
+.acute-arrow-mode__item:focus-visible {
+  background: var(--acute-accent-soft);
+  outline: none;
+}
+.acute-arrow-mode__item[aria-checked="true"] .acute-arrow-mode__icon {
+  color: var(--acute-accent);
+}
+.acute-arrow-mode__icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--acute-text-muted);
+}
+.acute-arrow-mode__label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+.acute-arrow-mode__item[aria-checked="true"] .acute-arrow-mode__label::after {
+  content: " ✓";
+  color: var(--acute-accent);
+}
+.acute-arrow-mode__hint {
+  display: block;
+  margin-top: 1px;
+  font-size: 12px;
+  color: var(--acute-text-muted);
+}
+
+.acute-toolbar-slot {
+  display: contents;
+}
+
+/* ✨ Visualize, the toolbar's last item: the header's pill toggle (track + raised thumb), so it reads as an action, not a drawing tool. */
+.acute-visualize-tool {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  margin-left: 2px;
+  padding: 2px;
+  border: 1px solid var(--acute-toggle-border);
+  border-radius: 999px;
+  background: var(--acute-toggle-track);
+}
+.acute-visualize-tool__button {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  height: 26px;
+  padding: 0 12px 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--acute-toggle-thumb);
+  box-shadow: 0 1px 3px rgba(40, 36, 120, 0.18);
+  color: var(--acute-toggle-thumb-text);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+.acute-visualize-tool__button:hover,
+.acute-visualize-tool__button[aria-pressed="true"] {
+  background: var(--acute-cta);
+  color: var(--acute-cta-text);
+}
+.acute-visualize-tool__button:focus-visible {
+  outline: 2px solid var(--acute-toggle-thumb-text);
+  outline-offset: 2px;
+}
+
+/* The shape library is not part of the MVP. */
+.excalidraw .sidebar-triggers .default-sidebar-trigger,
+.excalidraw .default-sidebar-trigger.default-sidebar-trigger {
+  display: none;
+}
+
+/* ---- Rich blocks (canvas-hosted) ------------------------------------- */
+
+/* Activation is double-click / Enter; the native hover hint would cover content. */
+.excalidraw .excalidraw__embeddable-hint {
+  display: none;
+}
+
+.acute-block {
+  --block-text: #1f1f24;
+  --block-muted: #8a8a96;
+  --block-code-bg: #f4f4f6;
+  --block-border: #e6e6ea;
+  --block-accent: #6965db;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: var(--block-text);
+  /* Font, size and alignment come from the item's style (see blockFonts.ts). */
+  font-family: var(--acute-block-font, "Inter", system-ui, sans-serif);
+  font-size: var(--acute-block-size, 14px);
+  line-height: 1.5;
+  text-align: var(--acute-block-align, left);
+  user-select: none;
+  isolation: isolate;
+}
+
+.acute-block[data-theme="dark"] {
+  --block-text: #e4e4ea;
+  --block-muted: #8e8e9a;
+  --block-code-bg: #1d1d22;
+  --block-border: #3a3a44;
+  --block-accent: #a8a5ff;
+}
+
+/* Paints the element fill in the DOM layer so overlapping blocks stay opaque.
+   Excalidraw inverts canvas colours in dark mode; mirror that filter here. */
+.acute-block__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--acute-block-bg, transparent);
+  pointer-events: none;
+}
+.excalidraw.theme--dark .acute-block__bg {
+  filter: var(--theme-filter);
+}
+
+.acute-block__content {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.acute-block[data-active] {
+  user-select: text;
+}
+.acute-block[data-active] .acute-block__content {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.acute-block--unknown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--block-muted);
+}
+
+/* BlockNote inside a block: transparent, compact gutters. */
+.acute-block .bn-container,
+.acute-block .bn-editor {
+  background: transparent;
+}
+.acute-block .bn-editor {
+  padding: 12px 14px 16px 30px;
+  font-size: inherit;
+  font-family: inherit;
+}
+.acute-block .bn-container[data-color-scheme] {
+  --bn-colors-editor-background: transparent;
+  --bn-colors-editor-text: var(--block-text);
+  --bn-font-family: var(--acute-block-font, "Inter", system-ui, sans-serif);
+}
+.acute-block .bn-inline-content {
+  text-align: inherit;
+}
+
+.acute-block__copy {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 2;
+  padding: 2px 8px;
+  border: 1px solid var(--block-border);
+  border-radius: 6px;
+  background: var(--block-code-bg);
+  color: var(--block-muted);
+  font: 500 11px/18px inherit;
+  cursor: pointer;
+}
+.acute-block__copy:hover {
+  color: var(--block-text);
+}
+
+/* ---- Static preview renderer ---------------------------------------- */
+
+.acute-preview {
+  padding: 12px 14px 12px 30px;
+}
+.acute-preview > :first-child {
+  margin-top: 0;
+}
+.acute-preview h1,
+.acute-preview h2,
+.acute-preview h3 {
+  margin: 0.2em 0 0.35em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.acute-preview h1 {
+  font-size: 1.75em;
+}
+.acute-preview h2 {
+  font-size: 1.4em;
+}
+.acute-preview h3 {
+  font-size: 1.15em;
+}
+.acute-preview p {
+  margin: 0 0 0.25em;
+  min-height: 1.5em;
+}
+.acute-preview code {
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: var(--block-code-bg);
+  font-family: "Cascadia", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+.acute-preview a {
+  color: var(--block-accent);
+  text-decoration: underline;
+}
+.acute-preview__placeholder {
+  color: var(--block-muted);
+  font-style: italic;
+}
+.acute-preview__li {
+  display: flex;
+  gap: 0.5em;
+  align-items: flex-start;
+  margin: 0 0 0.2em;
+}
+.acute-preview__marker {
+  min-width: 1.1em;
+  color: var(--block-muted);
+  text-align: right;
+}
+.acute-preview__li input[type="checkbox"] {
+  margin: 0.3em 0 0;
+  accent-color: var(--block-accent);
+}
+.acute-preview__li[data-checked] .acute-preview__check-text {
+  color: var(--block-muted);
+  text-decoration: line-through;
+}
+.acute-preview__children {
+  margin-left: 1.4em;
+}
+.acute-preview__code {
+  position: relative;
+  margin: 0.25em 0;
+  border-radius: 8px;
+  /* Matches BlockNote's code block so preview and editor look the same. */
+  background: #161616;
+  color: #f5f5f5;
+}
+.acute-preview__code pre {
+  margin: 0;
+  padding: 24px 24px 20px;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.acute-preview__code pre code {
+  padding: 0;
+  background: none;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.acute-preview__lang {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  color: #9a9aa6;
+  font-size: 11px;
+}
+.acute-preview__mermaid {
+  position: relative;
+  margin: 0.25em 0;
+  padding: 20px 12px 12px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+}
+.acute-preview__mermaid svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+.acute-preview__mermaid-note {
+  margin: 4px 0 0;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+.acute-preview__table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin: 0.25em 0;
+}
+.acute-preview__table th,
+.acute-preview__table td {
+  padding: 5px 8px;
+  border: 1px solid var(--block-border);
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.acute-preview__table th {
+  background: var(--block-code-bg);
+  font-weight: 600;
+}
+
+/* Acute blocks store their document reference in `link`; never show it. */
+:root[data-acute-block-selected] .excalidraw .excalidraw-hyperlinkContainer {
+  display: none;
+}
+
+/* Editor-view display: BlockNote's static markup, same gutters as the editor. */
+.acute-block .acute-editor-view {
+  pointer-events: none;
+}
+.acute-block .acute-editor-view .bn-editor {
+  outline: none;
+}
+
+/* Compact preview: keep empty table rows at a readable height. */
+.acute-preview__table td,
+.acute-preview__table th {
+  height: 2.1em;
+}
+
+/* ---- Block content colour ------------------------------------------- */
+
+/* Stroke colour → content colour (see blockColor.ts). */
+.acute-block {
+  color: var(--acute-block-fg, var(--block-text));
+}
+.acute-block .bn-container[data-color-scheme] {
+  --bn-colors-editor-text: var(--acute-block-fg, var(--block-text));
+}
+
+/* BlockNote's colour palette for the compact preview (same data attributes). */
+.acute-preview__styled {
+  border-radius: 4px;
+}
+.acute-preview [data-text-color="gray"] { color: #9b9a97; }
+.acute-preview [data-text-color="brown"] { color: #64473a; }
+.acute-preview [data-text-color="red"] { color: #e03e3e; }
+.acute-preview [data-text-color="orange"] { color: #d9730d; }
+.acute-preview [data-text-color="yellow"] { color: #dfab01; }
+.acute-preview [data-text-color="green"] { color: #4d6461; }
+.acute-preview [data-text-color="blue"] { color: #0b6e99; }
+.acute-preview [data-text-color="purple"] { color: #6940a5; }
+.acute-preview [data-text-color="pink"] { color: #ad1a72; }
+.acute-preview [data-background-color="gray"] { background-color: #ebeced; }
+.acute-preview [data-background-color="brown"] { background-color: #e9e5e3; }
+.acute-preview [data-background-color="red"] { background-color: #fbe4e4; }
+.acute-preview [data-background-color="orange"] { background-color: #f6e9d9; }
+.acute-preview [data-background-color="yellow"] { background-color: #fbf3db; }
+.acute-preview [data-background-color="green"] { background-color: #ddedea; }
+.acute-preview [data-background-color="blue"] { background-color: #ddebf1; }
+.acute-preview [data-background-color="purple"] { background-color: #eae4f2; }
+.acute-preview [data-background-color="pink"] { background-color: #f4dfeb; }
+
+/* Custom (hex) text colours are stored in canvas colour space: in dark mode
+   apply the same filter Excalidraw applies to the canvas so they match. */
+.excalidraw.theme--dark .acute-block [data-custom-color] {
+  filter: var(--theme-filter);
+}
+
+/* Per-block wrapper in the compact preview (carries data-block-id); layout-neutral. */
+.acute-preview__block {
+  display: contents;
+}
+.acute-preview > .acute-preview__block:first-child > :first-child {
+  margin-top: 0;
+}
+
+
+/* ---- Frameless text items (T tool) ------------------------------------ */
+
+/* No gutters: text starts exactly where the user clicked, like canvas text. */
+.acute-block[data-frame="none"] .acute-preview,
+.acute-block[data-frame="none"] .bn-editor {
+  padding: 0;
+}
+.acute-block[data-frame="none"] .acute-preview p:last-child {
+  margin-bottom: 0;
+}
+/* Height follows content (auto-size measures this element). */
+.acute-block[data-frame="none"] .acute-block__content {
+  height: auto;
+  overflow: visible;
+}
+.acute-block[data-frame="none"][data-active] .acute-block__content {
+  overflow: visible;
+}
+/* Auto-height cards (AI-created, until resized by hand): the block follows its content's height. */
+.acute-block[data-autoheight] .acute-block__content {
+  height: auto;
+}
+
+/* Auto-width: grow with the longest line, then wrap. */
+.acute-block[data-autowidth] .acute-block__content {
+  width: max-content;
+  min-width: 1ch;
+  max-width: 600px;
+}
+.acute-block[data-frame="none"] {
+  overflow: visible;
+}
+
+/* Frameless text has no frame: hide the native frame controls. */
+:root[data-acute-frameless-selected] .App-menu__left [data-acute-section="stroke"],
+:root[data-acute-frameless-selected] .App-menu__left [data-acute-section="fill"],
+:root[data-acute-frameless-selected] .App-menu__left [data-acute-section="stroke-width"],
+:root[data-acute-frameless-selected] .App-menu__left [data-acute-section="stroke-style"],
+:root[data-acute-frameless-selected] .App-menu__left [data-acute-section="sloppiness"],
+:root[data-acute-frameless-selected] .App-menu__left [data-acute-section="edges"] {
+  display: none;
+}
+
+/* A composite shape (cylinder): its colours are the Acute Shape section's (the native pickers would colour its
+   transparent host), and its edges come from its outline. */
+:root[data-acute-composite-selected] .App-menu__left [data-acute-section="stroke"],
+:root[data-acute-composite-selected] .App-menu__left [data-acute-section="background"],
+:root[data-acute-composite-selected] .App-menu__left [data-acute-section="edges"] {
+  display: none;
+}
+
+/* ---- Text panel section (inside Excalidraw's properties panel) -------- */
+
+[data-acute-slot]:empty {
+  display: none;
+}
+.acute-text-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  border: 0;
+}
+.acute-text-section legend {
+  margin-top: 0.4rem;
+}
+.acute-text-section__font {
+  width: 100%;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--default-border-color, #e6e6ea);
+  border-radius: var(--border-radius-lg, 8px);
+  background: var(--island-bg-color, #fff);
+  color: var(--text-primary-color, #1b1b1f);
+  font-size: 0.95rem;
+}
+.acute-text-section__glyph {
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+}
+.acute-text-section__colors {
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* Performance: each hosted block is an independent layout/paint unit, so
+   moving the canvas (which repositions every embeddable container) doesn't
+   re-layout or repaint block content. */
+.excalidraw .excalidraw__embeddable-container__inner {
+  contain: layout paint style;
+}
+
+/* Style row (bold, italic, …) and link field in the Text section. */
+.acute-text-section__marks {
+  flex-wrap: wrap;
+}
+.acute-text-section .buttonList > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--border-radius-lg, 8px);
+  background: var(--button-bg, var(--island-bg-color, #f1f0ff));
+  color: var(--text-primary-color, #1b1b1f);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.acute-text-section .buttonList > button:hover {
+  background: var(--button-hover-bg, var(--color-surface-high, #e0dfff));
+}
+.acute-text-section .buttonList > button.active {
+  background: var(--color-surface-primary-container, #e0dfff);
+  box-shadow: 0 0 0 1px var(--color-primary, #6965db);
+}
+.acute-text-section__link {
+  display: flex;
+  gap: 0.25rem;
+}
+.acute-text-section__link input {
+  flex: 1;
+  min-width: 0;
+  height: 1.9rem;
+  padding: 0 0.4rem;
+  border: 1px solid var(--default-border-color, #e6e6ea);
+  border-radius: 6px;
+  background: var(--island-bg-color, #fff);
+  color: var(--text-primary-color, #1b1b1f);
+  font-size: 0.85rem;
+}
+.acute-text-section__link button {
+  height: 1.9rem;
+  padding: 0 0.6rem;
+  border: 0;
+  border-radius: 6px;
+  background: var(--color-primary, #6965db);
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+/* Element-level link badge (clickable even though block content is inert). */
+.acute-block__href {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--block-accent);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1;
+  text-decoration: none;
+  pointer-events: auto;
+}
+.acute-text-section__hint {
+  margin: 0;
+  color: var(--text-primary-color, #1b1b1f);
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+.acute-text-section__wide > label {
+  width: auto;
+  padding: 0 0.6rem;
+}
+.acute-text-section__convert {
+  height: 2rem;
+  border: 0;
+  border-radius: var(--border-radius-lg, 8px);
+  background: var(--color-primary, #6965db);
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* ---- Dialogs (export, find) --------------------------------------------- */
+.acute-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+}
+.acute-dialog {
+  width: min(360px, calc(100vw - 32px));
+  padding: 18px 20px 16px;
+  border: 1px solid var(--acute-border);
+  border-radius: 12px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  box-shadow: var(--acute-shadow);
+  font-size: 14px;
+}
+.acute-dialog h2 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+.acute-dialog__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+}
+.acute-dialog__seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--acute-surface-muted);
+}
+.acute-dialog__seg button {
+  padding: 3px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  cursor: pointer;
+}
+.acute-dialog__seg button[aria-checked="true"] {
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+.acute-dialog__error {
+  color: #c92a2a;
+  font-size: 13px;
+}
+.acute-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+.acute-dialog__actions button {
+  padding: 6px 12px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  cursor: pointer;
+}
+.acute-dialog__actions button[data-primary] {
+  border-color: var(--acute-accent);
+  background: var(--acute-accent);
+  color: #fff;
+}
+.acute-dialog__actions button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ---- MCP access dialog (F20/F21) --------------------------------------- */
+.acute-mcp-dialog {
+  width: min(520px, calc(100vw - 32px));
+}
+.acute-mcp-dialog > .acute-dialog__text {
+  margin-bottom: 8px;
+}
+.acute-mcp-dialog__status {
+  margin: 6px 0 4px;
+  color: var(--acute-text-muted);
+  font-size: 13px;
+}
+.acute-mcp-dialog__status[data-status="connected"] {
+  color: #2b8a3e;
+}
+.acute-mcp-dialog__label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+}
+.acute-mcp-dialog__field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.acute-mcp-dialog__field code {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acute-mcp-dialog__field .acute-mcp-dialog__command {
+  white-space: normal;
+  word-break: break-all;
+}
+.acute-mcp-dialog__field button {
+  padding: 4px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ---- Visualize dialog (F31) — a wider .acute-dialog variant ------------- */
+.acute-visualize-dialog {
+  width: min(520px, calc(100vw - 32px));
+  /* The shared-chats list can make the dialog taller than the window: scroll it, never push Visualize off-screen. */
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+}
+.acute-visualize-dialog h2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.acute-visualize-dialog__text {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 160px;
+  padding: 8px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+  resize: vertical;
+}
+.acute-visualize-dialog__text:focus {
+  outline: none;
+  border-color: var(--acute-accent);
+}
+.acute-visualize-dialog__destination {
+  margin: 10px 0 0;
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+}
+.acute-visualize-dialog__link {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--acute-accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+.acute-visualize-dialog__templates {
+  margin-top: 10px;
+}
+/* Visualize: merge into existing notes, or add as new (topic merge G2.2). */
+.acute-visualize-dialog__mode {
+  margin: 10px 0 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.acute-visualize-dialog__choice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  font-size: 13px;
+  cursor: pointer;
+}
+.acute-visualize-dialog__target {
+  color: var(--acute-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acute-visualize-dialog__select {
+  max-width: 100%;
+  margin: 2px 0 4px 22px;
+  padding: 4px 6px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+  font-size: 13px;
+}
+.acute-visualize-dialog__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+/* Visualize: import shared chat links (chat-share plan C1). */
+.acute-shared-chats {
+  margin-top: 10px;
+  font-size: 13px;
+}
+.acute-shared-chats > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.acute-shared-chats__add {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin-top: 6px;
+}
+.acute-shared-chats__add .acute-visualize-dialog__text {
+  min-height: 0;
+}
+.acute-shared-chats__list {
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-shared-chats__item {
+  padding: 4px 0;
+  border-top: 1px solid var(--acute-border);
+}
+.acute-shared-chats__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.acute-shared-chats__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acute-shared-chats__buttons {
+  display: flex;
+  gap: 2px;
+  flex: none;
+}
+.acute-shared-chats__note {
+  margin: 2px 0 0;
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+}
+/* Visualize's template picker (F31): a grid of small cards, one per template. */
+.acute-template-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+@media (max-width: 460px) {
+  .acute-template-picker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.acute-template-picker__option {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 2px;
+  padding: 6px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  cursor: pointer;
+  min-width: 0;
+}
+.acute-template-picker__option:hover {
+  border-color: var(--acute-text-muted);
+}
+.acute-template-picker__option[data-checked] {
+  border-color: var(--acute-accent);
+  box-shadow: 0 0 0 1px var(--acute-accent);
+}
+.acute-template-picker__option input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.acute-template-picker__option:has(input:focus-visible) {
+  outline: 2px solid var(--acute-accent);
+  outline-offset: 1px;
+}
+.acute-template-picker__sketch {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  color: var(--acute-text-muted);
+}
+.acute-template-picker__sketch svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+}
+.acute-template-picker__option[data-checked] .acute-template-picker__sketch {
+  color: var(--acute-accent);
+}
+.acute-template-picker__name {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.acute-template-picker__example {
+  overflow: hidden;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---- Large-paste hint (F31): a UI control tracking a block, at a fixed size (not zoom-scaled) ---- */
+.acute-visualize-hint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: max-content;
+  padding: 4px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  box-shadow: var(--acute-shadow);
+  font-size: 12.5px;
+}
+.acute-visualize-hint__ask {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--acute-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.acute-visualize-hint__ask:hover {
+  background: var(--acute-surface-muted);
+}
+.acute-visualize-hint__dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--acute-text-muted);
+  cursor: pointer;
+}
+.acute-visualize-hint__dismiss:hover {
+  background: var(--acute-surface-muted);
+}
+
+/* ---- Find on canvas ------------------------------------------------------ */
+.acute-find {
+  position: absolute;
+  top: 12px;
+  right: 60px;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  width: 340px;
+  padding: 6px;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  box-shadow: var(--acute-shadow);
+  font-size: 13px;
+}
+.acute-find input {
+  flex: 1;
+  min-width: 0;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+  outline: none;
+}
+.acute-find > button {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  cursor: pointer;
+}
+.acute-find > button:hover:not(:disabled) {
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+}
+.acute-find__count {
+  min-width: 56px;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+  text-align: right;
+}
+.acute-find__results {
+  flex-basis: 100%;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-find__results button {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  width: 100%;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text);
+  text-align: left;
+  cursor: pointer;
+}
+.acute-find__results button[aria-current="true"],
+.acute-find__results button:hover {
+  background: var(--acute-accent-soft);
+}
+.acute-find__kind {
+  min-width: 18px;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+.acute-find__snippet {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.acute-find__snippet mark {
+  background: #ffe066;
+  color: inherit;
+}
+.acute-find__n {
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+/* The find highlight's `::highlight(acute-find)` rule is injected by FindOverlay:
+   Turbopack's CSS parser does not recognise `::highlight()` yet. */
+
+/* ---- Notion-style blocks in the static preview (pages) ----------------- */
+.acute-preview__quote {
+  margin: 0.2em 0 0.35em;
+  padding: 0 0 0 0.9em;
+  border-left: 3px solid currentColor;
+}
+.acute-preview__divider {
+  margin: 0.6em 0;
+  border: 0;
+  border-top: 1px solid var(--block-border);
+}
+.acute-preview__toggle-heading {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+.acute-preview__toggle {
+  text-align: center;
+}
+.acute-preview__image {
+  margin: 0.35em 0;
+}
+.acute-preview__image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.acute-preview__image-missing {
+  min-height: 3em;
+  border-radius: 4px;
+  background: var(--block-border);
+  opacity: 0.4;
+}
+.acute-preview__image figcaption {
+  margin-top: 0.25em;
+  font-size: 0.85em;
+  opacity: 0.7;
+}
+
+/* ---- Page previews on the canvas (F09) ---------------------------------- */
+.acute-page {
+  font-family: "Inter", system-ui, sans-serif;
+}
+.acute-page [data-untitled] {
+  color: var(--block-muted);
+}
+
+/* Actions are the only interactive part of an inactive embeddable. */
+.acute-page__actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  display: flex;
+  gap: 4px;
+  pointer-events: auto;
+}
+.acute-page__actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--block-border);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--block-muted);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+.acute-page[data-theme="dark"] .acute-page__actions button {
+  background: #2a2a31;
+}
+.acute-page__actions button:hover {
+  color: var(--block-accent);
+}
+
+/* Compact card */
+.acute-page__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 14px 16px 12px;
+}
+.acute-page__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.acute-page:has(.acute-page__actions) .acute-page__head {
+  padding-right: 60px;
+}
+.acute-page__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--block-muted);
+}
+.acute-page__title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.acute-page__rename {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 1px 4px;
+  margin: -2px -5px;
+  border: 1px solid var(--block-accent);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: inherit;
+  font: inherit;
+  outline: none;
+  pointer-events: auto;
+}
+.acute-page__excerpt {
+  flex: 1;
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--block-muted);
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.acute-page__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--block-muted);
+  font-size: 11.5px;
+}
+.acute-page__open {
+  color: var(--block-accent);
+  font-weight: 500;
+}
+
+/* Content preview: the page as a clipped document. */
+.acute-page__doc {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+.acute-page__doc-title {
+  padding: 18px 18px 2px 30px;
+  font-size: 1.7em;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.acute-page:has(.acute-page__actions) .acute-page__doc-title {
+  padding-right: 104px;
+}
+.acute-page__doc .acute-preview {
+  padding-top: 8px;
+}
+.acute-page__fade {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 44px;
+  background: linear-gradient(to bottom, transparent, var(--acute-block-bg, #ffffff));
+  pointer-events: none;
+}
+/* The fill is drawn in canvas colours and inverted in dark mode; so is the fade. */
+.excalidraw.theme--dark .acute-page__fade {
+  filter: var(--theme-filter);
+}
+
+.acute-page__missing {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--block-muted);
+  font-style: italic;
+}
+
+/* ---- Shared side panel shell (page panel, Acute Lens; plan D17) --------- */
+/* One right-hand slot: layout, resize handle and header bar are shared so the two surfaces can't drift. */
+.acute-side-panel {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  min-width: 0;
+  max-width: calc(100% - 240px);
+  border-left: 1px solid var(--acute-border);
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.04);
+  outline: none;
+}
+/* Expanded: over the canvas (which stays mounted), beside the page list. */
+.acute-side-panel[data-expanded] {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  max-width: none;
+  border-left: 0;
+  box-shadow: none;
+}
+[data-sidebar-open] > .acute-side-panel[data-expanded] {
+  left: 15rem;
+  border-left: 1px solid var(--acute-border);
+}
+
+.acute-side-panel__resize {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -3px;
+  z-index: 2;
+  width: 6px;
+  cursor: col-resize;
+  touch-action: none;
+}
+.acute-side-panel__resize:hover,
+.acute-side-panel__resize:active {
+  background: linear-gradient(to right, transparent 2px, var(--acute-accent) 2px, var(--acute-accent) 4px, transparent 4px);
+}
+
+.acute-side-panel__bar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  height: 40px;
+  padding: 0 8px;
+}
+.acute-side-panel__crumb {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+  padding: 0 6px;
+  color: var(--acute-text-muted);
+  font-size: 13px;
+}
+.acute-side-panel__crumb svg {
+  flex-shrink: 0;
+}
+
+/* ---- Page side panel (F09/F16) ------------------------------------------ */
+/* Copy + chevron (more options) as one control. */
+.acute-split-button {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+.acute-split-button > button:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.acute-split-button > .acute-split-button__chevron {
+  width: 16px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.acute-page-panel__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  cursor: text;
+}
+.acute-page-panel__doc {
+  /* Room below the content: clicking it continues writing at the end. */
+  padding: 28px 0 30vh;
+  font-family: "Inter", system-ui, sans-serif;
+}
+.acute-page-panel[data-expanded] .acute-page-panel__doc {
+  max-width: 860px;
+  margin: 0 auto;
+  padding-top: 72px;
+}
+
+/* Title and meta line up with the editor text (BlockNote's 54px side-menu gutter). */
+.acute-page-panel__title {
+  display: block;
+  width: calc(100% - 108px);
+  margin: 0 54px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  color: var(--acute-text);
+  font: 700 2.25rem/1.2 "Inter", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  resize: none;
+  outline: none;
+}
+.acute-page-panel__title::placeholder {
+  color: var(--acute-text-muted);
+  opacity: 0.55;
+}
+.acute-page-panel__meta {
+  margin: 6px 54px 14px;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+}
+
+.acute-page-panel .bn-container[data-color-scheme] {
+  --bn-colors-editor-background: transparent;
+  --bn-colors-editor-text: var(--acute-text);
+}
+.acute-page-panel .bn-editor {
+  padding-inline: 54px;
+  font-size: 16px;
+}
+/* Suspense fallback: static content in the editor's position. */
+.acute-page-panel__content > .acute-block {
+  height: auto;
+  color: var(--acute-text);
+}
+.acute-page-panel__content > .acute-block .acute-preview {
+  padding: 3px 54px;
+  font-size: 16px;
+}
+
+/* ---- Page list (sidebar) ------------------------------------------------ */
+.acute-page-row {
+  display: flex;
+  align-items: center;
+  margin: 1px 0;
+  border-radius: 6px;
+}
+.acute-page-row:hover,
+.acute-page-row[data-open] {
+  background: var(--acute-surface-muted);
+}
+.acute-page-row__open {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  padding: 5px 8px 5px calc(8px + var(--acute-indent, 0px));
+  border: 0;
+  background: transparent;
+  color: var(--acute-text);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-page-row[data-open] .acute-page-row__open {
+  font-weight: 600;
+}
+.acute-page-row__open svg {
+  flex-shrink: 0;
+  color: var(--acute-text-muted);
+}
+.acute-page-row__open [data-untitled] {
+  color: var(--acute-text-muted);
+}
+.acute-page-row__actions {
+  display: none;
+  padding-right: 2px;
+}
+.acute-page-row:hover .acute-page-row__actions,
+.acute-page-row:focus-within .acute-page-row__actions {
+  display: flex;
+}
+.acute-page-row__rename {
+  flex: 1;
+  min-width: 0;
+  margin: 2px 2px 2px calc(2px + var(--acute-indent, 0px));
+  padding: 4px 6px;
+  border: 1px solid var(--acute-accent);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font-size: 14px;
+  outline: none;
+}
+
+/* ---- Navigator tree (workspaces → canvases → pages) ---------------------- */
+.acute-nav-chevron {
+  margin: 0 -4px 0 -2px;
+  transition: transform 120ms ease;
+}
+.acute-nav-chevron[data-expanded] {
+  transform: rotate(90deg);
+}
+.acute-nav-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  margin: 1px 0;
+  padding: 5px 8px 5px calc(8px + var(--acute-indent, 0px));
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-nav-add:hover {
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+}
+
+/* ---- Header breadcrumb (click a name to rename it) ----------------------- */
+.acute-crumb {
+  display: inline-flex;
+  min-width: 0;
+  max-width: 260px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: text;
+}
+.acute-crumb[data-current] {
+  color: var(--acute-text);
+}
+.acute-crumb:hover:not(:disabled) {
+  background: var(--acute-surface-muted);
+}
+.acute-crumb__input {
+  width: 200px;
+  min-width: 0;
+  padding: 2px 6px;
+  border: 1px solid var(--acute-accent);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+  outline: none;
+}
+
+/* ---- Header canvas toolbar (icon buttons; names in tooltips) -------------- */
+.acute-toolbar {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.acute-toolbar__button {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  cursor: pointer;
+}
+.acute-toolbar__button:hover:not(:disabled) {
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+}
+.acute-toolbar__button[aria-pressed="true"],
+.acute-toolbar__button[aria-expanded="true"] {
+  background: var(--acute-accent-soft);
+  color: var(--acute-accent);
+}
+.acute-toolbar__button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+.acute-view-toggle {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 0 4px 0 6px;
+}
+.acute-view-toggle__label {
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.acute-segmented {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 2px;
+  border: 1px solid var(--acute-toggle-border);
+  border-radius: 999px;
+  background: var(--acute-toggle-track);
+}
+/* The sliding thumb sits under the selected option. */
+.acute-segmented::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  width: calc(50% - 2px);
+  border-radius: 999px;
+  background: var(--acute-toggle-thumb);
+  box-shadow: 0 1px 3px rgba(40, 36, 120, 0.18);
+  transition: transform 160ms ease;
+}
+.acute-segmented[data-value="editor"]::before,
+.acute-segmented[data-selected="second"]::before {
+  transform: translateX(100%);
+}
+.acute-segmented button {
+  position: relative;
+  z-index: 1;
+  min-width: 64px;
+  height: 24px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--acute-toggle-text);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+.acute-segmented button[aria-checked="true"] {
+  color: var(--acute-toggle-thumb-text);
+}
+.acute-segmented button:focus-visible {
+  outline: 2px solid var(--acute-toggle-thumb-text);
+  outline-offset: -2px;
+}
+.acute-toolbar__swatch {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--acute-border);
+  border-radius: 4px;
+}
+.acute-toolbar__status {
+  padding: 0 8px 0 4px;
+  white-space: nowrap;
+}
+.acute-toolbar__sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 3px;
+  background: var(--acute-border);
+}
+.acute-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  padding: 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  box-shadow: var(--acute-shadow);
+}
+.acute-popover__title {
+  margin-bottom: 8px;
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+.acute-popover__swatches {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.acute-popover__swatch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.acute-popover__swatch[aria-checked="true"] {
+  box-shadow: 0 0 0 2px var(--acute-surface), 0 0 0 3.5px var(--acute-accent);
+}
+.acute-popover__swatch--custom {
+  background: conic-gradient(#ff6b6b, #ffd93d, #6bcb77, #4d96ff, #b36bff, #ff6b6b);
+}
+.acute-popover__swatch--custom input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.acute-popover__sep {
+  width: 1px;
+  height: 20px;
+  margin: 0 2px;
+  background: var(--acute-border);
+}
+
+/* ---- Header ⋮ menu ------------------------------------------------------ */
+.acute-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 60;
+  min-width: 250px;
+  padding: 6px;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  box-shadow: var(--acute-shadow);
+}
+.acute-menu button {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text);
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-menu button:hover:not(:disabled) {
+  background: var(--acute-accent-soft);
+}
+.acute-menu button:disabled {
+  color: var(--acute-text-muted);
+  cursor: default;
+}
+.acute-menu__hint {
+  flex-shrink: 0;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+/* The header toolbar replaces Excalidraw's own canvas menu. */
+.excalidraw .main-menu-trigger {
+  /* Excalidraw's stylesheet loads after ours: win on specificity. */
+  display: none !important;
+}
+.acute-menu--fixed {
+  position: fixed;
+  right: auto;
+}
+.acute-menu__label {
+  padding: 6px 10px 2px;
+  color: var(--acute-text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.acute-menu__sep {
+  height: 1px;
+  margin: 5px 4px;
+  background: var(--acute-border);
+}
+.acute-dialog__text {
+  margin: 0;
+  color: var(--acute-text-muted);
+  line-height: 1.45;
+}
+
+/* ---- Pill buttons: the segmented toggle's language as standalone buttons -- */
+.acute-pill {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--acute-toggle-border);
+  border-radius: 999px;
+  background: var(--acute-toggle-track);
+  color: var(--acute-toggle-text);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+.acute-pill:hover:not(:disabled) {
+  background: var(--acute-toggle-thumb);
+  color: var(--acute-toggle-thumb-text);
+  box-shadow: 0 1px 3px rgba(40, 36, 120, 0.18);
+}
+.acute-pill:focus-visible {
+  outline: 2px solid var(--acute-toggle-thumb-text);
+  outline-offset: 1px;
+}
+.acute-pill:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+/* Selected state reads exactly like the toggle's thumb. */
+.acute-pill[aria-pressed="true"] {
+  background: var(--acute-toggle-thumb);
+  color: var(--acute-toggle-thumb-text);
+  box-shadow: 0 1px 3px rgba(40, 36, 120, 0.18);
+}
+.acute-pill--primary {
+  border-color: var(--acute-cta);
+  background: var(--acute-cta);
+  color: var(--acute-cta-text);
+}
+.acute-pill--primary:hover:not(:disabled) {
+  border-color: var(--acute-cta-hover);
+  background: var(--acute-cta-hover);
+  color: var(--acute-cta-text);
+}
+.acute-pill--ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--acute-text-muted);
+}
+.acute-pill--ghost:hover:not(:disabled) {
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+  box-shadow: none;
+}
+.acute-pill--danger:hover:not(:disabled) {
+  background: var(--acute-danger-soft);
+  color: var(--acute-danger);
+}
+
+/* ---- Form fields (settings dialogs) ------------------------------------- */
+.acute-field {
+  display: grid;
+  gap: 6px;
+}
+.acute-field__label {
+  display: flex;
+  justify-content: space-between;
+  color: var(--acute-text);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.acute-field__hint {
+  color: var(--acute-text-muted);
+  font-weight: 400;
+}
+.acute-field__control {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.acute-input {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+  font-size: 13.5px;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+.acute-input::placeholder {
+  color: var(--acute-text-muted);
+  opacity: 0.75;
+}
+.acute-input:focus {
+  outline: none;
+  border-color: var(--acute-accent);
+  box-shadow: 0 0 0 3px var(--acute-accent-soft);
+}
+select.acute-input {
+  padding-right: 30px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b76' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+.acute-input--compact {
+  width: auto;
+  height: 28px;
+  border-radius: 999px;
+  font-size: 12.5px;
+}
+.acute-icon-toggle {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  color: var(--acute-text-muted);
+  cursor: pointer;
+}
+.acute-icon-toggle:hover {
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+}
+
+/* ---- AI Providers dialog (F27) ------------------------------------------ */
+.acute-ai-settings {
+  display: flex;
+  flex-direction: column;
+  width: min(680px, calc(100vw - 32px));
+  max-height: min(760px, calc(100vh - 48px));
+  padding: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    0 24px 60px rgba(20, 18, 60, 0.16);
+}
+.acute-ai-settings__header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--acute-border);
+}
+.acute-ai-settings .acute-ai-settings__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.acute-ai-settings__subtitle {
+  margin: 4px 0 0;
+  color: var(--acute-text-muted);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.acute-ai-settings__close {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin: -4px -6px 0 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  cursor: pointer;
+}
+.acute-ai-settings__close:hover {
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+}
+.acute-ai-settings__body {
+  display: grid;
+  gap: 22px;
+  padding: 20px 24px 24px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.acute-ai-group__heading {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin: 0 0 8px 2px;
+}
+.acute-ai-group__label {
+  color: var(--acute-text-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.acute-ai-group__hint {
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+}
+.acute-ai-group__list {
+  border: 1px solid var(--acute-border);
+  border-radius: 12px;
+  background: var(--acute-surface);
+}
+.acute-ai-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 16px;
+  align-items: center;
+  padding: 14px 16px;
+}
+.acute-ai-row + .acute-ai-row {
+  border-top: 1px solid var(--acute-border);
+}
+.acute-ai-row__info {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.acute-ai-row__title {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+.acute-ai-row__dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid color-mix(in srgb, var(--acute-text-muted) 55%, transparent);
+  border-radius: 50%;
+}
+.acute-ai-row__dot[data-connected] {
+  border-color: var(--acute-success);
+  background: var(--acute-success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--acute-success) 18%, transparent);
+}
+.acute-ai-row__badge {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--acute-accent-soft);
+  color: var(--acute-toggle-thumb-text);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.acute-ai-row__billing {
+  margin: 0;
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.acute-ai-row__actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+}
+.acute-ai-row__extra {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 8px 12px;
+  align-items: center;
+  margin-top: 4px;
+}
+.acute-ai-row__meta {
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+}
+.acute-ai-row__meta strong {
+  color: var(--acute-text);
+  font-weight: 600;
+}
+.acute-ai-status {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.acute-ai-status[data-ok="true"] {
+  color: var(--acute-success);
+}
+.acute-ai-status[data-ok="false"] {
+  color: var(--acute-danger);
+}
+.acute-ai-status__hint {
+  color: var(--acute-text-muted);
+  font-weight: 400;
+}
+.acute-ai-settings__footer {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--acute-surface-muted);
+}
+.acute-ai-settings__footer-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+.acute-ai-settings__decision {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.acute-ai-settings__footer-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+.acute-ai-settings__footer-hint {
+  margin: 2px 0 0;
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.acute-ai-settings__usage {
+  margin: 4px 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---- Connect dialog ------------------------------------------------------ */
+.acute-ai-connect {
+  display: grid;
+  gap: 16px;
+  width: min(460px, calc(100vw - 32px));
+  padding: 22px 24px 20px;
+  border-radius: 16px;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    0 24px 60px rgba(20, 18, 60, 0.2);
+}
+.acute-ai-connect h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.acute-ai-connect__note {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--acute-surface-muted);
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.acute-ai-connect__note code {
+  font-family: "Cascadia", ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  color: var(--acute-text);
+}
+.acute-ai-connect__segmented {
+  display: flex;
+}
+.acute-ai-connect__segmented .acute-segmented button {
+  min-width: 0;
+  height: 28px;
+  padding: 0 14px;
+}
+.acute-ai-connect__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+.acute-ai-connect__error {
+  margin: 0;
+  color: var(--acute-danger);
+  font-size: 12.5px;
+}
+
+/* ---- Undo / redo: Acute's unified history replaces Excalidraw's ------------ */
+.excalidraw .undo-button-container:not([data-acute]),
+.excalidraw .redo-button-container:not([data-acute]),
+.excalidraw .ToolIcon[data-testid="button-undo"],
+.excalidraw .ToolIcon[data-testid="button-redo"] {
+  /* Excalidraw's stylesheet loads after ours: win on specificity. */
+  display: none;
+}
+.acute-history-slot {
+  display: contents;
+}
+
+/* ---- AI mode switch (AI settings) --------------------------------------- */
+.acute-ai-settings__mode {
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: var(--acute-surface-muted);
+}
+.acute-ai-mode {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 2px;
+  border: 1px solid var(--acute-toggle-border);
+  border-radius: 8px;
+  background: var(--acute-toggle-track);
+}
+.acute-ai-mode label {
+  padding: 4px 14px;
+  border-radius: 6px;
+  white-space: nowrap;
+  color: var(--acute-toggle-text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.acute-ai-mode label.active {
+  background: var(--acute-toggle-thumb);
+  color: var(--acute-toggle-thumb-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+.acute-ai-mode input,
+.acute-ask-ai__scope input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.acute-ai-mode label:has(input:focus-visible),
+.acute-ask-ai__scope label:has(input:focus-visible) {
+  outline: 2px solid var(--acute-accent);
+  outline-offset: 1px;
+}
+
+/* ---- AI settings → Response styling ------------------------------------ */
+.acute-style-settings {
+  display: grid;
+  gap: 12px;
+}
+.acute-style-settings__grid .acute-ai-mode {
+  justify-self: start;
+}
+.acute-style-settings__grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 10px 16px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--acute-text-muted);
+}
+.acute-style-fonts {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.acute-style-fonts .acute-ai-mode {
+  flex-wrap: wrap;
+}
+.acute-style-fonts .acute-ai-mode label {
+  padding: 4px 10px;
+}
+.acute-style-fonts__other {
+  padding: 4px 10px;
+  border: 1px solid var(--acute-toggle-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--acute-toggle-text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.acute-style-fonts__other[aria-expanded="true"],
+.acute-style-fonts__other:hover {
+  background: var(--acute-toggle-track);
+}
+.acute-style-fonts__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 5;
+  display: grid;
+  min-width: 170px;
+  padding: 4px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  box-shadow: var(--acute-shadow);
+}
+.acute-style-fonts__menu button {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-style-fonts__menu button:hover,
+.acute-style-fonts__menu button:focus-visible {
+  background: var(--acute-accent-soft);
+  outline: none;
+}
+.acute-style-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.acute-style-swatches label {
+  display: inline-flex;
+  padding: 2px;
+  border: 2px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.acute-style-swatches label.active {
+  border-color: var(--acute-accent);
+}
+.acute-style-swatches label:has(input:focus-visible) {
+  outline: 2px solid var(--acute-accent);
+  outline-offset: 1px;
+}
+.acute-style-swatches input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.acute-style-swatches span {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--acute-border);
+  border-radius: 4px;
+}
+/* "None": a diagonal line through an empty swatch. */
+.acute-style-swatches__none {
+  background: linear-gradient(to top right, transparent 45%, var(--acute-text-muted) 45% 55%, transparent 55%);
+}
+.acute-style-preview {
+  flex-shrink: 0;
+  width: 120px;
+  padding: 8px;
+  border: 1px solid #d5d5dc;
+  border-radius: 8px;
+  color: #1e1e24;
+}
+.acute-style-preview__title {
+  margin-bottom: 6px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.acute-style-preview__line {
+  height: 5px;
+  margin: 4px 4px 0;
+  border-radius: 3px;
+  background: #d5d5dc;
+}
+.acute-style-preview__line--short {
+  width: 60%;
+}
+
+/* ---- ✨ Ask AI (F18) ----------------------------------------------------- */
+.acute-ask-ai__entry {
+  height: 2rem;
+  border: 1px solid var(--default-border-color, #e6e6ea);
+  border-radius: var(--border-radius-lg, 8px);
+  background: var(--island-bg-color, #fff);
+  color: var(--text-primary-color, #1b1b1f);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.acute-ask-ai__entry:hover {
+  border-color: var(--acute-accent);
+  background: var(--acute-accent-soft);
+}
+.acute-ask-ai__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.acute-ask-ai__title {
+  font-size: 13px;
+  font-weight: 600;
+}
+.acute-ask-ai__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  cursor: pointer;
+}
+.acute-ask-ai__close:hover {
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+}
+.acute-ask-ai__scope {
+  display: flex;
+  padding: 2px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface-muted);
+}
+.acute-ask-ai__scope label {
+  flex: 1;
+  padding: 4px 6px;
+  border-radius: 6px;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+  text-align: center;
+  cursor: pointer;
+}
+.acute-ask-ai__scope label.active {
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.acute-ask-ai__actions {
+  display: flex;
+  flex-direction: column;
+}
+.acute-ask-ai__actions button,
+.acute-ask-ai__related button {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-ask-ai__actions button:hover:not(:disabled),
+.acute-ask-ai__actions button:focus-visible,
+.acute-ask-ai__related button:hover:not(:disabled) {
+  background: var(--acute-accent-soft);
+  outline: none;
+}
+.acute-ask-ai__actions button:disabled,
+.acute-ask-ai__related button:disabled {
+  color: var(--acute-text-muted);
+  cursor: default;
+}
+.acute-ask-ai__hint {
+  margin-left: auto;
+  padding-left: 8px;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+.acute-ask-ai__footer {
+  padding-top: 6px;
+  border-top: 1px solid var(--acute-border);
+  color: var(--acute-text-muted);
+  font-size: 11.5px;
+}
+.acute-ask-ai__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--acute-accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.acute-ask-ai__status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.acute-ask-ai__status > span:nth-child(2) {
+  display: flex;
+  flex: 1;
+}
+.acute-ask-ai__spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--acute-accent-soft);
+  border-top-color: var(--acute-accent);
+  border-radius: 50%;
+  animation: acute-spin 0.8s linear infinite;
+}
+/* Reduced motion (Wave D): still visibly working, but a slow turn instead of a fast spin. */
+@media (prefers-reduced-motion: reduce) {
+  .acute-ask-ai__spinner {
+    animation-duration: 3s;
+  }
+}
+@keyframes acute-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.acute-ask-ai__stream,
+.acute-ask-ai__result {
+  overflow: auto;
+  min-height: 0;
+  max-height: 340px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--acute-surface-muted);
+}
+.acute-ask-ai__stream {
+  color: var(--acute-text-muted);
+  white-space: pre-wrap;
+}
+.acute-ask-ai__stream--formatted {
+  color: inherit;
+  white-space: normal;
+}
+.acute-ask-ai__subtitle {
+  display: flex;
+  font-weight: 600;
+}
+.acute-ask-ai__buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.acute-ask-ai__primary,
+.acute-ask-ai__secondary {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.acute-ask-ai__primary {
+  border: 0;
+  background: var(--acute-cta);
+  color: var(--acute-cta-text);
+}
+.acute-ask-ai__primary:hover {
+  background: var(--acute-cta-hover);
+}
+.acute-ask-ai__secondary {
+  border: 1px solid var(--acute-border);
+  background: var(--acute-surface);
+  color: var(--acute-text);
+}
+.acute-ask-ai__secondary:hover {
+  background: var(--acute-surface-muted);
+}
+.acute-ask-ai__error {
+  margin: 0;
+  color: var(--acute-danger);
+}
+.acute-ask-ai__notice {
+  margin: 0;
+  color: var(--acute-text-muted);
+  font-size: 11.5px;
+}
+.acute-ask-ai__related {
+  overflow: auto;
+  max-height: 320px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-ask-ai__kind {
+  min-width: 36px;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+.acute-ask-ai__snippet {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.acute-ask-ai__why {
+  max-width: 110px;
+  overflow: hidden;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---- AI conversations (F40) --------------------------------------------- */
+/* The header copy sits outside `.excalidraw`: use the app's own colours. */
+.acute-ask-ai__entry--header {
+  height: 30px;
+  padding: 0 10px;
+  border-color: var(--acute-border);
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  white-space: nowrap;
+}
+.acute-ask-ai__entry--header[aria-pressed="true"] {
+  border-color: var(--acute-accent);
+  background: var(--acute-accent-soft);
+}
+.acute-ask-ai__entry--header:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+.acute-ask-ai__entry-row {
+  display: flex;
+  gap: 6px;
+}
+.acute-ask-ai__entry-row .acute-ask-ai__entry {
+  flex: 1;
+}
+.acute-ai-history-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--default-border-color, #e6e6ea);
+  border-radius: var(--border-radius-lg, 8px);
+  background: var(--island-bg-color, #fff);
+  color: var(--text-primary-color, #1b1b1f);
+  cursor: pointer;
+}
+.acute-ai-history-toggle:hover,
+.acute-ai-history-toggle[aria-pressed="true"] {
+  border-color: var(--acute-accent);
+  background: var(--acute-accent-soft);
+}
+.acute-ask-ai__title {
+  overflow: hidden;
+  min-width: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.acute-ask-ai__header-actions {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 2px;
+}
+.acute-ask-ai__close[aria-pressed="true"] {
+  background: var(--acute-accent-soft);
+  color: var(--acute-text);
+}
+.acute-ask-ai__composer {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  padding: 4px 4px 4px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+}
+.acute-ask-ai__composer:focus-within {
+  border-color: var(--acute-accent);
+}
+.acute-ask-ai__composer textarea {
+  flex: 1;
+  min-height: 24px;
+  max-height: 120px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--acute-text);
+  font: inherit;
+  resize: none;
+  outline: none;
+  field-sizing: content;
+}
+.acute-ask-ai__composer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--acute-cta);
+  color: var(--acute-cta-text);
+  cursor: pointer;
+}
+.acute-ask-ai__composer button:disabled {
+  background: var(--acute-surface-muted);
+  color: var(--acute-text-muted);
+  cursor: default;
+}
+.acute-ask-ai__transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+  min-height: 0;
+  max-height: 380px;
+}
+.acute-ask-ai__you {
+  display: flex;
+  align-self: flex-end;
+  gap: 6px;
+  align-items: baseline;
+  max-width: 90%;
+  padding: 6px 10px;
+  border-radius: 10px 10px 2px 10px;
+  background: var(--acute-accent-soft);
+  white-space: pre-wrap;
+}
+.acute-ask-ai__chip {
+  font-weight: 500;
+}
+.acute-ask-ai__reply {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acute-ask-ai__reply .acute-ask-ai__result {
+  max-height: none;
+}
+.acute-ask-ai__section-title {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 2px 2px;
+  color: var(--acute-text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.acute-ask-ai__recent {
+  padding-top: 4px;
+  border-top: 1px solid var(--acute-border);
+}
+.acute-ask-ai__search {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+  font: inherit;
+  outline: none;
+}
+.acute-ask-ai__search:focus {
+  border-color: var(--acute-accent);
+}
+.acute-ask-ai__empty {
+  margin: 6px 2px;
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+  list-style: none;
+}
+.acute-ask-ai__link--danger {
+  color: var(--acute-danger);
+}
+.acute-ask-ai__primary--danger {
+  background: var(--acute-danger);
+}
+.acute-conv-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-conv-list > li {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+}
+.acute-conv-list > li:hover {
+  background: var(--acute-surface-muted);
+}
+.acute-conv-row {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr auto;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--acute-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-conv-row:focus-visible {
+  outline: 2px solid var(--acute-accent);
+}
+.acute-conv-row__title {
+  overflow: hidden;
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.acute-conv-row__age {
+  grid-row: 1;
+  grid-column: 2;
+  padding-left: 8px;
+  color: var(--acute-text-muted);
+  font-size: 11.5px;
+}
+.acute-conv-row__meta {
+  overflow: hidden;
+  grid-column: 1 / -1;
+  color: var(--acute-text-muted);
+  font-size: 11.5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.acute-conv-list__actions {
+  display: none;
+  gap: 2px;
+  padding-right: 4px;
+}
+.acute-conv-list > li:hover .acute-conv-list__actions,
+.acute-conv-list > li:focus-within .acute-conv-list__actions {
+  display: inline-flex;
+}
+.acute-conv-list__actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  cursor: pointer;
+}
+.acute-conv-list__actions button:hover {
+  background: var(--acute-surface);
+  color: var(--acute-text);
+}
+.acute-ai-history__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid var(--acute-border);
+  color: var(--acute-text-muted);
+  font-size: 11.5px;
+}
+.acute-ai-history__footer-actions {
+  display: inline-flex;
+  gap: 12px;
+}
+.acute-ai-orphans {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 70;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  max-width: min(640px, calc(100vw - 32px));
+  padding: 10px 12px;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  box-shadow: var(--acute-shadow);
+  font-size: 13px;
+  transform: translateX(-50%);
+}
+.acute-ai-orphans__actions {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+/* ---- Object origin / provenance (F25) ------------------------------------ */
+.acute-provenance__origin {
+  margin: 0 0 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--acute-text);
+}
+.acute-provenance__detail {
+  color: var(--acute-text-muted);
+}
+.acute-provenance__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.acute-provenance__actions button {
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.acute-provenance__actions button:hover:not(:disabled) {
+  background: var(--acute-surface-muted);
+}
+.acute-provenance__actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ---- AI change-set review (F19) ------------------------------------------ */
+/* Ghosts: proposed objects drawn over the canvas (never part of the scene):
+   above Excalidraw's canvas and blocks (z 2), below its UI layer (z 4). */
+.acute-review-ghosts {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Added by AI (AIChangeMarkers): a pulsing green dot on each added object's corner, the same size at any zoom. */
+/*
+ * The overview level of a Visualize result (Wave D): below 35% zoom, each section frame shows its title and
+ * takeaway over it, at an on-screen size that stays readable (sizes divided by the zoom). Clicks go through.
+ */
+.acute-overview {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+.acute-overview__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+.acute-overview__card {
+  --acute-overview-min: 300px;
+  position: absolute;
+  box-sizing: border-box;
+  /* Centred on its frame, never narrower (on screen) than a readable line: it overhangs a narrow frame. */
+  width: min(var(--acute-frame-room, 100000px), max(var(--acute-frame-w, 0px), calc(var(--acute-overview-min) / var(--acute-overview-zoom, 1))));
+  height: max(var(--acute-frame-h, 0px), calc(140px / var(--acute-overview-zoom, 1)));
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(16px / var(--acute-overview-zoom, 1));
+  border: calc(2px / var(--acute-overview-zoom, 1)) solid var(--acute-border);
+  border-radius: calc(10px / var(--acute-overview-zoom, 1));
+  background: color-mix(in srgb, var(--acute-surface) 92%, transparent);
+  color: var(--acute-text);
+  text-align: center;
+  overflow: hidden;
+}
+.acute-overview__card {
+  /* Sizes below may follow the card's own width (a narrow section's card can't widen into its neighbour). */
+  container-type: inline-size;
+}
+.acute-overview__text {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8px / var(--acute-overview-zoom, 1));
+  max-width: 100%;
+}
+.acute-overview__title,
+.acute-overview__takeaway {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  /* Whole words: a line breaks between words — inside one only when that word alone is wider than the card. */
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+.acute-overview__title {
+  /* 22 px on screen, smaller in a card too narrow for it (about 12 characters a line), never below 11 px on screen. */
+  font-size: max(calc(11px / var(--acute-overview-zoom, 1)), min(calc(22px / var(--acute-overview-zoom, 1)), 8cqi));
+  line-height: 1.2;
+  -webkit-line-clamp: 3;
+}
+.acute-overview__takeaway {
+  font-size: max(calc(10px / var(--acute-overview-zoom, 1)), min(calc(15px / var(--acute-overview-zoom, 1)), 6cqi));
+  line-height: 1.35;
+  color: var(--acute-text-muted, var(--acute-text));
+  -webkit-line-clamp: 4;
+}
+/* The AI markers would sit on top of the overview: hidden while it shows (they come back when zoomed in). */
+.acute-overview[data-active] ~ .acute-ai-markers {
+  visibility: hidden;
+}
+
+.acute-ai-markers {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+.acute-ai-markers__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+.acute-ai-marker {
+  --acute-marker-green: #2f9e44;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(calc(1 / var(--acute-marker-zoom, 1)));
+}
+/* The dot itself, inside a larger hit area. */
+.acute-ai-marker::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1.5px solid var(--acute-surface);
+  border-radius: 999px;
+  background: var(--acute-marker-green);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--acute-marker-green) 35%, transparent), 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+/* The pulse: a ring that grows and fades, like a live indicator. */
+.acute-ai-marker::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 999px;
+  background: var(--acute-marker-green);
+  /* A few pulses to draw the eye, then a still dot: a pulse that never stops is a distraction (Wave D). */
+  animation: acute-ai-marker-pulse 1.4s ease-out 3;
+}
+.acute-ai-marker:hover::before {
+  transform: scale(1.2);
+}
+.acute-ai-marker:focus-visible {
+  outline: 2px solid var(--acute-marker-green);
+  outline-offset: 0;
+  border-radius: 999px;
+}
+:root[data-theme="dark"] .acute-ai-marker {
+  --acute-marker-green: #40c057;
+}
+@keyframes acute-ai-marker-pulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .acute-ai-marker::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+.acute-review-ghosts marker path {
+  fill: var(--acute-accent);
+}
+.acute-review-ghost rect,
+.acute-review-ghost ellipse,
+.acute-review-ghost polygon {
+  fill: color-mix(in srgb, var(--acute-accent-soft) 45%, transparent);
+  stroke: var(--acute-accent);
+  stroke-width: 1.5px;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+}
+.acute-review-ghost--update rect {
+  fill: color-mix(in srgb, var(--acute-accent-soft) 25%, transparent);
+}
+.acute-review-ghost--remove rect {
+  fill: color-mix(in srgb, var(--acute-danger) 10%, transparent);
+  stroke: var(--acute-danger);
+}
+.acute-review-ghost--line {
+  stroke: var(--acute-accent);
+  stroke-width: 1.5px;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+  fill: none;
+}
+.acute-review-ghost__text,
+.acute-review-ghost__label {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: var(--acute-text);
+  opacity: 0.7;
+  font-size: 14px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+.acute-review-ghost__text {
+  padding: 12px 14px;
+}
+.acute-review-ghost__label {
+  display: flex;
+  font-size: 20px; /* Excalidraw's shape-label size */
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  text-align: center;
+}
+
+/* Review bar: above the delete-conversations prompt, which uses the same spot. */
+/*
+ * One bottom bar at a time (content fidelity Wave D): they share one spot, so the one about what the user is doing
+ * now wins — a Visualize in progress (or its error), then a proposal under review, then the dense-block
+ * walk-through, then the "Added …" notice. The others come back when it goes.
+ */
+main:has(.acute-review[aria-label="Visualize"]) .acute-review:not([aria-label="Visualize"]),
+main:has(.acute-review[aria-label="AI changes to review"]) .acute-review:is([aria-label="Dense blocks"], [aria-label="AI changes"], [aria-label="Mapping session"]),
+main:has(.acute-review[aria-label="Dense blocks"]) .acute-review[aria-label="AI changes"] {
+  display: none;
+}
+.acute-review {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  z-index: 25;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  width: max-content;
+  max-width: min(640px, calc(100% - 32px));
+  padding: 10px 12px;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  box-shadow: var(--acute-shadow);
+  font-size: 13px;
+  transform: translateX(-50%);
+}
+.acute-review > svg {
+  flex: none;
+  color: var(--acute-accent);
+}
+.acute-review__summary {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+.acute-review__note {
+  color: var(--acute-text-muted);
+}
+.acute-review__actions {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: auto;
+}
+.acute-review__actions button {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.acute-review__actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.acute-review__list {
+  flex-basis: 100%;
+  max-height: 220px;
+  margin: 0;
+  padding: 4px 0 0;
+  overflow-y: auto;
+  border-top: 1px solid var(--acute-border);
+  list-style: none;
+}
+.acute-review__item button {
+  width: 100%;
+  padding: 5px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-review__item button:hover:not(:disabled) {
+  background: var(--acute-surface-muted);
+}
+.acute-review__item--skipped button {
+  color: var(--acute-text-muted);
+  cursor: default;
+}
+
+/* ---- Review: content coverage (content fidelity) --------------------------- */
+.acute-coverage {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid var(--acute-border);
+}
+.acute-analysis__message {
+  flex: 1 1 auto;
+  padding: 4px 6px;
+}
+.acute-analysis__badge {
+  color: var(--acute-warning);
+}
+.acute-analysis__causes {
+  flex-basis: 100%;
+  padding: 0 6px;
+}
+.acute-analysis__causes summary {
+  cursor: pointer;
+}
+.acute-analysis__causes ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+.acute-coverage__summary {
+  display: inline-flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-coverage__summary:hover {
+  background: var(--acute-surface-muted);
+}
+.acute-coverage__summary[aria-expanded="true"] > svg {
+  transform: rotate(180deg);
+}
+.acute-coverage__missing {
+  color: var(--acute-warning);
+}
+.acute-coverage__regenerate {
+  margin-left: auto;
+}
+.acute-coverage__error {
+  flex-basis: 100%;
+  color: var(--acute-danger, var(--acute-warning));
+}
+.acute-coverage__details {
+  display: flex;
+  flex-basis: 100%;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 260px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.acute-coverage__section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+}
+.acute-coverage__section-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.acute-coverage__added {
+  margin: 2px 0 0;
+  padding-left: 18px;
+}
+.acute-coverage__added li {
+  margin: 1px 0;
+}
+.acute-coverage__terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.acute-coverage__terms code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--acute-warning) 12%, transparent);
+  font-size: 12px;
+}
+
+/* ---- Review: conflicts from "Update from new content" (F39) ---------------- */
+.acute-review-ghost--conflict rect {
+  fill: color-mix(in srgb, var(--acute-warning) 10%, transparent);
+  stroke: var(--acute-warning);
+  stroke-dasharray: 6 4;
+}
+.acute-review__conflicts {
+  display: flex;
+  flex-basis: 100%;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 360px;
+  margin: 0;
+  padding: 8px 0 0;
+  overflow-y: auto;
+  border-top: 1px solid var(--acute-border);
+  list-style: none;
+}
+.acute-review__conflict {
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--acute-warning) 45%, var(--acute-border));
+  border-radius: 8px;
+}
+.acute-review__conflict[data-decision="apply"],
+.acute-review__conflict[data-decision="keep"] {
+  border-color: var(--acute-border);
+}
+.acute-review__conflict-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.acute-review__conflict-name {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.acute-review__compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.acute-review__compare-label {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+.acute-review__compare pre,
+.acute-review__diff {
+  max-height: 140px;
+  margin: 0;
+  padding: 6px;
+  overflow: auto;
+  border-radius: 6px;
+  background: var(--acute-surface-muted);
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.acute-review__diff-line--add {
+  color: var(--acute-success);
+}
+.acute-review__diff-line--del {
+  color: var(--acute-danger);
+  text-decoration: line-through;
+}
+.acute-review__conflict-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 6px;
+}
+.acute-review__conflict-actions [aria-pressed="true"] {
+  border-color: var(--acute-accent);
+  background: color-mix(in srgb, var(--acute-accent) 14%, transparent);
+}
+@media (max-width: 560px) {
+  .acute-review__compare {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- AI side panel: Chat + History tabs (F18/F40) ------------------------ */
+.acute-ai-panel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 380px;
+  max-width: calc(100% - 24px);
+  padding: 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 12px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  box-shadow: var(--acute-shadow);
+  font-size: 13px;
+}
+.acute-ai-panel__header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+.acute-ai-panel__tabs {
+  display: flex;
+  flex: 1;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--acute-surface-muted);
+}
+.acute-ai-panel__tabs button {
+  display: inline-flex;
+  flex: 1;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.acute-ai-panel__tabs button[aria-selected="true"] {
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.acute-ai-panel__tabs button:focus-visible {
+  outline: 2px solid var(--acute-accent);
+}
+.acute-ai-panel__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+  min-height: 0;
+}
+.acute-ai-panel__body .acute-ask-ai__transcript {
+  flex: 1;
+  max-height: none;
+}
+.acute-ai-panel__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+}
+.acute-ai-panel__about {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--acute-border);
+}
+.acute-ai-panel__about .acute-ask-ai__title {
+  font-weight: 600;
+}
+.acute-ai-panel__about .acute-ask-ai__hint {
+  margin: 0;
+  padding: 0;
+}
+.acute-ai-panel__subject {
+  margin: 0;
+  color: var(--acute-text-muted);
+  font-size: 12.5px;
+}
+.acute-ai-panel__subject strong {
+  color: var(--acute-text);
+  font-weight: 500;
+}
+.acute-ai-panel__earlier {
+  align-self: flex-start;
+  font-size: 12px;
+}
+.acute-ai-panel__list {
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---- Chat tab: bottom-anchored greeting, suggestions and composer -------- */
+.acute-ai-chat {
+  overflow: hidden;
+}
+.acute-ai-chat__scroll {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+  min-height: 0;
+  padding: 2px;
+}
+.acute-ai-chat__home {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+  padding: 0 4px 4px;
+}
+.acute-ai-chat__hello {
+  margin: 0;
+  color: var(--acute-accent);
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.acute-ai-chat__prompt {
+  margin: 0 0 10px;
+  color: var(--acute-text-muted);
+  font-size: 22px;
+  line-height: 1.25;
+}
+.acute-ai-chat__chips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.acute-ai-chip {
+  max-width: 100%;
+  padding: 9px 16px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 18px;
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+  font: inherit;
+  font-size: 13.5px;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.acute-ai-chip:hover:not(:disabled) {
+  background: var(--acute-accent-soft);
+}
+.acute-ai-chip:disabled {
+  color: var(--acute-text-muted);
+  cursor: default;
+}
+.acute-ai-chat__notice {
+  margin: 0;
+  color: var(--acute-text-muted);
+}
+.acute-ai-composer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.acute-ai-sharing {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+  padding: 7px 12px 12px;
+  margin-bottom: -6px;
+  border: 0;
+  border-radius: 12px 12px 0 0;
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+  font: inherit;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-ai-sharing--static {
+  cursor: default;
+}
+.acute-ai-sharing svg:first-child {
+  color: var(--acute-accent);
+  flex-shrink: 0;
+}
+.acute-ai-sharing__text {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.acute-ai-composer__box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 8px 6px 12px;
+  border: 1px solid var(--acute-border);
+  border-radius: 12px;
+  background: var(--acute-surface);
+}
+.acute-ai-composer__box:focus-within {
+  border-color: var(--acute-accent);
+}
+.acute-ai-composer__box textarea {
+  min-height: 40px;
+  max-height: 160px;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--acute-text);
+  font: inherit;
+  font-size: 13.5px;
+  resize: none;
+  outline: none;
+  field-sizing: content;
+}
+.acute-ai-composer__row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.acute-ai-composer__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--acute-text);
+  cursor: pointer;
+}
+.acute-ai-composer__icon:hover,
+.acute-ai-composer__icon[aria-expanded="true"] {
+  background: var(--acute-surface-muted);
+}
+.acute-ai-composer__send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--acute-cta);
+  color: var(--acute-cta-text);
+  cursor: pointer;
+}
+.acute-ai-composer__send:disabled {
+  background: var(--acute-surface-muted);
+  color: var(--acute-text-muted);
+  cursor: default;
+}
+.acute-ai-composer__status {
+  margin: 4px 2px 0;
+  color: var(--acute-text-muted);
+  font-size: 11.5px;
+}
+/* What the last reply's context covered (F18). */
+.acute-ai-coverage {
+  margin: 4px 2px 0;
+  color: var(--acute-text-muted);
+  font-size: 11.5px;
+}
+.acute-ai-coverage summary {
+  cursor: pointer;
+}
+.acute-ai-coverage[open] {
+  max-height: 220px;
+  overflow-y: auto;
+}
+.acute-ai-coverage__used {
+  opacity: 0.8;
+}
+.acute-ai-coverage__list {
+  margin: 2px 0 4px;
+  padding-left: 16px;
+}
+.acute-ai-coverage__list .acute-ask-ai__link {
+  font-size: 11.5px;
+  text-align: left;
+}
+.acute-ai-coverage__more,
+.acute-ai-coverage__hint {
+  margin: 2px 0;
+}
+.acute-ai-model-wrap {
+  position: relative;
+  margin-left: auto;
+  min-width: 0;
+}
+.acute-ai-model {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  max-width: 170px;
+  height: 30px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--acute-text);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.acute-ai-model:hover,
+.acute-ai-model[aria-expanded="true"] {
+  background: var(--acute-surface-muted);
+}
+.acute-ai-model__text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.acute-ai-model--none {
+  margin-left: auto;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+}
+.acute-ai-popover {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  left: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  max-height: 320px;
+  padding: 6px;
+  overflow: auto;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  box-shadow: var(--acute-shadow);
+}
+.acute-ai-popover--scope label {
+  padding: 7px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.acute-ai-popover--scope label.active,
+.acute-ai-popover--scope label:hover {
+  background: var(--acute-accent-soft);
+}
+.acute-ai-popover--scope input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.acute-ai-popover--model {
+  left: auto;
+  width: 240px;
+}
+.acute-ai-popover button[role="menuitemradio"],
+.acute-ai-popover__footer {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-ai-popover button[role="menuitemradio"][aria-checked="true"] {
+  background: var(--acute-accent-soft);
+  font-weight: 500;
+}
+.acute-ai-popover button[role="menuitemradio"]:hover,
+.acute-ai-popover__footer:hover {
+  background: var(--acute-surface-muted);
+}
+.acute-ai-popover__footer {
+  margin-top: 4px;
+  border-top: 1px solid var(--acute-border);
+  border-radius: 0 0 6px 6px;
+  color: var(--acute-text-muted);
+}
+
+/* ---- Export canvas dialog (a narrower AI-settings layout) ---------------- */
+.acute-export-canvas {
+  width: min(540px, calc(100vw - 32px));
+}
+.acute-export-canvas__all {
+  margin-left: auto;
+  font-size: 12.5px;
+}
+.acute-export-canvas__options {
+  display: grid;
+  gap: 2px;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--acute-surface-muted);
+}
+.acute-export-canvas__option {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.acute-export-canvas__option:hover {
+  background: var(--acute-surface);
+}
+.acute-export-canvas__option input {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+  accent-color: var(--acute-accent);
+  cursor: pointer;
+}
+.acute-export-canvas__option > span {
+  display: grid;
+}
+/* Stale repo-map cards (F43, StaleMarkers): a quiet amber dot on the top-left corner, same size at any zoom. */
+.acute-stale-marker {
+  --acute-marker-amber: #e8590c;
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(calc(1 / var(--acute-marker-zoom, 1)));
+}
+.acute-stale-marker::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1.5px solid var(--acute-surface);
+  border-radius: 999px;
+  background: var(--acute-marker-amber);
+  opacity: 0.85;
+}
+.acute-stale-marker:hover::before {
+  opacity: 1;
+  transform: scale(1.2);
+}
+.acute-stale-marker:focus-visible {
+  outline: 2px solid var(--acute-marker-amber);
+  border-radius: 999px;
+}
+/* Dense blocks (DenseBlocks): a small amber "Dense" pill on the bottom-left corner of a block with too much content. */
+/* "Dense" is violet, and only "dense" (amber means stale): a quiet dot per block, one summary chip for all. */
+.acute-dense-marker,
+.acute-dense-summary {
+  --acute-marker-dense: #7048e8;
+}
+:root[data-theme="dark"] .acute-dense-marker,
+:root[data-theme="dark"] .acute-dense-summary {
+  --acute-marker-dense: #9775fa;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .acute-dense-marker,
+  :root:not([data-theme="light"]) .acute-dense-summary {
+    --acute-marker-dense: #9775fa;
+  }
+}
+.acute-dense-marker {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  padding: 0;
+  border: 2px solid var(--acute-surface);
+  border-radius: 999px;
+  background: var(--acute-marker-dense);
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  /* Its bottom-left corner on the block's, the same size at any zoom. */
+  transform-origin: 0 0;
+  transform: scale(calc(1 / var(--acute-marker-zoom, 1))) translateY(-100%);
+  opacity: 0.85;
+}
+.acute-dense-summary {
+  position: absolute;
+  left: 250px;
+  bottom: 16px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px 4px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 999px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font-size: 13px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+/* Review reasons at each section (Wave C): a chip above the frame's top-right corner, the same size at any zoom. */
+.acute-section-chip {
+  --acute-chip-tone: var(--acute-border);
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 4px 3px 10px;
+  border: 1px solid var(--acute-chip-tone);
+  border-left-width: 4px;
+  border-radius: 8px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+  pointer-events: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  /* Never wider on screen than its section: side by side, chips can't cover each other (the text is cut, the
+     whole reason is in the tooltip, the action stays). */
+  max-width: max(64px, calc(var(--acute-frame-w, 100000px) * var(--acute-marker-zoom, 1)));
+  box-sizing: border-box;
+  transform-origin: 100% 100%;
+  transform: translate(-100%, calc(-100% - 6px)) scale(calc(1 / var(--acute-marker-zoom, 1)));
+}
+.acute-section-chip--warning {
+  --acute-chip-tone: var(--acute-warning);
+}
+.acute-section-chip--note {
+  --acute-chip-tone: var(--acute-text-muted);
+}
+.acute-section-chip--ok {
+  --acute-chip-tone: #2f9e44;
+}
+.acute-section-chip__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.acute-section-chip__action {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 1px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+  font: inherit;
+  cursor: pointer;
+}
+.acute-section-chip__action:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.acute-section-chip__error {
+  color: var(--acute-danger, var(--acute-warning));
+}
+.acute-dense-summary__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--acute-marker-dense);
+}
+@media (max-width: 720px) {
+  .acute-dense-summary {
+    left: 16px;
+    bottom: 72px;
+  }
+}
+.acute-dense-marker:hover,
+.acute-dense-marker--current {
+  opacity: 1;
+}
+.acute-dense-marker--current {
+  outline: 2px solid var(--acute-marker-dense);
+  outline-offset: 2px;
+}
+.acute-dense-marker:focus-visible {
+  outline: 2px solid var(--acute-marker-dense);
+  outline-offset: 2px;
+}
+.acute-review__part {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+.acute-review__part-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acute-review__auto {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+/* Web embeds: a URL in a frame, or imported HTML for sites that refuse framing. */
+.acute-web {
+  background: var(--block-bg, #ffffff);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.acute-web[data-theme="dark"] {
+  --block-bg: #232329;
+}
+.acute-web__frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+  /* Inert until activated, like other embeds; the canvas keeps pan/select. */
+  pointer-events: none;
+}
+.acute-web[data-active] .acute-web__frame {
+  pointer-events: auto;
+}
+.acute-web__status {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--block-muted);
+  font-size: 13px;
+  pointer-events: none;
+}
+.acute-web__blocked {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  color: var(--block-text);
+  text-align: center;
+  font-size: 13px;
+}
+.acute-web__blocked strong {
+  font-size: 15px;
+}
+.acute-web__blocked p {
+  max-width: 420px;
+  margin: 0;
+  color: var(--block-muted);
+}
+.acute-web__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+  pointer-events: auto;
+}
+.acute-web__toolbar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 16px);
+  padding: 4px 4px 4px 10px;
+  border: 1px solid var(--block-border);
+  border-radius: 8px;
+  background: var(--block-bg, #ffffff);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  color: var(--block-muted);
+  pointer-events: auto;
+}
+.acute-web__name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.acute-web__button {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--block-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--block-text);
+  font: inherit;
+  font-size: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.acute-web__button:hover {
+  color: var(--block-accent);
+}
+.acute-web__button--primary {
+  border-color: var(--block-accent);
+  background: var(--block-accent);
+  color: #ffffff;
+}
+.acute-web__button--primary:hover {
+  color: #ffffff;
+  filter: brightness(1.08);
+}
+.acute-web__error {
+  color: #d9480f;
+}
+
+/* Interactive architecture frames: fields in the properties panel. */
+.acute-diagram-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.acute-diagram-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  color: var(--text-primary-color, #1b1b1f);
+}
+.acute-diagram-field > span {
+  opacity: 0.7;
+}
+.acute-diagram-field__input {
+  width: 100%;
+  min-height: 1.9rem;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--default-border-color, #e6e6ea);
+  border-radius: 6px;
+  background: var(--island-bg-color, #fff);
+  color: var(--text-primary-color, #1b1b1f);
+  font: inherit;
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+/* Interactive architecture frames: the overlay (legend, info cards, highlight, passport card). */
+.acute-diagram {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+.acute-diagram__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+.acute-diagram__highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+}
+.acute-diagram__dim {
+  fill: var(--acute-bg);
+  opacity: 0.62;
+}
+.acute-diagram__edge {
+  fill: none;
+  stroke: var(--acute-accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.75;
+}
+.acute-diagram__edge[data-hovered] {
+  stroke-width: 4.5;
+  opacity: 1;
+}
+.acute-diagram__ring {
+  fill: none;
+  stroke: var(--acute-accent);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The route probe (frames plan Phase 5): the lit route, its flowing arrows, and the panel. */
+.acute-route__node {
+  fill: none;
+  stroke: var(--acute-accent);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+.acute-route__node[data-role="start"],
+.acute-route__node[data-role="end"] {
+  stroke-width: 4;
+}
+.acute-route__node[data-role="candidate"] {
+  stroke-width: 2;
+  opacity: 0.85;
+}
+.acute-route__node[data-role="candidate-against"] {
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+  opacity: 0.6;
+}
+.acute-route__edge {
+  fill: none;
+  stroke: var(--acute-accent);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 9 7;
+  vector-effect: non-scaling-stroke;
+  animation: acute-lens-flow 900ms linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .acute-route__edge {
+    animation: none;
+    stroke-dasharray: none;
+  }
+}
+.acute-route-probe {
+  /* Bottom centre, above the zoom and help controls: the top centre is Excalidraw's toolbar. */
+  position: absolute;
+  bottom: 72px;
+  left: 50%;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: min(440px, calc(100% - 32px));
+  max-height: calc(100% - 160px);
+  overflow-y: auto;
+  padding: 10px 14px;
+  transform: translateX(-50%);
+  border: 1px solid var(--acute-accent);
+  border-radius: 12px;
+  background: var(--acute-surface);
+  box-shadow: var(--acute-shadow);
+  color: var(--acute-text);
+  font-size: 13px;
+  pointer-events: auto;
+}
+.acute-route-probe__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.acute-route-probe__head strong {
+  font-size: 14px;
+}
+.acute-route-probe__muted {
+  margin: 0;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+}
+.acute-route-probe__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+.acute-route-probe button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--acute-accent);
+  font: inherit;
+  cursor: pointer;
+}
+.acute-route-probe__stops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-route-probe__stops button {
+  padding: 1px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 999px;
+  color: var(--acute-text);
+}
+
+.acute-diagram-footer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--acute-text);
+  font-size: 12px;
+}
+.acute-diagram-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  color: var(--acute-text-muted);
+}
+.acute-diagram-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.acute-diagram-legend__item i {
+  width: 16px;
+  height: 10px;
+  border: 1.5px solid;
+  border-radius: 3px;
+}
+.acute-diagram-legend__item em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--acute-text);
+}
+.acute-diagram-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+.acute-diagram-infocard {
+  padding: 10px 12px;
+  border: 1px solid var(--acute-border);
+  border-top: 3px solid var(--acute-kind);
+  border-radius: 8px;
+  background: var(--acute-surface);
+}
+.acute-diagram-infocard strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.acute-diagram-infocard ul {
+  margin: 0;
+  padding-left: 16px;
+  color: var(--acute-text-muted);
+  line-height: 1.45;
+}
+
+.acute-diagram-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: calc(100% - 16px);
+  overflow-y: auto;
+  padding: 12px 14px;
+  border: 1px solid var(--acute-border);
+  border-radius: 12px;
+  background: var(--acute-surface);
+  box-shadow: var(--acute-shadow);
+  color: var(--acute-text);
+  font-size: 13px;
+  pointer-events: auto;
+}
+.acute-diagram-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.acute-diagram-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.acute-diagram-chip {
+  padding: 1px 8px;
+  border: 1px solid var(--acute-kind);
+  border-radius: 999px;
+  color: var(--acute-kind);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.acute-diagram-card__frame {
+  overflow: hidden;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acute-diagram-card__close {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  font-size: 16px;
+  cursor: pointer;
+}
+.acute-diagram-card__close:hover {
+  background: var(--acute-surface-muted);
+}
+.acute-diagram-card__title {
+  font-size: 15px;
+}
+.acute-diagram-card__sub {
+  color: var(--acute-text-muted);
+}
+.acute-diagram-card__tag {
+  align-self: flex-start;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--acute-surface-muted);
+  font-size: 11px;
+}
+.acute-diagram-card__details {
+  margin: 2px 0;
+  padding-left: 16px;
+  line-height: 1.45;
+}
+.acute-diagram-card__reach {
+  margin: 2px 0 0;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+.acute-diagram-card__group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+  border-top: 1px solid var(--acute-border);
+}
+.acute-diagram-card__group-title {
+  padding: 2px 0 4px;
+  color: var(--acute-text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.acute-diagram-card__rel {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 6px;
+  padding: 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-diagram-card__rel:hover,
+.acute-diagram-card__rel:focus-visible {
+  background: var(--acute-accent-soft);
+  outline: none;
+}
+.acute-diagram-card__rel-dir {
+  color: var(--acute-accent);
+  font-weight: 700;
+}
+.acute-diagram-card__rel-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.acute-diagram-card__rel-body small {
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+.acute-diagram-card__why {
+  font-style: italic;
+}
+.acute-diagram-card__empty {
+  margin: 4px 0 0;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+}
+
+/* Interactive architecture frames: a node's sublabel and tag, drawn on the canvas by zoom (nodeDetails.ts). */
+.acute-diagram-detail {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  text-align: center;
+}
+.acute-diagram-detail__sub,
+.acute-diagram-detail__tag {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acute-diagram-detail__sub {
+  height: 15px;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  line-height: 15px;
+}
+.acute-diagram-detail__tag {
+  height: 14px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--acute-surface-muted) 85%, transparent);
+  color: var(--acute-text-muted);
+  font-family: "Cascadia", ui-monospace, Consolas, monospace;
+  font-size: 9px;
+  line-height: 14px;
+}
+
+/* ---- Back-to-canvas flash (Acute Lens, plan AC9) ------------------------ */
+.acute-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+.acute-flash__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+.acute-flash__ring {
+  position: absolute;
+  border: 2px solid var(--acute-accent);
+  border-radius: 8px;
+  animation: acute-flash-pulse 900ms ease-out;
+}
+@keyframes acute-flash-pulse {
+  0% {
+    opacity: 0.9;
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--acute-accent) 45%, transparent);
+  }
+  100% {
+    opacity: 0;
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .acute-flash__ring {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* ---- Acute Lens panel (plan: .ai/docs/acute-lens-plan.md §5) ------------ */
+/* The shell (`.acute-side-panel`) is shared with the page panel; this is Lens's own body. */
+.acute-lens-panel__doc {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.acute-lens-panel__stage {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  overflow: auto;
+  background: var(--acute-surface-muted);
+}
+.acute-lens-panel__level {
+  padding: 2px 10px;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.acute-lens-panel__canvas {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+.acute-lens-panel__path {
+  position: absolute;
+  right: 10px;
+  bottom: 48px;
+  z-index: 2;
+  padding: 4px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  color: var(--acute-text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.acute-lens-panel__path[aria-pressed="true"] {
+  border-color: var(--acute-accent);
+  color: var(--acute-accent);
+}
+.acute-lens-panel__zoom {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  font-size: 12px;
+  color: var(--acute-text-muted);
+}
+.acute-lens-panel__zoom button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--acute-text);
+  cursor: pointer;
+}
+.acute-lens-panel__zoom button:hover {
+  background: var(--acute-surface-muted);
+}
+.acute-lens-panel__zoom-value {
+  min-width: 34px;
+  text-align: center;
+}
+
+/* Breadcrumb, inside the header's shared `.acute-side-panel__crumb`. */
+.acute-lens-panel__crumbs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+}
+.acute-lens-panel__crumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.acute-lens-panel__crumb button {
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  color: var(--acute-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.acute-lens-panel__crumb button:hover {
+  color: var(--acute-text);
+  text-decoration: underline;
+}
+.acute-lens-panel__crumb-current {
+  overflow: hidden;
+  color: var(--acute-text);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acute-lens-panel__crumb-sep {
+  flex-shrink: 0;
+  color: var(--acute-text-muted);
+  opacity: 0.6;
+}
+
+/* Level rail: L0–L5, filled (exists for this path) or empty (not linked). */
+.acute-lens-panel__level-col {
+  flex-shrink: 0;
+  width: 128px;
+  overflow-y: auto;
+  border-right: 1px solid var(--acute-border);
+  padding: 10px 6px;
+}
+.acute-lens-panel__rail {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.acute-lens-panel__rail-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+  text-align: left;
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.acute-lens-panel__rail-item[data-filled] {
+  opacity: 1;
+}
+.acute-lens-panel__rail-item:not(:disabled) {
+  cursor: pointer;
+}
+.acute-lens-panel__rail-item:not(:disabled):hover {
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+}
+.acute-lens-panel__rail-item[data-current] {
+  background: color-mix(in srgb, var(--acute-accent) 12%, transparent);
+  color: var(--acute-text);
+  font-weight: 600;
+}
+.acute-lens-panel__rail-dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.acute-lens-panel__rail-item[data-current] .acute-lens-panel__rail-dot {
+  opacity: 1;
+  background: var(--acute-accent);
+}
+
+.acute-lens-panel__loop {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  z-index: 3;
+  padding: 4px 10px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: var(--acute-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  color: var(--acute-text-muted);
+  font-size: 12px;
+}
+
+/* Semantic zoom transition (plan §5.2, AC4): a brief cross-fade, ≤ 200ms, none under reduced motion. */
+.acute-lens-panel__frame {
+  width: 100%;
+  height: 100%;
+}
+.acute-lens-panel__frame[data-animate] {
+  animation-name: acute-lens-level-in;
+  animation-timing-function: ease-out;
+}
+@keyframes acute-lens-level-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .acute-lens-panel__frame[data-animate] {
+    animation: none;
+  }
+}
+
+.acute-lens-panel__zoom-in {
+  margin-top: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.acute-lens-panel__zoom-in:hover {
+  background: var(--acute-surface-muted);
+}
+
+.acute-lens-panel__empty {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: var(--acute-text-muted);
+  font-size: 13px;
+  text-align: center;
+}
+.acute-lens-panel__inspector {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 280px;
+  min-width: 280px;
+  overflow-y: auto;
+  border-left: 1px solid var(--acute-border);
+  padding: 14px;
+}
+.acute-lens-panel__inspector-empty {
+  padding: 4px 2px;
+  color: var(--acute-text-muted);
+  font-size: 13px;
+}
+
+.acute-lens-diagram {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+.acute-lens-node {
+  cursor: pointer;
+}
+.acute-lens-node__box {
+  stroke-width: 1.5;
+  rx: 8;
+}
+.acute-lens-node[data-selected] .acute-lens-node__box {
+  stroke-width: 2.5;
+}
+/* A dashed inset border: this node has a child frame (double-click to zoom in, plan AC4). */
+.acute-lens-node__child-marker {
+  fill: none;
+  stroke: var(--acute-text-muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  pointer-events: none;
+}
+.acute-lens-node__label,
+.acute-lens-node__kind {
+  font-family: "Inter", system-ui, sans-serif;
+  pointer-events: none;
+  user-select: none;
+}
+.acute-lens-node__label {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--acute-text);
+}
+.acute-lens-node__kind {
+  font-size: 9px;
+  fill: var(--acute-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.acute-lens-edge {
+  fill: none;
+  stroke: var(--acute-text-muted);
+  stroke-width: 1.5;
+}
+.acute-lens-edge__label {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 10px;
+  fill: var(--acute-text-muted);
+}
+.acute-lens-diagram__dim {
+  fill: color-mix(in srgb, var(--acute-surface-muted) 70%, transparent);
+}
+.acute-lens-diagram__edge {
+  fill: none;
+  stroke: var(--acute-accent);
+  stroke-width: 2;
+}
+.acute-lens-diagram__edge[data-hovered] {
+  stroke-width: 3;
+}
+.acute-lens-diagram__ring {
+  fill: none;
+  stroke: var(--acute-accent);
+  stroke-width: 2;
+}
+
+/* ---- Acute Lens, Phase 3: trace, impact and an agent's highlight -------- */
+.acute-lens-diagram__mark {
+  fill: none;
+  stroke: var(--acute-accent);
+  stroke-width: 2.5;
+  pointer-events: none;
+}
+.acute-lens-diagram__mark[data-mark="start"],
+.acute-lens-diagram__mark[data-mark="end"] {
+  stroke-width: 3.5;
+}
+.acute-lens-diagram__mark[data-mark="candidate"] {
+  stroke-width: 2;
+  opacity: 0.85;
+}
+.acute-lens-diagram__mark[data-mark="candidate-against"] {
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+  opacity: 0.6;
+}
+.acute-lens-node[data-dim] {
+  opacity: 0.35;
+}
+.acute-lens-diagram__mark[data-mark="modified"] {
+  stroke: var(--acute-danger);
+}
+.acute-lens-diagram__mark[data-mark="affected"] {
+  stroke: var(--acute-warning);
+  stroke-dasharray: 6 3;
+}
+.acute-lens-diagram__mark[data-mark="related"] {
+  stroke: var(--acute-text-muted);
+  stroke-dasharray: 2 3;
+}
+.acute-lens-diagram__mark-edge {
+  fill: none;
+  stroke: var(--acute-accent);
+  stroke-width: 3;
+  pointer-events: none;
+  stroke-dasharray: 8 6;
+  animation: acute-lens-flow 900ms linear infinite;
+}
+@keyframes acute-lens-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .acute-lens-diagram__mark-edge {
+    animation: none;
+    stroke-dasharray: none;
+  }
+}
+.acute-lens-overlay__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.acute-lens-overlay__finder {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.acute-lens-overlay__finder input {
+  padding: 4px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+}
+.acute-lens-overlay li[data-current] > button {
+  font-weight: 600;
+}
+.acute-lens-overlay__row button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.acute-lens-overlay {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface-muted);
+  font-size: 12px;
+}
+.acute-lens-overlay__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-weight: 600;
+}
+.acute-lens-overlay__head button,
+.acute-lens-overlay__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--acute-accent);
+  font: inherit;
+  font-weight: 400;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-lens-overlay__link:hover {
+  text-decoration: underline;
+}
+.acute-lens-overlay ol,
+.acute-lens-overlay ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding-left: 18px;
+}
+.acute-lens-overlay__muted {
+  color: var(--acute-text-muted);
+}
+.acute-lens-overlay__group {
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.acute-lens-overlay__warning {
+  color: var(--acute-warning);
+}
+.acute-lens-overlay select {
+  padding: 2px 4px;
+  border: 1px solid var(--acute-border);
+  border-radius: 4px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+}
+
+/* ---- Acute Lens, Phase 4: Agent Sync (plan §8.2) ------------------------- */
+/* Proposed state over the level (D3): + NEW (green, dashed), ~ changed (amber), − removed (struck). */
+.acute-lens-ghost__box {
+  stroke: var(--acute-success);
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  opacity: 0.85;
+}
+.acute-lens-ghost__edge {
+  stroke: var(--acute-success);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+}
+.acute-lens-node__pending {
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+}
+.acute-lens-node__pending[data-pending="added"] {
+  fill: var(--acute-success);
+}
+.acute-lens-node__pending[data-pending="changed"] {
+  fill: var(--acute-warning);
+}
+.acute-lens-node__pending[data-pending="removed"] {
+  fill: var(--acute-danger);
+}
+.acute-lens-node[data-pending="changed"] .acute-lens-node__box {
+  stroke: var(--acute-warning);
+  stroke-width: 2.5;
+}
+.acute-lens-node[data-pending="removed"] .acute-lens-node__box {
+  stroke: var(--acute-danger);
+  stroke-dasharray: 4 3;
+  opacity: 0.6;
+}
+.acute-lens-node__strike {
+  stroke: var(--acute-danger);
+  stroke-width: 2;
+  pointer-events: none;
+}
+.acute-lens-edge[data-pending="changed"] {
+  stroke: var(--acute-warning);
+}
+.acute-lens-edge[data-pending="removed"] {
+  stroke: var(--acute-danger);
+  opacity: 0.5;
+}
+/* Stale: cites a changed path (the canvas's amber dot); may be affected: a lighter ring on its ancestors. */
+.acute-lens-node__stale {
+  fill: var(--acute-warning);
+  stroke: var(--acute-surface);
+  stroke-width: 1.5;
+}
+.acute-lens-node__affected {
+  fill: none;
+  stroke: var(--acute-warning);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 3;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.acute-lens-sync {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.acute-lens-sync__status {
+  color: var(--acute-text-muted);
+  white-space: nowrap;
+}
+.acute-lens-sync__status[data-on] {
+  color: var(--acute-success);
+}
+.acute-lens-sync__pause {
+  padding: 1px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 999px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+  cursor: pointer;
+}
+.acute-lens-sync__pause[aria-pressed="true"] {
+  border-color: var(--acute-warning);
+  color: var(--acute-warning);
+}
+.acute-lens-drawer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--acute-border);
+  background: var(--acute-surface);
+  font-size: 12px;
+}
+.acute-lens-drawer__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  color: var(--acute-text-muted);
+}
+.acute-lens-drawer__bar button {
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--acute-text-muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.acute-lens-drawer__bar button[aria-selected="true"] {
+  color: var(--acute-text);
+  background: var(--acute-surface-muted);
+}
+.acute-lens-drawer__body {
+  display: flex;
+  max-height: 220px;
+  flex-direction: column;
+  gap: 6px;
+  overflow: auto;
+  padding: 4px 10px 10px;
+}
+.acute-lens-drawer__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-lens-drawer__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+.acute-lens-drawer__actions button,
+.acute-lens-drawer__actions input {
+  padding: 2px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+}
+.acute-lens-drawer__actions input {
+  min-width: 0;
+  flex: 1;
+}
+.acute-lens-drawer__actions button {
+  cursor: pointer;
+}
+.acute-diagram-lens-chip[data-delta] {
+  border-color: var(--acute-warning);
+}
+
+/* ---- Acute Lens, Phase 5: AI in Lens (plan §6) ---------------------------- */
+.acute-lens-panel__actions > [data-full-row] {
+  flex-basis: 100%;
+  margin: 0;
+}
+.acute-lens-ai__text {
+  color: var(--acute-text);
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+.acute-lens-ai__note {
+  margin: 6px 0 0;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+}
+.acute-lens-ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px 6px;
+  font-size: 12px;
+}
+.acute-lens-ask input {
+  min-width: 0;
+  flex: 1 1 220px;
+  padding: 4px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+}
+/* Design review: interview-style assessment of the level on screen. */
+.acute-lens-review {
+  margin: 0 10px 6px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  font-size: 12px;
+  /* Open, it scrolls inside itself so the diagram below keeps its room. */
+  flex: 0 0 auto;
+  max-height: 45vh;
+  overflow: auto;
+}
+.acute-lens-review > summary {
+  position: sticky;
+  top: 0;
+  background: var(--acute-surface);
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.acute-lens-review[open] > summary {
+  border-bottom: 1px solid var(--acute-border);
+}
+.acute-lens-review__form,
+.acute-lens-review > p,
+.acute-lens-review > .acute-lens-ai {
+  margin: 0;
+  padding: 8px 10px;
+}
+.acute-lens-review__form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acute-lens-review__form > input,
+.acute-lens-review__form label input {
+  min-width: 0;
+  padding: 4px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+}
+.acute-lens-review__form > input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.acute-lens-review__form label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--acute-text-muted);
+}
+.acute-lens-review__form label input {
+  width: 64px;
+}
+.acute-lens-assess {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acute-lens-assess [role="tab"][aria-selected="true"] {
+  border-color: var(--acute-accent);
+  background: var(--acute-accent-soft);
+  font-weight: 600;
+}
+.acute-lens-assess__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.acute-lens-assess__table th {
+  position: sticky;
+  top: 0;
+  padding: 4px 6px;
+  background: var(--acute-surface-muted);
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: left;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.acute-lens-assess__table td {
+  padding: 6px;
+  border-top: 1px solid var(--acute-border);
+  vertical-align: top;
+  line-height: 1.4;
+}
+.acute-lens-assess__table td:last-child,
+.acute-lens-assess__table th:last-child {
+  width: 1%;
+  white-space: nowrap;
+}
+.acute-lens-assess__signal {
+  display: inline-block;
+  margin: 2px 0;
+  padding: 0 6px;
+  border: 1px solid var(--acute-border);
+  border-radius: 999px;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+.acute-lens-assess__signal[data-signal="seen"] {
+  border-color: var(--acute-success);
+  color: var(--acute-success);
+}
+.acute-lens-assess__signal[data-signal="not-seen"] {
+  border-color: var(--acute-warning);
+  color: var(--acute-warning);
+}
+.acute-lens-assess__table td:first-child {
+  border-left: 3px solid transparent;
+}
+.acute-lens-assess__table tr[data-verdict="strong"] td:first-child {
+  border-left-color: var(--acute-success);
+}
+.acute-lens-assess__table tr[data-verdict="partial"] td:first-child {
+  border-left-color: var(--acute-warning);
+}
+.acute-lens-assess__table tr[data-verdict="gap"] td:first-child {
+  border-left-color: var(--acute-danger);
+}
+.acute-lens-assess__table tr[data-verdict="gap"] td:last-child {
+  color: var(--acute-danger);
+  font-weight: 600;
+}
+.acute-lens-assess__table tr[data-verdict="strong"] td:last-child {
+  color: var(--acute-success);
+  font-weight: 600;
+}
+.acute-lens-assess__table td button {
+  margin-top: 4px;
+  padding: 0 6px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--acute-text-muted);
+  font: inherit;
+  cursor: pointer;
+}
+.acute-lens-assess .acute-lens-ask {
+  padding: 0;
+}
+.acute-lens-assess .acute-lens-ask button {
+  padding: 4px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+  cursor: pointer;
+}
+.acute-lens-assess .acute-lens-ask button:disabled,
+.acute-lens-drawer__actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.acute-diagram-card__confidence {
+  color: var(--acute-text-muted);
+  font-style: italic;
+}
+
+/* ---- Acute Lens, Phase 1B: node actions, evidence, L5 source card ------- */
+.acute-lens-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.acute-lens-panel__actions .acute-lens-panel__zoom-in[aria-pressed="true"] {
+  border-color: var(--acute-accent);
+  background: color-mix(in srgb, var(--acute-accent) 10%, var(--acute-surface));
+}
+.acute-lens-evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 12px;
+}
+.acute-lens-evidence ul,
+.acute-lens-source ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-lens-evidence__role {
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.acute-lens-evidence__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+}
+.acute-lens-evidence__path {
+  overflow-wrap: anywhere;
+  color: var(--acute-text);
+  font-size: 12px;
+}
+.acute-lens-evidence__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+.acute-lens-evidence__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2px;
+}
+.acute-lens-evidence a,
+.acute-lens-source a {
+  color: var(--acute-accent);
+  font-size: 12px;
+}
+.acute-lens-evidence__note {
+  margin: 0;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+}
+.acute-lens-evidence__show {
+  align-self: flex-start;
+  border: 0;
+  background: transparent;
+  color: var(--acute-accent);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-lens-evidence__show:hover {
+  text-decoration: underline;
+}
+.acute-lens-evidence__repo summary {
+  color: var(--acute-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+.acute-lens-evidence__repo form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+.acute-lens-source {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 560px;
+  margin: 24px auto;
+  padding: 18px 20px;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+.acute-lens-source header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.acute-lens-source__parent {
+  color: var(--acute-text-muted);
+  font-size: 12px;
+}
+.acute-lens-source__title {
+  color: var(--acute-text);
+  font-size: 15px;
+}
+
+/* Properties panel: a node's sources. */
+.acute-diagram-sources {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 2px 0 6px;
+  padding: 0;
+  list-style: none;
+}
+.acute-diagram-sources li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12px;
+}
+.acute-diagram-sources code {
+  overflow: hidden;
+  flex: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acute-diagram-sources em {
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+.acute-diagram-sources button {
+  border: 0;
+  background: transparent;
+  color: var(--acute-text-muted);
+  cursor: pointer;
+}
+.acute-diagram-sources button:hover {
+  color: var(--acute-text);
+}
+.acute-diagram-sources__add {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.acute-diagram-sources__add [aria-invalid="true"] {
+  border-color: var(--acute-danger);
+}
+
+/* Canvas: the frame's Lens chip (plan §5.3), above its top-right corner; one per frame. */
+.acute-diagram-chips {
+  position: absolute;
+  display: flex;
+  gap: 4px;
+  transform: translate(-100%, calc(-100% - 6px));
+}
+.acute-diagram-lens-chip[aria-pressed="true"] {
+  border-color: var(--acute-accent);
+  color: var(--acute-accent);
+}
+.acute-diagram-lens-chip {
+  padding: 1px 7px;
+  border: 1px solid var(--acute-border);
+  border-radius: 999px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.acute-diagram-lens-chip:hover {
+  border-color: var(--acute-accent);
+}
+.acute-diagram-lens-chip[data-ready] {
+  opacity: 0.55;
+  font-weight: 400;
+}
+.acute-diagram-lens-chip[data-ready]:hover {
+  opacity: 1;
+}
+
+/* Navigator: a canvas's Lens rows. */
+.acute-nav-lens-level {
+  margin-left: auto;
+  padding-left: 6px;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* ---- Acute Lens, Phase 6: the Project profile (plan §3.6) --------------- */
+.acute-lens-lane__box {
+  fill: color-mix(in srgb, var(--acute-surface-muted) 55%, transparent);
+  stroke: var(--acute-border);
+  stroke-width: 1;
+}
+.acute-lens-lane__title {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--acute-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+.acute-lens-node__summary,
+.acute-lens-node__badge {
+  font-family: "Inter", system-ui, sans-serif;
+  pointer-events: none;
+  user-select: none;
+  fill: var(--acute-text-muted);
+}
+.acute-lens-node__summary {
+  font-size: 11px;
+}
+.acute-lens-node__badge {
+  font-size: 10px;
+  font-weight: 600;
+}
+.acute-lens-project {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 0;
+  font-size: 12px;
+}
+.acute-lens-project__row {
+  margin: 0;
+  color: var(--acute-text);
+}
+.acute-lens-project__row b {
+  color: var(--acute-text-muted);
+  font-weight: 600;
+}
+.acute-lens-project ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-lens-project li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.acute-lens-project li[data-status="unresolved"] code,
+.acute-lens-project li[data-status="ambiguous"] code,
+.acute-diagram-sources li[data-status="unresolved"] code,
+.acute-diagram-sources li[data-status="ambiguous"] code {
+  color: var(--acute-danger);
+}
+.acute-lens-project li em,
+.acute-project-options em {
+  color: var(--acute-accent);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+}
+.acute-project-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acute-project-options li[data-chosen] code {
+  font-weight: 600;
+}
+
+/* ---- Agent State (Lens Phase 7A): the agent log tab and the review bar's set chooser --------- */
+.acute-review__sets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 100%;
+}
+.acute-review__set {
+  max-width: 220px;
+  overflow: hidden;
+  padding: 2px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 999px;
+  background: var(--acute-surface);
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.acute-review__set[aria-selected="true"] {
+  border-color: var(--acute-accent);
+  color: var(--acute-text);
+}
+.acute-review__reject-reason {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font-size: 12px;
+  color: var(--acute-text-muted);
+}
+.acute-review__reject-reason input {
+  flex: 1;
+  min-width: 0;
+  padding: 3px 6px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font: inherit;
+}
+.acute-agent-history {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
+  padding: 12px;
+}
+.acute-agent-history__empty {
+  color: var(--acute-text-muted);
+  font-size: 13px;
+}
+.acute-agent-history__group-title {
+  margin: 0 0 6px;
+  color: var(--acute-text);
+  font-size: 12px;
+  font-weight: 600;
+}
+.acute-agent-history__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-agent-history__row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+}
+.acute-agent-history__row[data-outcome="rejected"],
+.acute-agent-history__row[data-outcome="expired"] {
+  opacity: 0.75;
+}
+.acute-agent-history__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.acute-agent-history__title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--acute-text);
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acute-agent-history__badge {
+  flex-shrink: 0;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.acute-agent-history__meta,
+.acute-agent-history__reason {
+  margin: 0;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+}
+.acute-agent-history__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+.acute-agent-history__review-toggle {
+  margin-left: 8px;
+  padding: 1px 8px;
+  font-size: 11px;
+}
+.acute-agent-history__review {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  border-left: 2px solid var(--acute-accent);
+  background: var(--acute-surface-muted);
+}
+.acute-lens-source__code {
+  max-height: 320px;
+  overflow: auto;
+  margin: 4px 0 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--acute-surface-muted);
+  color: var(--acute-text);
+  font-size: 12px;
+  line-height: 1.45;
+}

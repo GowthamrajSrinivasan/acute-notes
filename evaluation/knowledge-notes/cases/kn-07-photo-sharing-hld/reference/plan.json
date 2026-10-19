@@ -1,0 +1,504 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": {
+    "title": "Pinhole: high-level design for photo sharing"
+  },
+  "nodes": [
+    {
+      "id": "n-scope",
+      "type": "text",
+      "importance": "high",
+      "title": "High-level design only: Pinhole photo sharing",
+      "content": {
+        "markdown": "Pinhole lets people post photos and see photos from the accounts they follow, sized for about 2 million daily active users at launch.\n\nThis canvas shows parts, responsibilities, connections and reasons. Code, internal modules and operations are left to each service's low-level design."
+      }
+    },
+    {
+      "id": "g-clients",
+      "type": "group",
+      "content": {
+        "label": "Clients",
+        "arrangement": "grid",
+        "takeaway": "Two thin apps on one public HTTPS API",
+        "diagram": "architecture",
+        "level": 0
+      }
+    },
+    {
+      "id": "n-mobile",
+      "type": "shape",
+      "parent": "g-clients",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Mobile app",
+        "kind": "frontend",
+        "sublabel": "iOS and Android",
+        "details": [
+          "Public HTTPS API; simple input checks only",
+          "Uploads originals with a short-lived signed URL"
+        ]
+      }
+    },
+    {
+      "id": "n-web",
+      "type": "shape",
+      "parent": "g-clients",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Web app",
+        "kind": "frontend",
+        "sublabel": "Runs in the browser",
+        "details": [
+          "Public HTTPS API; simple input checks only"
+        ]
+      }
+    },
+    {
+      "id": "g-edge",
+      "type": "group",
+      "content": {
+        "label": "Edge & API",
+        "arrangement": "grid",
+        "takeaway": "One way in: TLS, token check, rate limit, routing",
+        "diagram": "architecture",
+        "level": 1
+      }
+    },
+    {
+      "id": "n-gateway",
+      "type": "shape",
+      "parent": "g-edge",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "API gateway",
+        "kind": "backend",
+        "sublabel": "Single way in for client requests",
+        "details": [
+          "Terminates TLS",
+          "Checks each caller's access token",
+          "Rate limit: 120 requests per minute per account",
+          "Fails closed: rejects the request when auth can't be reached",
+          "Routes to the right service; never serves photo bytes"
+        ]
+      }
+    },
+    {
+      "id": "g-core",
+      "type": "group",
+      "content": {
+        "label": "Core services",
+        "arrangement": "grid",
+        "takeaway": "Auth, upload and feed own the synchronous work",
+        "diagram": "architecture",
+        "level": 1
+      }
+    },
+    {
+      "id": "n-auth",
+      "type": "shape",
+      "parent": "g-core",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Auth service",
+        "kind": "backend",
+        "sublabel": "Issues and verifies access tokens",
+        "details": [
+          "Owns accounts and sessions"
+        ]
+      }
+    },
+    {
+      "id": "n-upload",
+      "type": "shape",
+      "parent": "g-core",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Upload service",
+        "kind": "backend",
+        "sublabel": "Signs upload URLs and records new photos",
+        "details": [
+          "Records a new photo as 'processing' once the upload completes",
+          "Publishes PhotoUploaded"
+        ]
+      }
+    },
+    {
+      "id": "n-feed",
+      "type": "shape",
+      "parent": "g-core",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Feed service",
+        "kind": "backend",
+        "sublabel": "Builds each person's feed from the accounts they follow",
+        "details": [
+          "Keeps ready-made feed pages",
+          "On PhotoReady: adds the photo to followers' feeds and requests follower alerts"
+        ]
+      }
+    },
+    {
+      "id": "g-async",
+      "type": "group",
+      "content": {
+        "label": "Asynchronous processing",
+        "arrangement": "grid",
+        "takeaway": "Upload and processing only meet through the queue",
+        "diagram": "architecture",
+        "level": 1
+      }
+    },
+    {
+      "id": "n-queue",
+      "type": "shape",
+      "parent": "g-async",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Message queue",
+        "kind": "messagebus",
+        "sublabel": "PhotoUploaded, PhotoReady",
+        "details": [
+          "Keeps events up to 7 days: a processing outage delays thumbnails but loses no uploads"
+        ]
+      }
+    },
+    {
+      "id": "n-workers",
+      "type": "shape",
+      "parent": "g-async",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Media processing workers",
+        "kind": "backend",
+        "sublabel": "Thumbnails 150, 640 and 1080 px wide",
+        "details": [
+          "Read the original, write the thumbnails back",
+          "Mark the photo 'ready', then publish PhotoReady",
+          "A photo that keeps failing stays 'processing' and is never shown in a feed"
+        ]
+      }
+    },
+    {
+      "id": "g-storage",
+      "type": "group",
+      "content": {
+        "label": "Storage",
+        "arrangement": "grid",
+        "takeaway": "The metadata database is the source of truth; the cache is a copy",
+        "diagram": "architecture",
+        "level": 1
+      }
+    },
+    {
+      "id": "n-objstore",
+      "type": "shape",
+      "parent": "g-storage",
+      "importance": "high",
+      "content": {
+        "shape": "cylinder",
+        "label": "Object storage",
+        "kind": "store",
+        "sublabel": "Originals (never overwritten) and thumbnails"
+      }
+    },
+    {
+      "id": "n-metadata",
+      "type": "shape",
+      "parent": "g-storage",
+      "importance": "high",
+      "content": {
+        "shape": "cylinder",
+        "label": "Metadata database",
+        "kind": "database",
+        "sublabel": "Source of truth: follow relationships, photo records and processing status"
+      }
+    },
+    {
+      "id": "n-cache",
+      "type": "shape",
+      "parent": "g-storage",
+      "importance": "high",
+      "content": {
+        "shape": "cylinder",
+        "label": "Cache",
+        "kind": "store",
+        "sublabel": "Ready-made feed pages for 60 seconds",
+        "details": [
+          "Only a copy kept for speed: losing it makes feeds slower, never wrong"
+        ]
+      }
+    },
+    {
+      "id": "g-external",
+      "type": "group",
+      "content": {
+        "label": "External (outside the Pinhole boundary)",
+        "arrangement": "grid",
+        "takeaway": "Run by third parties; Pinhole only sends them requests",
+        "diagram": "architecture",
+        "level": 0
+      }
+    },
+    {
+      "id": "n-cdn",
+      "type": "shape",
+      "parent": "g-external",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "CDN",
+        "kind": "external",
+        "sublabel": "Third party: serves photos and thumbnails close to the user"
+      }
+    },
+    {
+      "id": "n-push",
+      "type": "shape",
+      "parent": "g-external",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Push-notification provider",
+        "kind": "external",
+        "sublabel": "Third party: delivers alerts; Pinhole doesn't control when they arrive"
+      }
+    },
+    {
+      "id": "g-decisions",
+      "type": "group",
+      "content": {
+        "label": "Design decisions",
+        "arrangement": "grid",
+        "takeaway": "Why the system has this shape"
+      }
+    },
+    {
+      "id": "n-dec-queue",
+      "type": "text",
+      "parent": "g-decisions",
+      "importance": "medium",
+      "title": "A queue keeps thumbnails from failing uploads",
+      "content": {
+        "markdown": "A slow or failed thumbnail job must never block or fail an upload, so the upload service and the workers only meet through the message queue.\n\n**Cost:** a new photo takes a few seconds to appear in feeds."
+      }
+    },
+    {
+      "id": "n-dec-signed",
+      "type": "text",
+      "parent": "g-decisions",
+      "importance": "medium",
+      "title": "Signed URLs keep big files off the gateway",
+      "content": {
+        "markdown": "Originals can be up to 25 MB; routing them through the gateway would make it the bottleneck. Clients send bytes straight to object storage; the upload service only signs the URL and records the result."
+      }
+    },
+    {
+      "id": "n-dec-meta",
+      "type": "text",
+      "parent": "g-decisions",
+      "importance": "medium",
+      "title": "Metadata lives apart from photo bytes",
+      "content": {
+        "markdown": "Bytes go to object storage, everything queried goes to the metadata database: the two grow at very different rates and need different backups."
+      }
+    },
+    {
+      "id": "n-dec-cache",
+      "type": "text",
+      "parent": "g-decisions",
+      "importance": "medium",
+      "title": "The cache is disposable",
+      "content": {
+        "markdown": "Feed pages are cached for speed only; the metadata database stays the source of truth, so the cache can be flushed at any time."
+      }
+    },
+    {
+      "id": "n-dec-buy",
+      "type": "text",
+      "parent": "g-decisions",
+      "importance": "medium",
+      "title": "Buy CDN and push delivery, don't build them",
+      "content": {
+        "markdown": "A third-party CDN and push-notification provider instead of our own; their outages are accepted as outside our control."
+      }
+    },
+    {
+      "id": "g-open",
+      "type": "group",
+      "content": {
+        "label": "Open questions",
+        "arrangement": "grid",
+        "takeaway": "Not decided by this design"
+      }
+    },
+    {
+      "id": "n-open-retry",
+      "type": "text",
+      "parent": "g-open",
+      "importance": "medium",
+      "title": "Open: retrying failed processing",
+      "content": {
+        "markdown": "How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet."
+      }
+    },
+    {
+      "id": "n-open-precompute",
+      "type": "text",
+      "parent": "g-open",
+      "importance": "medium",
+      "title": "Open: precomputed feeds for big accounts",
+      "content": {
+        "markdown": "Whether the feed service should precompute feeds for accounts with very many followers is left to the feed service's own low-level design."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "n-mobile",
+      "to": "n-gateway",
+      "type": "calls",
+      "label": "HTTPS API requests"
+    },
+    {
+      "from": "n-web",
+      "to": "n-gateway",
+      "type": "calls",
+      "label": "HTTPS API requests"
+    },
+    {
+      "from": "n-mobile",
+      "to": "n-objstore",
+      "type": "writes",
+      "label": "uploads original via signed URL"
+    },
+    {
+      "from": "n-mobile",
+      "to": "n-cdn",
+      "type": "reads",
+      "label": "loads thumbnails"
+    },
+    {
+      "from": "n-gateway",
+      "to": "n-auth",
+      "type": "calls",
+      "label": "verifies access token"
+    },
+    {
+      "from": "n-gateway",
+      "to": "n-upload",
+      "type": "calls",
+      "label": "routes photo posts"
+    },
+    {
+      "from": "n-gateway",
+      "to": "n-feed",
+      "type": "calls",
+      "label": "routes feed requests"
+    },
+    {
+      "from": "n-upload",
+      "to": "n-metadata",
+      "type": "writes",
+      "label": "records photo as processing"
+    },
+    {
+      "from": "n-upload",
+      "to": "n-queue",
+      "type": "publishes",
+      "label": "publishes PhotoUploaded"
+    },
+    {
+      "from": "n-workers",
+      "to": "n-queue",
+      "type": "subscribes",
+      "label": "subscribes to PhotoUploaded"
+    },
+    {
+      "from": "n-workers",
+      "to": "n-objstore",
+      "type": "writes",
+      "label": "reads originals, writes thumbnails"
+    },
+    {
+      "from": "n-workers",
+      "to": "n-metadata",
+      "type": "writes",
+      "label": "marks photo ready"
+    },
+    {
+      "from": "n-workers",
+      "to": "n-queue",
+      "type": "publishes",
+      "label": "publishes PhotoReady"
+    },
+    {
+      "from": "n-feed",
+      "to": "n-queue",
+      "type": "subscribes",
+      "label": "subscribes to PhotoReady"
+    },
+    {
+      "from": "n-feed",
+      "to": "n-metadata",
+      "type": "reads",
+      "label": "reads photo metadata"
+    },
+    {
+      "from": "n-feed",
+      "to": "n-cache",
+      "type": "writes",
+      "label": "keeps feed pages"
+    },
+    {
+      "from": "n-feed",
+      "to": "n-push",
+      "type": "calls",
+      "label": "asks to alert followers"
+    },
+    {
+      "from": "n-cdn",
+      "to": "n-objstore",
+      "type": "reads",
+      "label": "reads photos and thumbnails"
+    },
+    {
+      "from": "n-dec-queue",
+      "to": "n-queue",
+      "type": "supports",
+      "label": "justifies"
+    },
+    {
+      "from": "n-dec-signed",
+      "to": "n-upload",
+      "type": "supports",
+      "label": "justifies"
+    },
+    {
+      "from": "n-dec-meta",
+      "to": "n-metadata",
+      "type": "supports",
+      "label": "justifies"
+    },
+    {
+      "from": "n-dec-cache",
+      "to": "n-cache",
+      "type": "supports",
+      "label": "justifies"
+    },
+    {
+      "from": "n-dec-buy",
+      "to": "n-cdn",
+      "type": "supports",
+      "label": "justifies"
+    }
+  ]
+}

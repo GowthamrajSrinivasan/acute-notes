@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": { "title": "Hybrid search and reranking in the Harbor assistant" },
+  "nodes": [
+    {
+      "id": "g1",
+      "type": "group",
+      "content": { "label": "Retrieval signals: keywords and embeddings", "arrangement": "compare", "takeaway": "BM25 catches exact terms and rare identifiers; embeddings catch meaning across different words." }
+    },
+    {
+      "id": "n1",
+      "type": "text",
+      "parent": "g1",
+      "importance": "high",
+      "title": "BM25 finds exact terms and rare identifiers",
+      "content": { "markdown": "Keyword retrieval scores a passage by the query terms it contains, with rare terms weighted more; BM25 also dampens repeated terms and corrects for passage length. It needs no training and is cheap, so it stays the baseline.\n\nA query for `E-4012` or `sync.retry_window` finds the passages containing those strings, even if they occur only once.\n\n**Limit:** vocabulary mismatch. \"Why does my upload stall\" won't match a passage that only says \"transfers pause when the connection drops\"." }
+    },
+    {
+      "id": "n2",
+      "type": "text",
+      "parent": "g1",
+      "importance": "high",
+      "title": "Embeddings find passages that mean the same thing",
+      "content": { "markdown": "Vector retrieval encodes the query and every passage as embeddings and returns the closest passages, so the stalled-upload question finds the passage about paused transfers with no shared words.\n\n**Limit:** weaker on exact codes and identifiers. To the encoder `E-4012` and `E-4021` look almost the same; on 31 of 50 error-code queries, vector retrieval alone missed the correct passage.\n\nRe-embedding after an encoder change takes about 6 hours for this collection." }
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "content": { "label": "Fusion and candidates", "arrangement": "grid", "takeaway": "Merge both ranked lists by rank and aim for recall: the right passage only has to be somewhere in the list." }
+    },
+    {
+      "id": "n3",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Hybrid search merges both retrievers' lists",
+      "content": { "markdown": "Runs BM25 and vector search on the same query and merges their result lists. It **can improve recall when lexical and semantic signals are complementary**: each retriever finds relevant passages the other misses.\n\nIf both return the same passages, or one is poorly tuned for the collection, merging adds latency without adding much." }
+    },
+    {
+      "id": "n4",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Reciprocal Rank Fusion merges by rank, not score",
+      "content": { "markdown": "BM25 scores and vector similarities sit on different scales, so RRF ignores raw scores. Each passage gets `1/(k + rank)` from every list it appears in, and the contributions are summed.\n\n`k = 60`, a common default; a larger k flattens the gap between top and lower ranks." }
+    },
+    {
+      "id": "n5",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Candidate generation is tuned for recall",
+      "content": { "markdown": "Each retriever returns its top 50 passages, so the fused list holds at most 100 candidates (fewer when the lists overlap). The goal is that the right passage is somewhere in the list, not that it comes first.\n\nRaising the limit to 100 per retriever found the right passage slightly more often but roughly doubled reranking time, so it stays at 50." }
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "content": { "label": "Reranking with a cross-encoder", "arrangement": "stack", "takeaway": "Sharper top results, drawn only from what retrieval found." }
+    },
+    {
+      "id": "n6",
+      "type": "text",
+      "parent": "g3",
+      "importance": "medium",
+      "title": "A cross-encoder rescores the fused candidates",
+      "content": { "markdown": "It reads the query and one passage together and outputs one relevance score, so it judges relevance far more accurately than either retriever. Too expensive for the whole collection, it runs only on the fused candidates. The top 8 passages are kept." }
+    },
+    {
+      "id": "n7",
+      "type": "text",
+      "parent": "g3",
+      "importance": "high",
+      "title": "Reranking sharpens the top results, not the answer's correctness",
+      "content": { "markdown": "Reranking improves the precision of the top results, but it does not guarantee that the final answer is correct.\n\n**Limits**\n- It can only reorder what retrieval found: if the right passage is not among the candidates, reranking cannot recover it.\n- A passage can be highly relevant and still out of date; no relevance score detects that." }
+    },
+    {
+      "id": "g4",
+      "type": "group",
+      "content": { "label": "Generation from the top passages", "arrangement": "grid", "takeaway": "The model answers only from what it is given, cites it, or says that nothing fits." }
+    },
+    {
+      "id": "n8",
+      "type": "text",
+      "parent": "g4",
+      "importance": "high",
+      "title": "The answer is bounded by what retrieval returns",
+      "content": { "markdown": "RAG answers in two stages: retrieve passages from the collection, then have a language model write the answer from them. The model never sees the rest of the collection, so the answer can be no better than the passages retrieval hands it." }
+    },
+    {
+      "id": "n9",
+      "type": "text",
+      "parent": "g4",
+      "importance": "high",
+      "title": "The model answers only from the top 8 passages and cites them",
+      "content": { "markdown": "It receives the question and the top 8 passages, answers only from them and cites the passages it used. If none of them addresses the question, it says so instead of answering from general knowledge.\n\n**Limit:** citations let a reader check each claim against its passage, but don't show whether that passage is current." }
+    },
+    {
+      "id": "n10",
+      "type": "text",
+      "parent": "g4",
+      "importance": "low",
+      "title": "Example: \"What does E-4012 mean?\"",
+      "content": { "markdown": "BM25 retrieves the error-code table, vector search the article on resumable uploads, and the reranker keeps both in the top 8, so the answer defines the code and explains the fix." }
+    },
+    {
+      "id": "g5",
+      "type": "group",
+      "content": { "label": "Relevance, latency and cost", "arrangement": "stack", "takeaway": "Each gain in relevance is paid for in latency or money." }
+    },
+    {
+      "id": "n11",
+      "type": "table",
+      "parent": "g5",
+      "importance": "high",
+      "title": "Measured on 400 internal test questions",
+      "content": {
+        "columns": ["Configuration", "Correct passage in top 8", "Median latency", "Cost per 1,000 queries"],
+        "rows": [
+          ["BM25 only", "61%", "35 ms", "$0.02"],
+          ["Vector only", "68%", "60 ms", "$0.10"],
+          ["Hybrid (RRF)", "79%", "70 ms", "$0.12"],
+          ["Hybrid + reranker", "88%", "190 ms", "$0.95"]
+        ]
+      }
+    },
+    {
+      "id": "n12",
+      "type": "text",
+      "parent": "g5",
+      "importance": "high",
+      "title": "Reranking adds about 120 ms per query",
+      "content": { "markdown": "Most of it is the cross-encoder running over up to 100 candidates, and it accounts for most of the cost increase.\n\n**Caveat:** these figures come from one collection and one query set. A collection with fewer codes may see a smaller gain from keyword search, and a different reranker has a different latency.\n\nWith a strict latency budget, rerank fewer candidates (say the top 30 of the fused list) at some cost in recall." }
+    },
+    {
+      "id": "n13",
+      "type": "text",
+      "importance": "high",
+      "title": "Each step helps only under its own conditions",
+      "content": { "markdown": "Hybrid search widens the net, reranking sorts the catch, and generation can only work with the passages it is given. None of the steps makes the final answer certain to be right." }
+    }
+  ],
+  "relationships": [
+    { "from": "n1", "to": "n5", "type": "flows_to", "label": "top 50 passages" },
+    { "from": "n2", "to": "n5", "type": "flows_to", "label": "top 50 passages" },
+    { "from": "n5", "to": "n4", "type": "explained_by", "label": "merged by rank" },
+    { "from": "n5", "to": "n6", "type": "flows_to", "label": "up to 100 fused candidates" },
+    { "from": "n6", "to": "n9", "type": "flows_to", "label": "top 8 passages" },
+    { "from": "n9", "to": "n10", "type": "explained_by", "label": "for example" }
+  ]
+}

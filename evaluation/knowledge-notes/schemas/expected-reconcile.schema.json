@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "datasetVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "caseId": {
+      "type": "string",
+      "pattern": "^kn-\\d{2}-[a-z0-9-]+$"
+    },
+    "fromVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "toVersion": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 9007199254740991
+    },
+    "userEdits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "element": {
+            "type": "string",
+            "pattern": "^e\\.[a-z0-9-]+$"
+          },
+          "before": {
+            "type": "string",
+            "minLength": 1
+          },
+          "after": {
+            "type": "string",
+            "minLength": 1
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "element",
+          "before",
+          "after",
+          "note"
+        ]
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^i\\.[a-z0-9-]+$"
+          },
+          "element": {
+            "type": "string",
+            "pattern": "^e\\.[a-z0-9-]+$"
+          },
+          "match": {
+            "type": "object",
+            "properties": {
+              "all": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "required": [
+              "all"
+            ]
+          },
+          "change": {
+            "type": "string",
+            "enum": [
+              "unchanged",
+              "edited",
+              "added",
+              "removed",
+              "dependency_changed",
+              "user_edited",
+              "ambiguous"
+            ]
+          },
+          "states": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "unchanged",
+                "update_clean",
+                "update_conflict",
+                "add",
+                "remove",
+                "review"
+              ]
+            }
+          },
+          "mustKeep": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "unitsBefore": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^u\\d+$"
+            }
+          },
+          "unitsAfter": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^u\\d+$"
+            }
+          },
+          "explanation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "support": {
+            "type": "string",
+            "enum": [
+              "implemented",
+              "partial",
+              "future"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "element",
+          "match",
+          "change",
+          "states",
+          "unitsBefore",
+          "unitsAfter",
+          "explanation",
+          "support"
+        ]
+      }
+    }
+  },
+  "required": [
+    "datasetVersion",
+    "caseId",
+    "fromVersion",
+    "toVersion",
+    "userEdits",
+    "items"
+  ]
+}

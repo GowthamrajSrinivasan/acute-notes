@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": { "title": "Post-incident review: checkout outage, March 14" },
+  "nodes": [
+    {
+      "id": "g1",
+      "type": "group",
+      "content": { "label": "What happened", "arrangement": "grid", "takeaway": "A config typo took checkout down for 47 minutes; detection, status updates and review all lagged." }
+    },
+    {
+      "id": "n1",
+      "type": "text",
+      "parent": "g1",
+      "importance": "high",
+      "title": "A config typo cut the payments connection pool from 50 to 5",
+      "content": { "markdown": "On Friday, March 14 at 16:40, a config change set the gateway connection pool from 50 connections to 5 (the intent was 55). Checkout requests queued for a connection and timed out.\n\n- Alert fired at 17:02, 22 minutes after the change\n- Config rolled back at 17:15; checkout recovered at 17:27\n- 47 minutes of errors: about 2,300 failed checkouts, 140 support tickets before the status page went up" }
+    },
+    {
+      "id": "n2",
+      "type": "text",
+      "parent": "g1",
+      "importance": "medium",
+      "title": "The alert worked as configured, but too slowly for checkout",
+      "content": { "markdown": "It only fires when the checkout error rate stays above 10% for 15 minutes. Errors crossed 10% around 16:47, so 17:02 was the earliest it could fire. Leila: 15 minutes of sustained errors is too long when every minute is lost revenue." }
+    },
+    {
+      "id": "n3",
+      "type": "text",
+      "parent": "g1",
+      "importance": "medium",
+      "title": "The status page went up 40 minutes late",
+      "content": { "markdown": "Posted at 17:20, 40 minutes after errors began, while customers were already asking on social media. The incident commander posts it when they remember; on Friday that was Marcus, who was busy rolling back." }
+    },
+    {
+      "id": "n4",
+      "type": "text",
+      "parent": "g1",
+      "importance": "medium",
+      "title": "Config changes skip code review",
+      "content": { "markdown": "Config is edited in the deploy dashboard and applied directly: code changes need two approvals, config needs none. Tomás: a typo in code would have been caught by a reviewer or a test." }
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "content": { "label": "Agreed decisions", "arrangement": "grid", "takeaway": "Three changes were agreed in the meeting." }
+    },
+    {
+      "id": "n5",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Checkout alert: 5% over 5 minutes",
+      "content": { "markdown": "**Agreed.** Lower the checkout error-rate alert from 10% over 15 minutes to 5% over 5 minutes. Over the last 30 days it would have paged twice on noise, both during the payment provider's maintenance; the group accepted that." }
+    },
+    {
+      "id": "n6",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Support posts status updates directly",
+      "content": { "markdown": "**Agreed.** Support can post a status-page update directly, without waiting for the incident commander." }
+    },
+    {
+      "id": "n7",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Payments config goes through pull-request review",
+      "content": { "markdown": "**Agreed.** Payments config moves into the repo; every change gets a pull request and one approval from the payments team." }
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "content": { "label": "Proposed, not agreed", "arrangement": "compare", "takeaway": "Two proposals discussed without agreement; both stay open." }
+    },
+    {
+      "id": "n8",
+      "type": "text",
+      "parent": "g3",
+      "importance": "high",
+      "title": "A Friday deploy freeze was proposed and disputed",
+      "content": { "markdown": "Tomás proposed stopping all payments deploys after 15:00 on Fridays: this change went out at 16:40 on a Friday with half the team logged off.\n\n**Disagreement**\n- Leila: a freeze moves the risk to Monday morning, when traffic is higher; the cause was the missing review, not the day.\n- Tomás: fewer people around slows recovery for any cause.\n- Leila: recovery took 25 minutes after the alert, with Marcus on call.\n\n**Status:** not agreed and not decided; Tomás will bring incident data to the next review." }
+    },
+    {
+      "id": "n9",
+      "type": "text",
+      "parent": "g3",
+      "importance": "high",
+      "title": "Automatic rollback was proposed; migrations make it uncertain",
+      "content": { "markdown": "Marcus proposed rolling back automatically when the checkout error rate doubles within 10 minutes of a deploy.\n\n- Leila: maybe for config; for code, rolling back without its database migration can leave things worse.\n- Marcus: releases with migrations could be excluded.\n- Leila wants to know how often migrations ship before agreeing.\n\n**Status:** left open; nobody knows how many releases include migrations." }
+    },
+    {
+      "id": "g4",
+      "type": "group",
+      "content": { "label": "Action items", "arrangement": "stack", "takeaway": "Owners and dates as stated in the meeting; the email has no date." }
+    },
+    {
+      "id": "n10",
+      "type": "todo",
+      "parent": "g4",
+      "importance": "high",
+      "title": "Who does what",
+      "content": {
+        "items": [
+          { "text": "Marcus: change the checkout alert to 5% over 5 minutes, by Wednesday, March 19", "checked": false },
+          { "text": "Leila: move payments config into the repo and add the approval rule, by Friday, March 21", "checked": false },
+          { "text": "Tomás: pull six months of incidents and check whether late-Friday deploys are over-represented; bring it to the next review on April 2", "checked": false },
+          { "text": "Kenji: draft the customer email (no deadline set)", "checked": false }
+        ]
+      }
+    },
+    {
+      "id": "g5",
+      "type": "group",
+      "content": { "label": "Open questions", "arrangement": "grid", "takeaway": "Left unresolved in the meeting." }
+    },
+    {
+      "id": "n11",
+      "type": "text",
+      "parent": "g5",
+      "importance": "high",
+      "title": "Did customers retry the 2,300 failed checkouts?",
+      "content": { "markdown": "Nobody knows yet: the payment logs would show it, but no one has looked. The answer changes what the email to customers says." }
+    }
+  ],
+  "relationships": [
+    { "from": "n5", "to": "n2", "type": "derived_from", "label": "fixes slow detection" },
+    { "from": "n7", "to": "n4", "type": "derived_from", "label": "closes the review gap" },
+    { "from": "n6", "to": "n3", "type": "derived_from", "label": "status page was late" }
+  ]
+}

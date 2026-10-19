@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-usage-read-reversed",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The read edge is flipped: usage_events now points at collectUsage instead of collectUsage reading usage_events.",
+  "mutations": [
+    { "op": "reverse_relationship", "from": "s_col", "to": "s_usage" }
+  ],
+  "expectFailing": ["a.rel-collect-reads", "a.no-reversed-read"]
+}

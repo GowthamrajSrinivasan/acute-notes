@@ -1,0 +1,171 @@
+{
+  "id": "kn-06-hybrid-search-reranking",
+  "kind": "technical_documentation",
+  "source": "# Hybrid search and reranking in the Harbor assistant\n\n## Why retrieval decides the answer\n\nA retrieval-augmented generation (RAG) system answers a question in two stages: it first retrieves passages from a document collection, then asks a language model to write an answer from those passages. The model never sees the rest of the collection, so the answer can only be as good as the passages that retrieval hands it. This note describes the retrieval design of the Harbor support assistant, an internal tool that answers questions over about 40,000 help-centre articles and release notes.\n\n## Keyword retrieval with BM25\n\nKeyword retrieval scores a passage by the query terms it contains, weighted so that rare terms count for more than common ones. BM25 is the usual scoring function for this; it also dampens the effect of a term repeated many times and corrects for passage length. BM25 needs no training and is cheap to run, which is why it remains the baseline. Its strength is exact matching. A query for the error code `E-4012` or the setting `sync.retry_window` finds the passages that contain those strings, even when they appear only once in the whole collection. Its weakness is vocabulary mismatch: a user who asks \"why does my upload stall\" will not match a passage that only says \"transfers pause when the connection drops\".\n\n## Vector retrieval with embeddings\n\nVector retrieval turns the query and every passage into embeddings, lists of numbers produced by an encoder model, and returns the passages whose embeddings lie closest to the query's. Passages that mean the same thing end up close together even when they share no words, so the stalled-upload question can find the passage about paused transfers. Embeddings are weaker on exact codes and identifiers. To the encoder, `E-4012` and `E-4021` look almost the same, and a rare product name may be split into fragments that carry little meaning. In our tests, vector retrieval alone missed the correct passage for 31 of 50 queries that consisted mainly of an error code. Embeddings must also be recomputed whenever the encoder changes, which for this collection takes about 6 hours.\n\n## Combining the two signals\n\nHybrid search runs both retrievers on the same query and merges their result lists. Hybrid search can improve recall when lexical and semantic signals are complementary, that is, when each retriever finds relevant passages that the other misses. If both retrievers tend to return the same passages, or if one of them is poorly tuned for the collection, merging adds latency without adding much. BM25 scores and vector similarities sit on different scales, so they cannot simply be added together. We use Reciprocal Rank Fusion (RRF), which ignores the raw scores and uses only the rank of each passage in each list. A passage receives `1/(k + rank)` from every list it appears in, and the contributions are summed. We set `k = 60`, a common default; a larger k flattens the difference between the top ranks and the lower ones.\n\n## Candidate generation\n\nEach retriever returns its top 50 passages, so the fused list holds at most 100 candidates, and usually fewer because some passages appear in both lists. This stage is tuned for recall rather than precision: the goal is to make sure the right passage is somewhere in the list, not that it comes first. Raising the limit to 100 per retriever put the right passage in the list slightly more often, but it roughly doubled the time spent reranking, so we kept 50.\n\n## Reranking\n\nA reranker then rescores the fused candidates. We use a cross-encoder, a model that reads the query and one passage together and outputs a single relevance score. Because it sees both texts at once, it judges relevance far more accurately than either retriever. That accuracy is expensive, so the cross-encoder runs only on the fused candidates, never on the whole collection. After reranking we keep the top 8 passages.\n\nReranking improves the precision of the top results, but it does not guarantee that the final answer is correct. The reranker can only reorder what retrieval found: if the right passage is not among the candidates, reranking cannot recover it. A passage can also be highly relevant and still out of date, which no relevance score will detect.\n\n## Generation\n\nThe language model receives the question and the top 8 passages, and is instructed to answer only from them and to cite the passages it used. If none of the passages addresses the question, it should say so rather than answer from its general knowledge. Citations let a reader check each claim against its passage, but they do not show whether the passage itself is current. For example, asked \"What does E-4012 mean?\", the assistant retrieves the error-code table through BM25 and the article on resumable uploads through vector search, and the reranker keeps both in the top 8, so the answer can define the code and explain the fix.\n\n## Relevance, latency and cost\n\nEvery stage buys relevance with time or money. On an internal test set of 400 questions, we measured:\n\n| Configuration | Correct passage in top 8 | Median latency | Cost per 1,000 queries |\n|---|---|---|---|\n| BM25 only | 61% | 35 ms | $0.02 |\n| Vector only | 68% | 60 ms | $0.10 |\n| Hybrid (RRF) | 79% | 70 ms | $0.12 |\n| Hybrid + reranker | 88% | 190 ms | $0.95 |\n\nReranking adds about 120 ms per query, most of it spent running the cross-encoder over up to 100 candidates, and it accounts for most of the cost increase. These figures come from one collection and one query set; a collection with fewer exact identifiers may see a smaller gain from BM25, and a different reranker will have a different latency. Teams with a strict latency budget can rerank fewer candidates, for example the top 30 of the fused list instead of all of them, at some cost in recall.\n\n## Summary\n\nHybrid search widens the net, reranking sorts the catch, and generation can only work with the passages it is given. Each step helps only under its own conditions, and none of them makes the final answer certain to be right.\n",
+  "critical": [
+    {
+      "quote": "The model never sees the rest of the collection, so the answer can only be as good as the passages that retrieval hands it.",
+      "why": "The bound that motivates the whole design: generation can't exceed retrieval."
+    },
+    {
+      "quote": "Its weakness is vocabulary mismatch: a user who asks \"why does my upload stall\" will not match a passage that only says \"transfers pause when the connection drops\".",
+      "why": "BM25's weakness; it is the reason a second signal is worth adding."
+    },
+    {
+      "quote": "Embeddings are weaker on exact codes and identifiers.",
+      "why": "Vector retrieval's weakness; the complement of BM25's strength."
+    },
+    {
+      "quote": "Hybrid search can improve recall when lexical and semantic signals are complementary, that is, when each retriever finds relevant passages that the other misses.",
+      "why": "A possibility under a condition: 'can improve … when … complementary'. Neither the hedge nor the condition may be dropped."
+    },
+    {
+      "quote": "If both retrievers tend to return the same passages, or if one of them is poorly tuned for the collection, merging adds latency without adding much.",
+      "why": "When the condition fails, hybrid search costs latency for little gain."
+    },
+    {
+      "quote": "A passage receives `1/(k + rank)` from every list it appears in, and the contributions are summed.",
+      "why": "The fusion formula must survive exactly."
+    },
+    {
+      "quote": "We set `k = 60`, a common default; a larger k flattens the difference between the top ranks and the lower ones.",
+      "why": "The constant's value is part of the formula."
+    },
+    {
+      "quote": "Reranking improves the precision of the top results, but it does not guarantee that the final answer is correct.",
+      "why": "Precision of the ranking is not correctness of the answer."
+    },
+    {
+      "quote": "The reranker can only reorder what retrieval found: if the right passage is not among the candidates, reranking cannot recover it.",
+      "why": "The reranker can't add a passage retrieval missed."
+    },
+    {
+      "quote": "If none of the passages addresses the question, it should say so rather than answer from its general knowledge.",
+      "why": "The fallback when retrieval found nothing useful."
+    },
+    {
+      "quote": "Reranking adds about 120 ms per query, most of it spent running the cross-encoder over up to 100 candidates, and it accounts for most of the cost increase.",
+      "why": "The latency price of reranking."
+    },
+    {
+      "quote": "These figures come from one collection and one query set; a collection with fewer exact identifiers may see a smaller gain from BM25, and a different reranker will have a different latency.",
+      "why": "The measurements don't generalise as they stand."
+    },
+    {
+      "quote": "Each step helps only under its own conditions, and none of them makes the final answer certain to be right.",
+      "why": "The takeaway, which carries its own limit."
+    }
+  ],
+  "exact": [
+    "E-4012",
+    "sync.retry_window",
+    "E-4021",
+    "31 of 50",
+    "6 hours",
+    "1/(k + rank)",
+    "k = 60",
+    "top 50",
+    "100 candidates",
+    "top 8",
+    "88%",
+    "190 ms",
+    "$0.95",
+    "120 ms",
+    "61%",
+    "68%",
+    "79%"
+  ],
+  "groups": {
+    "together": [
+      [
+        "BM25 finds exact terms and rare identifiers (E-4012, sync.retry_window) — but misses passages that use different words",
+        "Embeddings find passages that mean the same thing — but are weak on exact codes (missed 31 of 50 error-code queries)"
+      ],
+      [
+        "Hybrid search can improve recall — when the lexical and semantic signals are complementary; otherwise it adds latency for little gain",
+        "Reciprocal Rank Fusion: each passage scores 1/(k + rank) per list, summed; k = 60",
+        "Top 50 from each retriever, at most 100 fused candidates; tuned for recall, not precision"
+      ],
+      [
+        "A cross-encoder reads query and passage together, rescoring only the fused candidates; the top 8 are kept",
+        "Reranking improves the precision of the top results — it does not guarantee a correct answer and can only reorder what retrieval found"
+      ],
+      [
+        "The model answers only from the top 8 passages, cites them, and says so when none applies",
+        "Example: 'What does E-4012 mean?' — BM25 finds the error-code table, vectors the resumable-uploads article; both reach the top 8"
+      ]
+    ],
+    "apart": [
+      [
+        "Reranking improves the precision of the top results — it does not guarantee a correct answer and can only reorder what retrieval found",
+        "BM25 finds exact terms and rare identifiers (E-4012, sync.retry_window) — but misses passages that use different words"
+      ],
+      [
+        "A cross-encoder reads query and passage together, rescoring only the fused candidates; the top 8 are kept",
+        "Embeddings find passages that mean the same thing — but are weak on exact codes (missed 31 of 50 error-code queries)"
+      ]
+    ]
+  },
+  "hierarchy": [
+    {
+      "main": "The model answers only from the top 8 passages, cites them, and says so when none applies",
+      "supporting": [
+        "Example: 'What does E-4012 mean?' — BM25 finds the error-code table, vectors the resumable-uploads article; both reach the top 8"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "BM25 finds exact terms and rare identifiers (E-4012, sync.retry_window) — but misses passages that use different words",
+      "to": "Top 50 from each retriever, at most 100 fused candidates; tuned for recall, not precision",
+      "type": "flows_to",
+      "label": "top 50 passages"
+    },
+    {
+      "from": "Embeddings find passages that mean the same thing — but are weak on exact codes (missed 31 of 50 error-code queries)",
+      "to": "Top 50 from each retriever, at most 100 fused candidates; tuned for recall, not precision",
+      "type": "flows_to",
+      "label": "top 50 passages"
+    },
+    {
+      "from": "Top 50 from each retriever, at most 100 fused candidates; tuned for recall, not precision",
+      "to": "A cross-encoder reads query and passage together, rescoring only the fused candidates; the top 8 are kept",
+      "type": "flows_to",
+      "label": "up to 100 fused candidates"
+    },
+    {
+      "from": "A cross-encoder reads query and passage together, rescoring only the fused candidates; the top 8 are kept",
+      "to": "The model answers only from the top 8 passages, cites them, and says so when none applies",
+      "type": "flows_to",
+      "label": "top 8 passages"
+    },
+    {
+      "from": "The model answers only from the top 8 passages, cites them, and says so when none applies",
+      "to": "Example: 'What does E-4012 mean?' — BM25 finds the error-code table, vectors the resumable-uploads article; both reach the top 8",
+      "type": "explained_by",
+      "label": "for example"
+    }
+  ],
+  "mustNotSay": [
+    {
+      "text": "Hybrid search always improves recall.",
+      "why": "The source says it can improve recall when the signals are complementary, and adds latency for little gain otherwise."
+    },
+    {
+      "text": "Reranking guarantees a correct answer.",
+      "why": "The source says explicitly that it does not."
+    },
+    {
+      "text": "Reranking improves recall / finds passages retrieval missed.",
+      "why": "The reranker can only reorder the candidates; it cannot recover a passage that isn't among them."
+    },
+    {
+      "text": "Generation feeds back into retrieval (or the reranker depends on the answer).",
+      "why": "The pipeline runs one way: retrieval → fusion → reranking → generation."
+    },
+    {
+      "text": "The measured gains (88%, 120 ms) hold for any collection or reranker.",
+      "why": "The source limits the figures to one collection and one query set."
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "datasetVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "inspectedAt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capabilities": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+)+$"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "canvas",
+              "pages",
+              "ai_pipeline",
+              "architecture",
+              "lens",
+              "provenance",
+              "reconcile",
+              "mcp",
+              "testing"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "implemented",
+              "partially_implemented",
+              "planned",
+              "not_found",
+              "needs_verification"
+            ]
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "id",
+          "category",
+          "status",
+          "summary",
+          "evidence"
+        ]
+      }
+    }
+  },
+  "required": [
+    "datasetVersion",
+    "inspectedAt",
+    "capabilities"
+  ]
+}

@@ -1,0 +1,287 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-04-queue-choice",
+  "template": "sectioned",
+  "templateNote": "A comparison reads best as: why, the options side by side (a table), each option's trade-offs, the criteria, the evidence, and the decision status. The criteria and the options stay in different frames, and the decision frame names no winner.",
+  "frames": [
+    {
+      "id": "f.context",
+      "title": "Why the billing queue is changing",
+      "titleMatch": { "all": [["why", "problem", "context", "changing", "lost jobs", "losing jobs"]] },
+      "purpose": "The problem the comparison solves and the load it must carry.",
+      "rationale": "Context is separate from the options; it explains the first must-have.",
+      "children": ["e.context"],
+      "arrangement": "grid",
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "f.options",
+      "title": "Three options compared",
+      "titleMatch": { "all": [["compared", "comparison", "cost", "side by side"]] },
+      "purpose": "The three options with their monthly costs and effort, side by side.",
+      "rationale": "A cost comparison across options is tabular: one row per option, one column per figure.",
+      "children": ["e.cost-table"],
+      "arrangement": "grid",
+      "separateFrom": [{ "frame": "f.criteria", "reason": "The criteria judge the options; mixing them reads as if a criterion were a property of one option." }],
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.tradeoffs",
+      "title": "Trade-offs by option",
+      "titleMatch": { "all": [["trade-off", "tradeoff", "trade off", "pros and cons", "benefits"]] },
+      "purpose": "Each option's benefit with the conditions and costs that come with it.",
+      "rationale": "Grouping trade-offs by option, side by side, lets the reader compare like with like.",
+      "children": ["e.tradeoff-a", "e.tradeoff-b", "e.tradeoff-c"],
+      "arrangement": "compare",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.criteria",
+      "title": "Selection criteria",
+      "titleMatch": { "all": [["criteria", "criterion", "must-have", "must have"]] },
+      "purpose": "The two must-haves that gate options and the weights that score the rest.",
+      "rationale": "Criteria apply to every option, so they get their own frame.",
+      "children": ["e.must-haves", "e.weights"],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.evidence",
+      "title": "Evidence so far",
+      "titleMatch": { "all": [["evidence", "load test", "what we measured"]] },
+      "purpose": "What has been measured, and what has not.",
+      "rationale": "Evidence is kept apart from claims so the reader can see that only one option was tested.",
+      "children": ["e.load-test", "e.untested"],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.status",
+      "title": "Decision status: deferred",
+      "titleMatch": { "all": [["decision", "deferred", "status", "next step"]] },
+      "purpose": "That no option is chosen, what the decision waits for, and the next step.",
+      "rationale": "The note's conclusion is a deferral; it needs its own frame so it isn't read as a recommendation.",
+      "children": ["e.deferred", "e.next-step"],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e.context",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "context",
+      "content": "In-process workers lose queued jobs on deploys and crashes (37 invoice emails last quarter); about 40,000 jobs a day, peak 600 a minute",
+      "knowledge": ["ku.problem", "ku.volume"],
+      "match": { "all": [["deploy", "crash"], ["lose", "lost", "loses"], ["in-process", "worker pool", "37"]] },
+      "hierarchy": "secondary",
+      "frame": "f.context",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.cost-table",
+      "element": "table",
+      "planNodeTypes": ["table"],
+      "role": "comparison table",
+      "content": "One row per option: what it is, monthly infrastructure ($310 / $540 / $0 extra), monthly team effort (about 2 / 12 / 4 hours), with the volume assumption and the broker's estimate noted on their rows",
+      "knowledge": ["ku.option-a", "ku.option-b", "ku.option-c", "ku.cost-table", "ku.cost-growth", "ku.b-effort-estimate"],
+      "match": { "all": [["$310", "310"], ["$540", "540"]] },
+      "hierarchy": "primary",
+      "frame": "f.options",
+      "layout": "A table, not three cards: the figures are compared across rows.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.tradeoff-a",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "option trade-off",
+      "content": "Managed queue: almost no operational work and automatic dead-lettering — but at-least-once delivery means every handler must be idempotent first (only the email handler is today); provider lock-in",
+      "knowledge": ["ku.a-benefits", "ku.a-at-least-once", "ku.a-lock-in"],
+      "match": { "all": [["managed", "cloud queue", "provider"], ["at least once", "at-least-once"]] },
+      "hierarchy": "primary",
+      "frame": "f.tradeoffs",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.tradeoff-b",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "option trade-off",
+      "content": "Self-hosted broker: priority queues and delayed delivery — but upgrades need a maintenance window",
+      "knowledge": ["ku.b-benefits", "ku.b-maintenance"],
+      "match": { "all": [["broker"], ["priority", "priorities"], ["delay"]] },
+      "hierarchy": "primary",
+      "frame": "f.tradeoffs",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.tradeoff-c",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "option trade-off",
+      "content": "Job table: enqueue in the same transaction as the billing change — only for jobs inside the billing database transaction (not the reporting service's); polling loads the primary at month-end",
+      "knowledge": ["ku.c-transactional", "ku.c-scope", "ku.c-polling"],
+      "match": { "all": [["job table", "jobs table", "database"], ["same transaction"], ["primary"]] },
+      "hierarchy": "primary",
+      "frame": "f.tradeoffs",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.must-haves",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "decision criteria",
+      "content": "Must-haves: no job lost on a crash or deploy; 1,800 jobs per minute without manual intervention. Failing either rules an option out",
+      "knowledge": ["ku.must-haves"],
+      "match": { "all": [["1800"], ["lost", "lose", "loss"], ["must"]] },
+      "hierarchy": "primary",
+      "frame": "f.criteria",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.weights",
+      "element": "text_card",
+      "planNodeTypes": ["text", "table"],
+      "role": "decision criteria",
+      "content": "Weighted criteria: operational effort 40%, monthly cost 30%, developer experience 20%, portability 10%",
+      "knowledge": ["ku.weights"],
+      "match": { "all": [["40%"], ["30%"], ["operational effort", "operations", "ops effort"]] },
+      "hierarchy": "secondary",
+      "frame": "f.criteria",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.load-test",
+      "element": "text_card",
+      "planNodeTypes": ["text", "table"],
+      "role": "evidence with its limits",
+      "content": "Job table load test: 1,200 jobs a minute at p95 18 ms; at 2,000 a minute CPU 85% and p95 240 ms — 1,800 not tested, staging a quarter of production size",
+      "knowledge": ["ku.load-test", "ku.load-test-limits"],
+      "match": { "all": [["1200"], ["2000"], ["p95", "latency"]] },
+      "hierarchy": "primary",
+      "frame": "f.evidence",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.untested",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "evidence gap",
+      "content": "Managed queue and broker were not load-tested; the managed queue's throughput is the provider's figure",
+      "knowledge": ["ku.untested-ab"],
+      "match": { "all": [["provider"], ["not load-tested", "not load tested", "not tested", "untested", "neither"]] },
+      "hierarchy": "secondary",
+      "frame": "f.evidence",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.deferred",
+      "element": "text_card",
+      "planNodeTypes": ["text", "heading"],
+      "role": "decision status",
+      "content": "No option is recommended: the decision waits for the job table measured at 1,800 jobs a minute on a production-sized database. Open requirement per option: idempotent handlers / a broker owner / a passing load test",
+      "knowledge": ["ku.deferred", "ku.open-requirements"],
+      "match": { "all": [["defer", "waits", "postpone", "not yet decided", "no decision"], ["1800"]] },
+      "hierarchy": "primary",
+      "frame": "f.status",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.next-step",
+      "element": "todo",
+      "planNodeTypes": ["todo"],
+      "role": "action item",
+      "content": "Priya: bring the load-test result to the next architecture review",
+      "knowledge": ["ku.next-step"],
+      "match": { "all": [["priya"]] },
+      "hierarchy": "secondary",
+      "frame": "f.status",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r.loadtest-supports-c",
+      "from": "e.load-test",
+      "to": "e.tradeoff-c",
+      "type": "supports",
+      "acceptableTypes": ["supports", "derived_from", "explained_by", "references", "relates_to"],
+      "label": { "required": false, "text": "measured polling load" },
+      "direction": "bidirectional",
+      "explanation": "The load test is the evidence about the job table's load on the primary database.",
+      "evidence": ["u32", "u33", "u34", "u35"],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.deferred-from-loadtest",
+      "from": "e.deferred",
+      "to": "e.load-test",
+      "type": "derived_from",
+      "acceptableTypes": ["derived_from", "depends_on", "caused_by", "references", "relates_to", "blocks"],
+      "label": { "required": false, "text": "1,800 a minute not yet tested" },
+      "direction": "bidirectional",
+      "explanation": "The decision waits on the measurement the load test did not make.",
+      "evidence": ["u36", "u40"],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.deferred-from-musthaves",
+      "from": "e.deferred",
+      "to": "e.must-haves",
+      "type": "derived_from",
+      "acceptableTypes": ["derived_from", "depends_on", "references", "relates_to"],
+      "label": { "required": false, "text": "throughput must-have" },
+      "direction": "bidirectional",
+      "explanation": "The 1,800 a minute the decision waits for is the throughput must-have.",
+      "evidence": ["u18", "u40"],
+      "provenance": "inferred",
+      "inferenceAllowed": true,
+      "reviewRequired": true,
+      "requirement": "optional",
+      "support": "implemented"
+    }
+  ],
+  "together": [
+    { "elements": ["e.tradeoff-a", "e.tradeoff-b", "e.tradeoff-c"], "reason": "Trade-offs are compared side by side, one card per option." },
+    { "elements": ["e.must-haves", "e.weights"], "reason": "Both are the selection criteria." }
+  ],
+  "keepSeparate": [
+    { "elements": ["e.must-haves", "e.cost-table"], "reason": "Criteria judge the options; they are not one more row or column of the comparison." },
+    { "elements": ["e.must-haves", "e.tradeoff-c"], "reason": "The no-lost-jobs must-have is not Option C's benefit, even though Option C addresses it; merging them pre-judges the decision." },
+    { "elements": ["e.deferred", "e.tradeoff-c"], "reason": "The decision status sits apart from any one option so it can't be read as that option's verdict." }
+  ],
+  "hierarchy": [
+    { "main": "e.tradeoff-c", "supporting": ["e.load-test"], "reason": "The load test is evidence about the job table's polling load, not a co-equal option." }
+  ],
+  "unsupported": [
+    { "capability": "ai.cites", "ideal": "Each card cites its units: table u6–u15, u28; trade-offs u24–u32 (minus u28); criteria u16–u23; evidence u33–u38; status u39–u45.", "expectedToday": "Not checkable; matching is by content." },
+    { "capability": "canvas.card-roles", "ideal": "Evidence cards and criteria cards are styled distinctly from option cards.", "expectedToday": "Plain cards; frames carry the distinction." }
+  ]
+}

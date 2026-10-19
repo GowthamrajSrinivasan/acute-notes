@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-publish-reversed",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The upload service → message queue 'publishes PhotoUploaded' arrow is drawn the wrong way round, so the queue appears to push into the upload service.",
+  "mutations": [
+    {
+      "op": "reverse_relationship",
+      "from": "n-upload",
+      "to": "n-queue"
+    }
+  ],
+  "expectFailing": [
+    "a.rel-upload-queue",
+    "a.no-queue-to-upload"
+  ]
+}

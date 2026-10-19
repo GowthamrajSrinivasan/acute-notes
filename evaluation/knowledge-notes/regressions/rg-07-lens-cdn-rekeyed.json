@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-lens-cdn-rekeyed",
+  "distortion": "inconsistent_identity_across_levels",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "lens",
+  "description": "The CDN shown as boundary context in the L1 frame gets a new identity instead of keeping its L0 key.",
+  "mutations": [
+    {
+      "op": "lens_rekey",
+      "level": 1,
+      "key": "cdn",
+      "newKey": "edge-cdn"
+    }
+  ],
+  "expectFailing": [
+    "a.lens-identity-cdn"
+  ]
+}

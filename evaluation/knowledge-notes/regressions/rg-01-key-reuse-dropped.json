@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-01-key-reuse-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-01-idempotency-keys",
+  "target": "plan",
+  "description": "The exception for a reused key with a different amount is silently dropped from the mechanism card.",
+  "mutations": [
+    { "op": "replace_text", "node": "n2", "find": "\n- A reused key with a different amount must be rejected, not answered with the old result.", "replace": "" }
+  ],
+  "expectFailing": ["a.reuse-with-claim"]
+}

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-generation-feeds-reranker",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "The reranking → generation flow is reversed, so the answer appears to feed the reranker.",
+  "mutations": [
+    { "op": "reverse_relationship", "from": "n6", "to": "n9" }
+  ],
+  "expectFailing": ["a.rel-rerank-generation", "a.no-generation-to-rerank"]
+}

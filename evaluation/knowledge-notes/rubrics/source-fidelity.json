@@ -1,0 +1,63 @@
+{
+  "datasetVersion": "1.0.0",
+  "dimension": "source_fidelity",
+  "title": "A. Source fidelity",
+  "definition": "Every claim on the canvas means what the source means: qualifiers, conditions, causes, numbers, identifiers and named entities are preserved, and nothing the source doesn't support is added.",
+  "questions": [
+    "Are the original ideas preserved?",
+    "Are causal relationships and conditions preserved (no widened condition, no swapped cause and effect, no correlation stated as causation)?",
+    "Are numerical values, formulas, identifiers and named entities exactly right?",
+    "Are unsupported claims introduced (absolutes, invented numbers, recommendations the source doesn't make)?",
+    "Are critical caveats or exceptions omitted?"
+  ],
+  "severity": {
+    "critical": "A meaning change a reader would act on: a possibility made a guarantee, a condition or exception dropped, a cause reversed, a wrong number, an invented fact.",
+    "major": "A weakened but not reversed qualifier; a named term changed; a hedge lost on a non-critical claim.",
+    "minor": "Harmless rewording that a careful reader might find slightly less precise."
+  },
+  "methods": {
+    "deterministic": [
+      "text_present on the claim's own element (condition, qualifier, exact value)",
+      "text_absent for known distortions (absolutes, invented paths/code, fabricated agreement)",
+      "knowledge.mustNotClaim mirrored as text_absent",
+      "future: plan §3.4 meaning rules once implemented (ai.meaning-rules)"
+    ],
+    "model_judge": [
+      "Card-by-card comparison with the units it represents: supported / partly / not supported, with the reason (offline, approved runs only)"
+    ],
+    "human": [
+      "Reviewer compares each critical card with its source units; resolves judge disagreements"
+    ]
+  },
+  "requiredAssertions": [
+    "At least one critical text_present per critical condition or limit",
+    "At least one text_absent per plausible distortion in mustNotClaim",
+    "One judged meaning check per case"
+  ],
+  "passCriteria": "Every critical deterministic fidelity assertion passes on every run, and the judged check finds no critical distortion.",
+  "failCriteria": "Any critical fidelity assertion fails, or the judge/reviewer finds a critical distortion the checks missed (which then becomes a new assertion).",
+  "passExample": "Source: 'Hybrid search can improve recall when lexical and semantic signals are complementary.' Card: 'Hybrid search may raise recall — if keyword and vector signals complement each other.'",
+  "failExample": "Card: 'Hybrid search always improves recall.' (qualifier and condition gone: possibility → guarantee)",
+  "judgeScale": [
+    {
+      "score": 1,
+      "meaning": "Several meaning changes or invented facts."
+    },
+    {
+      "score": 2,
+      "meaning": "Between 1 and 3: several serious problems."
+    },
+    {
+      "score": 3,
+      "meaning": "Meaning kept overall; one qualifier weakened or one non-critical detail off."
+    },
+    {
+      "score": 4,
+      "meaning": "Between 3 and 5: one minor problem."
+    },
+    {
+      "score": 5,
+      "meaning": "Every claim keeps its qualifiers, conditions, causes and exact values; nothing added."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-purge-instant",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "Eventual consistency becomes a guarantee: the purge card says a purge applies instantly everywhere.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n3",
+      "find": "Eventually consistent, not instant: each edge location applies the purge on its own schedule, so for a while some serve the new version and others the old one.",
+      "replace": "A purge applies instantly at every edge location."
+    }
+  ],
+  "expectFailing": [
+    "a.purge-eventual",
+    "a.no-instant"
+  ]
+}

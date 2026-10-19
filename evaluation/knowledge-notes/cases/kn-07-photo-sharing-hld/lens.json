@@ -1,0 +1,907 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-07-photo-sharing-hld",
+  "profile": "architecture",
+  "levels": [
+    {
+      "level": 0,
+      "name": "System",
+      "frameKey": "pinhole.system",
+      "title": "Pinhole in context",
+      "availability": "available",
+      "reveals": "Pinhole as one system, its two client apps and the two third-party systems outside its boundary.",
+      "nodes": [
+        "pinhole",
+        "mobile-app",
+        "web-app",
+        "cdn",
+        "push-provider"
+      ],
+      "edges": [
+        "r.l0-mobile-pinhole",
+        "r.l0-web-pinhole",
+        "r.l0-pinhole-push",
+        "r.l0-cdn-pinhole",
+        "r.l0-mobile-cdn"
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Architecture",
+      "frameKey": "pinhole.architecture",
+      "title": "Pinhole containers",
+      "availability": "available",
+      "reveals": "The gateway, the three services, the workers, the queue and the three stores with labelled calls/reads/writes/publishes/subscribes edges.",
+      "nodes": [
+        "api-gateway",
+        "auth-service",
+        "upload-service",
+        "feed-service",
+        "media-workers",
+        "message-queue",
+        "object-storage",
+        "metadata-db",
+        "cache"
+      ],
+      "edges": [
+        "r.l1-gateway-auth",
+        "r.l1-gateway-upload",
+        "r.l1-gateway-feed",
+        "r.l1-upload-metadata",
+        "r.l1-upload-queue",
+        "r.l1-workers-subscribe",
+        "r.l1-workers-objstore",
+        "r.l1-workers-metadata",
+        "r.l1-workers-publish",
+        "r.l1-feed-subscribe",
+        "r.l1-feed-metadata",
+        "r.l1-feed-cache"
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Component",
+      "frameKey": "pinhole.metadata-db",
+      "title": "Metadata database: what it holds",
+      "availability": "partial",
+      "unavailableReason": "Only the metadata database has stated parts (its two record kinds, u22). No service has stated internals, so no other L2 frame exists.",
+      "reveals": "The two record kinds the metadata database holds; nothing about schema.",
+      "nodes": [
+        "follow-relationships",
+        "photo-records"
+      ],
+      "edges": []
+    },
+    {
+      "level": 3,
+      "name": "Flow",
+      "frameKey": "pinhole.flows",
+      "title": "Flows",
+      "availability": "unavailable",
+      "unavailableReason": "The source is HLD only (u3, u4): it gives no flows below service level, no operations and no code.",
+      "reveals": "Nothing: the source stops at service level.",
+      "nodes": [],
+      "edges": []
+    },
+    {
+      "level": 4,
+      "name": "Operation",
+      "frameKey": "pinhole.operations",
+      "title": "Operations",
+      "availability": "unavailable",
+      "unavailableReason": "The source is HLD only (u3, u4): it gives no flows below service level, no operations and no code.",
+      "reveals": "Nothing: no operations are described.",
+      "nodes": [],
+      "edges": []
+    },
+    {
+      "level": 5,
+      "name": "Source",
+      "frameKey": "pinhole.source",
+      "title": "Source",
+      "availability": "unavailable",
+      "unavailableReason": "The source is HLD only (u3, u4): it gives no flows below service level, no operations and no code.",
+      "reveals": "Nothing: no code or paths are given.",
+      "nodes": [],
+      "edges": []
+    }
+  ],
+  "nodes": [
+    {
+      "key": "pinhole",
+      "label": "Pinhole",
+      "match": {
+        "all": [
+          [
+            "pinhole"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 0,
+      "expandsTo": "pinhole.architecture",
+      "knowledge": [
+        "ku.purpose",
+        "ku.system-boundary"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u1",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u28",
+          "availability": "available"
+        }
+      ],
+      "uncertainty": {
+        "note": "The canvas has no single 'Pinhole' shape: the system node stands for the internal frames together (Edge & API, Core services, Asynchronous processing, Storage).",
+        "reviewRequired": true
+      }
+    },
+    {
+      "key": "mobile-app",
+      "label": "Mobile app",
+      "match": {
+        "all": [
+          [
+            "mobile"
+          ]
+        ]
+      },
+      "kind": "frontend",
+      "level": 0,
+      "canvasElement": "e.mobile-app",
+      "knowledge": [
+        "ku.clients"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u5",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "web-app",
+      "label": "Web app",
+      "match": {
+        "all": [
+          [
+            "web"
+          ]
+        ]
+      },
+      "kind": "frontend",
+      "level": 0,
+      "canvasElement": "e.web-app",
+      "knowledge": [
+        "ku.clients"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u5",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "cdn",
+      "label": "CDN",
+      "match": {
+        "all": [
+          [
+            "cdn",
+            "content delivery"
+          ]
+        ]
+      },
+      "kind": "external",
+      "level": 0,
+      "canvasElement": "e.cdn",
+      "knowledge": [
+        "ku.cdn",
+        "ku.system-boundary"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u25",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u26",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "push-provider",
+      "label": "Push-notification provider",
+      "match": {
+        "all": [
+          [
+            "push"
+          ]
+        ]
+      },
+      "kind": "external",
+      "level": 0,
+      "canvasElement": "e.push",
+      "knowledge": [
+        "ku.push-provider",
+        "ku.system-boundary"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u25",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u27",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "api-gateway",
+      "label": "API gateway",
+      "match": {
+        "all": [
+          [
+            "gateway"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "pinhole",
+      "canvasElement": "e.api-gateway",
+      "knowledge": [
+        "ku.gateway",
+        "ku.gateway-fails-closed"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u8",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u9",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u10",
+          "availability": "available"
+        },
+        {
+          "type": "none",
+          "availability": "unavailable",
+          "note": "The source is HLD only and names no file or code (u4)."
+        }
+      ]
+    },
+    {
+      "key": "auth-service",
+      "label": "Auth service",
+      "match": {
+        "all": [
+          [
+            "auth"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "pinhole",
+      "canvasElement": "e.auth",
+      "knowledge": [
+        "ku.auth"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u12",
+          "availability": "available"
+        },
+        {
+          "type": "none",
+          "availability": "unavailable",
+          "note": "The source is HLD only and names no file or code (u4)."
+        }
+      ]
+    },
+    {
+      "key": "upload-service",
+      "label": "Upload service",
+      "match": {
+        "all": [
+          [
+            "upload"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "pinhole",
+      "canvasElement": "e.upload",
+      "knowledge": [
+        "ku.upload-service"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u13",
+          "availability": "available"
+        },
+        {
+          "type": "none",
+          "availability": "unavailable",
+          "note": "The source is HLD only and names no file or code (u4)."
+        }
+      ]
+    },
+    {
+      "key": "feed-service",
+      "label": "Feed service",
+      "match": {
+        "all": [
+          [
+            "feed service",
+            "feed"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "pinhole",
+      "canvasElement": "e.feed",
+      "knowledge": [
+        "ku.feed-service",
+        "ku.photo-ready-fanout"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u14",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u18",
+          "availability": "available"
+        },
+        {
+          "type": "none",
+          "availability": "unavailable",
+          "note": "The source is HLD only and names no file or code (u4)."
+        }
+      ]
+    },
+    {
+      "key": "media-workers",
+      "label": "Media processing workers",
+      "match": {
+        "all": [
+          [
+            "worker",
+            "media processing"
+          ]
+        ]
+      },
+      "kind": "backend",
+      "level": 1,
+      "parent": "pinhole",
+      "canvasElement": "e.workers",
+      "knowledge": [
+        "ku.workers",
+        "ku.stuck-photos"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u15",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u16",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u17",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u20",
+          "availability": "available"
+        },
+        {
+          "type": "none",
+          "availability": "unavailable",
+          "note": "The source is HLD only and names no file or code (u4)."
+        }
+      ]
+    },
+    {
+      "key": "message-queue",
+      "label": "Message queue",
+      "match": {
+        "all": [
+          [
+            "queue",
+            "message bus",
+            "broker"
+          ]
+        ]
+      },
+      "kind": "messagebus",
+      "level": 1,
+      "parent": "pinhole",
+      "canvasElement": "e.queue",
+      "knowledge": [
+        "ku.message-queue",
+        "ku.queue-retention"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u13",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u15",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u19",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "object-storage",
+      "label": "Object storage",
+      "match": {
+        "all": [
+          [
+            "object storage",
+            "object store",
+            "blob"
+          ]
+        ]
+      },
+      "kind": "store",
+      "level": 1,
+      "parent": "pinhole",
+      "canvasElement": "e.object-storage",
+      "knowledge": [
+        "ku.object-storage"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u21",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "metadata-db",
+      "label": "Metadata database",
+      "match": {
+        "all": [
+          [
+            "metadata"
+          ]
+        ]
+      },
+      "kind": "database",
+      "level": 1,
+      "parent": "pinhole",
+      "expandsTo": "pinhole.metadata-db",
+      "canvasElement": "e.metadata-db",
+      "knowledge": [
+        "ku.metadata-db"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u22",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "cache",
+      "label": "Cache",
+      "match": {
+        "all": [
+          [
+            "cache"
+          ]
+        ]
+      },
+      "kind": "store",
+      "level": 1,
+      "parent": "pinhole",
+      "canvasElement": "e.cache",
+      "knowledge": [
+        "ku.cache"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u23",
+          "availability": "available"
+        },
+        {
+          "type": "source_unit",
+          "unit": "u24",
+          "availability": "available"
+        }
+      ]
+    },
+    {
+      "key": "follow-relationships",
+      "label": "Follow relationships",
+      "match": {
+        "all": [
+          [
+            "follow"
+          ]
+        ]
+      },
+      "kind": "store",
+      "level": 2,
+      "parent": "metadata-db",
+      "knowledge": [
+        "ku.metadata-db"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u22",
+          "availability": "available"
+        }
+      ],
+      "uncertainty": {
+        "note": "The source names the record kind only; no schema, fields or keys.",
+        "reviewRequired": false
+      }
+    },
+    {
+      "key": "photo-records",
+      "label": "Photo records (with processing status)",
+      "match": {
+        "all": [
+          [
+            "photo record",
+            "photo"
+          ],
+          [
+            "record",
+            "status"
+          ]
+        ]
+      },
+      "kind": "store",
+      "level": 2,
+      "parent": "metadata-db",
+      "knowledge": [
+        "ku.metadata-db"
+      ],
+      "evidence": [
+        {
+          "type": "source_unit",
+          "unit": "u22",
+          "availability": "available"
+        }
+      ],
+      "uncertainty": {
+        "note": "The source names the record kind and that it carries a processing status; nothing else.",
+        "reviewRequired": false
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "r.l0-mobile-pinhole",
+      "from": "mobile-app",
+      "to": "pinhole",
+      "relation": "calls",
+      "label": "HTTPS API requests",
+      "level": 0,
+      "explanation": "The mobile app uses Pinhole's public HTTPS API.",
+      "evidence": [
+        "u6"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l0-web-pinhole",
+      "from": "web-app",
+      "to": "pinhole",
+      "relation": "calls",
+      "label": "HTTPS API requests",
+      "level": 0,
+      "explanation": "The web app uses Pinhole's public HTTPS API.",
+      "evidence": [
+        "u6"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l0-pinhole-push",
+      "from": "pinhole",
+      "to": "push-provider",
+      "relation": "calls",
+      "label": "asks to alert followers",
+      "level": 0,
+      "explanation": "Pinhole sends alert requests to the third-party provider.",
+      "evidence": [
+        "u18",
+        "u27"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l0-cdn-pinhole",
+      "from": "cdn",
+      "to": "pinhole",
+      "relation": "reads",
+      "label": "reads photos and thumbnails",
+      "level": 0,
+      "explanation": "The CDN reads photo bytes from Pinhole's object storage.",
+      "evidence": [
+        "u26"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l0-mobile-cdn",
+      "from": "mobile-app",
+      "to": "cdn",
+      "relation": "reads",
+      "label": "loads thumbnails",
+      "level": 0,
+      "explanation": "Clients load thumbnails from the CDN.",
+      "evidence": [
+        "u33"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-gateway-auth",
+      "from": "api-gateway",
+      "to": "auth-service",
+      "relation": "calls",
+      "label": "verifies access token",
+      "level": 1,
+      "explanation": "Token check on every request.",
+      "evidence": [
+        "u9"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-gateway-upload",
+      "from": "api-gateway",
+      "to": "upload-service",
+      "relation": "calls",
+      "label": "routes photo posts",
+      "level": 1,
+      "explanation": "Routing.",
+      "evidence": [
+        "u9",
+        "u29"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-gateway-feed",
+      "from": "api-gateway",
+      "to": "feed-service",
+      "relation": "calls",
+      "label": "routes feed requests",
+      "level": 1,
+      "explanation": "Routing.",
+      "evidence": [
+        "u9",
+        "u33"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-upload-metadata",
+      "from": "upload-service",
+      "to": "metadata-db",
+      "relation": "writes",
+      "label": "records photo as processing",
+      "level": 1,
+      "explanation": "New photo record.",
+      "evidence": [
+        "u13"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-upload-queue",
+      "from": "upload-service",
+      "to": "message-queue",
+      "relation": "publishes",
+      "label": "publishes PhotoUploaded",
+      "level": 1,
+      "explanation": "Upload publishes; it never reads from the queue.",
+      "evidence": [
+        "u13"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-workers-subscribe",
+      "from": "media-workers",
+      "to": "message-queue",
+      "relation": "subscribes",
+      "label": "subscribes to PhotoUploaded",
+      "level": 1,
+      "explanation": "Workers consume PhotoUploaded.",
+      "evidence": [
+        "u15"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-workers-objstore",
+      "from": "media-workers",
+      "to": "object-storage",
+      "relation": "writes",
+      "label": "reads originals, writes thumbnails",
+      "level": 1,
+      "explanation": "Thumbnail generation.",
+      "evidence": [
+        "u16"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-workers-metadata",
+      "from": "media-workers",
+      "to": "metadata-db",
+      "relation": "writes",
+      "label": "marks photo ready",
+      "level": 1,
+      "explanation": "Status change.",
+      "evidence": [
+        "u16"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-workers-publish",
+      "from": "media-workers",
+      "to": "message-queue",
+      "relation": "publishes",
+      "label": "publishes PhotoReady",
+      "level": 1,
+      "explanation": "Ready event.",
+      "evidence": [
+        "u17"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-feed-subscribe",
+      "from": "feed-service",
+      "to": "message-queue",
+      "relation": "subscribes",
+      "label": "subscribes to PhotoReady",
+      "level": 1,
+      "explanation": "Feed fan-out trigger.",
+      "evidence": [
+        "u18"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-feed-metadata",
+      "from": "feed-service",
+      "to": "metadata-db",
+      "relation": "reads",
+      "label": "reads photo metadata",
+      "level": 1,
+      "explanation": "Feed building.",
+      "evidence": [
+        "u14"
+      ],
+      "provenance": "explicit"
+    },
+    {
+      "id": "r.l1-feed-cache",
+      "from": "feed-service",
+      "to": "cache",
+      "relation": "writes",
+      "label": "keeps feed pages",
+      "level": 1,
+      "explanation": "Ready-made pages.",
+      "evidence": [
+        "u14",
+        "u23"
+      ],
+      "provenance": "explicit"
+    }
+  ],
+  "navigationPaths": [
+    {
+      "id": "p.post-photo",
+      "description": "From the client into the system, to the upload service, to where it records the photo, down to the photo records.",
+      "path": [
+        "mobile-app",
+        "pinhole",
+        "upload-service",
+        "metadata-db",
+        "photo-records"
+      ]
+    }
+  ],
+  "invariants": [
+    "Lens is a projection of the canvas frames; every L1 node is the canonical shape on the canvas (canvasElement), never a second copy.",
+    "External systems (CDN, push provider) and the client apps may reappear in the L1 frame as boundary context; they keep their L0 key and kind.",
+    "No L1 service drills anywhere: the source gives no internals for the gateway, auth, upload, feed or the workers.",
+    "L3 Flow, L4 Operation and L5 Source have no nodes; they are unavailable because the source is HLD only, not because a step was skipped.",
+    "No node carries code evidence with a path or line range; code evidence is 'unavailable' wherever it is listed.",
+    "Edges keep direction: publishers and subscribers both point at the message queue; nothing points from the queue to a service."
+  ],
+  "interactions": [
+    {
+      "id": "drill-system",
+      "description": "Drill from the Pinhole system node into the L1 container frame.",
+      "support": "partial",
+      "evidence": "lens.drill is implemented (expandsTo or an explained_by arrow to a frame); lens.drill-from-plan is partial: a VisualPlan can't set expandsTo, so the link is made in the UI, set_lens or MCP link_lens_detail."
+    },
+    {
+      "id": "drill-metadata",
+      "description": "Drill from the metadata database into its two record kinds (L2, partial).",
+      "support": "partial",
+      "evidence": "Same as drill-system: lens.drill implemented, lens.drill-from-plan partial."
+    },
+    {
+      "id": "roll-up",
+      "description": "Roll back up from L1 to L0 through the crumbs.",
+      "support": "implemented",
+      "evidence": "lens.drill: crumbs roll back up."
+    },
+    {
+      "id": "reveal-on-canvas",
+      "description": "Select an L1 node (e.g. Upload service) and reveal its canonical shape on the canvas.",
+      "support": "implemented",
+      "evidence": "lens.canvas-reveal: canvas evidence carries {canvasId, elementId}."
+    },
+    {
+      "id": "trace-post-photo",
+      "description": "Trace the path upload service → message queue ← media workers, and the post-photo path down to photo records.",
+      "support": "implemented",
+      "evidence": "lens.trace: BFS path tracing across levels and edges."
+    },
+    {
+      "id": "unavailable-levels",
+      "description": "Show L3-L5 as unavailable with the reason, rather than empty or hidden.",
+      "support": "partial",
+      "evidence": "lens.confidence-marking is partial: edges carry confidence, but there is no 'unknown / unavailable detail' marker on nodes or levels."
+    }
+  ]
+}

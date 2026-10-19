@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "datasetVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^kn-\\d{2}-[a-z0-9-]+$"
+          },
+          "directory": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scenario": {
+            "type": "string",
+            "minLength": 1
+          },
+          "files": {
+            "type": "object",
+            "properties": {
+              "case": {
+                "type": "string",
+                "minLength": 1
+              },
+              "knowledge": {
+                "type": "string",
+                "minLength": 1
+              },
+              "canvas": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evaluation": {
+                "type": "string",
+                "minLength": 1
+              },
+              "constraints": {
+                "type": "string",
+                "minLength": 1
+              },
+              "lens": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reconcile": {
+                "type": "string",
+                "minLength": 1
+              },
+              "referencePlan": {
+                "type": "string",
+                "minLength": 1
+              },
+              "referenceLens": {
+                "type": "string",
+                "minLength": 1
+              },
+              "referenceReconcile": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "case",
+              "knowledge",
+              "canvas",
+              "evaluation",
+              "constraints",
+              "referencePlan"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "directory",
+          "scenario",
+          "files"
+        ]
+      }
+    },
+    "rubrics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "regressionsDir": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "datasetVersion",
+    "name",
+    "description",
+    "cases",
+    "rubrics",
+    "regressionsDir"
+  ]
+}

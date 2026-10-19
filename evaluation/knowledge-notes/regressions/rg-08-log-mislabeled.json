@@ -1,0 +1,10 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-log-mislabeled",
+  "distortion": "mislabeled_architecture_edge",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "The Orchestrator 'reads' the Answer log instead of writing to it.",
+  "mutations": [{ "op": "set_relation_type", "from": "a-orch", "to": "a-log", "type": "reads" }],
+  "expectFailing": ["a.rel-orchestrator-log"]
+}

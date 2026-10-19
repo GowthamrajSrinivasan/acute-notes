@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-recommends-job-table",
+  "distortion": "unsupported_recommendation",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The deferral turns into a recommendation the note never makes: 'This note does not recommend an option.' becomes 'We should choose the job table.'",
+  "mutations": [
+    { "op": "replace_text", "node": "n10", "find": "This note does not recommend an option.", "replace": "We should choose the job table." }
+  ],
+  "expectFailing": ["a.no-recommendation"]
+}

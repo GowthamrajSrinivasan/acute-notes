@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-switch-before-smoke-test",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The order between the smoke tests and the traffic switch is reversed: traffic moves to green and the smoke test comes after.",
+  "mutations": [
+    {
+      "op": "reverse_relationship",
+      "from": "n9",
+      "to": "n10"
+    }
+  ],
+  "expectFailing": [
+    "a.order-switch-after-smoke",
+    "a.rel-smoke-switch"
+  ]
+}

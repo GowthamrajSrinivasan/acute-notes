@@ -1,0 +1,9 @@
+the part holding the statement: "Branch · AI App Builder Ecosystem (2026-10-08)" (1471 characters, 9 sentences)
+the statement's sentence: 5, I would estimate **25–40 focused development days for a convincing MVP**, not 7–10 days.
+does the real NOTES text (chat 1) contain any build-time statement? no
+V1 planted topic "7–10 days" vs the WHOLE real part: topic t1 (conf 1.00); relation contradicts (P repeats 0.00, adds 0.00, contradicts 1.00); nothing-new P 0.01
+V2 planted topic "7–10 days" vs the statement's sentence ALONE: topic t1 (conf 1.00); relation contradicts (P repeats 0.00, adds 0.00, contradicts 1.00); nothing-new P 0.02
+V3 control, consistent topic "25–40 days" vs the whole real part: topic t1 (conf 1.00); relation adds (P repeats 0.17, adds 0.83, contradicts 0.00); nothing-new P 0.02
+V1 round two (one question per statement of the part, 8 statements): statements Jev says contradict the topic: p1_s3_contradicts→t1.s0 (conf 0.88); p1_s4_contradicts→t1.s0 (conf 0.46)
+V1 round two as production would read it: null (handed to the chat task)
+input tokens 4648; estimated cost $0.00020 (ceiling $0.005)

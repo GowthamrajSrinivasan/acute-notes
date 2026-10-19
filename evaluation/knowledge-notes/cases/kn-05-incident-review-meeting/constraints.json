@@ -1,0 +1,174 @@
+{
+  "id": "kn-05-incident-review-meeting",
+  "kind": "meeting_transcript",
+  "source": "# Post-incident review: checkout outage, March 14\n\nAttendees: Dana (facilitator), Marcus (on-call SRE), Leila (payments backend lead), Tomás (release engineering), Kenji (customer support lead)\n\n---\n\nDana: Okay, I think everyone's here. Did people manage to grab coffee? The machine on four is broken again.\n\nKenji: I brought my own. Lesson learned.\n\nDana: Smart. Right, let's start. This is the blameless review for the checkout outage on Friday, March 14. Marcus, can you walk us through the timeline?\n\nMarcus: Sure. At 16:40 a config change to the payments service went out. It changed the gateway connection pool from 50 connections to 5. That was a typo; the intent was 55. Checkout requests started queuing for a connection and timing out almost immediately.\n\nMarcus: Our error-rate alert fired at 17:02, so 22 minutes after the change. I rolled the config back at 17:15, and checkout was fully recovered at 17:27. So customers saw errors for 47 minutes in total.\n\nKenji: And on our side, we counted about 2,300 failed checkouts in that window. Support got 140 tickets before we posted the status page.\n\nDana: Why did the alert take 22 minutes?\n\nMarcus: The alert only fires when the checkout error rate is above 10% for 15 minutes. Errors went over 10% around 16:47, so the earliest it could fire was 17:02. It did exactly what it was configured to do.\n\nLeila: Which is too slow for checkout. 15 minutes of sustained errors is a long time when every minute is lost revenue.\n\nDana: Fair. What do we want instead?\n\nMarcus: I'd propose 5% over 5 minutes for checkout specifically. I checked the last 30 days and that would have paged twice on noise, both during the payment provider's own maintenance.\n\nLeila: Two noisy pages a month is fine for checkout.\n\nDana: Anyone against? ... Okay. Agreed: we'll lower the checkout error-rate alert to 5% over 5 minutes. Marcus, can you own that?\n\nMarcus: Yes. I'll have it changed by Wednesday, March 19.\n\nKenji: One more thing from support. The status page went up at 17:20, which is 40 minutes after the errors started. Customers were asking on social media before we said anything.\n\nDana: Who posts the status page today?\n\nKenji: Whoever is incident commander, when they remember. On Friday that was Marcus, and he was busy rolling back.\n\nMarcus: Honestly, it was the last thing on my mind.\n\nDana: Should support be allowed to post it directly?\n\nKenji: I'd like that, yes.\n\nLeila: No objection from me.\n\nDana: Agreed: support can post a status-page update directly, without waiting for the incident commander.\n\nDana: Great. Next, how did a config value like that get through?\n\nLeila: Config changes don't go through code review. They're edited in the deploy dashboard and applied directly. Code changes need two approvals; config needs none.\n\nTomás: That's the real gap. A typo in code would have been caught by the reviewer or by a test.\n\nDana: So the proposal is that payments config goes through the same review as code?\n\nLeila: Yes. Config lives in the repo, it gets a pull request, and it needs one approval from the payments team.\n\nTomás: I'm fine with that.\n\nMarcus: Same.\n\nDana: Agreed: config changes to the payments service will go through pull-request review with one payments-team approval. Leila, can you set that up?\n\nLeila: I'll move the config into the repo and add the approval rule by Friday, March 21.\n\nTomás: Can I raise something else? I'd like us to stop deploying anything to payments after 15:00 on Fridays. This went out at 16:40 on a Friday, and half the team had already logged off.\n\nLeila: I don't agree with that. A freeze just moves the risk to Monday morning, when traffic is higher. The problem here wasn't the day, it was that nobody reviewed the change.\n\nTomás: The review fixes this one cause. But fewer people around means slower recovery for any cause.\n\nLeila: Recovery took 25 minutes after the alert, and Marcus was on call. Being Friday didn't slow that down.\n\nTomás: That's one incident. I think we'd see a pattern if we looked.\n\nDana: I don't think we're going to settle this today. Let's not decide the freeze now. Tomás, could you pull the incidents from the last six months and see whether late-Friday deploys are over-represented? Bring it to the next review on April 2.\n\nTomás: Sure, I can do that.\n\nMarcus: While we're on prevention, I'd also propose automatic rollback: if the checkout error rate doubles within 10 minutes of a deploy, the pipeline rolls back on its own.\n\nLeila: For config, maybe. For code, I'm nervous. If a release includes a database migration, rolling back the code without the migration can leave us worse off.\n\nMarcus: We could exclude releases with migrations.\n\nLeila: Possibly. I'd want to know how often we ship migrations before I agree to anything.\n\nDana: Okay, so auto-rollback is an open question. We don't know how many releases include migrations. Let's leave it open.\n\nKenji: Can I go back to customers? Do we know whether any of the 2,300 failed checkouts were retried successfully? If most people retried, the email we send is different.\n\nMarcus: I don't know. The payment logs would show it, but nobody has looked yet.\n\nDana: That's an open question too, then. Kenji, can you draft the customer email either way?\n\nKenji: Yes, I'll take the email draft.\n\nMarcus: So just to recap the timeline again for the doc: the change went out at 16:40, the alert fired at 17:02, rollback at 17:15, recovered at 17:27.\n\nDana: Thanks. Anything else? ... Okay. Good review, everyone. And someone please report the coffee machine.\n",
+  "critical": [
+    {
+      "quote": "At 16:40 a config change to the payments service went out.",
+      "why": "When the incident started."
+    },
+    {
+      "quote": "It changed the gateway connection pool from 50 connections to 5.",
+      "why": "The cause, with its values."
+    },
+    {
+      "quote": "So customers saw errors for 47 minutes in total.",
+      "why": "Duration of impact."
+    },
+    {
+      "quote": "And on our side, we counted about 2,300 failed checkouts in that window.",
+      "why": "Customer impact."
+    },
+    {
+      "quote": "Agreed: we'll lower the checkout error-rate alert to 5% over 5 minutes.",
+      "why": "Agreed decision 1."
+    },
+    {
+      "quote": "Marcus: Yes. I'll have it changed by Wednesday, March 19.",
+      "why": "Owner Marcus, deadline Wednesday, March 19."
+    },
+    {
+      "quote": "Dana: Agreed: support can post a status-page update directly, without waiting for the incident commander.",
+      "why": "Agreed decision 2; no owner or date was given."
+    },
+    {
+      "quote": "Agreed: config changes to the payments service will go through pull-request review with one payments-team approval.",
+      "why": "Agreed decision 3."
+    },
+    {
+      "quote": "Leila: I'll move the config into the repo and add the approval rule by Friday, March 21.",
+      "why": "Owner Leila, deadline Friday, March 21."
+    },
+    {
+      "quote": "I'd like us to stop deploying anything to payments after 15:00 on Fridays.",
+      "why": "A proposal that was disputed and not agreed."
+    },
+    {
+      "quote": "Leila: I don't agree with that.",
+      "why": "The objection that leaves the freeze unagreed."
+    },
+    {
+      "quote": "Let's not decide the freeze now.",
+      "why": "Explicitly not decided."
+    },
+    {
+      "quote": "Bring it to the next review on April 2.",
+      "why": "Owner Tomás, due at the review on April 2."
+    },
+    {
+      "quote": "Marcus: While we're on prevention, I'd also propose automatic rollback: if the checkout error rate doubles within 10 minutes of a deploy, the pipeline rolls back on its own.",
+      "why": "A proposal with an unresolved objection."
+    },
+    {
+      "quote": "Dana: Okay, so auto-rollback is an open question.",
+      "why": "Auto-rollback stays open."
+    },
+    {
+      "quote": "Do we know whether any of the 2,300 failed checkouts were retried successfully?",
+      "why": "Unanswered; it shapes the customer email."
+    },
+    {
+      "quote": "Kenji: Yes, I'll take the email draft.",
+      "why": "Owner Kenji; no deadline was stated, and none may be invented."
+    }
+  ],
+  "exact": [
+    "March 14",
+    "16:40",
+    "50",
+    "55",
+    "17:02",
+    "17:15",
+    "17:27",
+    "47 minutes",
+    "2,300",
+    "140",
+    "10%",
+    "15 minutes",
+    "5% over 5 minutes",
+    "Wednesday, March 19",
+    "17:20",
+    "Friday, March 21",
+    "15:00",
+    "April 2",
+    "16:47",
+    "Marcus",
+    "Leila",
+    "Kenji"
+  ],
+  "groups": {
+    "together": [
+      [
+        "Agreed: checkout error-rate alert at 5% over 5 minutes",
+        "Agreed: support can post status-page updates directly, without waiting for the incident commander",
+        "Agreed: payments config moves into the repo; every change gets a pull request and one payments-team approval"
+      ],
+      [
+        "Tomás proposed no payments deploys after 15:00 on Fridays; Leila disagreed (it moves the risk to Monday; the cause was the missing review); not agreed and not decided",
+        "Marcus proposed automatic rollback when checkout errors double within 10 minutes of a deploy; Leila is wary of database migrations; left open"
+      ]
+    ],
+    "apart": [
+      [
+        "Agreed: payments config moves into the repo; every change gets a pull request and one payments-team approval",
+        "Tomás proposed no payments deploys after 15:00 on Fridays; Leila disagreed (it moves the risk to Monday; the cause was the missing review); not agreed and not decided"
+      ],
+      [
+        "Agreed: checkout error-rate alert at 5% over 5 minutes",
+        "Tomás proposed no payments deploys after 15:00 on Fridays; Leila disagreed (it moves the risk to Monday; the cause was the missing review); not agreed and not decided"
+      ],
+      [
+        "Agreed: checkout error-rate alert at 5% over 5 minutes",
+        "Marcus proposed automatic rollback when checkout errors double within 10 minutes of a deploy; Leila is wary of database migrations; left open"
+      ],
+      [
+        "Agreed: payments config moves into the repo; every change gets a pull request and one payments-team approval",
+        "Marcus proposed automatic rollback when checkout errors double within 10 minutes of a deploy; Leila is wary of database migrations; left open"
+      ]
+    ]
+  },
+  "hierarchy": [
+    {
+      "main": "Agreed: checkout error-rate alert at 5% over 5 minutes",
+      "supporting": [
+        "The alert fired as configured (10% for 15 minutes), which is too slow for checkout"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "Agreed: checkout error-rate alert at 5% over 5 minutes",
+      "to": "The alert fired as configured (10% for 15 minutes), which is too slow for checkout",
+      "type": "derived_from",
+      "label": "fixes slow detection"
+    },
+    {
+      "from": "Agreed: payments config moves into the repo; every change gets a pull request and one payments-team approval",
+      "to": "Config changes skip code review: code needs two approvals, config none",
+      "type": "derived_from",
+      "label": "closes the review gap"
+    }
+  ],
+  "mustNotSay": [
+    {
+      "text": "The team agreed to stop payments deploys after 15:00 on Fridays.",
+      "why": "Tomás proposed it, Leila objected, and Dana explicitly did not decide it."
+    },
+    {
+      "text": "The team agreed to automatic rollback.",
+      "why": "It was left as an open question."
+    },
+    {
+      "text": "Kenji will send the customer email by a given date.",
+      "why": "No deadline was stated for the email."
+    },
+    {
+      "text": "Most customers retried their failed checkouts.",
+      "why": "Nobody knows; the logs have not been checked."
+    },
+    {
+      "text": "The alert was misconfigured or failed.",
+      "why": "It fired exactly as configured; the threshold was the problem."
+    }
+  ]
+}

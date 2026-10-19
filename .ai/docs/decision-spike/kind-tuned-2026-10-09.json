@@ -1,0 +1,899 @@
+[
+ {
+  "doc": "cmg-verify-cheatsheet.txt",
+  "label": "cmg-verify cheat sheet — SR3 deterministic checks",
+  "truthKind": "annotated",
+  "truthProm": "primary",
+  "mateKind": "supporting",
+  "v1": {
+   "kind": "notes",
+   "conf": 0.24,
+   "prominence": "supporting",
+   "ms": 993,
+   "tokens": 1046,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "hierarchy",
+    "0.5": "notes",
+    "0.7": "notes"
+   },
+   "probs": {
+    "comparison": 0.22,
+    "hierarchy": 0.32,
+    "flow": 0.09,
+    "cards": 0.13,
+    "decision": 0.35,
+    "metrics": 0.1,
+    "annotated": 0.33,
+    "supporting": 0.45
+   },
+   "conf": 0.45,
+   "prominence": "primary",
+   "ms": 1179,
+   "tokens": 1160,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "hierarchy",
+   "conf": 0.28,
+   "prominence": "primary",
+   "ms": 1515,
+   "tokens": 1565,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "cmg-verify-cheatsheet.txt",
+  "label": "Checks 0–7",
+  "truthKind": "cards",
+  "truthProm": "primary",
+  "mateKind": "comparison",
+  "v1": {
+   "kind": "cards",
+   "conf": 0.35,
+   "prominence": "primary",
+   "ms": 995,
+   "tokens": 1414,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "notes"
+   },
+   "probs": {
+    "comparison": 0.62,
+    "hierarchy": 0.69,
+    "flow": 0.28,
+    "cards": 0.06,
+    "decision": 0.3,
+    "metrics": 0.27,
+    "annotated": 0.29,
+    "supporting": 0.27
+   },
+   "conf": 0.69,
+   "prominence": "supporting",
+   "ms": 932,
+   "tokens": 1528,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "metrics",
+   "conf": 0.02,
+   "prominence": "supporting",
+   "ms": 1495,
+   "tokens": 2212,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "cmg-verify-cheatsheet.txt",
+  "label": "Pass / fail examples per check",
+  "truthKind": "supporting",
+  "truthProm": "supporting",
+  "mateKind": "comparison",
+  "v1": {
+   "kind": "comparison",
+   "conf": 0.64,
+   "prominence": "primary",
+   "ms": 1010,
+   "tokens": 2700,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "notes"
+   },
+   "probs": {
+    "comparison": 0.62,
+    "hierarchy": 0.68,
+    "flow": 0.14,
+    "cards": 0.06,
+    "decision": 0.63,
+    "metrics": 0.34,
+    "annotated": 0.37,
+    "supporting": 0.48
+   },
+   "conf": 0.68,
+   "prominence": "supporting",
+   "ms": 991,
+   "tokens": 2814,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "cards",
+   "conf": 0.44,
+   "prominence": "supporting",
+   "ms": 1480,
+   "tokens": 4784,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "cmg-verify-cheatsheet.txt",
+  "label": "Hook points (the deterministic layer around the model)",
+  "truthKind": "cards",
+  "truthProm": "primary",
+  "mateKind": "cards",
+  "v1": {
+   "kind": "flow",
+   "conf": 0.76,
+   "prominence": "primary",
+   "ms": 983,
+   "tokens": 1232,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "comparison"
+   },
+   "probs": {
+    "comparison": 0.79,
+    "hierarchy": 0.43,
+    "flow": 0.75,
+    "cards": 0.08,
+    "decision": 0.88,
+    "metrics": 0.11,
+    "annotated": 0.26,
+    "supporting": 0.22
+   },
+   "conf": 0.88,
+   "prominence": "primary",
+   "ms": 1006,
+   "tokens": 1346,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "flow",
+   "conf": 0.84,
+   "prominence": "supporting",
+   "ms": 1458,
+   "tokens": 1937,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "cmg-verify-cheatsheet.txt",
+  "label": "A1–A6 codes (what happens when a check fires)",
+  "truthKind": "cards",
+  "truthProm": "supporting",
+  "mateKind": "comparison",
+  "v1": {
+   "kind": "comparison",
+   "conf": 0.43,
+   "prominence": "supporting",
+   "ms": 1096,
+   "tokens": 1261,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "notes"
+   },
+   "probs": {
+    "comparison": 0.61,
+    "hierarchy": 0.63,
+    "flow": 0.25,
+    "cards": 0.13,
+    "decision": 0.46,
+    "metrics": 0.17,
+    "annotated": 0.3,
+    "supporting": 0.37
+   },
+   "conf": 0.63,
+   "prominence": "supporting",
+   "ms": 943,
+   "tokens": 1375,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "cards",
+   "conf": 0.76,
+   "prominence": "supporting",
+   "ms": 1445,
+   "tokens": 1906,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "cmg-verify-cheatsheet.txt",
+  "label": "The engineer file (YAML)",
+  "truthKind": "supporting",
+  "truthProm": "supporting",
+  "mateKind": "cards",
+  "v1": {
+   "kind": "comparison",
+   "conf": 0.43,
+   "prominence": "primary",
+   "ms": 1017,
+   "tokens": 1132,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "comparison"
+   },
+   "probs": {
+    "comparison": 0.74,
+    "hierarchy": 0.44,
+    "flow": 0.08,
+    "cards": 0.21,
+    "decision": 0.26,
+    "metrics": 0.16,
+    "annotated": 0.39,
+    "supporting": 0.35
+   },
+   "conf": 0.74,
+   "prominence": "primary",
+   "ms": 886,
+   "tokens": 1246,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "cards",
+   "conf": 0.43,
+   "prominence": "primary",
+   "ms": 1444,
+   "tokens": 1648,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "cmg-verify-cheatsheet.txt",
+  "label": "submit_answer outcomes",
+  "truthKind": "cards",
+  "truthProm": "primary",
+  "mateKind": "comparison",
+  "v1": {
+   "kind": "comparison",
+   "conf": 0.7,
+   "prominence": "primary",
+   "ms": 902,
+   "tokens": 1103,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "decision"
+   },
+   "probs": {
+    "comparison": 0.6,
+    "hierarchy": 0.29,
+    "flow": 0.23,
+    "cards": 0.14,
+    "decision": 0.72,
+    "metrics": 0.05,
+    "annotated": 0.16,
+    "supporting": 0.29
+   },
+   "conf": 0.72,
+   "prominence": "supporting",
+   "ms": 991,
+   "tokens": 1217,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "cards",
+   "conf": 0.8,
+   "prominence": "supporting",
+   "ms": 1387,
+   "tokens": 1590,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "cmg-verify-cheatsheet.txt",
+  "label": "Other knobs",
+  "truthKind": "supporting",
+  "truthProm": "supporting",
+  "mateKind": "cards",
+  "v1": {
+   "kind": "cards",
+   "conf": 0.89,
+   "prominence": "supporting",
+   "ms": 951,
+   "tokens": 1158,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "decision"
+   },
+   "probs": {
+    "comparison": 0.69,
+    "hierarchy": 0.33,
+    "flow": 0.05,
+    "cards": 0.51,
+    "decision": 0.79,
+    "metrics": 0.06,
+    "annotated": 0.33,
+    "supporting": 0.16
+   },
+   "conf": 0.79,
+   "prominence": "supporting",
+   "ms": 936,
+   "tokens": 1272,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "cards",
+   "conf": 1,
+   "prominence": "supporting",
+   "ms": 1476,
+   "tokens": 1700,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "handoff-status.md",
+  "label": "(lead)",
+  "truthKind": "notes",
+  "truthProm": "primary",
+  "v1": {
+   "kind": "notes",
+   "conf": 0.51,
+   "prominence": "primary",
+   "ms": 622,
+   "tokens": 806,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "hierarchy",
+    "0.5": "hierarchy",
+    "0.7": "notes"
+   },
+   "probs": {
+    "comparison": 0.07,
+    "hierarchy": 0.55,
+    "flow": 0.61,
+    "cards": 0.26,
+    "decision": 0.15,
+    "metrics": 0.1,
+    "annotated": 0.39,
+    "supporting": 0.22
+   },
+   "conf": 0.61,
+   "prominence": "primary",
+   "ms": 576,
+   "tokens": 920,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "supporting",
+   "conf": 0.16,
+   "prominence": "primary",
+   "ms": 1090,
+   "tokens": 1057,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "handoff-status.md",
+  "label": "Tests before the hand-off",
+  "truthKind": "metrics",
+  "truthProm": "supporting",
+  "mateKind": "metrics",
+  "v1": {
+   "kind": "metrics",
+   "conf": 0.57,
+   "prominence": "supporting",
+   "ms": 731,
+   "tokens": 858,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "comparison"
+   },
+   "probs": {
+    "comparison": 0.78,
+    "hierarchy": 0.15,
+    "flow": 0.2,
+    "cards": 0.43,
+    "decision": 0.04,
+    "metrics": 0.73,
+    "annotated": 0.27,
+    "supporting": 0.79
+   },
+   "conf": 0.79,
+   "prominence": "supporting",
+   "ms": 748,
+   "tokens": 972,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "metrics",
+   "conf": 0.92,
+   "prominence": "supporting",
+   "ms": 1291,
+   "tokens": 1100,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "handoff-status.md",
+  "label": "Branches and worktrees (new worktrees, so your existing checkouts are untouched)",
+  "truthKind": "hierarchy",
+  "truthProm": "supporting",
+  "mateKind": "hierarchy",
+  "v1": {
+   "kind": "hierarchy",
+   "conf": 0.66,
+   "prominence": "supporting",
+   "ms": 678,
+   "tokens": 905,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "hierarchy",
+    "0.7": "hierarchy"
+   },
+   "probs": {
+    "comparison": 0.35,
+    "hierarchy": 0.73,
+    "flow": 0.17,
+    "cards": 0.15,
+    "decision": 0.65,
+    "metrics": 0.09,
+    "annotated": 0.4,
+    "supporting": 0.58
+   },
+   "conf": 0.73,
+   "prominence": "supporting",
+   "ms": 712,
+   "tokens": 1019,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "hierarchy",
+   "conf": 0.49,
+   "prominence": "supporting",
+   "ms": 1299,
+   "tokens": 1283,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "handoff-status.md",
+  "label": "What's built",
+  "truthKind": "cards",
+  "truthProm": "supporting",
+  "mateKind": "cards",
+  "v1": {
+   "kind": "flow",
+   "conf": 0.9,
+   "prominence": "supporting",
+   "ms": 706,
+   "tokens": 1038,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "flow"
+   },
+   "probs": {
+    "comparison": 0.63,
+    "hierarchy": 0.39,
+    "flow": 0.75,
+    "cards": 0.12,
+    "decision": 0.13,
+    "metrics": 0.46,
+    "annotated": 0.38,
+    "supporting": 0.45
+   },
+   "conf": 0.75,
+   "prominence": "supporting",
+   "ms": 706,
+   "tokens": 1152,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "metrics",
+   "conf": 0.48,
+   "prominence": "supporting",
+   "ms": 1160,
+   "tokens": 1460,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "handoff-status.md",
+  "label": "Things that differ from the plan or need a decision",
+  "truthKind": "decision",
+  "truthProm": "primary",
+  "v1": {
+   "kind": "decision",
+   "conf": 0.72,
+   "prominence": "primary",
+   "ms": 725,
+   "tokens": 1233,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "decision"
+   },
+   "probs": {
+    "comparison": 0.5,
+    "hierarchy": 0.45,
+    "flow": 0.16,
+    "cards": 0.31,
+    "decision": 0.7,
+    "metrics": 0.21,
+    "annotated": 0.53,
+    "supporting": 0.51
+   },
+   "conf": 0.7,
+   "prominence": "supporting",
+   "ms": 677,
+   "tokens": 1347,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "cards",
+   "conf": 0.7,
+   "prominence": "supporting",
+   "ms": 1290,
+   "tokens": 1850,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "decision-table-reply.txt",
+  "label": "Decision My proposal",
+  "truthKind": "decision",
+  "truthProm": "primary",
+  "mateKind": "decision",
+  "v1": {
+   "kind": "decision",
+   "conf": 1,
+   "prominence": "primary",
+   "ms": 575,
+   "tokens": 1056,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "comparison"
+   },
+   "probs": {
+    "comparison": 0.77,
+    "hierarchy": 0.45,
+    "flow": 0.15,
+    "cards": 0.39,
+    "decision": 0.98,
+    "metrics": 0.17,
+    "annotated": 0.3,
+    "supporting": 0.23
+   },
+   "conf": 0.98,
+   "prominence": "primary",
+   "ms": 871,
+   "tokens": 1170,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "decision",
+   "conf": 0.49,
+   "prominence": "primary",
+   "ms": 1173,
+   "tokens": 1557,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "unit-checks-reply.md",
+  "label": "Overview",
+  "truthKind": "notes",
+  "truthProm": "primary",
+  "mateKind": "notes",
+  "v1": {
+   "kind": "notes",
+   "conf": 0.78,
+   "prominence": "primary",
+   "ms": 948,
+   "tokens": 770,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "annotated",
+    "0.5": "notes",
+    "0.7": "notes"
+   },
+   "probs": {
+    "comparison": 0.21,
+    "hierarchy": 0.04,
+    "flow": 0.11,
+    "cards": 0.11,
+    "decision": 0.09,
+    "metrics": 0.04,
+    "annotated": 0.47,
+    "supporting": 0.26
+   },
+   "conf": 0.47,
+   "prominence": "primary",
+   "ms": 947,
+   "tokens": 884,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "supporting",
+   "conf": 0.52,
+   "prominence": "primary",
+   "ms": 1454,
+   "tokens": 985,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "unit-checks-reply.md",
+  "label": "Units and Wording Checks v3",
+  "truthKind": "comparison",
+  "truthProm": "primary",
+  "v1": {
+   "kind": "comparison",
+   "conf": 1,
+   "prominence": "primary",
+   "ms": 968,
+   "tokens": 1151,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "comparison"
+   },
+   "probs": {
+    "comparison": 0.94,
+    "hierarchy": 0.48,
+    "flow": 0.11,
+    "cards": 0.22,
+    "decision": 0.44,
+    "metrics": 0.13,
+    "annotated": 0.4,
+    "supporting": 0.25
+   },
+   "conf": 0.94,
+   "prominence": "supporting",
+   "ms": 1020,
+   "tokens": 1265,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "annotated",
+   "conf": 0.14,
+   "prominence": "supporting",
+   "ms": 1472,
+   "tokens": 1747,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "unit-checks-reply.md",
+  "label": "How it stays safe",
+  "truthKind": "cards",
+  "truthProm": "supporting",
+  "mateKind": "supporting",
+  "v1": {
+   "kind": "comparison",
+   "conf": 0.44,
+   "prominence": "supporting",
+   "ms": 948,
+   "tokens": 880,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "comparison"
+   },
+   "probs": {
+    "comparison": 0.86,
+    "hierarchy": 0.19,
+    "flow": 0.08,
+    "cards": 0.23,
+    "decision": 0.23,
+    "metrics": 0.03,
+    "annotated": 0.36,
+    "supporting": 0.64
+   },
+   "conf": 0.86,
+   "prominence": "supporting",
+   "ms": 978,
+   "tokens": 994,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "supporting",
+   "conf": 0.17,
+   "prominence": "supporting",
+   "ms": 1541,
+   "tokens": 1205,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "unit-checks-reply.md",
+  "label": "Tests",
+  "truthKind": "metrics",
+  "truthProm": "supporting",
+  "mateKind": "metrics",
+  "v1": {
+   "kind": "supporting",
+   "conf": 0.31,
+   "prominence": "supporting",
+   "ms": 946,
+   "tokens": 1079,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "hierarchy"
+   },
+   "probs": {
+    "comparison": 0.67,
+    "hierarchy": 0.73,
+    "flow": 0.13,
+    "cards": 0.19,
+    "decision": 0.07,
+    "metrics": 0.33,
+    "annotated": 0.43,
+    "supporting": 0.7
+   },
+   "conf": 0.73,
+   "prominence": "supporting",
+   "ms": 946,
+   "tokens": 1193,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "metrics",
+   "conf": 0.72,
+   "prominence": "supporting",
+   "ms": 1440,
+   "tokens": 1542,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "unit-checks-reply.md",
+  "label": "Script, diagram and deck",
+  "truthKind": "supporting",
+  "truthProm": "supporting",
+  "mateKind": "supporting",
+  "v1": {
+   "kind": "comparison",
+   "conf": 0.34,
+   "prominence": "supporting",
+   "ms": 1115,
+   "tokens": 979,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "comparison",
+    "0.7": "comparison"
+   },
+   "probs": {
+    "comparison": 0.76,
+    "hierarchy": 0.6,
+    "flow": 0.13,
+    "cards": 0.18,
+    "decision": 0.07,
+    "metrics": 0.05,
+    "annotated": 0.17,
+    "supporting": 0.2
+   },
+   "conf": 0.76,
+   "prominence": "supporting",
+   "ms": 962,
+   "tokens": 1093,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "cards",
+   "conf": 0.67,
+   "prominence": "supporting",
+   "ms": 1440,
+   "tokens": 1342,
+   "requests": 2
+  }
+ },
+ {
+  "doc": "unit-checks-reply.md",
+  "label": "Left for you",
+  "truthKind": "notes",
+  "truthProm": "supporting",
+  "mateKind": "notes",
+  "v1": {
+   "kind": "notes",
+   "conf": 0.53,
+   "prominence": "supporting",
+   "ms": 946,
+   "tokens": 800,
+   "requests": 1
+  },
+  "v2": {
+   "byTau": {
+    "0.3": "comparison",
+    "0.5": "cards",
+    "0.7": "notes"
+   },
+   "probs": {
+    "comparison": 0.39,
+    "hierarchy": 0.1,
+    "flow": 0.06,
+    "cards": 0.51,
+    "decision": 0.51,
+    "metrics": 0.04,
+    "annotated": 0.15,
+    "supporting": 0.35
+   },
+   "conf": 0.51,
+   "prominence": "supporting",
+   "ms": 962,
+   "tokens": 914,
+   "requests": 1
+  },
+  "v3": {
+   "kind": "cards",
+   "conf": 0.57,
+   "prominence": "supporting",
+   "ms": 1463,
+   "tokens": 984,
+   "requests": 2
+  }
+ }
+]

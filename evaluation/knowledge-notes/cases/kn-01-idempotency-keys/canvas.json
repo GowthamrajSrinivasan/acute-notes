@@ -1,0 +1,116 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-01-idempotency-keys",
+  "template": "sectioned",
+  "templateNote": "One short concept: one frame with three cards. More frames would fragment nine sentences.",
+  "frames": [
+    {
+      "id": "f.idempotency-keys",
+      "title": "Idempotency keys",
+      "titleMatch": { "all": [["idempotency", "idempotent"]] },
+      "purpose": "Holds the whole concept: what a key is, how the server uses it, its limits and an example.",
+      "rationale": "All nine sentences are about one mechanism; splitting them would separate the limits from the claim they limit.",
+      "children": ["e.definition", "e.replay", "e.example"],
+      "arrangement": "grid",
+      "expansion": "None expected; the frame stays small.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e.definition",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "main idea",
+      "content": "An idempotency key is a unique value that lets the server recognise a retry",
+      "knowledge": ["ku.definition"],
+      "match": { "all": [["idempotency key"], ["retry", "retries", "repeat"], ["unique", "identif", "recognis", "recogniz", "tell"]] },
+      "hierarchy": "primary",
+      "frame": "f.idempotency-keys",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.replay",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "mechanism with its limits",
+      "content": "The server returns the stored result for a completed key — only within 24 hours, and never for a different amount",
+      "knowledge": ["ku.replay", "ku.expiry-window", "ku.key-reuse"],
+      "match": { "all": [["stored result", "saved result", "cached result", "original result"], ["instead of", "without", "rather than", "again"]] },
+      "hierarchy": "primary",
+      "frame": "f.idempotency-keys",
+      "layout": "Beside or below the definition; the limits are part of this card, not separate cards.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.example",
+      "element": "text_card",
+      "planNodeTypes": ["text", "code"],
+      "role": "example",
+      "content": "Example: a dropped checkout response retried with key 7f3c-91ab is charged once",
+      "knowledge": ["ku.example"],
+      "match": { "all": [["7f3c-91ab", "dropped", "connection drop"], ["charged once", "original confirmation", "charged only once"]] },
+      "hierarchy": "detail",
+      "frame": "f.idempotency-keys",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.takeaway",
+      "element": "takeaway",
+      "planNodeTypes": ["group", "text", "heading"],
+      "role": "section takeaway",
+      "content": "Retries are safe within a bounded window — not a general guarantee",
+      "knowledge": ["ku.takeaway"],
+      "match": { "all": [["bounded window", "limited window", "within a window", "24 hours", "time window"], ["retr"]] },
+      "hierarchy": "primary",
+      "frame": null,
+      "outsideFrameReason": "Shown as the frame's own takeaway line (group.content.takeaway) under its title, not as a card inside it.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r.replay-example",
+      "from": "e.replay",
+      "to": "e.example",
+      "type": "explained_by",
+      "acceptableTypes": ["explained_by", "supports", "references", "relates_to"],
+      "label": { "required": false, "text": "for example" },
+      "direction": "bidirectional",
+      "explanation": "The example illustrates the replay mechanism.",
+      "evidence": ["u3", "u5"],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.definition-replay",
+      "from": "e.definition",
+      "to": "e.replay",
+      "type": "flows_to",
+      "acceptableTypes": ["flows_to", "explained_by", "relates_to", "implements"],
+      "label": { "required": false },
+      "direction": "directed",
+      "explanation": "The key is what the server looks up to decide whether to replay.",
+      "evidence": ["u1", "u2"],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    }
+  ],
+  "together": [{ "elements": ["e.definition", "e.replay", "e.example"], "reason": "One mechanism; one frame." }],
+  "hierarchy": [{ "main": "e.definition", "supporting": ["e.example"], "reason": "The example illustrates the concept and must not read as a second main idea." }],
+  "unsupported": [
+    { "capability": "ai.cites", "ideal": "Each card cites its units: definition u1; replay u2, u6, u7, u8; example u3–u5; takeaway u9.", "expectedToday": "Not checkable; cards carry no citations. Matching is by content." },
+    { "capability": "canvas.card-roles", "ideal": "The example card is styled as an example.", "expectedToday": "Plain card; lower importance (medium/low) than the main cards is the only signal." }
+  ]
+}

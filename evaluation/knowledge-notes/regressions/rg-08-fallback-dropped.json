@@ -1,0 +1,10 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-fallback-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "Step 4 loses its 800 ms fallback: the reranker looks mandatory and always used.",
+  "mutations": [{ "op": "replace_text", "node": "f4", "find": "No reply within 800 ms: skip reranking, keep the first 8 by vector similarity, log rerank_skipped = true", "replace": "Reranking always runs before composing" }],
+  "expectFailing": ["a.rerank-fallback"]
+}

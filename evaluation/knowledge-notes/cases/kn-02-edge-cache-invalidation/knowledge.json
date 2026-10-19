@@ -1,0 +1,594 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "units": [
+    {
+      "id": "ku.problem",
+      "title": "Every edge copy can go out of date; the work is replacing it",
+      "claim": "Edge caching makes pages fast, but every cached copy can go out of date; the hard part is deciding how and how quickly an outdated copy gets replaced.",
+      "explanation": "The article's framing. The frames below make it concrete, so a separate card is optional.",
+      "type": "concept",
+      "importance": "important",
+      "sourceUnits": [
+        "u2",
+        "u3"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": true,
+        "reason": "Framing; restated by the techniques and the takeaway."
+      }
+    },
+    {
+      "id": "ku.ttl",
+      "title": "Copies expire on their own after a TTL",
+      "claim": "Every cached object carries a TTL set by the origin with Cache-Control (max-age=300 keeps a copy for 300 seconds); expiry needs no coordination between origin and edge, so it is the default.",
+      "explanation": "The baseline technique every other one is compared with.",
+      "type": "concept",
+      "importance": "critical",
+      "sourceUnits": [
+        "u6",
+        "u7",
+        "u8"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "max-age=300"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.revalidation",
+      "title": "An expired copy can be revalidated instead of re-downloaded",
+      "claim": "When a TTL runs out and the origin sent an ETag, the edge can ask whether the copy changed and get a short 304 Not Modified answer.",
+      "explanation": "A detail of expiry; useful but not needed to understand invalidation.",
+      "type": "process",
+      "importance": "supplementary",
+      "sourceUnits": [
+        "u9"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": true,
+        "reason": "Supporting detail."
+      }
+    },
+    {
+      "id": "ku.ttl-window",
+      "title": "A TTL can't be shortened once a copy is cached",
+      "claim": "The TTL is a guess made in advance: a headline corrected 60 seconds after publishing can stay old for up to the remaining 240 seconds of a 300-second TTL, and nothing the origin does shortens that wait.",
+      "explanation": "The limit of expiry, with its concrete window.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": [
+        "u10",
+        "u11"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.ttl",
+      "exactDetails": [
+        "240 seconds"
+      ],
+      "mustPreserve": [
+        "nothing the origin does will shorten that wait"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.ttl-tradeoff",
+      "title": "Shorter TTLs buy freshness with origin traffic",
+      "claim": "Shortening the TTL narrows the stale window but sends more requests to the origin: when Larkspur dropped its article TTL from 300 to 30 seconds, origin traffic rose roughly eightfold.",
+      "explanation": "The trade-off that keeps TTLs from simply being made tiny.",
+      "type": "trade_off",
+      "importance": "important",
+      "sourceUnits": [
+        "u12"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "30 seconds"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.purge-url",
+      "title": "A URL purge removes one cached address on demand",
+      "claim": "The origin can ask the CDN to purge a specific URL so the next request for it is fetched fresh; Larkspur purges the article URL on every saved correction.",
+      "explanation": "The explicit, on-demand alternative to waiting for expiry.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u13",
+        "u14",
+        "u15"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.purge-eventual",
+      "title": "A purge is eventually consistent, not instant",
+      "claim": "A purge is accepted quickly but applied by each edge location on its own schedule, so for a while some locations serve the new version and others the old one.",
+      "explanation": "The article's most repeated caveat (u17, u34, u63). It must stay on the purge card.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": [
+        "u16",
+        "u17",
+        "u18"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.purge-url",
+      "mustPreserve": [
+        "eventually consistent",
+        "some locations still serve the old one"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.url-scope",
+      "title": "A URL purge removes only the exact URL named",
+      "claim": "A URL purge removes only that URL: the home page, section page and RSS feed showing the same headline keep the old copy, and a query-string variant is a separate cache entry.",
+      "explanation": "The second limit of purge-by-URL, and the motivation for surrogate keys.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": [
+        "u19",
+        "u20",
+        "u21"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.purge-url",
+      "exactDetails": [
+        "/story/417?ref=social"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.purge-rate-limit",
+      "title": "Purge calls are rate limited",
+      "claim": "Purge APIs are rate limited: Larkspur's plan allows 1000 purge calls per minute, which a bulk correction across the archive can exhaust.",
+      "explanation": "An operational limit of purge-by-URL.",
+      "type": "caveat",
+      "importance": "important",
+      "sourceUnits": [
+        "u22"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.purge-url",
+      "exactDetails": [
+        "1,000 purge calls per minute"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.purge-walkthrough",
+      "title": "A purge propagates in steps; the slowest location took 20 seconds",
+      "claim": "The purge API answers in about 150 milliseconds (only queued), the control plane fans the purge out to all 90 edge locations, each marks its copy invalid, half had applied it within 2 seconds and the slowest within 20 seconds; until then that location serves the old copy.",
+      "explanation": "The long step-by-step explanation; too long and ordered for a card, so it belongs on a page linked from the purge card.",
+      "type": "process",
+      "importance": "important",
+      "sourceUnits": [
+        "u23",
+        "u24",
+        "u25",
+        "u26",
+        "u27"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "150 milliseconds",
+        "90 edge locations",
+        "2 seconds",
+        "20 seconds"
+      ],
+      "paraphrase": {
+        "allowed": true,
+        "note": "Numbers and their order stay exact."
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.surrogate",
+      "title": "Surrogate keys purge every page that carries a tag",
+      "claim": "The origin tags responses with a Surrogate-Key header (for example story-417 and section-politics); one purge of story-417 removes every cached page that included the story: the article, home page, section page and feed.",
+      "explanation": "Solves the listing problem of purge-by-URL.",
+      "type": "concept",
+      "importance": "critical",
+      "sourceUnits": [
+        "u28",
+        "u29",
+        "u30"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "Surrogate-Key",
+        "story-417"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.key-budget",
+      "title": "Larkspur keeps under 50 keys per response",
+      "claim": "Every key a page carries makes the header longer; Larkspur keeps it under 50 keys per response.",
+      "explanation": "A practical detail; may be dropped.",
+      "type": "constraint",
+      "importance": "supplementary",
+      "sourceUnits": [
+        "u31"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": true,
+        "reason": "Operational detail."
+      }
+    },
+    {
+      "id": "ku.tag-discipline",
+      "title": "A missing tag fails silently",
+      "claim": "Surrogate keys move responsibility to the origin: a page is purged by a key only if the origin tagged it, and a missing tag leaves a stale page with no error anywhere.",
+      "explanation": "The limit of tag purges.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": [
+        "u32",
+        "u33"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.surrogate",
+      "mustPreserve": [
+        "no error anywhere"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.tag-burst",
+      "title": "A broad tag purge causes a burst of misses",
+      "claim": "Tag purges can be large: purging section-politics at Larkspur removes about 12000 cached objects, and the origin must absorb the burst of misses.",
+      "explanation": "A cost of tag purges.",
+      "type": "caveat",
+      "importance": "important",
+      "sourceUnits": [
+        "u35",
+        "u36"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.surrogate",
+      "exactDetails": [
+        "12,000"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.swr",
+      "title": "Stale-while-revalidate serves the old copy while refreshing it",
+      "claim": "With max-age=300 and stale-while-revalidate=60, a request after the 300 seconds gets the expired copy immediately while the edge fetches a fresh one in the background; the next reader gets the refreshed copy.",
+      "explanation": "Turns expiry into a background task.",
+      "type": "process",
+      "importance": "critical",
+      "sourceUnits": [
+        "u37",
+        "u38",
+        "u39"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "stale-while-revalidate=60"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.swr-usage",
+      "title": "Larkspur uses it for articles, not live results",
+      "claim": "Larkspur uses stale-while-revalidate on article pages, where a minute of staleness is acceptable, but not on live election results.",
+      "explanation": "Example of choosing where staleness is tolerable.",
+      "type": "example",
+      "importance": "supplementary",
+      "sourceUnits": [
+        "u40"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": true,
+        "reason": "Example."
+      }
+    },
+    {
+      "id": "ku.swr-bound",
+      "title": "Stale serving is bounded to 60 seconds past the TTL",
+      "claim": "An expired copy is served for at most 60 seconds past its TTL; after that the edge waits for the origin as on an ordinary miss.",
+      "explanation": "The bound without which the technique reads as 'serves stale forever'.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u41"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.swr",
+      "exactDetails": [
+        "60 seconds"
+      ],
+      "mustPreserve": [
+        "at most 60 seconds",
+        "after that the edge waits for the origin"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.stale-tolerance",
+      "title": "Serving stale trades freshness for speed",
+      "claim": "Serving stale is a choice about tolerance, not a way to make content fresher: it hides a slow origin but some readers see a copy older than the TTL suggests.",
+      "explanation": "Qualifies what stale-while-revalidate is for.",
+      "type": "caveat",
+      "importance": "important",
+      "sourceUnits": [
+        "u43",
+        "u44"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.swr",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.stale-if-error",
+      "title": "stale-if-error keeps serving for a day, only during origin errors",
+      "claim": "stale-if-error=86400 lets the edge keep serving an expired copy for up to 86400 seconds (one day), but only while the origin is returning errors.",
+      "explanation": "A related directive with its own condition.",
+      "type": "concept",
+      "importance": "important",
+      "sourceUnits": [
+        "u42"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "stale-if-error=86400"
+      ],
+      "mustPreserve": [
+        "while the origin is returning errors"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.versioned",
+      "title": "A content hash in the file name makes old copies irrelevant",
+      "claim": "The build puts a hash of each file's contents into its name, so a changed file gets a new URL, the old copy is never requested again, and versioned assets can be cached for a year (max-age=31536000); most build tools do this automatically.",
+      "explanation": "The cleanest technique, for static assets.",
+      "type": "concept",
+      "importance": "critical",
+      "sourceUnits": [
+        "u45",
+        "u46",
+        "u47",
+        "u48"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "app.3f9c2e.js",
+        "max-age=31536000"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.html-caveat",
+      "title": "Versioning does not help for HTML entry pages",
+      "claim": "Versioning does not help for HTML entry pages: they are requested at fixed addresses and point to the new asset names, so they still need a TTL, a purge or both.",
+      "explanation": "The scope limit of versioning.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": [
+        "u49",
+        "u50"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.versioned",
+      "mustPreserve": [
+        "still need a TTL, a purge or both"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.old-assets",
+      "title": "Keep old assets as long as the longest HTML TTL",
+      "claim": "If HTML stays cached longer than the origin keeps old asset files, it sends readers to files that no longer exist, so old asset versions must stay available at least as long as the longest HTML TTL.",
+      "explanation": "A requirement that follows from the HTML caveat.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u51",
+        "u52"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.versioned",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.comparison",
+      "title": "The techniques differ in freshness, cost and caveat",
+      "claim": "TTL expiry: up to the full TTL (300 seconds), costs origin traffic; URL purge: seconds (20 seconds worst case), misses other pages; surrogate-key purge: seconds for tagged pages, needs tagging discipline; stale-while-revalidate: up to the TTL plus 60 seconds; versioned URLs: immediate for new references, not for HTML entry pages.",
+      "explanation": "The article's own comparison; it has comparable attributes per technique, so it is a table.",
+      "type": "trade_off",
+      "importance": "important",
+      "sourceUnits": [
+        "u54",
+        "u55",
+        "u56",
+        "u57",
+        "u58",
+        "u59"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true,
+        "note": "Rows and columns may be reworded; the numbers stay."
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.takeaway",
+      "title": "No single technique is enough; layer them",
+      "claim": "Invalidation at the edge is a set of trade-offs: a reliable setup combines expiry, explicit purges, deliberate stale serving and versioned file names, each covering the gaps of the others.",
+      "explanation": "The conclusion, previewed in the intro (u4).",
+      "type": "principle",
+      "importance": "critical",
+      "sourceUnits": [
+        "u60",
+        "u61",
+        "u62"
+      ],
+      "provenance": "explicit",
+      "mustPreserve": [
+        "each covering the gaps of the others"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    }
+  ],
+  "mustNotClaim": [
+    {
+      "claim": "A purge takes effect instantly at every edge location.",
+      "why": "The source says purging is eventually consistent; the slowest location took 20 seconds.",
+      "units": [
+        "u16",
+        "u17",
+        "u18",
+        "u26"
+      ]
+    },
+    {
+      "claim": "Stale-while-revalidate can serve expired content indefinitely.",
+      "why": "It is bounded to 60 seconds past the TTL; only stale-if-error goes to a day, and only during origin errors.",
+      "units": [
+        "u41",
+        "u42"
+      ]
+    },
+    {
+      "claim": "Versioned asset URLs remove the need to expire or purge HTML pages.",
+      "why": "The source says versioning does not help for HTML entry pages.",
+      "units": [
+        "u49",
+        "u50"
+      ]
+    },
+    {
+      "claim": "Purging an article's URL also clears the home page and feeds that show it.",
+      "why": "A URL purge removes only the exact URL; that is why surrogate keys exist.",
+      "units": [
+        "u19",
+        "u20"
+      ]
+    },
+    {
+      "claim": "stale-if-error serves the old copy for a day regardless of the origin's health.",
+      "why": "Only while the origin is returning errors.",
+      "units": [
+        "u42"
+      ]
+    }
+  ]
+}

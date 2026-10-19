@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-email-owner-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "The customer-email item loses its owner: 'Kenji: draft the customer email' becomes an ownerless task.",
+  "mutations": [
+    { "op": "replace_text", "node": "n10", "find": "Kenji: draft the customer email", "replace": "Draft the customer email" }
+  ],
+  "expectFailing": ["a.action-email-owner"]
+}

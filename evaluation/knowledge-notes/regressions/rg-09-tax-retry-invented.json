@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-tax-retry-invented",
+  "distortion": "invented_detail",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The unknown tax retry behaviour is filled in with a plausible policy and a helper file the source never mentions.",
+  "mutations": [
+    { "op": "replace_text", "node": "s_tax", "find": "Retries: unknown — not documented; quote() has no retry code", "replace": "Retries 3 times with exponential backoff (billing/tax/retry.ts)" }
+  ],
+  "expectFailing": ["a.tax-retries-unknown", "a.no-retry-policy", "a.no-fabricated-path"]
+}

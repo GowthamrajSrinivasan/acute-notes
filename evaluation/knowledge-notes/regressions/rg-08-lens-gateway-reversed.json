@@ -1,0 +1,10 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-lens-gateway-reversed",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "lens",
+  "description": "In the Lens projection the Gateway calls the Orchestrator: direction lost in projection.",
+  "mutations": [{ "op": "lens_reverse_edge", "level": 1, "from": "arch.orchestrator", "to": "arch.gateway" }],
+  "expectFailing": ["a.lens-edge-orchestrator-gateway"]
+}

@@ -1,0 +1,62 @@
+{
+  "datasetVersion": "1.0.0",
+  "dimension": "architecture_lens",
+  "title": "F. Architecture and Lens quality",
+  "definition": "System boundaries and responsibilities are accurate; the L0 System → L5 Source hierarchy is correct; each component keeps one identity at every level; dependencies and flows can be followed; code evidence is linked where the source gives it; unknown details stay unknown.",
+  "questions": [
+    "Are system boundaries and responsibilities accurate?",
+    "Is the HLD-to-LLD hierarchy correct (each level at its own abstraction)?",
+    "Are the same components represented consistently at different levels?",
+    "Can users follow important dependencies and flows (trace, drill-down, roll-up)?",
+    "Is available code evidence linked correctly?",
+    "Are unknown details left unknown?"
+  ],
+  "severity": {
+    "critical": "A component with two identities; a drill-down to the wrong component; invented internals, code or paths; a reversed edge in the projection.",
+    "major": "A level frame missing its level; an edge relation changed by projection; a missing roll-up.",
+    "minor": "A node's kind differs from the expected one but is still reasonable."
+  },
+  "methods": {
+    "deterministic": [
+      "frame_level, element_kind on the plan",
+      "lens_node, lens_edge, lens_drill, lens_identity, lens_no_children, lens_path on the projection"
+    ],
+    "model_judge": [
+      "'Does each level show only what belongs at it?'"
+    ],
+    "human": [
+      "Walk L0 → L5 for the HLD-to-LLD case; check every L5 location against the source"
+    ]
+  },
+  "requiredAssertions": [
+    "lens_identity for every component that appears at more than one level",
+    "lens_no_children for every component the source leaves undescribed",
+    "lens_path for the main HLD-to-LLD journey"
+  ],
+  "passCriteria": "All critical Lens assertions pass on the projection of the generated canvas; the walk-through finds no level mixing.",
+  "failCriteria": "Any identity, drill, direction or invented-detail failure.",
+  "passExample": "Orchestrator at L1 drills to its four parts at L2; the Answer composer drills to the request flow at L3; step 5 drills to composeAnswer at L4; L5 shows compose.ts lines 40–118 and no code.",
+  "failExample": "L2 redraws 'Orchestrator service' as a new box beside its parts; the Ingestion worker gets an invented L2 and a services/ingestion path.",
+  "judgeScale": [
+    {
+      "score": 1,
+      "meaning": "Levels mixed, identities duplicated, details invented."
+    },
+    {
+      "score": 2,
+      "meaning": "Between 1 and 3: several serious problems."
+    },
+    {
+      "score": 3,
+      "meaning": "Correct hierarchy; one roll-up or level label missing."
+    },
+    {
+      "score": 4,
+      "meaning": "Between 3 and 5: one minor problem."
+    },
+    {
+      "score": 5,
+      "meaning": "Every level at its abstraction, one identity per component, evidence exact, unknowns explicit."
+    }
+  ]
+}

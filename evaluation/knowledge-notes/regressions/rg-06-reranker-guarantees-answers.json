@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-reranker-guarantees-answers",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "The negation is flipped: reranking 'does not guarantee' a correct answer becomes reranking 'guarantees' it.",
+  "mutations": [
+    { "op": "replace_text", "node": "n7", "find": "but it does not guarantee that the final answer is correct.", "replace": "so it guarantees that the final answer is correct." }
+  ],
+  "expectFailing": ["a.no-rerank-guarantee", "a.rerank-not-correctness"]
+}

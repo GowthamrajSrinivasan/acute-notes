@@ -1,0 +1,603 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "kn-07-photo-sharing-hld",
+  "title": "Pinhole: high-level design for photo sharing",
+  "scenario": "System design and HLD: a photo-sharing service described at container level only (clients, gateway, services, async workers, stores, external dependencies, data flow, boundary and decisions), with no code, modules or operations.",
+  "sourceType": "architecture_proposal",
+  "audience": "Engineers joining the Pinhole team and reviewers of the design",
+  "objective": "See the parts of the system, what talks to what and in which direction, where the boundary is, and why it is shaped this way; and see that nothing below service level is known yet.",
+  "complexity": "high",
+  "sourceFiles": [
+    {
+      "version": 1,
+      "path": "source.md",
+      "words": 930,
+      "title": "Pinhole: high-level design for photo sharing"
+    }
+  ],
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "Purpose and scope"
+    },
+    {
+      "id": "s2",
+      "heading": "Clients"
+    },
+    {
+      "id": "s3",
+      "heading": "Edge and API"
+    },
+    {
+      "id": "s4",
+      "heading": "Core services"
+    },
+    {
+      "id": "s5",
+      "heading": "Asynchronous processing"
+    },
+    {
+      "id": "s6",
+      "heading": "Storage"
+    },
+    {
+      "id": "s7",
+      "heading": "External dependencies and system boundary"
+    },
+    {
+      "id": "s8",
+      "heading": "Main data flow: posting a photo"
+    },
+    {
+      "id": "s9",
+      "heading": "Design decisions"
+    },
+    {
+      "id": "s10",
+      "heading": "Open questions"
+    }
+  ],
+  "units": [
+    {
+      "id": "u1",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "Pinhole lets people post photos and see the photos of the accounts they follow in a feed.",
+      "tags": [
+        "definition"
+      ]
+    },
+    {
+      "id": "u2",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "The design is sized for about 2 million daily active users at launch.",
+      "tags": [
+        "numeric",
+        "assumption"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "2 million"
+        }
+      ]
+    },
+    {
+      "id": "u3",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "This document is the high-level design only: it names the parts of the system, what each part is responsible for, how the parts talk to each other and why we chose this shape.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "The source is HLD only; it sets the depth any Lens view may reach."
+      }
+    },
+    {
+      "id": "u4",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "It does not describe code, internal modules or individual operations; those belong in the low-level designs that each service team will write later.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "No code, modules or operations: L3-L5 have nothing to show and must not be invented."
+      }
+    },
+    {
+      "id": "u5",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "People use Pinhole through two clients: a mobile app for iOS and Android, and a web app that runs in the browser.",
+      "tags": [
+        "terminology"
+      ],
+      "protected": [
+        {
+          "tier": "warn",
+          "kind": "named_term",
+          "value": "mobile app"
+        },
+        {
+          "tier": "warn",
+          "kind": "named_term",
+          "value": "web app"
+        }
+      ]
+    },
+    {
+      "id": "u6",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "Both clients speak the same public HTTPS API and hold no business rules of their own beyond simple input checks."
+    },
+    {
+      "id": "u7",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "Clients upload a photo directly to object storage with a short-lived signed URL, so large files never pass through our own services.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u8",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "Every client request enters through the API gateway.",
+      "protected": [
+        {
+          "tier": "warn",
+          "kind": "named_term",
+          "value": "API gateway"
+        }
+      ]
+    },
+    {
+      "id": "u9",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "The gateway terminates TLS, checks the caller's access token with the auth service, applies a rate limit of 120 requests per minute per account, and routes the request to the right service.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "120 requests per minute"
+        }
+      ]
+    },
+    {
+      "id": "u10",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "If the auth service cannot be reached, the gateway rejects the request instead of letting it through unchecked.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "The gateway fails closed when auth is down."
+      }
+    },
+    {
+      "id": "u11",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "Photo bytes are served to clients by the CDN, never by the gateway.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u12",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "The auth service issues and verifies access tokens and owns accounts and sessions.",
+      "protected": [
+        {
+          "tier": "warn",
+          "kind": "named_term",
+          "value": "auth service"
+        }
+      ]
+    },
+    {
+      "id": "u13",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "The upload service hands the client a signed upload URL, records the new photo in the metadata database with the status \"processing\" once the upload completes, and publishes a PhotoUploaded event to the message queue.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "PhotoUploaded"
+        },
+        {
+          "tier": "warn",
+          "kind": "named_term",
+          "value": "upload service"
+        }
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "Defines the upload service's three dependencies: metadata database (writes), message queue (publishes)."
+      }
+    },
+    {
+      "id": "u14",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "The feed service builds each person's feed from the photos of the accounts they follow: it reads photo metadata from the metadata database and keeps ready-made feed pages in the cache.",
+      "protected": [
+        {
+          "tier": "warn",
+          "kind": "named_term",
+          "value": "feed service"
+        }
+      ]
+    },
+    {
+      "id": "u15",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Media processing workers subscribe to PhotoUploaded events on the message queue.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "PhotoUploaded"
+        }
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "Direction of the dependency: workers consume from the queue."
+      }
+    },
+    {
+      "id": "u16",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "For each event, a worker reads the original from object storage, creates thumbnails in three sizes (150, 640 and 1080 pixels wide), writes them back to object storage and marks the photo \"ready\" in the metadata database.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "150, 640 and 1080 pixels"
+        }
+      ]
+    },
+    {
+      "id": "u17",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "The worker then publishes a PhotoReady event.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "PhotoReady"
+        }
+      ]
+    },
+    {
+      "id": "u18",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "The feed service subscribes to PhotoReady events to add the photo to the followers' feeds, and asks the push-notification provider to alert followers who have notifications turned on.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "PhotoReady"
+        }
+      ]
+    },
+    {
+      "id": "u19",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "The queue keeps an event for up to 7 days, so a worker outage delays thumbnails but does not lose uploads.",
+      "tags": [
+        "numeric",
+        "limitation",
+        "condition"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "7 days"
+        }
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "No upload is lost only within the 7-day retention; the bound must stay with the claim."
+      }
+    },
+    {
+      "id": "u20",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "A photo whose processing keeps failing stays in the \"processing\" state and is not shown in any feed.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "Known gap of the design: stuck photos are invisible."
+      }
+    },
+    {
+      "id": "u21",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "Object storage holds the original photos and their thumbnails; originals are kept unchanged and are never overwritten."
+    },
+    {
+      "id": "u22",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "The metadata database holds follow relationships and photo records with their processing status, and it is the source of truth for whether a photo exists.",
+      "critical": {
+        "reason": "requirement",
+        "note": "Source of truth; the cache is not."
+      }
+    },
+    {
+      "id": "u23",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "The cache holds ready-made feed pages for 60 seconds.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "60 seconds"
+        }
+      ]
+    },
+    {
+      "id": "u24",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "It is only a copy kept for speed: losing it makes feeds slower, never wrong.",
+      "tags": [
+        "limitation"
+      ]
+    },
+    {
+      "id": "u25",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "The CDN and the push-notification provider are run by third parties and sit outside the Pinhole system boundary.",
+      "critical": {
+        "reason": "requirement",
+        "note": "The system boundary: these two are external."
+      }
+    },
+    {
+      "id": "u26",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "The CDN reads photos and thumbnails from object storage and serves them to clients from locations close to the user."
+    },
+    {
+      "id": "u27",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "The push-notification provider delivers alerts to phones; Pinhole only sends it requests and does not control when an alert arrives.",
+      "tags": [
+        "limitation"
+      ]
+    },
+    {
+      "id": "u28",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Everything else in this document (the gateway, the three services, the workers, the queue and the three stores) is inside the boundary and is operated by the Pinhole team."
+    },
+    {
+      "id": "u29",
+      "section": "s8",
+      "kind": "list_item",
+      "quote": "The client asks the upload service for a signed URL and uploads the original straight to object storage.",
+      "tags": [
+        "repetition"
+      ],
+      "omittable": {
+        "reason": "duplicate",
+        "of": "u7"
+      }
+    },
+    {
+      "id": "u30",
+      "section": "s8",
+      "kind": "list_item",
+      "quote": "The upload service records the photo as \"processing\" and publishes PhotoUploaded.",
+      "tags": [
+        "repetition"
+      ],
+      "omittable": {
+        "reason": "duplicate",
+        "of": "u13"
+      }
+    },
+    {
+      "id": "u31",
+      "section": "s8",
+      "kind": "list_item",
+      "quote": "A media processing worker picks up the event, creates the thumbnails and marks the photo \"ready\".",
+      "tags": [
+        "repetition"
+      ],
+      "omittable": {
+        "reason": "duplicate",
+        "of": "u16"
+      }
+    },
+    {
+      "id": "u32",
+      "section": "s8",
+      "kind": "list_item",
+      "quote": "The worker publishes PhotoReady; the feed service adds the photo to the followers' feeds and asks the push-notification provider to alert them.",
+      "tags": [
+        "repetition"
+      ],
+      "omittable": {
+        "reason": "duplicate",
+        "of": "u18"
+      }
+    },
+    {
+      "id": "u33",
+      "section": "s8",
+      "kind": "list_item",
+      "quote": "Followers' clients fetch the updated feed through the gateway and load the thumbnails from the CDN."
+    },
+    {
+      "id": "u34",
+      "section": "s9",
+      "kind": "list_item",
+      "quote": "**A queue between upload and processing.** A slow or failed thumbnail job must never block or fail an upload, so the upload service and the workers only meet through the message queue. The cost is that a new photo takes a few seconds to appear in feeds.",
+      "tags": [
+        "decision"
+      ],
+      "critical": {
+        "reason": "decision",
+        "note": "Main design decision, with its cost."
+      }
+    },
+    {
+      "id": "u35",
+      "section": "s9",
+      "kind": "list_item",
+      "quote": "**Direct upload with signed URLs.** Originals can be up to 25 MB, and routing them through the gateway would make it the bottleneck, so clients send bytes straight to object storage and the upload service only signs the URL and records the result.",
+      "tags": [
+        "decision",
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "25 MB"
+        }
+      ],
+      "critical": {
+        "reason": "decision",
+        "note": "Why bytes bypass the gateway."
+      }
+    },
+    {
+      "id": "u36",
+      "section": "s9",
+      "kind": "list_item",
+      "quote": "**Metadata apart from bytes.** Photo bytes live in object storage and everything we query lives in the metadata database, because the two grow at very different rates and need different backups.",
+      "tags": [
+        "decision"
+      ]
+    },
+    {
+      "id": "u37",
+      "section": "s9",
+      "kind": "list_item",
+      "quote": "**The cache is disposable.** Feed pages are cached for speed only; the metadata database stays the source of truth, so the cache can be flushed at any time.",
+      "tags": [
+        "decision"
+      ]
+    },
+    {
+      "id": "u38",
+      "section": "s9",
+      "kind": "list_item",
+      "quote": "**Buy delivery, don't build it.** We use a third-party CDN and push-notification provider instead of running our own, and we accept that their outages are outside our control.",
+      "tags": [
+        "decision",
+        "limitation"
+      ]
+    },
+    {
+      "id": "u39",
+      "section": "s10",
+      "kind": "list_item",
+      "quote": "How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet.",
+      "tags": [
+        "question"
+      ],
+      "critical": {
+        "reason": "open_question",
+        "note": "Open; must not be presented as decided."
+      }
+    },
+    {
+      "id": "u40",
+      "section": "s10",
+      "kind": "list_item",
+      "quote": "Whether the feed service should precompute feeds for accounts with very many followers is left to the feed service's own low-level design.",
+      "tags": [
+        "question"
+      ],
+      "critical": {
+        "reason": "open_question",
+        "note": "Deferred to the feed service's LLD; not part of this HLD."
+      }
+    }
+  ],
+  "safeToOmit": [
+    {
+      "units": [
+        "u29",
+        "u30",
+        "u31",
+        "u32"
+      ],
+      "why": "The numbered flow restates edges already stated in sections s4 and s5; it is represented by the labelled edges and the flow knowledge unit, and need not get cards of its own."
+    }
+  ],
+  "capabilities": [
+    "canvas.shape",
+    "canvas.frame",
+    "canvas.arrow-labeled",
+    "canvas.relation-types",
+    "canvas.node-kinds",
+    "canvas.text-card",
+    "ai.sectioned-template",
+    "ai.takeaway",
+    "arch.interactive-frame",
+    "lens.profile-levels",
+    "lens.projection",
+    "lens.stable-identity",
+    "lens.drill",
+    "lens.drill-from-plan",
+    "lens.canvas-reveal",
+    "lens.trace",
+    "lens.confidence-marking",
+    "ai.cites",
+    "ai.unit-accounting"
+  ],
+  "provenance": {
+    "synthetic": true,
+    "note": "Original text written for this dataset. Pinhole, its numbers (2 million users, 120 requests per minute, 150/640/1080-pixel thumbnails, 7-day retention, 60-second cache, 25 MB originals) and its decisions are invented. The source names no technologies, code or file paths on purpose: it is HLD only."
+  },
+  "review": {
+    "status": "draft",
+    "authoredBy": "Claude Code (assistant-drafted by hand; not produced by the Acute pipeline)",
+    "reviewers": [],
+    "approvedAt": null
+  }
+}

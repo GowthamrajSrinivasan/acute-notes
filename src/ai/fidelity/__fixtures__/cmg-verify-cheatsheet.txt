@@ -1,0 +1,98 @@
+cmg-verify cheat sheet — SR3 deterministic checks
+Status: describes the proposed results-dictionary architecture (2026-09-28). Nothing below is built yet; see the phases in .ai/cmg-verify-results-dictionary-implementation-plan.md.
+
+Companion to cmg-verify-dictionary-architecture.html (check by check) and cmg-verify-dictionary.html (interactive). One line per item: what it's for, and where to change it. Paths are relative to the cmg-code repo root. Code lives in .pi/extensions/cmg-verify/. Thresholds and judgement live in one engineer file, .pi/skills/cmg-sr3-skill/registries/engineer-judgements.yaml (called engineer file below; section.key names its keys). Line numbers are omitted for code the plan rewrites; search for the function name.
+
+Three sources of input:
+
+Dictionary: quantity, phase, conditions and units per unit system, added to every curve by cmg-sr3 from the results-dictionary snapshot (dictSource, dictVersion alongside).
+File: what the .sr3 reports (origins via list_origins, curves, dates).
+Engineer file: judgement and thresholds.
+Full design and rationale: .ai/cmg-verify-results-dictionary-plan.md.
+
+Pass / fail examples per check
+One row per check. Where a check can fail more than one way, the ways are lettered and the outcome column uses the same letters. The outcome is what happens when the check fails; a pass adds nothing to the answer.
+
+Check (focus)	Example that passes	Example that fails	Data that decides it	Tier → outcome (when it fails)
+0: Prerequisites (diagnostic claims need rate + pressure)	"wl5_inj injectivity is increasing." Both Water Rate SC and Well Bottom-hole Pressure were fetched for wl5_inj.	Same claim, but only Water Rate SC was fetched for wl5_inj.	Engineer file diagnostic_evidence: term injectivity needs [rate, pressure], same_entity: true, when_missing: caveat. Dictionary quantity on each curve decides what counts as a pressure, in any unit system; no curve for wl5_inj has quantity pressure.	A6, bound → ✅ OK + caveat "missing pressure evidence for wl5_inj"
+1-pre: Citations (the evidence cited must contain what's claimed, and the text must state the checked figure)	"BASE's average field oil rate is 18.78 m3/day." value 18.7786, basis mean. It cites fo1, a real call that fetched Oil Prod Rate SCTR for the field-total origin on the BASE path.	Any of these: it cites t99, which isn't a call in this session; the text says 19.5 while value is 18.7786; or valueBasis is missing.	None. Code only: the rounding tolerance for figures in the text (matchesNumber, numbers.ts).	no tier, rejected → ↩ Retry
+1: Scope (a sum of wells vs the field total)	"13 wells produced 8,920,000 m3 cumulative oil." The field total was fetched and says 8,923,563 m3, which is 0.04% apart.	(a) Same claim, but the field total was never fetched. (b) It was fetched, but the wells sum to 8,800,000 (1.4% apart).	File: the field total is the origin alone in its category in list_origins ("Entire Field" on BASE/WATER), else engineer file field_conventions.field_total_names. Well ↔ field curve matched by dictionary phase + conditions + quantity, confirmed numerically. Gap threshold: tolerances.aggregate_gap_pct (0.5).	(a) A1, ask → ⏸ Pause: "Field-level via the aggregate, or these specific origins?" (field option only offered if the file has one). (b) A2, bound → ✅ OK + caveat "1.4% difference"
+2: Window (a comparison window must be the real overlap)	BASE covers 2010-02-01→2050-12-01 and WATER covers 2010-03-02→2050-12-01. The claim window is 2010-03-02 → 2050-12-01.	(a) Claim window 2010-02-01 → 2050-12-01: the start is 29 days off (limit ±1 day). (b) The two cases overlap for less than 20% of the shorter one's span.	File: each case's coverage from its field-total curve, else case_info. Engineer file tolerances.window_endpoint_days (1) and tolerances.short_overlap_fraction (0.2).	(a) no tier, rejected → ↩ Retry. (b) A3, ask → ⏸ Pause: "Proceed on the short overlap, or reframe?"
+3a: Units (same kind of quantity, correct conversion)	"118.114 bbl/day" with conversionFactor 0.158987. 118.114 × 0.158987 = 18.778, and the retrieved mean is 18.7786 m3/day: within 1%.	"118.114 bbl": a volume, while the data is a rate. Also fails: bbl/day with no conversionFactor, or a conversion more than 1% off.	Dictionary quantity and its units per unit system (replaces metricFamilyOf). Engineer file tolerances.conversion_pct (1). A curve with no deterministic quantity → "not checked", never a pass.	no tier, rejected → ↩ Retry
+3b: Wording (phrases SR3 data can't support)	"Water breakthrough at wl8: Water Cut SC exceeds 0.5 in June 2031." A criterion is stated.	(a) "Water breakthrough at wl8 happened early." (b) "wl8 is a pattern well of wl5_inj." (c) "The optimized case ends at 892,000 m3."	Engineer file unsupported_phrases: breakthrough-without-criterion (clears_if_text_has replaces CRITERION_HINT; question_to_engineer + options form the question), pattern-membership (reaction: ask, without_ui: remove), optimized-from-filename (reaction: remove).	(a) A4, ask → ⏸ Pause: "What threshold defines this event?" (caveat → ✅ in exploratory posture). (b) A5, ask → ⏸ Pause: "Which wells belong to this pattern?" (no UI → remove → ↩ Retry). (c) no code, remove → ↩ Retry
+4: Arithmetic (a derived number must match its recomputed formula)	"wl1's BHP fell by 348.56 kPa." Formula Well_Bottom_hole_Pressure_first - Well_Bottom_hole_Pressure_last = 6068.42 − 5719.85 = 348.56.	Same formula, but the claim states 360 (3.18% off). Also fails: bare names when wl1 and wl8 BHP are both cited (the names are ambiguous).	Engineer file tolerances.derived_pct (1). Formula syntax in code (evalFormula).	no tier: rejected (wrong result) or needs_evidence (can't compute) → ↩ Retry
+5: Inactive entity (no credit to a well that did nothing)	"Converting wl5 improves producer performance," after fetching wl5_inj's Water Rate SC: 835–1823 m3/day, not zero.	The same claim when the only curve fetched for wl5_inj is Oil Rate SC (0 throughout): its injected phase's rate was never checked.	Engineer file effect_wordings: words match "improves"; activity_variable.water_injector: water rate says which curve proves activity (dictionary phase + injection side pick it); reaction: send_back.	no tier, needs_evidence → ↩ Retry ("check the injectors' water rate first")
+6: Consistency (don't contradict an earlier accepted claim)	Accepted earlier: "BASE field oil rate mean = 18.78 m3/day". Later: "118.1 bbl/day" with factor 0.158987 = 18.78 m3/day, the same value in the retrieved unit.	Later, for the same path, metric, wells, window and basis: "18.20 m3/day", 3.1% off the accepted 18.78.	Dictionary quantity picks the tolerance. Engineer file tolerances.consistency_pct.rate (0.5); fraction has no value yet (review question).	no tier, rejected → ↩ Retry
+7: Time resolution (no dating finer than the spacing between data points)	"wl1's water rate reaches 52 m3/day in June 2031." The points are monthly, so month-level dating is fine.	"…reaches 52 m3/day on 2031-06-17": day-level dating when the points are ~30 days apart.	File: point dates. Engineer file tolerances.dated_event_max_days (32) and tolerances.spacing_factor (2).	no tier, rejected → ↩ Retry
+What the outcomes mean:
+
+⏸ Pause: the engineer is asked a structured question.
+↩ Retry: the answer goes back to the model to fix.
+✅ OK + caveat: the answer renders with the gap stated.
+If a submission contains any ask, the pause wins, and every other hit is shown in the same prompt (tiers.ts resolveSubmission, unchanged).
+
+Checks 0–7
+Check	Purpose (one line)	Where it's configured
+0 Prerequisites	A diagnostic claim ("injectivity", "support", …) must have both rate and pressure data for the same well, or it's flagged A6.	Terms + evidence: engineer file diagnostic_evidence · rate/pressure: dictionary quantity · logic: checks.ts check0
+1-pre Citations	The claim's wells, metric and .sr3 path must actually appear in the tool calls it cites; the text's figures and quantity words ("water cut" vs "water rate") must match what was checked.	checks.ts check1pre · quantity words: engineer file metric_words
+1 Scope	A total over a few wells is compared against the field total, which leads to an A1 ask or an A2 note.	Field total: file (list_origins, sole origin in its category), else engineer file field_conventions.field_total_names · gap: tolerances.aggregate_gap_pct
+2 Window	A stated comparison date range must equal the real overlap of the cases.	Coverage: field-total curve, else case_info · tolerances.window_endpoint_days · "degenerate overlap" (A3): tolerances.short_overlap_fraction
+3a Units	Claim and data must be the same dictionary quantity; unit strings parsed against its units in any unit system; conversions within tolerance.	Dictionary quantity + units · tolerances.conversion_pct · unclassified → "not checked"
+3b Wording	Risky phrasings: "breakthrough" needs a criterion (A4); pattern membership asks the engineer (A5); causal wording ("due to", "driven by") asks whether it's the only difference; design intent and "optimized" / "best case" are removed.	Engineer file unsupported_phrases (phrases, clears_if_text_has, reaction, options, prerequisite)
+4 Arithmetic	Derived quantities (Δp, q·Δp) are recomputed from the cited curves and must match within tolerance.	tolerances.derived_pct · logic: checks.ts check4
+5 Inactive entity	An "improvement" can't be credited to a well whose injected phase's rate is zero or wasn't retrieved.	Engineer file effect_wordings (words, activity_variable, reaction) · dictionary phase · logic: checks.ts check5
+6 Consistency	A later claim can't contradict an earlier accepted claim in the same session.	Tolerance per dictionary quantity: tolerances.consistency_pct
+7 Time resolution	An event can't be dated more precisely than the spacing between data points.	tolerances.dated_event_max_days · tolerances.spacing_factor
+Layer A vs B	Layer A: a guard before each cmg_sr3_* call, plus advisory notes (Checks 0, 1, 2) after it, as one note per parallel batch. Layer B: submit_answer runs all checks as a gate, and a Stop-style follow-up stops unverified figures ending the answer. See Hook points below.	Layer A: index.ts registerLayerA · Layer B: index.ts submit_answer · settings: engineer file hooks
+Hook points (the deterministic layer around the model)
+The same idea as Claude Code's hooks: our code runs at fixed points in each turn, so the model can't skip it. Proposed items are tagged with the plan's HK-n numbers.
+
+When	pi event	What runs	Can it block?	Settings
+Before the model sees the prompt	before_agent_start	Case card (HK-3): per .sr3 in the prompt, its unit system, field-total origin, real coverage and wells; for two cases, their overlap and differing wells. Cached per file.	No, it adds facts	hooks.case_card
+Before each cmg_sr3_* call	tool_call	Tool-call guard (HK-2): field total first (block wells ["*"] when a field total exists), fix a near-miss origin or variable name, raise pointBudget for dated questions	Yes: block with a reason, or fix the input	hooks.tool_call_guards
+After each call	tool_result	Layer A notes: Checks 0, 1, 2 hints	No	field_conventions
+After a parallel batch	turn_end / context	One combined note (HK-4) in place of per-call notes	No	—
+When the model submits	submit_answer tool	Layer B: all checks → ask / retry / OK	Yes, it's the gate	engineer file (all sections)
+When the answer ends	agent_end + sendUserMessage	Stop-style gate (HK-1): figures from SR3 with no passing submit_answer → a follow-up telling the model to verify or remove them, at most N times (N per posture: exploratory 1, review 2, audit 2), then the banner. On in every posture.	Yes, up to the cap	hooks.stop_gate
+When the checks can't decide	small model / Reviewer	Judgement tiers (HK-5): a one-turn model check, then the Reviewer only for high-risk answers. Per posture: exploratory runs none (a "not reviewed: …" line instead), review runs the small model, audit adds the Reviewer, in the background by default.	No, advisory only	hooks.judgement_triggers, hooks.judgement_tiers, hooks.reviewer_timing
+A1–A6 codes (what happens when a check fires)
+Code	Tier	Purpose (one line)	Where it's configured
+—	Deny / Ask / Bound	Deny: the model must reword or drop the claim. Ask: the engineer picks an option. Bound: the answer shows with a note. Engineer-file reactions map onto these: remove → deny, ask → ask, caveat → bound, send_back → retry.	Routing + precedence: tiers.ts (L39–49, unchanged)
+A1	Ask	"Field-level via the aggregate, or these specific wells?" The field option is offered only if the file has a field total.	Raised by Check 1 · answer saved per (path, metric) in .pi/skills/cmg-sr3-skill/persisted-answers.yaml
+A2	Bound	Manually summed wells differ from the field total by more than the gap threshold, and the gap is shown.	tolerances.aggregate_gap_pct (0.5)
+A3	Ask	The series barely overlap (≤0 or below the fraction): proceed on the short window, or reframe?	tolerances.short_overlap_fraction (0.2) · never saved, always asked live
+A4	Ask	An event (e.g. breakthrough) is claimed with no threshold defined.	unsupported_phrases breakthrough-without-criterion · becomes Bound in exploratory posture (in_exploratory_mode: caveat) · answer saved per case folder
+A5	Ask	A pattern-membership claim: confirm the named wells, state it as unverified, or leave it out. No UI → remove.	unsupported_phrases pattern-membership · answer saved per case folder, like A4
+A6	Bound	A diagnostic claim is missing its prerequisite evidence (Check 0); the gap is shown.	diagnostic_evidence (when_missing: caveat)
+Trigger IDs are declared in types.ts L86.
+
+Every ask shows exactly three options (two decisions plus a safe fallback; labels in the engineer file), several asks in one prompt. The answers are applied, the checks re-run, and the model gets decisions[] and directives[] to act on (plan Phase 4b). The ask must reach the engineer in every host. See interactive-ui-across-hosts-plan.md: the Orion panel currently cancels asks.
+
+The engineer file (YAML)
+One file, .pi/skills/cmg-sr3-skill/registries/engineer-judgements.yaml, replaces the five old registries and the thresholds hardcoded in checks.ts. Loaded by registries.ts. Every entry carries status (draft / reviewed), source, and a review_question where one is open. A missing or unparseable file, or an unavailable dictionary snapshot, makes the checks fail closed: submit_answer returns "checks could not run", and Layer A stays silent.
+
+Section	Used by	Purpose (one line)
+diagnostic_evidence	Check 0	Which claim terms need which evidence (rate, pressure) for the same well, and what happens when it's missing.
+unsupported_phrases	Check 3b	Wording that needs a criterion (ask), the engineer's input (ask: pattern, causal), or can't be supported at all (remove: design intent, optimized).
+metric_words	Check 1-pre (text)	Quantity words a claim's text may use for its checked metric ("water cut" ≠ water rate).
+effect_wordings	Check 5	Phrasings that credit an effect to a well, and which variable proves the well is active.
+field_conventions	Check 1, Layer A	Fallback field-total names when the file has no sole-in-category origin, plus verdicts on known groups.
+tolerances	Checks 1, 2, 3a, 4, 6, 7	Every allowed % difference and limit (placeholders).
+variable_overrides	Dictionary lookup	Corrections to the dictionary; the only way a Gemini-filled field can gate a verdict.
+hooks	Hook points	Which guards are on (block or note-only), case-card contents, Stop-gate follow-up cap, judgement-tier triggers.
+submit_answer outcomes
+Outcome	Purpose (one line)	Where it's configured
+needs_evidence	Data the claim depends on wasn't retrieved yet, so the model fetches it and resubmits.	tiers.ts L47–49 (retry-shaped) · send_back reactions in the engineer file
+rejected	Retrieved data contradicts the claim, so the model must walk it back.	Set by the individual checks in checks.ts
+needs_clarification	The SR3 file can never support this claim, so reword or drop it (deny tier, no engineer prompt).	tiers.ts · remove reactions in unsupported_phrases
+pending	Waiting on the engineer's A1 / A3 / A4 / A5 / causal choices; with no UI it fails closed back to the model.	Ask form: ask-form.ts (tabbed form in the terminal, one select per ask in RPC hosts)
+retry_after_ask / ok_after_ask	The engineer answered: still something to do (with directives[]), or everything settled and re-checked.	submission-flow.ts
+ok	Passed, with any bound notes and "not checked: …" lines included, and rendered as "✓ Verified via cmg-verify — N claim(s) checked."	Rendering: tiers.ts L80
+Skipped gate	A turn used SR3 data, didn't pass submit_answer, and looks numeric. Proposed (HK-1): a follow-up tells the model to verify or remove the figures, up to hooks.stop_gate.max_followups for the current posture; after that, the "⚠️ UNVERIFIED" banner, as today.	Detection: index.ts message_end hook · follow-up: agent_end
+Other knobs
+Knob	Purpose (one line)	Where
+Analysis posture	exploratory / review (default) / audit; entries with in_exploratory_mode (e.g. A4) become caveats in exploratory. Proposed: the posture also sets the Stop-style gate's cap and which judgement tiers run (exploratory = quick, audit = thorough). A host's Quick / Thorough switch maps to exploratory / audit.	CMG_VERIFY_POSTURE env var or /cmg-verify-posture command (index.ts L269, L308)
+Who gets submit_answer	worker and history-match get the gate; scout and reviewer get Layer A only. The reviewer also receives the Primary's last submit_answer outcome (hits, "not checked" lines, engineer decisions) to challenge, and runs only when hooks.judgement_triggers flag an answer as high-risk.	tools: line in .pi/roles/*.md · gating and hand-off in .pi/extensions/cmg-delegate/index.ts
+Audit log	One JSONL file per session, recording every check, ask, submission and message_end event, with dictVersion, ruleStatus per hit and the unclassified variables.	~/.pi/agent/cmg-verify/traces/ · CMG_VERIFY_TRACE_DIR, CMG_VERIFY_TRACE_RETENTION_DAYS (default 30) in audit-log.ts
+Eval fixtures	Replays scripted claims against real SR3 output (now with the dictionary fields) to catch regressions.	eval-fixtures/ · run: pixi run verify-eval or npx --yes bun@latest .pi/extensions/cmg-verify/eval-runner.mjs
+MCP server registration	How cmg-agent starts the cmg-sr3 MCP server, which loads the dictionary snapshot at startup.	.mcp.json (cmg-sr3 entry) · snapshot pinned in scripts/dist-pins.json, staged by scripts/dist-stage.mjs

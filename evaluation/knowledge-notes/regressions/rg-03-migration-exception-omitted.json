@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-migration-exception-omitted",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The 'not backward compatible: don't use this procedure' exception is dropped from the migration requirement.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n4",
+      "find": "\n\n**If a migration is not backward compatible, do not use this procedure:** split it into an additive release first and a cleanup release later.",
+      "replace": ""
+    }
+  ],
+  "expectFailing": [
+    "a.non-compatible-exception"
+  ]
+}

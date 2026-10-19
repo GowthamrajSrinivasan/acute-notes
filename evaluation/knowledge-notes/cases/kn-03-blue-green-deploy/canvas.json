@@ -1,0 +1,1013 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-03-blue-green-deploy",
+  "template": "sectioned",
+  "templateNote": "Sectioned so prerequisites, the step flow and failure handling are separate frames; the step frame is a tree of shapes with labelled branch edges, plus the command as a code block.",
+  "frames": [
+    {
+      "id": "f.overview",
+      "title": "How blue-green works",
+      "titleMatch": {
+        "all": [
+          [
+            "how blue-green",
+            "how it works",
+            "overview",
+            "concept",
+            "blue-green works",
+            "blue/green"
+          ]
+        ]
+      },
+      "purpose": "Orients the reader.",
+      "rationale": "The concept card is short and precedes the procedure.",
+      "children": [
+        "e.concept"
+      ],
+      "arrangement": "grid",
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "f.prereqs",
+      "title": "Prerequisites",
+      "titleMatch": {
+        "all": [
+          [
+            "prerequisite",
+            "before you start",
+            "requirement",
+            "you need"
+          ]
+        ]
+      },
+      "purpose": "Everything that must be true before step 1.",
+      "rationale": "Requirements must be visible before the steps, not folded into them.",
+      "children": [
+        "e.prereq-envs",
+        "e.prereq-health",
+        "e.prereq-migrations",
+        "e.prereq-lb",
+        "e.prereq-dashboard"
+      ],
+      "arrangement": "grid",
+      "separateFrom": [
+        {
+          "frame": "f.procedure",
+          "reason": "The migration requirement is a precondition, not a step detail."
+        }
+      ],
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.procedure",
+      "title": "Release steps",
+      "titleMatch": {
+        "all": [
+          [
+            "step",
+            "procedure",
+            "release",
+            "rollout",
+            "workflow"
+          ]
+        ]
+      },
+      "purpose": "The eight steps in order with the three decisions.",
+      "rationale": "A flow: the order and the branches are the content.",
+      "children": [
+        "e.step-deploy",
+        "e.step-migrate",
+        "e.health-check",
+        "e.smoke",
+        "e.switch",
+        "e.switch-command",
+        "e.error-watch",
+        "e.standby",
+        "e.retire"
+      ],
+      "arrangement": "tree",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.failure",
+      "title": "When things go wrong",
+      "titleMatch": {
+        "all": [
+          [
+            "rollback",
+            "roll back",
+            "wrong",
+            "failure",
+            "switch back",
+            "switch-back"
+          ]
+        ]
+      },
+      "purpose": "The two ways back and their costs.",
+      "rationale": "The branches lead here; keeping both ways back together shows the difference before and after the switch.",
+      "children": [
+        "e.rollback-before",
+        "e.switch-back"
+      ],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e.concept",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "orientation",
+      "content": "Two identical environments; deploy to the idle one, switch in one step, switch back the same way",
+      "knowledge": [
+        "ku.concept"
+      ],
+      "match": {
+        "all": [
+          [
+            "blue"
+          ],
+          [
+            "green"
+          ],
+          [
+            "identical"
+          ],
+          [
+            "idle",
+            "one step",
+            "one-step"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.overview",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.prereq-envs",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text",
+        "todo"
+      ],
+      "role": "prerequisite",
+      "content": "orders-blue and orders-green are identical",
+      "knowledge": [
+        "ku.prereq-envs"
+      ],
+      "match": {
+        "all": [
+          [
+            "orders-blue",
+            "orders-green"
+          ],
+          [
+            "identical",
+            "same instance",
+            "same configuration"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.prereqs",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.prereq-health",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text",
+        "todo"
+      ],
+      "role": "prerequisite",
+      "content": "GET /healthz returns 200 only when database and queue are reachable",
+      "knowledge": [
+        "ku.prereq-health"
+      ],
+      "match": {
+        "all": [
+          [
+            "/healthz",
+            "health endpoint"
+          ],
+          [
+            "200"
+          ],
+          [
+            "database",
+            "queue"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.prereqs",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.prereq-migrations",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text",
+        "todo"
+      ],
+      "role": "critical prerequisite with its exception",
+      "content": "Migrations must be backward compatible (one shared database; rollback doesn't undo them) — otherwise don't use this procedure",
+      "knowledge": [
+        "ku.prereq-migrations",
+        "ku.non-compatible"
+      ],
+      "match": {
+        "all": [
+          [
+            "backward compatible",
+            "backward-compatible",
+            "backwards compatible",
+            "backwards-compatible"
+          ],
+          [
+            "migration"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.prereqs",
+      "layout": "The exception sits on this card, not on its own.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.prereq-lb",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text",
+        "todo"
+      ],
+      "role": "prerequisite",
+      "content": "Access to the load balancer's listener rules",
+      "knowledge": [
+        "ku.prereq-lb"
+      ],
+      "match": {
+        "all": [
+          [
+            "listener"
+          ],
+          [
+            "access",
+            "permission",
+            "rules"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.prereqs",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.prereq-dashboard",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text",
+        "todo"
+      ],
+      "role": "prerequisite",
+      "content": "A per-environment 5xx error-rate dashboard",
+      "knowledge": [
+        "ku.prereq-dashboard"
+      ],
+      "match": {
+        "all": [
+          [
+            "5xx",
+            "error rate"
+          ],
+          [
+            "dashboard",
+            "query",
+            "per environment",
+            "per-environment"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.prereqs",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.step-deploy",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape",
+        "text"
+      ],
+      "role": "step 1",
+      "content": "1. Deploy 2.8.0 to orders-green (expected: blue still serves 100%)",
+      "knowledge": [
+        "ku.step-deploy"
+      ],
+      "match": {
+        "all": [
+          [
+            "2.8.0"
+          ],
+          [
+            "green"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.procedure",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.step-migrate",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape",
+        "text"
+      ],
+      "role": "step 2",
+      "content": "2. Run migrations once (expected: exit code 0, blue unaffected)",
+      "knowledge": [
+        "ku.step-migrate"
+      ],
+      "match": {
+        "all": [
+          [
+            "migration"
+          ],
+          [
+            "code 0",
+            "exit"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.procedure",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.health-check",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape",
+        "text"
+      ],
+      "role": "decision",
+      "content": "3. All green instances return 200 within 10 minutes?",
+      "knowledge": [
+        "ku.step-health",
+        "ku.health-rollback"
+      ],
+      "match": {
+        "all": [
+          [
+            "health",
+            "200",
+            "healthz"
+          ],
+          [
+            "10 minutes",
+            "10 min"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.procedure",
+      "layout": "A decision: a diamond is ideal, with its outgoing branches labelled.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.smoke",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape",
+        "text"
+      ],
+      "role": "decision",
+      "content": "4. Smoke tests pass on green?",
+      "knowledge": [
+        "ku.step-smoke"
+      ],
+      "match": {
+        "all": [
+          [
+            "smoke"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.procedure",
+      "layout": "A decision, like step 3.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.switch",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape",
+        "text"
+      ],
+      "role": "step 5",
+      "content": "5. Switch traffic to green (expected within about 30 seconds)",
+      "knowledge": [
+        "ku.step-switch"
+      ],
+      "match": {
+        "all": [
+          [
+            "green target group",
+            "traffic to green",
+            "listener at green",
+            "listener to green"
+          ],
+          [
+            "switch",
+            "point",
+            "move",
+            "forward"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.procedure",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.switch-command",
+      "element": "code",
+      "planNodeTypes": [
+        "code"
+      ],
+      "role": "exact command",
+      "content": "aws elbv2 modify-listener … $GREEN_TG_ARN",
+      "knowledge": [
+        "ku.step-switch"
+      ],
+      "match": {
+        "all": [
+          [
+            "modify-listener"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.procedure",
+      "layout": "Kept as a code block beside step 5.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.error-watch",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape",
+        "text"
+      ],
+      "role": "decision",
+      "content": "6. 5xx error rate above 2% within 15 minutes?",
+      "knowledge": [
+        "ku.step-watch"
+      ],
+      "match": {
+        "all": [
+          [
+            "5xx",
+            "error rate"
+          ],
+          [
+            "15 minutes",
+            "15 min"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.procedure",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.standby",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape",
+        "text"
+      ],
+      "role": "step 7 with its condition",
+      "content": "7. Keep blue on standby for 24 hours — no next-release migrations meanwhile",
+      "knowledge": [
+        "ku.step-standby",
+        "ku.no-next-migrations"
+      ],
+      "match": {
+        "all": [
+          [
+            "standby",
+            "stand-by",
+            "stand by"
+          ],
+          [
+            "24 hours",
+            "24 h"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.procedure",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.retire",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape",
+        "text"
+      ],
+      "role": "step 8",
+      "content": "8. Retire blue: scale it down",
+      "knowledge": [
+        "ku.step-retire"
+      ],
+      "match": {
+        "all": [
+          [
+            "retire",
+            "scale it down",
+            "scale down",
+            "scale blue down"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.procedure",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.rollback-before",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text",
+        "shape"
+      ],
+      "role": "failure handling",
+      "content": "Before the switch: tear down green, blue keeps serving — customers unaffected",
+      "knowledge": [
+        "ku.health-rollback",
+        "ku.rollback-before"
+      ],
+      "match": {
+        "all": [
+          [
+            "tear down",
+            "roll back",
+            "rollback"
+          ],
+          [
+            "customers",
+            "unaffected",
+            "leave blue",
+            "blue serving",
+            "blue keeps"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.failure",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.switch-back",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text",
+        "shape"
+      ],
+      "role": "failure handling with its caveat",
+      "content": "After the switch: switch back with $BLUE_TG_ARN (about 30 seconds); in-flight requests may fail",
+      "knowledge": [
+        "ku.switch-back",
+        "ku.inflight"
+      ],
+      "match": {
+        "all": [
+          [
+            "switch back",
+            "switch-back",
+            "switching back"
+          ],
+          [
+            "blue"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.failure",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r.deploy-migrate",
+      "from": "e.step-deploy",
+      "to": "e.step-migrate",
+      "type": "flows_to",
+      "label": {
+        "required": false
+      },
+      "direction": "directed",
+      "explanation": "Step 1 then step 2.",
+      "evidence": [
+        "u15",
+        "u17"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.migrate-health",
+      "from": "e.step-migrate",
+      "to": "e.health-check",
+      "type": "flows_to",
+      "label": {
+        "required": false
+      },
+      "direction": "directed",
+      "explanation": "Step 2 then step 3.",
+      "evidence": [
+        "u17",
+        "u19"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.health-smoke",
+      "from": "e.health-check",
+      "to": "e.smoke",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "text": "all healthy (200)",
+        "match": {
+          "all": [
+            [
+              "200",
+              "healthy",
+              "pass",
+              "all"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The pass branch of the health decision.",
+      "evidence": [
+        "u19"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.health-rollback",
+      "from": "e.health-check",
+      "to": "e.rollback-before",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "text": "still failing after 10 minutes",
+        "match": {
+          "all": [
+            [
+              "10 min"
+            ],
+            [
+              "fail",
+              "unhealthy",
+              "not healthy"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The fail branch: the 10-minute timeout leads to the cheap rollback.",
+      "evidence": [
+        "u20"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.smoke-switch",
+      "from": "e.smoke",
+      "to": "e.switch",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "text": "all pass",
+        "match": {
+          "all": [
+            [
+              "pass"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Step 5 only after the smoke tests pass.",
+      "evidence": [
+        "u23",
+        "u25"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.smoke-rollback",
+      "from": "e.smoke",
+      "to": "e.rollback-before",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "text": "a test fails",
+        "match": {
+          "all": [
+            [
+              "fail"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "A failing smoke test stops the release like a failed health check.",
+      "evidence": [
+        "u24"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.switch-command",
+      "from": "e.switch",
+      "to": "e.switch-command",
+      "type": "explained_by",
+      "acceptableTypes": [
+        "explained_by",
+        "references",
+        "relates_to",
+        "implements"
+      ],
+      "label": {
+        "required": false,
+        "text": "command"
+      },
+      "direction": "bidirectional",
+      "explanation": "The command that performs step 5.",
+      "evidence": [
+        "u25",
+        "u26"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.switch-watch",
+      "from": "e.switch",
+      "to": "e.error-watch",
+      "type": "flows_to",
+      "label": {
+        "required": false
+      },
+      "direction": "directed",
+      "explanation": "Step 5 then step 6.",
+      "evidence": [
+        "u28"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.watch-switchback",
+      "from": "e.error-watch",
+      "to": "e.switch-back",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "text": "above 2%: switch back",
+        "match": {
+          "all": [
+            [
+              "2%",
+              "2 %",
+              "2 percent"
+            ],
+            [
+              "above",
+              "over",
+              ">",
+              "exceed",
+              "more than",
+              "rises"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The fail branch after the switch; the 2% threshold must be on the edge.",
+      "evidence": [
+        "u29"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.watch-standby",
+      "from": "e.error-watch",
+      "to": "e.standby",
+      "type": "flows_to",
+      "label": {
+        "required": true,
+        "text": "at or below 2%: continue",
+        "match": {
+          "all": [
+            [
+              "2%",
+              "2 %",
+              "2 percent"
+            ],
+            [
+              "at or below",
+              "below",
+              "under",
+              "<=",
+              "≤",
+              "stays",
+              "within"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The pass branch after the switch.",
+      "evidence": [
+        "u30"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.standby-retire",
+      "from": "e.standby",
+      "to": "e.retire",
+      "type": "flows_to",
+      "label": {
+        "required": false,
+        "text": "after 24 hours"
+      },
+      "direction": "directed",
+      "explanation": "Step 7 then step 8.",
+      "evidence": [
+        "u33"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.migrate-requirement",
+      "from": "e.step-migrate",
+      "to": "e.prereq-migrations",
+      "type": "depends_on",
+      "acceptableTypes": [
+        "depends_on",
+        "references",
+        "relates_to",
+        "derived_from"
+      ],
+      "label": {
+        "required": false,
+        "text": "needs backward-compatible migrations"
+      },
+      "direction": "bidirectional",
+      "explanation": "Step 2 is only safe because of the backward-compatibility requirement. Crosses the procedure and prerequisite frames.",
+      "evidence": [
+        "u10",
+        "u18"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    }
+  ],
+  "together": [
+    {
+      "elements": [
+        "e.prereq-envs",
+        "e.prereq-health",
+        "e.prereq-migrations",
+        "e.prereq-lb",
+        "e.prereq-dashboard"
+      ],
+      "reason": "All prerequisites in one place, before the steps."
+    },
+    {
+      "elements": [
+        "e.switch",
+        "e.switch-command"
+      ],
+      "reason": "The command sits with the step it performs."
+    },
+    {
+      "elements": [
+        "e.rollback-before",
+        "e.switch-back"
+      ],
+      "reason": "Both ways back, side by side."
+    }
+  ],
+  "keepSeparate": [
+    {
+      "elements": [
+        "e.prereq-migrations",
+        "e.step-migrate"
+      ],
+      "reason": "The requirement is checked before the release starts; inside the step frame it reads as a detail of step 2."
+    }
+  ],
+  "hierarchy": [
+    {
+      "main": "e.switch",
+      "supporting": [
+        "e.switch-command"
+      ],
+      "reason": "The command is the detail of step 5."
+    }
+  ],
+  "unsupported": [
+    {
+      "capability": "ai.cites",
+      "ideal": "Each step cites its units (step 3: u19–u21; step 6: u28–u30).",
+      "expectedToday": "Not checkable; matching is by content."
+    },
+    {
+      "capability": "canvas.card-roles",
+      "ideal": "Decisions are styled as decisions.",
+      "expectedToday": "A diamond shape is the only signal; a judged assertion asks for it."
+    }
+  ]
+}

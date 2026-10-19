@@ -1,0 +1,10 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-store-read-reversed",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "The read dependency is drawn backwards: the Vector store reads the Retrieval service.",
+  "mutations": [{ "op": "reverse_relationship", "from": "a-retr", "to": "a-vs" }],
+  "expectFailing": ["a.rel-retrieval-store", "a.no-store-to-retrieval"]
+}

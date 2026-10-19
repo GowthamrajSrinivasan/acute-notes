@@ -1,0 +1,27 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "kn-01-idempotency-keys",
+  "title": "Idempotency keys",
+  "scenario": "Short conceptual explanation: a definition, one worked example and two limitations that qualify the main claim.",
+  "sourceType": "technical_documentation",
+  "audience": "Backend engineers new to payment APIs",
+  "objective": "Understand what an idempotency key does and, just as importantly, when it stops protecting you.",
+  "complexity": "low",
+  "sourceFiles": [{ "version": 1, "path": "source.md", "words": 181, "title": "Idempotency keys" }],
+  "sections": [{ "id": "s1", "heading": "Idempotency keys" }],
+  "units": [
+    { "id": "u1", "section": "s1", "kind": "sentence", "quote": "An idempotency key is a unique value that a client attaches to a request so that the server can recognise a retry of the same operation.", "tags": ["definition", "terminology"] },
+    { "id": "u2", "section": "s1", "kind": "sentence", "quote": "If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.", "tags": ["condition"], "critical": { "reason": "condition", "note": "The replay only happens for a key whose request already completed." } },
+    { "id": "u3", "section": "s1", "kind": "sentence", "quote": "For example, a checkout client sends `Idempotency-Key: 7f3c-91ab` with a payment request.", "tags": ["example"], "protected": [{ "tier": "exact", "kind": "identifier", "value": "Idempotency-Key" }, { "tier": "exact", "kind": "identifier", "value": "7f3c-91ab" }] },
+    { "id": "u4", "section": "s1", "kind": "sentence", "quote": "The connection drops before the response arrives, so the client retries with the same key.", "tags": ["example"] },
+    { "id": "u5", "section": "s1", "kind": "sentence", "quote": "The server finds the stored result for `7f3c-91ab` and returns the original confirmation, and the customer is charged once.", "tags": ["example"] },
+    { "id": "u6", "section": "s1", "kind": "sentence", "quote": "Keys only protect against duplicates while the server still remembers them.", "tags": ["limitation", "condition"], "critical": { "reason": "limitation", "note": "Protection is bounded by how long the server keeps results." } },
+    { "id": "u7", "section": "s1", "kind": "sentence", "quote": "In this design, stored results expire after 24 hours, so a retry sent after that window is treated as a new payment.", "tags": ["limitation", "numeric"], "critical": { "reason": "limitation", "note": "The 24-hour window is the concrete bound; after it a retry charges again." }, "protected": [{ "tier": "exact", "kind": "number", "value": "24 hours" }] },
+    { "id": "u8", "section": "s1", "kind": "sentence", "quote": "Keys also do not make two different requests safe: if a client reuses a key with a different amount, the server must reject the request rather than return the old result.", "tags": ["limitation", "condition"], "critical": { "reason": "requirement", "note": "A reused key with a different payload must be rejected." } },
+    { "id": "u9", "section": "s1", "kind": "sentence", "quote": "In short, idempotency keys make retries safe within a bounded window; they are not a general guarantee against duplicate operations.", "critical": { "reason": "takeaway", "note": "The section's takeaway, including its own limit." } }
+  ],
+  "safeToOmit": [],
+  "capabilities": ["canvas.text-card", "canvas.frame", "ai.takeaway", "ai.sectioned-template", "ai.cites", "ai.unit-accounting"],
+  "provenance": { "synthetic": true, "note": "Original text written for this dataset; the key value and the 24-hour window are invented for the example." },
+  "review": { "status": "draft", "authoredBy": "Claude Code (assistant-drafted by hand; not produced by the Acute pipeline)", "reviewers": [], "approvedAt": null }
+}
