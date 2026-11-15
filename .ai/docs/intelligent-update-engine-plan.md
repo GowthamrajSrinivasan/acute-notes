@@ -2905,6 +2905,117 @@ overruns, no duplicate or unbudgeted judgments). It reproduced each defect with 
 | Stage 5 prototype | `src/ai/router/{descent,itemIndex,…}.ts`, `locateEvaluation*.ts`, `evaluation/update-engine/locate/**` | untracked |
 | Docs | this plan, `knowledge-notes-lanes.md` | modified |
 
+### 12.29 Provider-request accounting, the reliability check (PAID, one run, PASS), screening refinements (2026-11-15)
+
+**Review decision (2026-11-15, "Stage 4f Decision Review"):**
+- approved: the bounded P3 reliability recording (≤ 6 calls, ≤ 16,800 reserved tokens, ≤ $0.02, 60 dev + regression pairs, no accuracy reported), conditional on verifying SDK retries and a frozen, offline-tested harness; no paid reruns;
+- approved offline: both P2 screening refinements (fix the general logic; unseen4 is development evidence from now on);
+- approved: scoped commits;
+- kept: the 90,000-token day, 10 pairs per call, the provider configuration;
+- **Stage 4f stays OFF.**
+
+The two release gates stay separate:
+- **execution reliability**, which this check addresses;
+- **semantic quality**, on fresh sealed data: contradiction recall ≥ 85 %, strict recall ≥ 85 %, conflict precision ≥ 90 %, context false positives ≤ 10 %.
+
+Passing the first doesn't satisfy the second.
+
+**P1 — provider-request accounting (offline, plus a local-mock measurement; no model).**
+
+*Measured:* `copilotRetry.spike.test.ts` (opt-in `COPILOT_RETRY_SPIKE=1`) points a BYOK connection at a **local** mock OpenAI-compatible server and counts what arrives. @github/copilot-sdk 1.0.14:
+
+| Mock reply | Physical POSTs for one call, unguarded | With the guard |
+|---|---|---|
+| success | 1 | 1 (`providerRequests: 1`) |
+| 429 | **6** ("retried 5 times", 5.3 s) | 1, call fails |
+| 500 | **6** ("retried 5 times", 15–17 s) | 1, call fails |
+
+So on the app path one reservation could become up to 6 billable requests. The SDK exposes no setting to turn that off.
+
+*Control:* `src/ai/host/copilot/attemptGuard.ts`, a `SingleAttemptRequestHandler`. It uses the SDK's experimental `requestHandler` hook, which sees every outbound model-layer request before it leaves the process:
+- the first POST is forwarded;
+- every repeat is answered locally with a non-retryable 400 and never reaches the provider;
+- WebSocket model transports are refused, since one connection can carry several requests;
+- GETs pass through and aren't counted.
+
+How it is wired:
+- `AIRequest.singleAttempt` asks for the guard;
+- `AICapabilities.providerAttempts: "single"` declares support (the Copilot provider);
+- `AIResponse.providerRequests` returns the count;
+- `aiHost.ts` passes the flag through.
+
+*Execution core:* a `JudgeTransport` must declare `singleAttempt`, or nothing is sent. The new status is `no_single_attempt`, with pending reason `single_attempt_unavailable`; no reservation is made.
+- `JudgeTransportRequest.onProviderRequest` counts requests at the transport's physical boundary.
+- `JudgeCallResult.providerRequests` is the larger of the boundary count and the count reported by the layer below. `extraProviderRequests` flags more than one.
+
+*Recording transport:* raw `fetch`, which never retries a POST. Redirects are refused (`redirect: "error"`), because a 307 would re-send. A real local server sees one request for each of 429, 500 and 307.
+
+*Limits:*
+- the WebSocket refusal is unit-tested only (the SDK builds those handlers internally);
+- the guard is an experimental SDK API, so re-run the spike after any SDK upgrade;
+- on a failed app-path call the count isn't returned (the AIError crosses HTTP), but the guard bounds it to 1 by construction.
+
+**P2 — the reliability check (PAID, one run, done — never rerun).** `src/ai/contractTests/reliabilityHarness.ts` (vendor-neutral core), `consistencyReliability.contract.test.ts` (runner), `wireCounter.ts` (undici `undici:request:create` diagnostics channel: model POSTs counted *below* fetch, independently of the transport). Workload `reliability/workload.json` = dev.json (56) + regressions.json (2) + the first 2 of regressions-unseen1.json, **statements only, no labels** (a test checks), 6 fixed groups of 10. Offline simulations against a real local server (`reliabilityHarness.test.ts`, 12): all-pass; 500 → its 10 pairs fail, reservation kept, not retried; truncation; missing usage; unreadable reply (no repair); timeout; **a hidden retry below the transport is caught on the wire (transport 1, wire 2)**; call/token/dollar ceilings enforced before sending; code caps (6 / 16,800 / $0.02) can't be raised. Frozen in `reliability/FREEZE.json` (11 files incl. judgeCall/judgeLedger/judgeReply/judge/candidates/transport/workload), pinned in `reliabilityFreeze.test.ts`; the runner refuses on any change, any earlier run folder, or a missing ceiling, and writes `started.json` before the first request.
+
+**Result — run `reliability/runs/2026-11-15-reliability`: PASS.**
+
+| Criterion | Observed |
+|---|---|
+| ≥ 95 % pairs classified (≥ 57/60) | **60/60** |
+| no call reached the 90 s timeout | none |
+| p95 latency ≤ 60 s | **40.4 s** (p50 19.1 s; 18.5, 30.1, 40.4, 18.0, 19.1, 29.0 s) |
+| no `finish_reason: length` | none |
+| complete usage accounting | all 6 calls reported prompt + completion tokens |
+| usage within 16,800 | reserved 12,888 · used/charged 8,818 |
+| requests: application / transport boundary / wire | **6 / 6 / 6** (1/1/1 per call) |
+| cost | **$0.000802** (worst case $0.00219, ceiling $0.02) |
+
+All 9 failure-handling assertions held. They held trivially where nothing failed, so the failure paths are covered by the offline simulations only.
+
+Caveats:
+- 6 samples: p95 is the largest value, an operational check, not a latency estimate;
+- AICredits reported no reasoning-token breakdown;
+- latency is end to end (queue time can't be separated);
+- one day, one provider: this qualifies the path for further review, **not long-term reliability**;
+- semantic accuracy was not measured and must not be inferred.
+
+Outputs are pinned byte for byte.
+
+**P3 — screening refinements (offline; no AI call).** Two general fixes for the unseen4 misses:
+
+1. **`different metrics` excludes only on positive evidence.** The pair must have both sides naming a statistic, and the two must differ (`statisticsDiffer` in screen.ts).
+   - "Average", "mean", "typically", "usually" and "normally" are one central-value class.
+   - Period words count only when both sides use them, and not when they are the sentence's own frequency.
+   - A bound is not a statistic.
+   - A statistic word on one side only is forwarded with its own reason and never dropped as an extension.
+   - The tier-1 rules' verdict and the live panel are unchanged.
+2. **Limit phrasing is parsed as a maximum** in the shared bound parsing (rules.ts `valuesOf`).
+   - Covered: a limiting verb with its object between ("caps … at", "limits … to", "restricts … to"), plus "a cap of" and "a ceiling of".
+   - Two different maxima become the existing `limit` near-miss and are forwarded.
+   - An observation inside a cap still agrees.
+   - "The limit to N" after an article stays a value.
+
+Effect:
+- **dev + regression files (75 pairs):** 0 changes.
+- **unseen1–3 (diagnostic):** 8 compatible or ambiguous pairs change: 7 now forwarded, 1 now `same_frequency`. No contradiction is newly excluded.
+- **unseen4, now development evidence (never reported as unseen):** x04, x24, x60 and x71 are forwarded, plus 6 compatibles (10 of 90 changed, none newly excluded).
+
+Pinned in `regressions-unseen4.json` and `regressionsUnseen4.test.ts`: the 4 unseen4 pairs copied word for word, 6 authored variants and 4 counter-cases. The historical unseen4 result (8 calls, 32/72 classified, 42 % recall) is unchanged. **Whether these fixes generalise needs a fresh, independently authored sealed set.** No paid semantic evaluation is approved.
+
+**Tests:**
+- `src/ai` + `src/app`: **2,564 passed, 0 failed**;
+- 10 skipped (opt-in spikes, including the 6 SDK-retry spike tests);
+- 6 expected-fail (other lanes' known gaps), 4 todo;
+- `tsc` and eslint clean.
+
+**Commits:** all lanes' work was committed and pushed (GowthamrajSrinivasan/acute-notes) as 7 lane-scoped commits, the frozen unseen evaluation history first. This section's work is committed after it. `.gitattributes` now pins LF for `evaluation/**` and `src/ai/**`, because FREEZE hashes are byte-exact and a Windows clone with `autocrlf` would otherwise break them.
+
+**What still blocks Stage 4f:**
+1. **Semantic quality** on a fresh, independently authored sealed set with blind labels. Preparing it is approved; the paid run needs its own approval.
+2. **Execution, still open:**
+   - wire `judge_consistency` into the app only through `providerJudgeTransport` (the guard);
+   - live behaviour of the guard against a real BYOK provider and of the Copilot subscription path. A subscription connection is still refused by the cap rule, so the check never runs there.
+
 ## 13. Stage 5 — semantic locate and anchor (plan, 2026-11-14)
 
 **Status: planned, nothing built.** Goal: find the card and the exact item a piece of new information belongs to,
