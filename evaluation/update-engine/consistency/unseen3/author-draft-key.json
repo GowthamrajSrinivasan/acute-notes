@@ -1,0 +1,455 @@
+{
+  "note": "The fixture author's draft labels and design categories (a separate agent, not the rules' author). NOT ground truth: the reviewer labels pairs.json blind first; these are compared afterwards. Categories feed the per-category and context scores.",
+  "drafts": {
+    "w01": {
+      "category": "exclusivity",
+      "label": "contradiction",
+      "why": "Only the head baker may change it vs the pastry chef can change it unapproved."
+    },
+    "w02": {
+      "category": "numeric",
+      "label": "contradiction",
+      "why": "Two different totals for the same piste length."
+    },
+    "w03": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Different claim bands, different rules."
+    },
+    "w04": {
+      "category": "exclusivity",
+      "label": "compatible",
+      "why": "Phone and web form channels coexist; neither claims exclusivity."
+    },
+    "w05": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Business vs economy cabin allowances."
+    },
+    "w06": {
+      "category": "ambiguous_reference",
+      "label": "ambiguous",
+      "why": "Unclear whether 'she' is Ms Patel, and whether the move predates the first statement."
+    },
+    "w07": {
+      "category": "exclusivity",
+      "label": "contradiction",
+      "why": "Only during the 2 p.m. talk vs at any opening time."
+    },
+    "w08": {
+      "category": "modality",
+      "label": "contradiction",
+      "why": "Opt-in vs on by default with opt-out."
+    },
+    "w09": {
+      "category": "paraphrase",
+      "label": "compatible",
+      "why": "Round-the-clock access restates 24/7."
+    },
+    "w10": {
+      "category": "metric",
+      "label": "compatible",
+      "why": "12 t/day is about 360 t/month."
+    },
+    "w11": {
+      "category": "ambiguous_reference",
+      "label": "ambiguous",
+      "why": "'The express' is unnamed; if it is the Harbour City Northline, every 20 vs every 30 minutes conflicts."
+    },
+    "w12": {
+      "category": "exclusivity",
+      "label": "contradiction",
+      "why": "Exclusively staff vs some bought from agencies."
+    },
+    "w13": {
+      "category": "extension",
+      "label": "compatible",
+      "why": "Adds a CI requirement without removing the approval rule."
+    },
+    "w14": {
+      "category": "limit",
+      "label": "compatible",
+      "why": "290 is within the 320 capacity."
+    },
+    "w15": {
+      "category": "limit",
+      "label": "contradiction",
+      "why": "Minimum age 25 vs cars rented to 21-year-olds."
+    },
+    "w16": {
+      "category": "scope",
+      "label": "ambiguous",
+      "why": "Depends on whether a covered patio counts as inside."
+    },
+    "w17": {
+      "category": "temporal",
+      "label": "compatible",
+      "why": "Past year's deadline vs current deadline."
+    },
+    "w18": {
+      "category": "frequency_equivalence",
+      "label": "contradiction",
+      "why": "Every 48 hours is every other day, not daily."
+    },
+    "w19": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Commercial organisers are a different applicant type."
+    },
+    "w20": {
+      "category": "metric",
+      "label": "compatible",
+      "why": "Average vs maximum wait."
+    },
+    "w21": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "One free bag vs pay for every bag."
+    },
+    "w22": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "Accepting unsolicited manuscripts vs returning them unread."
+    },
+    "w23": {
+      "category": "ambiguous_reference",
+      "label": "ambiguous",
+      "why": "Whether 'she' is the head baker decides the conflict."
+    },
+    "w24": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Different regional prices."
+    },
+    "w25": {
+      "category": "universal",
+      "label": "contradiction",
+      "why": "Motor claims under £500 are a counterexample to the no-inspection rule."
+    },
+    "w26": {
+      "category": "ambiguous_reference",
+      "label": "ambiguous",
+      "why": "Unclear whether 'the office' is the intake desk."
+    },
+    "w27": {
+      "category": "frequency_equivalence",
+      "label": "compatible",
+      "why": "Twice an hour equals every 30 minutes."
+    },
+    "w28": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "Accepts batteries at the gate vs no drop-off anywhere including the gate; extra clause pads it."
+    },
+    "w29": {
+      "category": "extension",
+      "label": "compatible",
+      "why": "Adds a price to the feeding sessions."
+    },
+    "w30": {
+      "category": "universal",
+      "label": "compatible",
+      "why": "The example agrees with the universal rule."
+    },
+    "w31": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "24/7 vs closed nightly."
+    },
+    "w32": {
+      "category": "temporal",
+      "label": "contradiction",
+      "why": "Same period, different training day for juniors."
+    },
+    "w33": {
+      "category": "limit",
+      "label": "ambiguous",
+      "why": "Three may be the actual rule behind 'at least two' or a different, conflicting threshold."
+    },
+    "w34": {
+      "category": "metric",
+      "label": "compatible",
+      "why": "Total spaces vs spaces free now."
+    },
+    "w35": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Vans vs cars."
+    },
+    "w36": {
+      "category": "limit",
+      "label": "contradiction",
+      "why": "Planned admission exceeds the daily cap."
+    },
+    "w37": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Spring vs autumn intake."
+    },
+    "w38": {
+      "category": "temporal",
+      "label": "ambiguous",
+      "why": "Unknown whether the £45 figure is from before or after January's rise."
+    },
+    "w39": {
+      "category": "paraphrase",
+      "label": "compatible",
+      "why": "No charge to residents' groups restates free permits."
+    },
+    "w40": {
+      "category": "exclusivity",
+      "label": "contradiction",
+      "why": "Solely to one buyer vs some to a cheesemaker."
+    },
+    "w41": {
+      "category": "temporal",
+      "label": "compatible",
+      "why": "Past rule changed before the current allowance."
+    },
+    "w42": {
+      "category": "modality",
+      "label": "compatible",
+      "why": "Recommended for adults vs mandatory for children."
+    },
+    "w43": {
+      "category": "extension",
+      "label": "compatible",
+      "why": "Adds a logging requirement."
+    },
+    "w44": {
+      "category": "modality",
+      "label": "contradiction",
+      "why": "Must sign vs optional."
+    },
+    "w45": {
+      "category": "limit",
+      "label": "ambiguous",
+      "why": "If £500 is the threshold the £1,000 figure conflicts; if not, b just covers more."
+    },
+    "w46": {
+      "category": "frequency_equivalence",
+      "label": "compatible",
+      "why": "Every second Thursday is fortnightly."
+    },
+    "w47": {
+      "category": "frequency",
+      "label": "contradiction",
+      "why": "Every 30 minutes vs hourly on weekdays."
+    },
+    "w48": {
+      "category": "temporal",
+      "label": "ambiguous",
+      "why": "Unspecified time of the last count and unnamed membership."
+    },
+    "w49": {
+      "category": "universal",
+      "label": "contradiction",
+      "why": "No feeding of any animal vs giraffe feeding permitted."
+    },
+    "w50": {
+      "category": "universal",
+      "label": "contradiction",
+      "why": "One stairs-only room breaks 'every room accessible'."
+    },
+    "w51": {
+      "category": "modality",
+      "label": "contradiction",
+      "why": "Must be 25+ vs under-25s may hire with surcharge."
+    },
+    "w52": {
+      "category": "extension",
+      "label": "compatible",
+      "why": "Adds refill stations."
+    },
+    "w53": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "Two approvals required vs one is enough."
+    },
+    "w54": {
+      "category": "modality",
+      "label": "contradiction",
+      "why": "Prohibited vs permitted, same pitch and boots."
+    },
+    "w55": {
+      "category": "scope",
+      "label": "ambiguous",
+      "why": "Unclear whether the 31 January close covers international applicants."
+    },
+    "w56": {
+      "category": "temporal",
+      "label": "compatible",
+      "why": "Observation on a date consistent with the standing rule."
+    },
+    "w57": {
+      "category": "universal",
+      "label": "contradiction",
+      "why": "Off-peak members are members, so 24/7 access fails for them."
+    },
+    "w58": {
+      "category": "metric",
+      "label": "contradiction",
+      "why": "Same average metric, different values."
+    },
+    "w59": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "Free vs £75 fee for the same applicants."
+    },
+    "w60": {
+      "category": "metric",
+      "label": "ambiguous",
+      "why": "2,400 has no time unit, so it may or may not exceed 1,800 per hour."
+    },
+    "w61": {
+      "category": "limit",
+      "label": "contradiction",
+      "why": "23 kg vs 20 kg free allowance."
+    },
+    "w62": {
+      "category": "frequency_equivalence",
+      "label": "compatible",
+      "why": "Every six months equals twice a year."
+    },
+    "w63": {
+      "category": "exclusivity",
+      "label": "compatible",
+      "why": "Consistent with only the head baker changing it."
+    },
+    "w64": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "Around the clock vs no overnight access."
+    },
+    "w65": {
+      "category": "universal",
+      "label": "contradiction",
+      "why": "Every claim inspected vs small claims not inspected."
+    },
+    "w66": {
+      "category": "modality",
+      "label": "compatible",
+      "why": "Different roles: volunteers vs visitors."
+    },
+    "w67": {
+      "category": "frequency",
+      "label": "compatible",
+      "why": "Sunday service differs from weekday service."
+    },
+    "w68": {
+      "category": "frequency",
+      "label": "contradiction",
+      "why": "Closed Mondays vs open seven days."
+    },
+    "w69": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Goats vs giraffes."
+    },
+    "w70": {
+      "category": "subject_mismatch",
+      "label": "ambiguous",
+      "why": "Unclear whether headliners play the main stage."
+    },
+    "w71": {
+      "category": "extension",
+      "label": "compatible",
+      "why": "Adds a licence requirement."
+    },
+    "w72": {
+      "category": "exclusivity",
+      "label": "compatible",
+      "why": "Several tools coexist for different purposes."
+    },
+    "w73": {
+      "category": "universal",
+      "label": "contradiction",
+      "why": "Docs-only PRs are a counterexample to the all-PRs rule."
+    },
+    "w74": {
+      "category": "numeric",
+      "label": "contradiction",
+      "why": "Up to four vs limited to two in the same mode."
+    },
+    "w75": {
+      "category": "temporal",
+      "label": "contradiction",
+      "why": "Different deadline dates for the same intake."
+    },
+    "w76": {
+      "category": "temporal",
+      "label": "compatible",
+      "why": "Different years."
+    },
+    "w77": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Pool hours vs gym access."
+    },
+    "w78": {
+      "category": "environment",
+      "label": "ambiguous",
+      "why": "Unclear whether the 30-second figure applies to beta firmware or only to stable."
+    },
+    "w79": {
+      "category": "extension",
+      "label": "compatible",
+      "why": "Adds a notice period."
+    },
+    "w80": {
+      "category": "temporal",
+      "label": "contradiction",
+      "why": "Two different current prices."
+    },
+    "w81": {
+      "category": "metric",
+      "label": "compatible",
+      "why": "Carry-on limit vs checked-bag allowance."
+    },
+    "w82": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Oven temperatures, not the recipe."
+    },
+    "w83": {
+      "category": "paraphrase",
+      "label": "compatible",
+      "why": "Restates the small-claim rule."
+    },
+    "w84": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "Weekday express exists vs none Monday to Friday."
+    },
+    "w85": {
+      "category": "ambiguous_reference",
+      "label": "ambiguous",
+      "why": "Unnamed animal; conflicts only if it means the giraffes."
+    },
+    "w86": {
+      "category": "universal",
+      "label": "compatible",
+      "why": "Example consistent with the age rule."
+    },
+    "w87": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Experimental branches vs main."
+    },
+    "w88": {
+      "category": "paraphrase",
+      "label": "compatible",
+      "why": "Same deadline, different words."
+    },
+    "w89": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "Reception staffing vs member access."
+    },
+    "w90": {
+      "category": "ambiguous_reference",
+      "label": "ambiguous",
+      "why": "Unnamed permit and unclear whether residents' associations are charities."
+    }
+  }
+}

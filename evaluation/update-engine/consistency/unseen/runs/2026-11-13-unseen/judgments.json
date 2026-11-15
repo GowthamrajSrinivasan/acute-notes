@@ -1,0 +1,90 @@
+{
+  "u01": {
+    "answer": "contradicts",
+    "why": "Both statements describe the same payroll frequency with no contextual difference.",
+    "suggestion": "Confirm the current payroll schedule.",
+    "call": 1
+  },
+  "u03": {
+    "answer": "contradicts",
+    "why": "One says guests cannot export reports, the other says they can.",
+    "suggestion": "Verify the guest permissions for report export.",
+    "call": 1
+  },
+  "u14": {
+    "answer": "contradicts",
+    "why": "The training set size is given as two different numbers.",
+    "suggestion": "Check the actual size of the model's training data.",
+    "call": 1
+  },
+  "u17": {
+    "answer": "contradicts",
+    "why": "One claims card numbers are not stored, the other says they are stored.",
+    "suggestion": "Review the mobile app's data storage policy.",
+    "call": 1
+  },
+  "u21": {
+    "answer": "contradicts",
+    "why": "The onboarding checklist is described with two different step counts.",
+    "suggestion": "Confirm the current version of the onboarding checklist.",
+    "call": 1
+  },
+  "u23": {
+    "answer": "compatible",
+    "why": "Twice a year and every six months describe the same meeting frequency.",
+    "call": 1
+  },
+  "u29": {
+    "answer": "compatible",
+    "why": "One statement limits editing, the other allows viewing; both can coexist.",
+    "call": 1
+  },
+  "u05": {
+    "answer": "contradicts",
+    "why": "Reports cannot be due on both Monday and Friday simultaneously.",
+    "suggestion": "Clarify the official report due date.",
+    "call": 1
+  },
+  "u12": {
+    "answer": "contradicts",
+    "why": "Two different teams are each claimed to be the sole owner.",
+    "suggestion": "Determine the actual ownership of the event pipeline.",
+    "call": 1
+  },
+  "u24": {
+    "answer": "contradicts",
+    "why": "Audits are said to occur quarterly versus monthly.",
+    "suggestion": "Confirm the audit frequency for DNS records.",
+    "call": 1
+  },
+  "u26": {
+    "answer": "contradicts",
+    "why": "Both statements claim the same team uses a single database type, which cannot be both Postgres and MongoDB simultaneously.",
+    "suggestion": "Confirm which database the team actually uses.",
+    "call": 2
+  },
+  "u33": {
+    "answer": "contradicts",
+    "why": "One says sign-ups grew while the other says they shrank in the same quarter, which cannot both be true.",
+    "suggestion": "Check the sign‑up metrics for that quarter.",
+    "call": 2
+  },
+  "u08": {
+    "answer": "contradicts",
+    "why": "The certificate cannot expire on 1 March 2027 and also be valid until 30 June 2027.",
+    "suggestion": "Verify the correct expiration date.",
+    "call": 2
+  },
+  "u20": {
+    "answer": "compatible_context",
+    "why": "One refers to the process before the 2025 redesign, the other to the current process after the redesign.",
+    "suggestion": "No action needed; both statements can coexist.",
+    "call": 2
+  },
+  "u32": {
+    "answer": "compatible",
+    "why": "Each statement describes requirements for a different SDK version, so they do not conflict.",
+    "suggestion": "No action needed.",
+    "call": 2
+  }
+}

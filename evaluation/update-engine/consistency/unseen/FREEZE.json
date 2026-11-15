@@ -1,0 +1,18 @@
+{
+  "frozen": "2026-11-13",
+  "note": "Frozen before any rule, selector or model saw the unseen pairs (plan \u00a712.16). Every file must keep this hash until the unseen run is complete; the recorder and src/ai/consistency/unseen.test.ts refuse otherwise. Not frozen: shared plumbing (src/ai/runtime.ts parseJsonReply) that other work may touch.",
+  "files": {
+    "evaluation/update-engine/consistency/unseen/pairs.json": "c8621e179463e988d1e768792c7b541cb7b7112da50ea76ed00ce76792679673",
+    "evaluation/update-engine/consistency/unseen/author-draft-key.json": "7f190f0c16e3617276d7a1dd6bfbd9c235877c74c3c03af27043a82b85e8403a",
+    "src/ai/consistency/rules.ts": "b6992ffc3a67a0d57ae0292907c86f32a25b88a85bc6c0c8dd61259cfd518e68",
+    "src/ai/fidelity/quantities.ts": "eae62c363080cdb1b5c8becbde19d77367b5b95b6e8aecbcf0c7b89567537d02",
+    "src/ai/fidelity/information.ts": "59cab6cff59a8800cbb0fd45c45c17aecb99986510f46586591575f8bce3a15d",
+    "src/ai/consistency/judge.ts": "46b5bd8ea4fb72e2c065422eba636846a7f8a6bb840840cbc87568ad0414ad05",
+    "src/ai/consistency/candidates.ts": "cea799be232778b703a482100b3d13494da2eb6a117b7415ddd90fe6180d5caf",
+    "src/ai/consistency/evaluation.ts": "bd56f0c9b079fb5ddb06c1e685ad915d40a0ab2a736798aa97c3da2dc7c1def2",
+    "src/ai/consistency/judgeEvaluation.ts": "334d2ec838e4aa8c72ccc95c7b21cd322ef4005a3ed2d3ea2cb34c52f8ba411d",
+    "src/ai/contractTests/consistencyUnseen.contract.test.ts": "fc420c7cb546e286247a27591181751ee1506c64096c402b904356f228018152",
+    "evaluation/update-engine/consistency/unseen/labels.json": "6cddd9ed2b55500857fd6f04b7232c5d193a3ceeeb77e1eb62bdf5d109cab525"
+  },
+  "labelsFrozen": "2026-11-13: the reviewer blind labels, added before the route step; no other entry changed"
+}

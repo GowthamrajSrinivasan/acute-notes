@@ -1,0 +1,237 @@
+/**
+ * The unseen consistency evaluation (intelligent-update-engine-plan §12.16), in two one-shot steps:
+ *
+ * The set is `CONSISTENCY_UNSEEN_SET` (default `unseen`, the first; `unseen2`, … later ones), each with its own FREEZE.json.
+ *
+ *   1. `route` — free, no network. Needs the reviewer's blind labels (`unseen/labels.json`). Runs the frozen rules and
+ *      selector over every unseen pair and records the routing and the planned calls (`routing.json`), before any AI.
+ *        CONSISTENCY_UNSEEN_STEP=route CONSISTENCY_UNSEEN_RUN=2026-11-14-unseen npx vitest run --config vitest.contract.config.ts consistencyUnseen
+ *   2. `classify` — PAID, needs its own approval. Sends exactly the planned calls once (gpt-oss-120b on AICredits, the
+ *      §12.14 settings), within the approved call count and dollar ceiling, then scores end to end:
+ *        CONSISTENCY_UNSEEN_STEP=classify CONSISTENCY_UNSEEN_RUN=2026-11-14-unseen CONSISTENCY_UNSEEN_APPROVED_BY="<name>" \
+ *          CONSISTENCY_UNSEEN_MAX_CALLS=6 CONSISTENCY_UNSEEN_MAX_TOKENS=10800 CONSISTENCY_UNSEEN_MAX_USD=0.05 npx vitest run --config vitest.contract.config.ts consistencyUnseen
+ *
+ * Both refuse unless every file in `unseen/FREEZE.json` (pairs, rules, selector, prompt + combining policy, scorer, this
+ * recorder) still has its frozen hash, and neither ever runs twice for a run (no reruns, no tuning). Detection is
+ * measured over **every** unseen pair (not only those routed), and a routed pair without an answer counts as missed.
+ */
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+import { callTokens, JudgeBudget, planForChange, rankCandidates, routeOf, priorityOf } from "@/ai/consistency/candidates";
+import { evaluate, formatReport, type EvalPair } from "@/ai/consistency/evaluation";
+import { judgeConsistencyTask, outputBudget, planCalls, type JudgeOutput } from "@/ai/consistency/judge";
+import { evaluateCombined, formatCombined, formatMatrix, routingMatrix, type RecordedJudgment, type TruthLabel } from "@/ai/consistency/judgeEvaluation";
+import { budgetedSelection, evaluatePipeline, formatPipeline } from "@/ai/consistency/pipelineEvaluation";
+import { judgePair } from "@/ai/consistency/rules";
+import { screenPair } from "@/ai/consistency/screen";
+import { parseJsonReply } from "@/ai/runtime";
+import { getByokCredentials } from "./testEnv";
+
+const ROOT = process.cwd();
+/** The set: `unseen` (the first, recorded 2026-11-13) or a later one, e.g. `unseen2` (`CONSISTENCY_UNSEEN_SET`). */
+const SET = process.env.CONSISTENCY_UNSEEN_SET ?? "unseen";
+const DIR = join(ROOT, "evaluation", "update-engine", "consistency", SET);
+const STEP = process.env.CONSISTENCY_UNSEEN_STEP ?? "";
+const RUN = process.env.CONSISTENCY_UNSEEN_RUN ?? "";
+const RUN_DIR = join(DIR, "runs", RUN);
+const APPROVED_BY = (process.env.CONSISTENCY_UNSEEN_APPROVED_BY ?? "").trim();
+/** The approved call cap for this run (the code allows at most 12; each run's approval sets its own). */
+const MAX_CALLS = Math.min(12, Number(process.env.CONSISTENCY_UNSEEN_MAX_CALLS) || 0);
+const MAX_USD = Number(process.env.CONSISTENCY_UNSEEN_MAX_USD) || 0;
+/** Total tokens for the recording (worst case reserved per call: estimated input + whole output allowance); the code allows ≤ 21,600. */
+const MAX_TOKENS = Math.min(21_600, Number(process.env.CONSISTENCY_UNSEEN_MAX_TOKENS) || 0);
+const CLASSIFIER = "openai/gpt-oss-120b";
+const ENDPOINT = "https://api.aicredits.in/v1";
+const creds = getByokCredentials("aicredits");
+
+const sha = (path: string) => createHash("sha256").update(readFileSync(path)).digest("hex");
+const read = <T,>(path: string) => JSON.parse(readFileSync(path, "utf8")) as T;
+
+interface Labels {
+  reviewer: string;
+  date: string;
+  blind: boolean;
+  labels: Record<string, { label: TruthLabel; note?: string }>;
+}
+
+function frozenMismatch(): string {
+  if (!existsSync(join(DIR, "FREEZE.json"))) return "unseen/FREEZE.json is missing";
+  const freeze = read<{ files: Record<string, string> }>(join(DIR, "FREEZE.json"));
+  const changed = Object.entries(freeze.files).filter(([f, h]) => sha(join(ROOT, f)) !== h).map(([f]) => f);
+  return changed.length ? `changed since the freeze: ${changed.join(", ")}` : "";
+}
+
+function refusal(): string {
+  if (STEP !== "route" && STEP !== "classify") return "CONSISTENCY_UNSEEN_STEP is not route or classify";
+  if (!/^unseen\d*$/.test(SET)) return `CONSISTENCY_UNSEEN_SET "${SET}" must be unseen, unseen2, …`;
+  if (!/^\d{4}-\d{2}-\d{2}-[a-z0-9-]+$/.test(RUN)) return "CONSISTENCY_UNSEEN_RUN must look like 2026-11-14-unseen";
+  const frozen = frozenMismatch();
+  if (frozen) return frozen;
+  if (!existsSync(join(DIR, "labels.json"))) return "unseen/labels.json (the reviewer's blind labels) is missing";
+  if (STEP === "route" && existsSync(join(RUN_DIR, "routing.json"))) return "routing already recorded for this run";
+  if (STEP === "classify") {
+    if (!existsSync(join(RUN_DIR, "routing.json"))) return "run the route step first";
+    if (existsSync(join(RUN_DIR, "judgments.json"))) return "already classified: no reruns";
+    if (!APPROVED_BY) return "CONSISTENCY_UNSEEN_APPROVED_BY is not set";
+    if (!MAX_CALLS) return "CONSISTENCY_UNSEEN_MAX_CALLS (the approved cap) is not set";
+    if (!MAX_USD) return "CONSISTENCY_UNSEEN_MAX_USD is not set";
+    if (!MAX_TOKENS) return "CONSISTENCY_UNSEEN_MAX_TOKENS (the approved ceiling) is not set";
+    if (!creds) return "no AICredits credentials";
+  }
+  return "";
+}
+
+/** The unseen pairs with the reviewer's labels as truth, and the design categories (for per-category and context scores). */
+function labelled(): { pairs: (EvalPair & { batch?: string })[]; labelsSha: string } {
+  const pairs = read<{ pairs: { id: string; a: string; b: string; batch?: string }[] }>(join(DIR, "pairs.json")).pairs;
+  const labels = read<Labels>(join(DIR, "labels.json"));
+  const drafts = read<{ drafts: Record<string, { category: string }> }>(join(DIR, "author-draft-key.json")).drafts;
+  expect(labels.blind, "labels must be given blind").toBe(true);
+  expect(Object.keys(labels.labels).sort()).toEqual(pairs.map((p) => p.id).sort());
+  return {
+    pairs: pairs.map((p) => ({ id: p.id, a: p.a, b: p.b, ...(p.batch ? { batch: p.batch } : {}), category: drafts[p.id]!.category, truth: labels.labels[p.id]!.label, expected: "compatible", rationale: labels.labels[p.id]!.note ?? "" })),
+    labelsSha: sha(join(DIR, "labels.json")),
+  };
+}
+
+describe.skipIf(!!refusal())(`unseen consistency evaluation — ${STEP}`, () => {
+  it(`${STEP} ${RUN}`, async () => {
+    const { pairs, labelsSha } = labelled();
+    mkdirSync(RUN_DIR, { recursive: true });
+
+    if (STEP === "route") {
+      const rows = pairs.map((p) => {
+        const j = judgePair(p.a, p.b);
+        return { id: p.id, route: routeOf(j), priority: priorityOf(j), verdict: j.verdict, ...(j.nearMiss ? { nearMiss: j.nearMiss.kind } : {}), ...(j.contextDiffers ? { contextDiffers: true } : {}) };
+      });
+      const ranked = rankCandidates(pairs.map((p) => ({ key: p.id, a: { sentence: p.a }, b: { sentence: p.b }, judgement: judgePair(p.a, p.b) })));
+      // §12.21: the pipeline screens every pair; the calls cover every pair ANY routing sends to the AI (baseline, near-miss,
+      // pipeline), so the three are scored on the same answers. Pipeline candidates first, in its priority order.
+      const screened = new Map(pairs.map((p) => [p.id, screenPair(p.a, p.b)] as const));
+      const pipelineForward = pairs.filter((p) => screened.get(p.id)!.decision === "forward").sort((x, y) => screened.get(y.id)!.priority - screened.get(x.id)!.priority);
+      const union = [...pipelineForward.map((p) => p.id), ...ranked.map((c) => c.key).filter((k) => !pipelineForward.some((p) => p.id === k))];
+      const byIdRoute = new Map(pairs.map((p) => [p.id, p] as const));
+      const { calls } = planCalls(union.map((k) => ({ key: k, a: { sentence: byIdRoute.get(k)!.a }, b: { sentence: byIdRoute.get(k)!.b } })), Number.POSITIVE_INFINITY);
+      const pipeline = {
+        decisions: Object.fromEntries([...screened].map(([id, x]) => [id, { decision: x.decision, ...(x.exclusion ? { exclusion: x.exclusion } : {}), priority: Math.round(x.priority * 100) / 100, scoped: x.scoped, exclusive: x.exclusive, thin: x.thin }])),
+        generationRecall: evaluatePipeline(pairs).generationRecall,
+        budgetPool: budgetedSelection(pairs, "pool"),
+        budgetBatch: pairs.some((p) => p.batch) ? budgetedSelection(pairs.filter((p) => p.batch), "batch") : null,
+      };
+      // The 10-pair limit: if every candidate arrived in one accepted change, which contradictions would its one call take?
+      const truth = new Map(pairs.map((p) => [p.id, p.truth] as const));
+      const one = planForChange("rev:unseen-all", ranked, new JudgeBudget({ now: () => 0 }), { aiEnabled: true });
+      const routedContradictions = ranked.filter((c) => truth.get(c.key) === "contradiction").map((c) => c.key);
+      const oneChange = {
+        call: one.call?.keys ?? [],
+        pending: one.pending,
+        contradictionsRouted: routedContradictions.length,
+        contradictionsInTheCall: routedContradictions.filter((k) => one.call?.keys.includes(k)).length,
+        contradictionsLeftOut: routedContradictions.filter((k) => !one.call?.keys.includes(k)),
+      };
+      const routing = {
+        run: RUN,
+        date: new Date().toISOString(),
+        labelsSha256: labelsSha,
+        counts: Object.fromEntries((["rule_conflict", "possible", "near_miss", "excluded"] as const).map((r) => [r, rows.filter((x) => x.route === r).length])),
+        candidates: ranked.length,
+        plannedCalls: calls.map((c) => ({ keys: c.keys, maxTokens: callTokens(c.input) })),
+        oneChange,
+        pipeline,
+        rows,
+      };
+      writeFileSync(join(RUN_DIR, "routing.json"), JSON.stringify(routing, null, 2) + "\n");
+      const matrix = formatMatrix("unseen", routingMatrix(pairs));
+      writeFileSync(join(RUN_DIR, "routing.md"), `${matrix}\n\n${formatReport("unseen rules only", evaluate(pairs))}\n\n${formatPipeline("pipeline (before any answer)", evaluatePipeline(pairs), pipeline.budgetPool)}\n`);
+      console.log(matrix);
+      return;
+    }
+
+    // classify — exactly the planned calls, once.
+    const routing = read<{ labelsSha256: string; plannedCalls: { keys: string[]; maxTokens: number }[] }>(join(RUN_DIR, "routing.json"));
+    expect(routing.labelsSha256, "labels changed after routing").toBe(labelsSha);
+    const catalogue = (await (await fetch(`${ENDPOINT}/models`, { headers: { authorization: `Bearer ${creds!.apiKey}` } })).json()) as { data: { id: string; input_cost_per_token: number; output_cost_per_token: number }[] };
+    const price = catalogue.data.find((m) => m.id === CLASSIFIER)!;
+    const worst = (tokens: number) => tokens * Math.max(price.input_cost_per_token, price.output_cost_per_token);
+    const byId = new Map(pairs.map((p) => [p.id, p] as const));
+    const calls: unknown[] = [];
+    const judgments: Record<string, RecordedJudgment & { call: number }> = {};
+    let spentWorst = 0;
+    let tokensReserved = 0;
+    let n = 0;
+    for (const planned of routing.plannedCalls) {
+      // Every ceiling is checked on the worst case before the call; a call that would pass one is not sent (its pairs count as missed).
+      const reason = n >= MAX_CALLS ? "call limit" : tokensReserved + planned.maxTokens > MAX_TOKENS ? "token ceiling" : spentWorst + worst(planned.maxTokens) > MAX_USD ? "dollar ceiling" : "";
+      if (reason) {
+        calls.push({ keys: planned.keys, status: "not_sent", reason });
+        continue;
+      }
+      n++;
+      spentWorst += worst(planned.maxTokens);
+      tokensReserved += planned.maxTokens;
+      const { calls: one } = planCalls(planned.keys.map((k) => ({ key: k, a: { sentence: byId.get(k)!.a }, b: { sentence: byId.get(k)!.b } })), 1);
+      const input = one[0]!.input;
+      const { systemPrompt, prompt } = judgeConsistencyTask.buildPrompt({ input });
+      const maxTokens = outputBudget(input);
+      const started = Date.now();
+      let res: Response | undefined;
+      for (const pause of [0, 3_000, 8_000]) {
+        if (pause) await new Promise((r) => setTimeout(r, pause));
+        res = await fetch(`${ENDPOINT}/chat/completions`, {
+          method: "POST",
+          headers: { authorization: `Bearer ${creds!.apiKey}`, "content-type": "application/json" },
+          body: JSON.stringify({ model: CLASSIFIER, temperature: 0, max_tokens: maxTokens, reasoning_effort: "low", messages: [{ role: "system", content: systemPrompt }, { role: "user", content: prompt }] }),
+          signal: AbortSignal.timeout(30_000),
+        });
+        if (res.status !== 429 && res.status < 500) break;
+      }
+      const ms = Date.now() - started;
+      if (!res?.ok) {
+        calls.push({ n, keys: planned.keys, prompt, status: "http_error", httpStatus: res?.status, raw: (await res?.text().catch(() => "")) ?? "", ms });
+        continue;
+      }
+      const body = (await res.json()) as { choices?: { message?: { content?: string }; finish_reason?: string }[]; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number; cost?: number } };
+      const raw = body.choices?.[0]?.message?.content ?? "";
+      const u = body.usage ?? {};
+      const parsed = judgeConsistencyTask.outputSchema.safeParse(parseJsonReply(raw));
+      const status = body.choices?.[0]?.finish_reason === "length" ? "truncated" : parsed.success ? "ok" : "unreadable";
+      calls.push({ n, keys: planned.keys, systemPrompt, prompt, maxTokens, status, raw, usage: u, costUsd: (u.prompt_tokens ?? 0) * price.input_cost_per_token + (u.completion_tokens ?? 0) * price.output_cost_per_token, ms });
+      if (status !== "ok" || !parsed.success) continue;
+      for (const r of (parsed.data as JudgeOutput).results) {
+        const key = planned.keys[Number(r.ref.replace(/^p/, "")) - 1];
+        if (key && !judgments[key]) judgments[key] = { answer: r.answer, ...(r.why ? { why: r.why } : {}), ...(r.suggestion ? { suggestion: r.suggestion } : {}), call: n };
+      }
+    }
+    writeFileSync(join(RUN_DIR, "calls.json"), JSON.stringify(calls, null, 2) + "\n");
+    writeFileSync(join(RUN_DIR, "judgments.json"), JSON.stringify(judgments, null, 2) + "\n");
+    const answers = new Map(Object.entries(judgments));
+    const report = [
+      `# Unseen evaluation ${RUN} (approved by ${APPROVED_BY}; ≤ ${MAX_CALLS} calls, ≤ ${MAX_TOKENS} tokens, ≤ $${MAX_USD}; sent ${n}, worst-case reserved ${tokensReserved} tokens / $${spentWorst.toFixed(4)})`,
+      "",
+      formatMatrix("unseen", routingMatrix(pairs)),
+      "",
+      formatReport("rules only", evaluate(pairs)),
+      "",
+      formatCombined("rules + AI, baseline routing (possible only)", evaluateCombined(pairs, answers, "baseline")),
+      "",
+      formatCombined("rules + AI, near-miss routing", evaluateCombined(pairs, answers, "near_miss")),
+      "",
+      formatPipeline("rules + AI, §12.21 pipeline (retrieval → screen → AI → guards)", evaluatePipeline(pairs, answers), budgetedSelection(pairs, "pool")),
+      ...(pairs.some((p) => p.batch) ? ["", formatPipeline("§12.21 pipeline, competing batches", evaluatePipeline(pairs.filter((p) => p.batch), answers), budgetedSelection(pairs.filter((p) => p.batch), "batch"))] : []),
+    ].join("\n");
+    writeFileSync(join(RUN_DIR, "report.md"), report + "\n");
+    console.log(report);
+    expect(n).toBeLessThanOrEqual(MAX_CALLS);
+    expect(tokensReserved).toBeLessThanOrEqual(MAX_TOKENS);
+  }, 600_000);
+});
+
+describe("unseen consistency evaluation — refusal", () => {
+  it("says why it did not run", () => {
+    const why = refusal();
+    if (why) console.log(`consistencyUnseen not run: ${why}`);
+    expect(true).toBe(true);
+  });
+});

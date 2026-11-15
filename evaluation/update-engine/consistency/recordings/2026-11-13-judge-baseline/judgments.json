@@ -1,0 +1,157 @@
+{
+  "dev": {
+    "d17": {
+      "answer": "contradicts",
+      "why": "Both statements claim ownership of the same gateway by different teams in the same context.",
+      "suggestion": "Confirm which team currently owns the gateway.",
+      "call": 1
+    },
+    "d18": {
+      "answer": "contradicts",
+      "why": "They state two different primary database technologies for the same system.",
+      "suggestion": "Verify the actual primary database in use.",
+      "call": 1
+    },
+    "d19": {
+      "answer": "contradicts",
+      "why": "One says builds run on GitHub Actions, the other on Jenkins, for the same builds.",
+      "suggestion": "Check which CI system is currently configured.",
+      "call": 1
+    },
+    "d20": {
+      "answer": "contradicts",
+      "why": "Both assign a different default region to the same deployment.",
+      "suggestion": "Determine the correct default region.",
+      "call": 1
+    },
+    "d21": {
+      "answer": "compatible_context",
+      "why": "A specifies the 2023 limit, B gives an unspecified (likely later) limit.",
+      "call": 1
+    },
+    "d22": {
+      "answer": "compatible_context",
+      "why": "A refers to pre‑migration times, B to post‑migration performance.",
+      "call": 1
+    },
+    "d23": {
+      "answer": "compatible_context",
+      "why": "A applies until March, B applies after March.",
+      "call": 1
+    },
+    "d24": {
+      "answer": "compatible_context",
+      "why": "A describes version 1, B likely refers to a newer version.",
+      "call": 1
+    },
+    "d25": {
+      "answer": "compatible_context",
+      "why": "A is about the last quarter, B about the current headcount.",
+      "call": 1
+    },
+    "d26": {
+      "answer": "compatible_context",
+      "why": "Different environments (staging vs production) have different retry settings.",
+      "call": 1
+    },
+    "d27": {
+      "answer": "compatible_context",
+      "why": "Different environments (staging vs production) imply separate contexts.",
+      "call": 2
+    },
+    "d28": {
+      "answer": "compatible_context",
+      "why": "One refers to test, the other to production, so contexts differ.",
+      "call": 2
+    },
+    "d30": {
+      "answer": "compatible_context",
+      "why": "Dev and production clusters are distinct contexts.",
+      "call": 2
+    },
+    "d34": {
+      "answer": "compatible",
+      "why": "One limit is per user, the other is a total system limit; both can coexist.",
+      "call": 2
+    },
+    "d35": {
+      "answer": "compatible_context",
+      "why": "Different client types (mobile vs web) provide separate contexts.",
+      "call": 2
+    },
+    "d45": {
+      "answer": "compatible",
+      "why": "Both statements can be true about different assets owned by the same team.",
+      "call": 2
+    },
+    "d51": {
+      "answer": "compatible",
+      "why": "A cache can store both user sessions and access tokens simultaneously.",
+      "call": 2
+    },
+    "d55": {
+      "answer": "contradicts",
+      "why": "Both state a single limit value without any contextual distinction.",
+      "suggestion": "Clarify which limit applies to which scope or environment.",
+      "call": 2
+    },
+    "d56": {
+      "answer": "contradicts",
+      "why": "Both give different durations for the same unspecified process.",
+      "suggestion": "Specify the context or step each duration refers to.",
+      "call": 2
+    }
+  },
+  "heldout": {
+    "h07": {
+      "answer": "contradicts",
+      "why": "Both statements refer to the same alert routing without any contextual distinction, yet they assign alerts to different channels.",
+      "suggestion": "Confirm which channel is the correct destination for alerts.",
+      "call": 4
+    },
+    "h08": {
+      "answer": "compatible_context",
+      "why": "One statement specifies the year 2022, implying a past policy, while the other lacks a time reference and may describe the current policy.",
+      "suggestion": "Check the effective date of the session expiration rule.",
+      "call": 4
+    },
+    "h09": {
+      "answer": "compatible_context",
+      "why": "The word \"Previously\" indicates a past state, whereas the other statement describes the present state of the bucket.",
+      "suggestion": "Verify the timeline of the bucket's capacity changes.",
+      "call": 4
+    },
+    "h10": {
+      "answer": "compatible_context",
+      "why": "The statements explicitly refer to different environments (staging vs production).",
+      "suggestion": "Ensure each environment’s session timeout is configured as intended.",
+      "call": 4
+    },
+    "h11": {
+      "answer": "compatible_context",
+      "why": "Each statement describes a different cluster (QA vs production).",
+      "suggestion": "Confirm the node counts for each specific cluster.",
+      "call": 4
+    },
+    "h13": {
+      "answer": "compatible_context",
+      "why": "The statements pertain to different platforms (iOS vs Android).",
+      "suggestion": "Validate the cache size settings for each platform.",
+      "call": 4
+    }
+  },
+  "regressions": {
+    "r01": {
+      "answer": "contradicts",
+      "why": "Both statements describe the same release frequency without any contextual distinction, and one week vs two weeks cannot both be true.",
+      "suggestion": "Verify the current release schedule and clarify whether it changed over time.",
+      "call": 3
+    },
+    "r02": {
+      "answer": "contradicts",
+      "why": "Both statements specify the number of retry attempts for the same worker, and three vs five attempts cannot both apply simultaneously.",
+      "suggestion": "Check the worker configuration or documentation to confirm the correct retry count.",
+      "call": 3
+    }
+  }
+}

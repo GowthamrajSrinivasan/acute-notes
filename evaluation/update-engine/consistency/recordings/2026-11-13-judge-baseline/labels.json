@@ -1,0 +1,776 @@
+{
+  "anthropic/claude-haiku-4.5": {
+    "d01": {
+      "label": "ambiguous",
+      "why": "Unclear if 'retries' and 'worker retries' refer to the same retry mechanism or different ones.",
+      "call": 5
+    },
+    "d02": {
+      "label": "contradiction",
+      "why": "Both describe the same timeout property with different values (30s vs 10s).",
+      "call": 5
+    },
+    "d03": {
+      "label": "contradiction",
+      "why": "Both describe cache entry expiration with different durations (60 min vs 15 min).",
+      "call": 5
+    },
+    "d04": {
+      "label": "contradiction",
+      "why": "Both describe backup retention period with different values (30 days vs 7 days).",
+      "call": 5
+    },
+    "d05": {
+      "label": "contradiction",
+      "why": "Both describe the same rate limit with different values (100 vs 1000 requests/min).",
+      "call": 5
+    },
+    "d06": {
+      "label": "contradiction",
+      "why": "Both describe node memory capacity with different values (16 GB vs 32 GB).",
+      "call": 5
+    },
+    "d07": {
+      "label": "contradiction",
+      "why": "Both describe team size with different values (four vs six engineers).",
+      "call": 5
+    },
+    "d08": {
+      "label": "contradiction",
+      "why": "Both describe deploy duration with different values (10 min vs 40 min).",
+      "call": 5
+    },
+    "d09": {
+      "label": "contradiction",
+      "why": "Retries cannot be both enabled and disabled for the same operation.",
+      "call": 5
+    },
+    "d10": {
+      "label": "contradiction",
+      "why": "A service cannot be both stateless and not stateless simultaneously.",
+      "call": 5
+    },
+    "d11": {
+      "label": "contradiction",
+      "why": "One states admins can delete projects, the other states they cannot; both cannot be true simultaneously.",
+      "call": 6
+    },
+    "d12": {
+      "label": "contradiction",
+      "why": "Required and optional are mutually exclusive states for the same requirement.",
+      "call": 6
+    },
+    "d13": {
+      "label": "contradiction",
+      "why": "A queue either guarantees ordering or does not; both cannot be true.",
+      "call": 6
+    },
+    "d14": {
+      "label": "contradiction",
+      "why": "Latency cannot both increase and decrease after the same migration.",
+      "call": 6
+    },
+    "d15": {
+      "label": "contradiction",
+      "why": "Costs cannot simultaneously grow and shrink with the same variable.",
+      "call": 6
+    },
+    "d16": {
+      "label": "contradiction",
+      "why": "Error rates cannot both go up and down in the same time period.",
+      "call": 6
+    },
+    "d17": {
+      "label": "contradiction",
+      "why": "The same gateway cannot be owned by two different teams.",
+      "call": 6
+    },
+    "d18": {
+      "label": "contradiction",
+      "why": "The primary database cannot be both PostgreSQL and MySQL simultaneously.",
+      "call": 6
+    },
+    "d19": {
+      "label": "ambiguous",
+      "why": "Builds could run on both platforms, or in different environments/stages, or at different times.",
+      "call": 6
+    },
+    "d20": {
+      "label": "contradiction",
+      "why": "The default region cannot be two different locations at the same time.",
+      "call": 6
+    },
+    "d21": {
+      "label": "compatible",
+      "why": "Different time periods (2023 vs. current); API limits may have changed.",
+      "call": 7
+    },
+    "d22": {
+      "label": "compatible",
+      "why": "Different contexts (before vs. after migration); both can be true at different times.",
+      "call": 7
+    },
+    "d23": {
+      "label": "compatible",
+      "why": "Different time periods (until March vs. current); retry behavior may have changed.",
+      "call": 7
+    },
+    "d24": {
+      "label": "compatible",
+      "why": "Different versions (Version 1 vs. current); timeout may have changed across versions.",
+      "call": 7
+    },
+    "d25": {
+      "label": "compatible",
+      "why": "Different time periods (last quarter vs. current); team size may have changed.",
+      "call": 7
+    },
+    "d26": {
+      "label": "compatible",
+      "why": "Different environments (staging vs. production); retry counts can differ by environment.",
+      "call": 7
+    },
+    "d27": {
+      "label": "compatible",
+      "why": "Different environments (staging vs. production); memory allocation can differ by environment.",
+      "call": 7
+    },
+    "d28": {
+      "label": "compatible",
+      "why": "Different environments (test vs. production); backup retention policies can differ by environment.",
+      "call": 7
+    },
+    "d29": {
+      "label": "compatible",
+      "why": "Different scopes (local development vs. primary database); can both be true in different contexts.",
+      "call": 7
+    },
+    "d30": {
+      "label": "compatible",
+      "why": "Different clusters (dev vs. production); timeout values can differ by cluster.",
+      "call": 7
+    },
+    "d31": {
+      "label": "compatible",
+      "why": "Different user tiers have different limits; both can be true simultaneously.",
+      "call": 8
+    },
+    "d32": {
+      "label": "compatible",
+      "why": "Jobs and requests are different entities; each can have its own retry policy.",
+      "call": 8
+    },
+    "d33": {
+      "label": "compatible",
+      "why": "Admins and viewers are different roles with different permissions; both statements can be true.",
+      "call": 8
+    },
+    "d34": {
+      "label": "compatible",
+      "why": "Per-user and total limits are different scopes; both can coexist (e.g., 100/min per user, 5000/min across all users).",
+      "call": 8
+    },
+    "d35": {
+      "label": "compatible",
+      "why": "Mobile and web clients are different platforms; each can have its own timeout.",
+      "call": 8
+    },
+    "d36": {
+      "label": "compatible",
+      "why": "EU and US are different regions with different storage locations; both can be true.",
+      "call": 8
+    },
+    "d37": {
+      "label": "contradiction",
+      "why": "One says retries happen up to five times, the other says exactly three times; they conflict on the maximum retry count.",
+      "call": 8
+    },
+    "d38": {
+      "label": "compatible",
+      "why": "10 minutes is within the 'at most 15 minutes' constraint; both can be true.",
+      "call": 8
+    },
+    "d39": {
+      "label": "contradiction",
+      "why": "25 minutes exceeds the 'at most 15 minutes' limit; they cannot both be true.",
+      "call": 8
+    },
+    "d40": {
+      "label": "compatible",
+      "why": "Six engineers satisfies 'at least four engineers'; both statements can be true.",
+      "call": 8
+    },
+    "d41": {
+      "label": "compatible",
+      "why": "Timeouts and retries are different events; both can occur independently.",
+      "call": 9
+    },
+    "d42": {
+      "label": "compatible",
+      "why": "Read replica and primary are different instances; each can have different memory.",
+      "call": 9
+    },
+    "d43": {
+      "label": "compatible",
+      "why": "Search and upload are different request types; each can have different timeout values.",
+      "call": 9
+    },
+    "d44": {
+      "label": "compatible",
+      "why": "Billing and search are different services; each can be written in different languages.",
+      "call": 9
+    },
+    "d45": {
+      "label": "compatible",
+      "why": "Gateway and ledger are different systems; one team can own both.",
+      "call": 9
+    },
+    "d46": {
+      "label": "compatible",
+      "why": "p50 and p99 are different percentiles; p99 is expected to be higher than p50.",
+      "call": 9
+    },
+    "d47": {
+      "label": "compatible",
+      "why": "Average and peak are different metrics; peak is expected to be higher than average.",
+      "call": 9
+    },
+    "d48": {
+      "label": "compatible",
+      "why": "Monthly and daily active users are different scopes; monthly can be higher than daily.",
+      "call": 9
+    },
+    "d49": {
+      "label": "compatible",
+      "why": "Both statements say the same thing; they agree and reinforce each other.",
+      "call": 9
+    },
+    "d50": {
+      "label": "compatible",
+      "why": "30 days and one month are approximately equivalent; statements agree.",
+      "call": 9
+    },
+    "d51": {
+      "label": "compatible",
+      "why": "A cache can store both user sessions and access tokens simultaneously.",
+      "call": 10
+    },
+    "d52": {
+      "label": "compatible",
+      "why": "Both statements say the same thing; 'one deploy' and 'deploys' refer to the same duration.",
+      "call": 10
+    },
+    "d53": {
+      "label": "compatible",
+      "why": "B adds detail about the backoff strategy; both can be true together.",
+      "call": 10
+    },
+    "d54": {
+      "label": "compatible",
+      "why": "B adds information about auditing; both statements can be true together.",
+      "call": 10
+    },
+    "d55": {
+      "label": "contradiction",
+      "why": "A limit cannot be both 100 and 500 in the same context.",
+      "call": 10
+    },
+    "d56": {
+      "label": "contradiction",
+      "why": "The same action cannot take both 5 minutes and 2 hours.",
+      "call": 10
+    },
+    "h01": {
+      "label": "contradiction",
+      "why": "Sessions cannot expire at both 30 minutes and 8 hours simultaneously.",
+      "call": 10
+    },
+    "h02": {
+      "label": "contradiction",
+      "why": "The same bucket cannot store both 2 TB and 500 GB of logs.",
+      "call": 10
+    },
+    "h03": {
+      "label": "contradiction",
+      "why": "Releases cannot ship at both two-week and one-week intervals.",
+      "call": 10
+    },
+    "h04": {
+      "label": "contradiction",
+      "why": "An endpoint cannot be both public and not public simultaneously.",
+      "call": 10
+    },
+    "h05": {
+      "label": "contradiction",
+      "why": "Direct negation: one says users can export, the other says they cannot.",
+      "call": 11
+    },
+    "h06": {
+      "label": "contradiction",
+      "why": "Throughput cannot both rise and fall after the same upgrade.",
+      "call": 11
+    },
+    "h07": {
+      "label": "contradiction",
+      "why": "Alerts cannot go to both the on-call channel and the platform channel simultaneously in the same context.",
+      "call": 11
+    },
+    "h08": {
+      "label": "compatible",
+      "why": "Different time periods: 2022 had 8-hour expiry, but current expiry is 30 minutes (a change over time).",
+      "call": 11
+    },
+    "h09": {
+      "label": "compatible",
+      "why": "Different time periods: previously 500 GB, now 2 TB (a change over time).",
+      "call": 11
+    },
+    "h10": {
+      "label": "compatible",
+      "why": "Different environments: staging has 8-hour expiry, production has 30-minute expiry.",
+      "call": 11
+    },
+    "h11": {
+      "label": "compatible",
+      "why": "Different clusters: QA and production are separate systems with different node counts.",
+      "call": 11
+    },
+    "h12": {
+      "label": "compatible",
+      "why": "Different plan tiers: Enterprise and Standard plans have different retention policies.",
+      "call": 11
+    },
+    "h13": {
+      "label": "compatible",
+      "why": "Different platforms: iOS and Android are separate systems with different cache sizes.",
+      "call": 11
+    },
+    "h14": {
+      "label": "contradiction",
+      "why": "Sessions cannot last both up to 8 hours and exactly 30 minutes in the same context.",
+      "call": 11
+    },
+    "h15": {
+      "label": "contradiction",
+      "why": "A queue cannot simultaneously have a maximum capacity of 1000 and contain 5000 messages.",
+      "call": 12
+    },
+    "h16": {
+      "label": "compatible",
+      "why": "Two different jobs can run on different schedules without conflict.",
+      "call": 12
+    },
+    "h17": {
+      "label": "compatible",
+      "why": "Median and worst-case are different statistical measures; both can be true simultaneously.",
+      "call": 12
+    },
+    "h18": {
+      "label": "compatible",
+      "why": "30 minutes and half an hour are equivalent; statements agree.",
+      "call": 12
+    },
+    "h19": {
+      "label": "contradiction",
+      "why": "A cannot be true if alerts also go to email; B specifies a superset of destinations.",
+      "call": 12
+    },
+    "r01": {
+      "label": "contradiction",
+      "why": "Releases cannot ship both every two weeks and every week simultaneously.",
+      "call": 12
+    },
+    "r02": {
+      "label": "contradiction",
+      "why": "The worker cannot retry both three times and five times for the same operation.",
+      "call": 12
+    }
+  },
+  "deepseek/deepseek-v3.2": {
+    "d01": {
+      "label": "contradiction",
+      "why": "Different retry counts cannot both be true for the same worker.",
+      "call": 13
+    },
+    "d02": {
+      "label": "contradiction",
+      "why": "Different timeout durations cannot both be true for the same request.",
+      "call": 13
+    },
+    "d03": {
+      "label": "contradiction",
+      "why": "Different cache expiration times cannot both be true for the same cache.",
+      "call": 13
+    },
+    "d04": {
+      "label": "contradiction",
+      "why": "Different backup retention periods cannot both be true for the same backups.",
+      "call": 13
+    },
+    "d05": {
+      "label": "contradiction",
+      "why": "Different rate limits cannot both be true for the same API.",
+      "call": 13
+    },
+    "d06": {
+      "label": "contradiction",
+      "why": "Different memory amounts cannot both be true for the same node.",
+      "call": 13
+    },
+    "d07": {
+      "label": "contradiction",
+      "why": "Different team sizes cannot both be true for the same team.",
+      "call": 13
+    },
+    "d08": {
+      "label": "contradiction",
+      "why": "Different deploy durations cannot both be true for the same deploy process.",
+      "call": 13
+    },
+    "d09": {
+      "label": "contradiction",
+      "why": "Retries cannot be both enabled and disabled for the same payment calls.",
+      "call": 13
+    },
+    "d10": {
+      "label": "contradiction",
+      "why": "A service cannot be both stateless and not stateless.",
+      "call": 13
+    },
+    "d11": {
+      "label": "contradiction",
+      "why": "Admins either can or cannot delete projects; both cannot be true simultaneously.",
+      "call": 14
+    },
+    "d12": {
+      "label": "contradiction",
+      "why": "Encryption at rest cannot be both required and optional in the same context.",
+      "call": 14
+    },
+    "d13": {
+      "label": "contradiction",
+      "why": "The queue either guarantees ordering or it does not; both cannot be true.",
+      "call": 14
+    },
+    "d14": {
+      "label": "contradiction",
+      "why": "Latency cannot both increase and decrease after the same migration.",
+      "call": 14
+    },
+    "d15": {
+      "label": "contradiction",
+      "why": "Costs cannot both grow and shrink with the number of users under the same conditions.",
+      "call": 14
+    },
+    "d16": {
+      "label": "contradiction",
+      "why": "Error rates cannot both go up and down in the same period (last week).",
+      "call": 14
+    },
+    "d17": {
+      "label": "ambiguous",
+      "why": "Could be different teams owning different parts, or ownership changed; need more context.",
+      "call": 14
+    },
+    "d18": {
+      "label": "contradiction",
+      "why": "The primary database cannot be both PostgreSQL and MySQL at the same time.",
+      "call": 14
+    },
+    "d19": {
+      "label": "ambiguous",
+      "why": "Builds might run on both systems for different projects or at different times; unclear.",
+      "call": 14
+    },
+    "d20": {
+      "label": "contradiction",
+      "why": "The default region cannot be both Frankfurt and Dublin simultaneously.",
+      "call": 14
+    },
+    "d21": {
+      "label": "ambiguous",
+      "why": "Could be about different years or contexts, but not explicitly stated.",
+      "call": 15
+    },
+    "d22": {
+      "label": "compatible",
+      "why": "Different time contexts: 'before migration' vs. current.",
+      "call": 15
+    },
+    "d23": {
+      "label": "compatible",
+      "why": "Different time contexts: 'until March' vs. current.",
+      "call": 15
+    },
+    "d24": {
+      "label": "compatible",
+      "why": "Different versions: 'Version 1' vs. current.",
+      "call": 15
+    },
+    "d25": {
+      "label": "compatible",
+      "why": "Different time contexts: 'last quarter' vs. current.",
+      "call": 15
+    },
+    "d26": {
+      "label": "compatible",
+      "why": "Different environments: staging vs. production.",
+      "call": 15
+    },
+    "d27": {
+      "label": "compatible",
+      "why": "Different environments: staging vs. production.",
+      "call": 15
+    },
+    "d28": {
+      "label": "compatible",
+      "why": "Different environments: test vs. production.",
+      "call": 15
+    },
+    "d29": {
+      "label": "compatible",
+      "why": "Different contexts: local development vs. primary database.",
+      "call": 15
+    },
+    "d30": {
+      "label": "compatible",
+      "why": "Different clusters: dev vs. production.",
+      "call": 15
+    },
+    "d31": {
+      "label": "compatible",
+      "why": "Different user tiers have different limits.",
+      "call": 16
+    },
+    "d32": {
+      "label": "compatible",
+      "why": "Jobs and requests are different entities.",
+      "call": 16
+    },
+    "d33": {
+      "label": "compatible",
+      "why": "Different roles have different permissions.",
+      "call": 16
+    },
+    "d34": {
+      "label": "compatible",
+      "why": "Per-user and total limits can coexist.",
+      "call": 16
+    },
+    "d35": {
+      "label": "compatible",
+      "why": "Different client types have different timeouts.",
+      "call": 16
+    },
+    "d36": {
+      "label": "compatible",
+      "why": "Different regions have different storage locations.",
+      "call": 16
+    },
+    "d37": {
+      "label": "contradiction",
+      "why": "Five times and three times cannot both be true for the same retry policy.",
+      "call": 16
+    },
+    "d38": {
+      "label": "compatible",
+      "why": "At most 15 minutes includes 10 minutes.",
+      "call": 16
+    },
+    "d39": {
+      "label": "contradiction",
+      "why": "25 minutes exceeds the at most 15 minutes limit.",
+      "call": 16
+    },
+    "d40": {
+      "label": "compatible",
+      "why": "At least four includes six.",
+      "call": 16
+    },
+    "d41": {
+      "label": "compatible",
+      "why": "Timeouts and retries are different events, can both occur independently.",
+      "call": 17
+    },
+    "d42": {
+      "label": "compatible",
+      "why": "Read replica and primary are different components with different specs.",
+      "call": 17
+    },
+    "d43": {
+      "label": "compatible",
+      "why": "Different request types can have different timeout settings.",
+      "call": 17
+    },
+    "d44": {
+      "label": "compatible",
+      "why": "Different services can be implemented in different languages.",
+      "call": 17
+    },
+    "d45": {
+      "label": "compatible",
+      "why": "A team can own multiple components; no conflict implied.",
+      "call": 17
+    },
+    "d46": {
+      "label": "compatible",
+      "why": "p50 and p99 are different percentiles; both can be true simultaneously.",
+      "call": 17
+    },
+    "d47": {
+      "label": "compatible",
+      "why": "Average and peak usage describe different aspects of CPU load.",
+      "call": 17
+    },
+    "d48": {
+      "label": "compatible",
+      "why": "Monthly and daily active users are different metrics; both can be true.",
+      "call": 17
+    },
+    "d49": {
+      "label": "compatible",
+      "why": "Both describe the same retry count, just phrased differently.",
+      "call": 17
+    },
+    "d50": {
+      "label": "compatible",
+      "why": "30 days and a month are equivalent time periods.",
+      "call": 17
+    },
+    "d51": {
+      "label": "compatible",
+      "why": "Cache can store multiple types of data simultaneously.",
+      "call": 18
+    },
+    "d52": {
+      "label": "compatible",
+      "why": "Both state the same duration using different phrasing.",
+      "call": 18
+    },
+    "d53": {
+      "label": "compatible",
+      "why": "B adds detail to A's basic statement without contradicting it.",
+      "call": 18
+    },
+    "d54": {
+      "label": "compatible",
+      "why": "B adds audit information without contradicting ownership.",
+      "call": 18
+    },
+    "d55": {
+      "label": "contradiction",
+      "why": "Different numeric limits cannot both be true for same thing.",
+      "call": 18
+    },
+    "d56": {
+      "label": "contradiction",
+      "why": "5 minutes and 2 hours are mutually exclusive durations.",
+      "call": 18
+    },
+    "h01": {
+      "label": "contradiction",
+      "why": "30 minutes and 8 hours are mutually exclusive expiration times.",
+      "call": 18
+    },
+    "h02": {
+      "label": "contradiction",
+      "why": "Different storage capacities cannot both be true simultaneously.",
+      "call": 18
+    },
+    "h03": {
+      "label": "contradiction",
+      "why": "Different release frequencies cannot both be true in same context.",
+      "call": 18
+    },
+    "h04": {
+      "label": "contradiction",
+      "why": "Public and not public are mutually exclusive states.",
+      "call": 18
+    },
+    "h05": {
+      "label": "contradiction",
+      "why": "Export capability cannot be both allowed and disallowed simultaneously.",
+      "call": 19
+    },
+    "h06": {
+      "label": "contradiction",
+      "why": "Throughput cannot both rise and fall after the same upgrade.",
+      "call": 19
+    },
+    "h07": {
+      "label": "compatible",
+      "why": "Alerts could be routed to multiple channels.",
+      "call": 19
+    },
+    "h08": {
+      "label": "ambiguous",
+      "why": "Could be a policy change over time or different environments.",
+      "call": 19
+    },
+    "h09": {
+      "label": "compatible",
+      "why": "Describes different time periods (previously vs. now).",
+      "call": 19
+    },
+    "h10": {
+      "label": "compatible",
+      "why": "Explicitly different environments (staging vs. production).",
+      "call": 19
+    },
+    "h11": {
+      "label": "compatible",
+      "why": "Different clusters (QA vs. production).",
+      "call": 19
+    },
+    "h12": {
+      "label": "compatible",
+      "why": "Different plans (Enterprise vs. Standard).",
+      "call": 19
+    },
+    "h13": {
+      "label": "compatible",
+      "why": "Different platforms (iOS vs. Android).",
+      "call": 19
+    },
+    "h14": {
+      "label": "ambiguous",
+      "why": "'Up to 8 hours' includes 30 minutes; unclear if 30 minutes is a fixed or maximum duration.",
+      "call": 19
+    },
+    "h15": {
+      "label": "contradiction",
+      "why": "One says at most 1000, the other says 5000; both cannot be true about the same queue.",
+      "call": 20
+    },
+    "h16": {
+      "label": "compatible",
+      "why": "Different jobs with different schedules; both can be true.",
+      "call": 20
+    },
+    "h17": {
+      "label": "compatible",
+      "why": "Median and worst-case are different metrics; both can be true.",
+      "call": 20
+    },
+    "h18": {
+      "label": "compatible",
+      "why": "30 minutes and half an hour are the same duration; they agree.",
+      "call": 20
+    },
+    "h19": {
+      "label": "compatible",
+      "why": "B adds an additional destination; both can be true if A is a subset of B.",
+      "call": 20
+    },
+    "r01": {
+      "label": "contradiction",
+      "why": "Different release frequencies; both cannot be true for the same release schedule.",
+      "call": 20
+    },
+    "r02": {
+      "label": "ambiguous",
+      "why": "Unclear if 'retries' refers to the same worker or a different retry policy.",
+      "call": 20
+    }
+  }
+}

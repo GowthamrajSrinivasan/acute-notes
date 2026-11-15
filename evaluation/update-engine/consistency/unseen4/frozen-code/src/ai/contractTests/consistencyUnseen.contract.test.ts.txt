@@ -1,0 +1,259 @@
+/**
+ * The unseen consistency evaluation (intelligent-update-engine-plan §12.16), in two one-shot steps:
+ *
+ * The set is `CONSISTENCY_UNSEEN_SET` (default `unseen`, the first; `unseen2`, … later ones), each with its own FREEZE.json.
+ *
+ *   1. `route` — free, no network. Needs the reviewer's blind labels (`unseen/labels.json`). Runs the frozen rules and
+ *      selector over every unseen pair and records the routing and the planned calls (`routing.json`), before any AI.
+ *        CONSISTENCY_UNSEEN_STEP=route CONSISTENCY_UNSEEN_RUN=2026-11-14-unseen npx vitest run --config vitest.contract.config.ts consistencyUnseen
+ *   2. `classify` — PAID, needs its own approval. Sends exactly the planned calls once (gpt-oss-120b on AICredits, the
+ *      §12.14 settings), within the approved call count and dollar ceiling, then scores end to end:
+ *        CONSISTENCY_UNSEEN_STEP=classify CONSISTENCY_UNSEEN_RUN=2026-11-14-unseen CONSISTENCY_UNSEEN_APPROVED_BY="<name>" \
+ *          CONSISTENCY_UNSEEN_MAX_CALLS=6 CONSISTENCY_UNSEEN_MAX_TOKENS=10800 CONSISTENCY_UNSEEN_MAX_USD=0.05 npx vitest run --config vitest.contract.config.ts consistencyUnseen
+ *      Since §12.24 each reply is read pair by pair (`readJudgeReply`, with the provider's finish_reason) into a
+ *      `JudgeLedger`, through the app's own execution core (`sendJudgeCall`, §12.25): one request per call, no repair,
+ *      no failover and no retry. Per-pair outcomes are written to `pair-outcomes.json`.
+ *
+ * Both refuse unless every file in `unseen/FREEZE.json` (pairs, rules, selector, prompt + combining policy, scorer, this
+ * recorder) still has its frozen hash, and neither ever runs twice for a run (no reruns, no tuning). Detection is
+ * measured over **every** unseen pair (not only those routed), and a routed pair without an answer counts as missed.
+ */
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+import { callTokens, JudgeBudget, planForChange, rankCandidates, routeOf, priorityOf } from "@/ai/consistency/candidates";
+import { evaluate, formatReport, type EvalPair } from "@/ai/consistency/evaluation";
+import { JUDGE_CALL_CEILING, judgeConsistencyTask, outputBudget, planCalls } from "@/ai/consistency/judge";
+import { JudgeLedger } from "@/ai/consistency/judgeLedger";
+import { sendJudgeCall } from "@/ai/consistency/judgeCall";
+import { openAICompatibleJudgeTransport } from "./judgeHttpTransport";
+import { evaluateCombined, formatCombined, formatMatrix, routingMatrix, type RecordedJudgment, type TruthLabel } from "@/ai/consistency/judgeEvaluation";
+import { budgetedSelection, evaluatePipeline, formatPipeline } from "@/ai/consistency/pipelineEvaluation";
+import { judgePair } from "@/ai/consistency/rules";
+import { screenPair } from "@/ai/consistency/screen";
+import { getByokCredentials } from "./testEnv";
+
+const ROOT = process.cwd();
+/** The set: `unseen` (the first, recorded 2026-11-13) or a later one, e.g. `unseen2` (`CONSISTENCY_UNSEEN_SET`). */
+const SET = process.env.CONSISTENCY_UNSEEN_SET ?? "unseen";
+const DIR = join(ROOT, "evaluation", "update-engine", "consistency", SET);
+const STEP = process.env.CONSISTENCY_UNSEEN_STEP ?? "";
+const RUN = process.env.CONSISTENCY_UNSEEN_RUN ?? "";
+const RUN_DIR = join(DIR, "runs", RUN);
+const APPROVED_BY = (process.env.CONSISTENCY_UNSEEN_APPROVED_BY ?? "").trim();
+/** The approved call cap for this run (the code allows at most 12; each run's approval sets its own). */
+const MAX_CALLS = Math.min(12, Number(process.env.CONSISTENCY_UNSEEN_MAX_CALLS) || 0);
+const MAX_USD = Number(process.env.CONSISTENCY_UNSEEN_MAX_USD) || 0;
+/** Total tokens for the recording (worst case reserved per call: estimated input + whole output allowance); the code allows ≤ 21,600. */
+const MAX_TOKENS = Math.min(21_600, Number(process.env.CONSISTENCY_UNSEEN_MAX_TOKENS) || 0);
+const CLASSIFIER = "openai/gpt-oss-120b";
+const ENDPOINT = "https://api.aicredits.in/v1";
+const creds = getByokCredentials("aicredits");
+
+const sha = (path: string) => createHash("sha256").update(readFileSync(path)).digest("hex");
+const read = <T,>(path: string) => JSON.parse(readFileSync(path, "utf8")) as T;
+
+interface Labels {
+  reviewer: string;
+  date: string;
+  blind: boolean;
+  labels: Record<string, { label: TruthLabel; note?: string }>;
+}
+
+function frozenMismatch(): string {
+  if (!existsSync(join(DIR, "FREEZE.json"))) return "unseen/FREEZE.json is missing";
+  const freeze = read<{ files: Record<string, string> }>(join(DIR, "FREEZE.json"));
+  const changed = Object.entries(freeze.files).filter(([f, h]) => sha(join(ROOT, f)) !== h).map(([f]) => f);
+  return changed.length ? `changed since the freeze: ${changed.join(", ")}` : "";
+}
+
+function refusal(): string {
+  if (STEP !== "route" && STEP !== "classify") return "CONSISTENCY_UNSEEN_STEP is not route or classify";
+  if (!/^unseen\d*$/.test(SET)) return `CONSISTENCY_UNSEEN_SET "${SET}" must be unseen, unseen2, …`;
+  if (!/^\d{4}-\d{2}-\d{2}-[a-z0-9-]+$/.test(RUN)) return "CONSISTENCY_UNSEEN_RUN must look like 2026-11-14-unseen";
+  const frozen = frozenMismatch();
+  if (frozen) return frozen;
+  if (!existsSync(join(DIR, "labels.json"))) return "unseen/labels.json (the reviewer's blind labels) is missing";
+  if (STEP === "route" && existsSync(join(RUN_DIR, "routing.json"))) return "routing already recorded for this run";
+  if (STEP === "classify") {
+    if (!existsSync(join(RUN_DIR, "routing.json"))) return "run the route step first";
+    if (existsSync(join(RUN_DIR, "judgments.json"))) return "already classified: no reruns";
+    if (!APPROVED_BY) return "CONSISTENCY_UNSEEN_APPROVED_BY is not set";
+    if (!MAX_CALLS) return "CONSISTENCY_UNSEEN_MAX_CALLS (the approved cap) is not set";
+    if (!MAX_USD) return "CONSISTENCY_UNSEEN_MAX_USD is not set";
+    if (!MAX_TOKENS) return "CONSISTENCY_UNSEEN_MAX_TOKENS (the approved ceiling) is not set";
+    if (!creds) return "no AICredits credentials";
+  }
+  return "";
+}
+
+/** The unseen pairs with the reviewer's labels as truth, and the design categories (for per-category and context scores). */
+function labelled(): { pairs: (EvalPair & { batch?: string })[]; labelsSha: string } {
+  const pairs = read<{ pairs: { id: string; a: string; b: string; batch?: string }[] }>(join(DIR, "pairs.json")).pairs;
+  const labels = read<Labels>(join(DIR, "labels.json"));
+  const drafts = read<{ drafts: Record<string, { category: string }> }>(join(DIR, "author-draft-key.json")).drafts;
+  expect(labels.blind, "labels must be given blind").toBe(true);
+  expect(Object.keys(labels.labels).sort()).toEqual(pairs.map((p) => p.id).sort());
+  return {
+    pairs: pairs.map((p) => ({ id: p.id, a: p.a, b: p.b, ...(p.batch ? { batch: p.batch } : {}), category: drafts[p.id]!.category, truth: labels.labels[p.id]!.label, expected: "compatible", rationale: labels.labels[p.id]!.note ?? "" })),
+    labelsSha: sha(join(DIR, "labels.json")),
+  };
+}
+
+describe.skipIf(!!refusal())(`unseen consistency evaluation — ${STEP}`, () => {
+  it(`${STEP} ${RUN}`, async () => {
+    const { pairs, labelsSha } = labelled();
+    mkdirSync(RUN_DIR, { recursive: true });
+
+    if (STEP === "route") {
+      const rows = pairs.map((p) => {
+        const j = judgePair(p.a, p.b);
+        return { id: p.id, route: routeOf(j), priority: priorityOf(j), verdict: j.verdict, ...(j.nearMiss ? { nearMiss: j.nearMiss.kind } : {}), ...(j.contextDiffers ? { contextDiffers: true } : {}) };
+      });
+      const ranked = rankCandidates(pairs.map((p) => ({ key: p.id, a: { sentence: p.a }, b: { sentence: p.b }, judgement: judgePair(p.a, p.b) })));
+      // §12.21: the pipeline screens every pair; the calls cover every pair ANY routing sends to the AI (baseline, near-miss,
+      // pipeline), so the three are scored on the same answers. Pipeline candidates first, in its priority order.
+      const screened = new Map(pairs.map((p) => [p.id, screenPair(p.a, p.b)] as const));
+      const pipelineForward = pairs.filter((p) => screened.get(p.id)!.decision === "forward").sort((x, y) => screened.get(y.id)!.priority - screened.get(x.id)!.priority);
+      const union = [...pipelineForward.map((p) => p.id), ...ranked.map((c) => c.key).filter((k) => !pipelineForward.some((p) => p.id === k))];
+      const byIdRoute = new Map(pairs.map((p) => [p.id, p] as const));
+      const { calls } = planCalls(union.map((k) => ({ key: k, a: { sentence: byIdRoute.get(k)!.a }, b: { sentence: byIdRoute.get(k)!.b } })), Number.POSITIVE_INFINITY);
+      const pipeline = {
+        decisions: Object.fromEntries([...screened].map(([id, x]) => [id, { decision: x.decision, ...(x.exclusion ? { exclusion: x.exclusion } : {}), priority: Math.round(x.priority * 100) / 100, scoped: x.scoped, exclusive: x.exclusive, thin: x.thin }])),
+        generationRecall: evaluatePipeline(pairs).generationRecall,
+        budgetPool: budgetedSelection(pairs, "pool"),
+        budgetBatch: pairs.some((p) => p.batch) ? budgetedSelection(pairs.filter((p) => p.batch), "batch") : null,
+      };
+      // The 10-pair limit: if every candidate arrived in one accepted change, which contradictions would its one call take?
+      const truth = new Map(pairs.map((p) => [p.id, p.truth] as const));
+      const one = planForChange("rev:unseen-all", ranked, new JudgeBudget({ now: () => 0 }), { aiEnabled: true });
+      const routedContradictions = ranked.filter((c) => truth.get(c.key) === "contradiction").map((c) => c.key);
+      const oneChange = {
+        call: one.call?.keys ?? [],
+        pending: one.pending,
+        contradictionsRouted: routedContradictions.length,
+        contradictionsInTheCall: routedContradictions.filter((k) => one.call?.keys.includes(k)).length,
+        contradictionsLeftOut: routedContradictions.filter((k) => !one.call?.keys.includes(k)),
+      };
+      const routing = {
+        run: RUN,
+        date: new Date().toISOString(),
+        labelsSha256: labelsSha,
+        counts: Object.fromEntries((["rule_conflict", "possible", "near_miss", "excluded"] as const).map((r) => [r, rows.filter((x) => x.route === r).length])),
+        candidates: ranked.length,
+        plannedCalls: calls.map((c) => ({ keys: c.keys, maxTokens: callTokens(c.input) })),
+        oneChange,
+        pipeline,
+        rows,
+      };
+      writeFileSync(join(RUN_DIR, "routing.json"), JSON.stringify(routing, null, 2) + "\n");
+      const matrix = formatMatrix("unseen", routingMatrix(pairs));
+      writeFileSync(join(RUN_DIR, "routing.md"), `${matrix}\n\n${formatReport("unseen rules only", evaluate(pairs))}\n\n${formatPipeline("pipeline (before any answer)", evaluatePipeline(pairs), pipeline.budgetPool)}\n`);
+      console.log(matrix);
+      return;
+    }
+
+    // classify — exactly the planned calls, once.
+    const routing = read<{ labelsSha256: string; plannedCalls: { keys: string[]; maxTokens: number }[] }>(join(RUN_DIR, "routing.json"));
+    expect(routing.labelsSha256, "labels changed after routing").toBe(labelsSha);
+    const catalogue = (await (await fetch(`${ENDPOINT}/models`, { headers: { authorization: `Bearer ${creds!.apiKey}` } })).json()) as { data: { id: string; input_cost_per_token: number; output_cost_per_token: number }[] };
+    const price = catalogue.data.find((m) => m.id === CLASSIFIER)!;
+    const worst = (tokens: number) => tokens * Math.max(price.input_cost_per_token, price.output_cost_per_token);
+    const byId = new Map(pairs.map((p) => [p.id, p] as const));
+    const calls: unknown[] = [];
+    const judgments: Record<string, RecordedJudgment & { call: number }> = {};
+    // §12.24: every reply is read pair by pair (`readJudgeReply`) into the same ledger the app would use, so one bad item
+    // or a cut-off reply fails only its own pairs, and a classified pair is set once.
+    const ledger = new JudgeLedger();
+    const CANVAS = `eval:${SET}`;
+    let spentWorst = 0;
+    let tokensReserved = 0;
+    let n = 0;
+    // §12.25: the recording goes through the app's own execution core (`sendJudgeCall`), over a one-request HTTP
+    // transport: the cap as max_tokens, reasoning effort "low", no repair, no failover, no retry ("paid retries: none").
+    const last: { exchange?: { status: number; body: string; ms: number } } = {};
+    const lastExchange = () => last.exchange; // read through a call: TypeScript can't see the transport's callback assign it
+    const transport = openAICompatibleJudgeTransport({ endpoint: ENDPOINT, apiKey: creds!.apiKey, model: CLASSIFIER, onExchange: (x) => void (last.exchange = x) });
+    for (const planned of routing.plannedCalls) {
+      const keys = planned.keys;
+      const { calls: one } = planCalls(keys.map((k) => ({ key: k, a: { sentence: byId.get(k)!.a }, b: { sentence: byId.get(k)!.b } })), 1);
+      const input = one[0]!.input;
+      const reserve = callTokens(input);
+      // Every ceiling is checked on the worst case before the call; a call that would pass one is not sent (its pairs count as missed).
+      const reason = reserve > JUDGE_CALL_CEILING ? "per-call ceiling" : n >= MAX_CALLS ? "call limit" : tokensReserved + reserve > MAX_TOKENS ? "token ceiling" : spentWorst + worst(reserve) > MAX_USD ? "dollar ceiling" : "";
+      if (reason) {
+        calls.push({ keys, status: "not_sent", reason });
+        ledger.markPending(CANVAS, RUN, keys.map((key) => ({ key, reason: "over_call_limit" })));
+        continue;
+      }
+      n++;
+      spentWorst += worst(reserve);
+      tokensReserved += reserve;
+      const callId = `call:${n}`;
+      ledger.markSent(CANVAS, RUN, keys, callId);
+      delete last.exchange;
+      let settled: number | null = null;
+      const result = await sendJudgeCall({ canvasId: CANVAS, revision: RUN, keys, input, reservation: callId, reserved: reserve, transport, ledger, settle: (actual) => void (settled = actual) });
+      const { systemPrompt, prompt } = judgeConsistencyTask.buildPrompt({ input });
+      for (const k of keys) {
+        const p = ledger.get(CANVAS, k);
+        if (p?.state === "classified" && p.reservation === callId) judgments[k] = { answer: p.answer!, ...(p.why ? { why: p.why } : {}), ...(p.suggestion ? { suggestion: p.suggestion } : {}), call: n };
+      }
+      const failed = result.reading ? Object.fromEntries([...result.reading.pairs].filter(([, o]) => o.state === "failed").map(([k, o]) => [k, o.state === "failed" ? `${o.reason}: ${o.detail}` : ""])) : {};
+      const raw = (() => {
+        try {
+          return (JSON.parse(lastExchange()?.body ?? "") as { choices?: { message?: { content?: string } }[] }).choices?.[0]?.message?.content ?? "";
+        } catch {
+          return lastExchange()?.body ?? "";
+        }
+      })();
+      const u = (() => {
+        try {
+          return (JSON.parse(lastExchange()?.body ?? "") as { usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } }).usage ?? {};
+        } catch {
+          return {};
+        }
+      })();
+      calls.push({
+        n, keys, systemPrompt, prompt, maxTokens: outputBudget(input), reserved: reserve, status: result.status === "answered" ? result.reading!.status : result.status,
+        ...(result.error ? { error: result.error } : {}), httpStatus: lastExchange()?.status ?? null, failed, unknownRefs: result.reading?.unknownRefs ?? 0, raw, usage: u, settledTokens: settled,
+        costUsd: (u.prompt_tokens ?? 0) * price.input_cost_per_token + (u.completion_tokens ?? 0) * price.output_cost_per_token, ms: result.ms,
+      });
+    }
+    const outcome = ledger.list(CANVAS);
+    writeFileSync(join(RUN_DIR, "pair-outcomes.json"), JSON.stringify(Object.fromEntries(outcome.map((p) => [p.key, { state: p.state, attempts: p.attempts, ...(p.reason ? { reason: p.reason } : {}), ...(p.detail ? { detail: p.detail } : {}) }])), null, 2) + "\n");
+    writeFileSync(join(RUN_DIR, "calls.json"), JSON.stringify(calls, null, 2) + "\n");
+    writeFileSync(join(RUN_DIR, "judgments.json"), JSON.stringify(judgments, null, 2) + "\n");
+    const answers = new Map(Object.entries(judgments));
+    const report = [
+      `# Unseen evaluation ${RUN} (approved by ${APPROVED_BY}; ≤ ${MAX_CALLS} calls (no retries), ≤ ${MAX_TOKENS} tokens, ≤ $${MAX_USD}; sent ${n}, worst-case reserved ${tokensReserved} tokens / $${spentWorst.toFixed(4)})`,
+      "",
+      `Execution (per pair, §12.24): ${(["classified", "failed", "gave_up", "pending"] as const).map((s) => `${s} ${outcome.filter((p) => p.state === s).length}`).join(" · ")}. A pair that is not classified counts as missed.`,
+      "",
+      formatMatrix("unseen", routingMatrix(pairs)),
+      "",
+      formatReport("rules only", evaluate(pairs)),
+      "",
+      formatCombined("rules + AI, baseline routing (possible only)", evaluateCombined(pairs, answers, "baseline")),
+      "",
+      formatCombined("rules + AI, near-miss routing", evaluateCombined(pairs, answers, "near_miss")),
+      "",
+      formatPipeline("rules + AI, §12.21 pipeline (retrieval → screen → AI → guards)", evaluatePipeline(pairs, answers), budgetedSelection(pairs, "pool")),
+      ...(pairs.some((p) => p.batch) ? ["", formatPipeline("§12.21 pipeline, competing batches", evaluatePipeline(pairs.filter((p) => p.batch), answers), budgetedSelection(pairs.filter((p) => p.batch), "batch"))] : []),
+    ].join("\n");
+    writeFileSync(join(RUN_DIR, "report.md"), report + "\n");
+    console.log(report);
+    expect(n).toBeLessThanOrEqual(MAX_CALLS);
+    expect(tokensReserved).toBeLessThanOrEqual(MAX_TOKENS);
+    expect(Object.keys(judgments).every((k) => ledger.get(CANVAS, k)?.state === "classified")).toBe(true);
+  }, 600_000);
+});
+
+describe("unseen consistency evaluation — refusal", () => {
+  it("says why it did not run", () => {
+    const why = refusal();
+    if (why) console.log(`consistencyUnseen not run: ${why}`);
+    expect(true).toBe(true);
+  });
+});

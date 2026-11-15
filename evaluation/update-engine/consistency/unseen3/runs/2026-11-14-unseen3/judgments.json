@@ -1,0 +1,362 @@
+{
+  "w02": {
+    "answer": "contradicts",
+    "why": "Both state a different total piste length for the same resort with no contextual distinction.",
+    "suggestion": "Verify the current total piste length.",
+    "call": 1
+  },
+  "w74": {
+    "answer": "contradicts",
+    "why": "One says up to four players, the other limits to two, with no context separating them.",
+    "suggestion": "Check the official co‑op player limit for the game.",
+    "call": 1
+  },
+  "w45": {
+    "answer": "compatible",
+    "why": "The £500 limit is a subset of the £1,000 limit, so both statements can be true.",
+    "suggestion": "None needed.",
+    "call": 1
+  },
+  "w34": {
+    "answer": "compatible",
+    "why": "Total spaces and free spaces this morning refer to different scopes and can both be correct.",
+    "suggestion": "None needed.",
+    "call": 1
+  },
+  "w88": {
+    "answer": "compatible",
+    "why": "Closing date and policy about late applications are consistent with each other.",
+    "suggestion": "None needed.",
+    "call": 1
+  },
+  "w67": {
+    "answer": "compatible_context",
+    "why": "One statement is about weekdays, the other about Sundays, different days of the week.",
+    "suggestion": "None needed.",
+    "call": 1
+  },
+  "w47": {
+    "answer": "contradicts",
+    "why": "Both describe weekday frequency but give different intervals with no contextual difference.",
+    "suggestion": "Confirm the actual weekday service frequency.",
+    "call": 1
+  },
+  "w18": {
+    "answer": "contradicts",
+    "why": "One says litter is changed every 48 hours, the other says daily, without indicating different contexts.",
+    "suggestion": "Clarify the litter‑changing schedule.",
+    "call": 1
+  },
+  "w58": {
+    "answer": "contradicts",
+    "why": "Different average daily container counts are given for the same port with no contextual distinction.",
+    "suggestion": "Check the correct average container throughput.",
+    "call": 1
+  },
+  "w80": {
+    "answer": "compatible_context",
+    "why": "The price change is tied to a time context (as of this month) versus a previous price.",
+    "suggestion": "None needed.",
+    "call": 1
+  },
+  "w28": {
+    "answer": "contradicts",
+    "why": "One says batteries are accepted at the gate, the other says they cannot be dropped off anywhere.",
+    "suggestion": "Verify the current policy on battery drop‑off at the centre.",
+    "call": 2
+  },
+  "w64": {
+    "answer": "contradicts",
+    "why": "One states the terminal is open 24/7, the other says hauliers have no overnight access.",
+    "suggestion": "Check the terminal access schedule for hauliers.",
+    "call": 2
+  },
+  "w37": {
+    "answer": "compatible_context",
+    "why": "The statements refer to different intake periods (autumn vs spring).",
+    "suggestion": "No action needed; both dates can be correct.",
+    "call": 2
+  },
+  "w61": {
+    "answer": "contradicts",
+    "why": "Both describe the free checked‑bag weight limit for economy, but give different maximum weights.",
+    "suggestion": "Confirm the current weight allowance for economy passengers.",
+    "call": 2
+  },
+  "w71": {
+    "answer": "compatible",
+    "why": "One sets an age minimum, the other sets a licence‑holding requirement; both can apply simultaneously.",
+    "suggestion": "No action needed; both requirements may be in effect.",
+    "call": 2
+  },
+  "w54": {
+    "answer": "contradicts",
+    "why": "One prohibits metal studs on the pitch, the other permits them.",
+    "suggestion": "Clarify the club’s policy on footwear.",
+    "call": 2
+  },
+  "w16": {
+    "answer": "compatible_context",
+    "why": "One bans dogs inside the restaurant, the other allows them on the covered patio.",
+    "suggestion": "No action needed; both statements can be true for different areas.",
+    "call": 2
+  },
+  "w81": {
+    "answer": "compatible",
+    "why": "One concerns free checked‑bag weight, the other concerns carry‑on weight limits; they address different baggage categories.",
+    "suggestion": "No action needed.",
+    "call": 2
+  },
+  "w75": {
+    "answer": "contradicts",
+    "why": "Both give different closing dates for the same autumn intake.",
+    "suggestion": "Verify the correct autumn intake deadline.",
+    "call": 2
+  },
+  "w60": {
+    "answer": "compatible_context",
+    "why": "One gives total passenger capacity, the other gives hourly skier throughput; different metrics.",
+    "suggestion": "No action needed; both figures can be correct.",
+    "call": 2
+  },
+  "w87": {
+    "answer": "compatible_context",
+    "why": "Different branch types (main vs experimental) provide separate contexts for approval rules.",
+    "suggestion": "Clarify the branch policies for each branch type.",
+    "call": 4
+  },
+  "w08": {
+    "answer": "contradicts",
+    "why": "One statement says data is shared only with explicit opt‑in, the other says it is on by default with opt‑out, which cannot both be true for the same setting.",
+    "suggestion": "Confirm the actual default and opt‑in/opt‑out behavior.",
+    "call": 4
+  },
+  "w21": {
+    "answer": "contradicts",
+    "why": "One claim gives a free bag allowance, the other says every bag is paid, which cannot both apply to economy passengers.",
+    "suggestion": "Check the airline’s baggage policy for economy class.",
+    "call": 4
+  },
+  "w65": {
+    "answer": "contradicts",
+    "why": "One rule exempts claims under £500 from inspection, the other requires inspection for every claim.",
+    "suggestion": "Verify whether a threshold exemption exists.",
+    "call": 4
+  },
+  "w73": {
+    "answer": "compatible_context",
+    "why": "Both refer to main‑branch PRs but distinguish by type (documentation‑only vs other), allowing different approval requirements.",
+    "suggestion": "Document the special rule for documentation‑only PRs.",
+    "call": 4
+  },
+  "w43": {
+    "answer": "compatible",
+    "why": "One restricts who may change the recipe; the other adds a logging requirement, which can coexist.",
+    "suggestion": "Ensure the logging procedure is followed by the authorized baker.",
+    "call": 4
+  },
+  "w50": {
+    "answer": "contradicts",
+    "why": "One statement says every room is wheelchair accessible, while another says the x‑ray room is only reachable by stairs.",
+    "suggestion": "Confirm the accessibility status of the x‑ray room.",
+    "call": 4
+  },
+  "w23": {
+    "answer": "compatible",
+    "why": "Both statements assert that only the head baker may alter the sourdough recipe, so they agree.",
+    "suggestion": "No action needed; the rule is consistent.",
+    "call": 4
+  },
+  "w07": {
+    "answer": "contradicts",
+    "why": "One limits visitor feeding to a specific talk time, the other allows feeding at any open time, which cannot both be true.",
+    "suggestion": "Check the official visitor feeding schedule.",
+    "call": 4
+  },
+  "w53": {
+    "answer": "contradicts",
+    "why": "One requires two maintainer approvals for main, the other says a single approval suffices, which are mutually exclusive.",
+    "suggestion": "Clarify the required number of approvals for merging to main.",
+    "call": 4
+  },
+  "w05": {
+    "answer": "compatible",
+    "why": "different passenger classes have different baggage allowances",
+    "suggestion": "none",
+    "call": 6
+  },
+  "w42": {
+    "answer": "compatible",
+    "why": "recommendation for adults and mandatory rule for children can coexist",
+    "suggestion": "none",
+    "call": 6
+  },
+  "w36": {
+    "answer": "contradicts",
+    "why": "same festival day capacity limit exceeded",
+    "suggestion": "verify the actual admission number for Saturday",
+    "call": 6
+  },
+  "w72": {
+    "answer": "compatible",
+    "why": "different teams using different task‑tracking tools can both be true",
+    "suggestion": "none",
+    "call": 6
+  },
+  "w86": {
+    "answer": "compatible",
+    "why": "the 27‑year‑old meets the minimum‑age requirement",
+    "suggestion": "none",
+    "call": 6
+  },
+  "w51": {
+    "answer": "contradicts",
+    "why": "one statement says under‑25 cannot rent, the other allows it with a surcharge",
+    "suggestion": "clarify if an exception exists for under‑25 renters",
+    "call": 6
+  },
+  "w19": {
+    "answer": "compatible_context",
+    "why": "different applicant types (residents vs commercial) have different fee rules",
+    "suggestion": "none",
+    "call": 6
+  },
+  "w79": {
+    "answer": "compatible",
+    "why": "fee exemption and submission deadline are independent conditions",
+    "suggestion": "none",
+    "call": 6
+  },
+  "w14": {
+    "answer": "compatible",
+    "why": "capacity limit and actual attendance are consistent (attendance below limit)",
+    "suggestion": "none",
+    "call": 6
+  },
+  "w48": {
+    "answer": "compatible_context",
+    "why": "membership numbers likely refer to different times",
+    "suggestion": "check the dates of each membership count",
+    "call": 6
+  },
+  "w09": {
+    "answer": "compatible",
+    "why": "Both statements describe round‑the‑clock gym access, just phrased differently",
+    "suggestion": "None",
+    "call": 7
+  },
+  "w89": {
+    "answer": "compatible_context",
+    "why": "One describes overall access hours, the other staff reception hours",
+    "suggestion": "None",
+    "call": 7
+  },
+  "w22": {
+    "answer": "compatible",
+    "why": "Manuscripts can be accepted but still be returned unread",
+    "suggestion": "None",
+    "call": 7
+  },
+  "w90": {
+    "answer": "compatible_context",
+    "why": "Free permit applies to residents' associations, cost applies to others like charities",
+    "suggestion": "None",
+    "call": 7
+  },
+  "w17": {
+    "answer": "compatible_context",
+    "why": "Different years: general rule vs 2023 specific date",
+    "suggestion": "None",
+    "call": 7
+  },
+  "w32": {
+    "answer": "contradicts",
+    "why": "Both claim juniors train on different days after the same rule change",
+    "suggestion": "Confirm the correct day for junior training",
+    "call": 7
+  },
+  "w44": {
+    "answer": "contradicts",
+    "why": "One says signing is required, the other says it is optional",
+    "suggestion": "Check the firm's policy on engagement letters",
+    "call": 7
+  },
+  "w41": {
+    "answer": "compatible_context",
+    "why": "One statement likely reflects current policy, the other refers to a past period until March 2025",
+    "suggestion": "None",
+    "call": 7
+  },
+  "w04": {
+    "answer": "compatible",
+    "why": "Both phone and web form can be available for enquiries",
+    "suggestion": "None",
+    "call": 7
+  },
+  "w24": {
+    "answer": "compatible",
+    "why": "Prices are given for different regions/currencies",
+    "suggestion": "None",
+    "call": 7
+  },
+  "w55": {
+    "answer": "compatible_context",
+    "why": "Different applicant groups (all vs international) allow different deadlines.",
+    "suggestion": "Confirm the specific deadlines for each applicant category.",
+    "call": 8
+  },
+  "w30": {
+    "answer": "compatible",
+    "why": "Both statements affirm that dogs are microchipped, with Biscuit as an example.",
+    "suggestion": "No action needed.",
+    "call": 8
+  },
+  "w56": {
+    "answer": "compatible",
+    "why": "The rule and the day's activity are consistent; no vessel >150 m entered.",
+    "suggestion": "No action needed.",
+    "call": 8
+  },
+  "w52": {
+    "answer": "compatible",
+    "why": "Both statements describe water provisions that can coexist.",
+    "suggestion": "No action needed.",
+    "call": 8
+  },
+  "w38": {
+    "answer": "contradicts",
+    "why": "One says the fee is £60, the other says new patients pay £45, without a contextual distinction.",
+    "suggestion": "Verify the current fee amount and any recent changes.",
+    "call": 8
+  },
+  "w40": {
+    "answer": "contradicts",
+    "why": "Statement A claims exclusive sale to Greenvale, while B says some milk goes elsewhere.",
+    "suggestion": "Clarify whether the milk sales are exclusive or shared.",
+    "call": 8
+  },
+  "w06": {
+    "answer": "compatible_context",
+    "why": "She could have led the sports desk before being moved to the business desk in September.",
+    "suggestion": "Check the timeline of her role changes.",
+    "call": 8
+  },
+  "w70": {
+    "answer": "contradicts",
+    "why": "A curfew of 11 p.m. conflicts with headliners playing until midnight.",
+    "suggestion": "Confirm the actual curfew enforcement or any exceptions.",
+    "call": 8
+  },
+  "w26": {
+    "answer": "compatible_context",
+    "why": "One refers to the office closing time, the other to a specific desk’s staffing hours.",
+    "suggestion": "No action needed.",
+    "call": 8
+  },
+  "w76": {
+    "answer": "compatible",
+    "why": "Each statement refers to a different year’s catalogue, so both can be true.",
+    "suggestion": "No action needed.",
+    "call": 8
+  }
+}

@@ -1,0 +1,282 @@
+[
+  {
+    "n": 1,
+    "keys": [
+      "w02",
+      "w74",
+      "w45",
+      "w34",
+      "w88",
+      "w67",
+      "w47",
+      "w18",
+      "w58",
+      "w80"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"The ski resort has 42 km of pistes in total.\"\n  B: \"The ski resort's total piste length is 55 km.\"\n\np2\n  A: \"The studio's next game will support up to four players in co-op.\"\n  B: \"Co-op in the studio's next game is limited to two players.\"\n\np3\n  A: \"Claims under £500 are approved by the claims desk without a site inspection.\"\n  B: \"Claims under £1,000 are approved without a site inspection.\"\n\np4\n  A: \"The ski resort has 3,000 parking spaces.\"\n  B: \"Only 400 parking spaces are free at the ski resort this morning.\"\n\np5\n  A: \"Applications for the autumn intake close on 31 January.\"\n  B: \"Late applications for the autumn intake are not accepted once January has ended.\"\n\np6\n  A: \"The Northline express to Harbour City runs every 30 minutes on weekdays.\"\n  B: \"On Sundays the Northline express to Harbour City runs once an hour.\"\n\np7\n  A: \"The Northline express to Harbour City runs every 30 minutes on weekdays.\"\n  B: \"Weekday Northline express service to Harbour City is hourly.\"\n\np8\n  A: \"Cat litter at the animal shelter is changed every 48 hours.\"\n  B: \"The shelter changes its cats' litter daily.\"\n\np9\n  A: \"The port handles an average of 1,200 containers a day.\"\n  B: \"On average, the port moves 400 containers per day.\"\n\np10\n  A: \"The cinema's adult ticket currently costs £11.\"\n  B: \"As of this month, an adult ticket at the cinema is £9.50.\"",
+    "maxTokens": 1003,
+    "status": "ok",
+    "raw": "{\n  \"results\": [\n    {\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"Both state a different total piste length for the same resort with no contextual distinction.\",\"suggestion\":\"Verify the current total piste length.\"},\n    {\"ref\":\"p2\",\"answer\":\"contradicts\",\"why\":\"One says up to four players, the other limits to two, with no context separating them.\",\"suggestion\":\"Check the official co‑op player limit for the game.\"},\n    {\"ref\":\"p3\",\"answer\":\"compatible\",\"why\":\"The £500 limit is a subset of the £1,000 limit, so both statements can be true.\",\"suggestion\":\"None needed.\"},\n    {\"ref\":\"p4\",\"answer\":\"compatible\",\"why\":\"Total spaces and free spaces this morning refer to different scopes and can both be correct.\",\"suggestion\":\"None needed.\"},\n    {\"ref\":\"p5\",\"answer\":\"compatible\",\"why\":\"Closing date and policy about late applications are consistent with each other.\",\"suggestion\":\"None needed.\"},\n    {\"ref\":\"p6\",\"answer\":\"compatible_context\",\"why\":\"One statement is about weekdays, the other about Sundays, different days of the week.\",\"suggestion\":\"None needed.\"},\n    {\"ref\":\"p7\",\"answer\":\"contradicts\",\"why\":\"Both describe weekday frequency but give different intervals with no contextual difference.\",\"suggestion\":\"Confirm the actual weekday service frequency.\"},\n    {\"ref\":\"p8\",\"answer\":\"contradicts\",\"why\":\"One says litter is changed every 48 hours, the other says daily, without indicating different contexts.\",\"suggestion\":\"Clarify the litter‑changing schedule.\"},\n    {\"ref\":\"p9\",\"answer\":\"contradicts\",\"why\":\"Different average daily container counts are given for the same port with no contextual distinction.\",\"suggestion\":\"Check the correct average container throughput.\"},\n    {\"ref\":\"p10\",\"answer\":\"compatible_context\",\"why\":\"The price change is tied to a time context (as of this month) versus a previous price.\",\"suggestion\":\"None needed.\"}\n  ]\n}",
+    "usage": {
+      "completion_tokens": 764,
+      "cost": 0.017475809956854486,
+      "cost_details": {
+        "completion_cost_inr": 0.014140385987666404,
+        "prompt_cost_inr": 0.0033354239691880806
+      },
+      "estimated_cost": 0.00016051599999999998,
+      "latency_ms": 19151,
+      "prompt_tokens": 828,
+      "prompt_tokens_details": null,
+      "total_tokens": 1592
+    },
+    "costUsd": 0.00016051600000000003,
+    "ms": 19376
+  },
+  {
+    "n": 2,
+    "keys": [
+      "w28",
+      "w64",
+      "w37",
+      "w61",
+      "w71",
+      "w54",
+      "w16",
+      "w81",
+      "w75",
+      "w60"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"The recycling centre accepts household batteries at the main gate.\"\n  B: \"Household batteries cannot be dropped off anywhere at the recycling centre, including the main gate, because of a fire risk identified last year.\"\n\np2\n  A: \"The port's container terminal is open to hauliers around the clock.\"\n  B: \"Hauliers have no access to the container terminal overnight.\"\n\np3\n  A: \"Applications for the autumn intake close on 31 January.\"\n  B: \"Applications for the spring intake close on 30 September.\"\n\np4\n  A: \"Economy passengers on Skyline Air may check one bag of up to 23 kg free of charge.\"\n  B: \"Skyline Air's free checked-bag allowance in economy is capped at 20 kg.\"\n\np5\n  A: \"Renters must be at least 25 years old to hire a car from DriveNow.\"\n  B: \"DriveNow requires renters to have held a full licence for at least two years.\"\n\np6\n  A: \"Players at the sports club are prohibited from wearing metal studs on the artificial pitch.\"\n  B: \"Metal-studded boots are permitted on the club's artificial pitch.\"\n\np7\n  A: \"Dogs are not allowed inside the restaurant.\"\n  B: \"Dogs are welcome on the restaurant's covered patio.\"\n\np8\n  A: \"Economy passengers on Skyline Air may check one bag of up to 23 kg free of charge.\"\n  B: \"Carry-on bags on Skyline Air must not exceed 7 kg.\"\n\np9\n  A: \"Applications for the autumn intake close on 31 January.\"\n  B: \"The autumn intake deadline is 15 February.\"\n\np10\n  A: \"The Summit chairlift carries 2,400 people.\"\n  B: \"The Summit chairlift's capacity is 1,800 skiers per hour.\"",
+    "maxTokens": 963,
+    "status": "ok",
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says batteries are accepted at the gate, the other says they cannot be dropped off anywhere.\",\n      \"suggestion\": \"Verify the current policy on battery drop‑off at the centre.\"\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One states the terminal is open 24/7, the other says hauliers have no overnight access.\",\n      \"suggestion\": \"Check the terminal access schedule for hauliers.\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"The statements refer to different intake periods (autumn vs spring).\",\n      \"suggestion\": \"No action needed; both dates can be correct.\"\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Both describe the free checked‑bag weight limit for economy, but give different maximum weights.\",\n      \"suggestion\": \"Confirm the current weight allowance for economy passengers.\"\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"compatible\",\n      \"why\": \"One sets an age minimum, the other sets a licence‑holding requirement; both can apply simultaneously.\",\n      \"suggestion\": \"No action needed; both requirements may be in effect.\"\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One prohibits metal studs on the pitch, the other permits them.\",\n      \"suggestion\": \"Clarify the club’s policy on footwear.\"\n    },\n    {\n      \"ref\": \"p7\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"One bans dogs inside the restaurant, the other allows them on the covered patio.\",\n      \"suggestion\": \"No action needed; both statements can be true for different areas.\"\n    },\n    {\n      \"ref\": \"p8\",\n      \"answer\": \"compatible\",\n      \"why\": \"One concerns free checked‑bag weight, the other concerns carry‑on weight limits; they address different baggage categories.\",\n      \"suggestion\": \"No action needed.\"\n    },\n    {\n      \"ref\": \"p9\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Both give different closing dates for the same autumn intake.\",\n      \"suggestion\": \"Verify the correct autumn intake deadline.\"\n    },\n    {\n      \"ref\": \"p10\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"One gives total passenger capacity, the other gives hourly skier throughput; different metrics.\",\n      \"suggestion\": \"No action needed; both figures can be correct.\"\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 849,
+      "cost": 0.019149727685221978,
+      "cost_details": {
+        "completion_cost_inr": 0.015713596470587406,
+        "prompt_cost_inr": 0.00343613121463458
+      },
+      "estimated_cost": 0.000175891,
+      "latency_ms": 18929,
+      "prompt_tokens": 853,
+      "prompt_tokens_details": null,
+      "total_tokens": 1702
+    },
+    "costUsd": 0.00017589100000000001,
+    "ms": 19176
+  },
+  {
+    "n": 3,
+    "keys": [
+      "w63",
+      "w49",
+      "w39",
+      "w29",
+      "w84",
+      "w57",
+      "w15",
+      "w66",
+      "w03",
+      "w78"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Only the head baker is allowed to change the sourdough recipe.\"\n  B: \"The weekend shift lead is not permitted to change any recipes.\"\n\np2\n  A: \"Visitors may feed the giraffes only during the 2 p.m. keeper talk.\"\n  B: \"Visitors are not allowed to feed any animals in the zoo.\"\n\np3\n  A: \"Street-party permits are free for residents' associations.\"\n  B: \"There is no charge to residents' groups applying to close their road for a street party.\"\n\np4\n  A: \"Visitors may feed the giraffes only during the 2 p.m. keeper talk.\"\n  B: \"Giraffe feeding sessions cost £5 per person.\"\n\np5\n  A: \"The Northline express to Harbour City runs every 30 minutes on weekdays.\"\n  B: \"There is no express service on the Northline from Monday to Friday.\"\n\np6\n  A: \"Members can use the gym 24 hours a day, 7 days a week.\"\n  B: \"Off-peak members cannot enter the gym after 4 p.m. on weekdays.\"\n\np7\n  A: \"Renters must be at least 25 years old to hire a car from DriveNow.\"\n  B: \"DriveNow rents cars to drivers aged 21 and over.\"\n\np8\n  A: \"Volunteers at the animal shelter must complete a handling course.\"\n  B: \"Members of the public visiting the shelter may walk a dog with a staff member present, with no course required.\"\n\np9\n  A: \"Claims under £500 are approved by the claims desk without a site inspection.\"\n  B: \"Claims above £5,000 need sign-off from a senior adjuster.\"\n\np10\n  A: \"In the beta firmware, the hub's motion sensors report every 10 seconds.\"\n  B: \"The smart-home hub's motion sensors report every 30 seconds.\"",
+    "maxTokens": 966,
+    "status": "truncated",
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"compatible\",\n      \"why\": \"Both statements can be true: the head baker may change recipes while the weekend shift lead is not permitted.\",\n      \"suggestion\": null\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One statement allows feeding at a specific time, the other forbids any feeding, which cannot both be true.\",\n      \"suggestion\": \"Confirm the zoo's policy on visitor feeding.\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"compatible\",\n      \"why\": \"Both statements say there is no charge for residents' groups applying for street‑party permits.\",\n      \"suggestion\": null\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"compatible\",\n      \"why\": \"Feeding may be allowed only during the talk and still require a £5 fee per person.\",\n      \"suggestion\": null\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says the express runs every 30 minutes on weekdays, the other says no express service exists Monday‑Friday.\",\n      \"suggestion\": \"Check the current timetable for the Northline express.\"\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Statement A allows 24/7 access for members, while B restricts off‑peak members after 4 p.m., which cannot both hold.\",\n      \"suggestion\": \"Clarify the gym access rules for different membership tiers.\"\n    },\n    {\n      \"ref\": \"p7\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One sets a minimum age of 25, the other permits renters as young as 21, which are mutually exclusive requirements.\",\n     ",
+    "usage": {
+      "completion_tokens": 966,
+      "cost": 0.021355488542244786,
+      "cost_details": {
+        "completion_cost_inr": 0.017879074429431603,
+        "prompt_cost_inr": 0.0034764141128131804
+      },
+      "estimated_cost": 0.00019615099999999999,
+      "latency_ms": 19245,
+      "prompt_tokens": 863,
+      "prompt_tokens_details": null,
+      "total_tokens": 1829
+    },
+    "costUsd": 0.00019615100000000004,
+    "ms": 19434
+  },
+  {
+    "n": 4,
+    "keys": [
+      "w87",
+      "w08",
+      "w21",
+      "w65",
+      "w73",
+      "w43",
+      "w50",
+      "w23",
+      "w07",
+      "w53"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"All pull requests to the main branch need approval from at least two maintainers.\"\n  B: \"Pull requests into experimental branches need only one maintainer's approval.\"\n\np2\n  A: \"The smart-home hub shares usage data only if the owner opts in.\"\n  B: \"Usage-data sharing on the smart-home hub is switched on by default, and owners can opt out in settings.\"\n\np3\n  A: \"Economy passengers on Skyline Air may check one bag of up to 23 kg free of charge.\"\n  B: \"Economy travellers on Skyline Air pay for every checked bag.\"\n\np4\n  A: \"Claims under £500 are approved by the claims desk without a site inspection.\"\n  B: \"Every claim requires a site inspection before approval.\"\n\np5\n  A: \"All pull requests to the main branch need approval from at least two maintainers.\"\n  B: \"Documentation-only pull requests to main can be merged with one approval.\"\n\np6\n  A: \"Only the head baker is allowed to change the sourdough recipe.\"\n  B: \"Any change to the sourdough recipe must be logged in the recipe book.\"\n\np7\n  A: \"Every room at the dental practice is wheelchair accessible.\"\n  B: \"The x-ray room at the dental practice can only be reached by a flight of stairs.\"\n\np8\n  A: \"Only the head baker is allowed to change the sourdough recipe.\"\n  B: \"She is the only person who may alter the sourdough recipe.\"\n\np9\n  A: \"Visitors may feed the giraffes only during the 2 p.m. keeper talk.\"\n  B: \"Giraffe feeding by visitors is permitted at any time the enclosure is open.\"\n\np10\n  A: \"All pull requests to the main branch need approval from at least two maintainers.\"\n  B: \"A single maintainer's approval is enough to merge into main.\"",
+    "maxTokens": 939,
+    "status": "ok",
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"Different branch types (main vs experimental) provide separate contexts for approval rules.\",\n      \"suggestion\": \"Clarify the branch policies for each branch type.\"\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One statement says data is shared only with explicit opt‑in, the other says it is on by default with opt‑out, which cannot both be true for the same setting.\",\n      \"suggestion\": \"Confirm the actual default and opt‑in/opt‑out behavior.\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One claim gives a free bag allowance, the other says every bag is paid, which cannot both apply to economy passengers.\",\n      \"suggestion\": \"Check the airline’s baggage policy for economy class.\"\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One rule exempts claims under £500 from inspection, the other requires inspection for every claim.\",\n      \"suggestion\": \"Verify whether a threshold exemption exists.\"\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"Both refer to main‑branch PRs but distinguish by type (documentation‑only vs other), allowing different approval requirements.\",\n      \"suggestion\": \"Document the special rule for documentation‑only PRs.\"\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"compatible\",\n      \"why\": \"One restricts who may change the recipe; the other adds a logging requirement, which can coexist.\",\n      \"suggestion\": \"Ensure the logging procedure is followed by the authorized baker.\"\n    },\n    {\n      \"ref\": \"p7\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One statement says every room is wheelchair accessible, while another says the x‑ray room is only reachable by stairs.\",\n      \"suggestion\": \"Confirm the accessibility status of the x‑ray room.\"\n    },\n    {\n      \"ref\": \"p8\",\n      \"answer\": \"compatible\",\n      \"why\": \"Both statements assert that only the head baker may alter the sourdough recipe, so they agree.\",\n      \"suggestion\": \"No action needed; the rule is consistent.\"\n    },\n    {\n      \"ref\": \"p9\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One limits visitor feeding to a specific talk time, the other allows feeding at any open time, which cannot both be true.\",\n      \"suggestion\": \"Check the official visitor feeding schedule.\"\n    },\n    {\n      \"ref\": \"p10\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One requires two maintainer approvals for main, the other says a single approval suffices, which are mutually exclusive.\",\n      \"suggestion\": \"Clarify the required number of approvals for merging to main.\"\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 866,
+      "cost": 0.019508680969802645,
+      "cost_details": {
+        "completion_cost_inr": 0.0160282385671716,
+        "prompt_cost_inr": 0.0034804424026310403
+      },
+      "estimated_cost": 0.00017918800000000002,
+      "latency_ms": 14463,
+      "prompt_tokens": 864,
+      "prompt_tokens_details": null,
+      "total_tokens": 1730
+    },
+    "costUsd": 0.00017918800000000002,
+    "ms": 14644
+  },
+  {
+    "n": 5,
+    "keys": [
+      "w33",
+      "w46",
+      "w01",
+      "w13",
+      "w69",
+      "w12",
+      "w68",
+      "w82",
+      "w85",
+      "w59"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"All pull requests to the main branch need approval from at least two maintainers.\"\n  B: \"Changes to main need a review from three maintainers.\"\n\np2\n  A: \"The farm co-op's members meet fortnightly.\"\n  B: \"Co-op members get together every second Thursday.\"\n\np3\n  A: \"Only the head baker is allowed to change the sourdough recipe.\"\n  B: \"The pastry chef can update the sourdough recipe without anyone's sign-off.\"\n\np4\n  A: \"All pull requests to the main branch need approval from at least two maintainers.\"\n  B: \"Every pull request into main must also pass the full CI suite.\"\n\np5\n  A: \"Visitors may feed the giraffes only during the 2 p.m. keeper talk.\"\n  B: \"Visitors may feed the goats in the petting area throughout the day.\"\n\np6\n  A: \"The newspaper sources its photographs exclusively from staff photographers.\"\n  B: \"The newspaper buys some of its photographs from freelance agencies.\"\n\np7\n  A: \"The restaurant is closed every Monday.\"\n  B: \"The restaurant opens for lunch and dinner seven days a week.\"\n\np8\n  A: \"Only the head baker is allowed to change the sourdough recipe.\"\n  B: \"Both the head baker and the shift lead may adjust oven temperatures.\"\n\np9\n  A: \"Visitors may feed the giraffes only during the 2 p.m. keeper talk.\"\n  B: \"Feeding is allowed at 11 a.m. as well.\"\n\np10\n  A: \"Street-party permits are free for residents' associations.\"\n  B: \"Residents' associations pay a £75 fee for each street-party permit.\"",
+    "maxTokens": 985,
+    "status": "unreadable",
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"compatible\",\n      \"why\": \"Three approvals satisfy the requirement of at least two, so both statements can be true.\",\n      \"suggestion\": null\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"unclear\",\n      \"why\": \"It's not clear if the fortnightly meetings align with the every‑second‑Thursday schedule.\",\n      \"suggestion\": null\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says only the head baker can change the recipe, the other gives the pastry chef that ability.\",\n      \"suggestion\": \"Confirm which role has authority over the sourdough recipe.\"\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"compatible\",\n      \"why\": \"One sets an approval requirement, the other adds a CI requirement; both can apply together.\",\n      \"suggestion\": null\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"compatible\",\n      \"why\": \"The statements refer to different animals and feeding times, so they can both be true.\",\n      \"suggestion\": null\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One claims photographs are exclusively from staff, the other says some are bought from freelancers.\",\n      \"suggestion\": \"Clarify whether any non‑staff photographs are used.\"\n    },\n    {\n      \"ref\": \"p7\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says the restaurant is closed every Monday, the other says it opens every day.\",\n      \"suggestion\": \"Verify the restaurant's Monday operating status.\"\n    },\n    {\n      \"ref\": \"p8\",\n      \"answer\": \"compatible\",\n      \"why\": \"One restricts recipe changes to the head baker, the other allows both to adjust oven temperatures; different tasks.\",\n      \"suggestion\": null\n    },\n    {\n      \"ref\": \"p9\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Both statements set mutually exclusive feeding times for the giraffes.\",\n      \"suggestion\": \"Determine the correct allowed feeding times for giraffes.\"\n    },\n    {\n      \"ref\": \"p10\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says permits are free, the other says a fee is required.\",\n      \"suggestion\": \"Check the current fee policy for street‑party permits.\"\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 871,
+      "cost": 0.019436062880383385,
+      "cost_details": {
+        "completion_cost_inr": 0.016120780360284602,
+        "prompt_cost_inr": 0.00331528252009878
+      },
+      "estimated_cost": 0.00017852100000000003,
+      "latency_ms": 15053,
+      "prompt_tokens": 823,
+      "prompt_tokens_details": null,
+      "total_tokens": 1694
+    },
+    "costUsd": 0.000178521,
+    "ms": 15247
+  },
+  {
+    "n": 6,
+    "keys": [
+      "w05",
+      "w42",
+      "w36",
+      "w72",
+      "w86",
+      "w51",
+      "w19",
+      "w79",
+      "w14",
+      "w48"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Economy passengers on Skyline Air may check one bag of up to 23 kg free of charge.\"\n  B: \"Business-class passengers on Skyline Air may check two bags free.\"\n\np2\n  A: \"Ski helmets are recommended for adults at the resort.\"\n  B: \"Helmets are mandatory for children in the resort's ski school.\"\n\np3\n  A: \"The music festival's site capacity is capped at 20,000 people per day.\"\n  B: \"On Saturday the festival will admit 25,000 people to the site.\"\n\np4\n  A: \"The game studio uses Jira for bug tracking.\"\n  B: \"The game studio's art team tracks its tasks in Trello.\"\n\np5\n  A: \"Renters must be at least 25 years old to hire a car from DriveNow.\"\n  B: \"A 27-year-old customer hired a DriveNow car last week.\"\n\np6\n  A: \"Renters must be at least 25 years old to hire a car from DriveNow.\"\n  B: \"Drivers under 25 may hire a DriveNow car if they pay a young-driver surcharge.\"\n\np7\n  A: \"Street-party permits are free for residents' associations.\"\n  B: \"Commercial event organisers are charged £200 for a street-party permit.\"\n\np8\n  A: \"Street-party permits are free for residents' associations.\"\n  B: \"Street-party permit applications must be submitted six weeks in advance.\"\n\np9\n  A: \"The cinema's largest screen seats up to 320 people.\"\n  B: \"Last night's premiere on the largest screen drew an audience of 290.\"\n\np10\n  A: \"The farm co-op has 140 members.\"\n  B: \"At the last count, membership stood at 210.\"",
+    "maxTokens": 993,
+    "status": "ok",
+    "raw": "{\n  \"results\": [\n    {\"ref\":\"p1\",\"answer\":\"compatible\",\"why\":\"different passenger classes have different baggage allowances\",\"suggestion\":\"none\"},\n    {\"ref\":\"p2\",\"answer\":\"compatible\",\"why\":\"recommendation for adults and mandatory rule for children can coexist\",\"suggestion\":\"none\"},\n    {\"ref\":\"p3\",\"answer\":\"contradicts\",\"why\":\"same festival day capacity limit exceeded\",\"suggestion\":\"verify the actual admission number for Saturday\"},\n    {\"ref\":\"p4\",\"answer\":\"compatible\",\"why\":\"different teams using different task‑tracking tools can both be true\",\"suggestion\":\"none\"},\n    {\"ref\":\"p5\",\"answer\":\"compatible\",\"why\":\"the 27‑year‑old meets the minimum‑age requirement\",\"suggestion\":\"none\"},\n    {\"ref\":\"p6\",\"answer\":\"contradicts\",\"why\":\"one statement says under‑25 cannot rent, the other allows it with a surcharge\",\"suggestion\":\"clarify if an exception exists for under‑25 renters\"},\n    {\"ref\":\"p7\",\"answer\":\"compatible_context\",\"why\":\"different applicant types (residents vs commercial) have different fee rules\",\"suggestion\":\"none\"},\n    {\"ref\":\"p8\",\"answer\":\"compatible\",\"why\":\"fee exemption and submission deadline are independent conditions\",\"suggestion\":\"none\"},\n    {\"ref\":\"p9\",\"answer\":\"compatible\",\"why\":\"capacity limit and actual attendance are consistent (attendance below limit)\",\"suggestion\":\"none\"},\n    {\"ref\":\"p10\",\"answer\":\"compatible_context\",\"why\":\"membership numbers likely refer to different times\",\"suggestion\":\"check the dates of each membership count\"}\n  ]\n}",
+    "usage": {
+      "completion_tokens": 623,
+      "cost": 0.014894329419792903,
+      "cost_details": {
+        "completion_cost_inr": 0.011530707421879803,
+        "prompt_cost_inr": 0.0033636219979131005
+      },
+      "estimated_cost": 0.000136805,
+      "latency_ms": 8900,
+      "prompt_tokens": 835,
+      "prompt_tokens_details": null,
+      "total_tokens": 1458
+    },
+    "costUsd": 0.00013680500000000002,
+    "ms": 9083
+  },
+  {
+    "n": 7,
+    "keys": [
+      "w09",
+      "w89",
+      "w22",
+      "w90",
+      "w17",
+      "w32",
+      "w44",
+      "w41",
+      "w04",
+      "w24"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Members can use the gym 24 hours a day, 7 days a week.\"\n  B: \"Members have round-the-clock access to the gym using their key fob.\"\n\np2\n  A: \"Members can use the gym 24 hours a day, 7 days a week.\"\n  B: \"Staffed reception hours at the gym are 8 a.m. to 8 p.m.\"\n\np3\n  A: \"The publisher accepts unsolicited manuscripts.\"\n  B: \"Manuscripts that arrive without an agent or an invitation are returned to the sender unread.\"\n\np4\n  A: \"Street-party permits are free for residents' associations.\"\n  B: \"The permit costs £40 unless the applicant is a registered charity.\"\n\np5\n  A: \"Applications for the autumn intake close on 31 January.\"\n  B: \"In 2023, applications for the autumn intake closed on 15 January.\"\n\np6\n  A: \"Since the 2024 rule change, the sports club's juniors train on Tuesdays.\"\n  B: \"Junior training at the sports club has been on Thursdays since the 2024 change, with Tuesdays kept for seniors.\"\n\np7\n  A: \"Clients must sign the engagement letter before the law firm opens a file.\"\n  B: \"Signing the engagement letter is optional; the firm can open a file without it.\"\n\np8\n  A: \"Economy passengers on Skyline Air may check one bag of up to 23 kg free of charge.\"\n  B: \"Until March 2025, economy passengers on Skyline Air had to pay for their first checked bag.\"\n\np9\n  A: \"The law firm's intake desk takes new enquiries by phone.\"\n  B: \"New enquiries can also be submitted through the intake desk's web form.\"\n\np10\n  A: \"The smart-home thermostat is sold in the UK for £149.\"\n  B: \"In Ireland the smart-home thermostat costs €179.\"",
+    "maxTokens": 957,
+    "status": "ok",
+    "raw": "{\n  \"results\": [\n    {\"ref\":\"p1\",\"answer\":\"compatible\",\"why\":\"Both statements describe round‑the‑clock gym access, just phrased differently\",\"suggestion\":\"None\"},\n    {\"ref\":\"p2\",\"answer\":\"compatible_context\",\"why\":\"One describes overall access hours, the other staff reception hours\",\"suggestion\":\"None\"},\n    {\"ref\":\"p3\",\"answer\":\"compatible\",\"why\":\"Manuscripts can be accepted but still be returned unread\",\"suggestion\":\"None\"},\n    {\"ref\":\"p4\",\"answer\":\"compatible_context\",\"why\":\"Free permit applies to residents' associations, cost applies to others like charities\",\"suggestion\":\"None\"},\n    {\"ref\":\"p5\",\"answer\":\"compatible_context\",\"why\":\"Different years: general rule vs 2023 specific date\",\"suggestion\":\"None\"},\n    {\"ref\":\"p6\",\"answer\":\"contradicts\",\"why\":\"Both claim juniors train on different days after the same rule change\",\"suggestion\":\"Confirm the correct day for junior training\"},\n    {\"ref\":\"p7\",\"answer\":\"contradicts\",\"why\":\"One says signing is required, the other says it is optional\",\"suggestion\":\"Check the firm's policy on engagement letters\"},\n    {\"ref\":\"p8\",\"answer\":\"compatible_context\",\"why\":\"One statement likely reflects current policy, the other refers to a past period until March 2025\",\"suggestion\":\"None\"},\n    {\"ref\":\"p9\",\"answer\":\"compatible\",\"why\":\"Both phone and web form can be available for enquiries\",\"suggestion\":\"None\"},\n    {\"ref\":\"p10\",\"answer\":\"compatible\",\"why\":\"Prices are given for different regions/currencies\",\"suggestion\":\"None\"}\n  ]\n}",
+    "usage": {
+      "completion_tokens": 653,
+      "cost": 0.015574457162824561,
+      "cost_details": {
+        "completion_cost_inr": 0.012085958180557802,
+        "prompt_cost_inr": 0.00348849898226676
+      },
+      "estimated_cost": 0.000143052,
+      "latency_ms": 10311,
+      "prompt_tokens": 866,
+      "prompt_tokens_details": null,
+      "total_tokens": 1519
+    },
+    "costUsd": 0.000143052,
+    "ms": 10568
+  },
+  {
+    "n": 8,
+    "keys": [
+      "w55",
+      "w30",
+      "w56",
+      "w52",
+      "w38",
+      "w40",
+      "w06",
+      "w70",
+      "w26",
+      "w76"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Applications for the autumn intake close on 31 January.\"\n  B: \"International applicants to the autumn intake have until 30 June.\"\n\np2\n  A: \"All dogs at the animal shelter are microchipped before adoption.\"\n  B: \"Biscuit, a terrier adopted from the shelter in May, was microchipped beforehand.\"\n\np3\n  A: \"The port's harbour master requires a pilot on board for every vessel longer than 150 m.\"\n  B: \"On 3 May no pilot was used, as no vessel over 150 m entered the port that day.\"\n\np4\n  A: \"The music festival allows refillable water bottles on site.\"\n  B: \"The festival also provides free water refill stations near each stage.\"\n\np5\n  A: \"The dental practice's new-patient fee was raised to £60 in January.\"\n  B: \"New patients at the dental practice pay £45.\"\n\np6\n  A: \"The farm co-op sells its milk solely to Greenvale Dairies.\"\n  B: \"Part of the co-op's milk goes to a local cheesemaker.\"\n\np7\n  A: \"Ms Patel leads the newspaper's sports desk.\"\n  B: \"She was moved to the business desk in September.\"\n\np8\n  A: \"The festival's main stage curfew is 11 p.m.\"\n  B: \"Headliners at the festival play until midnight.\"\n\np9\n  A: \"The office closes at 5 p.m. on Fridays.\"\n  B: \"The law firm's intake desk is staffed until 7 p.m. every weekday.\"\n\np10\n  A: \"The publisher's 2022 catalogue listed 80 new titles.\"\n  B: \"The publisher brought out 95 new titles in 2023.\"",
+    "maxTokens": 1003,
+    "status": "ok",
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"Different applicant groups (all vs international) allow different deadlines.\",\n      \"suggestion\": \"Confirm the specific deadlines for each applicant category.\"\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"compatible\",\n      \"why\": \"Both statements affirm that dogs are microchipped, with Biscuit as an example.\",\n      \"suggestion\": \"No action needed.\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"compatible\",\n      \"why\": \"The rule and the day's activity are consistent; no vessel >150 m entered.\",\n      \"suggestion\": \"No action needed.\"\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"compatible\",\n      \"why\": \"Both statements describe water provisions that can coexist.\",\n      \"suggestion\": \"No action needed.\"\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says the fee is £60, the other says new patients pay £45, without a contextual distinction.\",\n      \"suggestion\": \"Verify the current fee amount and any recent changes.\"\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Statement A claims exclusive sale to Greenvale, while B says some milk goes elsewhere.\",\n      \"suggestion\": \"Clarify whether the milk sales are exclusive or shared.\"\n    },\n    {\n      \"ref\": \"p7\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"She could have led the sports desk before being moved to the business desk in September.\",\n      \"suggestion\": \"Check the timeline of her role changes.\"\n    },\n    {\n      \"ref\": \"p8\",\n      \"answer\": \"contradicts\",\n      \"why\": \"A curfew of 11 p.m. conflicts with headliners playing until midnight.\",\n      \"suggestion\": \"Confirm the actual curfew enforcement or any exceptions.\"\n    },\n    {\n      \"ref\": \"p9\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"One refers to the office closing time, the other to a specific desk’s staffing hours.\",\n      \"suggestion\": \"No action needed.\"\n    },\n    {\n      \"ref\": \"p10\",\n      \"answer\": \"compatible\",\n      \"why\": \"Each statement refers to a different year’s catalogue, so both can be true.\",\n      \"suggestion\": \"No action needed.\"\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 890,
+      "cost": 0.019840089461844963,
+      "cost_details": {
+        "completion_cost_inr": 0.016472439174114003,
+        "prompt_cost_inr": 0.003367650287730961
+      },
+      "estimated_cost": 0.00018223199999999997,
+      "latency_ms": 15523,
+      "prompt_tokens": 836,
+      "prompt_tokens_details": null,
+      "total_tokens": 1726
+    },
+    "costUsd": 0.00018223200000000003,
+    "ms": 15710
+  }
+]

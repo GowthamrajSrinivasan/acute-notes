@@ -1,0 +1,155 @@
+/**
+ * The Stage 4f candidate pipeline after the second unseen evaluation (intelligent-update-engine-plan §12.21):
+ * **retrieval for recall, judgment for precision.** Offline only — nothing in the app calls it; Stage 4f stays OFF.
+ *
+ *   new or changed sentence → related sentences (high recall) → deterministic screen → budgeted AI judgment → evidence
+ *   and safety guards (`combine`) → the user's review.
+ *
+ * The screen's philosophy is the reverse of the near-miss selector's: a related pair is **forwarded to the AI unless there
+ * is positive evidence** that it is compatible or unrelated. Low shared wording is never evidence: paraphrased opposites
+ * ("accessible" / "cannot reach") share little and contradict.
+ *
+ * - **Rule conflict** (shown without the AI) only when the tier-1 rules find a conflict *and* the two statements are the
+ *   same claim word for word apart from their values — precision first ("120 rooms" / "95 rooms available for booking",
+ *   "the Premium plan" / "the Team plan" go to the AI instead).
+ * - **Excluded**, each with its reason: unrelated (no shared meaningful word, not near by the local embedder); the values
+ *   agree or one sits inside the other's limit; the same frequency written differently; different named metrics; a
+ *   different scope stated on both sides (staging / production, Android / iOS, version 2 / 3, 2022 / 2024); a pure
+ *   extension (one says everything the other says and more, with no exclusivity word on the shorter side).
+ * - **Forwarded** — everything else that is related — ranked by deterministic evidence of incompatibility.
+ *
+ * The tier-1 rules (`rules.ts`) are unchanged by this module; the live rules-only consistency panel keeps using them.
+ */
+import { quantitiesOf } from "@/ai/fidelity/quantities";
+import { significant } from "@/ai/fidelity/information";
+import { cosine, localEmbedder } from "@/ai/router/embedding";
+import { contentOf, frequencyOf, isExclusive, judgePair, MODAL_CLASH, markersOf, modalityOf, polarity, sharedCount, stem, unmatched, type PairJudgement } from "./rules";
+
+export type Exclusion = "unrelated" | "values_agree" | "same_frequency" | "different_metrics" | "different_scope" | "extension";
+
+export interface Screened {
+  decision: "rule_conflict" | "forward" | "excluded";
+  exclusion?: Exclusion;
+  reason: string;
+  /** The tier-1 rules' own result, kept as evidence. */
+  rule: PairJudgement;
+  /** A scope difference strong enough that the AI's "contradicts" alone stays possible (the context guard). */
+  scoped: boolean;
+  /** A statement says only one value can hold. */
+  exclusive: boolean;
+  evidence: { incompatibility: "strong" | "medium" | "weak"; sameClaim: boolean };
+  /** Local embedder cosine (0–1), a tie-break. */
+  similarity: number;
+  /** Too little said to identify the subject, or changes without a baseline (the thin guard). */
+  thin: boolean;
+  /** Higher first; 0 when not forwarded. */
+  priority: number;
+}
+
+/** Words too general to relate two statements on their own. */
+const GENERIC = new Set(["use", "get", "make", "take", "need", "include", "also", "new", "one", "time", "day", "year", "thing", "way", "part", "people", "many", "much", "every", "each", "all", "only"]);
+const VALUE_WORDS = new Set(["most", "least", "up", "maximum", "minimum", "limited", "capped", "limit", "about", "around", "roughly", "approximately", "nearly", "almost", "more", "less", "than", "over", "under", "below", "above", "within"]);
+const PAST = new Set(["previously", "formerly", "originally", "was", "were", "had", "used", "stopped", "until", "since", "before", "after"]);
+const SCOPE_KINDS = new Set(["env", "platform", "region", "version"]);
+
+/** The sentence's meaningful stems with its values (numbers, units, bound words) taken out. */
+function claimWords(sentence: string): string[] {
+  const qs = quantitiesOf(sentence);
+  const text = qs.reduceRight((t, q) => `${t.slice(0, q.start)} ${t.slice(q.end)}`, sentence);
+  return contentOf(text).filter((w) => !VALUE_WORDS.has(w) && !/^\d/.test(w));
+}
+
+/** Related at all? A shared meaningful word, or near by the local embedder. Recall first: this only drops the clearly unrelated. */
+export function relatedness(a: string, b: string): { related: boolean; similarity: number; shared: number } {
+  const wa = significant(a).map(stem).filter((w) => !GENERIC.has(w) && !/^\d/.test(w));
+  const wb = significant(b).map(stem).filter((w) => !GENERIC.has(w) && !/^\d/.test(w));
+  const shared = sharedCount([...new Set(wa)], [...new Set(wb)]);
+  const similarity = cosine(localEmbedder.embed(a), localEmbedder.embed(b));
+  return { related: shared >= 1 || similarity >= 0.2, similarity, shared };
+}
+
+/** The scope of a statement: its markers that set a context, and whether one heads the sentence or the tense is past. */
+function scopeOf(sentence: string) {
+  const markers = [...markersOf(sentence)];
+  const lower = sentence.toLowerCase();
+  const head = lower.split(/[,;:]/)[0]!.split(/\s+/).slice(0, 4).join(" ");
+  const headTime = markers.some((m) => m.startsWith("time:") && m.split(":")[1]!.split("-").some((w) => head.includes(w)));
+  const past = (lower.match(/[a-z']+/g) ?? []).some((w) => PAST.has(w)) && markers.some((m) => m.startsWith("time:"));
+  return { markers, explicit: markers.filter((m) => SCOPE_KINDS.has(m.split(":")[0]!)), headTime, past };
+}
+
+/**
+ * The context guard (refined, §12.21): a scope difference is a reason to hold the AI's "contradicts" at possible when
+ * both sides state the same kind of scope with different values, or one side states an environment / platform / region /
+ * version, or one side's time scope heads the sentence or puts it in the past. A unit ("per order"), a period inside the
+ * claim ("into the next year") or an observation checked against a limit is not a scope.
+ */
+function scopeDiffers(a: string, b: string, observationVsLimit: boolean): { scoped: boolean; bothSided: boolean } {
+  const sa = scopeOf(a);
+  const sb = scopeOf(b);
+  const kinds = (ms: string[]) => new Map(ms.map((m) => [m.split(":")[0]!, m] as const));
+  const ka = kinds(sa.markers);
+  const kb = kinds(sb.markers);
+  const bothSided = [...ka].some(([k, m]) => kb.has(k) && kb.get(k) !== m && k !== "time") || (ka.has("time") && kb.has("time") && sa.markers.filter((m) => m.startsWith("time:")).join() !== sb.markers.filter((m) => m.startsWith("time:")).join());
+  if (bothSided) return { scoped: true, bothSided: true };
+  if (observationVsLimit) return { scoped: false, bothSided: false };
+  const explicit = sa.explicit.filter((m) => !sb.markers.includes(m)).length + sb.explicit.filter((m) => !sa.markers.includes(m)).length > 0;
+  return { scoped: explicit || sa.headTime || sb.headTime || sa.past || sb.past, bothSided: false };
+}
+
+/** Screens one sentence pair (see module doc). Symmetric in what it decides. */
+export function screenPair(a: string, b: string): Screened {
+  const rule = judgePair(a, b);
+  const rel = relatedness(a, b);
+  const exclusive = isExclusive(a) || isExclusive(b);
+  const thin = Math.min(claimWords(a).length, claimWords(b).length) < 2 || /too little context|baseline/.test(rule.reason);
+  const base = { rule, exclusive, thin, similarity: rel.similarity };
+  const exclude = (exclusion: Exclusion, reason: string): Screened => ({ ...base, decision: "excluded", exclusion, reason, scoped: false, evidence: { incompatibility: "weak", sameClaim: false }, priority: 0 });
+  if (!rel.related) return exclude("unrelated", "no shared meaningful word, not near");
+
+  const ca = claimWords(a);
+  const cb = claimWords(b);
+  const identical = unmatched(ca, cb) === 0;
+  const negationDiffers = polarity(a).negated !== polarity(b).negated;
+  const ma = modalityOf(a);
+  const mb = modalityOf(b);
+  const modalClash = !!ma && !!mb && MODAL_CLASH.has(`${ma}/${mb}`);
+  const reason = rule.nearMiss?.reason ?? rule.reason;
+
+  // Positive evidence of compatibility — each needs something stated, never only a lack of shared words.
+  if (rule.verdict === "compatible" && !rule.nearMiss && rule.reason === "different metrics") return exclude("different_metrics", "different named metrics");
+  if (rule.verdict === "compatible" && !rule.nearMiss && rule.reason === "the values agree" && !negationDiffers && !modalClash) return exclude("values_agree", "the values agree, or one sits inside the other's limit");
+  const fa = frequencyOf(a);
+  const fb = frequencyOf(b);
+  if (fa && fb && Math.abs(Math.log(fa.perYear / fb.perYear)) <= 0.02 && !negationDiffers && unmatched(claimWords(a.toLowerCase().replace(fa.text, " ")), claimWords(b.toLowerCase().replace(fb.text, " "))) <= 2) return exclude("same_frequency", `“${fa.text}” = “${fb.text}”`);
+  const observationVsLimit = rule.verdict === "conflict" && /at most|at least/.test(rule.reason);
+  const scope = scopeDiffers(a, b, observationVsLimit);
+  if (scope.bothSided && rule.verdict !== "conflict") return exclude("different_scope", "a different scope stated on both sides");
+  const [short, long] = ca.length <= cb.length ? [ca, cb] : [cb, ca];
+  const shortSentence = ca.length <= cb.length ? a : b;
+  if (short.length >= 2 && long.length > short.length && unmatched(short, long) === long.length - short.length && !negationDiffers && !modalClash && !isExclusive(shortSentence) && rule.verdict === "compatible" && !rule.nearMiss)
+    return exclude("extension", "one says all the other says, and more");
+
+  // Precision first: a definite rule conflict only for the same claim word for word (apart from the values).
+  if (rule.verdict === "conflict" && (identical || rule.kind === "contradicts"))
+    return { ...base, decision: "rule_conflict", reason: rule.reason, scoped: false, evidence: { incompatibility: "strong", sameClaim: true }, priority: 0 };
+
+  // Forward: ranked by evidence of incompatibility, then by how surely it is the same claim.
+  const valuesDiffer = rule.verdict === "conflict" || (!!rule.nearMiss && ["value", "date", "frequency", "limit"].includes(rule.nearMiss.kind));
+  const incompatibility: Screened["evidence"]["incompatibility"] =
+    valuesDiffer || negationDiffers || modalClash || rule.nearMiss?.kind === "negation" || rule.nearMiss?.kind === "modality" || (rule.verdict === "possible" && rule.kind === "contradicts") ? "strong"
+    : exclusive || (rule.verdict === "possible" && rule.kind === "value") || rule.verdict === "possible" ? "medium"
+    : "weak";
+  const sameClaim = identical || unmatched(ca, cb) <= 2 || rel.similarity >= 0.45;
+  const inc = incompatibility === "strong" ? 3 : incompatibility === "medium" ? 2 : 1;
+  const priority = scope.scoped ? 1 + rel.similarity / 10 : 2 * inc + (sameClaim ? 1 : 0) + rel.similarity / 10;
+  return { ...base, decision: "forward", reason, scoped: scope.scoped, evidence: { incompatibility, sameClaim }, priority };
+}
+
+/** The judgement `combine` reads for a forwarded pair: possible, with the pipeline's own scope and exclusivity. */
+export function judgementForCombine(s: Screened): PairJudgement {
+  if (s.decision === "rule_conflict") return s.rule;
+  if (s.decision === "excluded") return { verdict: "compatible", reason: s.reason };
+  const swap = s.rule.verdict === "possible" && s.rule.kind === "value";
+  return { verdict: "possible", kind: swap ? "value" : "differs", reason: s.reason, ...(s.scoped ? { contextDiffers: true as const } : {}), ...(s.exclusive ? { exclusive: true as const } : {}), ...(s.thin ? { thin: true as const } : {}) };
+}

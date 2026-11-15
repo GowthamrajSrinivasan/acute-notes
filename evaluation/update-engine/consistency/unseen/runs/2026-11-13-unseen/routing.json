@@ -1,0 +1,309 @@
+{
+  "run": "2026-11-13-unseen",
+  "date": "2026-11-13T15:33:25.799Z",
+  "labelsSha256": "6cddd9ed2b55500857fd6f04b7232c5d193a3ceeeb77e1eb62bdf5d109cab525",
+  "counts": {
+    "rule_conflict": 2,
+    "possible": 8,
+    "near_miss": 7,
+    "excluded": 19
+  },
+  "candidates": 15,
+  "plannedCalls": [
+    {
+      "keys": [
+        "u01",
+        "u03",
+        "u14",
+        "u17",
+        "u21",
+        "u23",
+        "u29",
+        "u05",
+        "u12",
+        "u24"
+      ],
+      "maxTokens": 1800
+    },
+    {
+      "keys": [
+        "u26",
+        "u33",
+        "u08",
+        "u20",
+        "u32"
+      ],
+      "maxTokens": 1800
+    }
+  ],
+  "oneChange": {
+    "call": [
+      "u01",
+      "u03",
+      "u14",
+      "u17",
+      "u21",
+      "u23",
+      "u29",
+      "u05",
+      "u12",
+      "u24"
+    ],
+    "pending": [
+      {
+        "key": "u26",
+        "reason": "over_call_limit"
+      },
+      {
+        "key": "u33",
+        "reason": "over_call_limit"
+      },
+      {
+        "key": "u08",
+        "reason": "over_call_limit"
+      },
+      {
+        "key": "u20",
+        "reason": "over_call_limit"
+      },
+      {
+        "key": "u32",
+        "reason": "over_call_limit"
+      }
+    ],
+    "contradictionsRouted": 10,
+    "contradictionsInTheCall": 8,
+    "contradictionsLeftOut": [
+      "u33",
+      "u08"
+    ]
+  },
+  "rows": [
+    {
+      "id": "u01",
+      "route": "near_miss",
+      "priority": 4,
+      "verdict": "compatible",
+      "nearMiss": "frequency"
+    },
+    {
+      "id": "u02",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u03",
+      "route": "near_miss",
+      "priority": 4,
+      "verdict": "compatible",
+      "nearMiss": "negation"
+    },
+    {
+      "id": "u04",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u05",
+      "route": "possible",
+      "priority": 3,
+      "verdict": "possible"
+    },
+    {
+      "id": "u06",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u07",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u08",
+      "route": "possible",
+      "priority": 1,
+      "verdict": "possible",
+      "contextDiffers": true
+    },
+    {
+      "id": "u09",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u10",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u11",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u12",
+      "route": "possible",
+      "priority": 3,
+      "verdict": "possible"
+    },
+    {
+      "id": "u13",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u14",
+      "route": "near_miss",
+      "priority": 4,
+      "verdict": "compatible",
+      "nearMiss": "value"
+    },
+    {
+      "id": "u15",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u16",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u17",
+      "route": "near_miss",
+      "priority": 4,
+      "verdict": "compatible",
+      "nearMiss": "negation"
+    },
+    {
+      "id": "u18",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u19",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u20",
+      "route": "possible",
+      "priority": 1,
+      "verdict": "possible",
+      "contextDiffers": true
+    },
+    {
+      "id": "u21",
+      "route": "near_miss",
+      "priority": 4,
+      "verdict": "compatible",
+      "nearMiss": "value"
+    },
+    {
+      "id": "u22",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u23",
+      "route": "near_miss",
+      "priority": 4,
+      "verdict": "compatible",
+      "nearMiss": "frequency"
+    },
+    {
+      "id": "u24",
+      "route": "possible",
+      "priority": 3,
+      "verdict": "possible"
+    },
+    {
+      "id": "u25",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u26",
+      "route": "possible",
+      "priority": 3,
+      "verdict": "possible"
+    },
+    {
+      "id": "u27",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "u28",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u29",
+      "route": "near_miss",
+      "priority": 4,
+      "verdict": "compatible",
+      "nearMiss": "negation"
+    },
+    {
+      "id": "u30",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u31",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u32",
+      "route": "possible",
+      "priority": 1,
+      "verdict": "possible",
+      "contextDiffers": true
+    },
+    {
+      "id": "u33",
+      "route": "possible",
+      "priority": 3,
+      "verdict": "possible"
+    },
+    {
+      "id": "u34",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "u35",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "u36",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    }
+  ]
+}

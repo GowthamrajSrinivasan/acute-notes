@@ -1,0 +1,368 @@
+{
+  "reviewer": "Gowthamraj Srinivasan",
+  "date": "2026-11-15",
+  "blind": true,
+  "note": "The reviewer's blind labels for unseen4, given from labelling-sheet.md only (no draft key, rule results or predictions). Converted verbatim by script from 'Claude outputs/unseen4-labels.md'; reasons kept word for word. Frozen in FREEZE.json before the route step.",
+  "labels": {
+    "x01": {
+      "label": "contradiction",
+      "note": "New says photo ID is required at check-in; this says no ID is asked for."
+    },
+    "x02": {
+      "label": "contradiction",
+      "note": "\"Never shares raw data\" vs raw data sent to Ardent Bio."
+    },
+    "x03": {
+      "label": "contradiction",
+      "note": "Saturday opening stopped last spring, so it is not open now."
+    },
+    "x04": {
+      "label": "contradiction",
+      "note": "About 400 parcels a day vs about 1,200 on average."
+    },
+    "x05": {
+      "label": "contradiction",
+      "note": "Can pay rent online vs no way to pay over the internet."
+    },
+    "x06": {
+      "label": "ambiguous",
+      "note": "\"The squad\" is not named, and the 60-place expansion may or may not be the same squad or a later change."
+    },
+    "x07": {
+      "label": "contradiction",
+      "note": "Every Monday vs every other Monday."
+    },
+    "x08": {
+      "label": "contradiction",
+      "note": "Open to applicants vs not accepting any."
+    },
+    "x09": {
+      "label": "compatible",
+      "note": "Payment-run schedule says nothing about who approves."
+    },
+    "x10": {
+      "label": "compatible",
+      "note": "Hosting in Frankfurt and Dublin is inside the EU."
+    },
+    "x11": {
+      "label": "compatible",
+      "note": "A 2018 replacement and \"after the big storm\" can both hold."
+    },
+    "x12": {
+      "label": "contradiction",
+      "note": "Closed for repairs vs visitors can walk in and borrow books."
+    },
+    "x13": {
+      "label": "compatible",
+      "note": "Different months, different figures."
+    },
+    "x14": {
+      "label": "compatible",
+      "note": "Different coaches, different squads."
+    },
+    "x15": {
+      "label": "ambiguous",
+      "note": "Automatic hourly collection may or may not count as \"reading\" meters, so it is unclear whether it replaces quarterly reads."
+    },
+    "x16": {
+      "label": "compatible",
+      "note": "Tuesday and Friday is twice a week."
+    },
+    "x17": {
+      "label": "ambiguous",
+      "note": "\"It\" is unresolved; if it is the Ravelstone Ballroom, 300 vs 180 depends on layout."
+    },
+    "x18": {
+      "label": "compatible",
+      "note": "Different school."
+    },
+    "x19": {
+      "label": "compatible",
+      "note": "An express stopping there fits \"every train stops\"."
+    },
+    "x20": {
+      "label": "ambiguous",
+      "note": "One branch's Saturday closure may be an exception to, or a conflict with, the clinic-wide statement."
+    },
+    "x21": {
+      "label": "compatible",
+      "note": "Pharmacy next door is a different service."
+    },
+    "x22": {
+      "label": "compatible",
+      "note": "After 6pm and during the working day are different times."
+    },
+    "x23": {
+      "label": "compatible",
+      "note": "Recreational section, not the competitive squad."
+    },
+    "x24": {
+      "label": "contradiction",
+      "note": "A maximum of 800 a day cannot support a 1,200 daily average."
+    },
+    "x25": {
+      "label": "compatible",
+      "note": "Same statement, reworded."
+    },
+    "x26": {
+      "label": "contradiction",
+      "note": "Finance director approves all invoices vs the operations manager is sole approver."
+    },
+    "x27": {
+      "label": "compatible",
+      "note": "Explicitly about before 2021."
+    },
+    "x28": {
+      "label": "compatible",
+      "note": "Explicitly past (until 2023) vs now."
+    },
+    "x29": {
+      "label": "compatible",
+      "note": "Online catalogue is separate from the building being closed."
+    },
+    "x30": {
+      "label": "compatible",
+      "note": "Same availability claim, reworded."
+    },
+    "x31": {
+      "label": "ambiguous",
+      "note": "Unclear whether the 8am to 8pm hours apply to premium customers."
+    },
+    "x32": {
+      "label": "compatible",
+      "note": "Commercial customers, not residential."
+    },
+    "x33": {
+      "label": "contradiction",
+      "note": "Maximum 25 vs regularly 32 in the studio."
+    },
+    "x34": {
+      "label": "ambiguous",
+      "note": "\"She\" is unresolved, and the June transfer may end the Coldharbour role."
+    },
+    "x35": {
+      "label": "compatible",
+      "note": "Lessons vs lunchtime."
+    },
+    "x36": {
+      "label": "compatible",
+      "note": "Three farms near Inverurie fit \"exclusively Aberdeenshire\"."
+    },
+    "x37": {
+      "label": "contradiction",
+      "note": "Closed every weekend vs open on Saturdays."
+    },
+    "x38": {
+      "label": "ambiguous",
+      "note": "Under-16 exemption could be an exception to the rule or a conflict with \"patients must\"."
+    },
+    "x39": {
+      "label": "contradiction",
+      "note": "All staff at the town hall vs planning officers at home."
+    },
+    "x40": {
+      "label": "contradiction",
+      "note": "52 members exceeds a maximum of 40."
+    },
+    "x41": {
+      "label": "compatible",
+      "note": "36,000 a month is about 1,200 a day."
+    },
+    "x42": {
+      "label": "compatible",
+      "note": "Same claim, reworded."
+    },
+    "x43": {
+      "label": "contradiction",
+      "note": "Some invoices need no approval vs all approved by the finance director."
+    },
+    "x44": {
+      "label": "contradiction",
+      "note": "Thursday vs every other Monday."
+    },
+    "x45": {
+      "label": "compatible",
+      "note": "Same fact, reworded."
+    },
+    "x46": {
+      "label": "contradiction",
+      "note": "Open as usual vs currently closed."
+    },
+    "x47": {
+      "label": "compatible",
+      "note": "A different API (internal reporting)."
+    },
+    "x48": {
+      "label": "compatible",
+      "note": "Different regions and different charges."
+    },
+    "x49": {
+      "label": "compatible",
+      "note": "Four times a year is quarterly."
+    },
+    "x50": {
+      "label": "contradiction",
+      "note": "21 kg vs under 15 kg."
+    },
+    "x51": {
+      "label": "compatible",
+      "note": "A typical day and a peak day."
+    },
+    "x52": {
+      "label": "contradiction",
+      "note": "Year 5 using the suite at lunch vs only Year 6 allowed."
+    },
+    "x53": {
+      "label": "contradiction",
+      "note": "Annual vs every three years."
+    },
+    "x54": {
+      "label": "contradiction",
+      "note": "Live across all branches vs Exeter still on the old system."
+    },
+    "x55": {
+      "label": "contradiction",
+      "note": "Must show photo ID vs optional."
+    },
+    "x56": {
+      "label": "compatible",
+      "note": "A London data centre keeps data in the UK."
+    },
+    "x57": {
+      "label": "compatible",
+      "note": "A booking rule that fits Saturday opening."
+    },
+    "x58": {
+      "label": "compatible",
+      "note": "A peak day does not conflict with an average."
+    },
+    "x59": {
+      "label": "compatible",
+      "note": "Late coursework with permission, and refusal when none was sought."
+    },
+    "x60": {
+      "label": "contradiction",
+      "note": "Cap of 30 vs maximum 40."
+    },
+    "x61": {
+      "label": "compatible",
+      "note": "Fortnightly on Mondays is every other Monday."
+    },
+    "x62": {
+      "label": "contradiction",
+      "note": "Cancelled for winter vs runs all winter."
+    },
+    "x63": {
+      "label": "compatible",
+      "note": "A separate company."
+    },
+    "x64": {
+      "label": "contradiction",
+      "note": "Also served from US-East vs available only in the EU."
+    },
+    "x65": {
+      "label": "contradiction",
+      "note": "Opens at 8am vs 8:30am now."
+    },
+    "x66": {
+      "label": "compatible",
+      "note": "A different branch."
+    },
+    "x67": {
+      "label": "contradiction",
+      "note": "84 rooms vs 112 rooms."
+    },
+    "x68": {
+      "label": "compatible",
+      "note": "A credit union and a building society are different organisations."
+    },
+    "x69": {
+      "label": "contradiction",
+      "note": "Once a year vs every quarter."
+    },
+    "x70": {
+      "label": "compatible",
+      "note": "A 48-hour guarantee allows next-day arrival."
+    },
+    "x71": {
+      "label": "contradiction",
+      "note": "Weekly meeting on Wednesday vs moved to Thursday."
+    },
+    "x72": {
+      "label": "compatible",
+      "note": "Sign-in is an extra rule for Year 6."
+    },
+    "x73": {
+      "label": "contradiction",
+      "note": "Only the head chef signs off vs the sous-chef approved a menu."
+    },
+    "x74": {
+      "label": "contradiction",
+      "note": "Emergency patients only vs routine appointments."
+    },
+    "x75": {
+      "label": "compatible",
+      "note": "Accepted ID types fit the ID requirement."
+    },
+    "x76": {
+      "label": "contradiction",
+      "note": "Mandatory vs discretionary."
+    },
+    "x77": {
+      "label": "compatible",
+      "note": "34 is under the 40 cap."
+    },
+    "x78": {
+      "label": "compatible",
+      "note": "Picker productivity says nothing about the daily total."
+    },
+    "x79": {
+      "label": "contradiction",
+      "note": "Full vs record low."
+    },
+    "x80": {
+      "label": "compatible",
+      "note": "Finance director sign-off fits the rule."
+    },
+    "x81": {
+      "label": "compatible",
+      "note": "A different waste stream (garden waste)."
+    },
+    "x82": {
+      "label": "contradiction",
+      "note": "First Sunday of May vs late September."
+    },
+    "x83": {
+      "label": "compatible",
+      "note": "A past reopening unrelated to the current closure."
+    },
+    "x84": {
+      "label": "ambiguous",
+      "note": "Depends on whether a staging copy counts as the API being \"available\"."
+    },
+    "x85": {
+      "label": "contradiction",
+      "note": "Free for patients vs £3 an hour."
+    },
+    "x86": {
+      "label": "contradiction",
+      "note": "Monthly vs quarterly."
+    },
+    "x87": {
+      "label": "compatible",
+      "note": "£750 is under the £1,000 limit."
+    },
+    "x88": {
+      "label": "compatible",
+      "note": "A mean and a median can differ widely."
+    },
+    "x89": {
+      "label": "contradiction",
+      "note": "Open to every year group vs only Year 6."
+    },
+    "x90": {
+      "label": "contradiction",
+      "note": "Sole consultant vs run jointly with a second doctor."
+    }
+  }
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "n": 1,
+    "keys": [
+      "v42",
+      "v20",
+      "v10",
+      "v03",
+      "v09",
+      "v25",
+      "v32",
+      "v38",
+      "v48",
+      "v50"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Wearing a hairnet on the factory line is mandatory.\"\n  B: \"Factory line workers can choose whether or not to wear a hairnet.\"\n\np2\n  A: \"The data warehouse keeps raw event data for 90 days.\"\n  B: \"Raw event data in the data warehouse, which the analytics team queries most heavily at quarter-end, is deleted after 30 days.\"\n\np3\n  A: \"Coworking members can reserve a meeting room for up to 2 hours.\"\n  B: \"Coworking members can book a room for up to 4 hours.\"\n\np4\n  A: \"Until March 2025, the bike-share annual pass cost $90.\"\n  B: \"The bike-share annual pass now costs $110.\"\n\np5\n  A: \"The theatre's booking system allows at most 4 tickets per order.\"\n  B: \"Last Saturday a customer bought 6 tickets in a single order through the theatre's booking system.\"\n\np6\n  A: \"Employees can carry over at most 5 unused leave days into the next year.\"\n  B: \"Employees may carry up to 10 unused leave days into the following year.\"\n\np7\n  A: \"Staff based in the UK receive 25 days of annual leave.\"\n  B: \"Staff based in Germany receive 30 days of annual leave.\"\n\np8\n  A: \"In the test environment, the loyalty points job runs every hour.\"\n  B: \"In the live environment, the loyalty points job runs nightly.\"\n\np9\n  A: \"The factory line produces 400 units per shift.\"\n  B: \"The factory line produces 1,200 units per day.\"\n\np10\n  A: \"Before the 2024 renovation, the museum cafe seated 40 people.\"\n  B: \"The museum cafe now seats 80 people.\"",
+    "maxTokens": 987,
+    "status": "ok",
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One statement says wearing a hairnet is mandatory, the other says workers can choose, which cannot both be true in the same context.\",\n      \"suggestion\": \"Confirm the current policy on hairnet usage.\"\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One claim sets a 90‑day retention, the other says data is deleted after 30 days, without indicating a different context.\",\n      \"suggestion\": \"Check if there are separate retention rules for different data subsets.\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One limits reservations to 2 hours, the other to 4 hours, with no context distinction.\",\n      \"suggestion\": \"Verify the correct reservation limit and any applicable exceptions.\"\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"The statements refer to different time periods (until March 2025 vs now).\",\n      \"suggestion\": \"None\"\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"contradicts\",\n      \"why\": \"The system limit is 4 tickets per order, yet an order of 6 tickets is reported.\",\n      \"suggestion\": \"Investigate whether the limit was overridden or if the order was an exception.\"\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says a maximum of 5 carry‑over days, the other allows up to 10, without context differentiation.\",\n      \"suggestion\": \"Clarify the applicable carry‑over policy and any employee categories.\"\n    },\n    {\n      \"ref\": \"p7\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"The statements apply to staff in different countries.\",\n      \"suggestion\": \"None\"\n    },\n    {\n      \"ref\": \"p8\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"One describes the test environment schedule, the other the live environment schedule.\",\n      \"suggestion\": \"None\"\n    },\n    {\n      \"ref\": \"p9\",\n      \"answer\": \"compatible\",\n      \"why\": \"400 units per shift can total 1,200 units per day if there are three shifts.\",\n      \"suggestion\": \"None\"\n    },\n    {\n      \"ref\": \"p10\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"One refers to seating before renovation, the other after renovation.\",\n      \"suggestion\": \"None\"\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 875,
+      "cost": 0.019566156408127564,
+      "cost_details": {
+        "completion_cost_inr": 0.0161645844850875,
+        "prompt_cost_inr": 0.00340157192304006
+      },
+      "estimated_cost": 0.000180052,
+      "latency_ms": 15576,
+      "prompt_tokens": 846,
+      "prompt_tokens_details": null,
+      "total_tokens": 1721
+    },
+    "costUsd": 0.00018005200000000002,
+    "ms": 15790
+  }
+]

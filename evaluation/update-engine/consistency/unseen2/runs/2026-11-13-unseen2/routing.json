@@ -1,0 +1,398 @@
+{
+  "run": "2026-11-13-unseen2",
+  "date": "2026-11-13T16:06:48.450Z",
+  "labelsSha256": "743dfe342c5fdf45bd0aaaf8bdd9423c734543dbe1436bfe66bdb72cec00d19e",
+  "counts": {
+    "rule_conflict": 4,
+    "possible": 4,
+    "near_miss": 6,
+    "excluded": 42
+  },
+  "candidates": 10,
+  "plannedCalls": [
+    {
+      "keys": [
+        "v42",
+        "v20",
+        "v10",
+        "v03",
+        "v09",
+        "v25",
+        "v32",
+        "v38",
+        "v48",
+        "v50"
+      ],
+      "maxTokens": 1800
+    }
+  ],
+  "oneChange": {
+    "call": [
+      "v42",
+      "v20",
+      "v10",
+      "v03",
+      "v09",
+      "v25",
+      "v32",
+      "v38",
+      "v48",
+      "v50"
+    ],
+    "pending": [],
+    "contradictionsRouted": 5,
+    "contradictionsInTheCall": 5,
+    "contradictionsLeftOut": []
+  },
+  "rows": [
+    {
+      "id": "v01",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v02",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v03",
+      "route": "possible",
+      "priority": 1,
+      "verdict": "possible",
+      "contextDiffers": true
+    },
+    {
+      "id": "v04",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v05",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v06",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v07",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v08",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v09",
+      "route": "near_miss",
+      "priority": 1,
+      "verdict": "compatible",
+      "nearMiss": "value",
+      "contextDiffers": true
+    },
+    {
+      "id": "v10",
+      "route": "near_miss",
+      "priority": 5,
+      "verdict": "compatible",
+      "nearMiss": "limit"
+    },
+    {
+      "id": "v11",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v12",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v13",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v14",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v15",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v16",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "v17",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v18",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v19",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v20",
+      "route": "near_miss",
+      "priority": 6,
+      "verdict": "compatible",
+      "nearMiss": "value"
+    },
+    {
+      "id": "v21",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v22",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v23",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v24",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v25",
+      "route": "near_miss",
+      "priority": 1,
+      "verdict": "compatible",
+      "nearMiss": "limit",
+      "contextDiffers": true
+    },
+    {
+      "id": "v26",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v27",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "v28",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v29",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v30",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v31",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v32",
+      "route": "possible",
+      "priority": 1,
+      "verdict": "possible",
+      "contextDiffers": true
+    },
+    {
+      "id": "v33",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v34",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v35",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v36",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v37",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v38",
+      "route": "near_miss",
+      "priority": 1,
+      "verdict": "compatible",
+      "nearMiss": "frequency",
+      "contextDiffers": true
+    },
+    {
+      "id": "v39",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v40",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "v41",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v42",
+      "route": "near_miss",
+      "priority": 7,
+      "verdict": "compatible",
+      "nearMiss": "modality"
+    },
+    {
+      "id": "v43",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "v44",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v45",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v46",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v47",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v48",
+      "route": "possible",
+      "priority": 1,
+      "verdict": "possible",
+      "contextDiffers": true
+    },
+    {
+      "id": "v49",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v50",
+      "route": "possible",
+      "priority": 1,
+      "verdict": "possible",
+      "contextDiffers": true
+    },
+    {
+      "id": "v51",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v52",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v53",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v54",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v55",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "v56",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    }
+  ]
+}

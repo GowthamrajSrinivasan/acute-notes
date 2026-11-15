@@ -1,0 +1,83 @@
+{
+  "run": "2026-11-13-judge-baseline",
+  "approvedBy": "Gowthamraj Srinivasan (review 2026-11-13: Stage 4f approved for controlled AI evaluation only)",
+  "date": "2026-11-13T13:28:56.466Z",
+  "provider": "aicredits",
+  "endpoint": "https://api.aicredits.in/v1",
+  "classifier": "openai/gpt-oss-120b",
+  "labellers": [
+    "anthropic/claude-haiku-4.5",
+    "deepseek/deepseek-v3.2"
+  ],
+  "prices": {
+    "openai/gpt-oss-120b": {
+      "input": 3.7e-8,
+      "output": 1.7000000000000001e-7
+    },
+    "anthropic/claude-haiku-4.5": {
+      "input": 0.000001,
+      "output": 0.000005
+    },
+    "deepseek/deepseek-v3.2": {
+      "input": 2.6900000000000004e-7,
+      "output": 4.0000000000000003e-7
+    }
+  },
+  "limits": {
+    "pairs": 10,
+    "inputTokens": 1500,
+    "totalTokens": 1800,
+    "sentence": 400,
+    "title": 120,
+    "why": 240,
+    "maxCampaignCalls": 50
+  },
+  "promptSha256": "9fb6f6d22c5e1768a19ad5659744d7732b1c9635dfad68b913ad6e5c6ee5d0db",
+  "heldoutSha256": "9114c001350a2da346bbb7522fd6b540ee68eea194b2ae9684240d8958fe9488",
+  "heldoutExposure": "held-out pairs: classified once by openai/gpt-oss-120b (its possible pairs only); every held-out pair also sent once to each labeller (anthropic/claude-haiku-4.5, deepseek/deepseek-v3.2)",
+  "totals": {
+    "calls": 20,
+    "skipped": 0,
+    "promptTokens": 8680,
+    "completionTokens": 8617,
+    "costUsd": 0.024475421
+  },
+  "byModel": {
+    "openai/gpt-oss-120b": {
+      "calls": 4,
+      "ok": 4,
+      "promptTokens": 1970,
+      "completionTokens": 1983,
+      "maxCallTokens": 1289,
+      "costUsd": 0.00041,
+      "latencyMs": {
+        "p50": 14910,
+        "max": 23964
+      }
+    },
+    "anthropic/claude-haiku-4.5": {
+      "calls": 8,
+      "ok": 8,
+      "promptTokens": 3501,
+      "completionTokens": 3706,
+      "maxCallTokens": 971,
+      "costUsd": 0.022031000000000002,
+      "latencyMs": {
+        "p50": 3592,
+        "max": 4252
+      }
+    },
+    "deepseek/deepseek-v3.2": {
+      "calls": 8,
+      "ok": 8,
+      "promptTokens": 3209,
+      "completionTokens": 2928,
+      "maxCallTokens": 809,
+      "costUsd": 0.0020344210000000007,
+      "latencyMs": {
+        "p50": 8870,
+        "max": 12007
+      }
+    }
+  }
+}

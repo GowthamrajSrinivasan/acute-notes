@@ -1,0 +1,67 @@
+[
+  {
+    "n": 1,
+    "keys": [
+      "u01",
+      "u03",
+      "u14",
+      "u17",
+      "u21",
+      "u23",
+      "u29",
+      "u05",
+      "u12",
+      "u24"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Payroll is processed every two weeks.\"\n  B: \"Payroll runs once a month.\"\n\np2\n  A: \"Guest users cannot export reports.\"\n  B: \"Report export is available to guest users.\"\n\np3\n  A: \"The model is trained on 2 million examples.\"\n  B: \"The model's training set contains 500,000 examples.\"\n\np4\n  A: \"The mobile app does not store card numbers on the device.\"\n  B: \"Card numbers are stored on the device by the mobile app.\"\n\np5\n  A: \"The onboarding checklist has twelve steps, most of which new hires finish in their first week.\"\n  B: \"The onboarding checklist has seven steps.\"\n\np6\n  A: \"The board meets twice a year.\"\n  B: \"The board meets every six months.\"\n\np7\n  A: \"Guest users cannot edit reports.\"\n  B: \"Guest users can view reports.\"\n\np8\n  A: \"Reports are due on Monday.\"\n  B: \"Reports are due on Friday.\"\n\np9\n  A: \"The data platform team is the sole owner of the event pipeline.\"\n  B: \"The growth team is the sole owner of the event pipeline.\"\n\np10\n  A: \"The DNS records are audited quarterly.\"\n  B: \"The DNS records are audited every month.\"",
+    "maxTokens": 1264,
+    "status": "ok",
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Both statements describe the same payroll frequency with no contextual difference.\",\n      \"suggestion\": \"Confirm the current payroll schedule.\"\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says guests cannot export reports, the other says they can.\",\n      \"suggestion\": \"Verify the guest permissions for report export.\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"contradicts\",\n      \"why\": \"The training set size is given as two different numbers.\",\n      \"suggestion\": \"Check the actual size of the model's training data.\"\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One claims card numbers are not stored, the other says they are stored.\",\n      \"suggestion\": \"Review the mobile app's data storage policy.\"\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"contradicts\",\n      \"why\": \"The onboarding checklist is described with two different step counts.\",\n      \"suggestion\": \"Confirm the current version of the onboarding checklist.\"\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"compatible\",\n      \"why\": \"Twice a year and every six months describe the same meeting frequency.\"\n    },\n    {\n      \"ref\": \"p7\",\n      \"answer\": \"compatible\",\n      \"why\": \"One statement limits editing, the other allows viewing; both can coexist.\"\n    },\n    {\n      \"ref\": \"p8\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Reports cannot be due on both Monday and Friday simultaneously.\",\n      \"suggestion\": \"Clarify the official report due date.\"\n    },\n    {\n      \"ref\": \"p9\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Two different teams are each claimed to be the sole owner.\",\n      \"suggestion\": \"Determine the actual ownership of the event pipeline.\"\n    },\n    {\n      \"ref\": \"p10\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Audits are said to occur quarterly versus monthly.\",\n      \"suggestion\": \"Confirm the audit frequency for DNS records.\"\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 701,
+      "cost": 0.01533847913210844,
+      "cost_details": {
+        "completion_cost_inr": 0.012950141398910103,
+        "prompt_cost_inr": 0.00238833773319834
+      },
+      "estimated_cost": 0.000141148,
+      "latency_ms": 22016,
+      "prompt_tokens": 594,
+      "prompt_tokens_details": null,
+      "total_tokens": 1295
+    },
+    "costUsd": 0.000141148,
+    "ms": 22309
+  },
+  {
+    "n": 2,
+    "keys": [
+      "u26",
+      "u33",
+      "u08",
+      "u20",
+      "u32"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"contradicts\" only when nothing in the statements suggests different contexts; if one statement names a context the other doesn't, prefer \"compatible_context\" or \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"The team uses Postgres.\"\n  B: \"The team uses MongoDB.\"\n\np2\n  A: \"Sign-ups grew last quarter.\"\n  B: \"Sign-ups shrank last quarter.\"\n\np3\n  A: \"The certificate expires on 1 March 2027.\"\n  B: \"The certificate is valid until 30 June 2027.\"\n\np4\n  A: \"Before the 2025 redesign, checkout had five steps.\"\n  B: \"Checkout has three steps.\"\n\np5\n  A: \"Version 2 of the SDK requires Python 3.9.\"\n  B: \"Version 3 of the SDK requires Python 3.11.\"",
+    "maxTokens": 1417,
+    "status": "ok",
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Both statements claim the same team uses a single database type, which cannot be both Postgres and MongoDB simultaneously.\",\n      \"suggestion\": \"Confirm which database the team actually uses.\"\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says sign-ups grew while the other says they shrank in the same quarter, which cannot both be true.\",\n      \"suggestion\": \"Check the sign‑up metrics for that quarter.\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"contradicts\",\n      \"why\": \"The certificate cannot expire on 1 March 2027 and also be valid until 30 June 2027.\",\n      \"suggestion\": \"Verify the correct expiration date.\"\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"One refers to the process before the 2025 redesign, the other to the current process after the redesign.\",\n      \"suggestion\": \"No action needed; both statements can coexist.\"\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"compatible\",\n      \"why\": \"Each statement describes requirements for a different SDK version, so they do not conflict.\",\n      \"suggestion\": \"No action needed.\"\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 433,
+      "cost": 0.00982458994371624,
+      "cost_details": {
+        "completion_cost_inr": 0.007999160093763301,
+        "prompt_cost_inr": 0.0018254298499529402
+      },
+      "estimated_cost": 0.00009040799999999999,
+      "latency_ms": 15782,
+      "prompt_tokens": 454,
+      "prompt_tokens_details": null,
+      "total_tokens": 887
+    },
+    "costUsd": 0.000090408,
+    "ms": 16020
+  }
+]

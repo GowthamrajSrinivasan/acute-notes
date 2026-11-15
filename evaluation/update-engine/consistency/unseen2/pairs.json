@@ -1,0 +1,286 @@
+{
+  "split": "unseen2-2026-11-13",
+  "note": "The second unseen evaluation set (intelligent-update-engine-plan §12.19). Written by a separate author (a fresh agent given only the coverage spec, no access to the rules or earlier fixtures). Statements only: no labels, no categories. The code was frozen before this set existed; this file is frozen by SHA-256 in FREEZE.json. Never tune on it; the classifier runs once, after a separate approval.",
+  "pairs": [
+    {
+      "id": "v01",
+      "a": "Patients must bring photo ID to every appointment at the Elm Street clinic.",
+      "b": "Photo ID is optional for appointments at the Elm Street clinic."
+    },
+    {
+      "id": "v02",
+      "a": "Library members may borrow up to 8 books at a time.",
+      "b": "Priya currently has 5 books checked out on her library membership."
+    },
+    {
+      "id": "v03",
+      "a": "Until March 2025, the bike-share annual pass cost $90.",
+      "b": "The bike-share annual pass now costs $110."
+    },
+    {
+      "id": "v04",
+      "a": "The design team uses Figma exclusively for interface mockups.",
+      "b": "The design team also builds some of its interface mockups in Sketch."
+    },
+    {
+      "id": "v05",
+      "a": "The fire extinguishers in the lab are inspected every month.",
+      "b": "The lab's fire extinguishers get checked twelve times a year, once per calendar month."
+    },
+    {
+      "id": "v06",
+      "a": "Hotel guests on the executive floor get free breakfast.",
+      "b": "Hotel guests on standard floors pay $18 for breakfast."
+    },
+    {
+      "id": "v07",
+      "a": "The call centre is open Monday to Friday.",
+      "b": "The call centre is open Monday to Friday, and its weekday hours are 8am to 6pm."
+    },
+    {
+      "id": "v08",
+      "a": "The museum's east wing is accessible to wheelchair users.",
+      "b": "Wheelchair users cannot reach the museum's east wing."
+    },
+    {
+      "id": "v09",
+      "a": "The theatre's booking system allows at most 4 tickets per order.",
+      "b": "Last Saturday a customer bought 6 tickets in a single order through the theatre's booking system."
+    },
+    {
+      "id": "v10",
+      "a": "Coworking members can reserve a meeting room for up to 2 hours.",
+      "b": "Coworking members can book a room for up to 4 hours."
+    },
+    {
+      "id": "v11",
+      "a": "Lab staff must wear safety goggles when handling acids.",
+      "b": "Lab staff may take their goggles off in the write-up area."
+    },
+    {
+      "id": "v12",
+      "a": "The conveyor belts on the factory line are lubricated every Monday.",
+      "b": "The factory line's conveyor belts are lubricated only on the first day of each month."
+    },
+    {
+      "id": "v13",
+      "a": "This term, the school's first period starts at 8:30.",
+      "b": "First period at the school begins at 8:00 this term."
+    },
+    {
+      "id": "v14",
+      "a": "Customers can contact support by phone.",
+      "b": "Customers can also reach support through live chat."
+    },
+    {
+      "id": "v15",
+      "a": "The Lisbon office closes at 5pm on Fridays.",
+      "b": "The Porto office stays open until 7pm on Fridays."
+    },
+    {
+      "id": "v16",
+      "a": "Every nurse at the clinic works twelve-hour shifts.",
+      "b": "Nurse Okafor's shifts at the clinic are eight hours long."
+    },
+    {
+      "id": "v17",
+      "a": "The hotel pool closes at 8pm in winter.",
+      "b": "The hotel pool is open until 10pm."
+    },
+    {
+      "id": "v18",
+      "a": "Joining the loyalty programme is voluntary for all customers.",
+      "b": "All customers are automatically enrolled in the loyalty programme and cannot leave it."
+    },
+    {
+      "id": "v19",
+      "a": "The mobile game has 1.2 million monthly active players.",
+      "b": "The mobile game has about 300,000 daily active players."
+    },
+    {
+      "id": "v20",
+      "a": "The data warehouse keeps raw event data for 90 days.",
+      "b": "Raw event data in the data warehouse, which the analytics team queries most heavily at quarter-end, is deleted after 30 days."
+    },
+    {
+      "id": "v21",
+      "a": "Team retrospectives happen every two weeks.",
+      "b": "The team holds a retrospective fortnightly."
+    },
+    {
+      "id": "v22",
+      "a": "The bike-share system has docking stations in the city centre.",
+      "b": "The bike-share system has docking stations in the city centre and along the river path."
+    },
+    {
+      "id": "v23",
+      "a": "Maria is the owner of the vendor contracts process.",
+      "b": "Daniel owns the vendor contracts process."
+    },
+    {
+      "id": "v24",
+      "a": "Contractors are prohibited from entering the server room.",
+      "b": "Facilities staff are permitted to enter the server room."
+    },
+    {
+      "id": "v25",
+      "a": "Employees can carry over at most 5 unused leave days into the next year.",
+      "b": "Employees may carry up to 10 unused leave days into the following year."
+    },
+    {
+      "id": "v26",
+      "a": "Since January 2024, the library has stayed open until 9pm on Thursdays.",
+      "b": "In 2022, the library closed at 6pm on Thursdays."
+    },
+    {
+      "id": "v27",
+      "a": "The museum's permanent collection holds about 4,000 objects.",
+      "b": "The museum's permanent collection holds more than 25,000 objects."
+    },
+    {
+      "id": "v28",
+      "a": "The call centre's quality team reviews call recordings weekly.",
+      "b": "Call recordings are reviewed monthly."
+    },
+    {
+      "id": "v29",
+      "a": "The delivery fleet runs only electric vans.",
+      "b": "Two of the delivery fleet's vans run on diesel."
+    },
+    {
+      "id": "v30",
+      "a": "Children under 12 must be accompanied by an adult in the museum.",
+      "b": "Visitors aged 12 and over may explore the museum without an adult."
+    },
+    {
+      "id": "v31",
+      "a": "The Starter plan includes phone support.",
+      "b": "Starter plan customers get no phone support; it is reserved for the Business plan."
+    },
+    {
+      "id": "v32",
+      "a": "Staff based in the UK receive 25 days of annual leave.",
+      "b": "Staff based in Germany receive 30 days of annual leave."
+    },
+    {
+      "id": "v33",
+      "a": "The clinic stopped offering walk-in appointments in 2023.",
+      "b": "The clinic currently accepts walk-in patients every weekday morning."
+    },
+    {
+      "id": "v34",
+      "a": "Hotel rooms are deep-cleaned once a quarter.",
+      "b": "Each hotel room gets a deep clean every six months."
+    },
+    {
+      "id": "v35",
+      "a": "Lab visitors must sign the safety register.",
+      "b": "Signing the safety register is optional."
+    },
+    {
+      "id": "v36",
+      "a": "The mobile game supports English and Spanish.",
+      "b": "The mobile game supports English, Spanish and Japanese."
+    },
+    {
+      "id": "v37",
+      "a": "Each class at the school has at most 30 pupils.",
+      "b": "Year 9 class B has 27 pupils."
+    },
+    {
+      "id": "v38",
+      "a": "In the test environment, the loyalty points job runs every hour.",
+      "b": "In the live environment, the loyalty points job runs nightly."
+    },
+    {
+      "id": "v39",
+      "a": "The factory uses Kanban boards to track work orders.",
+      "b": "The factory also tracks urgent work orders in a shared spreadsheet."
+    },
+    {
+      "id": "v40",
+      "a": "The hotel has 120 rooms.",
+      "b": "The hotel has 95 rooms available for booking."
+    },
+    {
+      "id": "v41",
+      "a": "Bikes can be returned to any docking station in the network.",
+      "b": "A bike must be returned to the station where it was rented."
+    },
+    {
+      "id": "v42",
+      "a": "Wearing a hairnet on the factory line is mandatory.",
+      "b": "Factory line workers can choose whether or not to wear a hairnet."
+    },
+    {
+      "id": "v43",
+      "a": "The Premium plan allows 50 team members.",
+      "b": "The Team plan allows 10 team members."
+    },
+    {
+      "id": "v44",
+      "a": "The head of the call centre is Ana Ruiz.",
+      "b": "Ana Ruiz left the company last year."
+    },
+    {
+      "id": "v45",
+      "a": "The museum changes its temporary exhibition every quarter.",
+      "b": "A new temporary exhibition opens at the museum every three months."
+    },
+    {
+      "id": "v46",
+      "a": "Dogs are welcome in the hotel lobby.",
+      "b": "No pets are allowed anywhere in the hotel."
+    },
+    {
+      "id": "v47",
+      "a": "Clinic patients can book appointments online.",
+      "b": "Clinic patients can book online, and they receive a text reminder the day before."
+    },
+    {
+      "id": "v48",
+      "a": "The factory line produces 400 units per shift.",
+      "b": "The factory line produces 1,200 units per day."
+    },
+    {
+      "id": "v49",
+      "a": "Standard checkout at the hotel is at noon.",
+      "b": "Late checkout until 2pm is available on request."
+    },
+    {
+      "id": "v50",
+      "a": "Before the 2024 renovation, the museum cafe seated 40 people.",
+      "b": "The museum cafe now seats 80 people."
+    },
+    {
+      "id": "v51",
+      "a": "The bike-share app does not require a credit card to browse stations.",
+      "b": "The bike-share app requires a credit card to unlock a bike."
+    },
+    {
+      "id": "v52",
+      "a": "Leave requests are approved solely by the employee's line manager.",
+      "b": "Leave requests longer than five days also need sign-off from HR."
+    },
+    {
+      "id": "v53",
+      "a": "The library audits its shelves once a year, in August.",
+      "b": "The library's shelf audits happen every January and July."
+    },
+    {
+      "id": "v54",
+      "a": "The clinic's pharmacy closes at 6pm.",
+      "b": "The pharmacy on Hill Road is open until 9pm."
+    },
+    {
+      "id": "v55",
+      "a": "Pupils must hand in homework by Friday.",
+      "b": "Pupils may hand in homework early."
+    },
+    {
+      "id": "v56",
+      "a": "The museum's audio guide is free.",
+      "b": "Visitors pay 4 pounds to rent the museum's audio guide."
+    }
+  ]
+}

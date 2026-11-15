@@ -1,0 +1,18 @@
+{
+  "frozen": "2026-11-13",
+  "note": "Second unseen evaluation (plan \u00a712.19). The code was frozen FIRST, before any pair of this set existed; the pairs (written by a separate author that never saw the rules), the author's draft key and the reviewer's blind labels are added as they are made. Nothing here may change until the run is done.",
+  "files": {
+    "src/ai/consistency/rules.ts": "aa54384fcb6d5096cd6f4e67d898f8aa6aeecff107577255e9b7c84a3d21306c",
+    "src/ai/fidelity/quantities.ts": "eae62c363080cdb1b5c8becbde19d77367b5b95b6e8aecbcf0c7b89567537d02",
+    "src/ai/fidelity/information.ts": "59cab6cff59a8800cbb0fd45c45c17aecb99986510f46586591575f8bce3a15d",
+    "src/ai/consistency/judge.ts": "b6bb964c148e59ec591a240f1cf0922a9d949fd43ba4027fd49ca6b8c7b9a4bc",
+    "src/ai/consistency/candidates.ts": "6b0cfcb01e8617363282d41fd0b61079cdcbc89c071e3371b07e184db322d443",
+    "src/ai/consistency/evaluation.ts": "bd56f0c9b079fb5ddb06c1e685ad915d40a0ab2a736798aa97c3da2dc7c1def2",
+    "src/ai/consistency/judgeEvaluation.ts": "334d2ec838e4aa8c72ccc95c7b21cd322ef4005a3ed2d3ea2cb34c52f8ba411d",
+    "src/ai/contractTests/consistencyUnseen.contract.test.ts": "493da50c110db650ce8f1f20e8b9dc4cb8763fdbadad0f43f7deff5b37cfed77",
+    "evaluation/update-engine/consistency/unseen2/pairs.json": "8f15b8f01583110baa34187a7ffaee21ccb27d8a83ee7a127002ffa92aa27b93",
+    "evaluation/update-engine/consistency/unseen2/author-draft-key.json": "af60ffe9ec5785da40d5dc4d80f3318dba676ab887eabca407c20cc77eb02b28",
+    "evaluation/update-engine/consistency/unseen2/labels.json": "743dfe342c5fdf45bd0aaaf8bdd9423c734543dbe1436bfe66bdb72cec00d19e"
+  },
+  "labelsFrozen": "2026-11-13: the reviewer blind labels (22/29/5), added before the route step; no other entry changed"
+}

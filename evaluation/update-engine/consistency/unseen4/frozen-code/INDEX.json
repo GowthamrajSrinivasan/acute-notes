@@ -1,0 +1,23 @@
+{
+  "note": "Byte-exact copies of the code unseen4 will run (code freeze 2026-11-15, re-frozen the same day before labels; see FREEZE.json refrozen). Each hash equals its FREEZE.json entry.",
+  "files": {
+    "src/ai/consistency/rules.ts": "335a445436fd7c94f8863c7f40a28c9b222fddf8347cfc80abbc421bfd888ada",
+    "src/ai/fidelity/quantities.ts": "eae62c363080cdb1b5c8becbde19d77367b5b95b6e8aecbcf0c7b89567537d02",
+    "src/ai/fidelity/information.ts": "59cab6cff59a8800cbb0fd45c45c17aecb99986510f46586591575f8bce3a15d",
+    "src/ai/fidelity/meaning.ts": "ae35f1ecf4250d0b9880534f0fd4539b2732e18f8c35cafb06dc8591bd306275",
+    "src/ai/router/embedding.ts": "4efb999bfd0bdd4c09f02b256c248ba0e80a1922ca7834f73524e1ee8738f52f",
+    "src/ai/consistency/screen.ts": "c813195801540a138b66f8be815d3401eb5e174eea245c5b3d5673dc97c80a3a",
+    "src/ai/consistency/judge.ts": "29dd1984efe1000bf45d76ca3fa42cdc83d95dfaa0bb4d90b967c3885f4901ac",
+    "src/ai/consistency/candidates.ts": "bc76f6fb08ed7b8cc1910681087a093753e84bdf2192e50e7a3084aeb9b67c73",
+    "src/ai/consistency/judgeReply.ts": "7c96a573d191a0707ec3900d5819bf12b893c44c78fde73c423f85d968854a25",
+    "src/ai/consistency/judgeLedger.ts": "dfde9889a3a22023c2a883118947ec7236c80a98d57f463753962388c2fadab7",
+    "src/ai/consistency/judgeCall.ts": "7273d9ae230e88293f086317bce104a5926cf1e4b58f256134af6fe4b219a10b",
+    "src/ai/contractTests/judgeHttpTransport.ts": "c18549545dba96072300872d4c89227b906e96fb211f2958852721b78ac6f382",
+    "src/ai/content/fingerprint.ts": "3e3780af2992d4ff3670650dfe7a3621079733ef60b620acb281e57c16075943",
+    "src/ai/runtime.ts": "6a44b42663874033c316ebefea279472d09089c632971c55fbf8527f43f6c5ba",
+    "src/ai/consistency/evaluation.ts": "bd56f0c9b079fb5ddb06c1e685ad915d40a0ab2a736798aa97c3da2dc7c1def2",
+    "src/ai/consistency/judgeEvaluation.ts": "334d2ec838e4aa8c72ccc95c7b21cd322ef4005a3ed2d3ea2cb34c52f8ba411d",
+    "src/ai/consistency/pipelineEvaluation.ts": "03df47a64aa2e7e3073089ed7d4041cdbaa553c6c8c86ee49e236a4876bb13da",
+    "src/ai/contractTests/consistencyUnseen.contract.test.ts": "c713f6489ed51f8c7ed831aba4490dd66a78453ec5885ed982ad65fe8858658b"
+  }
+}

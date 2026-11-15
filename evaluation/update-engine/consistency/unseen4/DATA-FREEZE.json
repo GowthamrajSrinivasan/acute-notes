@@ -1,0 +1,9 @@
+{
+  "note": "unseen4 INPUTS frozen 2026-11-15, before any selector, rule, screen or model has run on them (intelligent-update-engine-plan §12.25). Author: an isolated agent given only a coverage spec (no earlier sets, code, plan or failure ids). One pair (x05) was rewritten by the same author after an automated overlap check found it near-identical to an earlier set; the check printed ids only. The coordinating session has not read the statements. The author draft key is preserved separately and is NOT the truth: the reviewer labels blind. The CODE freeze (FREEZE.json) is written later, after the dedicated call path is finished and before the route step.",
+  "date": "2026-11-15",
+  "files": {
+    "pairs.json": "74c67f86190e1b863c865a70a1fec018667f1647a11c8ec8ba34113a9c05be7c",
+    "author-draft-key.json": "c515545b25e4ab57093c68b5ec650a5c13ea89ffc3dae4e1d7ad7b9747e969c1",
+    "labelling-sheet.md": "ad3ac71ccc4bc4db9e8d7b99cfc9d94ce4126f7c62b558b04460132bf23eb93f"
+  }
+}

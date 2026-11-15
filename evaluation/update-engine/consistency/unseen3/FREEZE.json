@@ -1,0 +1,21 @@
+{
+  "frozen": "2026-11-13",
+  "note": "Third unseen evaluation (plan \u00a712.21). The code \u2014 rules, the local embedder and its stemmer, the screen, the prompt and combining policy, the selector, the scorers and the recorder \u2014 was frozen FIRST, before any pair of this set existed. The pairs (a separate author who never saw the earlier unseen sets, the routing code or any failure ids), its draft key and the reviewer's blind labels are added as they are made. Nothing here may change until the run is done.",
+  "files": {
+    "src/ai/consistency/rules.ts": "335a445436fd7c94f8863c7f40a28c9b222fddf8347cfc80abbc421bfd888ada",
+    "src/ai/fidelity/quantities.ts": "eae62c363080cdb1b5c8becbde19d77367b5b95b6e8aecbcf0c7b89567537d02",
+    "src/ai/fidelity/information.ts": "59cab6cff59a8800cbb0fd45c45c17aecb99986510f46586591575f8bce3a15d",
+    "src/ai/fidelity/meaning.ts": "ae35f1ecf4250d0b9880534f0fd4539b2732e18f8c35cafb06dc8591bd306275",
+    "src/ai/router/embedding.ts": "4efb999bfd0bdd4c09f02b256c248ba0e80a1922ca7834f73524e1ee8738f52f",
+    "src/ai/consistency/screen.ts": "d6cc17f9c2c164e096baf5a83e860c31e9a768f33c419962c87d3bcf710602e8",
+    "src/ai/consistency/judge.ts": "7c1ce82c2e62857a2fda9e13ec7840bfb760cdb8000994b5312c6482f737af30",
+    "src/ai/consistency/candidates.ts": "4d4c334a20f11df922e1031ff31c85bb4ff7ae9fbd7fde8936de1f577d50fe1c",
+    "src/ai/consistency/evaluation.ts": "bd56f0c9b079fb5ddb06c1e685ad915d40a0ab2a736798aa97c3da2dc7c1def2",
+    "src/ai/consistency/judgeEvaluation.ts": "334d2ec838e4aa8c72ccc95c7b21cd322ef4005a3ed2d3ea2cb34c52f8ba411d",
+    "src/ai/consistency/pipelineEvaluation.ts": "03df47a64aa2e7e3073089ed7d4041cdbaa553c6c8c86ee49e236a4876bb13da",
+    "src/ai/contractTests/consistencyUnseen.contract.test.ts": "608dc79be65a639bdf95c8f1b99299a9b5a63fa8cc29cf158a0a1c93abc7a18e",
+    "evaluation/update-engine/consistency/unseen3/pairs.json": "7ae25422a91c7a332630094dfca250e1d0d91071babcaae9e99a95845f67e73d",
+    "evaluation/update-engine/consistency/unseen3/author-draft-key.json": "2a402b4a7d3296ec6afc3f8cd74e9c07de1c96e1453d55a9707287d58416aa41",
+    "evaluation/update-engine/consistency/unseen3/labels.json": "db25699f65c3ba5a7ebfec3ee3d473bf6027ef45cbcbeab522e4845392212ee4"
+  }
+}

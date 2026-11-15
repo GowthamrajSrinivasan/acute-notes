@@ -1,0 +1,285 @@
+{
+  "note": "The fixture author's draft labels and design categories (a separate agent, not the rules' author). NOT ground truth: the reviewer labels pairs.json blind first; these are compared afterwards. Categories feed the per-category and context scores.",
+  "drafts": {
+    "v01": {
+      "category": "modality",
+      "label": "contradiction",
+      "why": "must vs optional for the same action and subject"
+    },
+    "v02": {
+      "category": "limit",
+      "label": "compatible",
+      "why": "actual value 5 is within the limit of 8"
+    },
+    "v03": {
+      "category": "temporal",
+      "label": "compatible",
+      "why": "past price vs current price"
+    },
+    "v04": {
+      "category": "exclusivity",
+      "label": "contradiction",
+      "why": "exclusively Figma vs also Sketch"
+    },
+    "v05": {
+      "category": "frequency_equivalence",
+      "label": "compatible",
+      "why": "monthly equals twelve times a year, once per month"
+    },
+    "v06": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "different floors / guest groups"
+    },
+    "v07": {
+      "category": "extension",
+      "label": "compatible",
+      "why": "second adds hours without denying days"
+    },
+    "v08": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "accessible vs cannot reach, same wing"
+    },
+    "v09": {
+      "category": "limit",
+      "label": "contradiction",
+      "why": "system-enforced max 4 vs an order of 6 in the same system"
+    },
+    "v10": {
+      "category": "limit",
+      "label": "ambiguous",
+      "why": "unclear whether 'a room' is the same meeting-room type"
+    },
+    "v11": {
+      "category": "modality",
+      "label": "compatible",
+      "why": "goggles required for acids; removable in a different area"
+    },
+    "v12": {
+      "category": "frequency",
+      "label": "contradiction",
+      "why": "weekly vs only monthly for the same task"
+    },
+    "v13": {
+      "category": "temporal",
+      "label": "contradiction",
+      "why": "two different start times for the same term"
+    },
+    "v14": {
+      "category": "exclusivity",
+      "label": "compatible",
+      "why": "multiple support channels can coexist"
+    },
+    "v15": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "different offices"
+    },
+    "v16": {
+      "category": "adversarial",
+      "label": "contradiction",
+      "why": "every nurse 12h vs a named nurse on 8h"
+    },
+    "v17": {
+      "category": "temporal",
+      "label": "ambiguous",
+      "why": "second has no season; may mean summer or contradict winter"
+    },
+    "v18": {
+      "category": "modality",
+      "label": "contradiction",
+      "why": "voluntary opt-in vs mandatory enrolment"
+    },
+    "v19": {
+      "category": "metric",
+      "label": "compatible",
+      "why": "MAU and DAU are different metrics; DAU below MAU"
+    },
+    "v20": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "90-day vs 30-day retention for same data; padding clause irrelevant"
+    },
+    "v21": {
+      "category": "frequency_equivalence",
+      "label": "compatible",
+      "why": "every two weeks equals fortnightly"
+    },
+    "v22": {
+      "category": "extension",
+      "label": "compatible",
+      "why": "adds river path stations"
+    },
+    "v23": {
+      "category": "exclusivity",
+      "label": "ambiguous",
+      "why": "co-ownership or handover over time is unknown"
+    },
+    "v24": {
+      "category": "modality",
+      "label": "compatible",
+      "why": "different roles"
+    },
+    "v25": {
+      "category": "limit",
+      "label": "contradiction",
+      "why": "two different carry-over limits for the same rule"
+    },
+    "v26": {
+      "category": "temporal",
+      "label": "compatible",
+      "why": "2022 value vs value since 2024"
+    },
+    "v27": {
+      "category": "numeric",
+      "label": "contradiction",
+      "why": "about 4,000 vs over 25,000 for the same collection"
+    },
+    "v28": {
+      "category": "frequency",
+      "label": "ambiguous",
+      "why": "second may refer to a different reviewer or review type"
+    },
+    "v29": {
+      "category": "exclusivity",
+      "label": "contradiction",
+      "why": "only electric vs some diesel"
+    },
+    "v30": {
+      "category": "adversarial",
+      "label": "compatible",
+      "why": "complementary age groups"
+    },
+    "v31": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "includes vs no phone support on same plan"
+    },
+    "v32": {
+      "category": "scope",
+      "label": "compatible",
+      "why": "different countries"
+    },
+    "v33": {
+      "category": "temporal",
+      "label": "contradiction",
+      "why": "stopped in 2023 vs currently offered"
+    },
+    "v34": {
+      "category": "frequency",
+      "label": "contradiction",
+      "why": "quarterly vs every six months"
+    },
+    "v35": {
+      "category": "modality",
+      "label": "ambiguous",
+      "why": "second has no subject; may apply to staff rather than visitors"
+    },
+    "v36": {
+      "category": "extension",
+      "label": "compatible",
+      "why": "second adds a language"
+    },
+    "v37": {
+      "category": "limit",
+      "label": "compatible",
+      "why": "27 is within the 30 limit"
+    },
+    "v38": {
+      "category": "environment",
+      "label": "compatible",
+      "why": "different environments"
+    },
+    "v39": {
+      "category": "exclusivity",
+      "label": "compatible",
+      "why": "two tracking tools coexist; no 'only'"
+    },
+    "v40": {
+      "category": "numeric",
+      "label": "ambiguous",
+      "why": "unclear if some rooms are out of service or a count disagrees"
+    },
+    "v41": {
+      "category": "adversarial",
+      "label": "contradiction",
+      "why": "any station vs must return to origin"
+    },
+    "v42": {
+      "category": "modality",
+      "label": "contradiction",
+      "why": "mandatory vs worker's choice"
+    },
+    "v43": {
+      "category": "subject_mismatch",
+      "label": "compatible",
+      "why": "different plans"
+    },
+    "v44": {
+      "category": "temporal",
+      "label": "ambiguous",
+      "why": "depends on when the first note was written"
+    },
+    "v45": {
+      "category": "frequency_equivalence",
+      "label": "compatible",
+      "why": "quarterly equals every three months"
+    },
+    "v46": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "dogs welcome in lobby vs no pets anywhere"
+    },
+    "v47": {
+      "category": "extension",
+      "label": "compatible",
+      "why": "adds reminders"
+    },
+    "v48": {
+      "category": "metric",
+      "label": "ambiguous",
+      "why": "consistent only if there are three shifts per day"
+    },
+    "v49": {
+      "category": "limit",
+      "label": "compatible",
+      "why": "standard limit plus an on-request exception"
+    },
+    "v50": {
+      "category": "temporal",
+      "label": "compatible",
+      "why": "before renovation vs now"
+    },
+    "v51": {
+      "category": "adversarial",
+      "label": "compatible",
+      "why": "different actions: browsing vs unlocking"
+    },
+    "v52": {
+      "category": "exclusivity",
+      "label": "contradiction",
+      "why": "solely line manager vs HR also signs off"
+    },
+    "v53": {
+      "category": "frequency",
+      "label": "contradiction",
+      "why": "once a year in August vs January and July"
+    },
+    "v54": {
+      "category": "subject_mismatch",
+      "label": "ambiguous",
+      "why": "unknown whether the Hill Road pharmacy is the clinic's"
+    },
+    "v55": {
+      "category": "modality",
+      "label": "compatible",
+      "why": "deadline vs permission to submit early"
+    },
+    "v56": {
+      "category": "paraphrase",
+      "label": "contradiction",
+      "why": "free vs paid rental of the same guide"
+    }
+  }
+}

@@ -1,0 +1,1380 @@
+{
+  "run": "2026-11-15-unseen4",
+  "date": "2026-11-15T13:33:42.766Z",
+  "labelsSha256": "588d94724d94eb3718eb8fc897be8b7c02f568b3da6c024215a59374fb2fcd0e",
+  "counts": {
+    "rule_conflict": 5,
+    "possible": 1,
+    "near_miss": 6,
+    "excluded": 78
+  },
+  "candidates": 7,
+  "plannedCalls": [
+    {
+      "keys": [
+        "x25",
+        "x30",
+        "x52",
+        "x08",
+        "x86",
+        "x59",
+        "x55",
+        "x69",
+        "x20",
+        "x53"
+      ],
+      "maxTokens": 2340
+    },
+    {
+      "keys": [
+        "x05",
+        "x45",
+        "x01",
+        "x42",
+        "x50",
+        "x67",
+        "x40",
+        "x32",
+        "x21",
+        "x33"
+      ],
+      "maxTokens": 2319
+    },
+    {
+      "keys": [
+        "x23",
+        "x06",
+        "x07",
+        "x76",
+        "x18",
+        "x61",
+        "x80",
+        "x89",
+        "x90",
+        "x43"
+      ],
+      "maxTokens": 2358
+    },
+    {
+      "keys": [
+        "x36",
+        "x74",
+        "x26",
+        "x16",
+        "x39",
+        "x19",
+        "x63",
+        "x54",
+        "x37",
+        "x09"
+      ],
+      "maxTokens": 2339
+    },
+    {
+      "keys": [
+        "x44",
+        "x15",
+        "x73",
+        "x14",
+        "x66",
+        "x65",
+        "x62",
+        "x03",
+        "x68",
+        "x85"
+      ],
+      "maxTokens": 2326
+    },
+    {
+      "keys": [
+        "x38",
+        "x31",
+        "x57",
+        "x75",
+        "x70",
+        "x79",
+        "x82",
+        "x17",
+        "x46",
+        "x29"
+      ],
+      "maxTokens": 2318
+    },
+    {
+      "keys": [
+        "x12",
+        "x64",
+        "x13",
+        "x22",
+        "x10",
+        "x48",
+        "x81",
+        "x56",
+        "x35",
+        "x28"
+      ],
+      "maxTokens": 2326
+    },
+    {
+      "keys": [
+        "x83",
+        "x02"
+      ],
+      "maxTokens": 1529
+    }
+  ],
+  "oneChange": {
+    "call": [
+      "x32",
+      "x53",
+      "x69",
+      "x86",
+      "x06",
+      "x13",
+      "x33"
+    ],
+    "pending": [],
+    "contradictionsRouted": 4,
+    "contradictionsInTheCall": 4,
+    "contradictionsLeftOut": []
+  },
+  "pipeline": {
+    "decisions": {
+      "x01": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x02": {
+        "decision": "forward",
+        "priority": 1.04,
+        "scoped": true,
+        "exclusive": false,
+        "thin": false
+      },
+      "x03": {
+        "decision": "forward",
+        "priority": 3.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x04": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x05": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x06": {
+        "decision": "forward",
+        "priority": 6.01,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x07": {
+        "decision": "forward",
+        "priority": 5.08,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x08": {
+        "decision": "forward",
+        "priority": 7.07,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x09": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x10": {
+        "decision": "forward",
+        "priority": 1.06,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "x11": {
+        "decision": "excluded",
+        "exclusion": "extension",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x12": {
+        "decision": "forward",
+        "priority": 2.02,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x13": {
+        "decision": "forward",
+        "priority": 1.07,
+        "scoped": true,
+        "exclusive": false,
+        "thin": false
+      },
+      "x14": {
+        "decision": "forward",
+        "priority": 3.08,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x15": {
+        "decision": "forward",
+        "priority": 4.03,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x16": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x17": {
+        "decision": "forward",
+        "priority": 2.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x18": {
+        "decision": "forward",
+        "priority": 5.07,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x19": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x20": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x21": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x22": {
+        "decision": "forward",
+        "priority": 1.06,
+        "scoped": true,
+        "exclusive": false,
+        "thin": false
+      },
+      "x23": {
+        "decision": "forward",
+        "priority": 6.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x24": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x25": {
+        "decision": "forward",
+        "priority": 7.07,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x26": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x27": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x28": {
+        "decision": "forward",
+        "priority": 1.05,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "x29": {
+        "decision": "forward",
+        "priority": 2.02,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x30": {
+        "decision": "forward",
+        "priority": 7.07,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x31": {
+        "decision": "forward",
+        "priority": 3.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x32": {
+        "decision": "forward",
+        "priority": 7.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x33": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x34": {
+        "decision": "excluded",
+        "exclusion": "unrelated",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x35": {
+        "decision": "forward",
+        "priority": 1.05,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "x36": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x37": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x38": {
+        "decision": "forward",
+        "priority": 3.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x39": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x40": {
+        "decision": "forward",
+        "priority": 7.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x41": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x42": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x43": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x44": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x45": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x46": {
+        "decision": "forward",
+        "priority": 2.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x47": {
+        "decision": "excluded",
+        "exclusion": "different_scope",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x48": {
+        "decision": "forward",
+        "priority": 1.06,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "x49": {
+        "decision": "excluded",
+        "exclusion": "same_frequency",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x50": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x51": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x52": {
+        "decision": "forward",
+        "priority": 7.07,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x53": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x54": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x55": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x56": {
+        "decision": "forward",
+        "priority": 1.05,
+        "scoped": true,
+        "exclusive": false,
+        "thin": false
+      },
+      "x57": {
+        "decision": "forward",
+        "priority": 3.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x58": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x59": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x60": {
+        "decision": "excluded",
+        "exclusion": "values_agree",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x61": {
+        "decision": "forward",
+        "priority": 5.07,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x62": {
+        "decision": "forward",
+        "priority": 3.07,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x63": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x64": {
+        "decision": "forward",
+        "priority": 1.07,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "x65": {
+        "decision": "forward",
+        "priority": 3.07,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x66": {
+        "decision": "forward",
+        "priority": 3.07,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x67": {
+        "decision": "forward",
+        "priority": 7.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x68": {
+        "decision": "forward",
+        "priority": 3.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x69": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x70": {
+        "decision": "forward",
+        "priority": 3.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x71": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x72": {
+        "decision": "excluded",
+        "exclusion": "values_agree",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x73": {
+        "decision": "forward",
+        "priority": 4.03,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x74": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x75": {
+        "decision": "forward",
+        "priority": 3.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x76": {
+        "decision": "forward",
+        "priority": 5.07,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x77": {
+        "decision": "excluded",
+        "exclusion": "values_agree",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x78": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x79": {
+        "decision": "forward",
+        "priority": 2.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x80": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x81": {
+        "decision": "forward",
+        "priority": 1.06,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "x82": {
+        "decision": "forward",
+        "priority": 2.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x83": {
+        "decision": "forward",
+        "priority": 1.05,
+        "scoped": true,
+        "exclusive": false,
+        "thin": false
+      },
+      "x84": {
+        "decision": "excluded",
+        "exclusion": "different_scope",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x85": {
+        "decision": "forward",
+        "priority": 3.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x86": {
+        "decision": "forward",
+        "priority": 7.07,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x87": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x88": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "x89": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "x90": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      }
+    },
+    "generationRecall": [
+      34,
+      38
+    ],
+    "budgetPool": {
+      "changes": 90,
+      "candidatesPerChange": {
+        "min": 0,
+        "median": 7,
+        "max": 19
+      },
+      "budgetedSelectionRecall": [
+        34,
+        38
+      ],
+      "waited": [],
+      "pendingTotal": 82,
+      "pendingCalls": 9,
+      "daysAtCap": 2
+    },
+    "budgetBatch": {
+      "changes": 50,
+      "candidatesPerChange": {
+        "min": 0,
+        "median": 4,
+        "max": 5
+      },
+      "budgetedSelectionRecall": [
+        17,
+        20
+      ],
+      "waited": [],
+      "pendingTotal": 0,
+      "pendingCalls": 0,
+      "daysAtCap": 1
+    }
+  },
+  "rows": [
+    {
+      "id": "x01",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x02",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x03",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x04",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x05",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x06",
+      "route": "near_miss",
+      "priority": 1,
+      "verdict": "compatible",
+      "nearMiss": "value",
+      "contextDiffers": true
+    },
+    {
+      "id": "x07",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x08",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x09",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x10",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x11",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x12",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x13",
+      "route": "possible",
+      "priority": 1,
+      "verdict": "possible",
+      "contextDiffers": true
+    },
+    {
+      "id": "x14",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x15",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x16",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x17",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x18",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x19",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x20",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x21",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x22",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x23",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x24",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x25",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x26",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x27",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x28",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x29",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x30",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x31",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x32",
+      "route": "near_miss",
+      "priority": 7,
+      "verdict": "compatible",
+      "nearMiss": "frequency"
+    },
+    {
+      "id": "x33",
+      "route": "near_miss",
+      "priority": 1,
+      "verdict": "compatible",
+      "nearMiss": "value",
+      "contextDiffers": true
+    },
+    {
+      "id": "x34",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x35",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x36",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x37",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x38",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x39",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x40",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "x41",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x42",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x43",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x44",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x45",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x46",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x47",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x48",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "x49",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x50",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "x51",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x52",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "x53",
+      "route": "near_miss",
+      "priority": 7,
+      "verdict": "compatible",
+      "nearMiss": "frequency"
+    },
+    {
+      "id": "x54",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x55",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x56",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x57",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x58",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x59",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x60",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x61",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x62",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x63",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x64",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x65",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x66",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x67",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "x68",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x69",
+      "route": "near_miss",
+      "priority": 7,
+      "verdict": "compatible",
+      "nearMiss": "frequency"
+    },
+    {
+      "id": "x70",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x71",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x72",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x73",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x74",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x75",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x76",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x77",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x78",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x79",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x80",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x81",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x82",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x83",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x84",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x85",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x86",
+      "route": "near_miss",
+      "priority": 7,
+      "verdict": "compatible",
+      "nearMiss": "frequency"
+    },
+    {
+      "id": "x87",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x88",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x89",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "x90",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    }
+  ]
+}

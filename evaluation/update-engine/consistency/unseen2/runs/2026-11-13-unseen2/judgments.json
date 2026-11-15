@@ -1,0 +1,62 @@
+{
+  "v42": {
+    "answer": "contradicts",
+    "why": "One statement says wearing a hairnet is mandatory, the other says workers can choose, which cannot both be true in the same context.",
+    "suggestion": "Confirm the current policy on hairnet usage.",
+    "call": 1
+  },
+  "v20": {
+    "answer": "contradicts",
+    "why": "One claim sets a 90‑day retention, the other says data is deleted after 30 days, without indicating a different context.",
+    "suggestion": "Check if there are separate retention rules for different data subsets.",
+    "call": 1
+  },
+  "v10": {
+    "answer": "contradicts",
+    "why": "One limits reservations to 2 hours, the other to 4 hours, with no context distinction.",
+    "suggestion": "Verify the correct reservation limit and any applicable exceptions.",
+    "call": 1
+  },
+  "v03": {
+    "answer": "compatible_context",
+    "why": "The statements refer to different time periods (until March 2025 vs now).",
+    "suggestion": "None",
+    "call": 1
+  },
+  "v09": {
+    "answer": "contradicts",
+    "why": "The system limit is 4 tickets per order, yet an order of 6 tickets is reported.",
+    "suggestion": "Investigate whether the limit was overridden or if the order was an exception.",
+    "call": 1
+  },
+  "v25": {
+    "answer": "contradicts",
+    "why": "One says a maximum of 5 carry‑over days, the other allows up to 10, without context differentiation.",
+    "suggestion": "Clarify the applicable carry‑over policy and any employee categories.",
+    "call": 1
+  },
+  "v32": {
+    "answer": "compatible_context",
+    "why": "The statements apply to staff in different countries.",
+    "suggestion": "None",
+    "call": 1
+  },
+  "v38": {
+    "answer": "compatible_context",
+    "why": "One describes the test environment schedule, the other the live environment schedule.",
+    "suggestion": "None",
+    "call": 1
+  },
+  "v48": {
+    "answer": "compatible",
+    "why": "400 units per shift can total 1,200 units per day if there are three shifts.",
+    "suggestion": "None",
+    "call": 1
+  },
+  "v50": {
+    "answer": "compatible_context",
+    "why": "One refers to seating before renovation, the other after renovation.",
+    "suggestion": "None",
+    "call": 1
+  }
+}

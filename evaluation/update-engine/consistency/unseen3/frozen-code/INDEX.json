@@ -1,0 +1,53 @@
+{
+  "note": "Byte-exact copies of the code the unseen3 recording (runs/2026-11-14-unseen3) ran, saved 2026-11-15 before the post-recording fixes (plan §12.23). Each copy has the SHA-256 recorded in ../FREEZE.json. Historical evidence: never edited, never imported (the .txt suffix keeps them out of the build, lint and tests).",
+  "files": {
+    "src/ai/consistency/rules.ts": {
+      "copy": "frozen-code/src/ai/consistency/rules.ts.txt",
+      "sha256": "335a445436fd7c94f8863c7f40a28c9b222fddf8347cfc80abbc421bfd888ada"
+    },
+    "src/ai/fidelity/quantities.ts": {
+      "copy": "frozen-code/src/ai/fidelity/quantities.ts.txt",
+      "sha256": "eae62c363080cdb1b5c8becbde19d77367b5b95b6e8aecbcf0c7b89567537d02"
+    },
+    "src/ai/fidelity/information.ts": {
+      "copy": "frozen-code/src/ai/fidelity/information.ts.txt",
+      "sha256": "59cab6cff59a8800cbb0fd45c45c17aecb99986510f46586591575f8bce3a15d"
+    },
+    "src/ai/fidelity/meaning.ts": {
+      "copy": "frozen-code/src/ai/fidelity/meaning.ts.txt",
+      "sha256": "ae35f1ecf4250d0b9880534f0fd4539b2732e18f8c35cafb06dc8591bd306275"
+    },
+    "src/ai/router/embedding.ts": {
+      "copy": "frozen-code/src/ai/router/embedding.ts.txt",
+      "sha256": "4efb999bfd0bdd4c09f02b256c248ba0e80a1922ca7834f73524e1ee8738f52f"
+    },
+    "src/ai/consistency/screen.ts": {
+      "copy": "frozen-code/src/ai/consistency/screen.ts.txt",
+      "sha256": "d6cc17f9c2c164e096baf5a83e860c31e9a768f33c419962c87d3bcf710602e8"
+    },
+    "src/ai/consistency/judge.ts": {
+      "copy": "frozen-code/src/ai/consistency/judge.ts.txt",
+      "sha256": "7c1ce82c2e62857a2fda9e13ec7840bfb760cdb8000994b5312c6482f737af30"
+    },
+    "src/ai/consistency/candidates.ts": {
+      "copy": "frozen-code/src/ai/consistency/candidates.ts.txt",
+      "sha256": "4d4c334a20f11df922e1031ff31c85bb4ff7ae9fbd7fde8936de1f577d50fe1c"
+    },
+    "src/ai/consistency/evaluation.ts": {
+      "copy": "frozen-code/src/ai/consistency/evaluation.ts.txt",
+      "sha256": "bd56f0c9b079fb5ddb06c1e685ad915d40a0ab2a736798aa97c3da2dc7c1def2"
+    },
+    "src/ai/consistency/judgeEvaluation.ts": {
+      "copy": "frozen-code/src/ai/consistency/judgeEvaluation.ts.txt",
+      "sha256": "334d2ec838e4aa8c72ccc95c7b21cd322ef4005a3ed2d3ea2cb34c52f8ba411d"
+    },
+    "src/ai/consistency/pipelineEvaluation.ts": {
+      "copy": "frozen-code/src/ai/consistency/pipelineEvaluation.ts.txt",
+      "sha256": "03df47a64aa2e7e3073089ed7d4041cdbaa553c6c8c86ee49e236a4876bb13da"
+    },
+    "src/ai/contractTests/consistencyUnseen.contract.test.ts": {
+      "copy": "frozen-code/src/ai/contractTests/consistencyUnseen.contract.test.ts.txt",
+      "sha256": "608dc79be65a639bdf95c8f1b99299a9b5a63fa8cc29cf158a0a1c93abc7a18e"
+    }
+  }
+}

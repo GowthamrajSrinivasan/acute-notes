@@ -1,0 +1,176 @@
+{
+  "x25": {
+    "answer": "compatible",
+    "why": "Both statements say the pharmacy is closed on bank holidays, so they agree.",
+    "call": 1
+  },
+  "x30": {
+    "answer": "compatible",
+    "why": "Both statements restrict the API to the EU region, so they are consistent.",
+    "call": 1
+  },
+  "x52": {
+    "answer": "contradicts",
+    "why": "One says only Year 6 may use the suite, the other says Year 5 also uses it, which cannot both be true.",
+    "call": 1
+  },
+  "x08": {
+    "answer": "contradicts",
+    "why": "One states the grant programme accepts new applicants, the other says it does not accept any.",
+    "call": 1
+  },
+  "x86": {
+    "answer": "contradicts",
+    "why": "One claims meters are read quarterly, the other claims they are read monthly; both cannot be true simultaneously.",
+    "call": 1
+  },
+  "x59": {
+    "answer": "compatible",
+    "why": "Late submission is allowed with permission, and tutors can refuse when no permission is given; both can coexist.",
+    "call": 1
+  },
+  "x55": {
+    "answer": "contradicts",
+    "why": "One makes photo ID mandatory, the other says it is optional, which are mutually exclusive.",
+    "call": 1
+  },
+  "x69": {
+    "answer": "contradicts",
+    "why": "One states meters are read every quarter, the other states they are read once a year; these frequencies conflict.",
+    "call": 1
+  },
+  "x20": {
+    "answer": "compatible_context",
+    "why": "The first refers to the clinic generally, the second to a specific Kingsbridge branch, so both can be true.",
+    "call": 1
+  },
+  "x53": {
+    "answer": "contradicts",
+    "why": "One says training is annual, the other says it occurs every three years; these intervals cannot both apply.",
+    "call": 1
+  },
+  "x05": {
+    "answer": "contradicts",
+    "why": "One statement says online rent payment is possible, the other says no internet payment exists, both refer to the same present situation.",
+    "suggestion": "Verify the current payment options with Quaymoor Housing Association.",
+    "call": 2
+  },
+  "x45": {
+    "answer": "compatible",
+    "why": "Both statements indicate furnace #3 is no longer in use, just phrased differently.",
+    "suggestion": "No action needed.",
+    "call": 2
+  },
+  "x01": {
+    "answer": "contradicts",
+    "why": "One requires photo ID at check‑in, the other says no identification is asked for, same context.",
+    "suggestion": "Confirm the ID policy at Elmfield Walk‑in Centre.",
+    "call": 2
+  },
+  "x42": {
+    "answer": "compatible",
+    "why": "Both assert the bakery’s kitchen is nut‑free; the wording differs but the claim is the same.",
+    "suggestion": "No action needed.",
+    "call": 2
+  },
+  "x50": {
+    "answer": "contradicts",
+    "why": "The e‑bike weight is given as 21 kg in one statement and under 15 kg in the other, same model, same time.",
+    "suggestion": "Check the official specifications for the flagship e‑bike.",
+    "call": 2
+  },
+  "x67": {
+    "answer": "contradicts",
+    "why": "One says the hotel has 84 rooms, the other says it offers 112 rooms, referring to the same property.",
+    "suggestion": "Verify the current room count with Larkspur Hotel.",
+    "call": 2
+  },
+  "x40": {
+    "answer": "contradicts",
+    "why": "A maximum of 40 rowers is stated, yet the squad is reported to have 52 members, which cannot both be true under the same policy.",
+    "suggestion": "Clarify the squad size limit and current membership.",
+    "call": 2
+  },
+  "x32": {
+    "answer": "compatible_context",
+    "why": "The statements address different customer groups (residential vs commercial), so both can be true.",
+    "suggestion": "No action needed.",
+    "call": 2
+  },
+  "x21": {
+    "answer": "compatible_context",
+    "why": "One concerns ID at the walk‑in centre check‑in, the other concerns ID for pharmacy prescription collection, different processes.",
+    "suggestion": "No action needed.",
+    "call": 2
+  },
+  "x33": {
+    "answer": "contradicts",
+    "why": "A maximum capacity of 25 is stated, yet a class is reported to have 32 participants, which cannot coexist.",
+    "suggestion": "Confirm the class capacity limits and actual attendance.",
+    "call": 2
+  },
+  "x38": {
+    "answer": "compatible",
+    "why": "A states ID is required, B provides an exemption for children under 16, which is a compatible exception.",
+    "call": 6
+  },
+  "x31": {
+    "answer": "compatible_context",
+    "why": "A refers to premium customers' 24‑hour support, B describes the general support hours, different customer scopes.",
+    "call": 6
+  },
+  "x57": {
+    "answer": "compatible",
+    "why": "One describes Saturday opening hours, the other a booking rule; both can coexist.",
+    "call": 6
+  },
+  "x75": {
+    "answer": "compatible",
+    "why": "A requires ID, B specifies which IDs are accepted; they complement each other.",
+    "call": 6
+  },
+  "x70": {
+    "answer": "compatible",
+    "why": "A gives a maximum delivery guarantee, B notes that most parcels arrive sooner; both can be true.",
+    "call": 6
+  },
+  "x79": {
+    "answer": "contradicts",
+    "why": "One says the reservoir is full, the other says it is at a record low at the same time.",
+    "suggestion": "Verify the current water level data.",
+    "call": 6
+  },
+  "x82": {
+    "answer": "contradicts",
+    "why": "The marathon cannot be both on the first Sunday of May and in late September each year.",
+    "suggestion": "Check the official event schedule.",
+    "call": 6
+  },
+  "x17": {
+    "answer": "compatible_context",
+    "why": "One gives a maximum capacity for seated dinners, the other specifies seating for a formal dinner, indicating different configurations.",
+    "call": 6
+  },
+  "x46": {
+    "answer": "contradicts",
+    "why": "One states the library is closed for repairs, the other says it is open to visitors this month.",
+    "suggestion": "Confirm the library’s current operating status.",
+    "call": 6
+  },
+  "x29": {
+    "answer": "compatible",
+    "why": "The physical branch is closed, but the online catalogue remains accessible; both statements can be true.",
+    "call": 6
+  },
+  "x83": {
+    "answer": "compatible",
+    "why": "The branch could have reopened in 2019 and later closed again for roof repairs; the statements refer to different times.",
+    "call": 8
+  },
+  "x02": {
+    "answer": "contradicts",
+    "why": "One statement says raw data is never shared, while the other reports a recent instance of sharing, which cannot both be true under the same policy.",
+    "suggestion": "Verify the current data‑sharing policy and confirm whether the reported transfer actually occurred.",
+    "call": 8
+  }
+}

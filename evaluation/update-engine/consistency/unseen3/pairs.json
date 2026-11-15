@@ -1,0 +1,506 @@
+{
+  "split": "unseen3-2026-11-14",
+  "note": "The third unseen evaluation set (intelligent-update-engine-plan §12.21). Written by a separate author (a fresh agent given only the coverage spec; it never saw the earlier unseen sets, the routing code or any failure ids). Statements only: no labels, no categories. Batches: one new statement (the same `a`) against several existing ones. The code was frozen before this set existed; this file is frozen by SHA-256 in FREEZE.json. Never tune on it.",
+  "pairs": [
+    {
+      "id": "w01",
+      "a": "Only the head baker is allowed to change the sourdough recipe.",
+      "b": "The pastry chef can update the sourdough recipe without anyone's sign-off.",
+      "batch": "B3"
+    },
+    {
+      "id": "w02",
+      "a": "The ski resort has 42 km of pistes in total.",
+      "b": "The ski resort's total piste length is 55 km."
+    },
+    {
+      "id": "w03",
+      "a": "Claims under £500 are approved by the claims desk without a site inspection.",
+      "b": "Claims above £5,000 need sign-off from a senior adjuster.",
+      "batch": "B7"
+    },
+    {
+      "id": "w04",
+      "a": "The law firm's intake desk takes new enquiries by phone.",
+      "b": "New enquiries can also be submitted through the intake desk's web form."
+    },
+    {
+      "id": "w05",
+      "a": "Economy passengers on Skyline Air may check one bag of up to 23 kg free of charge.",
+      "b": "Business-class passengers on Skyline Air may check two bags free.",
+      "batch": "B1"
+    },
+    {
+      "id": "w06",
+      "a": "Ms Patel leads the newspaper's sports desk.",
+      "b": "She was moved to the business desk in September."
+    },
+    {
+      "id": "w07",
+      "a": "Visitors may feed the giraffes only during the 2 p.m. keeper talk.",
+      "b": "Giraffe feeding by visitors is permitted at any time the enclosure is open.",
+      "batch": "B9"
+    },
+    {
+      "id": "w08",
+      "a": "The smart-home hub shares usage data only if the owner opts in.",
+      "b": "Usage-data sharing on the smart-home hub is switched on by default, and owners can opt out in settings."
+    },
+    {
+      "id": "w09",
+      "a": "Members can use the gym 24 hours a day, 7 days a week.",
+      "b": "Members have round-the-clock access to the gym using their key fob.",
+      "batch": "B5"
+    },
+    {
+      "id": "w10",
+      "a": "The recycling centre processes about 12 tonnes of glass a day.",
+      "b": "The recycling centre's monthly glass intake is around 360 tonnes."
+    },
+    {
+      "id": "w11",
+      "a": "The Northline express to Harbour City runs every 30 minutes on weekdays.",
+      "b": "The express runs every 20 minutes during the morning peak.",
+      "batch": "B2"
+    },
+    {
+      "id": "w12",
+      "a": "The newspaper sources its photographs exclusively from staff photographers.",
+      "b": "The newspaper buys some of its photographs from freelance agencies."
+    },
+    {
+      "id": "w13",
+      "a": "All pull requests to the main branch need approval from at least two maintainers.",
+      "b": "Every pull request into main must also pass the full CI suite.",
+      "batch": "B10"
+    },
+    {
+      "id": "w14",
+      "a": "The cinema's largest screen seats up to 320 people.",
+      "b": "Last night's premiere on the largest screen drew an audience of 290."
+    },
+    {
+      "id": "w15",
+      "a": "Renters must be at least 25 years old to hire a car from DriveNow.",
+      "b": "DriveNow rents cars to drivers aged 21 and over.",
+      "batch": "B6"
+    },
+    {
+      "id": "w16",
+      "a": "Dogs are not allowed inside the restaurant.",
+      "b": "Dogs are welcome on the restaurant's covered patio."
+    },
+    {
+      "id": "w17",
+      "a": "Applications for the autumn intake close on 31 January.",
+      "b": "In 2023, applications for the autumn intake closed on 15 January.",
+      "batch": "B4"
+    },
+    {
+      "id": "w18",
+      "a": "Cat litter at the animal shelter is changed every 48 hours.",
+      "b": "The shelter changes its cats' litter daily."
+    },
+    {
+      "id": "w19",
+      "a": "Street-party permits are free for residents' associations.",
+      "b": "Commercial event organisers are charged £200 for a street-party permit.",
+      "batch": "B8"
+    },
+    {
+      "id": "w20",
+      "a": "The restaurant's average wait for a table on Fridays is 15 minutes.",
+      "b": "On Friday nights the longest wait for a table at the restaurant can reach 45 minutes."
+    },
+    {
+      "id": "w21",
+      "a": "Economy passengers on Skyline Air may check one bag of up to 23 kg free of charge.",
+      "b": "Economy travellers on Skyline Air pay for every checked bag.",
+      "batch": "B1"
+    },
+    {
+      "id": "w22",
+      "a": "The publisher accepts unsolicited manuscripts.",
+      "b": "Manuscripts that arrive without an agent or an invitation are returned to the sender unread."
+    },
+    {
+      "id": "w23",
+      "a": "Only the head baker is allowed to change the sourdough recipe.",
+      "b": "She is the only person who may alter the sourdough recipe.",
+      "batch": "B3"
+    },
+    {
+      "id": "w24",
+      "a": "The smart-home thermostat is sold in the UK for £149.",
+      "b": "In Ireland the smart-home thermostat costs €179."
+    },
+    {
+      "id": "w25",
+      "a": "Claims under £500 are approved by the claims desk without a site inspection.",
+      "b": "Motor claims under £500 must be inspected by an assessor before they are approved.",
+      "batch": "B7"
+    },
+    {
+      "id": "w26",
+      "a": "The office closes at 5 p.m. on Fridays.",
+      "b": "The law firm's intake desk is staffed until 7 p.m. every weekday."
+    },
+    {
+      "id": "w27",
+      "a": "The Northline express to Harbour City runs every 30 minutes on weekdays.",
+      "b": "On weekdays, Northline express trains depart for Harbour City twice an hour.",
+      "batch": "B2"
+    },
+    {
+      "id": "w28",
+      "a": "The recycling centre accepts household batteries at the main gate.",
+      "b": "Household batteries cannot be dropped off anywhere at the recycling centre, including the main gate, because of a fire risk identified last year."
+    },
+    {
+      "id": "w29",
+      "a": "Visitors may feed the giraffes only during the 2 p.m. keeper talk.",
+      "b": "Giraffe feeding sessions cost £5 per person.",
+      "batch": "B9"
+    },
+    {
+      "id": "w30",
+      "a": "All dogs at the animal shelter are microchipped before adoption.",
+      "b": "Biscuit, a terrier adopted from the shelter in May, was microchipped beforehand."
+    },
+    {
+      "id": "w31",
+      "a": "Members can use the gym 24 hours a day, 7 days a week.",
+      "b": "The gym is closed to members every night between midnight and 5 a.m.",
+      "batch": "B5"
+    },
+    {
+      "id": "w32",
+      "a": "Since the 2024 rule change, the sports club's juniors train on Tuesdays.",
+      "b": "Junior training at the sports club has been on Thursdays since the 2024 change, with Tuesdays kept for seniors."
+    },
+    {
+      "id": "w33",
+      "a": "All pull requests to the main branch need approval from at least two maintainers.",
+      "b": "Changes to main need a review from three maintainers.",
+      "batch": "B10"
+    },
+    {
+      "id": "w34",
+      "a": "The ski resort has 3,000 parking spaces.",
+      "b": "Only 400 parking spaces are free at the ski resort this morning."
+    },
+    {
+      "id": "w35",
+      "a": "Renters must be at least 25 years old to hire a car from DriveNow.",
+      "b": "DriveNow vans can only be hired by drivers aged 30 or older.",
+      "batch": "B6"
+    },
+    {
+      "id": "w36",
+      "a": "The music festival's site capacity is capped at 20,000 people per day.",
+      "b": "On Saturday the festival will admit 25,000 people to the site."
+    },
+    {
+      "id": "w37",
+      "a": "Applications for the autumn intake close on 31 January.",
+      "b": "Applications for the spring intake close on 30 September.",
+      "batch": "B4"
+    },
+    {
+      "id": "w38",
+      "a": "The dental practice's new-patient fee was raised to £60 in January.",
+      "b": "New patients at the dental practice pay £45."
+    },
+    {
+      "id": "w39",
+      "a": "Street-party permits are free for residents' associations.",
+      "b": "There is no charge to residents' groups applying to close their road for a street party.",
+      "batch": "B8"
+    },
+    {
+      "id": "w40",
+      "a": "The farm co-op sells its milk solely to Greenvale Dairies.",
+      "b": "Part of the co-op's milk goes to a local cheesemaker."
+    },
+    {
+      "id": "w41",
+      "a": "Economy passengers on Skyline Air may check one bag of up to 23 kg free of charge.",
+      "b": "Until March 2025, economy passengers on Skyline Air had to pay for their first checked bag.",
+      "batch": "B1"
+    },
+    {
+      "id": "w42",
+      "a": "Ski helmets are recommended for adults at the resort.",
+      "b": "Helmets are mandatory for children in the resort's ski school."
+    },
+    {
+      "id": "w43",
+      "a": "Only the head baker is allowed to change the sourdough recipe.",
+      "b": "Any change to the sourdough recipe must be logged in the recipe book.",
+      "batch": "B3"
+    },
+    {
+      "id": "w44",
+      "a": "Clients must sign the engagement letter before the law firm opens a file.",
+      "b": "Signing the engagement letter is optional; the firm can open a file without it."
+    },
+    {
+      "id": "w45",
+      "a": "Claims under £500 are approved by the claims desk without a site inspection.",
+      "b": "Claims under £1,000 are approved without a site inspection.",
+      "batch": "B7"
+    },
+    {
+      "id": "w46",
+      "a": "The farm co-op's members meet fortnightly.",
+      "b": "Co-op members get together every second Thursday."
+    },
+    {
+      "id": "w47",
+      "a": "The Northline express to Harbour City runs every 30 minutes on weekdays.",
+      "b": "Weekday Northline express service to Harbour City is hourly.",
+      "batch": "B2"
+    },
+    {
+      "id": "w48",
+      "a": "The farm co-op has 140 members.",
+      "b": "At the last count, membership stood at 210."
+    },
+    {
+      "id": "w49",
+      "a": "Visitors may feed the giraffes only during the 2 p.m. keeper talk.",
+      "b": "Visitors are not allowed to feed any animals in the zoo.",
+      "batch": "B9"
+    },
+    {
+      "id": "w50",
+      "a": "Every room at the dental practice is wheelchair accessible.",
+      "b": "The x-ray room at the dental practice can only be reached by a flight of stairs."
+    },
+    {
+      "id": "w51",
+      "a": "Renters must be at least 25 years old to hire a car from DriveNow.",
+      "b": "Drivers under 25 may hire a DriveNow car if they pay a young-driver surcharge.",
+      "batch": "B6"
+    },
+    {
+      "id": "w52",
+      "a": "The music festival allows refillable water bottles on site.",
+      "b": "The festival also provides free water refill stations near each stage."
+    },
+    {
+      "id": "w53",
+      "a": "All pull requests to the main branch need approval from at least two maintainers.",
+      "b": "A single maintainer's approval is enough to merge into main.",
+      "batch": "B10"
+    },
+    {
+      "id": "w54",
+      "a": "Players at the sports club are prohibited from wearing metal studs on the artificial pitch.",
+      "b": "Metal-studded boots are permitted on the club's artificial pitch."
+    },
+    {
+      "id": "w55",
+      "a": "Applications for the autumn intake close on 31 January.",
+      "b": "International applicants to the autumn intake have until 30 June.",
+      "batch": "B4"
+    },
+    {
+      "id": "w56",
+      "a": "The port's harbour master requires a pilot on board for every vessel longer than 150 m.",
+      "b": "On 3 May no pilot was used, as no vessel over 150 m entered the port that day."
+    },
+    {
+      "id": "w57",
+      "a": "Members can use the gym 24 hours a day, 7 days a week.",
+      "b": "Off-peak members cannot enter the gym after 4 p.m. on weekdays.",
+      "batch": "B5"
+    },
+    {
+      "id": "w58",
+      "a": "The port handles an average of 1,200 containers a day.",
+      "b": "On average, the port moves 400 containers per day."
+    },
+    {
+      "id": "w59",
+      "a": "Street-party permits are free for residents' associations.",
+      "b": "Residents' associations pay a £75 fee for each street-party permit.",
+      "batch": "B8"
+    },
+    {
+      "id": "w60",
+      "a": "The Summit chairlift carries 2,400 people.",
+      "b": "The Summit chairlift's capacity is 1,800 skiers per hour."
+    },
+    {
+      "id": "w61",
+      "a": "Economy passengers on Skyline Air may check one bag of up to 23 kg free of charge.",
+      "b": "Skyline Air's free checked-bag allowance in economy is capped at 20 kg.",
+      "batch": "B1"
+    },
+    {
+      "id": "w62",
+      "a": "The dental practice sends recall reminders every six months.",
+      "b": "Recall reminders go out from the dental practice twice a year."
+    },
+    {
+      "id": "w63",
+      "a": "Only the head baker is allowed to change the sourdough recipe.",
+      "b": "The weekend shift lead is not permitted to change any recipes.",
+      "batch": "B3"
+    },
+    {
+      "id": "w64",
+      "a": "The port's container terminal is open to hauliers around the clock.",
+      "b": "Hauliers have no access to the container terminal overnight."
+    },
+    {
+      "id": "w65",
+      "a": "Claims under £500 are approved by the claims desk without a site inspection.",
+      "b": "Every claim requires a site inspection before approval.",
+      "batch": "B7"
+    },
+    {
+      "id": "w66",
+      "a": "Volunteers at the animal shelter must complete a handling course.",
+      "b": "Members of the public visiting the shelter may walk a dog with a staff member present, with no course required."
+    },
+    {
+      "id": "w67",
+      "a": "The Northline express to Harbour City runs every 30 minutes on weekdays.",
+      "b": "On Sundays the Northline express to Harbour City runs once an hour.",
+      "batch": "B2"
+    },
+    {
+      "id": "w68",
+      "a": "The restaurant is closed every Monday.",
+      "b": "The restaurant opens for lunch and dinner seven days a week."
+    },
+    {
+      "id": "w69",
+      "a": "Visitors may feed the giraffes only during the 2 p.m. keeper talk.",
+      "b": "Visitors may feed the goats in the petting area throughout the day.",
+      "batch": "B9"
+    },
+    {
+      "id": "w70",
+      "a": "The festival's main stage curfew is 11 p.m.",
+      "b": "Headliners at the festival play until midnight."
+    },
+    {
+      "id": "w71",
+      "a": "Renters must be at least 25 years old to hire a car from DriveNow.",
+      "b": "DriveNow requires renters to have held a full licence for at least two years.",
+      "batch": "B6"
+    },
+    {
+      "id": "w72",
+      "a": "The game studio uses Jira for bug tracking.",
+      "b": "The game studio's art team tracks its tasks in Trello."
+    },
+    {
+      "id": "w73",
+      "a": "All pull requests to the main branch need approval from at least two maintainers.",
+      "b": "Documentation-only pull requests to main can be merged with one approval.",
+      "batch": "B10"
+    },
+    {
+      "id": "w74",
+      "a": "The studio's next game will support up to four players in co-op.",
+      "b": "Co-op in the studio's next game is limited to two players."
+    },
+    {
+      "id": "w75",
+      "a": "Applications for the autumn intake close on 31 January.",
+      "b": "The autumn intake deadline is 15 February.",
+      "batch": "B4"
+    },
+    {
+      "id": "w76",
+      "a": "The publisher's 2022 catalogue listed 80 new titles.",
+      "b": "The publisher brought out 95 new titles in 2023."
+    },
+    {
+      "id": "w77",
+      "a": "Members can use the gym 24 hours a day, 7 days a week.",
+      "b": "The gym's swimming pool is open from 6 a.m. to 10 p.m.",
+      "batch": "B5"
+    },
+    {
+      "id": "w78",
+      "a": "In the beta firmware, the hub's motion sensors report every 10 seconds.",
+      "b": "The smart-home hub's motion sensors report every 30 seconds."
+    },
+    {
+      "id": "w79",
+      "a": "Street-party permits are free for residents' associations.",
+      "b": "Street-party permit applications must be submitted six weeks in advance.",
+      "batch": "B8"
+    },
+    {
+      "id": "w80",
+      "a": "The cinema's adult ticket currently costs £11.",
+      "b": "As of this month, an adult ticket at the cinema is £9.50."
+    },
+    {
+      "id": "w81",
+      "a": "Economy passengers on Skyline Air may check one bag of up to 23 kg free of charge.",
+      "b": "Carry-on bags on Skyline Air must not exceed 7 kg.",
+      "batch": "B1"
+    },
+    {
+      "id": "w82",
+      "a": "Only the head baker is allowed to change the sourdough recipe.",
+      "b": "Both the head baker and the shift lead may adjust oven temperatures.",
+      "batch": "B3"
+    },
+    {
+      "id": "w83",
+      "a": "Claims under £500 are approved by the claims desk without a site inspection.",
+      "b": "Small claims, those below £500, skip the inspection step and are signed off by the desk.",
+      "batch": "B7"
+    },
+    {
+      "id": "w84",
+      "a": "The Northline express to Harbour City runs every 30 minutes on weekdays.",
+      "b": "There is no express service on the Northline from Monday to Friday.",
+      "batch": "B2"
+    },
+    {
+      "id": "w85",
+      "a": "Visitors may feed the giraffes only during the 2 p.m. keeper talk.",
+      "b": "Feeding is allowed at 11 a.m. as well.",
+      "batch": "B9"
+    },
+    {
+      "id": "w86",
+      "a": "Renters must be at least 25 years old to hire a car from DriveNow.",
+      "b": "A 27-year-old customer hired a DriveNow car last week.",
+      "batch": "B6"
+    },
+    {
+      "id": "w87",
+      "a": "All pull requests to the main branch need approval from at least two maintainers.",
+      "b": "Pull requests into experimental branches need only one maintainer's approval.",
+      "batch": "B10"
+    },
+    {
+      "id": "w88",
+      "a": "Applications for the autumn intake close on 31 January.",
+      "b": "Late applications for the autumn intake are not accepted once January has ended.",
+      "batch": "B4"
+    },
+    {
+      "id": "w89",
+      "a": "Members can use the gym 24 hours a day, 7 days a week.",
+      "b": "Staffed reception hours at the gym are 8 a.m. to 8 p.m.",
+      "batch": "B5"
+    },
+    {
+      "id": "w90",
+      "a": "Street-party permits are free for residents' associations.",
+      "b": "The permit costs £40 unless the applicant is a registered charity.",
+      "batch": "B8"
+    }
+  ]
+}
