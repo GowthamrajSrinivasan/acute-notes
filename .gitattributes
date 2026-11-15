@@ -1,5 +1,6 @@
-# Evaluation sets and the source they freeze are pinned by SHA-256 of their exact bytes
-# (FREEZE.json, DATA-FREEZE.json, sealed held-out hashes). Keep LF on every checkout,
-# including Windows clones with core.autocrlf=true, so those hashes stay valid.
-evaluation/** text=auto eol=lf
-src/ai/** text=auto eol=lf
+# Store and check out every file BYTE-EXACT, with no line-ending conversion on any platform (plan §12.30/§12.31).
+# Evaluation sets, frozen code copies and their FREEZE.json / DATA-FREEZE.json are pinned by SHA-256 of their exact
+# bytes, and several tests compare raw file content. The working tree mixes LF and CRLF files; a conversion in either
+# direction (core.autocrlf, eol=lf) changed 751 files in a fresh Windows clone and broke 16 test files.
+# `-text` disables end-of-line conversion on check-in and checkout, overriding core.autocrlf. Keep this the only rule.
+* -text
