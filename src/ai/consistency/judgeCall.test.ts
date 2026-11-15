@@ -28,7 +28,7 @@ const replyFor = (request: JudgeTransportRequest, answer = "compatible") => {
 
 function fakeTransport(behave: (request: JudgeTransportRequest, n: number) => Promise<ReturnType<typeof replyFor>> | ReturnType<typeof replyFor>, capsOutput = true): JudgeTransport & { requests: JudgeTransportRequest[] } {
   const requests: JudgeTransportRequest[] = [];
-  return { id: "fake", capsOutput, requests, send: async (r) => (requests.push(r), behave(r, requests.length)) };
+  return { id: "fake", capsOutput, singleAttempt: true, requests, send: async (r) => (r.onProviderRequest?.(), requests.push(r), behave(r, requests.length)) };
 }
 
 function memoryBudgetStore(): BudgetStore & { state?: BudgetState } {
@@ -41,14 +41,14 @@ function memoryMeta() {
   return { data, get: async <T,>(k: string) => structuredClone(data.get(k)) as T | undefined, set: async (k: string, v: unknown) => void data.set(k, structuredClone(v)) };
 }
 
-function fakeProvider(generate: (r: AIRequest) => Promise<AIResponse>, outputCap: "passed" | "ignored" | "absent" = "passed"): AIProvider & { calls: AIRequest[] } {
+function fakeProvider(generate: (r: AIRequest) => Promise<AIResponse>, outputCap: "passed" | "ignored" | "absent" = "passed", providerAttempts: "single" | "absent" = "single"): AIProvider & { calls: AIRequest[] } {
   const calls: AIRequest[] = [];
   return {
     id: "fake-provider",
     name: "Fake",
     authTypes: ["api_key"],
     transport: "ai_host_local",
-    capabilities: { streaming: false, structuredOutput: "json_mode", toolCalling: false, vision: false, embeddings: false, modelSelection: false, ...(outputCap !== "absent" ? { outputCap } : {}) },
+    capabilities: { streaming: false, structuredOutput: "json_mode", toolCalling: false, vision: false, embeddings: false, modelSelection: false, ...(outputCap !== "absent" ? { outputCap } : {}), ...(providerAttempts !== "absent" ? { providerAttempts } : {}) },
     isConfigured: async () => true,
     testConnection: async () => ({ ok: true }),
     calls,
@@ -297,5 +297,81 @@ describe("§12.25 sendJudgeCall used directly (the recorder's path)", () => {
     expect(t.requests.length).toBe(0);
     expect(settled).toBe(0);
     expect(ledger.get("c", "k1")?.state).toBe("failed");
+  });
+});
+
+describe("§12.29 provider-request accounting — one physical request per reservation", () => {
+  it("a connection that may retry on its own (no providerAttempts 'single') sends nothing and reserves nothing", async () => {
+    const provider = fakeProvider(async () => {
+      throw new Error("must not be called");
+    }, "passed", "absent");
+    const budget = new JudgeBudget({ now });
+    const ledger = new JudgeLedger(undefined, now);
+    const r = await run({ transport: providerJudgeTransport(provider), budget, ledger });
+    expect(r.status).toBe("no_single_attempt");
+    expect(provider.calls.length).toBe(0);
+    expect(budget.state()).toMatchObject({ used: 0, tokens: 0 });
+    expect(ledger.get("c", "k1")).toMatchObject({ state: "pending", reason: "single_attempt_unavailable" });
+  });
+
+  it("sendJudgeCall called directly with such a transport: not sent, reservation released", async () => {
+    const t = { ...fakeTransport((r) => replyFor(r)), singleAttempt: false };
+    const settled: (number | null)[] = [];
+    const ledger = new JudgeLedger(undefined, now);
+    const input = { pairs: [{ ref: "p1", a: "A uses X.", b: "A uses Y." }] } as never;
+    const r = await sendJudgeCall({ canvasId: "c", revision: "r", keys: ["k1"], input, reservation: "res", reserved: 100, transport: t, ledger, settle: (n) => void settled.push(n) });
+    expect(r.status).toBe("no_single_attempt");
+    expect(t.requests.length).toBe(0);
+    expect(settled).toEqual([0]);
+  });
+
+  it("the provider transport asks for singleAttempt and records the provider's own physical count", async () => {
+    const provider = fakeProvider(async (req) => ({ text: replyFor({ prompt: req.prompt } as JudgeTransportRequest).text, model: "m", finishReason: "stop", usage: { provider: "fake", model: "m", promptTokens: 900, completionTokens: 400 }, providerRequests: 1 }));
+    const r = await run({ transport: providerJudgeTransport(provider) });
+    expect(provider.calls[0]).toMatchObject({ singleAttempt: true });
+    expect(r.call).toMatchObject({ status: "answered", providerRequests: 1 });
+    expect(r.call).not.toHaveProperty("extraProviderRequests");
+  });
+
+  it("more than one physical request for one reservation is reported, never hidden", async () => {
+    const provider = fakeProvider(async (req) => ({ text: replyFor({ prompt: req.prompt } as JudgeTransportRequest).text, model: "m", finishReason: "stop", usage: { provider: "fake", model: "m" }, providerRequests: 3 }));
+    const r = await run({ transport: providerJudgeTransport(provider) });
+    expect(r.call).toMatchObject({ providerRequests: 3, extraProviderRequests: true });
+  });
+
+  it("the transport's own boundary count is kept on failure too", async () => {
+    const t = fakeTransport(() => {
+      throw new Error("http 503");
+    });
+    const r = await run({ transport: t });
+    expect(r.call).toMatchObject({ status: "call_error", failure: "transport", providerRequests: 1 });
+  });
+
+  it("over a real local HTTP server: one request arrives for a 429, a 500 and a redirect (fetch never retries; redirects refused)", async () => {
+    const { createServer } = await import("node:http");
+    let hits = 0;
+    let status = 429;
+    const server = createServer((req, res) => {
+      req.resume();
+      req.on("end", () => {
+        hits++;
+        if (status === 307) res.writeHead(307, { location: "/v1/other" }).end();
+        else res.writeHead(status, { "content-type": "application/json" }).end('{"error":{"message":"x"}}');
+      });
+    });
+    await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
+    const port = (server.address() as { port: number }).port;
+    try {
+      for (const s of [429, 500, 307]) {
+        status = s;
+        hits = 0;
+        const t = openAICompatibleJudgeTransport({ endpoint: `http://127.0.0.1:${port}/v1`, apiKey: "k", model: "m" });
+        const r = await run({ transport: t });
+        expect([s, hits]).toEqual([s, 1]);
+        expect(r.call).toMatchObject({ status: "call_error", providerRequests: 1 });
+      }
+    } finally {
+      await new Promise((r) => server.close(r));
+    }
   });
 });

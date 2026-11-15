@@ -41,6 +41,7 @@ function gatedTransport(options: { honoursAbort?: boolean } = {}) {
   const gates: { request: JudgeTransportRequest; release: () => void }[] = [];
   const t: JudgeTransport & { sent: number } = {
     id: "gated",
+    singleAttempt: true,
     capsOutput: true,
     sent: 0,
     send: (request) =>

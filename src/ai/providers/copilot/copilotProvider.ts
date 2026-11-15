@@ -72,6 +72,7 @@ export function createCopilotProvider(config: CopilotProviderConfig = {}): AIPro
         temperature: request.temperature,
         maxTokens: request.maxTokens,
         ...(request.reasoningEffort ? { reasoningEffort: request.reasoningEffort } : {}),
+        ...(request.singleAttempt ? { singleAttempt: true } : {}),
         timeoutMs: request.timeoutMs,
       },
       provider: config.byok,
@@ -85,7 +86,8 @@ export function createCopilotProvider(config: CopilotProviderConfig = {}): AIPro
     transport: "ai_host_local",
     // §12.25: a BYOK connection hands `maxTokens` to the model (SDK `ProviderConfig.maxOutputTokens`); a Copilot
     // subscription session drops it.
-    capabilities: { ...CAPABILITIES, outputCap: config.byok ? "passed" : "ignored" },
+    // §12.29: `singleAttempt` is enforced by the host's request-handler guard (one model request sent, repeats refused).
+    capabilities: { ...CAPABILITIES, outputCap: config.byok ? "passed" : "ignored", providerAttempts: "single" },
 
     async isConfigured() {
       return Boolean(config.gitHubToken || config.byok || config.allowHostLoggedInUser);

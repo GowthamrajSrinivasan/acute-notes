@@ -3,6 +3,7 @@ import type { AIRequest } from "@/ai/types";
 import type { CopilotClientOptions, SessionConfig } from "@github/copilot-sdk";
 import type { CopilotClientLike, CopilotSessionEventLike, CopilotSessionLike } from "./copilotClient";
 import { createCopilotHostRuntime } from "./CopilotHostRuntime";
+import { SingleAttemptRequestHandler } from "./attemptGuard";
 
 type ScriptedEvent = { type: string; data?: unknown };
 
@@ -345,5 +346,26 @@ describe("CopilotHostRuntime — output cap and reasoning effort (§12.25)", () 
     expect(sessionConfigCalls[0]?.provider).not.toHaveProperty("maxOutputTokens");
     expect(sessionConfigCalls[0]).not.toHaveProperty("reasoningEffort");
     expect(sessionConfigCalls[1]?.provider).toBeUndefined();
+  });
+});
+
+describe("CopilotHostRuntime singleAttempt (§12.29)", () => {
+  const byok = { type: "openai" as const, baseUrl: "https://x.test/v1", apiKey: "k" };
+  it("a singleAttempt request gets the one-request guard as the client's requestHandler, and reports providerRequests", async () => {
+    const { session } = createFakeSession({ result: { data: { content: "ok", model: "m" } } });
+    const { createClient, clientOptionsCalls } = createFakeClient(session);
+    const runtime = createCopilotHostRuntime({ createClient });
+    const response = await runtime.generate({ request: baseRequest({ singleAttempt: true }), auth: { kind: "logged_in_user" }, provider: byok });
+    expect(clientOptionsCalls[0]?.requestHandler).toBeInstanceOf(SingleAttemptRequestHandler);
+    // The fake client never sends, so the guard counted nothing: the count is reported as it is, never guessed.
+    expect(response.providerRequests).toBe(0);
+  });
+  it("other requests get no handler and no count (unchanged behaviour)", async () => {
+    const { session } = createFakeSession({ result: { data: { content: "ok", model: "m" } } });
+    const { createClient, clientOptionsCalls } = createFakeClient(session);
+    const runtime = createCopilotHostRuntime({ createClient });
+    const response = await runtime.generate({ request: baseRequest(), auth: { kind: "logged_in_user" }, provider: byok });
+    expect(clientOptionsCalls[0]).not.toHaveProperty("requestHandler");
+    expect(response).not.toHaveProperty("providerRequests");
   });
 });

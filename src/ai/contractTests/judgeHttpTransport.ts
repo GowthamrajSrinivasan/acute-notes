@@ -4,6 +4,8 @@
  * the evaluation recorder uses (AICredits, gpt-oss-120b), so a recording goes through `sendJudgeCall` exactly as the app
  * would. **One HTTP request per call:** no retry on 429 or 5xx (a failed call fails its pairs; "paid retries: none").
  * `max_tokens` covers reasoning and answer together on these endpoints, so the cap is real (`capsOutput: true`).
+ * Each request is announced through `onProviderRequest` just before it leaves (§12.29); the reliability harness also
+ * counts requests independently on the wire (undici's diagnostics channel).
  */
 import type { JudgeTransport } from "@/ai/consistency/judgeCall";
 
@@ -26,12 +28,17 @@ export function openAICompatibleJudgeTransport(options: {
   return {
     id: `openai-compatible:${options.model}`,
     capsOutput: true,
+    // §12.29: fetch never retries a POST, and redirects are refused below, so one call is one physical request.
+    singleAttempt: true,
     async send(request) {
       const started = Date.now();
       const timeout = AbortSignal.timeout(request.timeoutMs);
       const signal = request.signal ? AbortSignal.any([request.signal, timeout]) : timeout;
+      request.onProviderRequest?.();
       const res = await doFetch(`${options.endpoint}/chat/completions`, {
         method: "POST",
+        // A redirect would be a second request (a 307/308 re-sends the body): refused, so the call fails instead.
+        redirect: "error",
         headers: { authorization: `Bearer ${options.apiKey}`, "content-type": "application/json" },
         body: JSON.stringify({
           model: options.model,

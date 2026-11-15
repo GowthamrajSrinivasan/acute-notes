@@ -28,6 +28,7 @@ const sleep = (ms: number, signal?: AbortSignal) =>
 function slowTransport(delayMs: number, options: { honoursAbort?: boolean; answered?: number; usage?: { promptTokens?: number; completionTokens?: number } } = {}): JudgeTransport & { sent: number; finished: number } {
   const t = {
     id: "slow",
+    singleAttempt: true,
     capsOutput: true,
     sent: 0,
     finished: 0,

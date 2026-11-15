@@ -42,6 +42,11 @@ export interface JudgeTransportRequest {
   reasoningEffort: typeof JUDGE_REASONING_EFFORT;
   timeoutMs: number;
   signal?: AbortSignal;
+  /**
+   * Called by the transport at the physical boundary, once per outbound model request, just before it leaves (§12.29).
+   * The application-level call is `send`; this counts what actually goes to the provider.
+   */
+  onProviderRequest?: () => void;
 }
 
 export interface JudgeTransportReply {
@@ -49,6 +54,8 @@ export interface JudgeTransportReply {
   /** The provider's own finish reason when it has one ("length" = cut off at the cap). */
   finishReason?: string | null;
   usage?: { promptTokens?: number; completionTokens?: number };
+  /** Physical model requests the layer below reported for this call (when it counts them itself, e.g. the AI host). */
+  providerRequests?: number;
 }
 
 /** One way to reach a model, for exactly one request. */
@@ -56,6 +63,11 @@ export interface JudgeTransport {
   id: string;
   /** Does `maxTokens` reach the model, so it stops at the cap? Without it, nothing is sent. */
   capsOutput: boolean;
+  /**
+   * Is a call exactly ONE physical provider request — no retry, model switch or fallback underneath (§12.29)? A budget
+   * reservation covers one request, so without it nothing is sent.
+   */
+  singleAttempt: boolean;
   send(request: JudgeTransportRequest): Promise<JudgeTransportReply>;
 }
 
@@ -105,7 +117,9 @@ export type JudgeCallStatus =
   /** The call failed before a reply (network, timeout, provider error, cancelled): every pair failed as `call_error`. */
   | "call_error"
   /** Not sent: the transport can't cap output. Nothing reserved, nothing spent. */
-  | "no_output_cap";
+  | "no_output_cap"
+  /** Not sent: the transport can't guarantee one physical request per call (§12.29). Nothing reserved, nothing spent. */
+  | "no_single_attempt";
 
 /**
  * Why a call got no reply (§12.27), kept apart from the model's judgment in every report:
@@ -128,6 +142,13 @@ export interface JudgeCallResult {
   usedTokens?: number;
   /** The provider reported more than was reserved (the input is an estimate): charged to the day's budget. */
   overReservation?: boolean;
+  /**
+   * Physical provider requests observed for this call (§12.29): the larger of the transport's own count
+   * (`onProviderRequest`) and the count the layer below reported. Absent when neither counted.
+   */
+  providerRequests?: number;
+  /** More than one physical request was observed for one reservation. Never expected; reported, never hidden. */
+  extraProviderRequests?: boolean;
   ms: number;
 }
 
@@ -172,6 +193,19 @@ export async function sendJudgeCall(args: {
     await fail(null, "not sent: this connection can't limit the answer's length", 0);
     return { status: "no_output_cap", ms: 0 };
   }
+  if (!transport.singleAttempt) {
+    await fail(null, "not sent: this connection may retry a request on its own", 0);
+    return { status: "no_single_attempt", ms: 0 };
+  }
+  // §12.29: what actually left for the provider, counted at the transport's physical boundary.
+  let physical = 0;
+  const onProviderRequest = () => void physical++;
+  const requests = (reported?: number): Pick<JudgeCallResult, "providerRequests" | "extraProviderRequests"> => {
+    const counted = Number.isInteger(reported);
+    if (!physical && !counted) return {};
+    const n = Math.max(physical, counted ? Number(reported) : 0);
+    return { providerRequests: n, ...(n > 1 ? { extraProviderRequests: true } : {}) };
+  };
   // Cancelled before anything was sent: nothing can have been billed, so the reservation is released.
   if (args.signal?.aborted) {
     await fail("cancelled", "cancelled before sending", 0);
@@ -206,7 +240,7 @@ export async function sendJudgeCall(args: {
   try {
     // A reply that arrives after the deadline or the cancellation loses the race and is never recorded.
     reply = await Promise.race([
-      transport.send({ systemPrompt: systemPrompt ?? "", prompt, maxTokens: outputBudget(input), reasoningEffort: JUDGE_REASONING_EFFORT, timeoutMs, signal: controller.signal }),
+      transport.send({ systemPrompt: systemPrompt ?? "", prompt, maxTokens: outputBudget(input), reasoningEffort: JUDGE_REASONING_EFFORT, timeoutMs, signal: controller.signal, onProviderRequest }),
       deadline,
       cancelled,
     ]);
@@ -218,7 +252,7 @@ export async function sendJudgeCall(args: {
     const failure: JudgeCallFailure = args.signal?.aborted ? "cancelled" : (err as { name?: string })?.name === "TimeoutError" ? "timeout" : "transport";
     const error = failure === "timeout" ? `timeout: no reply within ${Math.round(timeoutMs / 1000)} s` : failure === "cancelled" ? "cancelled" : errorText(err);
     await fail(failure, error, null);
-    return { status: "call_error", failure, error, ms: Date.now() - started };
+    return { status: "call_error", failure, error, ...requests(), ms: Date.now() - started };
   } finally {
     clearTimeout(timer);
     args.signal?.removeEventListener("abort", onCancel);
@@ -232,7 +266,7 @@ export async function sendJudgeCall(args: {
     await args.settle(usedTokens ?? null);
     await ledger.flushed();
   });
-  return { status: "answered", reading, ...(usedTokens !== undefined ? { usedTokens, overReservation: usedTokens > args.reserved } : {}), ms: Date.now() - started };
+  return { status: "answered", reading, ...(usedTokens !== undefined ? { usedTokens, overReservation: usedTokens > args.reserved } : {}), ...requests(reply?.providerRequests), ms: Date.now() - started };
 }
 
 export interface JudgeCheckResult {
@@ -279,6 +313,13 @@ export async function runJudgeCheck(args: {
       ledger.markPending(canvasId, revision, waiting);
       await ledger.flushed();
       return { status: "no_output_cap" as const, plan: { pending: waiting.map(({ key, reason }) => ({ key, reason })), skipped: [] } as RoutingPlan };
+    }
+    // §12.29: a reservation covers ONE physical request. A connection that may retry underneath gets nothing sent.
+    if (!transport.singleAttempt) {
+      const waiting = args.candidates.filter((c) => !blocked(c.key)).map((c) => ({ key: c.key, reason: "single_attempt_unavailable" as const, context: contexts.get(c.key)! }));
+      ledger.markPending(canvasId, revision, waiting);
+      await ledger.flushed();
+      return { status: "no_single_attempt" as const, plan: { pending: waiting.map(({ key, reason }) => ({ key, reason })), skipped: [] } as RoutingPlan };
     }
     const plan = planForChange(revision, args.candidates, budget, { aiEnabled: true, ...(args.retry ? { retry: true } : {}), judged: blocked });
     // The budget is saved BEFORE any pair is marked in flight: if the save fails, nothing is marked or sent (§12.28).
@@ -332,8 +373,11 @@ export function providerJudgeTransport(provider: AIProvider): JudgeTransport {
   return {
     id: provider.id,
     capsOutput: provider.capabilities.outputCap === "passed",
+    // §12.29: only a provider that enforces one model request per call (and counts it) qualifies.
+    singleAttempt: provider.capabilities.providerAttempts === "single",
     async send(request) {
       const r = await provider.generate({
+        singleAttempt: true,
         task: judgeConsistencyTask.task,
         systemPrompt: request.systemPrompt,
         prompt: request.prompt,
@@ -347,6 +391,7 @@ export function providerJudgeTransport(provider: AIProvider): JudgeTransport {
         text: r.text,
         finishReason: r.finishReason,
         usage: { ...(r.usage.promptTokens !== undefined ? { promptTokens: r.usage.promptTokens } : {}), ...(r.usage.completionTokens !== undefined ? { completionTokens: r.usage.completionTokens } : {}) },
+        ...(r.providerRequests !== undefined ? { providerRequests: r.providerRequests } : {}),
       };
     },
   };

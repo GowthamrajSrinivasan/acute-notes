@@ -36,6 +36,7 @@ interface AIHostRequestBody {
     temperature?: number;
     maxTokens?: number;
     reasoningEffort?: string;
+    singleAttempt?: boolean;
     timeoutMs?: number;
   };
   provider?: HostByokProvider;
@@ -130,6 +131,7 @@ export async function resolveHostInput(req: NextRequest, signal?: AbortSignal): 
         temperature: body.request.temperature,
         maxTokens: body.request.maxTokens,
         ...(body.request.reasoningEffort === "low" || body.request.reasoningEffort === "medium" || body.request.reasoningEffort === "high" ? { reasoningEffort: body.request.reasoningEffort } : {}),
+        ...(body.request.singleAttempt === true ? { singleAttempt: true } : {}),
         timeoutMs: body.request.timeoutMs,
         signal,
       },

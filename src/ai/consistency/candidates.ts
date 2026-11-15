@@ -193,7 +193,7 @@ export class JudgeBudget {
   }
 }
 
-export type PendingReason = "over_call_limit" | "daily_cap" | "daily_tokens" | "change_already_checked" | "output_cap_unavailable";
+export type PendingReason = "over_call_limit" | "daily_cap" | "daily_tokens" | "change_already_checked" | "output_cap_unavailable" | "single_attempt_unavailable";
 export type SkipReason = "ai_check_off" | "already_judged";
 
 export interface RoutingPlan {
@@ -208,6 +208,7 @@ export const PENDING_TEXT: Record<PendingReason, string> = {
   daily_tokens: "today's AI check tokens are used: waits for tomorrow or Retry",
   change_already_checked: "this revision already had its AI check: waits for Retry",
   output_cap_unavailable: "this AI connection can't limit the answer's length, so the check isn't sent (use a connection with its own API key)",
+  single_attempt_unavailable: "this AI connection may retry a request on its own, which the check's budget can't cover, so the check isn't sent",
 };
 
 /** The most a call can cost in tokens: its estimated input plus its whole output allowance. */

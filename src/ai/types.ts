@@ -23,6 +23,13 @@ export interface AICapabilities {
    * callers that need a cap (the AI consistency check, §12.25).
    */
   outputCap?: "passed" | "ignored";
+  /**
+   * Can a request ask for exactly ONE physical model request (`AIRequest.singleAttempt`), with no hidden retry, model
+   * switch or fallback behind it (§12.29)? `"single"`: enforced at the provider-request boundary and the count reported in
+   * `AIResponse.providerRequests`. Absent = the provider may retry internally; callers that need one request (the AI
+   * consistency check) send nothing.
+   */
+  providerAttempts?: "single";
 }
 
 export interface AIModel {
@@ -66,6 +73,12 @@ export interface AIRequest {
    * reasoning reserve was sized for). Only sent when set; no other task sets it.
    */
   reasoningEffort?: "low" | "medium" | "high";
+  /**
+   * At most one physical model request for this call: a failed request is not retried by any layer below (§12.29; the
+   * Copilot runtime otherwise retries 429/5xx up to 5 times). Only honoured by providers declaring
+   * `capabilities.providerAttempts: "single"`; only the AI consistency check sets it.
+   */
+  singleAttempt?: boolean;
   /** Convenience for adapters with native structured output; the result is still validated by AIRuntime. */
   responseSchema?: unknown;
   signal?: AbortSignal;
@@ -84,6 +97,8 @@ export interface AIResponse {
   model: string;
   finishReason: "stop" | "length" | "cancelled" | "error";
   usage: AIUsage;
+  /** Physical model requests that left for the provider for this call, when the provider counts them (`singleAttempt`). */
+  providerRequests?: number;
 }
 
 export interface AIProviderConfig {

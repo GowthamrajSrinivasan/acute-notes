@@ -12,6 +12,7 @@ import type { CopilotClientOptions, SessionConfig } from "@github/copilot-sdk";
 import { createRealCopilotClient, type CopilotClientLike, type CopilotSessionEventLike, type CopilotSessionLike } from "./copilotClient";
 import { mapSessionErrorEvent, mapTransportError, type CopilotErrorEventData } from "./errorMapping";
 import { buildHardening } from "./hardening";
+import { SingleAttemptRequestHandler } from "./attemptGuard";
 import type { HostAuth, HostByokProvider, HostGenerateInput, HostRuntime } from "../hostRuntime";
 
 export interface CopilotHostRuntimeDeps {
@@ -67,8 +68,10 @@ export function createCopilotHostRuntime(deps: CopilotHostRuntimeDeps = DEFAULT_
     input: HostGenerateInput,
     run: (session: CopilotSessionLike) => Promise<T>,
     streaming = false,
+    guard?: SingleAttemptRequestHandler,
   ): Promise<T> {
-    const client = deps.createClient(buildClientOptions(input.auth, input.provider));
+    // §12.29: a single-attempt call routes every outbound model request through the guard (one sent, repeats refused).
+    const client = deps.createClient({ ...buildClientOptions(input.auth, input.provider), ...(guard ? { requestHandler: guard } : {}) });
     await client.start();
     try {
       const session = await client.createSession(buildSessionConfig(input.request.model, input.provider, input.request.systemPrompt, streaming, input.request.maxTokens, input.request.reasoningEffort));
@@ -86,7 +89,8 @@ export function createCopilotHostRuntime(deps: CopilotHostRuntimeDeps = DEFAULT_
     id: "copilot",
 
     async generate(input: HostGenerateInput): Promise<AIResponse> {
-      return withSession(input, async (session) => {
+      const guard = input.request.singleAttempt ? new SingleAttemptRequestHandler() : undefined;
+      const response = await withSession(input, async (session) => {
         let usage: AIUsage = { provider: "copilot", model: input.request.model ?? "unknown" };
         let capturedError: CopilotErrorEventData | undefined;
         const unsubUsage = session.on("assistant.usage", (event) => {
@@ -125,7 +129,8 @@ export function createCopilotHostRuntime(deps: CopilotHostRuntimeDeps = DEFAULT_
           unsubUsage();
           unsubError();
         }
-      });
+      }, false, guard);
+      return guard ? { ...response, providerRequests: guard.counts.sent } : response;
     },
 
     async *stream(input: HostGenerateInput): AsyncIterable<AIStreamChunk> {

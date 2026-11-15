@@ -147,4 +147,17 @@ describe("copilotProvider — output cap and reasoning effort (§12.25)", () => 
     expect(bodies[0]).toMatchObject({ maxTokens: 1_300, reasoningEffort: "low" });
     expect(bodies[1]).not.toHaveProperty("reasoningEffort");
   });
+
+  it("§12.29: declares providerAttempts 'single' and sends singleAttempt on the wire only when a request sets it", async () => {
+    expect(createCopilotProvider({ gitHubToken: "gho" }).capabilities.providerAttempts).toBe("single");
+    const fetchMock = vi.fn(async () => jsonResponse({ text: "", model: "m", finishReason: "stop", usage: { provider: "copilot", model: "m" }, providerRequests: 1 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const provider = createCopilotProvider({ byok: { type: "openai", baseUrl: "https://x.test/v1", apiKey: "k" } });
+    const r = await provider.generate(baseRequest({ singleAttempt: true }));
+    await provider.generate(baseRequest());
+    const bodies = fetchMock.mock.calls.map((c) => JSON.parse((c as unknown as [string, RequestInit])[1].body as string).request);
+    expect(bodies[0]).toMatchObject({ singleAttempt: true });
+    expect(bodies[1]).not.toHaveProperty("singleAttempt");
+    expect(r.providerRequests).toBe(1);
+  });
 });
