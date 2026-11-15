@@ -74,6 +74,20 @@ describe("unseen5 — frozen inputs (never routed or scored before the blind lab
     expect(counts).toEqual({ contradiction: 40, compatible: 45, ambiguous: 5 });
   });
 
+  it("the one approved recording (2026-11-16) and its route step are preserved byte for byte — never rerun, re-scored or overwritten (plan §12.33)", () => {
+    const run = join(SET, "runs", "2026-11-15-unseen5");
+    const outputs: [string, string][] = [
+      ["calls.json", "4f6c1018aaecb81e18a1697a9ae786d97da2f22e8b6a4a840092a27dbc2f8d13"],
+      ["envelope.json", "bee50e72fe76dcb78c920ffffcd0fe3451d6985ee0c3b30df02c4ddeee463ed0"],
+      ["judgments.json", "5d4f9e0804e8fecf77bf23f97aab922844ffbd3524e98fba101e6598149b41b4"],
+      ["pair-outcomes.json", "7ced4e142096f0ccad7490a0dc36b7ef7911d592cd2ed6ac5c169b188b3d3266"],
+      ["report.md", "c32fae08e759e7f7100a33a9cb681e83619d0c6fda41088be7299f0f1af724a3"],
+      ["routing.json", "3cb5a45e052b16cd90d3b912254e6c2cb07e3f630a90ff7219aa5530befafbd5"],
+      ["routing.md", "9c41db8281b2d4188feaa4096815b443a1b5b4c785e1df6c5a90b3d0c8d20c1b"],
+    ];
+    for (const [f, h] of outputs) expect([f, sha(join(run, f))]).toEqual([f, h]);
+  });
+
   it("the code freeze, its index and every byte copy are pinned (a consistent edit to FREEZE.json and a copy would otherwise pass)", () => {
     expect(sha(join(SET, "FREEZE.json"))).toBe("f22e11e983902f07e5434edb966d3c0fe723b98e313efe0fc89ea2d6db26ef77");
     expect(sha(join(SET, "frozen-code", "INDEX.json"))).toBe("85534519d0722f6b3b8b81dc20a71a2e5c340d5447008ef83734ea8ff62a2181");

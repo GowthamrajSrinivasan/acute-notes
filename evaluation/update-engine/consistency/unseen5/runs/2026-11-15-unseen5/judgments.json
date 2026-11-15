@@ -1,0 +1,486 @@
+{
+  "y58": {
+    "answer": "contradicts",
+    "why": "One says tests every quarter, the other says only once a year; both cannot be true for the same schedule.",
+    "suggestion": "Confirm the current testing frequency.",
+    "call": 1
+  },
+  "y72": {
+    "answer": "contradicts",
+    "why": "Three evenings a week conflicts with rehearsals only on Monday and Thursday (two evenings).",
+    "suggestion": "Check the actual rehearsal schedule.",
+    "call": 1
+  },
+  "y11": {
+    "answer": "compatible",
+    "why": "Both state the same limit of 28 pupils for Year 7 classes.",
+    "call": 1
+  },
+  "y57": {
+    "answer": "contradicts",
+    "why": "One claims the bridge is 412 m, the other says just under 300 m.",
+    "suggestion": "Verify the bridge length from an authoritative source.",
+    "call": 1
+  },
+  "y10": {
+    "answer": "contradicts",
+    "why": "One says every bus has a wheelchair ramp, the other says none are equipped.",
+    "suggestion": "Confirm the current bus equipment policy.",
+    "call": 1
+  },
+  "y62": {
+    "answer": "contradicts",
+    "why": "One mandates respirators, the other says they are optional for the same group and location.",
+    "suggestion": "Check the safety requirements for contractors in Building C.",
+    "call": 1
+  },
+  "y12": {
+    "answer": "compatible",
+    "why": "A maximum of 28 pupils satisfies a cap of up to 30 pupils; both statements can be true simultaneously.",
+    "call": 1
+  },
+  "y06": {
+    "answer": "contradicts",
+    "why": "If every bus has a ramp, route 14 cannot have buses without ramps.",
+    "suggestion": "Clarify whether route 14 is an exception or if the network policy has changed.",
+    "call": 1
+  },
+  "y80": {
+    "answer": "contradicts",
+    "why": "A minimum of three engineers on call conflicts with only two engineers being on call.",
+    "suggestion": "Verify the on‑call staffing requirements.",
+    "call": 1
+  },
+  "y14": {
+    "answer": "compatible",
+    "why": "One statement concerns Year 7 class size, the other concerns Year 8 class size; they address different subjects.",
+    "call": 1
+  },
+  "y15": {
+    "answer": "contradicts",
+    "why": "One states a maximum of 28 pupils, the other requires at least 30 pupils to run, which cannot both be true for the same class.",
+    "suggestion": "Verify the current policy on class size and minimum enrollment.",
+    "call": 2
+  },
+  "y71": {
+    "answer": "compatible",
+    "why": "Both set a limit of six birds; the second adds that cockerels are not allowed, which does not conflict with the first.",
+    "suggestion": "N/A",
+    "call": 2
+  },
+  "y34": {
+    "answer": "compatible",
+    "why": "Both statements require a senior technician to be present when a trainee uses a wet‑lab centrifuge.",
+    "suggestion": "N/A",
+    "call": 2
+  },
+  "y31": {
+    "answer": "compatible_context",
+    "why": "The first rule applies generally, while the second adds a time‑based exception after the trainee’s first week.",
+    "suggestion": "Clarify the policy change after the first week.",
+    "call": 2
+  },
+  "y35": {
+    "answer": "compatible",
+    "why": "One rule concerns wet‑lab centrifuges, the other concerns autoclaves, so they do not conflict.",
+    "suggestion": "N/A",
+    "call": 2
+  },
+  "y86": {
+    "answer": "compatible_context",
+    "why": "Statement A refers to all trial participants, while B refers specifically to volunteers who withdrew early, a different subgroup.",
+    "suggestion": "Confirm whether withdrawn volunteers are considered participants for follow‑up.",
+    "call": 2
+  },
+  "y51": {
+    "answer": "contradicts",
+    "why": "One claims a diesel generator backup exists, the other claims no backup power exists, which cannot both be true.",
+    "suggestion": "Check the current backup power setup for the freezer.",
+    "call": 2
+  },
+  "y32": {
+    "answer": "compatible",
+    "why": "The first statement applies to wet‑lab centrifuges, while the second refers to a small benchtop centrifuge in a teaching room.",
+    "suggestion": "N/A",
+    "call": 2
+  },
+  "y44": {
+    "answer": "compatible",
+    "why": "One limits boat use to members, the other restricts usage after dark; both can be true simultaneously.",
+    "suggestion": "N/A",
+    "call": 2
+  },
+  "y63": {
+    "answer": "contradicts",
+    "why": "One caps the class at 18 riders, the other says up to 25 people are squeezed in, which cannot both be correct.",
+    "suggestion": "Verify the official maximum capacity for spin classes.",
+    "call": 2
+  },
+  "y22": {
+    "answer": "compatible",
+    "why": "Both statements describe the same opening time (9 pm on Fridays) for the Riverside branch, so they agree.",
+    "call": 3
+  },
+  "y60": {
+    "answer": "compatible",
+    "why": "Both statements say the A&E department is always open, so they are consistent.",
+    "call": 3
+  },
+  "y84": {
+    "answer": "contradicts",
+    "why": "One claim limits capacity to 640 seats, while the other says the auditorium can hold well over a thousand, which cannot both be true for the same space.",
+    "suggestion": "Check the official seating capacity for the Sundial Theatre to determine the correct figure.",
+    "call": 3
+  },
+  "y21": {
+    "answer": "contradicts",
+    "why": "The first statement says the Riverside branch stays open until 9 pm on Fridays, but the second says all shops close at 6 pm every day, creating a direct conflict.",
+    "suggestion": "Verify the closing times for Riverside and other Calloway Books locations.",
+    "call": 3
+  },
+  "y33": {
+    "answer": "compatible",
+    "why": "Statement A imposes a requirement for senior presence; statement B merely encourages seniors to stay nearby, which does not conflict.",
+    "call": 3
+  },
+  "y70": {
+    "answer": "contradicts",
+    "why": "Statement A says the ferry has never cancelled for weather, while statement B reports a weather‑related cancellation, which cannot both be true.",
+    "suggestion": "Review the ferry’s historical weather‑related service records.",
+    "call": 3
+  },
+  "y64": {
+    "answer": "compatible",
+    "why": "If every product is fragrance‑free, then the night cream being fragrance‑free is consistent.",
+    "call": 3
+  },
+  "y37": {
+    "answer": "contradicts",
+    "why": "One average is given as 410 tonnes per day, the other as roughly 300 tonnes per day for the same year, which cannot both be correct.",
+    "suggestion": "Consult the 2025 production reports for the actual average output.",
+    "call": 3
+  },
+  "y13": {
+    "answer": "compatible",
+    "why": "A maximum class size of 28 and an average size of 24 can both be true simultaneously.",
+    "call": 3
+  },
+  "y82": {
+    "answer": "contradicts",
+    "why": "One claim states every primary pupil receives free meals, while the other limits free meals to schools in Lower Ward only, a direct conflict.",
+    "suggestion": "Check the district’s free‑meal policy to see which schools are covered.",
+    "call": 3
+  },
+  "y47": {
+    "answer": "contradicts",
+    "why": "One says collection is every other Monday (fortnightly) while the other says every single Monday (weekly) in the same present context.",
+    "suggestion": "Verify the current collection schedule.",
+    "call": 4
+  },
+  "y67": {
+    "answer": "contradicts",
+    "why": "If half of appointments occur within four days, the median wait cannot be nine days; these statistics conflict.",
+    "suggestion": "Check the source data for the appointment wait times.",
+    "call": 4
+  },
+  "y40": {
+    "answer": "compatible_context",
+    "why": "One refers to rebar at the main plant, the other to wire rod at a different plant; different products and locations allow both statements.",
+    "suggestion": "None needed.",
+    "call": 4
+  },
+  "y02": {
+    "answer": "compatible_context",
+    "why": "One statement describes the schedule after March 2026, the other describes the schedule before 2026; different time periods.",
+    "suggestion": "None needed.",
+    "call": 4
+  },
+  "y66": {
+    "answer": "compatible",
+    "why": "Both statements concern members: the printer is limited to members, and members may book it for up to two hours.",
+    "suggestion": "None needed.",
+    "call": 4
+  },
+  "y38": {
+    "answer": "compatible",
+    "why": "An average of 410 t/day yields roughly 149,650 t/year, which aligns with the reported total of about 150,000 t for 2025.",
+    "suggestion": "None needed.",
+    "call": 4
+  },
+  "y53": {
+    "answer": "contradicts",
+    "why": "The universal claim that all accounts are free conflicts with the specific claim that a premium account incurs a fee.",
+    "suggestion": "Confirm which account types carry fees.",
+    "call": 4
+  },
+  "y20": {
+    "answer": "contradicts",
+    "why": "One claim says deployments occur twice weekly, the other restricts deployments to only Mondays (once a week).",
+    "suggestion": "Clarify the actual deployment schedule.",
+    "call": 4
+  },
+  "y48": {
+    "answer": "compatible_context",
+    "why": "One describes the current fortnightly schedule, the other describes the historical weekly schedule before the change.",
+    "suggestion": "None needed.",
+    "call": 4
+  },
+  "y07": {
+    "answer": "compatible",
+    "why": "Both statements agree that all buses have ramps; the second adds that newer buses also have audio announcements, which does not conflict.",
+    "suggestion": "None needed.",
+    "call": 4
+  },
+  "y43": {
+    "answer": "compatible",
+    "why": "Both statements can be true: only members may use boats and members must book 24 hours ahead.",
+    "call": 5
+  },
+  "y17": {
+    "answer": "contradicts",
+    "why": "One says deployments twice a week, the other says once every working day; both cannot be true for the same team in the same context.",
+    "suggestion": "Verify the actual deployment frequency.",
+    "call": 5
+  },
+  "y01": {
+    "answer": "contradicts",
+    "why": "One limits walk‑in vaccinations to Saturday mornings, the other says they are available weekdays afternoons; both cannot hold simultaneously.",
+    "call": 5
+  },
+  "y85": {
+    "answer": "compatible",
+    "why": "An average of 14 minutes can coexist with most calls being reached within ten minutes.",
+    "call": 5
+  },
+  "y09": {
+    "answer": "compatible",
+    "why": "All buses have ramps and drivers must deploy them when requested; the statements complement each other.",
+    "call": 5
+  },
+  "y50": {
+    "answer": "compatible",
+    "why": "Collection every other Monday and the requirement to put bins out by 7 am on collection day describe the same schedule.",
+    "call": 5
+  },
+  "y04": {
+    "answer": "compatible_context",
+    "why": "One refers to the clinic’s Saturday schedule, the other to a neighboring pharmacy’s Tuesday schedule; different contexts.",
+    "call": 5
+  },
+  "y16": {
+    "answer": "compatible",
+    "why": "Both describe a twice‑weekly release schedule (Tuesday and Thursday).",
+    "call": 5
+  },
+  "y56": {
+    "answer": "contradicts",
+    "why": "Exclusively at the farm shop vs also stocked in pubs and a supermarket cannot both be true.",
+    "call": 5
+  },
+  "y73": {
+    "answer": "compatible_context",
+    "why": "One statement concerns the sequencing machine, the other the mass spectrometer; different equipment contexts.",
+    "call": 5
+  },
+  "y46": {
+    "answer": "compatible",
+    "why": "Both statements describe a fortnightly (every other Monday) garden waste collection, which aligns.",
+    "call": 6
+  },
+  "y03": {
+    "answer": "compatible",
+    "why": "Both refer to Saturday walk‑in vaccination sessions without appointments; B adds detail about vaccines offered.",
+    "call": 6
+  },
+  "y41": {
+    "answer": "contradicts",
+    "why": "One says only members may use boats, the other says the club hires boats to the public.",
+    "suggestion": "Confirm the current policy on boat usage.",
+    "call": 6
+  },
+  "y42": {
+    "answer": "contradicts",
+    "why": "One restricts use to members only, the other permits non‑members with a coach present.",
+    "suggestion": "Check the official membership and coaching rules.",
+    "call": 6
+  },
+  "y28": {
+    "answer": "compatible",
+    "why": "Both state that robots perform all milking; B adds that staff only clean/maintain the units.",
+    "call": 6
+  },
+  "y87": {
+    "answer": "contradicts",
+    "why": "One claims the community pool is the sole public pool, the other lists a second council‑run pool.",
+    "suggestion": "Verify the number of public pools in Fairhaven.",
+    "call": 6
+  },
+  "y45": {
+    "answer": "contradicts",
+    "why": "One limits boat use to members, the other describes visiting school teams using the boats.",
+    "suggestion": "Clarify whether visiting teams are considered members or have special permission.",
+    "call": 6
+  },
+  "y26": {
+    "answer": "contradicts",
+    "why": "One says milking is exclusively robotic, the other says farmhands hand‑milk part of the herd.",
+    "suggestion": "Determine if hand‑milking is an exception or outdated practice.",
+    "call": 6
+  },
+  "y77": {
+    "answer": "contradicts",
+    "why": "One states the route uses only turboprop aircraft, the other mentions an Airbus jet operating on Fridays.",
+    "suggestion": "Check the aircraft types used on the Kirkhaven route.",
+    "call": 6
+  },
+  "y30": {
+    "answer": "compatible",
+    "why": "Both can be true: robotic milking units can milk cows up to three times a day.",
+    "call": 6
+  },
+  "y27": {
+    "answer": "compatible",
+    "why": "Different animal groups (dairy herd vs goats) can have different milking methods.",
+    "call": 7
+  },
+  "y08": {
+    "answer": "compatible_context",
+    "why": "One statement refers to buses, the other to trams, which are different vehicle fleets.",
+    "call": 7
+  },
+  "y54": {
+    "answer": "compatible",
+    "why": "Different teams (under‑16 squad vs senior women) can train/play on different surfaces.",
+    "call": 7
+  },
+  "y88": {
+    "answer": "compatible",
+    "why": "Both describe separate roles (goalkeeper coach and PE teacher) that can be held simultaneously.",
+    "call": 7
+  },
+  "y89": {
+    "answer": "contradicts",
+    "why": "One says tariffs were lowered, the other says households paid more, both for the same month.",
+    "suggestion": "Confirm the actual tariff change for April 2026.",
+    "call": 7
+  },
+  "y75": {
+    "answer": "compatible",
+    "why": "The statements describe a sequence: renting desks before moving to the new office opened in 2018.",
+    "call": 7
+  },
+  "y25": {
+    "answer": "compatible",
+    "why": "Both statements convey the same opening time for the Riverside branch on Fridays.",
+    "call": 7
+  },
+  "y81": {
+    "answer": "contradicts",
+    "why": "One says the reptile house is closed for refurbishment, the other says it is open to visitors this week.",
+    "suggestion": "Check the current status of the reptile house.",
+    "call": 7
+  },
+  "y68": {
+    "answer": "compatible",
+    "why": "Both affirm that pastries, specifically croissants, contain no palm oil.",
+    "call": 7
+  },
+  "y23": {
+    "answer": "compatible_context",
+    "why": "The statements refer to different branches (Riverside vs Harbour Street) with different closing times.",
+    "call": 7
+  },
+  "y79": {
+    "answer": "contradicts",
+    "why": "One says no parks allow off‑lead dogs, another says a specific park does allow it, same time and place.",
+    "suggestion": "Verify the current off‑lead policy for Abbey Park.",
+    "call": 8
+  },
+  "y74": {
+    "answer": "unclear",
+    "why": "Statements refer to different hotels and lack time context; could be past vs present roles.",
+    "suggestion": "Check the dates of Lorna Pike’s employment at each hotel.",
+    "call": 8
+  },
+  "y69": {
+    "answer": "compatible",
+    "why": "Different branches have different closing times; no conflict.",
+    "call": 8
+  },
+  "y55": {
+    "answer": "compatible_context",
+    "why": "One refers to the current leader, the other to a last‑year handbook, indicating a time‑based change.",
+    "suggestion": "Confirm the current head of the oncology ward.",
+    "call": 8
+  },
+  "y52": {
+    "answer": "contradicts",
+    "why": "One allows free checkout at noon, the other imposes a fee after 10:30 am, same policy period.",
+    "suggestion": "Check the hotel’s latest checkout fee policy.",
+    "call": 8
+  },
+  "y90": {
+    "answer": "compatible",
+    "why": "Bar and library are separate facilities with independent hours.",
+    "call": 8
+  },
+  "y59": {
+    "answer": "contradicts",
+    "why": "One says the head teacher retires in July, the other says they will stay for three more years, same role and timeframe.",
+    "suggestion": "Clarify the head teacher’s retirement plans.",
+    "call": 8
+  },
+  "y18": {
+    "answer": "compatible",
+    "why": "Different teams (platform vs mobile) have separate deployment schedules.",
+    "call": 8
+  },
+  "y05": {
+    "answer": "contradicts",
+    "why": "Both describe walk‑in vaccination availability in 2026 but give mutually exclusive schedules.",
+    "suggestion": "Determine the actual walk‑in vaccination policy for 2026.",
+    "call": 8
+  },
+  "y49": {
+    "answer": "contradicts",
+    "why": "One states garden waste is currently collected bi‑weekly, the other says collection stopped in 2023.",
+    "suggestion": "Verify the current garden‑waste collection status.",
+    "call": 8
+  },
+  "y65": {
+    "answer": "contradicts",
+    "why": "One says ownership since 1987, the other says the purchase happened in 2004; both cannot be true for the same ownership event.",
+    "suggestion": "Verify the correct acquisition date.",
+    "call": 9
+  },
+  "y24": {
+    "answer": "contradicts",
+    "why": "One states the Friday late opening is currently in effect, the other says it was scrapped in 2024 and has not returned.",
+    "suggestion": "Check the current Friday opening hours.",
+    "call": 9
+  },
+  "y83": {
+    "answer": "contradicts",
+    "why": "One claims pear production stopped in 2021, while the other reports a record pear harvest in 2024.",
+    "suggestion": "Confirm whether pears are still grown.",
+    "call": 9
+  },
+  "y61": {
+    "answer": "compatible_context",
+    "why": "Statement A refers to a future change in 2025 for the whole workforce; statement B describes the current situation where only one depot has switched.",
+    "suggestion": "None needed.",
+    "call": 9
+  },
+  "y29": {
+    "answer": "compatible",
+    "why": "B describes the historical method before 2019; A describes the current exclusive use of robots, so they fit together.",
+    "suggestion": "None needed.",
+    "call": 9
+  },
+  "y19": {
+    "answer": "compatible",
+    "why": "One refers to production deployments frequency, the other to staging pushes frequency; both can coexist.",
+    "suggestion": "None needed.",
+    "call": 9
+  }
+}

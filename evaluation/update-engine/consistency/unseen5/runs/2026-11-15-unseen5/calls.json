@@ -1,0 +1,358 @@
+[
+  {
+    "n": 1,
+    "keys": [
+      "y58",
+      "y72",
+      "y11",
+      "y57",
+      "y10",
+      "y62",
+      "y12",
+      "y06",
+      "y80",
+      "y14"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"compatible_context\" only when the statements themselves give positive evidence of a material difference in scope, time, subject or environment (staging vs production; \"until 2023\" vs now; UK vs Germany). A detail that only one statement mentions is not by itself a different context. \"Currently\", \"now\", \"today\", \"as of this month\" and \"since <a past change>\" all describe the present: two statements about the present are about the same time. A universal or exclusive statement (\"all\", \"every\", \"always\", \"must\", \"only\", \"solely\") covers each case it names: another statement that makes an exception for some of those cases contradicts it, unless the universal statement itself allows that exception. Required vs optional for the same action under the same policy cannot both hold. If you are not sure whether the contexts differ, answer \"unclear\", never \"contradicts\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Quorra Software's security team runs a full penetration test every quarter.\"\n  B: \"Quorra's security team carries out a full penetration test only once a year.\"\n\np2\n  A: \"The Aldermoor youth choir rehearses three evenings a week.\"\n  B: \"The Aldermoor youth choir meets to rehearse on Monday and Thursday evenings and on no other days.\"\n\np3\n  A: \"Pinecrest Academy's maximum class size for Year 7 is 28 pupils.\"\n  B: \"No Year 7 class at Pinecrest Academy may exceed twenty-eight students.\"\n\np4\n  A: \"The Corvell Bridge spans 412 metres across the estuary.\"\n  B: \"At just under 300 metres long, Corvell Bridge is the shortest crossing on the estuary.\"\n\np5\n  A: \"Every bus on the Marlowe Valley Transit network is fitted with a wheelchair ramp.\"\n  B: \"Marlowe Valley Transit does not equip its buses with wheelchair ramps; riders who need one use a separate dial-a-ride van.\"\n\np6\n  A: \"Contractors at the Varnell chemical plant must wear respirators in Building C.\"\n  B: \"Respirators are optional for contractors working inside Varnell's Building C.\"\n\np7\n  A: \"Pinecrest Academy's maximum class size for Year 7 is 28 pupils.\"\n  B: \"Pinecrest Academy caps its Year 7 teaching groups at thirty pupils each.\"\n\np8\n  A: \"Every bus on the Marlowe Valley Transit network is fitted with a wheelchair ramp.\"\n  B: \"Route 14 on Marlowe Valley Transit still relies on two older buses that have no ramp at all.\"\n\np9\n  A: \"A minimum of three engineers must be on call for the Sablewood payment service at all times.\"\n  B: \"Sablewood keeps just two engineers on call overnight for its payment system.\"\n\np10\n  A: \"Pinecrest Academy's maximum class size for Year 7 is 28 pupils.\"\n  B: \"Year 8 classes at Pinecrest Academy can hold up to 32 children.\"",
+    "maxTokens": 1300,
+    "reserved": 2365,
+    "status": "ok",
+    "httpStatus": 200,
+    "failed": {},
+    "unknownRefs": 0,
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says tests every quarter, the other says only once a year; both cannot be true for the same schedule.\",\n      \"suggestion\": \"Confirm the current testing frequency.\"\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Three evenings a week conflicts with rehearsals only on Monday and Thursday (two evenings).\",\n      \"suggestion\": \"Check the actual rehearsal schedule.\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"compatible\",\n      \"why\": \"Both state the same limit of 28 pupils for Year 7 classes.\",\n      \"suggestion\": null\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One claims the bridge is 412 m, the other says just under 300 m.\",\n      \"suggestion\": \"Verify the bridge length from an authoritative source.\"\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says every bus has a wheelchair ramp, the other says none are equipped.\",\n      \"suggestion\": \"Confirm the current bus equipment policy.\"\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One mandates respirators, the other says they are optional for the same group and location.\",\n      \"suggestion\": \"Check the safety requirements for contractors in Building C.\"\n    },\n    {\n      \"ref\": \"p7\",\n      \"answer\": \"compatible\",\n      \"why\": \"A maximum of 28 pupils satisfies a cap of up to 30 pupils; both statements can be true simultaneously.\",\n      \"suggestion\": null\n    },\n    {\n      \"ref\": \"p8\",\n      \"answer\": \"contradicts\",\n      \"why\": \"If every bus has a ramp, route 14 cannot have buses without ramps.\",\n      \"suggestion\": \"Clarify whether route 14 is an exception or if the network policy has changed.\"\n    },\n    {\n      \"ref\": \"p9\",\n      \"answer\": \"contradicts\",\n      \"why\": \"A minimum of three engineers on call conflicts with only two engineers being on call.\",\n      \"suggestion\": \"Verify the on‑call staffing requirements.\"\n    },\n    {\n      \"ref\": \"p10\",\n      \"answer\": \"compatible\",\n      \"why\": \"One statement concerns Year 7 class size, the other concerns Year 8 class size; they address different subjects.\",\n      \"suggestion\": null\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 993,
+      "cost": 0.022664900478444844,
+      "cost_details": {
+        "completion_cost_inr": 0.018378800112241803,
+        "prompt_cost_inr": 0.00428610036620304
+      },
+      "estimated_cost": 0.000208178,
+      "latency_ms": 27535,
+      "prompt_tokens": 1064,
+      "prompt_tokens_details": null,
+      "total_tokens": 2057
+    },
+    "settledTokens": 2057,
+    "costUsd": 0.000208178,
+    "ms": 27801
+  },
+  {
+    "n": 2,
+    "keys": [
+      "y15",
+      "y71",
+      "y34",
+      "y31",
+      "y35",
+      "y86",
+      "y51",
+      "y32",
+      "y44",
+      "y63"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"compatible_context\" only when the statements themselves give positive evidence of a material difference in scope, time, subject or environment (staging vs production; \"until 2023\" vs now; UK vs Germany). A detail that only one statement mentions is not by itself a different context. \"Currently\", \"now\", \"today\", \"as of this month\" and \"since <a past change>\" all describe the present: two statements about the present are about the same time. A universal or exclusive statement (\"all\", \"every\", \"always\", \"must\", \"only\", \"solely\") covers each case it names: another statement that makes an exception for some of those cases contradicts it, unless the universal statement itself allows that exception. Required vs optional for the same action under the same policy cannot both hold. If you are not sure whether the contexts differ, answer \"unclear\", never \"contradicts\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Pinecrest Academy's maximum class size for Year 7 is 28 pupils.\"\n  B: \"At Pinecrest, a Year 7 class needs at least 30 pupils enrolled before it is allowed to run.\"\n\np2\n  A: \"Each Pendle Valley allotment holder may keep a maximum of six hens.\"\n  B: \"Pendle Valley allotment rules allow up to six chickens per plot, but no cockerels.\"\n\np3\n  A: \"At Quillon Biotech's Ely site, trainee technicians may not operate the wet-lab centrifuges unless a senior technician is present.\"\n  B: \"Whenever a Quillon Ely trainee spins samples in one of the wet-lab centrifuges, an experienced technician has to be in the room.\"\n\np4\n  A: \"At Quillon Biotech's Ely site, trainee technicians may not operate the wet-lab centrifuges unless a senior technician is present.\"\n  B: \"Once they finish their first week, Quillon's Ely trainees are permitted to run the wet-lab centrifuges unsupervised.\"\n\np5\n  A: \"At Quillon Biotech's Ely site, trainee technicians may not operate the wet-lab centrifuges unless a senior technician is present.\"\n  B: \"Trainee technicians at Quillon's Ely site load and run the autoclaves without anyone senior watching.\"\n\np6\n  A: \"All Weldon Pharma trial participants receive a follow-up call within a week.\"\n  B: \"Some Weldon Pharma volunteers who withdrew early were never followed up.\"\n\np7\n  A: \"The Lindqvist Research Lab's cryogenic freezer is backed up by a diesel generator.\"\n  B: \"There is no backup power supply of any kind for the cryo freezer at Lindqvist's lab.\"\n\np8\n  A: \"At Quillon Biotech's Ely site, trainee technicians may not operate the wet-lab centrifuges unless a senior technician is present.\"\n  B: \"Trainees at Quillon's Ely site use the small benchtop centrifuge in the teaching room by themselves.\"\n\np9\n  A: \"Only members of the Brackley Rowing Club may use the club's boats on the river.\"\n  B: \"The club's boats are never taken out on the river after dark.\"\n\np10\n  A: \"The Hollins Gym spin class holds no more than 18 riders.\"\n  B: \"Hollins Gym squeezes up to 25 people into each of its spin sessions.\"",
+    "maxTokens": 1300,
+    "reserved": 2441,
+    "status": "ok",
+    "httpStatus": 200,
+    "failed": {},
+    "unknownRefs": 0,
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One states a maximum of 28 pupils, the other requires at least 30 pupils to run, which cannot both be true for the same class.\",\n      \"suggestion\": \"Verify the current policy on class size and minimum enrollment.\"\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"compatible\",\n      \"why\": \"Both set a limit of six birds; the second adds that cockerels are not allowed, which does not conflict with the first.\",\n      \"suggestion\": \"N/A\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"compatible\",\n      \"why\": \"Both statements require a senior technician to be present when a trainee uses a wet‑lab centrifuge.\",\n      \"suggestion\": \"N/A\"\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"The first rule applies generally, while the second adds a time‑based exception after the trainee’s first week.\",\n      \"suggestion\": \"Clarify the policy change after the first week.\"\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"compatible\",\n      \"why\": \"One rule concerns wet‑lab centrifuges, the other concerns autoclaves, so they do not conflict.\",\n      \"suggestion\": \"N/A\"\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"Statement A refers to all trial participants, while B refers specifically to volunteers who withdrew early, a different subgroup.\",\n      \"suggestion\": \"Confirm whether withdrawn volunteers are considered participants for follow‑up.\"\n    },\n    {\n      \"ref\": \"p7\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One claims a diesel generator backup exists, the other claims no backup power exists, which cannot both be true.\",\n      \"suggestion\": \"Check the current backup power setup for the freezer.\"\n    },\n    {\n      \"ref\": \"p8\",\n      \"answer\": \"compatible\",\n      \"why\": \"The first statement applies to wet‑lab centrifuges, while the second refers to a small benchtop centrifuge in a teaching room.\",\n      \"suggestion\": \"N/A\"\n    },\n    {\n      \"ref\": \"p9\",\n      \"answer\": \"compatible\",\n      \"why\": \"One limits boat use to members, the other restricts usage after dark; both can be true simultaneously.\",\n      \"suggestion\": \"N/A\"\n    },\n    {\n      \"ref\": \"p10\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One caps the class at 18 riders, the other says up to 25 people are squeezed in, which cannot both be correct.\",\n      \"suggestion\": \"Verify the official maximum capacity for spin classes.\"\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 1012,
+      "cost": 0.0233227093184316,
+      "cost_details": {
+        "completion_cost_inr": 0.018730458926071204,
+        "prompt_cost_inr": 0.0045922503923604
+      },
+      "estimated_cost": 0.00021422,
+      "latency_ms": 33530,
+      "prompt_tokens": 1140,
+      "prompt_tokens_details": null,
+      "total_tokens": 2152
+    },
+    "settledTokens": 2152,
+    "costUsd": 0.00021422000000000002,
+    "ms": 33776
+  },
+  {
+    "n": 3,
+    "keys": [
+      "y22",
+      "y60",
+      "y84",
+      "y21",
+      "y33",
+      "y70",
+      "y64",
+      "y37",
+      "y13",
+      "y82"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"compatible_context\" only when the statements themselves give positive evidence of a material difference in scope, time, subject or environment (staging vs production; \"until 2023\" vs now; UK vs Germany). A detail that only one statement mentions is not by itself a different context. \"Currently\", \"now\", \"today\", \"as of this month\" and \"since <a past change>\" all describe the present: two statements about the present are about the same time. A universal or exclusive statement (\"all\", \"every\", \"always\", \"must\", \"only\", \"solely\") covers each case it names: another statement that makes an exception for some of those cases contradicts it, unless the universal statement itself allows that exception. Required vs optional for the same action under the same policy cannot both hold. If you are not sure whether the contexts differ, answer \"unclear\", never \"contradicts\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Our Riverside branch of Calloway Books is open until 9 pm on Fridays.\"\n  B: \"Calloway's Riverside shop shuts at nine in the evening on Fridays and at seven on other weekdays.\"\n\np2\n  A: \"Westmoor Hospital's A&E department never closes.\"\n  B: \"Emergency care at Westmoor Hospital is available around the clock, every day of the year.\"\n\np3\n  A: \"The Sundial Theatre seats 640 people.\"\n  B: \"The Sundial Theatre's auditorium can hold well over a thousand spectators.\"\n\np4\n  A: \"Our Riverside branch of Calloway Books is open until 9 pm on Fridays.\"\n  B: \"Calloway Books closes all of its shops at 6 pm every day of the week.\"\n\np5\n  A: \"At Quillon Biotech's Ely site, trainee technicians may not operate the wet-lab centrifuges unless a senior technician is present.\"\n  B: \"Senior staff at Quillon Ely are encouraged to stay nearby whenever trainees handle unfamiliar lab equipment.\"\n\np6\n  A: \"The Marisco ferry has never cancelled a crossing because of the weather.\"\n  B: \"High winds forced Marisco Ferries to scrap its Tuesday afternoon sailing last March.\"\n\np7\n  A: \"Every product in the Lumora skincare range is fragrance-free.\"\n  B: \"Lumora's new night cream contains no added perfume or scent.\"\n\np8\n  A: \"In 2025, Halvorsen Steelworks produced an average of 410 tonnes of rebar per day.\"\n  B: \"Across 2025, Halvorsen Steelworks averaged roughly 300 tonnes of rebar each day.\"\n\np9\n  A: \"Pinecrest Academy's maximum class size for Year 7 is 28 pupils.\"\n  B: \"The average Year 7 class at Pinecrest Academy has about 24 pupils in it.\"\n\np10\n  A: \"Free school meals are provided to every pupil in Castlerigg district's primary schools.\"\n  B: \"In Castlerigg district, only the primary schools in Lower Ward give their pupils free meals.\"",
+    "maxTokens": 1300,
+    "reserved": 2366,
+    "status": "ok",
+    "httpStatus": 200,
+    "failed": {},
+    "unknownRefs": 0,
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"compatible\",\n      \"why\": \"Both statements describe the same opening time (9 pm on Fridays) for the Riverside branch, so they agree.\"\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"compatible\",\n      \"why\": \"Both statements say the A&E department is always open, so they are consistent.\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One claim limits capacity to 640 seats, while the other says the auditorium can hold well over a thousand, which cannot both be true for the same space.\",\n      \"suggestion\": \"Check the official seating capacity for the Sundial Theatre to determine the correct figure.\"\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"contradicts\",\n      \"why\": \"The first statement says the Riverside branch stays open until 9 pm on Fridays, but the second says all shops close at 6 pm every day, creating a direct conflict.\",\n      \"suggestion\": \"Verify the closing times for Riverside and other Calloway Books locations.\"\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"compatible\",\n      \"why\": \"Statement A imposes a requirement for senior presence; statement B merely encourages seniors to stay nearby, which does not conflict.\"\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"contradicts\",\n      \"why\": \"Statement A says the ferry has never cancelled for weather, while statement B reports a weather‑related cancellation, which cannot both be true.\",\n      \"suggestion\": \"Review the ferry’s historical weather‑related service records.\"\n    },\n    {\n      \"ref\": \"p7\",\n      \"answer\": \"compatible\",\n      \"why\": \"If every product is fragrance‑free, then the night cream being fragrance‑free is consistent.\"\n    },\n    {\n      \"ref\": \"p8\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One average is given as 410 tonnes per day, the other as roughly 300 tonnes per day for the same year, which cannot both be correct.\",\n      \"suggestion\": \"Consult the 2025 production reports for the actual average output.\"\n    },\n    {\n      \"ref\": \"p9\",\n      \"answer\": \"compatible\",\n      \"why\": \"A maximum class size of 28 and an average size of 24 can both be true simultaneously.\"\n    },\n    {\n      \"ref\": \"p10\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One claim states every primary pupil receives free meals, while the other limits free meals to schools in Lower Ward only, a direct conflict.\",\n      \"suggestion\": \"Check the district’s free‑meal policy to see which schools are covered.\"\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 969,
+      "cost": 0.022200558422413145,
+      "cost_details": {
+        "completion_cost_inr": 0.017934599505299402,
+        "prompt_cost_inr": 0.00426595891711374
+      },
+      "estimated_cost": 0.000203913,
+      "latency_ms": 24479,
+      "prompt_tokens": 1059,
+      "prompt_tokens_details": null,
+      "total_tokens": 2028
+    },
+    "settledTokens": 2028,
+    "costUsd": 0.000203913,
+    "ms": 24725
+  },
+  {
+    "n": 4,
+    "keys": [
+      "y47",
+      "y67",
+      "y40",
+      "y02",
+      "y66",
+      "y38",
+      "y53",
+      "y20",
+      "y48",
+      "y07"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"compatible_context\" only when the statements themselves give positive evidence of a material difference in scope, time, subject or environment (staging vs production; \"until 2023\" vs now; UK vs Germany). A detail that only one statement mentions is not by itself a different context. \"Currently\", \"now\", \"today\", \"as of this month\" and \"since <a past change>\" all describe the present: two statements about the present are about the same time. A universal or exclusive statement (\"all\", \"every\", \"always\", \"must\", \"only\", \"solely\") covers each case it names: another statement that makes an exception for some of those cases contradicts it, unless the universal statement itself allows that exception. Required vs optional for the same action under the same policy cannot both hold. If you are not sure whether the contexts differ, answer \"unclear\", never \"contradicts\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Northgate Council currently collects garden waste every other Monday.\"\n  B: \"Northgate Council's garden waste lorries come round every single Monday.\"\n\np2\n  A: \"The median wait for a routine appointment at Dunmere Health Centre is nine days.\"\n  B: \"Half of all routine appointments at Dunmere Health Centre take place within four days of booking.\"\n\np3\n  A: \"In 2025, Halvorsen Steelworks produced an average of 410 tonnes of rebar per day.\"\n  B: \"Halvorsen's Dunmore plant averaged 410 tonnes of wire rod per day in 2025.\"\n\np4\n  A: \"Since March 2026, the Harlow Creek Clinic has offered walk-in vaccinations only on Saturday mornings.\"\n  B: \"Before 2026, Harlow Creek Clinic ran its walk-in vaccination sessions on Wednesday evenings.\"\n\np5\n  A: \"The Oakhurst Library's 3D printer is reserved solely for registered members.\"\n  B: \"Oakhurst Library members can book the 3D printer for up to two hours per visit.\"\n\np6\n  A: \"In 2025, Halvorsen Steelworks produced an average of 410 tonnes of rebar per day.\"\n  B: \"Halvorsen Steelworks turned out about 150,000 tonnes of rebar over the whole of 2025.\"\n\np7\n  A: \"All Fenwick Credit Union accounts are free of monthly maintenance charges.\"\n  B: \"Fenwick Credit Union's premium current account carries a four-pound monthly fee.\"\n\np8\n  A: \"The Kestrel Analytics platform team deploys to production twice a week.\"\n  B: \"The team deploys to production only on Mondays.\"\n\np9\n  A: \"Northgate Council currently collects garden waste every other Monday.\"\n  B: \"Northgate Council used to collect garden waste weekly before it switched to a fortnightly round.\"\n\np10\n  A: \"Every bus on the Marlowe Valley Transit network is fitted with a wheelchair ramp.\"\n  B: \"Marlowe Valley Transit buses all carry ramps, and the newest ones also have audio stop announcements.\"",
+    "maxTokens": 1300,
+    "reserved": 2382,
+    "status": "ok",
+    "httpStatus": 200,
+    "failed": {},
+    "unknownRefs": 0,
+    "raw": "{\n  \"results\": [\n    {\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"One says collection is every other Monday (fortnightly) while the other says every single Monday (weekly) in the same present context.\",\"suggestion\":\"Verify the current collection schedule.\"},\n    {\"ref\":\"p2\",\"answer\":\"contradicts\",\"why\":\"If half of appointments occur within four days, the median wait cannot be nine days; these statistics conflict.\",\"suggestion\":\"Check the source data for the appointment wait times.\"},\n    {\"ref\":\"p3\",\"answer\":\"compatible_context\",\"why\":\"One refers to rebar at the main plant, the other to wire rod at a different plant; different products and locations allow both statements.\",\"suggestion\":\"None needed.\"},\n    {\"ref\":\"p4\",\"answer\":\"compatible_context\",\"why\":\"One statement describes the schedule after March 2026, the other describes the schedule before 2026; different time periods.\",\"suggestion\":\"None needed.\"},\n    {\"ref\":\"p5\",\"answer\":\"compatible\",\"why\":\"Both statements concern members: the printer is limited to members, and members may book it for up to two hours.\",\"suggestion\":\"None needed.\"},\n    {\"ref\":\"p6\",\"answer\":\"compatible\",\"why\":\"An average of 410 t/day yields roughly 149,650 t/year, which aligns with the reported total of about 150,000 t for 2025.\",\"suggestion\":\"None needed.\"},\n    {\"ref\":\"p7\",\"answer\":\"contradicts\",\"why\":\"The universal claim that all accounts are free conflicts with the specific claim that a premium account incurs a fee.\",\"suggestion\":\"Confirm which account types carry fees.\"},\n    {\"ref\":\"p8\",\"answer\":\"contradicts\",\"why\":\"One claim says deployments occur twice weekly, the other restricts deployments to only Mondays (once a week).\",\"suggestion\":\"Clarify the actual deployment schedule.\"},\n    {\"ref\":\"p9\",\"answer\":\"compatible_context\",\"why\":\"One describes the current fortnightly schedule, the other describes the historical weekly schedule before the change.\",\"suggestion\":\"None needed.\"},\n    {\"ref\":\"p10\",\"answer\":\"compatible\",\"why\":\"Both statements agree that all buses have ramps; the second adds that newer buses also have audio announcements, which does not conflict.\",\"suggestion\":\"None needed.\"}\n  ]\n}",
+    "usage": {
+      "completion_tokens": 858,
+      "cost": 0.020166272064393843,
+      "cost_details": {
+        "completion_cost_inr": 0.015880171698190802,
+        "prompt_cost_inr": 0.00428610036620304
+      },
+      "estimated_cost": 0.00018522799999999998,
+      "latency_ms": 22605,
+      "prompt_tokens": 1064,
+      "prompt_tokens_details": null,
+      "total_tokens": 1922
+    },
+    "settledTokens": 1922,
+    "costUsd": 0.000185228,
+    "ms": 22818
+  },
+  {
+    "n": 5,
+    "keys": [
+      "y43",
+      "y17",
+      "y01",
+      "y85",
+      "y09",
+      "y50",
+      "y04",
+      "y16",
+      "y56",
+      "y73"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"compatible_context\" only when the statements themselves give positive evidence of a material difference in scope, time, subject or environment (staging vs production; \"until 2023\" vs now; UK vs Germany). A detail that only one statement mentions is not by itself a different context. \"Currently\", \"now\", \"today\", \"as of this month\" and \"since <a past change>\" all describe the present: two statements about the present are about the same time. A universal or exclusive statement (\"all\", \"every\", \"always\", \"must\", \"only\", \"solely\") covers each case it names: another statement that makes an exception for some of those cases contradicts it, unless the universal statement itself allows that exception. Required vs optional for the same action under the same policy cannot both hold. If you are not sure whether the contexts differ, answer \"unclear\", never \"contradicts\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Only members of the Brackley Rowing Club may use the club's boats on the river.\"\n  B: \"Brackley Rowing Club members have to book a boat at least 24 hours ahead.\"\n\np2\n  A: \"The Kestrel Analytics platform team deploys to production twice a week.\"\n  B: \"Kestrel Analytics' platform engineers release to production once every working day.\"\n\np3\n  A: \"Since March 2026, the Harlow Creek Clinic has offered walk-in vaccinations only on Saturday mornings.\"\n  B: \"Walk-in vaccinations at Harlow Creek Clinic are available every weekday afternoon.\"\n\np4\n  A: \"The average response time for Calder Fire Service in rural areas is 14 minutes.\"\n  B: \"Calder Fire Service usually reaches rural callouts within ten minutes.\"\n\np5\n  A: \"Every bus on the Marlowe Valley Transit network is fitted with a wheelchair ramp.\"\n  B: \"Marlowe Valley Transit drivers must deploy the ramp whenever a passenger asks for it.\"\n\np6\n  A: \"Northgate Council currently collects garden waste every other Monday.\"\n  B: \"Northgate residents must put their garden waste bins out by 7 am on collection day.\"\n\np7\n  A: \"Since March 2026, the Harlow Creek Clinic has offered walk-in vaccinations only on Saturday mornings.\"\n  B: \"The Harlow Creek pharmacy next door to the clinic gives walk-in vaccinations on Tuesdays.\"\n\np8\n  A: \"The Kestrel Analytics platform team deploys to production twice a week.\"\n  B: \"Kestrel's platform team ships its production releases every Tuesday and Thursday.\"\n\np9\n  A: \"The Tamsin Valley co-op sells its cider exclusively at its own farm shop.\"\n  B: \"Tamsin Valley co-op cider is stocked by three village pubs and a supermarket in Wrexley.\"\n\np10\n  A: \"Rennick Labs' sequencing machine is calibrated every Monday.\"\n  B: \"Rennick Labs calibrates its mass spectrometer on the first day of each month.\"",
+    "maxTokens": 1300,
+    "reserved": 2379,
+    "status": "ok",
+    "httpStatus": 200,
+    "failed": {},
+    "unknownRefs": 0,
+    "raw": "{\n  \"results\": [\n    {\"ref\":\"p1\",\"answer\":\"compatible\",\"why\":\"Both statements can be true: only members may use boats and members must book 24 hours ahead.\"},\n    {\"ref\":\"p2\",\"answer\":\"contradicts\",\"why\":\"One says deployments twice a week, the other says once every working day; both cannot be true for the same team in the same context.\",\"suggestion\":\"Verify the actual deployment frequency.\"},\n    {\"ref\":\"p3\",\"answer\":\"contradicts\",\"why\":\"One limits walk‑in vaccinations to Saturday mornings, the other says they are available weekdays afternoons; both cannot hold simultaneously.\"},\n    {\"ref\":\"p4\",\"answer\":\"compatible\",\"why\":\"An average of 14 minutes can coexist with most calls being reached within ten minutes.\"},\n    {\"ref\":\"p5\",\"answer\":\"compatible\",\"why\":\"All buses have ramps and drivers must deploy them when requested; the statements complement each other.\"},\n    {\"ref\":\"p6\",\"answer\":\"compatible\",\"why\":\"Collection every other Monday and the requirement to put bins out by 7 am on collection day describe the same schedule.\"},\n    {\"ref\":\"p7\",\"answer\":\"compatible_context\",\"why\":\"One refers to the clinic’s Saturday schedule, the other to a neighboring pharmacy’s Tuesday schedule; different contexts.\"},\n    {\"ref\":\"p8\",\"answer\":\"compatible\",\"why\":\"Both describe a twice‑weekly release schedule (Tuesday and Thursday).\"},\n    {\"ref\":\"p9\",\"answer\":\"contradicts\",\"why\":\"Exclusively at the farm shop vs also stocked in pubs and a supermarket cannot both be true.\"},\n    {\"ref\":\"p10\",\"answer\":\"compatible_context\",\"why\":\"One statement concerns the sequencing machine, the other the mass spectrometer; different equipment contexts.\"}\n  ]\n}",
+    "usage": {
+      "completion_tokens": 689,
+      "cost": 0.016981963399724402,
+      "cost_details": {
+        "completion_cost_inr": 0.012752259090971402,
+        "prompt_cost_inr": 0.0042297043087530005
+      },
+      "estimated_cost": 0.00015597999999999998,
+      "latency_ms": 22471,
+      "prompt_tokens": 1050,
+      "prompt_tokens_details": null,
+      "total_tokens": 1739
+    },
+    "settledTokens": 1739,
+    "costUsd": 0.00015598,
+    "ms": 22683
+  },
+  {
+    "n": 6,
+    "keys": [
+      "y46",
+      "y03",
+      "y41",
+      "y42",
+      "y28",
+      "y87",
+      "y45",
+      "y26",
+      "y77",
+      "y30"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"compatible_context\" only when the statements themselves give positive evidence of a material difference in scope, time, subject or environment (staging vs production; \"until 2023\" vs now; UK vs Germany). A detail that only one statement mentions is not by itself a different context. \"Currently\", \"now\", \"today\", \"as of this month\" and \"since <a past change>\" all describe the present: two statements about the present are about the same time. A universal or exclusive statement (\"all\", \"every\", \"always\", \"must\", \"only\", \"solely\") covers each case it names: another statement that makes an exception for some of those cases contradicts it, unless the universal statement itself allows that exception. Required vs optional for the same action under the same policy cannot both hold. If you are not sure whether the contexts differ, answer \"unclear\", never \"contradicts\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Northgate Council currently collects garden waste every other Monday.\"\n  B: \"Garden waste in Northgate is picked up fortnightly.\"\n\np2\n  A: \"Since March 2026, the Harlow Creek Clinic has offered walk-in vaccinations only on Saturday mornings.\"\n  B: \"The Saturday walk-in sessions at Harlow Creek Clinic cover flu and tetanus shots, and nobody needs an appointment.\"\n\np3\n  A: \"Only members of the Brackley Rowing Club may use the club's boats on the river.\"\n  B: \"Brackley Rowing Club hires out its boats to the general public on summer weekends.\"\n\np4\n  A: \"Only members of the Brackley Rowing Club may use the club's boats on the river.\"\n  B: \"Non-members are allowed to row Brackley Rowing Club boats as long as a coach is present.\"\n\np5\n  A: \"Greywater Farm's dairy herd is milked exclusively by robotic milking units.\"\n  B: \"At Greywater, robots handle all milking of the dairy cows, and staff only clean and maintain the units.\"\n\np6\n  A: \"Fairhaven Community Pool is the sole public swimming pool in Fairhaven.\"\n  B: \"Fairhaven has two council-run pools: the community pool and the lido on Marine Parade.\"\n\np7\n  A: \"Only members of the Brackley Rowing Club may use the club's boats on the river.\"\n  B: \"Visiting school teams row on the river in boats from the Brackley boathouse.\"\n\np8\n  A: \"Greywater Farm's dairy herd is milked exclusively by robotic milking units.\"\n  B: \"Two farmhands hand-milk part of the Greywater dairy herd every morning.\"\n\np9\n  A: \"Seaborne Air's Kirkhaven route is flown solely by turboprop aircraft.\"\n  B: \"On Fridays Seaborne Air puts an Airbus jet on its Kirkhaven service to cope with demand.\"\n\np10\n  A: \"Greywater Farm's dairy herd is milked exclusively by robotic milking units.\"\n  B: \"Greywater's dairy cows are milked up to three times a day.\"",
+    "maxTokens": 1300,
+    "reserved": 2378,
+    "status": "ok",
+    "httpStatus": 200,
+    "failed": {},
+    "unknownRefs": 0,
+    "raw": "{\n  \"results\": [\n    {\"ref\":\"p1\",\"answer\":\"compatible\",\"why\":\"Both statements describe a fortnightly (every other Monday) garden waste collection, which aligns.\",\"suggestion\":null},\n    {\"ref\":\"p2\",\"answer\":\"compatible\",\"why\":\"Both refer to Saturday walk‑in vaccination sessions without appointments; B adds detail about vaccines offered.\",\"suggestion\":null},\n    {\"ref\":\"p3\",\"answer\":\"contradicts\",\"why\":\"One says only members may use boats, the other says the club hires boats to the public.\",\"suggestion\":\"Confirm the current policy on boat usage.\"},\n    {\"ref\":\"p4\",\"answer\":\"contradicts\",\"why\":\"One restricts use to members only, the other permits non‑members with a coach present.\" ,\"suggestion\":\"Check the official membership and coaching rules.\"},\n    {\"ref\":\"p5\",\"answer\":\"compatible\",\"why\":\"Both state that robots perform all milking; B adds that staff only clean/maintain the units.\",\"suggestion\":null},\n    {\"ref\":\"p6\",\"answer\":\"contradicts\",\"why\":\"One claims the community pool is the sole public pool, the other lists a second council‑run pool.\" ,\"suggestion\":\"Verify the number of public pools in Fairhaven.\"},\n    {\"ref\":\"p7\",\"answer\":\"contradicts\",\"why\":\"One limits boat use to members, the other describes visiting school teams using the boats.\" ,\"suggestion\":\"Clarify whether visiting teams are considered members or have special permission.\"},\n    {\"ref\":\"p8\",\"answer\":\"contradicts\",\"why\":\"One says milking is exclusively robotic, the other says farmhands hand‑milk part of the herd.\" ,\"suggestion\":\"Determine if hand‑milking is an exception or outdated practice.\"},\n    {\"ref\":\"p9\",\"answer\":\"contradicts\",\"why\":\"One states the route uses only turboprop aircraft, the other mentions an Airbus jet operating on Fridays.\" ,\"suggestion\":\"Check the aircraft types used on the Kirkhaven route.\"},\n    {\"ref\":\"p10\",\"answer\":\"compatible\",\"why\":\"Both can be true: robotic milking units can milk cows up to three times a day.\",\"suggestion\":null}\n  ]\n}",
+    "usage": {
+      "completion_tokens": 756,
+      "cost": 0.018318702383067244,
+      "cost_details": {
+        "completion_cost_inr": 0.013992319118685603,
+        "prompt_cost_inr": 0.0043263832643816395
+      },
+      "estimated_cost": 0.00016825800000000001,
+      "latency_ms": 19566,
+      "prompt_tokens": 1074,
+      "prompt_tokens_details": null,
+      "total_tokens": 1830
+    },
+    "settledTokens": 1830,
+    "costUsd": 0.00016825800000000001,
+    "ms": 19827
+  },
+  {
+    "n": 7,
+    "keys": [
+      "y27",
+      "y08",
+      "y54",
+      "y88",
+      "y89",
+      "y75",
+      "y25",
+      "y81",
+      "y68",
+      "y23"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"compatible_context\" only when the statements themselves give positive evidence of a material difference in scope, time, subject or environment (staging vs production; \"until 2023\" vs now; UK vs Germany). A detail that only one statement mentions is not by itself a different context. \"Currently\", \"now\", \"today\", \"as of this month\" and \"since <a past change>\" all describe the present: two statements about the present are about the same time. A universal or exclusive statement (\"all\", \"every\", \"always\", \"must\", \"only\", \"solely\") covers each case it names: another statement that makes an exception for some of those cases contradicts it, unless the universal statement itself allows that exception. Required vs optional for the same action under the same policy cannot both hold. If you are not sure whether the contexts differ, answer \"unclear\", never \"contradicts\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Greywater Farm's dairy herd is milked exclusively by robotic milking units.\"\n  B: \"Greywater Farm's goats are milked by hand in a small parlour behind the barn.\"\n\np2\n  A: \"Every bus on the Marlowe Valley Transit network is fitted with a wheelchair ramp.\"\n  B: \"Marlowe Valley's tram fleet still includes several cars without step-free access.\"\n\np3\n  A: \"The Ashby Hornets under-16 squad trains on artificial turf.\"\n  B: \"Ashby Hornets' senior women's team plays all of its home games on natural grass.\"\n\np4\n  A: \"Marta Silva coaches the Dunlow Tigers' goalkeepers.\"\n  B: \"Silva, the Tigers' goalkeeping coach, also teaches PE at Dunlow High.\"\n\np5\n  A: \"Ravel Water lowered its household tariffs in April 2026.\"\n  B: \"From April 2026, Ravel Water households have been paying more for their water.\"\n\np6\n  A: \"Merrow Tech's office on Canning Road opened in 2018.\"\n  B: \"Before moving to Canning Road in 2018, Merrow Tech rented desks in a shared workspace.\"\n\np7\n  A: \"Our Riverside branch of Calloway Books is open until 9 pm on Fridays.\"\n  B: \"Customers can browse at Calloway Riverside until 21:00 on a Friday.\"\n\np8\n  A: \"Thornbury Zoo's reptile house is closed to the public for refurbishment.\"\n  B: \"This week the reptile house at Thornbury Zoo is welcoming visitors as usual.\"\n\np9\n  A: \"Verrin Bakery does not use palm oil in any of its pastries.\"\n  B: \"Verrin Bakery's croissants are made with French butter and contain no palm oil.\"\n\np10\n  A: \"Our Riverside branch of Calloway Books is open until 9 pm on Fridays.\"\n  B: \"The Harbour Street branch of Calloway Books closes at 5:30 pm on Fridays.\"",
+    "maxTokens": 1300,
+    "reserved": 2333,
+    "status": "ok",
+    "httpStatus": 200,
+    "failed": {},
+    "unknownRefs": 0,
+    "raw": "{\n  \"results\": [\n    {\"ref\":\"p1\",\"answer\":\"compatible\",\"why\":\"Different animal groups (dairy herd vs goats) can have different milking methods.\",\"suggestion\":null},\n    {\"ref\":\"p2\",\"answer\":\"compatible_context\",\"why\":\"One statement refers to buses, the other to trams, which are different vehicle fleets.\",\"suggestion\":null},\n    {\"ref\":\"p3\",\"answer\":\"compatible\",\"why\":\"Different teams (under‑16 squad vs senior women) can train/play on different surfaces.\",\"suggestion\":null},\n    {\"ref\":\"p4\",\"answer\":\"compatible\",\"why\":\"Both describe separate roles (goalkeeper coach and PE teacher) that can be held simultaneously.\",\"suggestion\":null},\n    {\"ref\":\"p5\",\"answer\":\"contradicts\",\"why\":\"One says tariffs were lowered, the other says households paid more, both for the same month.\",\"suggestion\":\"Confirm the actual tariff change for April 2026.\"},\n    {\"ref\":\"p6\",\"answer\":\"compatible\",\"why\":\"The statements describe a sequence: renting desks before moving to the new office opened in 2018.\",\"suggestion\":null},\n    {\"ref\":\"p7\",\"answer\":\"compatible\",\"why\":\"Both statements convey the same opening time for the Riverside branch on Fridays.\",\"suggestion\":null},\n    {\"ref\":\"p8\",\"answer\":\"contradicts\",\"why\":\"One says the reptile house is closed for refurbishment, the other says it is open to visitors this week.\",\"suggestion\":\"Check the current status of the reptile house.\"},\n    {\"ref\":\"p9\",\"answer\":\"compatible\",\"why\":\"Both affirm that pastries, specifically croissants, contain no palm oil.\",\"suggestion\":null},\n    {\"ref\":\"p10\",\"answer\":\"compatible_context\",\"why\":\"The statements refer to different branches (Riverside vs Harbour Street) with different closing times.\",\"suggestion\":null}\n  ]\n}",
+    "usage": {
+      "completion_tokens": 731,
+      "cost": 0.017759314461873604,
+      "cost_details": {
+        "completion_cost_inr": 0.0135296101531206,
+        "prompt_cost_inr": 0.0042297043087530005
+      },
+      "estimated_cost": 0.00016312,
+      "latency_ms": 21704,
+      "prompt_tokens": 1050,
+      "prompt_tokens_details": null,
+      "total_tokens": 1781
+    },
+    "settledTokens": 1781,
+    "costUsd": 0.00016312,
+    "ms": 21922
+  },
+  {
+    "n": 8,
+    "keys": [
+      "y79",
+      "y74",
+      "y69",
+      "y55",
+      "y52",
+      "y90",
+      "y59",
+      "y18",
+      "y05",
+      "y49"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"compatible_context\" only when the statements themselves give positive evidence of a material difference in scope, time, subject or environment (staging vs production; \"until 2023\" vs now; UK vs Germany). A detail that only one statement mentions is not by itself a different context. \"Currently\", \"now\", \"today\", \"as of this month\" and \"since <a past change>\" all describe the present: two statements about the present are about the same time. A universal or exclusive statement (\"all\", \"every\", \"always\", \"must\", \"only\", \"solely\") covers each case it names: another statement that makes an exception for some of those cases contradicts it, unless the universal statement itself allows that exception. Required vs optional for the same action under the same policy cannot both hold. If you are not sure whether the contexts differ, answer \"unclear\", never \"contradicts\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"None of Greenlow Council's parks permits dogs off the lead.\"\n  B: \"Dogs can run off the lead in the eastern field of Greenlow's Abbey Park.\"\n\np2\n  A: \"Lorna Pike is head chef at the Harbourview Hotel in Saltby.\"\n  B: \"Pike has run the kitchen at the Saltby Grand Hotel for six years.\"\n\np3\n  A: \"Kilbride Bank's Glasgow branch closes at 4 pm on weekdays.\"\n  B: \"Kilbride Bank's Edinburgh branch stays open until 5:30 pm Monday to Friday.\"\n\np4\n  A: \"Dr. Imani Okafor leads the oncology ward at St. Brennan's Hospital.\"\n  B: \"According to last year's staff handbook, St. Brennan's oncology ward is headed by Dr. Paul Retter.\"\n\np5\n  A: \"Guests at the Solbrook Inn can check out as late as noon without paying a fee.\"\n  B: \"Solbrook Inn charges a late-checkout fee to anyone leaving their room after 10:30 am.\"\n\np6\n  A: \"Ferris Hall's student bar closes at midnight.\"\n  B: \"The Ferris Hall library stays open until 2 am during exam weeks.\"\n\np7\n  A: \"Elm Park Primary's head teacher, Ms. Garvey, retires in July.\"\n  B: \"The head teacher is staying on for at least another three years.\"\n\np8\n  A: \"The Kestrel Analytics platform team deploys to production twice a week.\"\n  B: \"The Kestrel mobile team deploys to production only once a month.\"\n\np9\n  A: \"Since March 2026, the Harlow Creek Clinic has offered walk-in vaccinations only on Saturday mornings.\"\n  B: \"Harlow Creek Clinic stopped offering walk-in vaccinations altogether in January 2026 and now insists on bookings.\"\n\np10\n  A: \"Northgate Council currently collects garden waste every other Monday.\"\n  B: \"Northgate Council stopped collecting garden waste in 2023 and now directs residents to the tip.\"",
+    "maxTokens": 1300,
+    "reserved": 2346,
+    "status": "ok",
+    "httpStatus": 200,
+    "failed": {},
+    "unknownRefs": 0,
+    "raw": "{\n  \"results\": [\n    {\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"One says no parks allow off‑lead dogs, another says a specific park does allow it, same time and place.\",\"suggestion\":\"Verify the current off‑lead policy for Abbey Park.\"},\n    {\"ref\":\"p2\",\"answer\":\"unclear\",\"why\":\"Statements refer to different hotels and lack time context; could be past vs present roles.\",\"suggestion\":\"Check the dates of Lorna Pike’s employment at each hotel.\"},\n    {\"ref\":\"p3\",\"answer\":\"compatible\",\"why\":\"Different branches have different closing times; no conflict.\",\"suggestion\":null},\n    {\"ref\":\"p4\",\"answer\":\"compatible_context\",\"why\":\"One refers to the current leader, the other to a last‑year handbook, indicating a time‑based change.\",\"suggestion\":\"Confirm the current head of the oncology ward.\"},\n    {\"ref\":\"p5\",\"answer\":\"contradicts\",\"why\":\"One allows free checkout at noon, the other imposes a fee after 10:30 am, same policy period.\",\"suggestion\":\"Check the hotel’s latest checkout fee policy.\"},\n    {\"ref\":\"p6\",\"answer\":\"compatible\",\"why\":\"Bar and library are separate facilities with independent hours.\",\"suggestion\":null},\n    {\"ref\":\"p7\",\"answer\":\"contradicts\",\"why\":\"One says the head teacher retires in July, the other says they will stay for three more years, same role and timeframe.\",\"suggestion\":\"Clarify the head teacher’s retirement plans.\"},\n    {\"ref\":\"p8\",\"answer\":\"compatible\",\"why\":\"Different teams (platform vs mobile) have separate deployment schedules.\",\"suggestion\":null},\n    {\"ref\":\"p9\",\"answer\":\"contradicts\",\"why\":\"Both describe walk‑in vaccination availability in 2026 but give mutually exclusive schedules.\",\"suggestion\":\"Determine the actual walk‑in vaccination policy for 2026.\"},\n    {\"ref\":\"p10\",\"answer\":\"contradicts\",\"why\":\"One states garden waste is currently collected bi‑weekly, the other says collection stopped in 2023.\",\"suggestion\":\"Verify the current garden‑waste collection status.\"}\n  ]\n}",
+    "usage": {
+      "completion_tokens": 801,
+      "cost": 0.019050871275637742,
+      "cost_details": {
+        "completion_cost_inr": 0.014825195256702603,
+        "prompt_cost_inr": 0.00422567601893514
+      },
+      "estimated_cost": 0.000174983,
+      "latency_ms": 33833,
+      "prompt_tokens": 1049,
+      "prompt_tokens_details": null,
+      "total_tokens": 1850
+    },
+    "settledTokens": 1850,
+    "costUsd": 0.00017498300000000003,
+    "ms": 34036
+  },
+  {
+    "n": 9,
+    "keys": [
+      "y65",
+      "y24",
+      "y83",
+      "y61",
+      "y29",
+      "y19"
+    ],
+    "systemPrompt": "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.",
+    "prompt": "Each pair below is two statements from different cards of the same notes. For each pair, answer:\n- \"contradicts\": they cannot both be true about the same thing in the same context.\n- \"compatible_context\": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n- \"compatible\": they agree, say different things that fit together, or are about different things.\n- \"unclear\": there is not enough to tell.\nRules: answer \"compatible_context\" only when the statements themselves give positive evidence of a material difference in scope, time, subject or environment (staging vs production; \"until 2023\" vs now; UK vs Germany). A detail that only one statement mentions is not by itself a different context. \"Currently\", \"now\", \"today\", \"as of this month\" and \"since <a past change>\" all describe the present: two statements about the present are about the same time. A universal or exclusive statement (\"all\", \"every\", \"always\", \"must\", \"only\", \"solely\") covers each case it names: another statement that makes an exception for some of those cases contradicts it, unless the universal statement itself allows that exception. Required vs optional for the same action under the same policy cannot both hold. If you are not sure whether the contexts differ, answer \"unclear\", never \"contradicts\". A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds (\"only\", \"sole\", \"all\", \"the default\", \"the primary\"). Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer \"unclear\". Never decide which statement is right. \"why\" is one short line. For \"contradicts\" only, \"suggestion\" is a neutral next step for the user (e.g. \"confirm which value is current\").\n\nReply with JSON only: {\"results\":[{\"ref\":\"p1\",\"answer\":\"contradicts\",\"why\":\"…\",\"suggestion\":\"…\"}]}\n\np1\n  A: \"Corrigan Mills has been owned by the Pell family since 1987.\"\n  B: \"The Pell family bought Corrigan Mills in 2004 from a regional investment fund.\"\n\np2\n  A: \"Our Riverside branch of Calloway Books is open until 9 pm on Fridays.\"\n  B: \"Late Friday opening at Calloway Riverside was scrapped in 2024 and has not returned.\"\n\np3\n  A: \"Bellamy Orchards stopped growing pears in 2021.\"\n  B: \"Bellamy Orchards harvested a record pear crop in autumn 2024.\"\n\np4\n  A: \"Brightwell Logistics moved its entire workforce to a four-day week in 2025.\"\n  B: \"Only Brightwell's Leeds depot switched to four-day weeks; the other sites still work five days.\"\n\np5\n  A: \"Greywater Farm's dairy herd is milked exclusively by robotic milking units.\"\n  B: \"Greywater Farm milked its cows by hand until it bought the robots in 2019.\"\n\np6\n  A: \"The Kestrel Analytics platform team deploys to production twice a week.\"\n  B: \"Kestrel's platform team pushes builds to the staging environment several times every day.\"",
+    "maxTokens": 1060,
+    "reserved": 1940,
+    "status": "ok",
+    "httpStatus": 200,
+    "failed": {},
+    "unknownRefs": 0,
+    "raw": "{\n  \"results\": [\n    {\n      \"ref\": \"p1\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One says ownership since 1987, the other says the purchase happened in 2004; both cannot be true for the same ownership event.\",\n      \"suggestion\": \"Verify the correct acquisition date.\"\n    },\n    {\n      \"ref\": \"p2\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One states the Friday late opening is currently in effect, the other says it was scrapped in 2024 and has not returned.\",\n      \"suggestion\": \"Check the current Friday opening hours.\"\n    },\n    {\n      \"ref\": \"p3\",\n      \"answer\": \"contradicts\",\n      \"why\": \"One claims pear production stopped in 2021, while the other reports a record pear harvest in 2024.\",\n      \"suggestion\": \"Confirm whether pears are still grown.\"\n    },\n    {\n      \"ref\": \"p4\",\n      \"answer\": \"compatible_context\",\n      \"why\": \"Statement A refers to a future change in 2025 for the whole workforce; statement B describes the current situation where only one depot has switched.\",\n      \"suggestion\": \"None needed.\"\n    },\n    {\n      \"ref\": \"p5\",\n      \"answer\": \"compatible\",\n      \"why\": \"B describes the historical method before 2019; A describes the current exclusive use of robots, so they fit together.\",\n      \"suggestion\": \"None needed.\"\n    },\n    {\n      \"ref\": \"p6\",\n      \"answer\": \"compatible\",\n      \"why\": \"One refers to production deployments frequency, the other to staging pushes frequency; both can coexist.\",\n      \"suggestion\": \"None needed.\"\n    }\n  ]\n}",
+    "usage": {
+      "completion_tokens": 629,
+      "cost": 0.015162482874425042,
+      "cost_details": {
+        "completion_cost_inr": 0.0116417575736154,
+        "prompt_cost_inr": 0.0035207253008096404
+      },
+      "estimated_cost": 0.000139268,
+      "latency_ms": 22205,
+      "prompt_tokens": 874,
+      "prompt_tokens_details": null,
+      "total_tokens": 1503
+    },
+    "settledTokens": 1503,
+    "costUsd": 0.000139268,
+    "ms": 22432
+  }
+]

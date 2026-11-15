@@ -1,0 +1,155 @@
+{
+  "limits": {
+    "maxRequests": 9,
+    "maxTokens": 21300,
+    "maxUsd": 0.05,
+    "price": {
+      "input": 3.7e-8,
+      "output": 1.7000000000000001e-7
+    },
+    "templateMargin": 64
+  },
+  "totals": {
+    "sent": 9,
+    "refused": 0,
+    "spentTokens": 16862,
+    "spentUsdUpperBound": 0.0028665400000000003
+  },
+  "log": [
+    {
+      "n": 1,
+      "at": "2026-11-15T18:44:32.807Z",
+      "decision": "sent",
+      "spentBefore": 0,
+      "maxTokens": 1300,
+      "estimatedInput": 1129,
+      "worstCase": 2429,
+      "status": 200,
+      "usage": {
+        "promptTokens": 1064,
+        "completionTokens": 993
+      },
+      "charged": 2057
+    },
+    {
+      "n": 2,
+      "at": "2026-11-15T18:45:00.609Z",
+      "decision": "sent",
+      "spentBefore": 2057,
+      "maxTokens": 1300,
+      "estimatedInput": 1205,
+      "worstCase": 2505,
+      "status": 200,
+      "usage": {
+        "promptTokens": 1140,
+        "completionTokens": 1012
+      },
+      "charged": 2152
+    },
+    {
+      "n": 3,
+      "at": "2026-11-15T18:45:34.385Z",
+      "decision": "sent",
+      "spentBefore": 4209,
+      "maxTokens": 1300,
+      "estimatedInput": 1130,
+      "worstCase": 2430,
+      "status": 200,
+      "usage": {
+        "promptTokens": 1059,
+        "completionTokens": 969
+      },
+      "charged": 2028
+    },
+    {
+      "n": 4,
+      "at": "2026-11-15T18:45:59.111Z",
+      "decision": "sent",
+      "spentBefore": 6237,
+      "maxTokens": 1300,
+      "estimatedInput": 1146,
+      "worstCase": 2446,
+      "status": 200,
+      "usage": {
+        "promptTokens": 1064,
+        "completionTokens": 858
+      },
+      "charged": 1922
+    },
+    {
+      "n": 5,
+      "at": "2026-11-15T18:46:21.929Z",
+      "decision": "sent",
+      "spentBefore": 8159,
+      "maxTokens": 1300,
+      "estimatedInput": 1143,
+      "worstCase": 2443,
+      "status": 200,
+      "usage": {
+        "promptTokens": 1050,
+        "completionTokens": 689
+      },
+      "charged": 1739
+    },
+    {
+      "n": 6,
+      "at": "2026-11-15T18:46:44.613Z",
+      "decision": "sent",
+      "spentBefore": 9898,
+      "maxTokens": 1300,
+      "estimatedInput": 1142,
+      "worstCase": 2442,
+      "status": 200,
+      "usage": {
+        "promptTokens": 1074,
+        "completionTokens": 756
+      },
+      "charged": 1830
+    },
+    {
+      "n": 7,
+      "at": "2026-11-15T18:47:04.440Z",
+      "decision": "sent",
+      "spentBefore": 11728,
+      "maxTokens": 1300,
+      "estimatedInput": 1097,
+      "worstCase": 2397,
+      "status": 200,
+      "usage": {
+        "promptTokens": 1050,
+        "completionTokens": 731
+      },
+      "charged": 1781
+    },
+    {
+      "n": 8,
+      "at": "2026-11-15T18:47:26.362Z",
+      "decision": "sent",
+      "spentBefore": 13509,
+      "maxTokens": 1300,
+      "estimatedInput": 1110,
+      "worstCase": 2410,
+      "status": 200,
+      "usage": {
+        "promptTokens": 1049,
+        "completionTokens": 801
+      },
+      "charged": 1850
+    },
+    {
+      "n": 9,
+      "at": "2026-11-15T18:48:00.398Z",
+      "decision": "sent",
+      "spentBefore": 15359,
+      "maxTokens": 1060,
+      "estimatedInput": 944,
+      "worstCase": 2004,
+      "status": 200,
+      "usage": {
+        "promptTokens": 874,
+        "completionTokens": 629
+      },
+      "charged": 1503
+    }
+  ]
+}
