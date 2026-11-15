@@ -74,6 +74,42 @@ function envIsStated(sentence: string, marker: string): boolean {
   return t.some((w, i) => w === word && (ENV_NOUNS.has(t[i + 1] ?? "") || ["on", "in", "during"].includes(t[i - 1] ?? "")));
 }
 
+/**
+ * The statistic a sentence names, as classes (§12.29, unseen4 x04/x24/x71). "average", "mean", "typically", "usually" are
+ * one class (a central value), so "on average" / "typically" is the same measure in other words. Period words (daily,
+ * weekly, …) are a schedule or a rate, not a statistic, unless both sides use one ("daily" / "monthly active users").
+ * A bound ("no more than", "a maximum of") is not a statistic: a cap and an average of the same thing are comparable.
+ */
+const STATISTIC_CLASS: Record<string, string> = {
+  average: "central", mean: "central", typical: "central", typically: "central", usually: "central", normally: "central",
+  median: "median", peak: "peak", "worst-case": "peak", "best-case": "best",
+};
+const PERIOD_WORD: Record<string, string> = { hourly: "hour", daily: "day", weekly: "week", monthly: "month", yearly: "year", annual: "year", annually: "year" };
+
+function statisticsOf(sentence: string): { stats: Set<string>; periods: Set<string> } {
+  const t: string[] = sentence.toLowerCase().match(/[a-z0-9'-]+/g) ?? [];
+  const stats = new Set<string>();
+  const periods = new Set<string>();
+  const freq = frequencyOf(sentence)?.text;
+  for (const w of t) {
+    if (STATISTIC_CLASS[w]) stats.add(STATISTIC_CLASS[w]!);
+    else if (/^p\d{2,3}$/.test(w)) stats.add(w);
+    else if (PERIOD_WORD[w] && freq !== w) periods.add(PERIOD_WORD[w]!);
+  }
+  return { stats, periods };
+}
+
+/**
+ * Positive evidence that two sentences measure different things: **both** name a statistic (or both a period-qualified
+ * metric) and the two differ. A qualifier on one side only, or the same statistic in other words, is no evidence.
+ */
+export function statisticsDiffer(a: string, b: string): boolean {
+  const sa = statisticsOf(a);
+  const sb = statisticsOf(b);
+  const differ = (x: Set<string>, y: Set<string>) => x.size > 0 && y.size > 0 && ([...x].some((v) => !y.has(v)) || [...y].some((v) => !x.has(v)));
+  return differ(sa.stats, sb.stats) || differ(sa.periods, sb.periods);
+}
+
 /** Both sentences state at least one value of the same kind (time, size, count, …), so "the values agree" compared something. */
 export function valuesCompared(a: string, b: string): boolean {
   const qb = quantitiesOf(b);
@@ -190,7 +226,10 @@ export function screenPair(a: string, b: string): Screened {
   const reason = rule.nearMiss?.reason ?? rule.reason;
 
   // Positive evidence of compatibility — each needs something stated, never only a lack of shared words.
-  if (rule.verdict === "compatible" && !rule.nearMiss && rule.reason === "different metrics") return exclude("different_metrics", "different named metrics");
+  // Different metrics only when both sides name one and they differ (§12.29): a statistic word on one side only
+  // ("on average" / "typically", "weekly meeting" / "every Wednesday") is forwarded, low priority, never excluded.
+  const metricsOneSided = rule.verdict === "compatible" && !rule.nearMiss && rule.reason === "different metrics" && !statisticsDiffer(a, b);
+  if (rule.verdict === "compatible" && !rule.nearMiss && rule.reason === "different metrics" && !metricsOneSided) return exclude("different_metrics", "different named metrics");
   // "The values agree" is evidence only when values of the same kind were actually compared (§12.23, w31): "24 hours a
   // day, 7 days a week" against "closed … between midnight and 5 a.m." compares nothing — durations on one side, a bare
   // count on the other — so the rule's "agree" is vacuous and the pair goes on to the AI.
@@ -203,7 +242,7 @@ export function screenPair(a: string, b: string): Screened {
   if (scope.bothSided && rule.verdict !== "conflict") return exclude("different_scope", "a different scope stated on both sides");
   const [short, long] = ca.length <= cb.length ? [ca, cb] : [cb, ca];
   const shortSentence = ca.length <= cb.length ? a : b;
-  if (short.length >= 2 && long.length > short.length && unmatched(short, long) === long.length - short.length && !negationDiffers && !modalClash && !isExclusive(shortSentence) && rule.verdict === "compatible" && !rule.nearMiss)
+  if (short.length >= 2 && long.length > short.length && unmatched(short, long) === long.length - short.length && !negationDiffers && !modalClash && !isExclusive(shortSentence) && rule.verdict === "compatible" && !rule.nearMiss && !metricsOneSided)
     return exclude("extension", "one says all the other says, and more");
 
   // Precision first: a definite rule conflict only for the same claim word for word (apart from the values).
@@ -214,12 +253,12 @@ export function screenPair(a: string, b: string): Screened {
   const valuesDiffer = rule.verdict === "conflict" || (!!rule.nearMiss && ["value", "date", "frequency", "limit"].includes(rule.nearMiss.kind));
   const incompatibility: Screened["evidence"]["incompatibility"] =
     valuesDiffer || negationDiffers || modalClash || rule.nearMiss?.kind === "negation" || rule.nearMiss?.kind === "modality" || (rule.verdict === "possible" && rule.kind === "contradicts") ? "strong"
-    : exclusive || (rule.verdict === "possible" && rule.kind === "value") || rule.verdict === "possible" ? "medium"
+    : exclusive || (rule.verdict === "possible" && rule.kind === "value") || rule.verdict === "possible" || (metricsOneSided && valuesCompared(a, b)) ? "medium"
     : "weak";
   const sameClaim = identical || unmatched(ca, cb) <= 2 || rel.similarity >= 0.45;
   const inc = incompatibility === "strong" ? 3 : incompatibility === "medium" ? 2 : 1;
   const priority = scope.scoped ? 1 + rel.similarity / 10 : 2 * inc + (sameClaim ? 1 : 0) + rel.similarity / 10;
-  return { ...base, decision: "forward", reason, scoped: scope.scoped, evidence: { incompatibility, sameClaim }, priority };
+  return { ...base, decision: "forward", reason: metricsOneSided ? "a statistic word on one side only — may be the same measure" : reason, scoped: scope.scoped, evidence: { incompatibility, sameClaim }, priority };
 }
 
 /** The judgement `combine` reads for a forwarded pair: possible, with the pipeline's own scope and exclusivity. */

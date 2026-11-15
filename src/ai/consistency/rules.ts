@@ -75,9 +75,15 @@ const MONTHS = new Set(["january", "february", "march", "april", "may", "june", 
 const PERIOD = new Set(["week", "month", "quarter", "year"]);
 /** A metric's own qualifier: two sentences about different statistics are about different things. */
 const METRIC = new Set(["average", "mean", "median", "peak", "worst-case", "best-case", "daily", "weekly", "monthly", "yearly", "annual", "hourly", "typical"]);
-const BOUND_MAX = ["up to", "at most", "no more than", "a maximum of", "maximum of", "not more than", "under", "below", "within", "limited to", "capped at", "a limit of", "limit of"];
+const BOUND_MAX = ["up to", "at most", "no more than", "a maximum of", "maximum of", "not more than", "under", "below", "within", "limited to", "capped at", "a limit of", "limit of", "a cap of", "cap of", "a ceiling of", "ceiling of"];
 const BOUND_MIN = ["at least", "no less than", "a minimum of", "minimum of", "not less than", "more than", "over", "above"];
-const LIMIT_WORDS = new Set(["limit", "limited", "capped"]);
+const LIMIT_WORDS = new Set(["limit", "limited", "capped", "cap", "ceiling"]);
+/**
+ * A maximum stated with a limiting verb and its object between (§12.29, unseen4 x60): "caps its squad at 30", "limits
+ * each order to 5 items", "restricts guests to 2 drinks". The verb only — after "the / a / its …" the word is a noun
+ * ("raised the limit to 50" states a new value of the limit, not a maximum of something else).
+ */
+const LIMIT_VERB_MAX = /(?:^|[^a-z'’])(?<!(?:the|a|an|its|their|this|that|our|your|his|her)\s)(?:caps?|capped|capping|limits?|limited|limiting|restricts?|restricted|restricting)(?:\s+(?!at\b|to\b)[a-z0-9'’-]+){1,4}\s+(?:at|to)\s*$/;
 const APPROX = ["about", "around", "roughly", "approximately", "nearly", "almost", "~"];
 
 /** Predicates whose "until <date>" is the claim's value ("valid until 30 June"), not a time scope ("Until March, …"). */
@@ -280,7 +286,7 @@ function valuesOf(sentence: string): Bounded[] {
     .map((q) => {
       const before = lower.slice(Math.max(0, q.start - 22), q.start);
       const ends = (cues: readonly string[]) => cues.some((c) => before.trimEnd().endsWith(c));
-      const bound: Bounded["bound"] = ends(BOUND_MAX) ? "max" : ends(BOUND_MIN) ? "min" : ends(APPROX) ? "approx" : null;
+      const bound: Bounded["bound"] = ends(BOUND_MAX) || LIMIT_VERB_MAX.test(lower.slice(Math.max(0, q.start - 60), q.start)) ? "max" : ends(BOUND_MIN) ? "min" : ends(APPROX) ? "approx" : null;
       return DELTA_BEFORE.test(before.trimEnd()) ? { q, bound, delta: true as const } : { q, bound };
     });
 }

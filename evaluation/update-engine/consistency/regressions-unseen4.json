@@ -1,0 +1,56 @@
+{
+  "split": "regressions-unseen4",
+  "note": "DEVELOPMENT EVIDENCE, not independent evidence. x04, x24, x60 and x71 are copied word for word from the fourth unseen set (unseen4/pairs.json, recorded 2026-11-15, plan §12.26) with the reviewer's blind label; the §12.29 screen fixes were written against them, so unseen4 is development evidence from this point on and no score on it may be reported as unseen. `screen4` is what the frozen screen did at the recording; `expectedDecision` is the intended behaviour after §12.29. The `v4-*` variants and `c4-*` counter-cases were authored for this file (other subjects, numbers and both directions) and are not from any evaluation set. The historical unseen4 result is unchanged. Measuring generalisation needs a fresh, independently authored sealed set.",
+  "pairs": [
+    {
+      "id": "x04",
+      "source": "unseen4",
+      "a": "The Quillon Press warehouse ships about 1,200 parcels per day on average.",
+      "b": "The Quillon Press warehouse typically sends out around 400 parcels a day.",
+      "truth": "contradiction",
+      "screen4": "excluded (different_metrics)",
+      "expectedDecision": "forward",
+      "rationale": "\"On average\" and \"typically\" name the same central value in other words; the old rule read a statistic word on one side only as two different statistics."
+    },
+    {
+      "id": "x24",
+      "source": "unseen4",
+      "a": "The Quillon Press warehouse ships about 1,200 parcels per day on average.",
+      "b": "No more than 800 parcels are ever dispatched from the Quillon Press warehouse in a single day.",
+      "truth": "contradiction",
+      "screen4": "excluded (different_metrics)",
+      "expectedDecision": "forward",
+      "rationale": "A cap and an average of the same quantity are comparable (an average cannot exceed the maximum). A bound is not a statistic."
+    },
+    {
+      "id": "x60",
+      "source": "unseen4",
+      "a": "Fernhill Rowing Club allows a maximum of 40 rowers on its competitive squad.",
+      "b": "Fernhill Rowing Club caps its competitive squad at 30 members.",
+      "truth": "contradiction",
+      "screen4": "excluded (values_agree)",
+      "expectedDecision": "forward",
+      "rationale": "\"Caps … at 30\" is a maximum. Two different maxima for the same thing are a limit near-miss, not an observation inside a limit."
+    },
+    {
+      "id": "x71",
+      "source": "unseen4",
+      "a": "The team at Fenwick Hospice meets every Wednesday.",
+      "b": "The team moved its weekly meeting to Thursdays.",
+      "truth": "contradiction",
+      "screen4": "excluded (different_metrics)",
+      "expectedDecision": "forward",
+      "rationale": "\"Weekly\" is a schedule word on one side only, not a statistic."
+    },
+    { "id": "v4-central-paraphrase", "source": "authored", "a": "The Linden Street clinic sees about 90 patients a day on average.", "b": "The Linden Street clinic usually sees around 30 patients a day.", "truth": "contradiction", "expectedDecision": "forward" },
+    { "id": "v4-central-both-sides", "source": "authored", "a": "Typically the Harbour Line ferry carries 200 cars per crossing.", "b": "On average the Harbour Line ferry carries 600 cars per crossing.", "truth": "contradiction", "expectedDecision": "forward" },
+    { "id": "v4-cap-vs-average", "source": "authored", "a": "At most 50 orders are packed per hour at the Brook Lane depot.", "b": "The Brook Lane depot packs 120 orders per hour on average.", "truth": "contradiction", "expectedDecision": "forward" },
+    { "id": "v4-limits-to", "source": "authored", "a": "The Orrin Museum limits each tour group to 12 visitors.", "b": "Tour groups at the Orrin Museum may have up to 20 visitors.", "truth": "contradiction", "expectedDecision": "forward" },
+    { "id": "v4-restricts-to", "source": "authored", "a": "The Saltmarsh Hostel restricts guests to 3 nights per stay.", "b": "The Saltmarsh Hostel allows a maximum of 7 nights per stay.", "truth": "contradiction", "expectedDecision": "forward" },
+    { "id": "v4-schedule-word", "source": "authored", "a": "The Ashby book club meets on the first Friday of each month.", "b": "The Ashby book club moved its monthly meeting to the last Tuesday.", "truth": "contradiction", "expectedDecision": "forward" },
+    { "id": "c4-two-sided-statistics", "source": "authored", "a": "Average checkout time at the Kettle Café is 40 seconds.", "b": "Peak checkout time at the Kettle Café is 3 minutes.", "truth": "compatible", "expectedDecision": "excluded", "expectedExclusion": "different_metrics" },
+    { "id": "c4-two-sided-periods", "source": "authored", "a": "The Tallow app has 5,000 daily active users.", "b": "The Tallow app has 20,000 monthly active users.", "truth": "compatible", "expectedDecision": "excluded", "expectedExclusion": "different_metrics" },
+    { "id": "c4-two-sided-percentiles", "source": "authored", "a": "Median build time on the Quarry CI is 4 minutes.", "b": "The p95 build time on the Quarry CI is 11 minutes.", "truth": "compatible", "expectedDecision": "excluded", "expectedExclusion": "different_metrics" },
+    { "id": "c4-observation-inside-cap", "source": "authored", "a": "The Fernhill rowing club caps its squad at 30 members.", "b": "The Fernhill rowing club's squad has 24 members.", "truth": "compatible", "expectedDecision": "excluded", "expectedExclusion": "values_agree" }
+  ]
+}
