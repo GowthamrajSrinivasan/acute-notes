@@ -1,0 +1,302 @@
+/*
+ * Phase 3 knowledge-interaction cards (src/ai/openui/interactions.tsx). Uses the app's --acute-* tokens (globals.css),
+ * which flip under :root[data-theme="dark"]; fallbacks are the light values so the cards also work outside the app.
+ */
+.openui-decision,
+.openui-timeline,
+.openui-flow,
+.openui-quiz,
+.openui-flashcard {
+  border: 1px solid var(--acute-border, #e4e4e8);
+  border-radius: 10px;
+  padding: 16px 18px;
+  background: var(--acute-surface, #ffffff);
+  color: var(--acute-text, #1b1b1f);
+}
+.openui-decision__question,
+.openui-timeline__title,
+.openui-flow__title,
+.openui-quiz__question {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+/* Interactive surfaces share one button reset. */
+.openui-decision__option,
+.openui-timeline__head,
+.openui-flow__node,
+.openui-quiz__choice,
+.openui-quiz__retry,
+.openui-flashcard__face,
+.openui-note-link {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.openui-decision__option:focus-visible,
+.openui-timeline__head:focus-visible,
+.openui-flow__node:focus-visible,
+.openui-quiz__choice:focus-visible,
+.openui-quiz__retry:focus-visible,
+.openui-flashcard__face:focus-visible,
+.openui-note-link:focus-visible {
+  outline: 2px solid var(--acute-accent, #6965db);
+  outline-offset: 2px;
+}
+
+/* DecisionCard */
+.openui-decision__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+.openui-decision__option {
+  position: relative;
+  border: 1px solid var(--acute-border, #e4e4e8);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--acute-surface-muted, #f5f5f7);
+}
+.openui-decision__option[aria-pressed="true"] {
+  border-color: var(--acute-accent, #6965db);
+  background: var(--acute-accent-soft, #e0dfff);
+}
+.openui-decision__option[data-chosen] {
+  border-width: 2px;
+  border-color: var(--acute-success, #2b8a3e);
+}
+.openui-decision__badge {
+  display: inline-block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--acute-success, #2b8a3e);
+}
+.openui-decision__option-name {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+}
+.openui-decision__pros,
+.openui-decision__cons {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+}
+.openui-decision__pros li::marker {
+  content: "+ ";
+  color: var(--acute-success, #2b8a3e);
+}
+.openui-decision__cons li::marker {
+  content: "− ";
+  color: var(--acute-danger, #c92a2a);
+}
+.openui-decision__rationale {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  color: var(--acute-text-muted, #6b6b76);
+}
+
+/* Timeline */
+.openui-timeline__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 14px;
+  border-left: 2px solid var(--acute-border, #e4e4e8);
+}
+.openui-timeline__event {
+  position: relative;
+  padding: 2px 0 8px 10px;
+}
+.openui-timeline__event::before {
+  content: "";
+  position: absolute;
+  left: -21px;
+  top: 9px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--acute-surface, #ffffff);
+  border: 2px solid var(--acute-accent, #6965db);
+}
+.openui-timeline__event[data-open]::before {
+  background: var(--acute-accent, #6965db);
+}
+.openui-timeline__head {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  border: 0;
+  background: none;
+  padding: 2px 0;
+}
+.openui-timeline__head:disabled {
+  cursor: default;
+}
+.openui-timeline__when {
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 12px;
+  color: var(--acute-text-muted, #6b6b76);
+  min-width: 48px;
+}
+.openui-timeline__label {
+  font-size: 14px;
+}
+.openui-timeline__detail p {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  color: var(--acute-text-muted, #6b6b76);
+}
+
+/* FlowDiagram */
+.openui-flow__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.openui-flow__step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.openui-flow__node {
+  border: 1px solid var(--acute-border, #e4e4e8);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: var(--acute-surface-muted, #f5f5f7);
+  font-size: 13.5px;
+}
+.openui-flow__node:disabled {
+  cursor: default;
+}
+.openui-flow__node[aria-pressed="true"] {
+  border-color: var(--acute-accent, #6965db);
+  background: var(--acute-accent-soft, #e0dfff);
+}
+.openui-flow__index {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--acute-accent, #6965db);
+  color: var(--acute-cta-text, #ffffff);
+}
+.openui-flow__arrow {
+  color: var(--acute-text-muted, #6b6b76);
+}
+.openui-flow__detail {
+  margin: 12px 0 0;
+  font-size: 13.5px;
+}
+
+/* QuizCard */
+.openui-quiz__choices {
+  display: grid;
+  gap: 6px;
+}
+.openui-quiz__choice {
+  border: 1px solid var(--acute-border, #e4e4e8);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: var(--acute-surface-muted, #f5f5f7);
+  font-size: 14px;
+}
+.openui-quiz__choice:disabled {
+  cursor: default;
+}
+.openui-quiz__choice[data-result="answer"] {
+  border-color: var(--acute-success, #2b8a3e);
+  box-shadow: inset 3px 0 0 var(--acute-success, #2b8a3e);
+}
+.openui-quiz__choice[data-result="wrong"] {
+  border-color: var(--acute-danger, #c92a2a);
+  box-shadow: inset 3px 0 0 var(--acute-danger, #c92a2a);
+}
+.openui-quiz__feedback {
+  margin-top: 10px;
+  font-size: 13.5px;
+}
+.openui-quiz__verdict {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+.openui-quiz[data-state="correct"] .openui-quiz__verdict {
+  color: var(--acute-success, #2b8a3e);
+}
+.openui-quiz[data-state="incorrect"] .openui-quiz__verdict {
+  color: var(--acute-danger, #c92a2a);
+}
+.openui-quiz__explanation {
+  margin: 0 0 8px;
+  color: var(--acute-text-muted, #6b6b76);
+}
+.openui-quiz__retry {
+  border: 1px solid var(--acute-border, #e4e4e8);
+  border-radius: 8px;
+  padding: 5px 10px;
+  background: var(--acute-surface, #ffffff);
+  font-size: 13px;
+}
+
+/* Flashcard */
+.openui-flashcard__face {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-height: 96px;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+.openui-flashcard__side {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--acute-text-muted, #6b6b76);
+}
+.openui-flashcard__text {
+  font-size: 15px;
+  line-height: 1.5;
+}
+.openui-flashcard[data-flipped] {
+  background: var(--acute-accent-soft, #e0dfff);
+}
+
+/* NoteLink */
+.openui-note-link {
+  display: inline-flex;
+  gap: 4px;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--acute-accent, #6965db);
+  font-size: 13.5px;
+}
+button.openui-note-link:hover {
+  text-decoration: underline;
+}
+span.openui-note-link {
+  cursor: default;
+  color: var(--acute-text-muted, #6b6b76);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .openui-decision__option,
+  .openui-flow__node,
+  .openui-quiz__choice,
+  .openui-flashcard {
+    transition: background-color 120ms ease, border-color 120ms ease;
+  }
+}

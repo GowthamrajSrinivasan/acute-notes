@@ -6,7 +6,7 @@ export default defineConfig({
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
   test: {
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
     // Contract tests make real network calls against live provider
     // credentials (F36) — never part of the default run. See
     // vitest.contract.config.ts / `npm run test:contract`.
