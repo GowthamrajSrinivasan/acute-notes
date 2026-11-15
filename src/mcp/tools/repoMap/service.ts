@@ -21,6 +21,7 @@
  * session" (`sessionAutoAccept`) ends with it.
  */
 import { sessionAutoAccept } from "@/ai/changes/autoAccept";
+import { NEVER_AUTO_ACCEPTED } from "@/ai/changes/agentState";
 import { InvalidChangeSetError, parseChangeSet, type ChangeSet, type ChangeTarget } from "@/ai/changes/changeSet";
 import { checkLayout, LAYOUT_LIMITS, type LayoutReport } from "@/ai/changes/layoutCheck";
 import { partSlices, type PartSlice } from "@/ai/changes/parts";
@@ -521,8 +522,10 @@ export class RepoMapService {
     const all = merged?.mergeKey === mergeKey ? merged.changes : parsed.changes;
     const layout = checkProposal(all, elements, { focusOn: parsed.changes, name: layoutNames(rec, all, elements, index) });
 
-    // Auto-accept (the user's choice, for this session only): never a section with conflicts or removals.
-    const risky = result.conflicts.length > 0 || result.changes.some((c) => c.kind === "remove");
+    // Auto-accept (the user's choice, for this session only): never a section with conflicts, removals or replacements.
+    // User decision 2026-11-16: a section that replaces an existing card's content (`update_block`) or a shape's label
+    // (`update_shape`) — or removes/restores anything — is held for explicit review (`NEVER_AUTO_ACCEPTED`).
+    const risky = result.conflicts.length > 0 || result.changes.some((c) => NEVER_AUTO_ACCEPTED.has(c.kind));
     const session = sessions.get(rec.id);
     let status: StageResult["status"] = "staged";
     if (opts.auto && !risky && session && sessionAutoAccept.isOn(mergeKey, session.id) && live.acceptParts) {

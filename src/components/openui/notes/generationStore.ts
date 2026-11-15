@@ -9,6 +9,7 @@ import { useSyncExternalStore } from "react";
 import type { SourceUnit } from "@/ai/fidelity/contracts";
 import type { NotesCheck } from "@/ai/openui/notesCheck";
 import type { GeneratedCard } from "@/ai/openui/notesTask";
+import { newId } from "@/domain/ids";
 
 export interface GenSource {
   sourceId: string;
@@ -28,9 +29,11 @@ export interface GenerationState {
   /** Generated card key → the canvas object it was pinned as. */
   pinned: ReadonlyMap<string, string>;
   run: number;
+  /** The current run's id (`gen_…`), fresh per run: a pinned card's key carries it, so two runs' "g1" never share a key. */
+  generationId: string;
 }
 
-const IDLE: GenerationState = { gen: { status: "idle" }, pinned: new Map(), run: 0 };
+const IDLE: GenerationState = { gen: { status: "idle" }, pinned: new Map(), run: 0, generationId: "" };
 const byCanvas = new Map<string, GenerationState>();
 const aborts = new Map<string, AbortController>();
 const listeners = new Set<() => void>();
@@ -48,7 +51,7 @@ export const generations = {
     const controller = new AbortController();
     aborts.set(canvasId, controller);
     const run = generations.get(canvasId).run + 1;
-    set(canvasId, { run, pinned: new Map() });
+    set(canvasId, { run, pinned: new Map(), generationId: newId("gen") });
     return { signal: controller.signal, current: () => !controller.signal.aborted && generations.get(canvasId).run === run };
   },
   setGen: (canvasId: string, gen: Generation) => set(canvasId, { gen }),

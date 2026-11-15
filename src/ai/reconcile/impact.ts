@@ -31,7 +31,7 @@ import { canonicalContent } from "@/ai/content/fingerprint";
 import { significant } from "@/ai/fidelity/information";
 import { sentenceSpans, wordOverlap } from "@/ai/fidelity/sourceUnits";
 import type { SceneElement } from "@/domain/canvas/adapter";
-import { isLocked } from "@/domain/canvas/lock";
+import { isLocked, optedOutBesidesLock } from "@/domain/canvas/lock";
 import { reconciliationOf } from "@/domain/provenance";
 import type { DocumentRecord, RichContent } from "@/domain/types";
 import { alignSentences, wordHunk } from "./claimPlanner";
@@ -115,7 +115,7 @@ export function discoverImpact(input: ImpactInput): ImpactResult {
     const link = reconciliationOf(el, getDocument);
     if (link?.contentSourceId === input.sourceId) continue; // the source's own cards reconcile from its own text
     const lockedHere = isLocked(el) || (!!el.frameId && lockedFrames.has(el.frameId));
-    if (link?.excludeFromReconciliation && !isLocked(el)) continue; // opted out of AI updates (a passage card, "Don't update")
+    if (link && optedOutBesidesLock(el, link.excludeFromReconciliation)) continue; // opted out of AI updates (a passage card, "Don't update")
     const name = nameOf(content);
     const found = matchesIn(content, claims);
     if (lockedHere && preserveLocked) {

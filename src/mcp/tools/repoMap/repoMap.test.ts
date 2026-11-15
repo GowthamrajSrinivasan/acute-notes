@@ -387,6 +387,40 @@ describe("F43 repo map: acceptance criteria", () => {
     expect((await upsert(w, mapId, section("d", 1))).status).toBe("staged");
   });
 
+  // User decision 2026-11-16: whole-block replacements wait for explicit review; create-only sections still auto-accept.
+  it("auto-accept holds a section that replaces a card's content (update_block); a create-only section is still applied", async () => {
+    const w = await world();
+    const { mapId } = await begin(w);
+    await upsert(w, mapId, section("a", 3));
+    w.canvas.accept();
+    await settle();
+    await upsert(w, mapId, section("b", 1));
+    const set = w.canvas.set!;
+    sessionAutoAccept.enable(set.mergeKey!, set.session!, "cv_map");
+    w.canvas.accept();
+    await settle();
+
+    // Create-only: a new section's cards, frame and links are written on arrival.
+    const created = await upsert(w, mapId, section("c", 2));
+    expect(created.status).toBe("applied");
+    expect(w.canvas.cardOf("file:c/f1.ts")).toBeDefined();
+    const steps = w.canvas.steps.length;
+
+    // One card's text changed (a clean update, no user edit): an update_block — held, the card unchanged until Accept.
+    const before = JSON.stringify(w.canvas.docs.get((w.canvas.cardOf("file:a/f1.ts")!.customData!.acute as { documentId: string }).documentId)!.snapshot);
+    const updated = await upsert(w, mapId, section("a", 3, { text: (i) => (i === 1 ? "Now retries twice." : `What a/f${i}.ts does.`) }));
+    expect(updated.status).toBe("staged");
+    expect(updated.outcomes.find((o: { key: string }) => o.key === "file:a/f1.ts")).toMatchObject({ outcome: "updated" });
+    expect(partSlices(w.canvas.set!).find((s) => s.part.key === "mod:a")!.changes.map((c) => c.kind)).toEqual(["update_block"]);
+    expect(w.canvas.steps).toHaveLength(steps);
+    expect(JSON.stringify(w.canvas.docs.get((w.canvas.cardOf("file:a/f1.ts")!.customData!.acute as { documentId: string }).documentId)!.snapshot)).toBe(before);
+    expect(sessionAutoAccept.isOn(set.mergeKey!, set.session!)).toBe(true); // still on: only this section waits
+
+    // Another create-only section while that one waits: still applied on arrival.
+    expect((await upsert(w, mapId, section("d", 1))).status).toBe("applied");
+    expect(partSlices(w.canvas.set!).map((s) => s.part.key)).toEqual(["mod:a"]);
+  });
+
   it("auto-accept also ends after 30 idle minutes", async () => {
     let now = 1_000_000;
     const real = Date.now;

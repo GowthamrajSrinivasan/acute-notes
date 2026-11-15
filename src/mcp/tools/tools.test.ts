@@ -3,7 +3,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { afterEach, describe, expect, it } from "vitest";
 import * as Y from "yjs";
-import { parseChangeSet, type ChangeSet } from "@/ai/changes/changeSet";
+import { parseChangeSet, type ChangeSet, type ProposedChange } from "@/ai/changes/changeSet";
 import { fingerprintContent } from "@/ai/content/fingerprint";
 import { canvasDocId } from "@/sync/docIds";
 import type { SceneElement } from "@/domain/canvas/adapter";
@@ -489,6 +489,39 @@ describe("MCP tool surface (F21): write tools propose, never write", () => {
     const change = fake.proposed[0]!.changes[0]!;
     // The same fingerprint Accept reads (`fingerprintOf` of the block's content now), so an untouched block matches.
     expect(change).toMatchObject({ kind: "update_block", target: "todo_1", expectedFingerprint: fingerprintContent(docs.get("d_todo")!.snapshot) });
+    expect(parseChangeSet(fake.proposed[0]!)).toEqual(fake.proposed[0]);
+  });
+
+  // User decision 2 (2026-11-15): "Preserve unrelated content and formatting".
+  it("update_block that changes one paragraph keeps the other blocks' ids and formatting (textColor) and the baseline", async () => {
+    const styled = record("d_todo", "block", [
+      { id: "b1", type: "heading", props: { level: 2, textColor: "red" }, content: "Retries" },
+      { id: "b2", type: "paragraph", props: { textColor: "blue" }, content: "Retries happen five times." },
+      { id: "b3", type: "paragraph", props: { textColor: "green", textAlignment: "center" }, content: "Calls are logged." },
+    ]);
+    const docs = new Map([...DOCS.map((d) => [d.id, d] as const), ["d_todo", styled] as const]);
+    // Like BlockNote's parser: fresh ids and default style props on every block, so nothing of the live blocks survives on its own.
+    let n = 0;
+    const blockNoteLike = (md: string): RichContent =>
+      md.split(/\n{2,}/).map((part) => {
+        const props = { textColor: "default", backgroundColor: "default", textAlignment: "left" };
+        const heading = /^(#+) (.*)$/.exec(part);
+        return heading
+          ? { id: `new${n++}`, type: "heading" as const, props: { ...props, level: heading[1]!.length }, content: heading[2]! }
+          : { id: `new${n++}`, type: "paragraph" as const, props, content: part };
+      });
+    const fake = fakeLive({ getDocument: (id) => docs.get(id) ?? null });
+    const client = await connect(await seed(), { getLiveCanvas: () => fake.live, parseMarkdown: blockNoteLike });
+    await ok(client, "update_block", { objectId: "todo_1", markdown: "## Retries\n\nRetries happen three times.\n\nCalls are logged." });
+    const change = fake.proposed[0]!.changes[0] as Extract<ProposedChange, { kind: "update_block" }>;
+    expect(change.content).toEqual([
+      styled.snapshot[0],
+      { id: "b2", type: "paragraph", props: { textColor: "blue", backgroundColor: "default", textAlignment: "left" }, content: "Retries happen three times." },
+      styled.snapshot[2],
+    ]);
+    // The baseline is the live content's, and the content still says exactly what the agent's Markdown says.
+    expect(change.expectedFingerprint).toBe(fingerprintContent(styled.snapshot));
+    expect(fingerprintContent(change.content)).toBe(fingerprintContent(blockNoteLike("## Retries\n\nRetries happen three times.\n\nCalls are logged.")));
     expect(parseChangeSet(fake.proposed[0]!)).toEqual(fake.proposed[0]);
   });
 

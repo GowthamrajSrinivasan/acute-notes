@@ -149,6 +149,10 @@ describe("2c — the Node Router", () => {
     const r = route("The cache stores data for an hour.");
     expect(r.decision).toBe("NEEDS_CLARIFICATION");
     expect(Math.abs(r.candidates[0]!.routing - r.candidates[1]!.routing)).toBeLessThan(CLARIFY_MARGIN);
+    // D1 (2026-11-15): the decision doesn't depend on how many candidates are shown.
+    const one = route("The cache stores data for an hour.", { limit: 1 });
+    expect(one.decision).toBe("NEEDS_CLARIFICATION");
+    expect(one.candidates).toHaveLength(1);
   });
 
   it("nothing close: NEW", () => {

@@ -5,15 +5,20 @@
  * answer — placed where it belongs in the notes on this canvas. The router (no AI) ranks the cards, says what it would
  * do at each (update the card that holds the claim, or add a card beside it) and why, with two separate confidences:
  * where (is this the right place?) and edit (does the change take the new information in correctly?). The user picks
- * one or more destinations — or a new card — and the choice becomes an ordinary change set, reviewed before anything
- * is written. When two places fit about equally, AI can be asked to decide (one explicit call; it may ask back).
+ * one or more destinations — or a new card, or "Keep existing — no change" — and the choice becomes an ordinary change
+ * set, reviewed before anything is written. When two places fit about equally, AI can be asked to decide (one explicit
+ * call; it may ask back).
+ *
+ * Only a confident route to a card whose edit needs no decision is preselected (user decisions 2026-11-15): "no card is
+ * close" (NEW), "more than one place fits" and an update that contradicts or rewrites the card start with nothing picked,
+ * and Propose waits for the user's choice (`defaultPicks`, `ai/router/placement.ts`).
  */
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { getPendingChanges } from "@/ai/changes/pendingChanges";
 import { AIRuntime } from "@/ai/runtime";
-import { placeContent, type PlacementChoice } from "@/ai/router/placement";
+import { choicesFor, defaultPicks, isEscalated, KEEP_EXISTING, modelPicks, NEW_CARD, placeContent, togglePick } from "@/ai/router/placement";
 import { routeContent, type RouteCandidate } from "@/ai/router/router";
 import { refineRoute, type RefinedRoute } from "@/ai/router/task";
 import type { SceneElement } from "@/domain/canvas/adapter";
@@ -24,7 +29,7 @@ import { useAIMode } from "./askAI";
 import { placeDialog, recordPlacement, routerFor, usePlaceDialog } from "./placeContent";
 
 const pct = (n: number) => `${Math.round(n * 100)}%`;
-const NEW = "__new__";
+const NEW = NEW_CARD;
 
 function actionLabel(c: RouteCandidate, asNew: boolean): string {
   if (asNew || c.action === "insert_near") return "Add a new card beside it";
@@ -54,8 +59,8 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
     const { tier, descriptors, signals } = await routerFor(home.workspaceId, home.canvasId, scene(), getDocument);
     const r = routeContent({ text, canvasId: home.canvasId, tier, scene: scene(), descriptors, signals });
     setResult(r);
-    // The router's own pick is preselected only when it is sure; otherwise the user chooses.
-    setPicked(new Set(r.decision === "route" && r.candidates[0] ? [r.candidates[0].id] : r.decision === "NEW" ? [NEW] : []));
+    // The router's own pick is preselected only when it is sure and its edit needs no decision; otherwise the user chooses.
+    setPicked(defaultPicks(r));
     setAsNew(new Set());
   };
 
@@ -65,8 +70,8 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
     try {
       const r = await refineRoute(result, text, AIRuntime, { force: true });
       setResult(r);
-      if (r.model?.decision === "route") setPicked(new Set(r.model.targets));
-      else if (r.model?.decision === "new") setPicked(new Set([NEW]));
+      // The model's cards are picked, never an escalated update, and never "a new card" on its say alone.
+      setPicked((p) => modelPicks(r, p));
     } finally {
       setAsking(false);
     }
@@ -74,10 +79,13 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
 
   const propose = () => {
     if (!result) return;
-    const byId = new Map(result.candidates.map((c) => [c.id, c] as const));
-    const choices: PlacementChoice[] = [...picked].map((id) =>
-      id === NEW ? { target: null, action: "new" } : { target: id, action: asNew.has(id) ? "insert_near" : byId.get(id)!.action, candidate: byId.get(id)! },
-    );
+    if (picked.has(KEEP_EXISTING)) {
+      // Nothing proposed and nothing recorded: keeping the notes as they are says nothing about where content belongs.
+      placeDialog.close();
+      api.setToast({ message: "No change: the notes are kept as they are.", closable: true, duration: 5000 });
+      return;
+    }
+    const choices = choicesFor(picked, asNew, result.candidates);
     const s = api.getAppState();
     const at = { x: -s.scrollX + s.width / s.zoom.value / 2 - 160, y: -s.scrollY + s.height / s.zoom.value / 2 - 60 };
     const { set, notes } = placeContent({ text, choices, scene: scene(), getDocument, at, operationId: newId("op") });
@@ -87,19 +95,17 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
     if (notes.length || !set) api.setToast({ message: notes.length ? notes.join(" ") : "Nothing to add: the notes already say this.", closable: true, duration: 8000 });
   };
 
-  const toggle = (id: string) =>
-    setPicked((p) => {
-      const next = new Set(p);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+  const toggle = (id: string) => setPicked((p) => togglePick(p, id));
 
   const banner = useMemo(() => {
     if (!result) return null;
-    if (result.decision === "NEW") return "No card is close to this: it can go in as a new card.";
+    if (result.decision === "NEW") return "No confident match: no card is close to this. Choose where it goes — a new card on its own, one of these, or keep the notes as they are.";
     if (result.decision === "NEEDS_CLARIFICATION") return `It could go in more than one place — choose. ${result.model?.question ?? ""}`.trim();
-    return `Best fit: ${result.reason.replace(/^best fit: /, "")}`;
+    const best = `Best fit: ${result.reason.replace(/^best fit: /, "")}`;
+    // The route's card (or a card the model picked) holds a claim the content contradicts or rewrites: left unpicked.
+    const chosen = result.model?.decision === "route" ? result.candidates.filter((c) => result.model!.targets.includes(c.id)) : result.candidates.slice(0, 1);
+    const escalated = chosen.find(isEscalated);
+    return escalated ? `${best} — but the change ${escalated.claim!.intent === "CONTRADICTS" ? "contradicts" : "rewrites"} what it says. Nothing is picked: choose what to do, or keep the notes as they are.` : best;
   }, [result]);
 
   return createPortal(
@@ -124,7 +130,7 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
             </p>
             <ul className="acute-place-dialog__list" aria-label="Places it could go">
               {result.candidates.map((c) => (
-                <li key={c.id} className="acute-place-dialog__item" data-action={c.action}>
+                <li key={c.id} className="acute-place-dialog__item" data-action={c.action} data-escalated={isEscalated(c) || undefined}>
                   <label className="acute-place-dialog__choice">
                     <input type="checkbox" checked={picked.has(c.id)} onChange={() => toggle(c.id)} disabled={c.action === "none"} />
                     <span className="acute-place-dialog__title">{c.descriptor.title}</span>
@@ -165,6 +171,12 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
                 <label className="acute-place-dialog__choice">
                   <input type="checkbox" checked={picked.has(NEW)} onChange={() => toggle(NEW)} />
                   <span className="acute-place-dialog__title">A new card on its own</span>
+                </label>
+              </li>
+              <li className="acute-place-dialog__item">
+                <label className="acute-place-dialog__choice">
+                  <input type="checkbox" checked={picked.has(KEEP_EXISTING)} onChange={() => toggle(KEEP_EXISTING)} />
+                  <span className="acute-place-dialog__title">Keep existing — no change</span>
                 </label>
               </li>
             </ul>

@@ -5,11 +5,15 @@
  * its content source and version, and the node it shows. A piece that is
  * split again stays a piece of the original node, with keys under its own.
  * Null for a block with no link (a manual or MCP block): its pieces are then
- * plain new objects.
+ * plain new objects. Null too for a pinned note or an added passage
+ * (`tracking.ts`): its key is never in the source's plan, so linked pieces
+ * would be proposed for removal by the next update (promotion-contract-proposal
+ * N4) — and "Visualize better" refuses such a card anyway (`isUserOwnedCard`, Q12).
  */
 import type { SplitRecord } from "@/ai/changes/changeSet";
 import { reconciliationOf, type ProvenanceElement } from "@/domain/provenance";
 import type { DocumentRecord } from "@/domain/types";
+import { isUserOwnedKey } from "./tracking";
 
 /** Joins a split node's key and a piece's own key into the piece's key. */
 export const SPLIT_KEY_JOINER = " ⊃ ";
@@ -23,7 +27,7 @@ export interface SplitLink {
 
 export function splitLinkOf(el: Pick<ProvenanceElement, "customData">, getDocument: (id: string) => DocumentRecord | null | undefined): SplitLink | null {
   const link = reconciliationOf(el, getDocument);
-  if (!link) return null;
+  if (!link || isUserOwnedKey(link.stableNodeKey)) return null;
   const of = link.splitOf ?? { stableNodeKey: link.stableNodeKey, fingerprint: link.contentFingerprint };
   // Keys are bounded (300 characters): a piece split again and again starts afresh under the original node.
   const base = link.stableNodeKey.length <= MAX_PREFIX_BASE ? link.stableNodeKey : `${of.stableNodeKey.slice(0, MAX_PREFIX_BASE)}${SPLIT_KEY_JOINER}s${Math.random().toString(36).slice(2, 8)}`;

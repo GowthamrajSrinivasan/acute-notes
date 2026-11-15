@@ -38,6 +38,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { describeChanges, InvalidChangeSetError, parseChangeSet, type ChangeSet, type ProposedChange } from "@/ai/changes/changeSet";
 import { autoAcceptable, summarizeArgs } from "@/ai/changes/agentState";
+import { keepFormatting } from "@/ai/changes/keepFormatting";
 import { AUTO_ACCEPT_TOOLS, sessionAutoAccept } from "@/ai/changes/autoAccept";
 import { describeLayout } from "@/ai/changes/layoutCheck";
 import { PendingReviewError } from "@/ai/changes/pendingChanges";
@@ -402,10 +403,12 @@ export function registerWriteTools(server: McpServer, deps: WriteToolDeps): void
         const current = live.getDocument ? objectContent(el, labelsByContainer(live.elements()), live.getDocument) : null;
         const baseline = current && current.kind !== "shape" ? fingerprintOf(current) : undefined;
         // No stableNodeKey: the writer keeps the target document's own provenance and reconciliation link.
+        // User decision 2: the blocks the Markdown leaves as they are keep their ids and formatting (`keepFormatting`;
+        // the same canonical Markdown, so the fingerprint semantics are unchanged).
         const change: ProposedChange = {
           kind: "update_block",
           target: el.id,
-          content: parse(args.markdown),
+          content: keepFormatting(current && current.kind !== "shape" ? current.content : null, parse(args.markdown)),
           ...(args.title ? { title: args.title } : {}),
           ...(baseline ? { expectedFingerprint: baseline } : {}),
         };

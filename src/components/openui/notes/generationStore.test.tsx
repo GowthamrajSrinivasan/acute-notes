@@ -48,9 +48,14 @@ describe("generations (store)", () => {
   it("a new run aborts the old one: its signal fires, current() turns false, and the pins reset", () => {
     const id = canvas();
     const first = generations.start(id);
+    const firstGeneration = generations.get(id).generationId;
     generations.pin(id, "g1", "el_1");
     expect(generations.get(id).pinned.get("g1")).toBe("el_1");
     const second = generations.start(id);
+    // Each run has its own id: a pinned card's key carries it, so two runs' "g1" never share a key (promotion P0, R3).
+    expect(firstGeneration).toMatch(/^gen_[0-9A-Za-z]{20}$/);
+    expect(generations.get(id).generationId).toMatch(/^gen_/);
+    expect(generations.get(id).generationId).not.toBe(firstGeneration);
     expect(first.signal.aborted).toBe(true);
     expect(first.current()).toBe(false);
     expect(second.current()).toBe(true);

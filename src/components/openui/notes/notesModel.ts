@@ -139,7 +139,17 @@ export function buildNotes(elements: readonly SceneElement[], getDocument: GetDo
   const sections = new Map<string, NoteSection>();
   for (const f of frames) sections.set(f.id, { id: f.id, title: (f as SceneElement & { name?: string | null }).name?.trim() || "Untitled section", notes: [] });
 
-  for (const el of readingOrder(live)) {
+  // Reading order among the cards of one section only: a frame, a drawing or a card of another frame starting a "row"
+  // would otherwise pull every card whose top is above its middle into that row, read by x alone (rows interleaved).
+  const bySection = new Map<string, SceneElement[]>();
+  for (const el of live) {
+    if (!documentIdOf(el)) continue;
+    const sid = el.frameId && frameIds.has(el.frameId) ? el.frameId : "";
+    (bySection.get(sid) ?? bySection.set(sid, []).get(sid)!).push(el);
+  }
+  const ordered = [...frames.map((f) => f.id), ""].flatMap((sid) => readingOrder(bySection.get(sid) ?? []));
+
+  for (const el of ordered) {
     const docId = documentIdOf(el);
     if (!docId) continue;
     const rec = getDocument(docId);

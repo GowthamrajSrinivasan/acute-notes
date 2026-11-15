@@ -38,6 +38,7 @@ vi.mock("@/components/review/knowledgeStore", () => ({ useKnowledgeUI: () => ({ 
 vi.mock("@/components/review/useKnowledgeObjects", () => ({ useKnowledgeObjects: () => ({ objects: s.knowledge, sceneVersion: 0 }) }));
 vi.mock("@/components/review/knowledgeActions", () => ({
   openSourceOn: (_env: unknown, id: string, units: readonly string[]) => void s.calls.push(["openSource", id, [...units]]),
+  openSourceForUnits: (_env: unknown, sourceId: string, units: readonly string[]) => (s.calls.push(["openSourceForUnits", sourceId, [...units]]), true),
   showObjects: (_api: unknown, ids: readonly string[], select?: boolean) => void s.calls.push(["show", [...ids], select]),
   outlineCiting: (_env: unknown, sourceId: string, units: readonly string[]) => (s.calls.push(["outline", sourceId, [...units]]), []),
 }));
@@ -72,7 +73,12 @@ vi.mock("@/ai/runtime", () => ({
 vi.mock("./promote", () => ({
   promoteNote: async (_env: unknown, note: { key: string }) => {
     s.calls.push(["promote", note]);
-    return `el_${note.key}`;
+    // The pinned card lands on the canvas, as the real commit does (the view drops pins whose card is gone).
+    const id = `el_${note.key}`;
+    s.scene = [...s.scene, block(id, 0, 700)];
+    s.docs.set(`d-${id}`, doc(`d-${id}`, "Pinned", [p("Pinned")]));
+    s.knowledge = [...s.knowledge];
+    return id;
   },
 }));
 
@@ -418,13 +424,26 @@ describe("NotesView (Generate from source → stream → check → Pin)", () => 
     await flush();
     const promoted = s.calls.filter((c) => c[0] === "promote").map((c) => c[1]);
     expect(promoted).toEqual([
-      { key: "g1", title: "Stale for a while", body: "Edge caches serve stale content after a deploy.", cites: ["u1"], source: { sourceId: "s1", version: 2 }, review: check.reviews.g1 },
+      { key: "g1", generationId: generations.get(canvasId).generationId, title: "Stale for a while", body: "Edge caches serve stale content after a deploy.", cites: ["u1"], source: { sourceId: "s1", version: 2 }, review: check.reviews.g1 },
     ]);
     expect(generations.get(canvasId).pinned.get("g1")).toBe("el_g1");
     // Once pinned, the action is "Show on canvas" — a second click doesn't pin again.
     await click(button("Show on canvas", note("g1")));
     expect(s.calls.filter((c) => c[0] === "promote")).toHaveLength(1);
     expect(s.calls).toContainEqual(["show", ["el_g1"], true]);
+
+    // Open in source on a generated card goes through a canvas card of the run's source (2026-11-15).
+    await click($('[data-testid="toolbar-acute-notes"]'));
+    await click(button("Open in source", note("g1")));
+    expect(s.calls).toContainEqual(["openSourceForUnits", "s1", ["u1"]]);
+
+    // The pinned card removed (Undo): the generated card offers Pin again, not a dead Show on canvas.
+    s.scene = s.scene.filter((e) => (e as { id: string }).id !== "el_g1");
+    s.knowledge = [...s.knowledge];
+    await click($('[data-testid="toolbar-acute-notes"]'));
+    await mount();
+    expect(button("Show on canvas", note("g1"))).toBeUndefined();
+    expect(button("Pin (needs review)", note("g1"))).toBeTruthy();
   });
 
   it("the generated cards survive closing and reopening the view", async () => {

@@ -11,9 +11,9 @@ import type { DocumentRecord } from "@/domain/types";
 import { block, doc, el, lookup, para } from "@/search/testFixtures";
 import { WorkspaceIndex } from "@/search/workspaceIndex";
 import { VectorTier } from "./embedding";
-import { placeContent, type PlacementChoice } from "./placement";
-import { routeContent, type RouteResult } from "./router";
-import { refineRoute, routeContentTask } from "./task";
+import { choicesFor, defaultPicks, isEscalated, KEEP_EXISTING, modelPicks, NEW_CARD, placeContent, togglePick, type PlacementChoice } from "./placement";
+import { routeContent, type RouteCandidate, type RouteResult } from "./router";
+import { refineRoute, routeContentTask, type RefinedRoute } from "./task";
 
 const frame = el({ id: "f_limits", type: "frame", name: "Limits", x: 0, y: 0, width: 600, height: 400 } as Partial<SceneElement> & Pick<SceneElement, "id" | "type">);
 const docs: DocumentRecord[] = [
@@ -133,5 +133,80 @@ describe("the model step (route_content)", () => {
     const { prompt } = routeContentTask.buildPrompt({ input: { content: "New text.", candidates: [{ ref: "c1", title: "Retries", section: "Limits", summary: "Retries happen five times." }] } });
     expect(prompt).toContain("[c1] Retries (section “Limits”)");
     expect(prompt).toContain('"decision":"needs_clarification"');
+  });
+});
+
+describe("what the dialog picks first (user decisions 2026-11-15: Q7, S4b)", () => {
+  const cand = (id: string, over: Partial<RouteCandidate> = {}): RouteCandidate =>
+    ({ id, descriptor: { title: id }, action: "insert_near", routing: 0.6, update: 0.9, scores: {}, evidence: [`about ${id}`], ...over }) as RouteCandidate;
+  const escalated = (id: string, intent: "CONTRADICTS" | "UNCLEAR" = "CONTRADICTS") =>
+    cand(id, { action: "update", update: 0.15, claim: { sentence: "s", newSentence: "n", intent, detail: "", escalate: true } });
+  const supersedes = (id: string) => cand(id, { action: "update", update: 0.8, claim: { sentence: "s", newSentence: "n", intent: "SUPERSEDES", detail: "", escalate: false } });
+  const result = (decision: RouteResult["decision"], candidates: RouteCandidate[]): RouteResult => ({ mode: "unanchored", decision, reason: "r", candidates, sections: [] }) as RouteResult;
+
+  it("route to a card whose edit needs no decision: that card is still preselected", () => {
+    expect([...defaultPicks(result("route", [supersedes("a"), cand("b")]))]).toEqual(["a"]);
+    expect([...defaultPicks(result("route", [cand("a")]))]).toEqual(["a"]);
+    expect([...defaultPicks(route("Retries happen three times with exponential backoff."))]).toEqual(["retries"]);
+  });
+
+  it("NEW: nothing is preselected (not even a new card), and the router's candidates and reasons are kept", () => {
+    const r = result("NEW", [cand("a"), cand("b")]);
+    expect(defaultPicks(r).size).toBe(0);
+    expect(defaultPicks(r).has(NEW_CARD)).toBe(false);
+    expect(r.candidates.map((c) => c.evidence[0])).toEqual(["about a", "about b"]);
+    const real = route("The quarterly budget review is in March.");
+    expect(real.decision).toBe("NEW");
+    expect(defaultPicks(real).size).toBe(0);
+  });
+
+  it("NEEDS_CLARIFICATION: nothing is preselected", () => {
+    expect(defaultPicks(result("NEEDS_CLARIFICATION", [supersedes("a"), cand("b")])).size).toBe(0);
+  });
+
+  it("an escalated update (CONTRADICTS or UNCLEAR) is never preselected, even when the decision is route", () => {
+    expect(defaultPicks(result("route", [escalated("a"), cand("b")])).size).toBe(0);
+    expect(defaultPicks(result("route", [escalated("a", "UNCLEAR")])).size).toBe(0);
+    // D2's reproduction: the router routes a contradiction to the card that holds the claim.
+    const r = route("Retries never happen with exponential backoff.");
+    expect(r.candidates[0]).toMatchObject({ id: "retries", action: "update", claim: { intent: "CONTRADICTS", escalate: true } });
+    expect(isEscalated(r.candidates[0])).toBe(true);
+    expect(defaultPicks(r).size).toBe(0);
+  });
+
+  it("Propose waits for a choice: the unselected states pick nothing until the user does", () => {
+    const canPropose = (picked: ReadonlySet<string>) => picked.size > 0; // the dialog's `disabled={!picked.size}`
+    for (const r of [result("NEW", [cand("a")]), result("NEEDS_CLARIFICATION", [cand("a"), cand("b")]), result("route", [escalated("a")])]) {
+      expect(canPropose(defaultPicks(r))).toBe(false);
+      expect(canPropose(togglePick(defaultPicks(r), NEW_CARD))).toBe(true);
+      expect(canPropose(togglePick(defaultPicks(r), KEEP_EXISTING))).toBe(true);
+    }
+  });
+
+  it("Keep existing is a choice on its own and proposes nothing", () => {
+    const keep = togglePick(new Set(["a", NEW_CARD]), KEEP_EXISTING);
+    expect([...keep]).toEqual([KEEP_EXISTING]);
+    expect([...togglePick(keep, "a")]).toEqual(["a"]);
+    expect(togglePick(keep, KEEP_EXISTING).size).toBe(0);
+    const r = route("Retries never happen with exponential backoff.");
+    expect(choicesFor(keep, new Set(), r.candidates)).toEqual([]);
+    expect(place("Retries never happen with exponential backoff.", choicesFor(keep, new Set(), r.candidates)).set).toBeNull();
+  });
+
+  it("an explicitly chosen escalated update becomes the reviewed claim-level patch; as a new card beside it, an insert", () => {
+    const text = "Retries never happen with exponential backoff.";
+    const r = route(text);
+    expect(choicesFor(new Set(["retries"]), new Set(), r.candidates)).toMatchObject([{ target: "retries", action: "update" }]);
+    expect(choicesFor(new Set(["retries"]), new Set(["retries"]), r.candidates)).toMatchObject([{ target: "retries", action: "insert_near" }]);
+    expect(choicesFor(new Set([NEW_CARD]), new Set(), r.candidates)).toEqual([{ target: null, action: "new" }]);
+  });
+
+  it("the model step picks its cards, but never an escalated update and never a new card on its say alone", () => {
+    const base = result("NEEDS_CLARIFICATION", [escalated("a"), supersedes("b"), cand("c")]);
+    const refined = (model: RefinedRoute["model"]): RefinedRoute => ({ ...base, decision: model!.decision === "route" ? "route" : model!.decision === "new" ? "NEW" : "NEEDS_CLARIFICATION", model });
+    expect([...modelPicks(refined({ decision: "route", targets: ["a", "b"] }), new Set())]).toEqual(["b"]);
+    expect(modelPicks(refined({ decision: "route", targets: ["a"] }), new Set()).size).toBe(0);
+    expect(modelPicks(refined({ decision: "new", targets: [] }), new Set()).size).toBe(0);
+    expect([...modelPicks(refined({ decision: "needs_clarification", targets: [], question: "?" }), new Set(["c"]))]).toEqual(["c"]);
   });
 });

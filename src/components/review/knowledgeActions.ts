@@ -74,6 +74,21 @@ export function openSourceOn(env: KnowledgeEnv, objectId: string, units: readonl
   knowledgeUI.openSource(env.home.canvasId, { objectId, units: [...units] });
 }
 
+/**
+ * Open in source for a note that isn't on the canvas (a generated Notes-view card): the Source tab is opened through the
+ * canvas card of `sourceId` citing the most of `units` (any card of that source when none cites them), on `units`.
+ * Returns false, changing nothing, when the canvas has no card of that source.
+ */
+export function openSourceForUnits(env: KnowledgeEnv, sourceId: string, units: readonly UnitId[]): boolean {
+  const shared = (o: KnowledgeObject) => o.cites.filter((u) => units.includes(u)).length;
+  const best = objectsNow(env.api)
+    .filter((o) => o.sourceId === sourceId)
+    .sort((a, b) => shared(b) - shared(a) || b.version - a.version)[0];
+  if (!best) return false;
+  openSourceOn(env, best.objectId, units);
+  return true;
+}
+
 /** Passage → cards: the cards citing any of `units` (of that source) outlined, the camera on them. Returns their ids. */
 export function outlineCiting(env: KnowledgeEnv, sourceId: string, units: readonly UnitId[]): string[] {
   const ids = objectsNow(env.api)

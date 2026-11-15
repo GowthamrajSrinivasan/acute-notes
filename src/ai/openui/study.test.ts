@@ -30,12 +30,20 @@ describe("studyNoteOf (study-mode plan §7, issue A)", () => {
 describe("flashcardLang", () => {
   it("parses cleanly with title as front, body as back and the first cite as unit — quotes and newlines intact", () => {
     for (const note of NOTES) {
-      const r = parse(flashcardLang(note));
+      const r = parse(flashcardLang(note)!);
       expect(r.meta.errors).toEqual([]);
       expect(r.root?.typeName).toBe("Flashcard");
       expect(r.root?.props.front).toBe(note.title);
       expect(r.root?.props.back).toBe(note.body);
       expect(r.root?.props.unit).toBe(note.cites[0]);
+    }
+  });
+
+  it("skips a title-only note (its front and back would both be the title), as the quiz does", () => {
+    for (const body of ["", "  \n "]) {
+      const note = studyNoteOf({ id: "t", title: "Limits", body, cites: ["u1"] });
+      expect(flashcardLang(note)).toBeNull();
+      expect(quizLang([note, ...NOTES], 0)).toBeNull();
     }
   });
 });

@@ -17,11 +17,12 @@ import { loadLatest, recordAcceptedSource } from "@/ai/content/sources";
 import { ensureStableKeys } from "@/ai/reconcile/keys";
 import { fingerprintOf, labelsByContainer, objectContent } from "@/ai/reconcile/objects";
 import { canUpdateSourceFrom, editedMarkdown, spliceSource } from "@/ai/reconcile/sourceEdit";
+import { isUserOwnedKey } from "@/ai/reconcile/tracking";
 import { validateVisualPlan } from "@/ai/visual-plan/validate";
 import type { VisualPlan } from "@/ai/visual-plan/types";
 import { getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
 import { reconciliationOf } from "@/domain/provenance";
-import { isLocked, withLock } from "@/domain/canvas/lock";
+import { isLocked, lockKeepsOptOut, withCardLock, withLock } from "@/domain/canvas/lock";
 import type { AIMetadata, DocumentHome, ObjectMetadata } from "@/domain/types";
 import type { CardReview } from "@/ai/fidelity/contracts";
 import { getPersistence } from "@/persistence";
@@ -54,11 +55,23 @@ function patchAI(api: ExcalidrawImperativeAPI, elementId: string, patch: Partial
   );
 }
 
-/** Whether an object is linked to a content source, whether it opted out, and whether the user locked it (Stage 1e); null when it isn't linked. */
-export function reconcileStatus(api: ExcalidrawImperativeAPI, elementId: string): { excluded: boolean; locked: boolean } | null {
+/**
+ * Whether an object is linked to a content source, whether it opted out, whether the user locked it (Stage 1e), and whether
+ * its opt-out is its own for good (`userOwned`: a pinned note or an added passage, `tracking.ts`); null when it isn't linked.
+ */
+export function reconcileStatus(api: ExcalidrawImperativeAPI, elementId: string): { excluded: boolean; locked: boolean; userOwned: boolean } | null {
   const el = (api.getSceneElements() as unknown as readonly SceneElement[]).find((e) => e.id === elementId);
   const link = el && reconciliationOf(el, getDocument);
-  return link ? { excluded: link.excludeFromReconciliation, locked: isLocked(el) } : null;
+  return link ? { excluded: link.excludeFromReconciliation, locked: isLocked(el), userOwned: isUserOwnedKey(link.stableNodeKey) } : null;
+}
+
+/**
+ * The Origin section's one reconciliation control for a linked object: Unlock a locked card; "Allow AI updates" on a card
+ * opted out some other way (a "Don't update" from before locks); otherwise Lock. Never "Allow AI updates" on a pinned note
+ * or an added passage card (`userOwned`): its key is in no plan, so the next update would propose removing it (N1).
+ */
+export function reconcileToggleOf(status: { excluded: boolean; locked: boolean; userOwned: boolean }): "unlock" | "allow" | "lock" {
+  return status.locked ? "unlock" : status.excluded && !status.userOwned ? "allow" : "lock";
 }
 
 /**
@@ -71,14 +84,19 @@ export function setCardLocked(api: ExcalidrawImperativeAPI, elementId: string, l
   const ref = getEmbedRef(el);
   const docId = ref?.kind === "rich-block" ? ref.documentId : ref?.kind === "page-preview" ? ref.pageId : null;
   const rec = docId ? getDocumentStore().get(docId) : null;
-  if (docId && rec?.metadata?.ai) getDocumentStore().update(docId, { metadata: { ...rec.metadata, ai: { ...rec.metadata.ai, excludeFromReconciliation: locked || undefined } } });
+  // An opt-out the card had before the lock (a passage or pinned card, "Don't update") is the card's own: locking
+  // records it, and unlocking keeps it (lock.ts `withCardLock`; shared-contract review 2026-11-15, risk 2).
+  const link = reconciliationOf(el, getDocument);
+  const keepsOptOut = locked ? (isLocked(el) ? lockKeepsOptOut(el) : !!link?.excludeFromReconciliation) : lockKeepsOptOut(el);
+  const excludeFromReconciliation = locked || keepsOptOut || undefined;
+  if (docId && rec?.metadata?.ai) getDocumentStore().update(docId, { metadata: { ...rec.metadata, ai: { ...rec.metadata.ai, excludeFromReconciliation } } });
   replaceElement(
     api,
     elementId,
     (e) => {
-      let customData = withLock(e.customData as Record<string, unknown> | undefined, locked);
+      let customData = withCardLock(e.customData as Record<string, unknown> | undefined, locked, keepsOptOut);
       const meta = customData.acuteMeta as ObjectMetadata | undefined;
-      if (!docId && meta?.ai) customData = { ...customData, acuteMeta: { ...meta, ai: { ...meta.ai, excludeFromReconciliation: locked || undefined } } };
+      if (!docId && meta?.ai) customData = { ...customData, acuteMeta: { ...meta, ai: { ...meta.ai, excludeFromReconciliation } } };
       return newElementWith(e, { customData });
     },
     CaptureUpdateAction.IMMEDIATELY,
@@ -90,8 +108,18 @@ export function setFrameLocked(api: ExcalidrawImperativeAPI, frameId: string, lo
   replaceElement(api, frameId, (e) => newElementWith(e, { customData: withLock(e.customData as Record<string, unknown> | undefined, locked) }), CaptureUpdateAction.IMMEDIATELY);
 }
 
-export function setExcludedFromReconciliation(api: ExcalidrawImperativeAPI, elementId: string, excluded: boolean): void {
+/**
+ * "Don't update" / "Allow AI updates" (F39). Refused (false, nothing written) when allowing updates on a pinned note or an
+ * added passage card: its key is never in the source's plan, so the next update would propose removing it
+ * (promotion-contract-proposal-2026-11-15 N1). Such a card keeps its opt-out; Lock and Unlock still work on it.
+ */
+export function setExcludedFromReconciliation(api: ExcalidrawImperativeAPI, elementId: string, excluded: boolean): boolean {
+  if (!excluded) {
+    const el = api.getSceneElements().find((e) => e.id === elementId);
+    if (el && isUserOwnedKey(reconciliationOf(el, getDocument)?.stableNodeKey)) return false;
+  }
   patchAI(api, elementId, { excludeFromReconciliation: excluded || undefined });
+  return true;
 }
 
 /**

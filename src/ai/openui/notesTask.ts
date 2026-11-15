@@ -9,7 +9,10 @@
  */
 import { createParser, type ElementNode } from "@openuidev/react-lang";
 import { z } from "zod";
-import type { AIRuntime, RunOptions } from "@/ai/runtime";
+import type { AIRuntime, AIRuntimeResult, RunOptions } from "@/ai/runtime";
+import { AIError } from "@/ai/errors";
+import { oneRequestUsageOf, setOneRequestPolicy } from "@/ai/requestPolicy";
+import type { AIUsage } from "@/ai/types";
 import { getTaskRegistry, type TaskDefinition, type TaskRegistry } from "@/ai/tasks";
 import { criticalReasonsOf } from "@/ai/fidelity/accounting";
 import type { SourceUnit } from "@/ai/fidelity/contracts";
@@ -20,6 +23,13 @@ import { propOrders, toPositional } from "./positional";
 /** Bounds what one call may send (a long source is cut, and says so in the prompt). */
 export const NOTES_MAX_UNITS = 400;
 export const NOTES_MAX_CHARS = 60_000;
+/**
+ * The output cap of the one model request a run makes (`ai/requestPolicy.ts`: no SDK retry, no repair, no fallback).
+ * Sized from kn-02 (8,133-char source, 63 units): its 14-card reply is 6,717 chars, about 1,900 output tokens measured
+ * 2026-11-13 (`.ai/docs/openui-live-2026-11-13.md`); 6,000 leaves about 3x for longer sources and reasoning tokens,
+ * which these endpoints count inside `max_tokens`. A reply cut at the cap keeps its finished cards.
+ */
+export const NOTES_MAX_OUTPUT_TOKENS = 6_000;
 
 const notesInput = z.object({
   title: z.string().max(300).optional(),
@@ -73,19 +83,24 @@ function prompt(input: OpenUiNotesInput): string {
 export const generateOpenUiNotesTask: TaskDefinition<OpenUiNotesInput, string> = {
   task: "generate_openui_notes",
   inputSchema: notesInput,
-  outputSchema: z.string().min(1),
+  // Any reply is accepted as it is (an empty one becomes an error in `generateOpenUiNotes`), so the runtime never
+  // sends a schema repair: one click, one request.
+  outputSchema: z.string().catch(""),
   outputFormat: "text",
   buildPrompt: ({ input, repairFeedback }) => ({
     systemPrompt: acuteCardSystemPrompt({ additionalRules: FORMAT_RULES }),
     prompt: repairFeedback ? `${prompt(input)}\n\n${repairFeedback}` : prompt(input),
   }),
   policy: {},
+  // Above the SDK's 60 s default: a reply discarded at the timeout would still be billed.
+  timeoutMs: 120_000,
 };
 
 export function registerOpenUiNotesTask(registry: TaskRegistry): void {
   if (!registry.has("generate_openui_notes")) registry.register(generateOpenUiNotesTask);
 }
 registerOpenUiNotesTask(getTaskRegistry());
+setOneRequestPolicy("generate_openui_notes", { maxTokens: NOTES_MAX_OUTPUT_TOKENS });
 
 type NotesUnit = OpenUiNotesInput["units"][number];
 
@@ -166,22 +181,43 @@ export interface NotesStreamUpdate {
 }
 
 /**
- * Runs the task, reporting the card blocks as text streams in, and resolves with the finished cards (blocks that
- * parse into an IdeaCard). Throws what the runtime throws (AI off, no provider, cancelled).
+ * Runs the task, reporting the card blocks as text arrives, and resolves with the finished cards (blocks that parse into
+ * an IdeaCard). One model request per call (`ai/requestPolicy.ts`), identified by a signal of its own. Throws what the
+ * runtime throws (AI off, no provider, cancelled), and `invalid_output` when the reply is empty.
  */
 export async function generateOpenUiNotes(
   runtime: AIRuntime,
   input: OpenUiNotesInput,
   opts: { signal?: AbortSignal; onUpdate?: (update: NotesStreamUpdate) => void } = {},
-): Promise<{ cards: GeneratedCard[]; dropped: number; providerId: string }> {
+): Promise<{ cards: GeneratedCard[]; dropped: number; providerId: string; usage: AIUsage; providerRequests?: number }> {
+  // A fresh signal per run: the one-request guard tells runs apart by it, so a reused caller signal can't block a new click.
+  const run = new AbortController();
+  const outer = opts.signal;
+  const onAbort = () => run.abort(outer?.reason);
+  if (outer?.aborted) onAbort();
+  else outer?.addEventListener("abort", onAbort, { once: true });
   const runOpts: RunOptions = {
-    ...(opts.signal ? { signal: opts.signal } : {}),
+    signal: run.signal,
     ...(opts.onUpdate ? { onText: (text: string) => opts.onUpdate!({ blocks: splitCards(text), done: false }) } : {}),
   };
-  const result = await runtime.run<OpenUiNotesInput, string>("generate_openui_notes", input, runOpts);
+  let result: AIRuntimeResult<string>;
+  try {
+    result = await runtime.run<OpenUiNotesInput, string>("generate_openui_notes", input, runOpts);
+  } finally {
+    outer?.removeEventListener("abort", onAbort);
+  }
+  const reported = oneRequestUsageOf(run.signal);
+  if (!result.data.trim()) throw new AIError("invalid_output", "The model returned no notes.");
   const blocks = splitCards(result.data);
   opts.onUpdate?.({ blocks, done: true });
   const known = new Set(input.units.map((u) => u.id));
   const cards = blocks.map((b, i) => cardOf(b, i, known)).filter((c): c is GeneratedCard => c !== null);
-  return { cards, dropped: blocks.length - cards.length, providerId: result.providerId };
+  return {
+    cards,
+    dropped: blocks.length - cards.length,
+    providerId: result.providerId,
+    // A streamed run reports no usage through the runtime; the one-request guard keeps what the host reported.
+    usage: reported?.usage ?? result.usage,
+    ...(reported?.providerRequests !== undefined ? { providerRequests: reported.providerRequests } : {}),
+  };
 }

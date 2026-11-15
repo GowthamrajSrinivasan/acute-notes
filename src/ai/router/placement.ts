@@ -21,7 +21,8 @@ import { measureNode } from "@/ai/renderer/measure";
 import type { VisualNode } from "@/ai/visual-plan/types";
 import type { SceneElement } from "@/domain/canvas/adapter";
 import type { AIMetadata, DocumentRecord, RichContent } from "@/domain/types";
-import type { RouteCandidate } from "./router";
+import type { RouteCandidate, RouteResult } from "./router";
+import type { RefinedRoute } from "./task";
 
 export interface PlacementChoice {
   /** The card (element id) chosen, or null for a new card at `at`. */
@@ -144,6 +145,53 @@ function claimPatch(
   if (block.id) edit.blockId = block.id;
   if (!applyClaimEdits(live.content, [edit]).ok) return null;
   return { kind: "patch_block", target: el.id, expectedFingerprint: fingerprintOf(live), edits: [edit] };
+}
+
+// ---------------------------------------------------------------------------
+// What "Where should this go?" picks before the user does (user decisions 2026-11-15, stage2-routing-acceptance Q7 and
+// S4b): the router's own pick is preselected only when it is a confident route to a card whose edit needs no decision.
+// A NEW ("no confident match"), a NEEDS_CLARIFICATION and an escalated update (CONTRADICTS/UNCLEAR, Stage 1's
+// `ESCALATED_INTENTS`) start with nothing picked: the user chooses the target and action, or keeps the existing text.
+
+/** The dialog's own picks besides the candidates: a new card on its own, and "Keep existing — no change". */
+export const NEW_CARD = "__new__";
+export const KEEP_EXISTING = "__keep__";
+
+/** An update a planner must not apply on its own: its claim contradicts or rewrites what the card says. */
+export const isEscalated = (c: RouteCandidate | undefined): boolean => c?.action === "update" && !!c.claim?.escalate;
+
+/** What is picked when the router's result is shown: its top card on a non-escalated `route`, else nothing. */
+export function defaultPicks(result: Pick<RouteResult, "decision" | "candidates">): Set<string> {
+  const top = result.candidates[0];
+  return new Set(result.decision === "route" && top && !isEscalated(top) ? [top.id] : []);
+}
+
+/**
+ * What is picked after the model step (`route_content`): the cards it chose, less any escalated update — that still
+ * waits for the user. A model "new" or question picks nothing new: the user's picks stay as they were.
+ */
+export function modelPicks(result: RefinedRoute, current: ReadonlySet<string>): Set<string> {
+  if (result.model?.decision !== "route") return new Set(current);
+  const byId = new Map(result.candidates.map((c) => [c.id, c] as const));
+  return new Set(result.model.targets.filter((id) => !isEscalated(byId.get(id))));
+}
+
+/** Toggles a pick. "Keep existing" is a choice on its own: picking it clears the others, picking another clears it. */
+export function togglePick(picked: ReadonlySet<string>, id: string): Set<string> {
+  if (picked.has(id)) return new Set([...picked].filter((p) => p !== id));
+  if (id === KEEP_EXISTING) return new Set([KEEP_EXISTING]);
+  return new Set([...picked].filter((p) => p !== KEEP_EXISTING).concat(id));
+}
+
+/** The picks as placement choices; "Keep existing" is none (nothing is proposed). */
+export function choicesFor(picked: ReadonlySet<string>, asNew: ReadonlySet<string>, candidates: readonly RouteCandidate[]): PlacementChoice[] {
+  if (picked.has(KEEP_EXISTING)) return [];
+  const byId = new Map(candidates.map((c) => [c.id, c] as const));
+  return [...picked].flatMap((id): PlacementChoice[] => {
+    if (id === NEW_CARD) return [{ target: null, action: "new" }];
+    const candidate = byId.get(id);
+    return candidate ? [{ target: id, action: asNew.has(id) ? "insert_near" : candidate.action, candidate }] : [];
+  });
 }
 
 function paragraphs(text: string): RichContent {

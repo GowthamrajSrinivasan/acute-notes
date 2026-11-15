@@ -17,6 +17,7 @@ interface El {
   y: number;
   width: number;
   height: number;
+  customData?: Record<string, unknown>;
 }
 
 const w = vi.hoisted(() => ({
@@ -38,7 +39,9 @@ vi.mock("@/components/canvas/changeSetWriter", () => ({
       for (const c of changes) {
         if (c.kind !== "create_block") continue;
         const id = `el_${w.scene.length}`;
-        w.scene = [...w.scene, { id, version: 1, index: `a${w.scene.length}`, isDeleted: false, ...c.box }];
+        // Stamped as the real writer does for a sourced pin (a shape's metadata on the element), so its key can be found.
+        const ai = set.passage && c.stableNodeKey ? { createdBy: "ai", contentSourceId: set.passage.sourceId, contentSourceVersion: set.passage.version, stableNodeKey: c.stableNodeKey, contentFingerprint: "f", excludeFromReconciliation: true } : undefined;
+        w.scene = [...w.scene, { id, version: 1, index: `a${w.scene.length}`, isDeleted: false, ...c.box, ...(ai ? { customData: { acuteMeta: { ai } } } : {}) }];
         if (w.creates) created.set(c.key, id);
       }
       return created;
@@ -53,6 +56,7 @@ vi.mock("@/components/review/knowledgeActions", () => ({ showObjects: (_api: unk
 vi.mock("@/components/review/knowledgeStore", () => ({ knowledgeUI: { changed: (canvasId: string) => void w.changed.push(canvasId) } }));
 
 const { promoteNote } = await import("./promote");
+const { promotionKey } = await import("@/ai/reconcile/tracking");
 
 function setup() {
   w.scene = [{ id: "mine", version: 1, index: "a", isDeleted: false, x: 0, y: 0, width: 10, height: 10 }];
@@ -75,7 +79,7 @@ function setup() {
   return { history, env: { api, home, history } };
 }
 const live = () => w.scene.filter((e) => !e.isDeleted).map((e) => e.id);
-const note = { key: "g1", title: "Keys expire", body: "After 24h a retry is new.", detail: "Servers forget keys.", cites: ["u2", "u3"], source: { sourceId: "s1", version: 2 } };
+const note = { key: "g1", generationId: "gen_run1", title: "Keys expire", body: "After 24h a retry is new.", detail: "Servers forget keys.", cites: ["u2", "u3"], source: { sourceId: "s1", version: 2 } };
 
 describe("promoteNote (Pin to canvas)", () => {
   beforeEach(() => vi.clearAllMocks());
@@ -88,7 +92,7 @@ describe("promoteNote (Pin to canvas)", () => {
     expect(w.writes).toHaveLength(1);
     expect(w.writes[0]!.changes.map((c) => c.kind)).toEqual(["create_block"]);
     expect(w.writes[0]!.set.passage).toEqual({ sourceId: "s1", version: 2 });
-    expect(w.writes[0]!.set.knowledge?.cards).toEqual({ "openui § g1": { sourceUnits: ["u2", "u3"] } });
+    expect(w.writes[0]!.set.knowledge?.cards).toEqual({ [promotionKey("gen_run1", "g1")]: { sourceUnits: ["u2", "u3"] } });
     expect(w.writes[0]!.set.metadata).toMatchObject({ createdBy: "ai", task: "generate_openui_notes", noteModel: "distil" });
     expect(history.canUndo).toBe(true);
     expect(w.shown).toEqual([["el_1"]]);
@@ -121,10 +125,32 @@ describe("promoteNote (Pin to canvas)", () => {
     const { env } = setup();
     const review = { reasons: ['"300 seconds" is not on any card citing it'] };
     await promoteNote(env, { ...note, review });
-    expect(w.writes[0]!.set.knowledge?.cards["openui § g1"]).toEqual({ sourceUnits: ["u2", "u3"], review });
-    await promoteNote(env, { key: "g9", title: "T", body: "B", cites: [] });
+    expect(w.writes[0]!.set.knowledge?.cards[promotionKey("gen_run1", "g1")]).toEqual({ sourceUnits: ["u2", "u3"], review });
+    await promoteNote(env, { key: "g9", generationId: "gen_run1", title: "T", body: "B", cites: [] });
     expect(w.writes[1]!.set.passage).toBeUndefined();
     expect(w.writes[1]!.set.knowledge).toBeUndefined();
+  });
+
+  it("a second pin of the same note (same run, card still live) shows that card and writes nothing (Q6: exact repeat only)", async () => {
+    const { history, env } = setup();
+    const id = await promoteNote(env, note);
+    w.shown = [];
+    expect(await promoteNote(env, note)).toBe(id);
+    expect(w.writes).toHaveLength(1);
+    expect(live()).toEqual(["mine", "el_1"]);
+    expect(w.shown).toEqual([[id]]);
+    // Undo removes it: the next pin writes it again.
+    history.undo();
+    expect(await promoteNote(env, note)).not.toBeNull();
+    expect(w.writes).toHaveLength(2);
+  });
+
+  it("the same note key from another generation run is a separate card (never merged by text)", async () => {
+    const { env } = setup();
+    await promoteNote(env, note);
+    await promoteNote(env, { ...note, generationId: "gen_run2" });
+    expect(w.writes).toHaveLength(2);
+    expect(live()).toEqual(["mine", "el_1", "el_2"]);
   });
 
   it("returns null and moves no camera when the writer created nothing", async () => {

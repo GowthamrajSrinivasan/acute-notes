@@ -27,9 +27,13 @@ export function studyNoteOf(note: { id: string; title: string; body: string; cit
 
 const lit = (s: string) => JSON.stringify(s);
 
-/** One Flashcard: the note's title as the prompt, its body as the answer, its first citation as the unit. */
-export function flashcardLang(note: StudyNote): string {
-  const args = [lit(note.title), lit(note.body || note.title)];
+/**
+ * One Flashcard: the note's title as the prompt, its body as the answer, its first citation as the unit. Null for a
+ * title-only note (front and back would both be the title), as `quizLang` skips it.
+ */
+export function flashcardLang(note: StudyNote): string | null {
+  if (!note.body.trim()) return null;
+  const args = [lit(note.title), lit(note.body)];
   if (note.cites[0]) args.push(lit(note.cites[0]));
   return `root = Flashcard(${args.join(", ")})`;
 }

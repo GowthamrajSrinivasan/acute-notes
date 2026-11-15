@@ -8,7 +8,7 @@
 import type { SceneElement } from "@/domain/canvas/adapter";
 import { getArrowRelation, getEmbedRef } from "@/domain/canvas/adapter";
 import { connectorSourceOf, reconciliationOf } from "@/domain/provenance";
-import { isLocked } from "@/domain/canvas/lock";
+import { isLocked, optedOutBesidesLock } from "@/domain/canvas/lock";
 import type { DocumentRecord, RelationType } from "@/domain/types";
 import type { ExistingObject } from "./classify";
 import { unitOfKey } from "./keys";
@@ -32,7 +32,7 @@ export function existingObjects(elements: readonly SceneElement[], getDocument: 
       stableNodeKey: link.stableNodeKey,
       baseline: link.contentFingerprint,
       current: fingerprintOf(content),
-      excluded: link.excludeFromReconciliation && !isLocked(el),
+      excluded: optedOutBesidesLock(el, link.excludeFromReconciliation),
       ...(locked ? { locked } : {}),
       ...(link.userWording ? { userWording: true } : {}),
       ...(link.splitOf ? { splitOf: link.splitOf } : {}),

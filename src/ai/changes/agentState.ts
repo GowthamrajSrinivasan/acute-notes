@@ -332,14 +332,21 @@ function withBoundLabels(conflicts: ConflictItem[], live: ReadonlyMap<string, Li
 // ---------------------------------------------------------------------------
 
 /**
- * Whether a set may be auto-accepted for a session the user switched it on for (D44): never one that removes or
- * restores anything, adds or turns a node into a `constraint`, or sets `enforce` (those bind later agents through
- * warnings, D36), and never one with conflicts.
+ * Change kinds a session's auto-accept never writes: removals and restores, and destructive replacements (user
+ * decision 2, 2026-11-15: "Never automatically accept a destructive replacement"): `update_block` replaces a whole
+ * block's content (e.g. MCP `update_block`), `update_shape` a label. A set with any of them always waits for review.
+ */
+export const NEVER_AUTO_ACCEPTED: ReadonlySet<ProposedChange["kind"]> = new Set(["update_block", "update_shape", "remove", "restore"]);
+
+/**
+ * Whether a set may be auto-accepted for a session the user switched it on for (D44): never one with a
+ * `NEVER_AUTO_ACCEPTED` change, one that adds or turns a node into a `constraint`, or sets `enforce` (those bind later
+ * agents through warnings, D36), and never one with conflicts.
  */
 export function autoAcceptable(set: Pick<ChangeSet, "changes" | "conflicts">): boolean {
   if (set.conflicts?.length) return false;
   return set.changes.every((c) => {
-    if (c.kind === "remove" || c.kind === "restore") return false;
+    if (NEVER_AUTO_ACCEPTED.has(c.kind)) return false;
     if (c.kind === "create_shape" && (c.semantics?.kind === "constraint" || c.project?.kind === "constraint" || c.project?.enforce === true)) return false;
     if (c.kind === "update_node" && (c.semantics.kind === "constraint" || c.semantics.enforce === true)) return false;
     return true;

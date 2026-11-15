@@ -203,8 +203,9 @@ export function routeContent(input: RouteInput): RouteResult {
     });
   }
   candidates.sort((a, b) => b.routing - a.routing || (a.id < b.id ? -1 : 1));
-  const shown = candidates.slice(0, limit);
-  return { mode: "unanchored", ...decide(shown), candidates: shown, sections };
+  // Decide on the full ranking, then cut it to `limit`: a close second must still make it ask even when only the
+  // top candidate is shown (D1, stage2-routing-acceptance-2026-11-15.md).
+  return { mode: "unanchored", ...decide(candidates), candidates: candidates.slice(0, limit), sections };
 }
 
 /** An insert copies the content in as it is: nothing existing is reworded or overwritten. */

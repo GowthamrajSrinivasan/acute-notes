@@ -1,7 +1,7 @@
 /**
  * "Auto-accept this mapping session" (F43): while it is on, each section a
  * mapping session sends is written on arrival, as its own undo step, instead
- * of being staged for review. Conflicts and removals are never auto-accepted:
+ * of being staged for review. Conflicts, removals and replacements are never auto-accepted:
  * a section with any waits in the review like any other (the producer checks
  * `isOn` and decides; see `src/mcp/tools/repoMap`).
  *

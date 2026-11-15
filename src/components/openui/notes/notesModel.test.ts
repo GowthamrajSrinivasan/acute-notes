@@ -80,6 +80,12 @@ describe("buildNotes", () => {
     ]);
   });
 
+  it("reads a grid of cards in a frame row by row: the tall frame itself doesn't merge the rows (seen in the app)", () => {
+    const grid = new Map<string, DocumentRecord>(["a", "b", "c", "d"].map((k) => [`d-${k}`, doc(`d-${k}`, k.toUpperCase(), [p(k.toUpperCase()), p(`Body ${k}.`)])] as const));
+    const cards = [frame("f", 0, 0, "Grid"), block("a", 0, 100, "f"), block("b", 300, 100, "f"), block("c", 0, 250, "f"), block("d", 300, 250, "f")];
+    expect(buildNotes(cards, (id) => grid.get(id))[0]!.notes.map((n) => n.id)).toEqual(["a", "b", "c", "d"]);
+  });
+
   it("titles an untitled card by its first line, keeps the rest as body", () => {
     const n1 = buildNotes(scene, getDocument)[0]!.notes[0]!;
     expect([n1.title, n1.body]).toEqual(["Edge caches serve stale content", "Until the TTL expires, edits are invisible."]);

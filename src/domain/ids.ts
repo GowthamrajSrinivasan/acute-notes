@@ -9,7 +9,7 @@ export function randomId(length = 20): string {
   return out;
 }
 
-export type IdPrefix = "ws" | "cv" | "doc" | "page" | "rel" | "op" | "asset" | "conv" | "src" | "chg" | "mcp";
+export type IdPrefix = "ws" | "cv" | "doc" | "page" | "rel" | "op" | "asset" | "conv" | "src" | "chg" | "mcp" | "gen";
 
 /** Stable, prefixed identifier. Never derived from array position or DOM identity. */
 export function newId(prefix: IdPrefix): string {

@@ -33,7 +33,7 @@ import { AIRuntime } from "@/ai/runtime";
 import { useAIMode } from "@/components/ai/askAI";
 import { useToolbarSlot } from "@/components/canvas/toolbarSlot";
 import { OpenUiCardRenderer } from "@/components/openui/OpenUiCardRenderer";
-import { openSourceOn, outlineCiting, showObjects } from "@/components/review/knowledgeActions";
+import { openSourceForUnits, openSourceOn, outlineCiting, showObjects } from "@/components/review/knowledgeActions";
 import { useKnowledgeUI } from "@/components/review/knowledgeStore";
 import { useKnowledgeObjects } from "@/components/review/useKnowledgeObjects";
 import type { SceneElement } from "@/domain/canvas/adapter";
@@ -207,7 +207,9 @@ function NotesView({ api, home, history }: Env) {
       cancelled = true;
     };
   }, [canvasId]);
-  const { gen, pinned } = useGeneration(canvasId);
+  const { gen, pinned: pinnedAll } = useGeneration(canvasId);
+  // A pin whose card is gone (removed by Undo, or deleted) offers Pin to canvas again, not a dead Show on canvas.
+  const pinned = useMemo(() => new Map([...pinnedAll].filter(([, id]) => allNotes.some((n) => n.id === id))), [pinnedAll, allNotes]);
   const generate = useCallback(async () => {
     if (!genSource) return;
     const { signal, current } = generations.start(canvasId);
@@ -234,10 +236,19 @@ function NotesView({ api, home, history }: Env) {
   const close = useCallback(() => notesView.close(canvasId), [canvasId]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !(e.target instanceof HTMLInputElement && e.target.value)) close();
+      if (e.key !== "Escape") return;
+      // Escape in a field with text clears or leaves that field first (an input, a textarea, rich text).
+      const t = e.target;
+      if ((t instanceof HTMLInputElement || t instanceof HTMLTextAreaElement) && t.value) return;
+      if (t instanceof HTMLElement && t.isContentEditable && t.textContent) return;
+      // A dialog or menu over the Notes view (opened from the header) handles its own Escape.
+      if (e.target instanceof Element && e.target.closest('[role="dialog"],[role="alertdialog"],[role="menu"]')) return;
+      close();
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    // Capture phase: while Notes covers the canvas, Escape is Notes' own. A canvas card left in edit mode
+    // must not take it first (found by openuiNotesFlow.local.spec.ts, 2026-11-15).
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
   }, [close]);
 
   // Cross-note navigation: scroll to the note and flash it.
@@ -339,7 +350,7 @@ function NotesView({ api, home, history }: Env) {
           </nav>
         )}
         <div className="acute-notes__scroll" ref={scroller}>
-          {gen.status !== "idle" && <GeneratedNotes gen={gen} env={env} pinned={pinned} onPinned={(k, id) => generations.pin(canvasId, k, id)} goTo={goTo} titles={titles} />}
+          {gen.status !== "idle" && <GeneratedNotes gen={gen} env={env} pinned={pinned} onPinned={(k, id) => generations.pin(canvasId, k, id)} goTo={goTo} titles={titles} sourceOnCanvas={"source" in gen && objects.some((o) => o.sourceId === gen.source.sourceId)} />}
 
           {allNotes.length === 0 ? (
             <p className="acute-notes__empty">This canvas has no text cards yet. Notes shows the cards Visualize or you add, as a document.</p>
@@ -417,6 +428,7 @@ function GeneratedNotes({
   onPinned,
   goTo,
   titles,
+  sourceOnCanvas,
 }: {
   gen: Exclude<Generation, { status: "idle" }>;
   env: Env;
@@ -424,6 +436,8 @@ function GeneratedNotes({
   onPinned(key: string, objectId: string): void;
   goTo(id: string): void;
   titles: Map<string, string>;
+  /** A canvas card of the run's source exists, so Open in source has somewhere to open (else it isn't offered). */
+  sourceOnCanvas: boolean;
 }) {
   const [pinning, setPinning] = useState<string | null>(null);
   if (gen.status === "error") {
@@ -462,6 +476,14 @@ function GeneratedNotes({
           unitText: (u) => gen.source.units.get(u),
           navigate: goTo,
           noteTitle: (id) => titles.get(id),
+          // Open in source, as canvas notes have it: through the canvas card of the same source (2026-11-15).
+          ...(sourceOnCanvas
+            ? {
+                openSource: (us: readonly string[]) => {
+                  if (openSourceForUnits(env, gen.source.sourceId, us)) notesView.close(env.home.canvasId);
+                },
+              }
+            : {}),
           ...(card
             ? {
                 pin: objectId
@@ -471,7 +493,7 @@ function GeneratedNotes({
                       done: pinning !== null,
                       run: () => {
                         setPinning(key);
-                        void promoteNote(env, { key, title: card.title, body: card.body, ...(card.detail ? { detail: card.detail } : {}), cites: card.cites, source: { sourceId: gen.source.sourceId, version: gen.source.version }, ...(review ? { review } : {}) })
+                        void promoteNote(env, { key, generationId: generations.get(env.home.canvasId).generationId, title: card.title, body: card.body, ...(card.detail ? { detail: card.detail } : {}), cites: card.cites, source: { sourceId: gen.source.sourceId, version: gen.source.version }, ...(review ? { review } : {}) })
                           .then((id) => id && onPinned(key, id))
                           .finally(() => setPinning(null));
                       },

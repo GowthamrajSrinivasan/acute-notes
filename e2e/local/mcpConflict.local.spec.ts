@@ -88,12 +88,30 @@ async function proposeViaMcp(page: Page, id: string, text: string): Promise<void
   await client.close();
 }
 
+/**
+ * User decision 2: every `update_block` shows a before/after diff in review, before Accept, collapsed behind "View changes"
+ * (not only a conflict). Leaves it collapsed again.
+ */
+async function seesBeforeAfter(page: Page, before: string, after: string) {
+  const item = review(page).getByRole("listitem", { name: `Update: ${after}` });
+  await expect(item).toBeVisible();
+  await expect(item).toContainText("Replaces this block's content");
+  const diff = item.getByLabel(`Before and after: ${after}`);
+  await expect(diff).toBeHidden();
+  await item.getByRole("button", { name: "View changes" }).click();
+  await expect(diff.locator(".acute-review__diff-line--del")).toContainText([before]);
+  await expect(diff.locator(".acute-review__diff-line--add")).toContainText([after]);
+  await item.getByRole("button", { name: "Hide changes" }).click();
+  await expect(diff).toBeHidden();
+}
+
 /** Proposed, then edited by the user, then Accept: the edit stays and the decision is shown. */
 async function conflictAfterEdit(page: Page, propose: (page: Page, id: string, text: string) => Promise<unknown>): Promise<string> {
   await openApp(page);
   const block = await oneBlock(page);
   await propose(page, block, "Retry limit: 3");
   await expect(review(page)).toBeVisible();
+  await seesBeforeAfter(page, "Retry limit: 5", "Retry limit: 3");
   await userEdit(page, block, "Retry limit: 4");
   await review(page).getByRole("button", { name: /^Accept all/ }).click();
   await expect(decision(page)).toBeVisible();
@@ -128,6 +146,19 @@ async function useProposed(page: Page, block: string) {
 }
 
 test.describe("Keep mine / Use proposed on an MCP update_block", () => {
+  test("in-app path: a clean update_block shows its before/after diff before Accept, and Accept writes it", async ({ page }) => {
+    await openApp(page);
+    const block = await oneBlock(page);
+    await proposeInApp(page, block, "Retry limit: 3");
+    await expect(review(page)).toBeVisible();
+    await seesBeforeAfter(page, "Retry limit: 5", "Retry limit: 3");
+    await expect(decision(page)).toHaveCount(0); // not a conflict: the diff is shown anyway
+    expect(await textOf(page, block)).toContain("Retry limit: 5");
+    await review(page).getByRole("button", { name: /^Accept all/ }).click();
+    await expect(review(page)).toBeHidden();
+    expect(await textOf(page, block)).toContain("Retry limit: 3");
+  });
+
   test("in-app path: Keep mine keeps the user's edit and writes nothing", async ({ page }) => {
     await keepMine(page, await conflictAfterEdit(page, proposeInApp));
   });

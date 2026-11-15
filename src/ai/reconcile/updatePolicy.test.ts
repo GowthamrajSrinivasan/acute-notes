@@ -8,7 +8,7 @@ import { acceptChangeSet, type ChangeSetCanvas } from "@/ai/changes/accept";
 import { parseChangeSet, type ChangeSet, type ProposedChange } from "@/ai/changes/changeSet";
 import { fingerprintContent } from "@/ai/content/fingerprint";
 import type { SceneElement } from "@/domain/canvas/adapter";
-import { withLock } from "@/domain/canvas/lock";
+import { lockKeepsOptOut, optedOutBesidesLock, withCardLock, withLock } from "@/domain/canvas/lock";
 import type { RichContent } from "@/domain/types";
 import { accepted, context, firstRun, parse, response, runtimeWith, type Accepted } from "@/testUtils/reconcileHarness";
 import type { ExistingObject } from "./classify";
@@ -110,6 +110,24 @@ describe("Stage 1e — Lock", () => {
       c: { locked: undefined, excluded: true },
       d: { locked: undefined, excluded: false },
     });
+  });
+
+  it("a pinned or passage card that is then locked keeps its own opt-out: excluded even with Preserve locked sections off, and still after Unlock", () => {
+    const meta = (key: string) => ({ acuteMeta: { ai: { createdBy: "ai", contentSourceId: "src", contentSourceVersion: 1, stableNodeKey: key, contentFingerprint: "x", excludeFromReconciliation: true } } });
+    const shape = (id: string, customData: Record<string, unknown>) => ({ id, type: "rectangle", x: 0, y: 0, width: 10, height: 10, isDeleted: false, customData }) as unknown as SceneElement;
+    const pinnedLocked = shape("p", withCardLock(meta("openui § g1"), true, true));
+    const lockedOnly = shape("l", withCardLock(meta("k#l"), true, false));
+    const pinnedUnlocked = shape("u", withCardLock(pinnedLocked.customData as Record<string, unknown>, false, lockKeepsOptOut(pinnedLocked)));
+    const got = Object.fromEntries(existingObjects([pinnedLocked, lockedOnly, pinnedUnlocked], () => null, "src").map((o) => [o.objectId, { locked: o.locked, excluded: o.excluded }]));
+    expect(got).toEqual({
+      p: { locked: "card", excluded: true },
+      l: { locked: "card", excluded: false },
+      u: { locked: undefined, excluded: true },
+    });
+    expect(pinnedUnlocked.customData).not.toHaveProperty("acuteLocked");
+    expect(pinnedUnlocked.customData).not.toHaveProperty("acuteLockKeepsOptOut");
+    expect(optedOutBesidesLock(pinnedLocked, true)).toBe(true);
+    expect(optedOutBesidesLock(lockedOnly, true)).toBe(false);
   });
 });
 

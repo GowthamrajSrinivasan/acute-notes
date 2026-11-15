@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { AGENT_STATE_LIMITS, autoAcceptable, boundedInverse, changeRecord, diffScenes, planRevert, retain, summarizeArgs, type AgentChangeRecord } from "./agentState";
-import { parseChangeSet, type ChangeSet } from "./changeSet";
+import { AGENT_STATE_LIMITS, autoAcceptable, boundedInverse, NEVER_AUTO_ACCEPTED, changeRecord, diffScenes, planRevert, retain, summarizeArgs, type AgentChangeRecord } from "./agentState";
+import { parseChangeSet, type ChangeSet, type ProposedChange } from "./changeSet";
 import { withDecisions } from "@/ai/reconcile/conflicts";
 
 type El = { id: string; type: string; version: number; isDeleted: boolean; customData?: Record<string, unknown>; text?: string; containerId?: string | null; x?: number };
@@ -211,5 +211,20 @@ describe("autoAcceptable (D44)", () => {
     expect(autoAcceptable({ changes: [{ kind: "update_node", target: "a", semantics: { kind: "constraint" } }] })).toBe(false);
     expect(autoAcceptable({ changes: [{ kind: "update_node", target: "a", semantics: { enforce: true } }] })).toBe(false);
     expect(autoAcceptable({ changes: [shape()], conflicts: [{ target: "a", apply: { kind: "remove", target: "a" } }] })).toBe(false);
+  });
+  // User decision 2 (2026-11-15): "Never automatically accept a destructive replacement".
+  it("never a destructive kind (update_block, update_shape, remove, restore), alone or among safe changes", () => {
+    const destructive: ProposedChange[] = [
+      { kind: "update_block", target: "a", content: [{ type: "paragraph", content: "replaced" }] },
+      { kind: "update_block", target: "a", content: [{ type: "paragraph", content: "replaced" }], expectedFingerprint: "c1" },
+      { kind: "update_shape", target: "a", label: "relabelled", stableNodeKey: "k" },
+      { kind: "remove", target: "a" },
+      { kind: "restore", target: "a", element: { id: "a", type: "rectangle" } },
+    ];
+    for (const c of destructive) {
+      expect(autoAcceptable({ changes: [c] }), c.kind).toBe(false);
+      expect(autoAcceptable({ changes: [shape("decision"), c] }), c.kind).toBe(false);
+    }
+    expect([...NEVER_AUTO_ACCEPTED].sort()).toEqual(["remove", "restore", "update_block", "update_shape"]);
   });
 });

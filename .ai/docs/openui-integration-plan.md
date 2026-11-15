@@ -108,6 +108,14 @@ dev demo section 3). All interaction is component-local state, a bound `$variabl
 **Verified:** `interactions.test.tsx` and `study.test.ts`, rendered through the real `Renderer` and clicked (happy-dom).
 **Gap:** only one card per `root`, so two cards sharing a `$variable` across separate Renderers isn't demonstrated.
 
+> **Parked by the user, 2026-11-16:** Phases 4–5, including promotion P1+, are parked. The new goal is OpenUI-rendered
+> blocks on the canvas itself: [openui-canvas-rendering-plan-2026-11-16.md](./openui/openui-canvas-rendering-plan-2026-11-16.md).
+> Already-landed work stays:
+> - P0 promotion fixes;
+> - placement defaults (decisions 1 and 3);
+> - the `update_block` before/after view, formatting carry-over and auto-accept guard (decision 2);
+> - the Repo Map hold.
+
 ### Phase 4 — Knowledge evolution ⏸ **blocked — see §2**
 
 - [ ] Connect interactive decisions to reconciliation.
@@ -117,6 +125,25 @@ dev demo section 3). All interaction is component-local state, a bound `$variabl
 - [ ] Preserve version history and provenance.
 
 **Acceptance:** users can safely evolve their knowledge rather than creating disconnected summaries.
+
+> **User decisions, 2026-11-15** (Phase 4):
+> 1. **Router default.** When the router says new card, don't preselect "A new card on its own". The dialog starts
+>    with nothing selected and needs the user's confirmation. No changes to routing weights.
+> 2. **Agent edits.** Whole-block proposals go through the existing reviewed ChangeSet path, with a before/after diff
+>    and unrelated content kept. A destructive replacement is never auto-accepted. Claim-level agent edits are a
+>    separate Phase 5 capability; no new agent write tool.
+> 3. **Contradictory, ambiguous or unclear placements.** Nothing is preselected; the user picks the target and the
+>    action. The dialog has a Keep existing / No change option, and nothing is silently overwritten.
+> 4. **Promotion.** A separate promotion record, plus tracking modes `managed` / `excluded` / `canonical`. No new
+>    `ProposedChange` kind. The `AIMetadata` change needs the integrator's approval first, covering schema and
+>    migration, compatibility with `excludeFromReconciliation`, the provenance readers, reconciliation in each mode,
+>    and undo, reload and source-version behaviour. Production activation is separate.
+>
+> **Conditions.** Phase 4 is neither committed nor activated before the manual results and the shared-contract
+> sign-off. No paid generation without explicit authorization.
+>
+> **Status, 2026-11-15:** decisions 1–3 are being implemented. The promotion-contract proposal is being drafted
+> (`promotion-contract-proposal-2026-11-15.md`).
 
 ### Phase 5 — Agent integration ⏸ **blocked — see §2**
 

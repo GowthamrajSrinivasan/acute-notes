@@ -9,6 +9,7 @@ import { getPendingChanges } from "@/ai/changes/pendingChanges";
 import { splitLocally } from "@/ai/density/splitLocally";
 import { NOTHING_TO_SPLIT_LOCALLY, NothingToSplitError, proposeSplit, visualizeBetter, type SplitTarget } from "@/ai/density/visualizeBetter";
 import { splitLinkOf } from "@/ai/reconcile/split";
+import { isUserOwnedCard } from "@/ai/reconcile/tracking";
 import { AIRuntime } from "@/ai/runtime";
 import { gatherRenderContext } from "@/components/canvas/renderPlanContext";
 import { getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
@@ -26,6 +27,9 @@ export class BlockUnavailableError extends Error {
   }
 }
 
+/** A pinned note or an added passage isn't split (promotion-contract-proposal-2026-11-15 N4, Q12): it stays the user's one card. */
+export const OWN_CARD_NOT_SPLIT = "This is a pinned note or a passage you added, so it isn't split: it stays one card. Nothing was changed.";
+
 /** A block's name: its own title, else its first heading, else "Details" (a table's header row is never a name). */
 function blockLabel(rec: DocumentRecord): string {
   const title = rec.title.trim();
@@ -41,6 +45,7 @@ function splitTargetOf(api: ExcalidrawImperativeAPI, elementId: string): { rec: 
   const getDocument = (id: string) => getDocumentStore().get(id);
   const rec = ref?.kind === "rich-block" ? getDocument(ref.documentId) : null;
   if (!el || !rec) throw new BlockUnavailableError();
+  if (isUserOwnedCard(el, getDocument)) throw new NothingToSplitError(OWN_CARD_NOT_SPLIT);
   return {
     rec,
     target: {

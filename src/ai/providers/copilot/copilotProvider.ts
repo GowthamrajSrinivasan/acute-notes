@@ -6,6 +6,7 @@
  * the only other place allowed to know about `CopilotHostRuntime`.
  */
 import { AIError, isAIErrorKind } from "@/ai/errors";
+import { oneRequestPolicyOf, sendOneRequest } from "@/ai/requestPolicy";
 import type { HostByokProvider } from "@/ai/host/hostRuntime";
 import type { AICapabilities, AIModel, AIProvider, AIRequest, AIResponse, AIStreamChunk, ConnectionTestResult } from "@/ai/types";
 
@@ -79,6 +80,11 @@ export function createCopilotProvider(config: CopilotProviderConfig = {}): AIPro
     };
   }
 
+  // The output cap reaches the model only on a BYOK connection (see `capabilities.outputCap` below).
+  const oneRequest = { id: config.id ?? "copilot", capped: Boolean(config.byok) };
+  const generate = (request: AIRequest): Promise<AIResponse> =>
+    sendOneRequest(request, oneRequest, (r) => postJson<AIResponse>("/api/ai/run", toWireRequest(r), r.signal));
+
   return {
     id: config.id ?? "copilot",
     name: config.name ?? "GitHub Copilot",
@@ -111,11 +117,16 @@ export function createCopilotProvider(config: CopilotProviderConfig = {}): AIPro
       }
     },
 
-    async generate(request: AIRequest): Promise<AIResponse> {
-      return postJson<AIResponse>("/api/ai/run", toWireRequest(request), request.signal);
-    },
+    generate,
 
     async *stream(request: AIRequest): AsyncIterable<AIStreamChunk> {
+      // A one-request task (`ai/requestPolicy.ts`) goes through the guarded one-shot route instead; its reply arrives whole.
+      if (oneRequestPolicyOf(request.task)) {
+        const response = await generate(request);
+        if (response.text) yield { delta: response.text, done: false };
+        yield { delta: "", done: true };
+        return;
+      }
       let res: Response;
       try {
         res = await fetch(`${baseUrl}/api/ai/stream`, {

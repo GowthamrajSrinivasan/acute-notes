@@ -9,15 +9,22 @@
  * The OpenUI Lang itself is not stored: once pinned, the card is BlockNote content the user edits like any other, and
  * no new `AIMetadata` field is needed. A `passage` card is opted out of updates (`excludeFromReconciliation`), so the
  * Intelligent Update Engine's patch path never touches it — the reason this phase is clear of that work (§2).
+ *
+ * The card's key is unique per generation run (`promotionKey`, promotion-contract-proposal P0, R3): two runs both
+ * have a "g1", and the old `openui § g1` gave both pins one key.
  */
 import { type ChangeSet } from "@/ai/changes/changeSet";
 import type { CardReview } from "@/ai/fidelity/contracts";
+import { promotionKey } from "@/ai/reconcile/tracking";
 import { renderVisualPlan } from "@/ai/renderer/render";
 import { validateVisualPlan } from "@/ai/visual-plan/validate";
 import { newId } from "@/domain/ids";
 
 export interface PromotableNote {
+  /** The note's key within its generation run ("g3"). */
   key: string;
+  /** The generation run it came from (`generations.start`): with `key`, the pinned card's unique stable key. */
+  generationId: string;
   title: string;
   body: string;
   detail?: string;
@@ -39,7 +46,7 @@ export async function promotionSet(
   context: Parameters<typeof renderVisualPlan>[1]["context"],
   parseMarkdown?: Parameters<typeof renderVisualPlan>[1]["parseMarkdown"],
 ): Promise<{ set: ChangeSet; key: string }> {
-  const stableKey = `openui § ${note.key}`;
+  const stableKey = promotionKey(note.generationId, note.key);
   const plan = validateVisualPlan({
     version: 1,
     template: "sectioned",

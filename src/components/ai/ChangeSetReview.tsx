@@ -57,6 +57,7 @@ import { denseBlocks, useDenseBlocks } from "@/components/ai/denseBlocksStore";
 import { labelFontsReady, loadLabelFonts, preloadLabelFont } from "@/components/canvas/changeSetWriter";
 import { ChevronDownIcon, SparkleIcon } from "@/components/common/icons";
 import { AnalysisRow } from "@/components/ai/AnalysisRow";
+import { BlockUpdateDiffs, blockUpdateDiffs } from "@/components/ai/BlockUpdateDiffs";
 import { CoverageRow } from "@/components/ai/CoverageRow";
 import { SectionChips } from "@/components/ai/SectionChips";
 import { RearrangeRow } from "@/components/ai/RearrangeRow";
@@ -355,7 +356,7 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
         <div className="acute-review" role="status" aria-label="Agent session">
           <SparkleIcon />
           <span className="acute-review__summary">
-            Agent session: project updates are accepted as they arrive ({n} auto-accepted this session; removals, reverts, constraints and enforced decisions still wait for you). Every one is in the agent log, where it can be reverted.
+            Agent session: project updates are accepted as they arrive ({n} auto-accepted this session; block replacements, removals, reverts, constraints and enforced decisions still wait for you). Every one is in the agent log, where it can be reverted.
           </span>
           <span className="acute-review__actions">
             <button type="button" className="acute-ask-ai__secondary" onClick={() => sessionsAuto.forEach((o) => sessionAutoAccept.disableSession(home.canvasId, o.session))}>
@@ -369,7 +370,7 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
       return (
         <div className="acute-review" role="status" aria-label="Mapping session">
           <SparkleIcon />
-          <span className="acute-review__summary">Mapping session: sections are accepted as they arrive (conflicts and removals still wait for you).</span>
+          <span className="acute-review__summary">Mapping session: sections are accepted as they arrive (conflicts, removals and block replacements still wait for you).</span>
           <span className="acute-review__actions">
             <button type="button" className="acute-ask-ai__secondary" onClick={() => sessionAutoAccept.disable(autoOn)}>
               Turn off auto-accept
@@ -523,7 +524,7 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
         </span>
         <span className="acute-review__actions">
           {set.mergeKey && set.session && !sessionAutoAccept.isRemote(set.session) && (
-            <label className="acute-review__auto" title="Write each section as it arrives, as its own undo step, for this mapping session only. Conflicts and removals still wait for you.">
+            <label className="acute-review__auto" title="Write each section as it arrives, as its own undo step, for this mapping session only. Conflicts, removals and block replacements still wait for you.">
               <input
                 type="checkbox"
                 checked={autoOn === set.mergeKey}
@@ -618,6 +619,15 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
             />
           </label>
         )}
+        {/* Decision 2: every clean whole-block update shows its before/after (collapsed), visible before Accept. */}
+        <BlockUpdateDiffs
+          key={set.operationId}
+          diffs={blockUpdateDiffs(resolved.changes, (target) => currentText(api.getSceneElements() as unknown as readonly SceneElement[], (id) => getDocumentStore().get(id), target))}
+          onShow={(target) => {
+            const b = boxOf(target);
+            if (b) focusBox(api, b);
+          }}
+        />
         {conflicts.length > 0 && (
           <ul className="acute-review__conflicts" aria-label="Changes that need your input">
             {conflicts.map((c) => (
