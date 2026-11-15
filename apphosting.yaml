@@ -1,0 +1,41 @@
+# Firebase App Hosting (master plan "Deferred — Cloud", C1). Deployed from local source with the Firebase CLI
+# (`firebase deploy --only apphosting`); no GitHub connection.
+#
+# This first deploy ships the build exactly as `.env.production` defines it: AI and MCP off, so `/api/ai/*` and
+# `/api/mcp/*` answer 404 and the app is the canvas without AI. Turning AI on for the hosted app needs the rest of C1
+# first (hosted mode, Copilot hidden and refused, AI route hardening, security headers).
+
+runConfig:
+  minInstances: 0
+  maxInstances: 2
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 1024
+
+scripts:
+  # Webpack, as the desktop build: the Turbopack production build of the workspace page hangs (next.config.ts).
+  # `npm run build` keeps the `prebuild` step (Excalidraw assets).
+  buildCommand: npm run build -- --webpack
+
+env:
+  # Fail closed even if a later build turns AI on before C1 is done: a request with no user credentials is refused
+  # instead of falling back to the host's own identity (src/app/api/ai/aiHost.ts).
+  - variable: AI_HOST_MODE
+    value: server
+    availability:
+      - RUNTIME
+  # Server-enforced MCP switch: off on the hosted app (the MCP bridge is local-only by design).
+  - variable: MCP_FEATURE
+    value: "off"
+    availability:
+      - RUNTIME
+  - variable: NEXT_PUBLIC_AI_FEATURE
+    value: "off"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_MCP_FEATURE
+    value: "off"
+    availability:
+      - BUILD
+      - RUNTIME
