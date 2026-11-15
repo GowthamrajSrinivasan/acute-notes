@@ -1,0 +1,179 @@
+{
+  "cases": [
+    {
+      "name": "inject_429",
+      "status": "call_error",
+      "failure": "transport",
+      "arrivals": 1,
+      "forwarded": 0,
+      "carried": {
+        "maxTokens": 760,
+        "temperature": 0,
+        "fields": [
+          "max_tokens",
+          "messages",
+          "model",
+          "reasoning_effort",
+          "temperature"
+        ]
+      },
+      "expectedMaxTokens": 760,
+      "reserved": 1424,
+      "budgetTokensAfter": 1424,
+      "ledgerState": "failed",
+      "requestBytes": 9844,
+      "ms": 7946,
+      "pass": true,
+      "checks": {
+        "exactlyOneArrival": true,
+        "nothingForwarded": true,
+        "callFailed": true,
+        "pairFailed": true,
+        "reservationKept": true,
+        "noExtraProviderRequests": true
+      }
+    },
+    {
+      "name": "inject_500",
+      "status": "call_error",
+      "failure": "transport",
+      "arrivals": 1,
+      "forwarded": 0,
+      "carried": {
+        "maxTokens": 760,
+        "temperature": 0,
+        "fields": [
+          "max_tokens",
+          "messages",
+          "model",
+          "reasoning_effort",
+          "temperature"
+        ]
+      },
+      "expectedMaxTokens": 760,
+      "reserved": 1424,
+      "budgetTokensAfter": 1424,
+      "ledgerState": "failed",
+      "requestBytes": 9844,
+      "ms": 2114,
+      "pass": true,
+      "checks": {
+        "exactlyOneArrival": true,
+        "nothingForwarded": true,
+        "callFailed": true,
+        "pairFailed": true,
+        "reservationKept": true,
+        "noExtraProviderRequests": true
+      }
+    },
+    {
+      "name": "live",
+      "status": "answered",
+      "arrivals": 1,
+      "forwarded": 1,
+      "carried": {
+        "maxTokens": 760,
+        "temperature": 0,
+        "fields": [
+          "max_tokens",
+          "messages",
+          "model",
+          "reasoning_effort",
+          "temperature"
+        ]
+      },
+      "expectedMaxTokens": 760,
+      "providerRequests": 1,
+      "usedTokens": 2201,
+      "reserved": 1424,
+      "budgetTokensAfter": 2201,
+      "ledgerState": "classified",
+      "lateOverwriteIgnored": true,
+      "requestBytes": 9844,
+      "ms": 5943,
+      "pass": true,
+      "checks": {
+        "exactlyOneArrival": true,
+        "exactlyOneForwarded": true,
+        "carriesMaxTokens": true,
+        "carriesTemperature0": true,
+        "answered": true,
+        "pairClassified": true,
+        "providerRequests1": true,
+        "usageReported": true,
+        "settledToUsage": true,
+        "lateOverwriteIgnored": true
+      }
+    }
+  ],
+  "totalForwarded": 1,
+  "refusedByCeiling": 0,
+  "arrivals": [
+    {
+      "n": 1,
+      "at": 1794767067542,
+      "method": "POST",
+      "path": "/chat/completions",
+      "bytes": 9844,
+      "outcome": "injected",
+      "carried": {
+        "maxTokens": 760,
+        "temperature": 0,
+        "fields": [
+          "max_tokens",
+          "messages",
+          "model",
+          "reasoning_effort",
+          "temperature"
+        ]
+      },
+      "status": 429
+    },
+    {
+      "n": 1,
+      "at": 1794767075212,
+      "method": "POST",
+      "path": "/chat/completions",
+      "bytes": 9844,
+      "outcome": "injected",
+      "carried": {
+        "maxTokens": 760,
+        "temperature": 0,
+        "fields": [
+          "max_tokens",
+          "messages",
+          "model",
+          "reasoning_effort",
+          "temperature"
+        ]
+      },
+      "status": 500
+    },
+    {
+      "n": 1,
+      "at": 1794767077344,
+      "method": "POST",
+      "path": "/chat/completions",
+      "bytes": 9844,
+      "outcome": "forwarded",
+      "carried": {
+        "maxTokens": 760,
+        "temperature": 0,
+        "fields": [
+          "max_tokens",
+          "messages",
+          "model",
+          "reasoning_effort",
+          "temperature"
+        ]
+      },
+      "status": 200
+    }
+  ],
+  "passed": true,
+  "costUsdUpperBound": 0.00037417,
+  "price": {
+    "input": 3.7e-8,
+    "output": 1.7000000000000001e-7
+  }
+}

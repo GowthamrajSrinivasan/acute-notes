@@ -11,7 +11,7 @@ describe.skipIf(process.env.COPILOT_RETRY_SPIKE !== "1")("live guard smoke test 
   it("injected 429 and 500: one arrival, nothing forwarded; live: one forwarded, providerRequests 1", async () => {
     const up = await startMockUpstream();
     try {
-      const r = await runGuardSmoke({ upstream: up.url, apiKey: "local-mock", model: "mock-model", maxForwarded: 1, maxTokens: 5_000, rehearsalTokenCap: 5_000 });
+      const r = await runGuardSmoke({ upstream: up.url, apiKey: "local-mock", model: "mock-model", maxForwarded: 1, maxTokens: 4_500 });
       console.log(JSON.stringify({ ...r, arrivals: r.arrivals.map((a) => `${a.method} ${a.path} ${a.outcome} ${a.status} ${a.bytes}B max_tokens=${a.carried?.maxTokens} temperature=${a.carried?.temperature}`) }, null, 1));
       expect(r.cases.map((c) => [c.name, c.pass, c.checks])).toEqual(r.cases.map((c) => [c.name, true, Object.fromEntries(Object.keys(c.checks).map((k) => [k, true]))]));
       expect(r.passed).toBe(true);

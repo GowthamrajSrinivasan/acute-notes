@@ -13,7 +13,29 @@
     "http429": 1,
     "http500": 1
   },
-  "liveProvider": "not yet verified (guardSmoke.contract.test.ts prepared and frozen; awaiting a stated ceiling)",
+  "liveProvider": {
+    "result": "PASS",
+    "run": "evaluation/update-engine/guard-smoke/runs/2026-11-15-guard-smoke",
+    "date": "2026-11-15",
+    "provider": "AICredits gpt-oss-120b via BYOK through the Copilot SDK host runtime",
+    "injected429": {
+      "arrivals": 1,
+      "forwarded": 0
+    },
+    "injected500": {
+      "arrivals": 1,
+      "forwarded": 0
+    },
+    "live": {
+      "arrivals": 1,
+      "forwarded": 1,
+      "providerRequests": 1,
+      "maxTokens": 760,
+      "temperature": 0,
+      "usedTokens": 2201,
+      "reservedByApp": 1424
+    }
+  },
   "wireFields": {
     "unguarded": "model, messages, reasoning_effort, temperature 1 — no output cap, not the caller temperature",
     "guarded": "max_tokens and the caller temperature written by the guard (copilotWireFields.spike.test.ts)"

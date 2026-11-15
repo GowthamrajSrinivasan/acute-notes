@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 
 const ROOT = process.cwd();
 const read = <T,>(p: string) => JSON.parse(readFileSync(join(ROOT, p), "utf8")) as T;
-const verified = read<{ sdkVersion: string; guarded: Record<string, number> }>("src/ai/host/copilot/retryGuardVerification.json");
+const verified = read<{ sdkVersion: string; guarded: Record<string, number>; liveProvider: { result?: string; live?: { forwarded: number; providerRequests: number } } }>("src/ai/host/copilot/retryGuardVerification.json");
 
 describe("Copilot SDK pin (§12.29)", () => {
   it("package.json declares the SDK as an exact version (no range)", () => {
@@ -23,5 +23,9 @@ describe("Copilot SDK pin (§12.29)", () => {
   });
   it("the recorded verification shows one physical request per guarded call", () => {
     expect(verified.guarded).toEqual({ success: 1, http429: 1, http500: 1 });
+  });
+  it("the live check through the real SDK and a real provider passed at this version (§12.32)", () => {
+    expect(verified.liveProvider.result).toBe("PASS");
+    expect(verified.liveProvider.live).toMatchObject({ forwarded: 1, providerRequests: 1 });
   });
 });

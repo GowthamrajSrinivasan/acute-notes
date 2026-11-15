@@ -27,7 +27,8 @@ import type { HostByokProvider, HostRuntime } from "@/ai/host/hostRuntime";
 import type { AIProvider } from "@/ai/types";
 import { startCountingProxy, worstCaseTokens, type ProxyArrival } from "./countingProxy";
 
-export const GUARD_SMOKE_LIMITS = Object.freeze({ forwarded: 1, tokens: 4_000, usd: 0.01 });
+/** Approved 2026-11-15 for THIS test only: 4,500 tokens (the normal per-call limit is unchanged). */
+export const GUARD_SMOKE_LIMITS = Object.freeze({ forwarded: 1, tokens: 4_500, usd: 0.01 });
 
 /** An invented pair the rules leave "possible" (it goes to the AI); not from any evaluation set. */
 const PAIR = { a: "The Larchfield depot stores its spare tyres in Building C.", b: "The Larchfield depot stores its spare tyres in Building F." };
@@ -79,7 +80,7 @@ export async function runGuardSmoke(o: {
   apiKey: string;
   model: string;
   maxForwarded: number;
-  /** Worst-case token and dollar ceilings, checked by the proxy BEFORE forwarding (code caps: 4,000 tokens, $0.01). */
+  /** Worst-case token and dollar ceilings, checked by the proxy BEFORE forwarding (code caps: 4,500 tokens, $0.01). */
   maxTokens?: number;
   maxUsd?: number;
   price?: { input: number; output: number };

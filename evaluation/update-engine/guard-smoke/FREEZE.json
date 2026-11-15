@@ -3,9 +3,9 @@
   "frozenAt": "2026-11-15T17:13:22.528Z",
   "sdkVersion": "1.0.14",
   "files": {
-    "src/ai/contractTests/guardSmoke.ts": "c198fcbb2cee0517f0a3593fc2bbf90da53388c42ca899eeb00a94dd80880e2d",
-    "src/ai/contractTests/guardSmoke.contract.test.ts": "7e431bde719487140d3c1119410cf39c653628d85f100e4f3452e27f99385f8e",
-    "src/ai/contractTests/guardSmoke.rehearsal.test.ts": "acd78c1dbb75e5a2aaf4482a9c525507835caaea7ba1d73b4f321a012d82e837",
+    "src/ai/contractTests/guardSmoke.ts": "6248918b388cfc4a63b9ae0e89df3fa728af63765be98221ae85c3286e5ddb0c",
+    "src/ai/contractTests/guardSmoke.contract.test.ts": "a8e119238ecce98fdd09b11055674f2f90f07dd91ecd0ad248e09d945fe51b70",
+    "src/ai/contractTests/guardSmoke.rehearsal.test.ts": "cc2decb2c8b6beaad558c4ddde2ed8b8f3712ed26f6566935c4c244a541d4fc8",
     "src/ai/contractTests/countingProxy.ts": "893fb411e47b87a34fd7b5ac279c2c0f6fb124b54c1fa1138e3e99a33ed92a08",
     "src/ai/contractTests/countingProxy.test.ts": "a1500d4ec2354610fb0954aced7d9fa7c5959aaa895ec98c17f40f4439094a83",
     "src/ai/contractTests/mockUpstream.ts": "1e31237248a29dec6b161938b53cc34daf2a4dd13426c91cbf5de1f2897d70ba",
@@ -18,5 +18,16 @@
     "src/ai/consistency/judgeLedger.ts": "6836ba0373863c4bb34ff5689947f281f8c3e2beda9e0b79c4a692e004e698d1",
     "src/ai/consistency/candidates.ts": "a16335c30b2676820b524926c34010f5a8ec1dd8e6086b018fff68c6da038d8d",
     "src/ai/consistency/judge.ts": "abca40dc541af0b398427683437dc705a9143bd0b7e3eb384883233c063d6281"
-  }
+  },
+  "refrozen": [
+    {
+      "date": "2026-11-15",
+      "why": "Before any run: the token code cap raised 4,000 → 4,500 for this test only, as approved in the Stage 4f decision review (the worst-case estimate of the SDK request was 4,027); header comment updated. No behaviour change otherwise.",
+      "changed": [
+        "src/ai/contractTests/guardSmoke.ts",
+        "src/ai/contractTests/guardSmoke.contract.test.ts",
+        "src/ai/contractTests/guardSmoke.rehearsal.test.ts"
+      ]
+    }
+  ]
 }

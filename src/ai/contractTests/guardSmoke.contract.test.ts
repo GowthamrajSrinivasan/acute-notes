@@ -1,9 +1,9 @@
 /**
- * The LIVE retry-guard smoke test (plan §12.30) — PAID, ONE run, NOT YET AUTHORIZED. Needs a separately stated call and
- * spending ceiling (review 2026-11-15). Proposed: ≤ 1 forwarded provider request, ≤ 4,000 worst-case tokens, ≤ $0.01.
+ * The LIVE retry-guard smoke test (plan §12.30–12.32) — PAID, ONE run. Approved 2026-11-15 (Stage 4f decision review):
+ * ≤ 1 forwarded provider request, ≤ 4,500 worst-case tokens (this test only), ≤ $0.01.
  *
  *   COPILOT_GUARD_SMOKE_RUN=2026-11-16-guard-smoke COPILOT_GUARD_SMOKE_APPROVED_BY="<name>" \
- *     COPILOT_GUARD_SMOKE_MAX_REQUESTS=1 COPILOT_GUARD_SMOKE_MAX_TOKENS=4000 COPILOT_GUARD_SMOKE_MAX_USD=0.01 \
+ *     COPILOT_GUARD_SMOKE_MAX_REQUESTS=1 COPILOT_GUARD_SMOKE_MAX_TOKENS=4500 COPILOT_GUARD_SMOKE_MAX_USD=0.01 \
  *     npx vitest run --config vitest.contract.config.ts guardSmoke
  *
  * The real Copilot SDK host runtime (pinned SDK) → the counting proxy (BYOK baseUrl) → AICredits, gpt-oss-120b. Counted at
