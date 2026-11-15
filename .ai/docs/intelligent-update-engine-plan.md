@@ -3236,6 +3236,64 @@ Wiring follows the unseen5 recording either way.
 
 **Tests:** consistency, contract, host and provider tests: 329 passed, 10 skipped (opt-in).
 
+### 12.33 Direct HTTP chosen; unseen5 RECORDED (approval used up — never rerun) (2026-11-16)
+
+**Decision (2026-11-16, "Stage 4f Decision"):**
+- **Stage 4f consistency judgments use the dedicated direct HTTP path only.**
+- Not approved: SDK `systemMessage: "replace"`. Deferred: SDK prompt customization and an SDK-specific 5,200 limit.
+- The SDK retry guard and its tests are preserved. `requestOverhead.ts` stays an unused, documented prototype.
+- unseen5 approved at ≤ 9 calls, **≤ 21,300 reserved tokens**, ≤ $0.05, once, direct HTTP, no retries, frozen code; provided the ceiling is enforced safely without modifying frozen code.
+- This round's safety work: commit approved. Pushed as `f5050ba`, `5497bb8`, `5036eec`.
+- **4f OFF**; a good result only supports an activation review.
+
+**External execution envelope** (new; no frozen file changed — all 22 of unseen5's verified before the run):
+- `contractTests/executionEnvelope.ts`, loaded around the frozen recorder through `vitest.envelope.config.ts` → `envelope.setup.ts` (wraps `fetch`).
+- Before each model request it requires:
+  - at most 9 model requests (no retry, fallback or repair can pass);
+  - a numeric `max_tokens`;
+  - **tokens actually reported so far + this request's worst case ≤ 21,300**, where worst case = ⌈characters ÷ 4⌉ + 64 (template margin, above the 39 measured) + `max_tokens`;
+  - the same in dollars ≤ $0.05.
+- A failing request is refused locally and recorded as a failure.
+- Past spend is exact and only the next request is estimated, so the thin headroom of the reservation sum doesn't matter.
+- 7 offline tests. Every decision is logged to `envelope.json`.
+
+**Run `unseen5/runs/2026-11-15-unseen5` — classify step, once.** Approved by the user (2026-11-16); pinned in `unseen5.test.ts`; the recorder refuses a rerun (verified).
+- **Execution:** 9/9 calls sent and answered (HTTP 200), 0 refused by the envelope; **86/86 pairs classified**, 0 failed, 0 pending.
+- **Usage:** 16,862 tokens reported (reserved 20,930); cost $0.0016 (envelope upper bound $0.0029).
+
+**Semantic result (frozen scorer, §12.21 pipeline; denominator = all 90 labelled pairs, 40 contradictions):**
+
+| Measure | All recorded answers | Budget-constrained (y24 waits, counted missed) | Gate |
+|---|---|---|---|
+| candidate generation | 40/40 | 40/40 | — |
+| budgeted selection | — | 39/40 (y24 outranked by 11) | — |
+| **recall** | **36/40 = 90 %** | **35/40 = 87.5 %** | ≥ 85 % ✓ |
+| **strict recall** | **31/40 = 77.5 %** | **31/40 = 77.5 %** | ≥ 85 % **✗** |
+| **conflict precision** | **31/31 = 100 %** | 31/31 = 100 % | ≥ 90 % ✓ |
+| **context false positives** | **0/10 = 0 %** | 0/10 | ≤ 10 % ✓ |
+| unanswered / pending | 0 | 1 (y24) | accounted |
+| candidate overflow (pool simulation) | 125 pairs pending → 13 Retry calls, about 3 days (the frozen simulation assumes 50 calls/day; the real 90k-token day allows about 39) | | accounted |
+
+Per pair:
+- **missed by the AI:**
+  - y12 (a 30 vs 28 cap; AI "compatible");
+  - y31, y61, y86 (AI "compatible_context": scope/time read as different context);
+- **downgraded by the guards to "possible" (counted in recall, not strict recall):** y05, y24, y49, y65, y83. The AI said contradicts; the context, non-exclusive-swap or thin-evidence guards made each a review item instead of a conflict.
+- **ambiguous shown as conflict (unsupported, outside precision):** y20, y45;
+- **excluded by the screen:** 5 compatible pairs only; no false exclusion.
+
+**Reading:**
+- Detection and precision pass. **Strict recall fails (77.5 % < 85 %), so the activation gates are not met.**
+- The gap is 4 AI misses plus 5 guard downgrades.
+- Any fix would be tuning on unseen5, so it needs a new decision and, to measure it, a new sealed set. unseen5 is now evaluation evidence like unseen4: never re-scored as unseen.
+
+**Rules-only and near-miss routings** (same answers, for comparison):
+- recall 8 % and 20 %;
+- precision 75 % and 89 %;
+- the frozen recorder's rule false positive y11 ("7" vs "twenty-eight") persists in those routings only.
+
+**Reporting probe:** `unseen5Report.probe.test.ts` (opt-in `UNSEEN5_PROBE=1`) recomputes the table above from the frozen files with the frozen scorer. It reads only; it writes nothing.
+
 ## 13. Stage 5 — semantic locate and anchor (plan, 2026-11-14)
 
 **Status: planned, nothing built.** Goal: find the card and the exact item a piece of new information belongs to,
