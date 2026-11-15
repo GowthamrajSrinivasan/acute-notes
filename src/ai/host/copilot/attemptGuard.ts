@@ -35,12 +35,54 @@ class RefusedWebSocket extends CopilotWebSocketHandler {
   }
 }
 
+/**
+ * Fields the guard writes into the one model request (§12.30). Measured on the wire (copilotWireFields.spike.test.ts, SDK
+ * 1.0.14, BYOK chat completions): the runtime sends `model`, `messages`, `reasoning_effort` and `temperature: 1` — NO
+ * output cap (`ProviderConfig.maxOutputTokens` never reaches the request) and not the caller's temperature. So the guard
+ * sets them itself on the request it forwards, and records what it set.
+ */
+export interface WireOverrides {
+  maxTokens?: number;
+  temperature?: number;
+}
+
 export class SingleAttemptRequestHandler extends CopilotRequestHandler {
   readonly counts: AttemptCounts = { sent: 0, refused: 0 };
+  /** What the forwarded request carried after the overrides (for verification and tests). */
+  applied?: { maxTokens?: number; temperature?: number; bodyRewritten: boolean };
+
+  constructor(private readonly overrides: WireOverrides = {}) {
+    super();
+  }
 
   /** The physical send. Overridable in tests; the SDK's default is `fetch(request, { signal })`. */
   protected forward(request: Request, ctx: CopilotRequestContext): Promise<Response> {
     return super.sendRequest(request, ctx);
+  }
+
+  /** Writes the overrides into a chat-completions JSON body. A body that isn't JSON is forwarded unchanged (recorded). */
+  private async withOverrides(request: Request): Promise<Request> {
+    const { maxTokens, temperature } = this.overrides;
+    if (maxTokens === undefined && temperature === undefined) return request;
+    const text = await request.clone().text();
+    let body: Record<string, unknown>;
+    try {
+      body = JSON.parse(text) as Record<string, unknown>;
+    } catch {
+      this.applied = { bodyRewritten: false };
+      return request;
+    }
+    // Chat completions read `max_tokens` (reasoning included on these endpoints); a newer field set by the runtime is
+    // replaced too, so only one cap is in force.
+    if (maxTokens !== undefined) {
+      delete body.max_completion_tokens;
+      body.max_tokens = maxTokens;
+    }
+    if (temperature !== undefined) body.temperature = temperature;
+    this.applied = { ...(maxTokens !== undefined ? { maxTokens } : {}), ...(temperature !== undefined ? { temperature } : {}), bodyRewritten: true };
+    const headers = new Headers(request.headers);
+    headers.delete("content-length");
+    return new Request(request.url, { method: request.method, headers, body: JSON.stringify(body), signal: request.signal });
   }
 
   protected override async sendRequest(request: Request, ctx: CopilotRequestContext): Promise<Response> {
@@ -53,7 +95,7 @@ export class SingleAttemptRequestHandler extends CopilotRequestHandler {
       });
     }
     this.counts.sent++;
-    return this.forward(request, ctx);
+    return this.forward(await this.withOverrides(request), ctx);
   }
 
   protected override async openWebSocket(ctx: CopilotRequestContext): Promise<CopilotWebSocketHandler> {

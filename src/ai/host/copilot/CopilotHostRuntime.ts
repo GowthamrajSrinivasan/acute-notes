@@ -89,7 +89,12 @@ export function createCopilotHostRuntime(deps: CopilotHostRuntimeDeps = DEFAULT_
     id: "copilot",
 
     async generate(input: HostGenerateInput): Promise<AIResponse> {
-      const guard = input.request.singleAttempt ? new SingleAttemptRequestHandler() : undefined;
+      // §12.30: the SDK puts neither the output cap nor the caller's temperature on a BYOK request, so the guard writes
+      // them into the one request it forwards (BYOK only: a subscription connection's cap stays "ignored").
+      const r = input.request;
+      const guard = r.singleAttempt
+        ? new SingleAttemptRequestHandler(input.provider ? { ...(Number.isInteger(r.maxTokens) && (r.maxTokens ?? 0) > 0 ? { maxTokens: r.maxTokens } : {}), ...(typeof r.temperature === "number" ? { temperature: r.temperature } : {}) } : {})
+        : undefined;
       const response = await withSession(input, async (session) => {
         let usage: AIUsage = { provider: "copilot", model: input.request.model ?? "unknown" };
         let capturedError: CopilotErrorEventData | undefined;

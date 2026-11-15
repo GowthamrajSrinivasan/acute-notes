@@ -1,0 +1,21 @@
+{
+  "note": "The Copilot SDK version whose retry behaviour and single-attempt guard were last verified (plan §12.29). sdkPin.test.ts fails when the installed or declared SDK differs: on any upgrade, rerun COPILOT_RETRY_SPIKE=1 npx vitest run src/ai/host/copilot/copilotRetry.spike.test.ts, record the new results here, and only then enable model calls.",
+  "sdkVersion": "1.0.14",
+  "verifiedAt": "2026-11-15",
+  "method": "local mock OpenAI-compatible provider over BYOK; requests counted at the server",
+  "unguarded": {
+    "success": 1,
+    "http429": 6,
+    "http500": 6
+  },
+  "guarded": {
+    "success": 1,
+    "http429": 1,
+    "http500": 1
+  },
+  "liveProvider": "not yet verified (guardSmoke.contract.test.ts prepared and frozen; awaiting a stated ceiling)",
+  "wireFields": {
+    "unguarded": "model, messages, reasoning_effort, temperature 1 — no output cap, not the caller temperature",
+    "guarded": "max_tokens and the caller temperature written by the guard (copilotWireFields.spike.test.ts)"
+  }
+}

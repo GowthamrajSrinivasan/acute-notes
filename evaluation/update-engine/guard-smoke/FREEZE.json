@@ -1,0 +1,22 @@
+{
+  "purpose": "Live retry-guard smoke test (plan §12.31): harness, proxy, guard, host runtime and the judge path it drives, frozen BEFORE the paid run (approved 2026-11-15: ≤1 provider request, ≤4,000 tokens, ≤$0.01). Editing any of these makes the runner refuse. The verification record (retryGuardVerification.json) is updated after the run and is not frozen; the runner checks the installed SDK version against it.",
+  "frozenAt": "2026-11-15T17:13:22.528Z",
+  "sdkVersion": "1.0.14",
+  "files": {
+    "src/ai/contractTests/guardSmoke.ts": "c198fcbb2cee0517f0a3593fc2bbf90da53388c42ca899eeb00a94dd80880e2d",
+    "src/ai/contractTests/guardSmoke.contract.test.ts": "7e431bde719487140d3c1119410cf39c653628d85f100e4f3452e27f99385f8e",
+    "src/ai/contractTests/guardSmoke.rehearsal.test.ts": "acd78c1dbb75e5a2aaf4482a9c525507835caaea7ba1d73b4f321a012d82e837",
+    "src/ai/contractTests/countingProxy.ts": "893fb411e47b87a34fd7b5ac279c2c0f6fb124b54c1fa1138e3e99a33ed92a08",
+    "src/ai/contractTests/countingProxy.test.ts": "a1500d4ec2354610fb0954aced7d9fa7c5959aaa895ec98c17f40f4439094a83",
+    "src/ai/contractTests/mockUpstream.ts": "1e31237248a29dec6b161938b53cc34daf2a4dd13426c91cbf5de1f2897d70ba",
+    "src/ai/host/copilot/attemptGuard.ts": "5c5134031d143fd6075a490d0572c1f4177f986d0c043b2423a59de65429ab95",
+    "src/ai/host/copilot/CopilotHostRuntime.ts": "0faa21f303a879c48c978787726b6fefe5d26d02659bd1c805c1c4a620ebc8cc",
+    "src/ai/host/copilot/copilotClient.ts": "2487b848ce0878b05dcd53e9886fa79b73afcd1559305f6aa3e0688c28bd03ba",
+    "src/ai/host/copilot/hardening.ts": "f6f63b703e943ca10b2804d7fb8094fa128b6607c79bfedfbbead0d29080b889",
+    "src/ai/host/copilot/errorMapping.ts": "f13e0c059e1f61d43050c81bcb261d5612ef431c797dac29afc36de813d58ae0",
+    "src/ai/consistency/judgeCall.ts": "8eadfa856d5c5110ceac9bb06d0f1d544d03d56d3d55293f4f6423241a115b40",
+    "src/ai/consistency/judgeLedger.ts": "6836ba0373863c4bb34ff5689947f281f8c3e2beda9e0b79c4a692e004e698d1",
+    "src/ai/consistency/candidates.ts": "a16335c30b2676820b524926c34010f5a8ec1dd8e6086b018fff68c6da038d8d",
+    "src/ai/consistency/judge.ts": "abca40dc541af0b398427683437dc705a9143bd0b7e3eb384883233c063d6281"
+  }
+}

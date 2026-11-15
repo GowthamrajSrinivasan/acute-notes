@@ -56,3 +56,39 @@ describe("SingleAttemptRequestHandler (§12.29): one physical model request per 
     expect(forwarded).toHaveLength(0);
   });
 });
+
+describe("SingleAttemptRequestHandler wire overrides (§12.30): the cap and temperature the SDK doesn't send", () => {
+  function overriding(overrides: ConstructorParameters<typeof SingleAttemptRequestHandler>[0]) {
+    const forwarded: Request[] = [];
+    class Spy extends SingleAttemptRequestHandler {
+      protected override forward(request: Request): Promise<Response> {
+        forwarded.push(request);
+        return Promise.resolve(new Response("{}"));
+      }
+    }
+    return { g: new Spy(overrides), forwarded };
+  }
+  const body = (o: unknown) => new Request("http://x.test/v1/chat/completions", { method: "POST", body: JSON.stringify(o), headers: { "content-type": "application/json" } });
+
+  it("writes max_tokens and temperature into the forwarded body, replacing any other cap field", async () => {
+    const { g, forwarded } = overriding({ maxTokens: 512, temperature: 0 });
+    await g.handle(body({ model: "m", messages: [], temperature: 1, max_completion_tokens: 9999 }), ctx);
+    const sent = JSON.parse(await forwarded[0]!.text()) as Record<string, unknown>;
+    expect(sent).toMatchObject({ model: "m", max_tokens: 512, temperature: 0 });
+    expect(sent).not.toHaveProperty("max_completion_tokens");
+    expect(g.applied).toEqual({ maxTokens: 512, temperature: 0, bodyRewritten: true });
+  });
+  it("no overrides: the request is forwarded untouched", async () => {
+    const { g, forwarded } = overriding({});
+    const r = body({ model: "m", temperature: 1 });
+    await g.handle(r, ctx);
+    expect(forwarded[0]).toBe(r);
+    expect(g.applied).toBeUndefined();
+  });
+  it("a body that isn't JSON is forwarded unchanged and recorded as not rewritten", async () => {
+    const { g, forwarded } = overriding({ maxTokens: 10 });
+    await g.handle(new Request("http://x.test/v1/chat/completions", { method: "POST", body: "not json" }), ctx);
+    expect(await forwarded[0]!.text()).toBe("not json");
+    expect(g.applied).toEqual({ bodyRewritten: false });
+  });
+});

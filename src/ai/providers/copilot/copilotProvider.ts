@@ -84,8 +84,10 @@ export function createCopilotProvider(config: CopilotProviderConfig = {}): AIPro
     name: config.name ?? "GitHub Copilot",
     authTypes: ["subscription", "api_key", "local"],
     transport: "ai_host_local",
-    // §12.25: a BYOK connection hands `maxTokens` to the model (SDK `ProviderConfig.maxOutputTokens`); a Copilot
-    // subscription session drops it.
+    // §12.25/§12.30: on a BYOK connection the cap reaches the model only on `singleAttempt` requests — the host's guard
+    // writes `max_tokens` into the request itself (measured: the SDK's `ProviderConfig.maxOutputTokens` never reaches the
+    // wire). Other BYOK requests are uncapped; only the consistency check relies on "passed", and it always sets
+    // `singleAttempt`. A Copilot subscription session drops the cap.
     // §12.29: `singleAttempt` is enforced by the host's request-handler guard (one model request sent, repeats refused).
     capabilities: { ...CAPABILITIES, outputCap: config.byok ? "passed" : "ignored", providerAttempts: "single" },
 
