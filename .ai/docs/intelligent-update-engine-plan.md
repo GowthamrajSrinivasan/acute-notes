@@ -3016,6 +3016,170 @@ Pinned in `regressions-unseen4.json` and `regressionsUnseen4.test.ts`: the 4 uns
    - wire `judge_consistency` into the app only through `providerJudgeTransport` (the guard);
    - live behaviour of the guard against a real BYOK provider and of the Copilot subscription path. A subscription connection is still refused by the cap rule, so the check never runs there.
 
+### 12.30 Integration checkpoint accepted; fresh-clone verification, SDK pin, guard wire fix, live smoke prepared, unseen5 frozen (2026-11-15, no paid call)
+
+**Review decision (2026-11-15, "Integration Checkpoint Review"):**
+- accepted: the committed checkpoint, the six-call result, the screening fixes (as offline regression fixes) and the `.gitattributes`/`.gitignore` changes;
+- approved: preparing a narrowly scoped live SDK verification; the paid smoke test needs a separately stated call and spending ceiling;
+- keep the SDK pinned and rerun the retry regression on any upgrade;
+- recommended: a fresh-clone verification of the pushed HEAD; document, rather than rewrite, intermediate commits that may not build;
+- next semantic set: independently authored, sealed, blind labels; no tuning after seeing its labels or routing;
+- **Stage 4f stays OFF.**
+
+**1. Fresh-clone verification of `36480d0`:**
+- `npm ci`, `tsc` and eslint: clean (0 errors; 2 warnings in another lane's file);
+- vitest over `src`: **16 files failed**, 3,623 tests passed.
+
+| Finding | Cause | Effect |
+|---|---|---|
+| **Line endings** | 751 of 2,046 tracked files differ from the dev worktree: 214 CRLF files were stored as LF (git `autocrlf` normalises on add); 537 LF files are checked out as CRLF (machine `core.autocrlf=true`, outside the `eol=lf` paths) | All 16 failures. Copying the worktree bytes for the 743 line-ending-only files into the clone makes all 16 pass (139 tests). Frozen CRLF files (e.g. `unseen3/pairs.json`, `unseen4/frozen-code/**`) are **not held byte for byte in git**: their FREEZE hashes are of CRLF bytes, the blobs are LF |
+| **Path length** | Longest tracked path is 133 characters (`evaluation/knowledge-notes/experiments/claim-conditions-…/adjudication-packets/…`); a clone under a ~120-character directory exceeds Windows' 260 limit | Checkout fails without `core.longpaths=true`. Clones in ordinary locations are fine |
+
+**Proposed fix (NOT applied — needs your go-ahead: a repository-wide policy change and a commit):**
+- `.gitattributes` becomes `* -text`, so every file is stored and checked out byte-exact on every platform;
+- the 213 CRLF files whose content is otherwise unchanged are re-stored with their CRLF bytes;
+- after that, a fresh clone equals the worktree.
+
+The commit was attempted and blocked by the session's safety classifier. `.gitattributes` was restored to HEAD and nothing was changed in git.
+
+**2. SDK pin (offline):**
+- `@github/copilot-sdk` is exactly `1.0.14` in `package.json` and the lock root; its platform binaries were already pinned by the SDK;
+- `src/ai/host/copilot/retryGuardVerification.json` records what was verified at that version;
+- `sdkPin.test.ts` fails if the declared, locked or installed version differs. On an upgrade, rerun the spikes and update the record before enabling model calls.
+
+**3. New finding — the output cap never reached the wire (fixed offline):** `copilotWireFields.spike.test.ts` (opt-in, local mock) shows the SDK runtime's BYOK request carries `model`, `messages`, `reasoning_effort` and **`temperature: 1`**:
+- **no `max_tokens`**: `ProviderConfig.maxOutputTokens` never reaches the request;
+- not the caller's `temperature: 0`.
+
+So the provider's `outputCap: "passed"` (§12.25) was **not true on the wire**. The reliability run wasn't affected: it used the direct HTTP transport, which sends `max_tokens`.
+
+*Fix:* for `singleAttempt` calls on a BYOK connection, `SingleAttemptRequestHandler` writes `max_tokens` (replacing any `max_completion_tokens`) and the caller's `temperature` into the one request it forwards, and records what it applied. Verified through the real SDK runtime: `max_tokens: 512, temperature: 0`. Other BYOK requests stay uncapped, as before; only the consistency check relies on the cap, and it always sets `singleAttempt`.
+
+**4. Live SDK retry-guard smoke test — PREPARED and FROZEN, not run.**
+
+Files:
+- `contractTests/countingProxy.ts`: a local forward proxy used as the BYOK `baseUrl`. **Every** provider-bound request passes through it, including any from the SDK's separate runtime process, so it counts below the SDK boundary.
+- `guardSmoke.ts`: the three cases (below).
+- `guardSmoke.contract.test.ts`: the paid runner.
+- `guardSmoke.rehearsal.test.ts` (opt-in, free, real SDK + local mock upstream) and `countingProxy.test.ts` (6).
+
+The proxy:
+- can inject a 429 or 500 locally, so retries are tested without paying for them;
+- has a hard forward cap;
+- refuses any request whose worst case (bytes ÷ 3 + `max_tokens`) breaks the token or dollar ceiling, **before** forwarding it.
+
+Three cases through the real host runtime (pinned SDK, guard on):
+
+| Case | Expected |
+|---|---|
+| injected 429 | 1 arrival at the proxy, 0 forwarded, the call fails without a retry |
+| injected 500 | the same |
+| live | 1 arrival, 1 forwarded, answered, `providerRequests: 1`, usage reported |
+
+The rehearsal passes. The SDK's request is about 7 KB (its own system prompt + ours), about 2,900 worst-case tokens with the 512 cap.
+
+Frozen:
+- `evaluation/update-engine/guard-smoke/FREEZE.json` (12 files: harness, proxy, guard, host runtime, client, hardening, error mapping, verification record), pinned in `guardSmokeFreeze.test.ts`;
+- the runner also refuses unless the installed SDK is the verified version.
+
+**Proposed ceiling for the paid run (needs your explicit approval):**
+- **≤ 1 forwarded provider request**, **≤ 4,000 worst-case tokens**, **≤ $0.01**;
+- gpt-oss-120b on AICredits, BYOK through the Copilot SDK;
+- one run, no reruns; expected cost ≈ $0.0003.
+
+**5. unseen5, the sealed semantic set — authored and INPUTS frozen.** The protocol of §12.25:
+- **Author:** an isolated fresh agent, given only a coverage spec. Its only tool use was writing three files.
+- **The set:** 90 pairs (10 batches of 5 + 40 singles). Draft 38 contradiction / 44 compatible / 8 ambiguous, over the same 16 categories.
+- **Script check (ids only):** batch B7 (y31–y35) shared ≥ 0.60 of its words with an unseen2 statement and was rewritten by the same author, unseen. After that, max Jaccard is 0.50 against every earlier set, including unseen4 and the regression files.
+- **Frozen:** `DATA-FREEZE.json` (pairs, draft key, sheet); `unseen5.test.ts` pins the inputs and checks shape, a blind sheet, independence, and that no labels, code freeze or run exist yet.
+- **I have not read the statements.** The author's draft key is not the truth.
+
+**Next for unseen5:**
+1. Blind labels from you or the reviewer, written in `unseen5/labelling-sheet.md`.
+2. The code freeze.
+3. The free route step: exact candidate and call counts, with candidate overflow fully accounted for.
+4. The paid proposal.
+
+No implementation change may be made on the basis of its labels or routing.
+
+**Tests:**
+- `src/ai` + `src/app`: 2,586 passed, 0 failed;
+- 13 skipped (opt-in spikes);
+- `tsc` and eslint clean.
+
+**Not committed** (the session's commit was blocked; awaiting your word): the SDK pin, the guard wire fix, the smoke harness + freeze, unseen5 + its test, this section.
+
+### 12.31 Byte-exact repository, live-guard harness hardened, unseen5 labels + code frozen + free route step (2026-11-15)
+
+**Review decision (2026-11-15, "Stage 4f Review"):**
+- approved: the byte-exact line-ending repair (own commit; verify blob hashes, frozen hashes and fresh clones with `core.autocrlf` true and false);
+- approved: scoped commits after verification;
+- approved: ONE live SDK retry-guard test at ≤ 1 provider request, ≤ 4,000 tokens, ≤ $0.01.
+
+Extra acceptance criteria for the live test:
+- the provider-bound payload carries the intended `max_tokens` and temperature;
+- usage is settled against the budget reservation;
+- a late response can't overwrite a terminal result;
+- a second execution is refused;
+- **any unexpected retry, fallback or repair request fails the test, even within budget.**
+
+Not approved: the unseen5 paid recording, tuning, routing-weight changes, 4f activation.
+
+**P0 — line-ending repair, committed locally as `5d68cb1` (its own commit).**
+- `.gitattributes` is the single rule `* -text`;
+- **383 files** whose content equals HEAD apart from line endings are re-stored with their exact worktree bytes. §12.30's 213 counted only files whose clone bytes differed under `autocrlf=true`; files that are CRLF in the worktree but stored LF also need re-storing under `-text`.
+- `git diff --cached --ignore-cr-at-eol` showed no change but `.gitattributes`;
+- all 384 staged blobs equal `git hash-object --no-filters` of the working file.
+
+Excluded:
+- `package.json` (CRLF plus the SDK pin) goes into the functional commit;
+- another lane's `src/ai/reconcile/update.ts` is LF in its worktree while its stored blob had CRLF, so its owner's next commit shows a whole-file change.
+
+**P1 — live guard test, hardened, frozen, NOT YET RUN (ceiling blocker).**
+- Each case is now one consistency check through the app's own path: `runJudgeCheck` (plan → reserve in a real `JudgeBudget` → one call → settle, `JudgeLedger`) over `providerJudgeTransport` over the real Copilot SDK host runtime. A test-only `hostRuntimeProvider` stands in for the Next route.
+- The proxy records each request's `max_tokens`, `temperature` and field names.
+
+Checks per case:
+- **Injected 429 / 500:** exactly one arrival, nothing forwarded, the call fails, the pair fails, the whole reservation is kept, no extra provider requests.
+- **Live:** exactly one arrival and one forward, carrying `max_tokens` = the call's output budget and `temperature: 0`; answered; pair classified; `providerRequests` 1; usage reported; the budget settled to the reported usage; a late reading for another reservation is ignored.
+- **Overall:** exactly 3 arrivals, 1 forwarded, 0 refused.
+
+The free rehearsal (mock upstream) passes every check: `max_tokens` 760, temperature 0. Re-frozen in `guard-smoke/FREEZE.json` (15 files, now including the judge path; the verification record is left out so it can be updated after the run).
+
+**Blocker:** the live judge request through the SDK is **9,799 bytes**: our judge prompt plus about 7 KB of the Copilot runtime's own system prompt.
+- The conservative pre-send estimate (bytes ÷ 3 + `max_tokens` 760) is **4,027 tokens**, 27 over the approved 4,000, so the proxy refuses to forward it (as designed).
+- The realistic size is about 3,200 tokens (bytes ÷ 4 + 760); about $0.0003.
+- Options:
+  - (a) raise the token ceiling to **4,500** (worst case $0.003 at gpt-oss rates; still ≤ 1 request, ≤ $0.01);
+  - (b) an exact token count, which needs the gpt-oss tokenizer file (a download);
+  - (c) a smaller output cap, which tests a different configuration than the app uses (not recommended).
+
+**Related finding:** `callTokens` reserves only our prompt, so on the Copilot path every consistency-check call under-reserves by about 1,800 input tokens (the SDK's system prompt). Overruns are charged and flagged by design (§12.28), but the 90k day would be consumed faster than planned. Open, no change made: candidates.ts and judge.ts are frozen by the reliability and unseen5 freezes.
+
+**P3 — unseen5:**
+- **Labels:** from your `Claude outputs/unseen5-labels.md`, converted verbatim into `unseen5/labels.json` with the source file's hash: **40 contradiction / 45 compatible / 5 ambiguous**. I didn't draft or edit them, or compare them with the author's draft.
+- **Code freeze:** `unseen5/FREEZE.json` holds the same 18 code files as unseen4's freeze, at current bytes (including the §12.29 screen and limit fixes and the single-attempt call path), plus the 4 data files. Byte copies are in `frozen-code/`, and `unseen5.test.ts` pins everything.
+- **Free route step, run once** (`runs/2026-11-15-unseen5`; do not rerun):
+
+| Measure | Result |
+|---|---|
+| rules-only routing | 4 rule conflict, 10 near-miss, 76 excluded |
+| §12.21 pipeline screen | **85 forwarded, 5 excluded** (y19 different scope; y36, y39 different metrics; y76, y78 values agree) |
+| pipeline generation recall | **40 / 40** contradictions reach the AI |
+| budgeted selection, all 90 as competing changes | 39 / 40; **y24 waits** (rank 12, outranked by 11) |
+| candidate overflow, pool | 125 pairs pending over 13 calls, about 3 days at the cap; per change: median 8, max 22 candidates |
+| batches (50 pairs, 10 changes) | 16 / 16; nothing pending |
+| planned paid calls | **9 calls, 86 pairs, ≤ 20,930 reserved tokens** (max 2,441 a call) |
+
+The rules-only "expected compatible" lines in routing.md are the frozen recorder's placeholder and mean nothing (§12.22).
+
+**Paid unseen5 proposal (NOT approved):**
+- ≤ 9 calls, ≤ 21,000 reserved tokens, ≤ $0.05;
+- gpt-oss-120b on AICredits over the direct one-request HTTP transport (as unseen4), no retries, once;
+- measured against the review's gates: recall ≥ 85 %, strict ≥ 85 %, precision ≥ 90 %, context FP ≤ 10 %, overflow accounted.
+
+**Suite:** `src/ai` + `src/app` give 2,606 passed. 1 failure (`noVendorLeak`) is another lane's untracked `src/mcp/tools/publishedTools.ts`; repo-wide `tsc` errors only in another lane's mid-edit `src/mcp/tools/repoMap/index.ts`. Neither is in this lane's commits.
+
 ## 13. Stage 5 — semantic locate and anchor (plan, 2026-11-14)
 
 **Status: planned, nothing built.** Goal: find the card and the exact item a piece of new information belongs to,
