@@ -1,0 +1,17 @@
+{
+  "purpose": "Execution-reliability check (plan §12.29 P2): the harness, runner, wire counter, execution core and workload, frozen BEFORE the one approved paid run. Editing any of these makes the runner refuse.",
+  "frozenAt": "2026-11-15T15:24:11.752Z",
+  "files": {
+    "src/ai/contractTests/reliabilityHarness.ts": "261a32c18861f12f27744964c317e187f71d6f77b93c176b97308d2da9dcf903",
+    "src/ai/contractTests/reliabilityHarness.test.ts": "7cff5e193046a8aec8168a1301e9efe1530d99225073d79a3f8cfaf3f1572666",
+    "src/ai/contractTests/consistencyReliability.contract.test.ts": "f0523b9efe90345a07213dc77970276b1e825d852cc57d852981dbfda37fed5a",
+    "src/ai/contractTests/wireCounter.ts": "1f3c9544905808d8345711115ea130f143b50417d098bd0e5f3da187f765c33a",
+    "src/ai/contractTests/judgeHttpTransport.ts": "6b66eb530e7f7e7fb44735996ebeb4738e015a84344e1bfc10b3528b67932f1b",
+    "src/ai/consistency/judgeCall.ts": "8eadfa856d5c5110ceac9bb06d0f1d544d03d56d3d55293f4f6423241a115b40",
+    "src/ai/consistency/judgeLedger.ts": "6836ba0373863c4bb34ff5689947f281f8c3e2beda9e0b79c4a692e004e698d1",
+    "src/ai/consistency/judgeReply.ts": "7c96a573d191a0707ec3900d5819bf12b893c44c78fde73c423f85d968854a25",
+    "src/ai/consistency/judge.ts": "abca40dc541af0b398427683437dc705a9143bd0b7e3eb384883233c063d6281",
+    "src/ai/consistency/candidates.ts": "a16335c30b2676820b524926c34010f5a8ec1dd8e6086b018fff68c6da038d8d",
+    "evaluation/update-engine/consistency/reliability/workload.json": "d4910a238b630ab62a31897d581133168f8ee99d1f322bda1e989e27aa9ea19d"
+  }
+}

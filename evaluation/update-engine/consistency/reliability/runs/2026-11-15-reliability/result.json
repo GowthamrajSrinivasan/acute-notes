@@ -1,0 +1,115 @@
+{
+  "run": "2026-11-15-reliability",
+  "totals": {
+    "sent": 6,
+    "pairsSent": 60,
+    "classified": 60,
+    "failed": 0,
+    "reserved": 12888,
+    "charged": 8818,
+    "reportedTokens": 8818,
+    "costUsd": 0.000802406,
+    "worstUsd": 0.0021909600000000005,
+    "wireRequests": 6,
+    "transportRequests": 6,
+    "appCalls": 6
+  },
+  "latency": {
+    "samplesMs": [
+      18526,
+      30068,
+      40355,
+      17973,
+      19050,
+      29023
+    ],
+    "p50Ms": 19050,
+    "p95Ms": 40355,
+    "maxMs": 40355,
+    "method": "nearest rank over 6 end-to-end call latencies (non-streaming; queue time not separable); with 6 samples p95 is the largest value — an operational check, not a statistically robust estimate"
+  },
+  "criteria": [
+    {
+      "name": "pairs classified ≥ 95 %",
+      "pass": true,
+      "detail": "60/60 (need ≥ 57)"
+    },
+    {
+      "name": "no call reached the 90 s timeout",
+      "pass": true,
+      "detail": "none"
+    },
+    {
+      "name": "p95 latency ≤ 60 s",
+      "pass": true,
+      "detail": "p95 40355 ms (p50 19050 ms, 6 samples)"
+    },
+    {
+      "name": "no truncated reply (finish_reason length)",
+      "pass": true,
+      "detail": "none"
+    },
+    {
+      "name": "complete usage accounting",
+      "pass": true,
+      "detail": "every answered call reported prompt and completion tokens; every failed call kept its whole reservation"
+    },
+    {
+      "name": "total usage within 16,800 tokens (or the overrun flagged and charged)",
+      "pass": true,
+      "detail": "charged 8818, reserved 12888, reported 8818"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "never more calls than the ceiling",
+      "pass": true,
+      "detail": "6 ≤ 6"
+    },
+    {
+      "name": "one application call per sent call",
+      "pass": true,
+      "detail": "1,1,1,1,1,1"
+    },
+    {
+      "name": "one physical request per call at the transport boundary",
+      "pass": true,
+      "detail": "1,1,1,1,1,1"
+    },
+    {
+      "name": "one model request per call on the wire",
+      "pass": true,
+      "detail": "1,1,1,1,1,1"
+    },
+    {
+      "name": "every sent pair ends classified or failed (none in flight or pending)",
+      "pass": true,
+      "detail": "0 left"
+    },
+    {
+      "name": "a failed call fails exactly its own pairs and keeps its reservation",
+      "pass": true,
+      "detail": "0 failed calls"
+    },
+    {
+      "name": "no pair classified without a validated answer",
+      "pass": true,
+      "detail": "60 classified"
+    },
+    {
+      "name": "ledger, budget and call records agree",
+      "pass": true,
+      "detail": "ledger 60+0, calls 60, charged 8818"
+    },
+    {
+      "name": "within the token and dollar ceilings (worst case)",
+      "pass": true,
+      "detail": "12888 ≤ 16800 tokens; $0.00219 ≤ $0.02"
+    }
+  ],
+  "passed": true,
+  "price": {
+    "input": 3.7e-8,
+    "output": 1.7000000000000001e-7
+  }
+}

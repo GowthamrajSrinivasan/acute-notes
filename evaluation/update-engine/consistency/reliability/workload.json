@@ -1,0 +1,310 @@
+{
+  "purpose": "Execution-reliability check workload (plan §12.29 P2). Statements only: NO labels, so no accuracy can be computed. Development and regression material (not a sealed set).",
+  "sources": {
+    "dev.json": "first 56 (all)",
+    "regressions.json": "first 2 (all)",
+    "regressions-unseen1.json": "first 2"
+  },
+  "pairs": [
+    {
+      "id": "d01",
+      "a": "Retries happen three times.",
+      "b": "The worker retries five times."
+    },
+    {
+      "id": "d02",
+      "a": "The request timeout is 30 seconds.",
+      "b": "Requests time out after 10 seconds."
+    },
+    {
+      "id": "d03",
+      "a": "The cache holds entries for 60 minutes.",
+      "b": "Cache entries expire after 15 minutes."
+    },
+    {
+      "id": "d04",
+      "a": "We keep backups for 30 days.",
+      "b": "Backups are kept for 7 days."
+    },
+    {
+      "id": "d05",
+      "a": "The API allows 100 requests per minute.",
+      "b": "The API allows 1000 requests per minute."
+    },
+    {
+      "id": "d06",
+      "a": "Each node has 16 GB of memory.",
+      "b": "Each node has 32 GB of memory."
+    },
+    {
+      "id": "d07",
+      "a": "The team has four engineers.",
+      "b": "The team has six engineers."
+    },
+    {
+      "id": "d08",
+      "a": "Deploys take about 10 minutes.",
+      "b": "Deploys take about 40 minutes."
+    },
+    {
+      "id": "d09",
+      "a": "Retries are enabled for payment calls.",
+      "b": "Retries are disabled for payment calls."
+    },
+    {
+      "id": "d10",
+      "a": "The service is stateless.",
+      "b": "The service is not stateless."
+    },
+    {
+      "id": "d11",
+      "a": "Admins can delete projects.",
+      "b": "Admins cannot delete projects."
+    },
+    {
+      "id": "d12",
+      "a": "Encryption at rest is required.",
+      "b": "Encryption at rest is optional."
+    },
+    {
+      "id": "d13",
+      "a": "The queue guarantees ordering.",
+      "b": "The queue does not guarantee ordering."
+    },
+    {
+      "id": "d14",
+      "a": "Latency increased after the migration.",
+      "b": "Latency decreased after the migration."
+    },
+    {
+      "id": "d15",
+      "a": "Costs grow with the number of users.",
+      "b": "Costs shrink with the number of users."
+    },
+    {
+      "id": "d16",
+      "a": "Error rates went up last week.",
+      "b": "Error rates went down last week."
+    },
+    {
+      "id": "d17",
+      "a": "The payments team owns the gateway.",
+      "b": "The platform team owns the gateway."
+    },
+    {
+      "id": "d18",
+      "a": "The primary database is PostgreSQL.",
+      "b": "The primary database is MySQL."
+    },
+    {
+      "id": "d19",
+      "a": "Builds run on GitHub Actions.",
+      "b": "Builds run on Jenkins."
+    },
+    {
+      "id": "d20",
+      "a": "The default region is Frankfurt.",
+      "b": "The default region is Dublin."
+    },
+    {
+      "id": "d21",
+      "a": "In 2023 the API allowed 100 requests per minute.",
+      "b": "The API allows 500 requests per minute."
+    },
+    {
+      "id": "d22",
+      "a": "Before the migration, deploys took 40 minutes.",
+      "b": "Deploys take 10 minutes."
+    },
+    {
+      "id": "d23",
+      "a": "Until March, retries happened five times.",
+      "b": "Retries happen three times."
+    },
+    {
+      "id": "d24",
+      "a": "Version 1 used a 30 second timeout.",
+      "b": "The timeout is 10 seconds."
+    },
+    {
+      "id": "d25",
+      "a": "Last quarter the team had four engineers.",
+      "b": "The team has six engineers."
+    },
+    {
+      "id": "d26",
+      "a": "In staging, retries happen five times.",
+      "b": "In production, retries happen three times."
+    },
+    {
+      "id": "d27",
+      "a": "Staging nodes have 8 GB of memory.",
+      "b": "Production nodes have 32 GB of memory."
+    },
+    {
+      "id": "d28",
+      "a": "The test environment keeps backups for 7 days.",
+      "b": "Backups are kept for 30 days in production."
+    },
+    {
+      "id": "d29",
+      "a": "Local development uses SQLite.",
+      "b": "The primary database is PostgreSQL."
+    },
+    {
+      "id": "d30",
+      "a": "On the dev cluster the timeout is 60 seconds.",
+      "b": "On the production cluster the timeout is 10 seconds."
+    },
+    {
+      "id": "d31",
+      "a": "Free users get 100 requests per minute.",
+      "b": "Paid users get 1000 requests per minute."
+    },
+    {
+      "id": "d32",
+      "a": "Each job retries three times.",
+      "b": "Each request retries five times."
+    },
+    {
+      "id": "d33",
+      "a": "Admins can delete projects.",
+      "b": "Viewers cannot delete projects."
+    },
+    {
+      "id": "d34",
+      "a": "The API allows 100 requests per minute per user.",
+      "b": "The API allows 5000 requests per minute in total."
+    },
+    {
+      "id": "d35",
+      "a": "Mobile clients time out after 30 seconds.",
+      "b": "Web clients time out after 10 seconds."
+    },
+    {
+      "id": "d36",
+      "a": "For EU customers, data is stored in Frankfurt.",
+      "b": "For US customers, data is stored in Virginia."
+    },
+    {
+      "id": "d37",
+      "a": "Retries happen up to five times.",
+      "b": "Retries happen three times."
+    },
+    {
+      "id": "d38",
+      "a": "Deploys take at most 15 minutes.",
+      "b": "Deploys take 10 minutes."
+    },
+    {
+      "id": "d39",
+      "a": "Deploys take at most 15 minutes.",
+      "b": "Deploys take 25 minutes."
+    },
+    {
+      "id": "d40",
+      "a": "The team has at least four engineers.",
+      "b": "The team has six engineers."
+    },
+    {
+      "id": "d41",
+      "a": "Timeouts happen five times a day.",
+      "b": "Retries happen three times."
+    },
+    {
+      "id": "d42",
+      "a": "The read replica has 16 GB of memory.",
+      "b": "The primary has 64 GB of memory."
+    },
+    {
+      "id": "d43",
+      "a": "Search requests time out after 5 seconds.",
+      "b": "Upload requests time out after 60 seconds."
+    },
+    {
+      "id": "d44",
+      "a": "The billing service is written in Go.",
+      "b": "The search service is written in Rust."
+    },
+    {
+      "id": "d45",
+      "a": "The payments team owns the gateway.",
+      "b": "The payments team owns the ledger."
+    },
+    {
+      "id": "d46",
+      "a": "p50 latency is 80 ms.",
+      "b": "p99 latency is 400 ms."
+    },
+    {
+      "id": "d47",
+      "a": "Average CPU usage is 40%.",
+      "b": "Peak CPU usage is 90%."
+    },
+    {
+      "id": "d48",
+      "a": "Monthly active users reached 20,000.",
+      "b": "Daily active users reached 3,000."
+    },
+    {
+      "id": "d49",
+      "a": "Retries happen five times.",
+      "b": "The service retries 5 times."
+    },
+    {
+      "id": "d50",
+      "a": "Backups are kept for 30 days.",
+      "b": "We retain backups for a month."
+    },
+    {
+      "id": "d51",
+      "a": "The cache stores user sessions.",
+      "b": "The cache stores access tokens."
+    },
+    {
+      "id": "d52",
+      "a": "Deploys take 10 minutes.",
+      "b": "A deploy takes ten minutes."
+    },
+    {
+      "id": "d53",
+      "a": "Retries happen five times.",
+      "b": "Retries happen five times with exponential backoff."
+    },
+    {
+      "id": "d54",
+      "a": "The gateway is owned by the payments team.",
+      "b": "The gateway is owned by the payments team and audited quarterly."
+    },
+    {
+      "id": "d55",
+      "a": "The limit is 100.",
+      "b": "The limit is 500."
+    },
+    {
+      "id": "d56",
+      "a": "It takes 5 minutes.",
+      "b": "It takes 2 hours."
+    },
+    {
+      "id": "r01",
+      "a": "Releases ship every two weeks.",
+      "b": "Releases ship every week."
+    },
+    {
+      "id": "r02",
+      "a": "Our worker retries three times before giving up.",
+      "b": "Retries happen five times."
+    },
+    {
+      "id": "u06",
+      "a": "Each upload is limited to 25 MB.",
+      "b": "Users can upload files of up to 100 MB."
+    },
+    {
+      "id": "u08",
+      "a": "The certificate expires on 1 March 2027.",
+      "b": "The certificate is valid until 30 June 2027."
+    }
+  ]
+}

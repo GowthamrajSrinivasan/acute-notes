@@ -1,0 +1,13 @@
+{
+  "run": "2026-11-15-reliability",
+  "startedAt": "2026-11-15T15:25:04.811Z",
+  "approvedBy": "Gowthamraj Srinivasan (Stage 4f decision review, 2026-11-15)",
+  "ceilings": {
+    "calls": 6,
+    "tokens": 16800,
+    "usd": 0.02
+  },
+  "model": "openai/gpt-oss-120b",
+  "endpoint": "https://api.aicredits.in/v1",
+  "freezeSha256": "53f46b1b64b2a46d4305c85d3819be26b0f6fd3e49f1227fd30bdc30a7ce1d4f"
+}
