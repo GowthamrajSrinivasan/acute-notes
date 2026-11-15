@@ -1,0 +1,23 @@
+{
+  "note": "Byte copies of the code frozen in ../FREEZE.json (unseen5), kept so the run's code stays inspectable after the live code moves on.",
+  "files": {
+    "src/ai/consistency/rules.ts": "baaad569c2b515fca257dbeae89ad4b0b38e07060aefdad1be11be128d401a94",
+    "src/ai/fidelity/quantities.ts": "eae62c363080cdb1b5c8becbde19d77367b5b95b6e8aecbcf0c7b89567537d02",
+    "src/ai/fidelity/information.ts": "59cab6cff59a8800cbb0fd45c45c17aecb99986510f46586591575f8bce3a15d",
+    "src/ai/fidelity/meaning.ts": "ae35f1ecf4250d0b9880534f0fd4539b2732e18f8c35cafb06dc8591bd306275",
+    "src/ai/router/embedding.ts": "4efb999bfd0bdd4c09f02b256c248ba0e80a1922ca7834f73524e1ee8738f52f",
+    "src/ai/consistency/screen.ts": "85af0558ff32684474bb063fcf3e69b23fe992a19ee1c5938754cf7493d9c802",
+    "src/ai/consistency/judge.ts": "abca40dc541af0b398427683437dc705a9143bd0b7e3eb384883233c063d6281",
+    "src/ai/consistency/candidates.ts": "a16335c30b2676820b524926c34010f5a8ec1dd8e6086b018fff68c6da038d8d",
+    "src/ai/consistency/judgeReply.ts": "7c96a573d191a0707ec3900d5819bf12b893c44c78fde73c423f85d968854a25",
+    "src/ai/consistency/judgeLedger.ts": "6836ba0373863c4bb34ff5689947f281f8c3e2beda9e0b79c4a692e004e698d1",
+    "src/ai/consistency/judgeCall.ts": "8eadfa856d5c5110ceac9bb06d0f1d544d03d56d3d55293f4f6423241a115b40",
+    "src/ai/contractTests/judgeHttpTransport.ts": "6b66eb530e7f7e7fb44735996ebeb4738e015a84344e1bfc10b3528b67932f1b",
+    "src/ai/content/fingerprint.ts": "3e3780af2992d4ff3670650dfe7a3621079733ef60b620acb281e57c16075943",
+    "src/ai/runtime.ts": "6a44b42663874033c316ebefea279472d09089c632971c55fbf8527f43f6c5ba",
+    "src/ai/consistency/evaluation.ts": "bd56f0c9b079fb5ddb06c1e685ad915d40a0ab2a736798aa97c3da2dc7c1def2",
+    "src/ai/consistency/judgeEvaluation.ts": "334d2ec838e4aa8c72ccc95c7b21cd322ef4005a3ed2d3ea2cb34c52f8ba411d",
+    "src/ai/consistency/pipelineEvaluation.ts": "03df47a64aa2e7e3073089ed7d4041cdbaa553c6c8c86ee49e236a4876bb13da",
+    "src/ai/contractTests/consistencyUnseen.contract.test.ts": "f182459cc496b0a042df8e69dbd348629ea46d8936e09c72338f82a4c0f3858f"
+  }
+}

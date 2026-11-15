@@ -1,0 +1,372 @@
+{
+  "reviewer": "Gowthamraj Srinivasan",
+  "date": "2026-11-15",
+  "blind": true,
+  "note": "Reference labels supplied by the user in `Claude outputs/unseen5-labels.md` (2026-11-15) for the blind labelling sheet; converted verbatim (label + reason). The coordinating session did not draft, reconstruct or edit them and has not compared them with the author's draft key. Frozen before the code freeze and the route step.",
+  "source": {
+    "file": "Claude outputs/unseen5-labels.md",
+    "sha256": "c00fb64909a2aa57ad488aa4d1dbd86c26d036c029d89fad9f3b61209a786952"
+  },
+  "labels": {
+    "y01": {
+      "label": "contradiction",
+      "note": "Weekday-afternoon walk-ins vs Saturday mornings only."
+    },
+    "y02": {
+      "label": "compatible",
+      "note": "Explicitly before 2026, so it predates the change."
+    },
+    "y03": {
+      "label": "compatible",
+      "note": "Describes the Saturday sessions without conflicting."
+    },
+    "y04": {
+      "label": "compatible",
+      "note": "A different provider (the pharmacy)."
+    },
+    "y05": {
+      "label": "contradiction",
+      "note": "Walk-ins stopped altogether and bookings are required vs walk-ins offered on Saturdays."
+    },
+    "y06": {
+      "label": "contradiction",
+      "note": "Two buses with no ramp vs every bus fitted."
+    },
+    "y07": {
+      "label": "compatible",
+      "note": "Restates the ramp claim and adds an unrelated feature."
+    },
+    "y08": {
+      "label": "compatible",
+      "note": "Trams are not buses."
+    },
+    "y09": {
+      "label": "compatible",
+      "note": "A ramp-use rule that fits the new statement."
+    },
+    "y10": {
+      "label": "contradiction",
+      "note": "No ramps on buses vs all buses fitted."
+    },
+    "y11": {
+      "label": "compatible",
+      "note": "Same cap, reworded."
+    },
+    "y12": {
+      "label": "contradiction",
+      "note": "Cap of 30 vs 28."
+    },
+    "y13": {
+      "label": "compatible",
+      "note": "An average under the cap."
+    },
+    "y14": {
+      "label": "compatible",
+      "note": "A different year group."
+    },
+    "y15": {
+      "label": "contradiction",
+      "note": "A 30-pupil minimum cannot be met under a 28 maximum."
+    },
+    "y16": {
+      "label": "compatible",
+      "note": "Tuesday and Thursday is twice a week."
+    },
+    "y17": {
+      "label": "contradiction",
+      "note": "Daily releases vs twice a week."
+    },
+    "y18": {
+      "label": "compatible",
+      "note": "A different team."
+    },
+    "y19": {
+      "label": "compatible",
+      "note": "Staging, not production."
+    },
+    "y20": {
+      "label": "ambiguous",
+      "note": "\"The team\" is not named; if it is the platform team, Mondays only conflicts."
+    },
+    "y21": {
+      "label": "contradiction",
+      "note": "Closes at 6pm daily vs open until 9pm Friday."
+    },
+    "y22": {
+      "label": "compatible",
+      "note": "Same Friday time at Riverside."
+    },
+    "y23": {
+      "label": "compatible",
+      "note": "A different branch."
+    },
+    "y24": {
+      "label": "contradiction",
+      "note": "Late Friday opening scrapped vs currently open until 9pm."
+    },
+    "y25": {
+      "label": "compatible",
+      "note": "21:00 is 9pm."
+    },
+    "y26": {
+      "label": "contradiction",
+      "note": "Hand-milking part of the herd vs exclusively robots."
+    },
+    "y27": {
+      "label": "compatible",
+      "note": "Goats are not the dairy herd."
+    },
+    "y28": {
+      "label": "compatible",
+      "note": "Agrees that robots do all the milking."
+    },
+    "y29": {
+      "label": "compatible",
+      "note": "Hand-milking is explicitly before the 2019 robots."
+    },
+    "y30": {
+      "label": "compatible",
+      "note": "Milking frequency says nothing about the method."
+    },
+    "y31": {
+      "label": "contradiction",
+      "note": "Unsupervised use after week one vs a senior technician required."
+    },
+    "y32": {
+      "label": "compatible",
+      "note": "A benchtop centrifuge in the teaching room, not a wet-lab one."
+    },
+    "y33": {
+      "label": "compatible",
+      "note": "An encouragement that doesn't conflict with the rule."
+    },
+    "y34": {
+      "label": "compatible",
+      "note": "Same requirement, reworded."
+    },
+    "y35": {
+      "label": "compatible",
+      "note": "Autoclaves, not centrifuges."
+    },
+    "y36": {
+      "label": "compatible",
+      "note": "A peak above the average."
+    },
+    "y37": {
+      "label": "contradiction",
+      "note": "Average of about 300 vs 410 tonnes."
+    },
+    "y38": {
+      "label": "compatible",
+      "note": "150,000 tonnes a year is about 410 a day."
+    },
+    "y39": {
+      "label": "compatible",
+      "note": "A median can differ from the mean."
+    },
+    "y40": {
+      "label": "compatible",
+      "note": "A different product and plant."
+    },
+    "y41": {
+      "label": "contradiction",
+      "note": "Public hire of boats vs members only."
+    },
+    "y42": {
+      "label": "contradiction",
+      "note": "Non-members rowing club boats vs members only."
+    },
+    "y43": {
+      "label": "compatible",
+      "note": "A booking rule for members."
+    },
+    "y44": {
+      "label": "compatible",
+      "note": "A restriction on time of day, not on who may use boats."
+    },
+    "y45": {
+      "label": "ambiguous",
+      "note": "The visiting teams may be using club boats (conflict) or their own boats from the shared boathouse."
+    },
+    "y46": {
+      "label": "compatible",
+      "note": "Fortnightly is every other week."
+    },
+    "y47": {
+      "label": "contradiction",
+      "note": "Every Monday vs every other Monday."
+    },
+    "y48": {
+      "label": "compatible",
+      "note": "The weekly round is explicitly past."
+    },
+    "y49": {
+      "label": "contradiction",
+      "note": "Collection stopped in 2023 vs currently collected."
+    },
+    "y50": {
+      "label": "compatible",
+      "note": "A rule about bin timing."
+    },
+    "y51": {
+      "label": "contradiction",
+      "note": "A diesel generator backup vs no backup of any kind."
+    },
+    "y52": {
+      "label": "contradiction",
+      "note": "Free checkout until noon vs a fee after 10:30."
+    },
+    "y53": {
+      "label": "contradiction",
+      "note": "All accounts fee-free vs a £4 monthly fee on one."
+    },
+    "y54": {
+      "label": "compatible",
+      "note": "Different teams and surfaces."
+    },
+    "y55": {
+      "label": "ambiguous",
+      "note": "Last year's handbook may be outdated, so the two heads may not conflict."
+    },
+    "y56": {
+      "label": "contradiction",
+      "note": "Sold exclusively at the farm shop vs stocked by pubs and a supermarket."
+    },
+    "y57": {
+      "label": "contradiction",
+      "note": "412 m vs under 300 m."
+    },
+    "y58": {
+      "label": "contradiction",
+      "note": "Quarterly vs once a year."
+    },
+    "y59": {
+      "label": "contradiction",
+      "note": "Retiring in July vs staying at least three years."
+    },
+    "y60": {
+      "label": "compatible",
+      "note": "Same claim, reworded."
+    },
+    "y61": {
+      "label": "contradiction",
+      "note": "Entire workforce vs only the Leeds depot."
+    },
+    "y62": {
+      "label": "contradiction",
+      "note": "Respirators required vs optional."
+    },
+    "y63": {
+      "label": "contradiction",
+      "note": "No more than 18 vs up to 25."
+    },
+    "y64": {
+      "label": "compatible",
+      "note": "A no-perfume night cream fits \"fragrance-free\"."
+    },
+    "y65": {
+      "label": "contradiction",
+      "note": "Owned since 1987 vs bought in 2004."
+    },
+    "y66": {
+      "label": "compatible",
+      "note": "Members booking the printer fits \"members only\"."
+    },
+    "y67": {
+      "label": "contradiction",
+      "note": "A median of nine days vs half within four days."
+    },
+    "y68": {
+      "label": "compatible",
+      "note": "Croissants without palm oil fit the claim."
+    },
+    "y69": {
+      "label": "compatible",
+      "note": "Different branches."
+    },
+    "y70": {
+      "label": "contradiction",
+      "note": "Never cancelled vs a crossing scrapped for wind."
+    },
+    "y71": {
+      "label": "compatible",
+      "note": "Six hens and six chickens are consistent."
+    },
+    "y72": {
+      "label": "contradiction",
+      "note": "Three evenings vs two (Monday and Thursday) and no other days."
+    },
+    "y73": {
+      "label": "compatible",
+      "note": "Different machines."
+    },
+    "y74": {
+      "label": "ambiguous",
+      "note": "Different hotels, and \"Pike\" may or may not be Lorna Pike or may have moved."
+    },
+    "y75": {
+      "label": "compatible",
+      "note": "The earlier rented desks fit the 2018 move."
+    },
+    "y76": {
+      "label": "compatible",
+      "note": "2.4 billion litres is 2,400 million."
+    },
+    "y77": {
+      "label": "contradiction",
+      "note": "Solely turboprop vs an Airbus jet on Fridays."
+    },
+    "y78": {
+      "label": "compatible",
+      "note": "48 hours is two days, with a penalty on both sides."
+    },
+    "y79": {
+      "label": "contradiction",
+      "note": "No park allows it vs an off-lead field in Abbey Park."
+    },
+    "y80": {
+      "label": "contradiction",
+      "note": "Minimum three on call vs two overnight."
+    },
+    "y81": {
+      "label": "contradiction",
+      "note": "Closed vs open as usual."
+    },
+    "y82": {
+      "label": "contradiction",
+      "note": "Every school vs only Lower Ward."
+    },
+    "y83": {
+      "label": "contradiction",
+      "note": "Pears stopped in 2021 vs a record crop in 2024."
+    },
+    "y84": {
+      "label": "contradiction",
+      "note": "640 seats vs well over a thousand."
+    },
+    "y85": {
+      "label": "ambiguous",
+      "note": "An average of 14 minutes can sit alongside \"usually under ten\" if a long tail pulls the mean up."
+    },
+    "y86": {
+      "label": "contradiction",
+      "note": "All participants followed up vs some never were."
+    },
+    "y87": {
+      "label": "contradiction",
+      "note": "Sole public pool vs two council-run pools."
+    },
+    "y88": {
+      "label": "compatible",
+      "note": "Extra detail about the same person."
+    },
+    "y89": {
+      "label": "contradiction",
+      "note": "Tariffs lowered vs households paying more."
+    },
+    "y90": {
+      "label": "compatible",
+      "note": "A student bar and a library are different facilities."
+    }
+  }
+}

@@ -1,0 +1,1399 @@
+{
+  "run": "2026-11-15-unseen5",
+  "date": "2026-11-15T17:12:39.489Z",
+  "labelsSha256": "27ca948c741bac6ea332febd3213db4b3a7197d91adb2b13d0ba599a1a346841",
+  "counts": {
+    "rule_conflict": 4,
+    "possible": 0,
+    "near_miss": 10,
+    "excluded": 76
+  },
+  "candidates": 10,
+  "plannedCalls": [
+    {
+      "keys": [
+        "y58",
+        "y72",
+        "y11",
+        "y57",
+        "y10",
+        "y62",
+        "y12",
+        "y06",
+        "y80",
+        "y14"
+      ],
+      "maxTokens": 2365
+    },
+    {
+      "keys": [
+        "y15",
+        "y71",
+        "y34",
+        "y31",
+        "y35",
+        "y86",
+        "y51",
+        "y32",
+        "y44",
+        "y63"
+      ],
+      "maxTokens": 2441
+    },
+    {
+      "keys": [
+        "y22",
+        "y60",
+        "y84",
+        "y21",
+        "y33",
+        "y70",
+        "y64",
+        "y37",
+        "y13",
+        "y82"
+      ],
+      "maxTokens": 2366
+    },
+    {
+      "keys": [
+        "y47",
+        "y67",
+        "y40",
+        "y02",
+        "y66",
+        "y38",
+        "y53",
+        "y20",
+        "y48",
+        "y07"
+      ],
+      "maxTokens": 2382
+    },
+    {
+      "keys": [
+        "y43",
+        "y17",
+        "y01",
+        "y85",
+        "y09",
+        "y50",
+        "y04",
+        "y16",
+        "y56",
+        "y73"
+      ],
+      "maxTokens": 2379
+    },
+    {
+      "keys": [
+        "y46",
+        "y03",
+        "y41",
+        "y42",
+        "y28",
+        "y87",
+        "y45",
+        "y26",
+        "y77",
+        "y30"
+      ],
+      "maxTokens": 2378
+    },
+    {
+      "keys": [
+        "y27",
+        "y08",
+        "y54",
+        "y88",
+        "y89",
+        "y75",
+        "y25",
+        "y81",
+        "y68",
+        "y23"
+      ],
+      "maxTokens": 2333
+    },
+    {
+      "keys": [
+        "y79",
+        "y74",
+        "y69",
+        "y55",
+        "y52",
+        "y90",
+        "y59",
+        "y18",
+        "y05",
+        "y49"
+      ],
+      "maxTokens": 2346
+    },
+    {
+      "keys": [
+        "y65",
+        "y24",
+        "y83",
+        "y61",
+        "y29",
+        "y19"
+      ],
+      "maxTokens": 1940
+    }
+  ],
+  "oneChange": {
+    "call": [
+      "y58",
+      "y14",
+      "y15",
+      "y21",
+      "y22",
+      "y84",
+      "y63",
+      "y18",
+      "y19",
+      "y61"
+    ],
+    "pending": [],
+    "contradictionsRouted": 6,
+    "contradictionsInTheCall": 6,
+    "contradictionsLeftOut": []
+  },
+  "pipeline": {
+    "decisions": {
+      "y01": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y02": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y03": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y04": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y05": {
+        "decision": "forward",
+        "priority": 1.06,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "y06": {
+        "decision": "forward",
+        "priority": 7.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y07": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y08": {
+        "decision": "forward",
+        "priority": 4.02,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y09": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y10": {
+        "decision": "forward",
+        "priority": 7.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y11": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y12": {
+        "decision": "forward",
+        "priority": 7.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y13": {
+        "decision": "forward",
+        "priority": 5.07,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y14": {
+        "decision": "forward",
+        "priority": 7.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y15": {
+        "decision": "forward",
+        "priority": 7.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y16": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y17": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y18": {
+        "decision": "forward",
+        "priority": 1.06,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "y19": {
+        "decision": "excluded",
+        "exclusion": "different_scope",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y20": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y21": {
+        "decision": "forward",
+        "priority": 6.03,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y22": {
+        "decision": "forward",
+        "priority": 6.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y23": {
+        "decision": "forward",
+        "priority": 3.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y24": {
+        "decision": "forward",
+        "priority": 1.05,
+        "scoped": true,
+        "exclusive": false,
+        "thin": false
+      },
+      "y25": {
+        "decision": "forward",
+        "priority": 3.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y26": {
+        "decision": "forward",
+        "priority": 4.03,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y27": {
+        "decision": "forward",
+        "priority": 4.03,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y28": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y29": {
+        "decision": "forward",
+        "priority": 1.03,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "y30": {
+        "decision": "forward",
+        "priority": 4.03,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y31": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y32": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y33": {
+        "decision": "forward",
+        "priority": 6.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y34": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y35": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y36": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y37": {
+        "decision": "forward",
+        "priority": 5.07,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y38": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y39": {
+        "decision": "excluded",
+        "exclusion": "different_metrics",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y40": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y41": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y42": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y43": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y44": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y45": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y46": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y47": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y48": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y49": {
+        "decision": "forward",
+        "priority": 1.05,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "y50": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y51": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y52": {
+        "decision": "forward",
+        "priority": 2.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y53": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y54": {
+        "decision": "forward",
+        "priority": 4.02,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y55": {
+        "decision": "forward",
+        "priority": 2.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y56": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y57": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y58": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y59": {
+        "decision": "forward",
+        "priority": 2.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y60": {
+        "decision": "forward",
+        "priority": 6.03,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y61": {
+        "decision": "forward",
+        "priority": 1.03,
+        "scoped": true,
+        "exclusive": true,
+        "thin": false
+      },
+      "y62": {
+        "decision": "forward",
+        "priority": 7.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y63": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y64": {
+        "decision": "forward",
+        "priority": 6.01,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y65": {
+        "decision": "forward",
+        "priority": 1.05,
+        "scoped": true,
+        "exclusive": false,
+        "thin": false
+      },
+      "y66": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y67": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y68": {
+        "decision": "forward",
+        "priority": 3.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y69": {
+        "decision": "forward",
+        "priority": 2.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y70": {
+        "decision": "forward",
+        "priority": 6.02,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y71": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y72": {
+        "decision": "forward",
+        "priority": 7.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y73": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y74": {
+        "decision": "forward",
+        "priority": 2.04,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y75": {
+        "decision": "forward",
+        "priority": 3.06,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y76": {
+        "decision": "excluded",
+        "exclusion": "values_agree",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y77": {
+        "decision": "forward",
+        "priority": 4.03,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y78": {
+        "decision": "excluded",
+        "exclusion": "values_agree",
+        "priority": 0,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y79": {
+        "decision": "forward",
+        "priority": 3.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y80": {
+        "decision": "forward",
+        "priority": 7.05,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y81": {
+        "decision": "forward",
+        "priority": 3.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y82": {
+        "decision": "forward",
+        "priority": 5.06,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y83": {
+        "decision": "forward",
+        "priority": 1.04,
+        "scoped": true,
+        "exclusive": false,
+        "thin": false
+      },
+      "y84": {
+        "decision": "forward",
+        "priority": 6.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y85": {
+        "decision": "forward",
+        "priority": 5.05,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y86": {
+        "decision": "forward",
+        "priority": 6.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y87": {
+        "decision": "forward",
+        "priority": 4.04,
+        "scoped": false,
+        "exclusive": true,
+        "thin": false
+      },
+      "y88": {
+        "decision": "forward",
+        "priority": 3.07,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y89": {
+        "decision": "forward",
+        "priority": 3.07,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      },
+      "y90": {
+        "decision": "forward",
+        "priority": 2.03,
+        "scoped": false,
+        "exclusive": false,
+        "thin": false
+      }
+    },
+    "generationRecall": [
+      40,
+      40
+    ],
+    "budgetPool": {
+      "changes": 90,
+      "candidatesPerChange": {
+        "min": 1,
+        "median": 8,
+        "max": 22
+      },
+      "budgetedSelectionRecall": [
+        39,
+        40
+      ],
+      "waited": [
+        {
+          "id": "y24",
+          "rank": 12,
+          "outrankedBy": 11
+        }
+      ],
+      "pendingTotal": 125,
+      "pendingCalls": 13,
+      "daysAtCap": 3
+    },
+    "budgetBatch": {
+      "changes": 50,
+      "candidatesPerChange": {
+        "min": 3,
+        "median": 5,
+        "max": 5
+      },
+      "budgetedSelectionRecall": [
+        16,
+        16
+      ],
+      "waited": [],
+      "pendingTotal": 0,
+      "pendingCalls": 0,
+      "daysAtCap": 1
+    }
+  },
+  "rows": [
+    {
+      "id": "y01",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y02",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y03",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y04",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y05",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y06",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y07",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y08",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y09",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y10",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y11",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "y12",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "y13",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y14",
+      "route": "near_miss",
+      "priority": 6,
+      "verdict": "compatible",
+      "nearMiss": "value"
+    },
+    {
+      "id": "y15",
+      "route": "near_miss",
+      "priority": 6,
+      "verdict": "compatible",
+      "nearMiss": "value"
+    },
+    {
+      "id": "y16",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y17",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y18",
+      "route": "near_miss",
+      "priority": 1,
+      "verdict": "compatible",
+      "nearMiss": "frequency",
+      "contextDiffers": true
+    },
+    {
+      "id": "y19",
+      "route": "near_miss",
+      "priority": 1,
+      "verdict": "compatible",
+      "nearMiss": "frequency",
+      "contextDiffers": true
+    },
+    {
+      "id": "y20",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y21",
+      "route": "near_miss",
+      "priority": 6,
+      "verdict": "compatible",
+      "nearMiss": "value"
+    },
+    {
+      "id": "y22",
+      "route": "near_miss",
+      "priority": 6,
+      "verdict": "compatible",
+      "nearMiss": "value"
+    },
+    {
+      "id": "y23",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y24",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y25",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y26",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y27",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y28",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y29",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y30",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y31",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y32",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y33",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y34",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y35",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y36",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y37",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y38",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y39",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y40",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y41",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y42",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y43",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y44",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y45",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y46",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y47",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y48",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y49",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y50",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y51",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y52",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y53",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y54",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y55",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y56",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y57",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "y58",
+      "route": "near_miss",
+      "priority": 7,
+      "verdict": "compatible",
+      "nearMiss": "frequency"
+    },
+    {
+      "id": "y59",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y60",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y61",
+      "route": "near_miss",
+      "priority": 1,
+      "verdict": "compatible",
+      "nearMiss": "value",
+      "contextDiffers": true
+    },
+    {
+      "id": "y62",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y63",
+      "route": "near_miss",
+      "priority": 5,
+      "verdict": "compatible",
+      "nearMiss": "limit"
+    },
+    {
+      "id": "y64",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y65",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y66",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y67",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y68",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y69",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y70",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y71",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y72",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y73",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y74",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y75",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y76",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y77",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y78",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y79",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y80",
+      "route": "rule_conflict",
+      "priority": 0,
+      "verdict": "conflict"
+    },
+    {
+      "id": "y81",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y82",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y83",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y84",
+      "route": "near_miss",
+      "priority": 6,
+      "verdict": "compatible",
+      "nearMiss": "value"
+    },
+    {
+      "id": "y85",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y86",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y87",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y88",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y89",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    },
+    {
+      "id": "y90",
+      "route": "excluded",
+      "priority": 0,
+      "verdict": "compatible"
+    }
+  ]
+}

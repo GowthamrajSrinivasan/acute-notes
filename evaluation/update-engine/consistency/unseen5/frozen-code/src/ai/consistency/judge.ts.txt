@@ -1,0 +1,226 @@
+/**
+ * Tier 2 of the consistency check (intelligent-update-engine-plan Stage 4f, §12.3, §12.6, refinement C): a model reads
+ * the pairs the rules left `possible` and says what it thinks — as **evidence for the user**, never as a decision.
+ *
+ * - Only `possible` pairs are ever sent. A rule `conflict` is shown as it is; a rule `compatible` is never shown.
+ * - A call carries at most 10 pairs and about 1,800 tokens in all (≈ 1,500 in, the rest out). Each pair is the two
+ *   sentences, plus a card title and section when given — nothing else from the canvas, and no ids: pairs are `p1…p10`.
+ * - The model never edits, never picks which statement wins, and never confirms a conflict: `combine` turns its answer
+ *   into what the user is shown, and every shown item still waits for the user's decision.
+ *
+ * **Not active.** Nothing in the app calls this task yet: the 2026-11-13 authorization covers an evaluation recording
+ * only (plan §12.14). AI checking of real accepted changes stays off until separately approved.
+ */
+import { z } from "zod";
+import { getTaskRegistry, type TaskDefinition, type TaskRegistry } from "@/ai/tasks";
+import type { PairJudgement } from "./rules";
+
+export const JUDGE_LIMITS = {
+  /** Pairs per call (§12.6). */
+  pairs: 10,
+  /** Estimated input tokens per call (§12.6: ≈ 1,500). */
+  inputTokens: 1_500,
+  /**
+   * Input and output together, as authorized for the 2026-11-13 and unseen3 recordings (≈ 1,800). Historical: the
+   * completion budget is now `outputBudget` (answer + reasoning reserve, §12.23), so a call can exceed this; `callTokens`
+   * gives the true figure for any new cap.
+   */
+  totalTokens: 1_800,
+  sentence: 400,
+  title: 120,
+  why: 240,
+} as const;
+
+/** Rough token count (4 characters a token) — used to keep a call inside its budget before it is sent. */
+export const estimateTokens = (text: string) => Math.ceil(text.length / 4);
+
+const side = z.object({ sentence: z.string().min(1).max(JUDGE_LIMITS.sentence), card: z.string().max(JUDGE_LIMITS.title).optional(), section: z.string().max(JUDGE_LIMITS.title).optional() });
+const judgeInput = z.object({ pairs: z.array(z.object({ ref: z.string(), a: side, b: side })).min(1).max(JUDGE_LIMITS.pairs) });
+export type JudgeInput = z.infer<typeof judgeInput>;
+
+export const JUDGE_ANSWERS = ["contradicts", "compatible_context", "compatible", "unclear"] as const;
+export type JudgeAnswer = (typeof JUDGE_ANSWERS)[number];
+
+/**
+ * An optional line of text. **Documented null representation (plan §12.23, fix A):** `null` and an absent field mean
+ * the same — "nothing to say" — and both read as absent. The unseen3 recording lost a whole call because the model
+ * wrote `"suggestion": null` for pairs with no suggestion (the prompt asks for one "for contradicts only"). Nothing
+ * else is loosened: a wrong type, an over-long line, an unknown answer or a missing `ref` are still rejected.
+ */
+const optionalLine = (max: number) =>
+  z
+    .string()
+    .max(max)
+    .nullish()
+    .transform((v) => v ?? undefined);
+
+/** One pair's answer. Exported so a reply can be validated pair by pair (`judgeReply.ts`). */
+export const judgeResult = z.object({ ref: z.string(), answer: z.enum(JUDGE_ANSWERS), why: optionalLine(400), suggestion: optionalLine(300) });
+const judgeOutput = z.object({ results: z.array(judgeResult).max(JUDGE_LIMITS.pairs) });
+export type JudgeOutput = z.infer<typeof judgeOutput>;
+
+const describeSide = (label: string, s: JudgeInput["pairs"][number]["a"]) =>
+  `  ${label}: "${s.sentence}"${s.card ? ` (card “${s.card}”${s.section ? `, section “${s.section}”` : ""})` : ""}`;
+
+export const JUDGE_SYSTEM_PROMPT = "You check notes for statements that disagree. You are careful: two statements about different contexts can both be true.";
+
+export function buildJudgePrompt(input: JudgeInput): string {
+  const pairs = input.pairs.map((p) => `${p.ref}\n${describeSide("A", p.a)}\n${describeSide("B", p.b)}`).join("\n\n");
+  return (
+    `Each pair below is two statements from different cards of the same notes. For each pair, answer:\n` +
+    `- "contradicts": they cannot both be true about the same thing in the same context.\n` +
+    `- "compatible_context": they could both be true because they are about different contexts (environment, time, version, region, platform, scope or unit such as per user vs in total).\n` +
+    `- "compatible": they agree, say different things that fit together, or are about different things.\n` +
+    `- "unclear": there is not enough to tell.\n` +
+    `Rules: answer "compatible_context" only when the statements themselves give positive evidence of a material difference in scope, time, subject or environment (staging vs production; "until 2023" vs now; UK vs Germany). A detail that only one statement mentions is not by itself a different context. ` +
+    `"Currently", "now", "today", "as of this month" and "since <a past change>" all describe the present: two statements about the present are about the same time. ` +
+    `A universal or exclusive statement ("all", "every", "always", "must", "only", "solely") covers each case it names: another statement that makes an exception for some of those cases contradicts it, unless the universal statement itself allows that exception. Required vs optional for the same action under the same policy cannot both hold. ` +
+    `If you are not sure whether the contexts differ, answer "unclear", never "contradicts". ` +
+    `A difference is not a contradiction unless the claims cannot both be true under the same subject, scope and time. Do not infer exclusivity solely from different named values: many things can have several values at once (a team can use two databases; alerts can go to two channels; ownership can be shared) unless a statement says only one holds ("only", "sole", "all", "the default", "the primary"). ` +
+    `Some claims can't hold together under the same scope: a single configured limit with two values, required vs optional, prohibited vs permitted, explicit sole ownership by two owners, two different dates for the same event. A maximum and an actual or smaller amount fit together. When the evidence is insufficient, answer "unclear". ` +
+    `Never decide which statement is right. "why" is one short line. For "contradicts" only, "suggestion" is a neutral next step for the user (e.g. "confirm which value is current").\n\n` +
+    `Reply with JSON only: {"results":[{"ref":"p1","answer":"contradicts","why":"…","suggestion":"…"}]}\n\n` +
+    pairs
+  );
+}
+
+/**
+ * The request timeout for one judge call (§12.27). It was 30 s (the §12.6 design, never re-measured); in the unseen4
+ * recording (§12.26) full 10-pair calls took 21.5–29.9 s and 4 of 8 were cut off at 30 s. 90 s is three times the
+ * slowest answered call. The in-flight recovery window (`IN_FLIGHT_STALE_MS`, the ledger) is separate and at least
+ * twice this.
+ */
+export const JUDGE_CALL_TIMEOUT_MS = 90_000;
+
+export const judgeConsistencyTask: TaskDefinition<JudgeInput, JudgeOutput> = {
+  task: "judge_consistency",
+  inputSchema: judgeInput,
+  outputSchema: judgeOutput,
+  buildPrompt: ({ input, repairFeedback }) => {
+    const prompt = buildJudgePrompt(input);
+    return { systemPrompt: JUDGE_SYSTEM_PROMPT, prompt: repairFeedback ? `${prompt}\n\n${repairFeedback}` : prompt };
+  },
+  policy: {},
+  timeoutMs: JUDGE_CALL_TIMEOUT_MS,
+};
+
+export function registerConsistencyTasks(registry: TaskRegistry): void {
+  if (!registry.has(judgeConsistencyTask.task)) registry.register(judgeConsistencyTask);
+}
+registerConsistencyTasks(getTaskRegistry());
+
+export interface JudgeItem {
+  /** The caller's own key — never sent. */
+  key: string;
+  a: { sentence: string; card?: string; section?: string };
+  b: { sentence: string; card?: string; section?: string };
+}
+
+/**
+ * Splits items into calls of at most 10 pairs whose prompt stays inside the input budget; returns the calls and the
+ * items left over (they stay "possible, not checked by AI"). `maxCalls` caps the calls (§12.6: one per accepted change).
+ */
+export function planCalls(items: readonly JudgeItem[], maxCalls = 1): { calls: { input: JudgeInput; keys: string[] }[]; skipped: string[] } {
+  const clip = (s: JudgeItem["a"]) => ({ sentence: s.sentence.slice(0, JUDGE_LIMITS.sentence), ...(s.card ? { card: s.card.slice(0, JUDGE_LIMITS.title) } : {}), ...(s.section ? { section: s.section.slice(0, JUDGE_LIMITS.title) } : {}) });
+  const calls: { input: JudgeInput; keys: string[] }[] = [];
+  const skipped: string[] = [];
+  let current: { input: JudgeInput; keys: string[] } | null = null;
+  for (const item of items) {
+    const pair = { ref: "", a: clip(item.a), b: clip(item.b) };
+    const fits = (c: { input: JudgeInput }) => c.input.pairs.length < JUDGE_LIMITS.pairs && estimateTokens(JUDGE_SYSTEM_PROMPT + buildJudgePrompt({ pairs: [...c.input.pairs, { ...pair, ref: `p${c.input.pairs.length + 1}` }] })) <= JUDGE_LIMITS.inputTokens;
+    if (!current || !fits(current)) {
+      if (calls.length >= maxCalls) {
+        skipped.push(item.key);
+        continue;
+      }
+      current = { input: { pairs: [] }, keys: [] };
+      calls.push(current);
+      if (!fits(current)) {
+        calls.pop();
+        current = null;
+        skipped.push(item.key);
+        continue;
+      }
+    }
+    current.input.pairs.push({ ...pair, ref: `p${current.input.pairs.length + 1}` });
+    current.keys.push(item.key);
+  }
+  return { calls, skipped };
+}
+
+/**
+ * The completion budget, as two explicit parts (plan §12.23, fix B). A reasoning model spends part of `max_tokens` on
+ * hidden reasoning before it writes the answer; the old budget (1,800 total − the prompt ≈ 966) was one shared figure,
+ * and in the unseen3 recording one call used all 966 and stopped at pair 7 (≈ 400 visible tokens, so ≈ 560 reasoning).
+ * - `answerTokensPerPair`: the visible JSON one pair needs. Measured: ≈ 47 tokens a pair in the recorded full replies
+ *   (1,865 characters for 10). 60 leaves headroom for a longer "why".
+ * - `reasoningTokens`: a reserve for reasoning, separate from the answer. Measured: ≈ 300–600 at `reasoning_effort: low`.
+ * So a full 10-pair call has 600 + 700 = 1,300 completion tokens. This changes no provider setting (model, reasoning
+ * effort, feature flags); the AI check stays off. A future paid run states its caps from `callTokens`.
+ */
+export const JUDGE_BUDGET = { answerTokensPerPair: 60, reasoningTokens: 700 } as const;
+
+/** The completion budget for a call: the answer it needs plus the reasoning reserve. */
+export const outputBudget = (input: JudgeInput) => input.pairs.length * JUDGE_BUDGET.answerTokensPerPair + JUDGE_BUDGET.reasoningTokens;
+
+/**
+ * The most one call may ever reserve (§12.24): the input cap plus a full 10-pair answer plus the reasoning reserve —
+ * 1,500 + 600 + 700 = **2,800 tokens**. A typical full call reserves ≈ 2,300 (its prompt is ≈ 1,000 tokens), so about
+ * 39 fit the 90,000 daily cap; at the ceiling, 32 do. `JudgeBudget.reserve` refuses anything above it.
+ */
+export const JUDGE_CALL_CEILING = JUDGE_LIMITS.inputTokens + JUDGE_LIMITS.pairs * JUDGE_BUDGET.answerTokensPerPair + JUDGE_BUDGET.reasoningTokens;
+
+/** What the user is shown for a pair, once rules (and, for `possible`, the model) have looked at it. */
+export type Shown =
+  /** The rules: they can't both be true. Waits for the user's confirmation. */
+  | "conflict"
+  /** The rules said possible and the model reads a contradiction. Shown as "AI: likely conflict" — still the user's call. */
+  | "likely"
+  /** Still possible: no AI answer, the model couldn't tell, or the model's "contradicts" was held back (below). */
+  | "possible"
+  /** Not shown: the rules found nothing, or the model read the pair as compatible (kept as evidence). */
+  | "hidden";
+
+export interface Combined {
+  shown: Shown;
+  /** Why, for the panel and the record. */
+  note: string;
+  /** A near-miss the AI hasn't answered yet: not shown (the rules alone found nothing), but tracked — never dropped. */
+  awaitingAI?: true;
+}
+
+/**
+ * Rules + AI (fixed before the 2026-11-13 recording, never tuned on its results):
+ * - only a `possible` rule verdict is affected by the model;
+ * - "contradicts" makes it `likely` — **unless the rules saw a context marker differ**: then it stays `possible` (the
+ *   model must not turn a context difference into a definite contradiction; the user decides);
+ * - "compatible" / "compatible_context" hide it (the answer is kept as evidence on the record);
+ * - "unclear" or no answer leave it `possible`.
+ *
+ * Near-misses (§12.15; a rule `compatible` with `nearMiss`) follow the same answers, except: with no answer they stay
+ * hidden and `awaitingAI` (the rules alone show nothing, as before), and "unclear" surfaces them as `possible`.
+ */
+export function combine(rule: PairJudgement, ai?: { answer: JudgeAnswer; why?: string }): Combined {
+  if (rule.verdict === "conflict") return { shown: "conflict", note: rule.reason };
+  if (rule.verdict === "compatible") {
+    if (!rule.nearMiss) return { shown: "hidden", note: rule.reason };
+    if (!ai) return { shown: "hidden", note: `near-miss: ${rule.nearMiss.reason} (awaiting the AI check)`, awaitingAI: true };
+    return combine({ verdict: "possible", kind: rule.nearMiss.kind === "negation" ? "contradicts" : "differs", reason: `near-miss: ${rule.nearMiss.reason}`, ...(rule.contextDiffers ? { contextDiffers: true } : {}) }, ai);
+  }
+  if (!ai) return { shown: "possible", note: `${rule.reason} (not checked by AI)` };
+  const why = ai.why ? `: ${ai.why}` : "";
+  switch (ai.answer) {
+    case "contradicts":
+      if (rule.contextDiffers) return { shown: "possible", note: `${rule.reason}; AI reads a contradiction${why}, but the contexts differ — needs a look` };
+      // A swapped value with nothing saying only one can hold (two databases, two channels): the model's reading alone
+      // doesn't make it a likely conflict — it stays for the user to judge (§12.19).
+      if (rule.thin) return { shown: "possible", note: `${rule.reason}; AI reads a contradiction${why}, but too little is said to tell it is the same thing — needs a look` };
+      if (rule.verdict === "possible" && rule.kind === "value" && !rule.exclusive) return { shown: "possible", note: `${rule.reason}; AI reads a contradiction${why}, but nothing says only one can hold — needs a look` };
+      return { shown: "likely", note: `AI: likely conflict${why}` };
+    case "compatible":
+    case "compatible_context":
+      return { shown: "hidden", note: `AI: ${ai.answer === "compatible_context" ? "different contexts" : "compatible"}${why}` };
+    default:
+      return { shown: "possible", note: `${rule.reason}; AI couldn't tell${why}` };
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "note": "unseen5 INPUTS frozen 2026-11-15, before any selector, rule, screen or model has run on them (plan §12.30). Author: an isolated agent given only a coverage spec (no earlier sets, code, plan or failure ids; its only tool use was writing these files). Batch B7 (y31–y35) was rewritten by the same author after an automated overlap check (Jaccard ≥ 0.60 with an unseen2 statement; ids only printed). Re-check: max Jaccard 0.50 against every earlier set. The coordinating session has not read the statements. The author draft key is NOT the truth: the reviewer labels blind. The CODE freeze (FREEZE.json) is written after the labels, before the route step.",
+  "date": "2026-11-15",
+  "files": {
+    "pairs.json": "59bf2006c478bd3c9e20f9137a49e69a7c0bcf2f9f8c521cd8cd3d6ca1ea0546",
+    "author-draft-key.json": "790072777b1882d112e7da57f4d2305dc95d1eadde7bd8956e2b32cde941c88f",
+    "labelling-sheet.md": "698610d85e7fc87d4af0b13fd0995f348d23d639a52d65007f56ab7f28c9d4d1"
+  }
+}
