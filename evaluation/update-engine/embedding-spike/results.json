@@ -1,0 +1,1295 @@
+{
+  "env": {
+    "node": "v22.23.3",
+    "platform": "win32-x64",
+    "transformers": "4.3.2",
+    "date": "2026-11-14"
+  },
+  "results": [
+    {
+      "embedder": "local-hash-v1",
+      "model": "hashed (Stage 2a)",
+      "languages": "en",
+      "weightsMB": 0,
+      "firstLoadMs": 0,
+      "cachedLoadMs": 0,
+      "rssAddedMB": 0,
+      "oneTextMs": 0.075,
+      "relatedness": {
+        "texts": 704,
+        "batchedMsPerText": 0.041,
+        "auc": 1,
+        "aucPerKind": {
+          "qualifier": 1,
+          "condition": 1,
+          "negation": 1,
+          "cause": 1,
+          "quantity": 0.999,
+          "trade_off": 0.998,
+          "scope": 1,
+          "compound": 1
+        },
+        "meanPositive": 0.727,
+        "meanNegative": 0.021,
+        "meanFaithful": 0.66,
+        "meanDistorted": 0.795,
+        "thresholdAt5pctFP": 0.126,
+        "recallAt5pctFP": 1,
+        "configuredRelated": 0.2,
+        "recallAtConfigured": 0.997,
+        "fpAtConfigured": 0.009,
+        "minPositive": 0.169,
+        "lowestPositives": [
+          {
+            "id": "h2-to-07",
+            "score": 0.169
+          },
+          {
+            "id": "h2-qt-03",
+            "score": 0.223
+          },
+          {
+            "id": "h2-qt-09",
+            "score": 0.24
+          },
+          {
+            "id": "h2-ql-09",
+            "score": 0.25
+          },
+          {
+            "id": "h-to-03",
+            "score": 0.267
+          }
+        ]
+      },
+      "router": [
+        {
+          "text": "Credentials are rotated every thirty days.",
+          "expected": "keys",
+          "origin": "router.test",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.208,
+          "margin": 0.177
+        },
+        {
+          "text": "Jitter spreads retries out so callers don't retry together.",
+          "expected": "retries",
+          "origin": "router.test",
+          "top": "retries",
+          "correct": true,
+          "expectedScore": 0.088,
+          "margin": 0.048
+        },
+        {
+          "text": "Failed requests are attempted again up to five times.",
+          "expected": "retries",
+          "origin": "spike",
+          "top": "retries",
+          "correct": true,
+          "expectedScore": 0.318,
+          "margin": 0.286
+        },
+        {
+          "text": "The gateway gives up on a call after ten seconds.",
+          "expected": "timeouts",
+          "origin": "spike",
+          "top": "timeouts",
+          "correct": true,
+          "expectedScore": 0.556,
+          "margin": 0.308
+        },
+        {
+          "text": "Billing engineers are responsible for the gateway.",
+          "expected": "owners",
+          "origin": "spike",
+          "top": "owners",
+          "correct": true,
+          "expectedScore": 0.215,
+          "margin": 0.169
+        },
+        {
+          "text": "Every server is issued a separate token with limited permissions.",
+          "expected": "tokens",
+          "origin": "spike",
+          "top": "tokens",
+          "correct": true,
+          "expectedScore": 0.273,
+          "margin": 0.244
+        },
+        {
+          "text": "We replace the keys used to sign requests once a month.",
+          "expected": "keys",
+          "origin": "spike",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.532,
+          "margin": 0.532
+        }
+      ],
+      "crossLanguage": [
+        {
+          "lang": "de",
+          "sameClaim": 0.106,
+          "unrelated": 0.015,
+          "separates": false
+        },
+        {
+          "lang": "fr",
+          "sameClaim": 0.198,
+          "unrelated": 0,
+          "separates": false
+        },
+        {
+          "lang": "es",
+          "sameClaim": 0.167,
+          "unrelated": 0.014,
+          "separates": false
+        }
+      ],
+      "related": 0.2
+    },
+    {
+      "embedder": "local-minilm-l6-q8-v1",
+      "model": "Xenova/all-MiniLM-L6-v2",
+      "languages": "en",
+      "weightsMB": 22.6,
+      "firstLoadMs": 600,
+      "cachedLoadMs": 251,
+      "rssAddedMB": 102.3,
+      "oneTextMs": 4.472,
+      "relatedness": {
+        "texts": 704,
+        "batchedMsPerText": 1.747,
+        "auc": 1,
+        "aucPerKind": {
+          "qualifier": 1,
+          "condition": 1,
+          "negation": 1,
+          "cause": 1,
+          "quantity": 1,
+          "trade_off": 1,
+          "scope": 1,
+          "compound": 1
+        },
+        "meanPositive": 0.888,
+        "meanNegative": 0.119,
+        "meanFaithful": 0.877,
+        "meanDistorted": 0.9,
+        "thresholdAt5pctFP": 0.298,
+        "recallAt5pctFP": 1,
+        "configuredRelated": 0.3,
+        "recallAtConfigured": 1,
+        "fpAtConfigured": 0.048,
+        "minPositive": 0.485,
+        "lowestPositives": [
+          {
+            "id": "h2-qt-03",
+            "score": 0.485
+          },
+          {
+            "id": "cp-09",
+            "score": 0.637
+          },
+          {
+            "id": "cp-22",
+            "score": 0.652
+          },
+          {
+            "id": "h2-ng-12",
+            "score": 0.683
+          },
+          {
+            "id": "to-10",
+            "score": 0.689
+          }
+        ]
+      },
+      "router": [
+        {
+          "text": "Credentials are rotated every thirty days.",
+          "expected": "keys",
+          "origin": "router.test",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.561,
+          "margin": 0.271
+        },
+        {
+          "text": "Jitter spreads retries out so callers don't retry together.",
+          "expected": "retries",
+          "origin": "router.test",
+          "top": "timeouts",
+          "correct": false,
+          "expectedScore": 0.402,
+          "margin": -0.023
+        },
+        {
+          "text": "Failed requests are attempted again up to five times.",
+          "expected": "retries",
+          "origin": "spike",
+          "top": "retries",
+          "correct": true,
+          "expectedScore": 0.446,
+          "margin": 0.086
+        },
+        {
+          "text": "The gateway gives up on a call after ten seconds.",
+          "expected": "timeouts",
+          "origin": "spike",
+          "top": "timeouts",
+          "correct": true,
+          "expectedScore": 0.532,
+          "margin": 0.095
+        },
+        {
+          "text": "Billing engineers are responsible for the gateway.",
+          "expected": "owners",
+          "origin": "spike",
+          "top": "owners",
+          "correct": true,
+          "expectedScore": 0.721,
+          "margin": 0.559
+        },
+        {
+          "text": "Every server is issued a separate token with limited permissions.",
+          "expected": "tokens",
+          "origin": "spike",
+          "top": "tokens",
+          "correct": true,
+          "expectedScore": 0.724,
+          "margin": 0.503
+        },
+        {
+          "text": "We replace the keys used to sign requests once a month.",
+          "expected": "keys",
+          "origin": "spike",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.754,
+          "margin": 0.504
+        }
+      ],
+      "crossLanguage": [
+        {
+          "lang": "de",
+          "sameClaim": 0.122,
+          "unrelated": -0.1,
+          "separates": false
+        },
+        {
+          "lang": "fr",
+          "sameClaim": 0.049,
+          "unrelated": -0.062,
+          "separates": false
+        },
+        {
+          "lang": "es",
+          "sameClaim": 0.174,
+          "unrelated": -0.067,
+          "separates": false
+        }
+      ],
+      "related": 0.3
+    },
+    {
+      "embedder": "local-arctic-xs-q8-v1",
+      "model": "Snowflake/snowflake-arctic-embed-xs",
+      "languages": "en",
+      "weightsMB": 22.6,
+      "firstLoadMs": 262,
+      "cachedLoadMs": 287,
+      "rssAddedMB": 65.8,
+      "oneTextMs": 3.815,
+      "relatedness": {
+        "texts": 704,
+        "batchedMsPerText": 2.125,
+        "auc": 1,
+        "aucPerKind": {
+          "qualifier": 1,
+          "condition": 1,
+          "negation": 1,
+          "cause": 1,
+          "quantity": 1,
+          "trade_off": 0.999,
+          "scope": 1,
+          "compound": 1
+        },
+        "meanPositive": 0.966,
+        "meanNegative": 0.743,
+        "meanFaithful": 0.961,
+        "meanDistorted": 0.971,
+        "thresholdAt5pctFP": 0.813,
+        "recallAt5pctFP": 1,
+        "configuredRelated": 0.3,
+        "recallAtConfigured": 1,
+        "fpAtConfigured": 1,
+        "minPositive": 0.863,
+        "lowestPositives": [
+          {
+            "id": "h2-qt-03",
+            "score": 0.863
+          },
+          {
+            "id": "h2-qt-09",
+            "score": 0.87
+          },
+          {
+            "id": "h2-to-07",
+            "score": 0.877
+          },
+          {
+            "id": "cp-09",
+            "score": 0.878
+          },
+          {
+            "id": "h2-qt-01",
+            "score": 0.892
+          }
+        ]
+      },
+      "router": [
+        {
+          "text": "Credentials are rotated every thirty days.",
+          "expected": "keys",
+          "origin": "router.test",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.849,
+          "margin": 0.066
+        },
+        {
+          "text": "Jitter spreads retries out so callers don't retry together.",
+          "expected": "retries",
+          "origin": "router.test",
+          "top": "retries",
+          "correct": true,
+          "expectedScore": 0.861,
+          "margin": 0.02
+        },
+        {
+          "text": "Failed requests are attempted again up to five times.",
+          "expected": "retries",
+          "origin": "spike",
+          "top": "timeouts",
+          "correct": false,
+          "expectedScore": 0.835,
+          "margin": -0.016
+        },
+        {
+          "text": "The gateway gives up on a call after ten seconds.",
+          "expected": "timeouts",
+          "origin": "spike",
+          "top": "timeouts",
+          "correct": true,
+          "expectedScore": 0.887,
+          "margin": 0.062
+        },
+        {
+          "text": "Billing engineers are responsible for the gateway.",
+          "expected": "owners",
+          "origin": "spike",
+          "top": "owners",
+          "correct": true,
+          "expectedScore": 0.881,
+          "margin": 0.149
+        },
+        {
+          "text": "Every server is issued a separate token with limited permissions.",
+          "expected": "tokens",
+          "origin": "spike",
+          "top": "tokens",
+          "correct": true,
+          "expectedScore": 0.912,
+          "margin": 0.1
+        },
+        {
+          "text": "We replace the keys used to sign requests once a month.",
+          "expected": "keys",
+          "origin": "spike",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.879,
+          "margin": 0.087
+        }
+      ],
+      "crossLanguage": [
+        {
+          "lang": "de",
+          "sameClaim": 0.748,
+          "unrelated": 0.688,
+          "separates": false
+        },
+        {
+          "lang": "fr",
+          "sameClaim": 0.784,
+          "unrelated": 0.715,
+          "separates": false
+        },
+        {
+          "lang": "es",
+          "sameClaim": 0.78,
+          "unrelated": 0.674,
+          "separates": false
+        }
+      ],
+      "related": 0.3
+    },
+    {
+      "embedder": "local-bge-small-en-q8-v1",
+      "model": "Xenova/bge-small-en-v1.5",
+      "languages": "en",
+      "weightsMB": 33.1,
+      "firstLoadMs": 380,
+      "cachedLoadMs": 384,
+      "rssAddedMB": -75.7,
+      "oneTextMs": 6.667,
+      "relatedness": {
+        "texts": 704,
+        "batchedMsPerText": 4.343,
+        "auc": 1,
+        "aucPerKind": {
+          "qualifier": 1,
+          "condition": 1,
+          "negation": 1,
+          "cause": 1,
+          "quantity": 1,
+          "trade_off": 0.999,
+          "scope": 0.999,
+          "compound": 1
+        },
+        "meanPositive": 0.911,
+        "meanNegative": 0.508,
+        "meanFaithful": 0.918,
+        "meanDistorted": 0.904,
+        "thresholdAt5pctFP": 0.622,
+        "recallAt5pctFP": 1,
+        "configuredRelated": 0.3,
+        "recallAtConfigured": 1,
+        "fpAtConfigured": 1,
+        "minPositive": 0.63,
+        "lowestPositives": [
+          {
+            "id": "sc-18",
+            "score": 0.63
+          },
+          {
+            "id": "cp-22",
+            "score": 0.669
+          },
+          {
+            "id": "h2-ng-12",
+            "score": 0.713
+          },
+          {
+            "id": "ng-13",
+            "score": 0.741
+          },
+          {
+            "id": "h2-qt-03",
+            "score": 0.742
+          }
+        ]
+      },
+      "router": [
+        {
+          "text": "Credentials are rotated every thirty days.",
+          "expected": "keys",
+          "origin": "router.test",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.752,
+          "margin": 0.129
+        },
+        {
+          "text": "Jitter spreads retries out so callers don't retry together.",
+          "expected": "retries",
+          "origin": "router.test",
+          "top": "timeouts",
+          "correct": false,
+          "expectedScore": 0.664,
+          "margin": -0.107
+        },
+        {
+          "text": "Failed requests are attempted again up to five times.",
+          "expected": "retries",
+          "origin": "spike",
+          "top": "retries",
+          "correct": true,
+          "expectedScore": 0.753,
+          "margin": 0.09
+        },
+        {
+          "text": "The gateway gives up on a call after ten seconds.",
+          "expected": "timeouts",
+          "origin": "spike",
+          "top": "timeouts",
+          "correct": true,
+          "expectedScore": 0.842,
+          "margin": 0.232
+        },
+        {
+          "text": "Billing engineers are responsible for the gateway.",
+          "expected": "owners",
+          "origin": "spike",
+          "top": "owners",
+          "correct": true,
+          "expectedScore": 0.806,
+          "margin": 0.187
+        },
+        {
+          "text": "Every server is issued a separate token with limited permissions.",
+          "expected": "tokens",
+          "origin": "spike",
+          "top": "tokens",
+          "correct": true,
+          "expectedScore": 0.844,
+          "margin": 0.23
+        },
+        {
+          "text": "We replace the keys used to sign requests once a month.",
+          "expected": "keys",
+          "origin": "spike",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.839,
+          "margin": 0.247
+        }
+      ],
+      "crossLanguage": [
+        {
+          "lang": "de",
+          "sameClaim": 0.64,
+          "unrelated": 0.415,
+          "separates": false
+        },
+        {
+          "lang": "fr",
+          "sameClaim": 0.493,
+          "unrelated": 0.438,
+          "separates": false
+        },
+        {
+          "lang": "es",
+          "sameClaim": 0.557,
+          "unrelated": 0.407,
+          "separates": false
+        }
+      ],
+      "related": 0.3
+    },
+    {
+      "embedder": "local-e5-small-multi-q8-v1",
+      "model": "Xenova/multilingual-e5-small",
+      "languages": "multilingual",
+      "weightsMB": 129.1,
+      "firstLoadMs": 1286,
+      "cachedLoadMs": 1213,
+      "rssAddedMB": 557.9,
+      "oneTextMs": 7.743,
+      "relatedness": {
+        "texts": 704,
+        "batchedMsPerText": 3.887,
+        "auc": 1,
+        "aucPerKind": {
+          "qualifier": 1,
+          "condition": 1,
+          "negation": 1,
+          "cause": 1,
+          "quantity": 1,
+          "trade_off": 1,
+          "scope": 1,
+          "compound": 1
+        },
+        "meanPositive": 0.964,
+        "meanNegative": 0.804,
+        "meanFaithful": 0.966,
+        "meanDistorted": 0.962,
+        "thresholdAt5pctFP": 0.844,
+        "recallAt5pctFP": 1,
+        "configuredRelated": 0.3,
+        "recallAtConfigured": 1,
+        "fpAtConfigured": 1,
+        "minPositive": 0.879,
+        "lowestPositives": [
+          {
+            "id": "h-cd-04",
+            "score": 0.879
+          },
+          {
+            "id": "cp-22",
+            "score": 0.881
+          },
+          {
+            "id": "cp-17",
+            "score": 0.888
+          },
+          {
+            "id": "h2-to-07",
+            "score": 0.893
+          },
+          {
+            "id": "cp-14",
+            "score": 0.9
+          }
+        ]
+      },
+      "router": [
+        {
+          "text": "Credentials are rotated every thirty days.",
+          "expected": "keys",
+          "origin": "router.test",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.884,
+          "margin": 0.043
+        },
+        {
+          "text": "Jitter spreads retries out so callers don't retry together.",
+          "expected": "retries",
+          "origin": "router.test",
+          "top": "timeouts",
+          "correct": false,
+          "expectedScore": 0.845,
+          "margin": -0.014
+        },
+        {
+          "text": "Failed requests are attempted again up to five times.",
+          "expected": "retries",
+          "origin": "spike",
+          "top": "retries",
+          "correct": true,
+          "expectedScore": 0.897,
+          "margin": 0.041
+        },
+        {
+          "text": "The gateway gives up on a call after ten seconds.",
+          "expected": "timeouts",
+          "origin": "spike",
+          "top": "timeouts",
+          "correct": true,
+          "expectedScore": 0.907,
+          "margin": 0.056
+        },
+        {
+          "text": "Billing engineers are responsible for the gateway.",
+          "expected": "owners",
+          "origin": "spike",
+          "top": "owners",
+          "correct": true,
+          "expectedScore": 0.909,
+          "margin": 0.089
+        },
+        {
+          "text": "Every server is issued a separate token with limited permissions.",
+          "expected": "tokens",
+          "origin": "spike",
+          "top": "tokens",
+          "correct": true,
+          "expectedScore": 0.937,
+          "margin": 0.11
+        },
+        {
+          "text": "We replace the keys used to sign requests once a month.",
+          "expected": "keys",
+          "origin": "spike",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.93,
+          "margin": 0.096
+        }
+      ],
+      "crossLanguage": [
+        {
+          "lang": "de",
+          "sameClaim": 0.902,
+          "unrelated": 0.749,
+          "separates": false
+        },
+        {
+          "lang": "fr",
+          "sameClaim": 0.903,
+          "unrelated": 0.774,
+          "separates": false
+        },
+        {
+          "lang": "es",
+          "sameClaim": 0.867,
+          "unrelated": 0.774,
+          "separates": false
+        }
+      ],
+      "related": 0.3
+    },
+    {
+      "embedder": "local-minilm-l12-multi-q8-v1",
+      "model": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
+      "languages": "multilingual",
+      "weightsMB": 129.1,
+      "firstLoadMs": 1600,
+      "cachedLoadMs": 1145,
+      "rssAddedMB": -74.3,
+      "oneTextMs": 8.57,
+      "relatedness": {
+        "texts": 704,
+        "batchedMsPerText": 3.102,
+        "auc": 1,
+        "aucPerKind": {
+          "qualifier": 1,
+          "condition": 1,
+          "negation": 0.999,
+          "cause": 1,
+          "quantity": 1,
+          "trade_off": 1,
+          "scope": 1,
+          "compound": 0.999
+        },
+        "meanPositive": 0.833,
+        "meanNegative": 0.13,
+        "meanFaithful": 0.848,
+        "meanDistorted": 0.819,
+        "thresholdAt5pctFP": 0.321,
+        "recallAt5pctFP": 1,
+        "configuredRelated": 0.3,
+        "recallAtConfigured": 1,
+        "fpAtConfigured": 0.063,
+        "minPositive": 0.42,
+        "lowestPositives": [
+          {
+            "id": "ng-13",
+            "score": 0.42
+          },
+          {
+            "id": "sc-18",
+            "score": 0.432
+          },
+          {
+            "id": "h2-ng-12",
+            "score": 0.451
+          },
+          {
+            "id": "cp-22",
+            "score": 0.456
+          },
+          {
+            "id": "cd-23",
+            "score": 0.457
+          }
+        ]
+      },
+      "router": [
+        {
+          "text": "Credentials are rotated every thirty days.",
+          "expected": "keys",
+          "origin": "router.test",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.435,
+          "margin": 0.222
+        },
+        {
+          "text": "Jitter spreads retries out so callers don't retry together.",
+          "expected": "retries",
+          "origin": "router.test",
+          "top": "timeouts",
+          "correct": false,
+          "expectedScore": 0.225,
+          "margin": -0.034
+        },
+        {
+          "text": "Failed requests are attempted again up to five times.",
+          "expected": "retries",
+          "origin": "spike",
+          "top": "retries",
+          "correct": true,
+          "expectedScore": 0.453,
+          "margin": 0.208
+        },
+        {
+          "text": "The gateway gives up on a call after ten seconds.",
+          "expected": "timeouts",
+          "origin": "spike",
+          "top": "timeouts",
+          "correct": true,
+          "expectedScore": 0.652,
+          "margin": 0.366
+        },
+        {
+          "text": "Billing engineers are responsible for the gateway.",
+          "expected": "owners",
+          "origin": "spike",
+          "top": "owners",
+          "correct": true,
+          "expectedScore": 0.594,
+          "margin": 0.387
+        },
+        {
+          "text": "Every server is issued a separate token with limited permissions.",
+          "expected": "tokens",
+          "origin": "spike",
+          "top": "tokens",
+          "correct": true,
+          "expectedScore": 0.705,
+          "margin": 0.53
+        },
+        {
+          "text": "We replace the keys used to sign requests once a month.",
+          "expected": "keys",
+          "origin": "spike",
+          "top": "keys",
+          "correct": true,
+          "expectedScore": 0.718,
+          "margin": 0.513
+        }
+      ],
+      "crossLanguage": [
+        {
+          "lang": "de",
+          "sameClaim": 0.809,
+          "unrelated": 0.155,
+          "separates": true
+        },
+        {
+          "lang": "fr",
+          "sameClaim": 0.871,
+          "unrelated": -0.038,
+          "separates": true
+        },
+        {
+          "lang": "es",
+          "sameClaim": 0.695,
+          "unrelated": 0.251,
+          "separates": true
+        }
+      ],
+      "related": 0.3
+    }
+  ],
+  "blind": [
+    {
+      "embedder": "local-hash-v1",
+      "meanByClass": {
+        "paraphrase": 0.047,
+        "same_topic": 0.016,
+        "decoy": 0.422,
+        "unrelated": 0.008
+      },
+      "aucParaphraseVsDecoy": 0,
+      "aucRelatedVsNot": 0.286,
+      "paraphraseRecallAt5pctFP": 0,
+      "thresholdAt5pctFP": 0.521,
+      "atConfigured": {
+        "related": 0.2,
+        "paraphraseRecall": 0,
+        "sameTopicRecall": 0,
+        "decoyPass": 1,
+        "unrelatedPass": 0
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 6,
+        "section": 9,
+        "trapped": 10,
+        "withTrap": 14,
+        "misses": [
+          "n01→c20",
+          "n03→c01",
+          "n04→c05",
+          "n05→c20",
+          "n06→c11",
+          "n07→c09",
+          "n08→c16",
+          "n09→c13",
+          "n10→c06",
+          "n11→c09",
+          "n12→c14",
+          "n13→c16",
+          "n16→c02",
+          "n17→c05",
+          "n18→c15",
+          "n20→c01",
+          "n22→c06",
+          "n24→c14",
+          "n25→c03"
+        ]
+      }
+    },
+    {
+      "embedder": "local-minilm-l6-q8-v1",
+      "meanByClass": {
+        "paraphrase": 0.476,
+        "same_topic": 0.272,
+        "decoy": 0.462,
+        "unrelated": 0.055
+      },
+      "aucParaphraseVsDecoy": 0.545,
+      "aucRelatedVsNot": 0.652,
+      "paraphraseRecallAt5pctFP": 0.05,
+      "thresholdAt5pctFP": 0.644,
+      "atConfigured": {
+        "related": 0.3,
+        "paraphraseRecall": 0.95,
+        "sameTopicRecall": 0.45,
+        "decoyPass": 0.9,
+        "unrelatedPass": 0
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 22,
+        "section": 23,
+        "trapped": 0,
+        "withTrap": 14,
+        "misses": [
+          "n06→c08",
+          "n10→c02",
+          "n25→c09"
+        ]
+      }
+    },
+    {
+      "embedder": "local-arctic-xs-q8-v1",
+      "meanByClass": {
+        "paraphrase": 0.84,
+        "same_topic": 0.77,
+        "decoy": 0.857,
+        "unrelated": 0.691
+      },
+      "aucParaphraseVsDecoy": 0.37,
+      "aucRelatedVsNot": 0.592,
+      "paraphraseRecallAt5pctFP": 0.05,
+      "thresholdAt5pctFP": 0.908,
+      "atConfigured": {
+        "related": 0.3,
+        "paraphraseRecall": 1,
+        "sameTopicRecall": 1,
+        "decoyPass": 1,
+        "unrelatedPass": 1
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 19,
+        "section": 22,
+        "trapped": 3,
+        "withTrap": 14,
+        "misses": [
+          "n06→c08",
+          "n09→c10",
+          "n12→c14",
+          "n17→c19",
+          "n24→c14",
+          "n25→c03"
+        ]
+      }
+    },
+    {
+      "embedder": "local-bge-small-en-q8-v1",
+      "meanByClass": {
+        "paraphrase": 0.692,
+        "same_topic": 0.576,
+        "decoy": 0.678,
+        "unrelated": 0.442
+      },
+      "aucParaphraseVsDecoy": 0.563,
+      "aucRelatedVsNot": 0.674,
+      "paraphraseRecallAt5pctFP": 0.05,
+      "thresholdAt5pctFP": 0.809,
+      "atConfigured": {
+        "related": 0.3,
+        "paraphraseRecall": 1,
+        "sameTopicRecall": 1,
+        "decoyPass": 1,
+        "unrelatedPass": 1
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 22,
+        "section": 23,
+        "trapped": 2,
+        "withTrap": 14,
+        "misses": [
+          "n06→c08",
+          "n09→c13",
+          "n25→c03"
+        ]
+      }
+    },
+    {
+      "embedder": "local-e5-small-multi-q8-v1",
+      "meanByClass": {
+        "paraphrase": 0.874,
+        "same_topic": 0.821,
+        "decoy": 0.875,
+        "unrelated": 0.788
+      },
+      "aucParaphraseVsDecoy": 0.502,
+      "aucRelatedVsNot": 0.607,
+      "paraphraseRecallAt5pctFP": 0.1,
+      "thresholdAt5pctFP": 0.921,
+      "atConfigured": {
+        "related": 0.3,
+        "paraphraseRecall": 1,
+        "sameTopicRecall": 1,
+        "decoyPass": 1,
+        "unrelatedPass": 1
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 20,
+        "section": 21,
+        "trapped": 4,
+        "withTrap": 14,
+        "misses": [
+          "n04→c05",
+          "n06→c08",
+          "n09→c13",
+          "n19→c09",
+          "n25→c03"
+        ]
+      }
+    },
+    {
+      "embedder": "local-minilm-l12-multi-q8-v1",
+      "meanByClass": {
+        "paraphrase": 0.478,
+        "same_topic": 0.217,
+        "decoy": 0.479,
+        "unrelated": 0.065
+      },
+      "aucParaphraseVsDecoy": 0.495,
+      "aucRelatedVsNot": 0.612,
+      "paraphraseRecallAt5pctFP": 0.1,
+      "thresholdAt5pctFP": 0.73,
+      "atConfigured": {
+        "related": 0.3,
+        "paraphraseRecall": 0.9,
+        "sameTopicRecall": 0.1,
+        "decoyPass": 0.85,
+        "unrelatedPass": 0
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 15,
+        "section": 17,
+        "trapped": 7,
+        "withTrap": 14,
+        "misses": [
+          "n04→c05",
+          "n06→c08",
+          "n09→c13",
+          "n10→c06",
+          "n11→c09",
+          "n17→c09",
+          "n19→c09",
+          "n22→c06",
+          "n24→c14",
+          "n25→c09"
+        ]
+      }
+    },
+    {
+      "embedder": "local-minilm-l6-q8-v1 + hashed (½ each)",
+      "meanByClass": {
+        "paraphrase": 0.261,
+        "same_topic": 0.144,
+        "decoy": 0.442,
+        "unrelated": 0.032
+      },
+      "aucParaphraseVsDecoy": 0.07,
+      "aucRelatedVsNot": 0.505,
+      "paraphraseRecallAt5pctFP": 0,
+      "thresholdAt5pctFP": 0.571,
+      "atConfigured": {
+        "related": 0.25,
+        "paraphraseRecall": 0.6,
+        "sameTopicRecall": 0,
+        "decoyPass": 1,
+        "unrelatedPass": 0
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 18,
+        "section": 19,
+        "trapped": 7,
+        "withTrap": 14,
+        "misses": [
+          "n04→c05",
+          "n06→c11",
+          "n07→c09",
+          "n09→c13",
+          "n10→c06",
+          "n11→c09",
+          "n25→c03"
+        ]
+      }
+    },
+    {
+      "embedder": "local-arctic-xs-q8-v1 + hashed (½ each)",
+      "meanByClass": {
+        "paraphrase": 0.443,
+        "same_topic": 0.393,
+        "decoy": 0.639,
+        "unrelated": 0.35
+      },
+      "aucParaphraseVsDecoy": 0.005,
+      "aucRelatedVsNot": 0.474,
+      "paraphraseRecallAt5pctFP": 0,
+      "thresholdAt5pctFP": 0.71,
+      "atConfigured": {
+        "related": 0.25,
+        "paraphraseRecall": 1,
+        "sameTopicRecall": 1,
+        "decoyPass": 1,
+        "unrelatedPass": 1
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 9,
+        "section": 12,
+        "trapped": 10,
+        "withTrap": 14,
+        "misses": [
+          "n01→c20",
+          "n04→c05",
+          "n05→c19",
+          "n06→c11",
+          "n07→c09",
+          "n08→c05",
+          "n09→c13",
+          "n10→c06",
+          "n11→c09",
+          "n12→c14",
+          "n13→c16",
+          "n17→c05",
+          "n20→c10",
+          "n22→c06",
+          "n24→c14",
+          "n25→c03"
+        ]
+      }
+    },
+    {
+      "embedder": "local-bge-small-en-q8-v1 + hashed (½ each)",
+      "meanByClass": {
+        "paraphrase": 0.37,
+        "same_topic": 0.296,
+        "decoy": 0.55,
+        "unrelated": 0.225
+      },
+      "aucParaphraseVsDecoy": 0.025,
+      "aucRelatedVsNot": 0.487,
+      "paraphraseRecallAt5pctFP": 0,
+      "thresholdAt5pctFP": 0.655,
+      "atConfigured": {
+        "related": 0.25,
+        "paraphraseRecall": 1,
+        "sameTopicRecall": 0.9,
+        "decoyPass": 1,
+        "unrelatedPass": 0.25
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 15,
+        "section": 16,
+        "trapped": 8,
+        "withTrap": 14,
+        "misses": [
+          "n01→c20",
+          "n04→c05",
+          "n06→c11",
+          "n07→c09",
+          "n09→c13",
+          "n10→c06",
+          "n11→c09",
+          "n17→c05",
+          "n22→c06",
+          "n25→c03"
+        ]
+      }
+    },
+    {
+      "embedder": "local-e5-small-multi-q8-v1 + hashed (½ each)",
+      "meanByClass": {
+        "paraphrase": 0.461,
+        "same_topic": 0.419,
+        "decoy": 0.648,
+        "unrelated": 0.398
+      },
+      "aucParaphraseVsDecoy": 0.003,
+      "aucRelatedVsNot": 0.441,
+      "paraphraseRecallAt5pctFP": 0,
+      "thresholdAt5pctFP": 0.711,
+      "atConfigured": {
+        "related": 0.25,
+        "paraphraseRecall": 1,
+        "sameTopicRecall": 1,
+        "decoyPass": 1,
+        "unrelatedPass": 1
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 9,
+        "section": 12,
+        "trapped": 9,
+        "withTrap": 14,
+        "misses": [
+          "n01→c20",
+          "n04→c05",
+          "n05→c19",
+          "n06→c11",
+          "n07→c09",
+          "n08→c05",
+          "n09→c13",
+          "n10→c06",
+          "n11→c09",
+          "n13→c16",
+          "n16→c02",
+          "n17→c05",
+          "n20→c10",
+          "n22→c06",
+          "n24→c14",
+          "n25→c03"
+        ]
+      }
+    },
+    {
+      "embedder": "local-minilm-l12-multi-q8-v1 + hashed (½ each)",
+      "meanByClass": {
+        "paraphrase": 0.263,
+        "same_topic": 0.116,
+        "decoy": 0.45,
+        "unrelated": 0.037
+      },
+      "aucParaphraseVsDecoy": 0.088,
+      "aucRelatedVsNot": 0.484,
+      "paraphraseRecallAt5pctFP": 0,
+      "thresholdAt5pctFP": 0.608,
+      "atConfigured": {
+        "related": 0.25,
+        "paraphraseRecall": 0.6,
+        "sameTopicRecall": 0,
+        "decoyPass": 0.95,
+        "unrelatedPass": 0
+      },
+      "routing": {
+        "notes": 25,
+        "top1": 14,
+        "section": 15,
+        "trapped": 9,
+        "withTrap": 14,
+        "misses": [
+          "n04→c05",
+          "n06→c11",
+          "n07→c09",
+          "n09→c13",
+          "n10→c06",
+          "n11→c09",
+          "n17→c09",
+          "n20→c10",
+          "n22→c06",
+          "n24→c14",
+          "n25→c03"
+        ]
+      }
+    }
+  ]
+}

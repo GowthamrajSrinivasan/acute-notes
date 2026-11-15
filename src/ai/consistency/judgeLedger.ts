@@ -1,0 +1,364 @@
+/**
+ * Per-pair completion accounting for the AI consistency check (plan §12.23 fix C, §12.24, §12.25). **Not wired into the
+ * app** (Stage 4f stays off); this is the execution path a future activation would use, built and tested offline.
+ *
+ * Every candidate pair sent to (or waiting for) the AI is in exactly one state:
+ * - `pending` — planned but not sent (over the call's limit, today's budget used, no output cap, …), with the reason;
+ * - `in_flight` — sent, no reading yet (`markSent`); never planned again while out. Stored and older than
+ *   `IN_FLIGHT_STALE_MS` it reads back as failed (the app closed mid-call); younger, another tab's call is still out;
+ * - `classified` — a validated answer (`judgeReply.ts`). **Set once for its context:** a later answer, a retry or a
+ *   replayed reply for the same context never changes or duplicates it;
+ * - `failed` — the call or its answer for this pair failed (truncated, unreadable, missing, invalid, duplicate, call
+ *   error), with the attempt count;
+ * - `gave_up` — failed `MAX_ATTEMPTS` times. Shown to the user as "possible, not checked by AI", never as compatible.
+ *
+ * **Identity (§12.25).** Keys are pair **fingerprints** (the conflict store's `pairId`: both cards and both sentence
+ * hashes), so a materially changed sentence is a new pair. The **context** the model was shown — both card titles and
+ * sections (`pairContext`) — is stored with the answer: after a material move or rename the answer is **stale**. The pair
+ * is eligible again (`blocksResend` is false), and the old answer is kept in `history` (bounded) — never erased.
+ *
+ * **Retries** are bounded and budgeted: `retryable()` lists pending and failed pairs under the attempt limit; the caller
+ * plans them through the budget. Idempotent: a reading is recorded once per call (`reservation`).
+ *
+ * **Several tabs:** `refresh()` merges the stored ledger by precedence (newer wins, a classified answer is never replaced
+ * by a non-classified state of the same context). `runJudgeCheck` refreshes inside the budget's critical section, so a
+ * pair another tab has in flight or has classified is not sent again.
+ *
+ * Persisted per canvas in the device-local meta store (`consistency.judge.<canvasId>`, bounded), read by a whitelist.
+ */
+import { cyrb53 } from "@/ai/content/fingerprint";
+import type { MetaRepository } from "@/persistence/repositories/types";
+import type { PendingReason } from "./candidates";
+import { JUDGE_ANSWERS, type JudgeAnswer } from "./judge";
+import type { FailReason, ReplyReading } from "./judgeReply";
+
+export const MAX_ATTEMPTS = 3;
+export const MAX_LEDGER_PAIRS = 500;
+/** Earlier answers kept per pair after its context changed. */
+export const MAX_HISTORY = 3;
+/**
+ * The in-flight recovery window (§12.27): a stored `in_flight` pair older than this was interrupted (the app closed
+ * mid-call) and reads back as failed. **Separate from the request timeout** (`JUDGE_CALL_TIMEOUT_MS`, 90 s) and at least
+ * twice it, so a slow call that is still legitimately out in another tab is never mistaken for an interrupted one.
+ */
+export const IN_FLIGHT_STALE_MS = 180_000;
+export const ledgerKey = (canvasId: string) => `consistency.judge.${canvasId}`;
+
+/** `in_flight` (§12.24 review): sent, no reading yet — never retried while the call is out. */
+export type LedgerState = "pending" | "in_flight" | "classified" | "failed" | "gave_up";
+
+/** An earlier answer, kept when the pair's context changed (§12.25). */
+export interface LedgerHistoryEntry {
+  answer: JudgeAnswer;
+  why?: string;
+  context?: string;
+  revision: string;
+  at: number;
+}
+
+export interface LedgerPair {
+  /** The pair's fingerprint (`pairId`). */
+  key: string;
+  state: LedgerState;
+  /** Why it is pending or failed. */
+  reason?: PendingReason | FailReason;
+  detail?: string;
+  /** Calls this pair was sent in (for its current context). */
+  attempts: number;
+  /** The committed revision that last sent or queued it. */
+  revision: string;
+  /** The budget reservation of the call that last carried it: a reading for that call is recorded once. */
+  reservation?: string;
+  /** The context the model was (or will be) shown: `pairContext` of both card titles and sections. */
+  context?: string;
+  answer?: JudgeAnswer;
+  why?: string;
+  suggestion?: string;
+  /** Answers given under an earlier context, newest first. */
+  history?: LedgerHistoryEntry[];
+  updatedAt: number;
+}
+
+/**
+ * The context identity of a pair (§12.25): both sides' card title and section, normalised (case, spacing and
+ * punctuation don't count). A move to another section or a rename is a material change; re-typing the same name isn't.
+ */
+export function pairContext(pair: { a: { card?: string; section?: string }; b: { card?: string; section?: string } }): string {
+  const norm = (s?: string) => (s ?? "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+  return cyrb53([pair.a.card, pair.a.section, pair.b.card, pair.b.section].map(norm).join("\u0001"));
+}
+
+const STATES: readonly LedgerState[] = ["pending", "in_flight", "classified", "failed", "gave_up"];
+const text = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, max) : undefined);
+const opt = <K extends string>(k: K, v: string | undefined) => (v ? ({ [k]: v } as Record<K, string>) : {});
+
+function readHistory(x: unknown): LedgerHistoryEntry[] {
+  if (!Array.isArray(x)) return [];
+  const out: LedgerHistoryEntry[] = [];
+  for (const h of x.slice(0, MAX_HISTORY) as Record<string, unknown>[]) {
+    if (!h || typeof h !== "object" || !JUDGE_ANSWERS.includes(h.answer as JudgeAnswer)) continue;
+    out.push({ answer: h.answer as JudgeAnswer, revision: text(h.revision, 200) ?? "", at: Number.isFinite(h.at) ? Number(h.at) : 0, ...opt("why", text(h.why, 400)), ...opt("context", text(h.context, 64)) });
+  }
+  return out;
+}
+
+/**
+ * One stored pair, read by a **whitelist** (§12.24 review): only known fields, strings cut to length, attempts clamped
+ * to [0, MAX_ATTEMPTS]. A `classified` entry without a valid answer is dropped, so the pair is checked again rather than
+ * trusted. A stored `in_flight` pair older than `IN_FLIGHT_STALE_MS` was interrupted: it reads as failed with the
+ * attempt counted, since the call may have been billed.
+ */
+function readPair(x: unknown, now: number): LedgerPair | null {
+  const p = x as Record<string, unknown> | null;
+  if (!p || typeof p !== "object") return null;
+  const key = text(p.key, 200);
+  const revision = text(p.revision, 200);
+  const state = p.state as LedgerState;
+  if (!key || revision === undefined || !STATES.includes(state)) return null;
+  const answer = JUDGE_ANSWERS.includes(p.answer as JudgeAnswer) ? (p.answer as JudgeAnswer) : undefined;
+  if (state === "classified" && !answer) return null;
+  const attempts = Math.min(MAX_ATTEMPTS, Math.max(0, Math.floor(Number.isFinite(p.attempts) ? Number(p.attempts) : 0)));
+  const updatedAt = Number.isFinite(p.updatedAt) ? Number(p.updatedAt) : 0;
+  const history = readHistory(p.history);
+  const base = { key, revision, attempts, updatedAt, ...opt("reservation", text(p.reservation, 100)), ...opt("context", text(p.context, 64)), ...(history.length ? { history } : {}) };
+  if (state === "classified") return { ...base, state, answer, ...opt("why", text(p.why, 400)), ...opt("suggestion", text(p.suggestion, 300)) };
+  if (state === "in_flight") {
+    if (now - updatedAt < IN_FLIGHT_STALE_MS) return { ...base, state };
+    return interrupted({ ...base, state }, now);
+  }
+  return { ...base, state, ...(text(p.reason, 40) ? { reason: text(p.reason, 40) as LedgerPair["reason"] } : {}), ...opt("detail", text(p.detail, 200)) };
+}
+
+/**
+ * An in-flight pair past the recovery window: the call was interrupted. Failed with the attempt counted (it may have
+ * been billed), and **stamped now** so the conversion wins a merge over the stale in-flight record in any tab (§12.28
+ * review: a long-lived tab otherwise kept it in flight forever).
+ */
+function interrupted(p: LedgerPair, now: number): LedgerPair {
+  const n = Math.min(MAX_ATTEMPTS, p.attempts + 1);
+  return { ...p, attempts: n, state: n >= MAX_ATTEMPTS ? "gave_up" : "failed", reason: "call_error", detail: "interrupted before an answer arrived", updatedAt: now };
+}
+
+/** Which of two records of one pair wins a merge: newer wins, but a classified answer is never replaced by a non-classified state of the same context. */
+function wins(candidate: LedgerPair, current: LedgerPair): boolean {
+  if (current.state === "classified" && candidate.state !== "classified" && candidate.context === current.context) return false;
+  if (candidate.state === "classified" && current.state !== "classified" && candidate.context === current.context) return true;
+  return candidate.updatedAt > current.updatedAt;
+}
+
+/** See module doc. */
+export class JudgeLedger {
+  private readonly byCanvas = new Map<string, Map<string, LedgerPair>>();
+  private saving: Promise<void> = Promise.resolve();
+  /** Loads in progress: a save waits for its canvas's load, so a write made meanwhile never overwrites stored pairs. */
+  private readonly loading = new Map<string, Promise<void>>();
+  private readonly failedSaves = new Set<string>();
+
+  constructor(
+    private readonly store?: Pick<MetaRepository, "get" | "set">,
+    private readonly now: () => number = Date.now,
+  ) {}
+
+  private map(canvasId: string): Map<string, LedgerPair> {
+    let m = this.byCanvas.get(canvasId);
+    if (!m) this.byCanvas.set(canvasId, (m = new Map()));
+    return m;
+  }
+
+  /** Merges stored records into this tab's map by precedence (`wins`). */
+  private merge(canvasId: string, stored: unknown): void {
+    const m = this.map(canvasId);
+    const now = this.now();
+    for (const x of (Array.isArray(stored) ? stored : []).slice(0, MAX_LEDGER_PAIRS)) {
+      const p = readPair(x, now);
+      if (!p) continue;
+      const cur = m.get(p.key);
+      if (!cur || wins(p, cur)) m.set(p.key, p);
+    }
+  }
+
+  /** Reads the stored ledger and merges it by precedence (`wins`); malformed entries are dropped, never thrown on. */
+  async load(canvasId: string): Promise<void> {
+    const run = (async () => {
+      try {
+        this.merge(canvasId, await this.store?.get<unknown[]>(ledgerKey(canvasId)));
+      } catch (err) {
+        console.error("[acute-notes] Failed to read the AI check ledger", err);
+      }
+    })();
+    this.loading.set(canvasId, run);
+    await run;
+  }
+
+  /**
+   * In-flight pairs past the recovery window become failed (interrupted), in this tab's memory too — not only when read
+   * back from storage (§12.28 review). Called before any planning and by `retryable()`.
+   */
+  expireStale(canvasId: string): void {
+    const m = this.map(canvasId);
+    const now = this.now();
+    let changed = false;
+    for (const p of m.values()) {
+      if (p.state === "in_flight" && now - p.updatedAt >= IN_FLIGHT_STALE_MS) {
+        m.set(p.key, interrupted(p, now));
+        changed = true;
+      }
+    }
+    if (changed) this.persist(canvasId);
+  }
+
+  /** Did the last save of this canvas fail? Then in-flight marks may not be visible to other tabs: don't send. */
+  saveFailed(canvasId: string): boolean {
+    return this.failedSaves.has(canvasId);
+  }
+
+  /** Re-reads what other tabs stored (same merge as `load`). Called inside the budget's critical section. */
+  refresh(canvasId: string): Promise<void> {
+    return this.load(canvasId);
+  }
+
+  /**
+   * Must this pair not be sent again now? True while it is in flight, and once it is classified or given up **for this
+   * context**. A classified answer for another context is stale: the pair may be sent (§12.25).
+   */
+  blocksResend(canvasId: string, key: string, context?: string): boolean {
+    const p = this.map(canvasId).get(key);
+    if (!p) return false;
+    // In flight blocks only inside the recovery window: past it the call was interrupted (§12.28 review).
+    if (p.state === "in_flight") return this.now() - p.updatedAt < IN_FLIGHT_STALE_MS;
+    if (p.state === "classified" || p.state === "gave_up") return context === undefined || p.context === undefined || p.context === context;
+    return false;
+  }
+
+  /** A valid answer for this context (a stale one doesn't count). */
+  isClassified(canvasId: string, key: string, context?: string): boolean {
+    const p = this.map(canvasId).get(key);
+    return p?.state === "classified" && (context === undefined || p.context === undefined || p.context === context);
+  }
+
+  /**
+   * The call carrying these pairs was sent: they are `in_flight` until its reading (or error) is recorded. A pair whose
+   * answer is stale (another context) keeps that answer in `history` and starts its attempts again.
+   */
+  markSent(canvasId: string, revision: string, keys: readonly string[], reservation: string, contexts?: ReadonlyMap<string, string>): void {
+    const m = this.map(canvasId);
+    for (const key of keys) {
+      const prev = m.get(key);
+      const context = contexts?.get(key);
+      if (this.blocksResend(canvasId, key, context)) continue;
+      const contextChanged = !!prev && prev.context !== undefined && context !== undefined && prev.context !== context;
+      const history = prev?.state === "classified" && prev.answer && contextChanged
+        ? [{ answer: prev.answer, revision: prev.revision, at: prev.updatedAt, ...opt("why", prev.why), ...opt("context", prev.context) }, ...(prev.history ?? [])].slice(0, MAX_HISTORY)
+        : prev?.history;
+      m.set(key, { key, state: "in_flight", attempts: contextChanged ? 0 : (prev?.attempts ?? 0), revision, reservation, ...opt("context", context ?? prev?.context), ...(history?.length ? { history } : {}), updatedAt: this.now() });
+    }
+    this.persist(canvasId);
+  }
+
+  /**
+   * Undo `markSent` for a call that was never sent (the in-flight marks couldn't be saved): its pairs go back to pending,
+   * with no attempt counted. Only pairs still marked with that reservation are touched.
+   */
+  unmarkSent(canvasId: string, keys: readonly string[], reservation: string): void {
+    const m = this.map(canvasId);
+    for (const key of keys) {
+      const p = m.get(key);
+      if (p?.state === "in_flight" && p.reservation === reservation) {
+        const { reservation: _r, ...rest } = p;
+        m.set(key, { ...rest, state: "pending", reason: "over_call_limit", detail: "not sent: the AI check ledger couldn't be saved", updatedAt: this.now() });
+      }
+    }
+    this.persist(canvasId);
+  }
+
+  get(canvasId: string, key: string): LedgerPair | undefined {
+    return this.map(canvasId).get(key);
+  }
+
+  list(canvasId: string, states?: readonly LedgerState[]): LedgerPair[] {
+    return [...this.map(canvasId).values()].filter((p) => !states || states.includes(p.state));
+  }
+
+  /** Pairs the planner left waiting. A classified (for its context), given-up or in-flight pair is left as it is. */
+  markPending(canvasId: string, revision: string, pending: readonly { key: string; reason: PendingReason; context?: string }[]): void {
+    const m = this.map(canvasId);
+    for (const { key, reason, context } of pending) {
+      const prev = m.get(key);
+      if (this.blocksResend(canvasId, key, context)) continue;
+      const keepFailed = prev?.state === "failed";
+      m.set(key, { ...(prev ?? { attempts: 0 }), key, state: keepFailed ? "failed" : "pending", reason: keepFailed ? prev.reason! : reason, revision, ...opt("context", context ?? prev?.context), updatedAt: this.now() } as LedgerPair);
+    }
+    this.persist(canvasId);
+  }
+
+  /** One call's reading: each pair classified once, or failed with an attempt counted (given up at the limit). */
+  recordReading(canvasId: string, revision: string, reading: Pick<ReplyReading, "pairs">, reservation?: string): { classified: number; failed: number; ignored: number } {
+    const m = this.map(canvasId);
+    const out = { classified: 0, failed: 0, ignored: 0 };
+    for (const [key, o] of reading.pairs) {
+      const prev = m.get(key);
+      // Idempotent: a pair already classified or given up for its context, or a reading for a call already recorded for
+      // this pair (a replay), changes nothing and costs no attempt. A reading for an older call than the one now in
+      // flight (another tab resent it) is ignored too: the newer call owns the pair.
+      const replay = reservation !== undefined && prev?.reservation === reservation && prev.state !== "in_flight";
+      const superseded = reservation !== undefined && prev?.state === "in_flight" && prev.reservation !== undefined && prev.reservation !== reservation;
+      if (prev?.state === "classified" || prev?.state === "gave_up" || replay || superseded) {
+        out.ignored++;
+        continue;
+      }
+      const attempts = Math.min(MAX_ATTEMPTS, (prev?.attempts ?? 0) + 1);
+      const keep = { ...(reservation !== undefined ? { reservation } : {}), ...opt("context", prev?.context), ...(prev?.history?.length ? { history: prev.history } : {}) };
+      if (o.state === "classified") {
+        m.set(key, { key, state: "classified", attempts, revision, ...keep, answer: o.answer, ...opt("why", o.why), ...opt("suggestion", o.suggestion), updatedAt: this.now() });
+        out.classified++;
+      } else {
+        m.set(key, { key, state: attempts >= MAX_ATTEMPTS ? "gave_up" : "failed", reason: o.reason, detail: o.detail, attempts, revision, ...keep, updatedAt: this.now() });
+        out.failed++;
+      }
+    }
+    this.persist(canvasId);
+    return out;
+  }
+
+  /** A call that failed before any reply (network, timeout, provider error): every pair it carried fails. */
+  recordCallError(canvasId: string, revision: string, keys: readonly string[], detail: string, reservation?: string): void {
+    this.recordReading(canvasId, revision, { pairs: new Map(keys.map((k) => [k, { state: "failed", reason: "call_error", detail }] as const)) }, reservation);
+  }
+
+  /** Pairs a Retry may send: pending, and failed under the attempt limit — never in flight, classified or given up. */
+  retryable(canvasId: string): string[] {
+    this.expireStale(canvasId);
+    return this.list(canvasId, ["pending", "failed"]).map((p) => p.key);
+  }
+
+  /** Bounded: classified and given-up pairs go first, oldest first; pending, in-flight and failed pairs are kept as long as possible. */
+  private persist(canvasId: string): void {
+    const m = this.map(canvasId);
+    if (m.size > MAX_LEDGER_PAIRS) {
+      const settled = (p: LedgerPair) => (p.state === "classified" || p.state === "gave_up" ? 0 : 1);
+      const drop = [...m.values()].sort((a, b) => settled(a) - settled(b) || a.updatedAt - b.updatedAt).slice(0, m.size - MAX_LEDGER_PAIRS);
+      for (const p of drop) m.delete(p.key);
+    }
+    const store = this.store;
+    if (!store) return;
+    // Read, merge, write (§12.28 review): another tab may have written since this tab last read, so the stored records
+    // are merged in by precedence before saving — a save never drops another tab's in-flight mark or classification.
+    // Atomic across tabs when callers hold the shared critical section (runJudgeCheck does, for every ledger write).
+    this.saving = this.saving
+      .then(() => this.loading.get(canvasId))
+      .then(async () => {
+        this.merge(canvasId, await store.get<unknown[]>(ledgerKey(canvasId)));
+        await store.set(ledgerKey(canvasId), [...m.values()]);
+        this.failedSaves.delete(canvasId);
+      })
+      .catch((err) => {
+        this.failedSaves.add(canvasId);
+        console.error("[acute-notes] Failed to save the AI check ledger", err);
+      });
+  }
+
+  /** Resolves when every write so far has been attempted. */
+  flushed(): Promise<void> {
+    return this.saving;
+  }
+}

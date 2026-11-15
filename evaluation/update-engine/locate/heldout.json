@@ -1,0 +1,324 @@
+{
+  "split": "heldout",
+  "author": "isolated agent, blind",
+  "date": "2026-11-14",
+  "canvases": [
+    {
+      "id": "h1",
+      "title": "Kessler Lab - Protein Folding Group",
+      "sections": [
+        { "id": "h1s1", "name": "Experiments", "cards": [
+          { "id": "h1c01", "kind": "text", "text": "Current focus is the thermal stability of mutant lysozyme variants. Runs use 96-well plates at 25 °C. Priya Nair leads the analysis." },
+          { "id": "h1c02", "kind": "list", "items": ["Batch A: wild-type control, 12 replicates", "Batch B: L99A mutant, 8 replicates", "Batch C: T4 double mutant, pending purification", "Buffer: 50 mM phosphate, pH 7.0"] },
+          { "id": "h1c03", "kind": "todo", "items": ["Re-run Batch B melt curves", "Upload raw spectra to shared drive", "Write up methods for Batch A"] }
+        ] },
+        { "id": "h1s2", "name": "Equipment booking", "cards": [
+          { "id": "h1c04", "kind": "table", "header": ["Instrument", "Room", "Booked by", "Slot"], "rows": [
+            ["Circular dichroism spectrometer", "B214", "Priya", "Mon 9-12"],
+            ["Plate reader", "B210", "Tom", "Tue 14-17"],
+            ["Ultracentrifuge", "B118", "Ana", "Thu 10-13"]
+          ] },
+          { "id": "h1c05", "kind": "text", "text": "Bookings go through the LabCal calendar at least 48 hours ahead. Cancellations must be posted by noon the day before." },
+          { "id": "h1c06", "kind": "list", "items": ["Plate reader lamp replaced in March", "Centrifuge rotor rated to 60,000 rpm", "CD spectrometer needs nitrogen purge for 20 min"] }
+        ] },
+        { "id": "h1s3", "name": "Grants and deadlines", "cards": [
+          { "id": "h1c07", "kind": "table", "header": ["Grant", "Funder", "Deadline", "Owner"], "rows": [
+            ["Protein dynamics R01 renewal", "NIH", "Feb 5", "Dr. Kessler"],
+            ["Equipment supplement", "NSF MRI", "Jan 20", "Tom Becker"],
+            ["Student fellowship", "Wellcome", "Mar 12", "Ana Ruiz"]
+          ] },
+          { "id": "h1c08", "kind": "todo", "items": ["Draft specific aims for R01", "Collect letters of support", "Get budget sign-off from department"] },
+          { "id": "h1c09", "kind": "text", "text": "All grant budgets need approval from the research office 10 working days before submission." }
+        ] },
+        { "id": "h1s4", "name": "Lab safety", "cards": [
+          { "id": "h1c10", "kind": "list", "items": ["Lab coats and goggles at all times", "No food or drink past the yellow line", "Chemical waste goes in the blue carboys", "Eyewash station checked weekly"] },
+          { "id": "h1c11", "kind": "todo", "items": ["Renew biosafety training for new students", "Restock spill kit in B210"] },
+          { "id": "h1c12", "kind": "text", "text": "Safety officer is Dr. Malik, extension 4471. Report any spill within one hour." }
+        ] }
+      ]
+    },
+    {
+      "id": "h2",
+      "title": "Larder & Vine - Kitchen Operations",
+      "sections": [
+        { "id": "h2s1", "name": "Menu changes", "cards": [
+          { "id": "h2c01", "kind": "list", "items": ["Add charred leek starter with romesco", "Drop the duck confit from mains", "Swap summer berry tart for apple galette", "New vegan option: mushroom barley risotto"] },
+          { "id": "h2c02", "kind": "text", "text": "Autumn menu launches on 3 October. Head chef Marco Bellini signs off all dish costings." },
+          { "id": "h2c03", "kind": "table", "header": ["Dish", "Price", "Food cost %"], "rows": [
+            ["Charred leek", "£9", "24%"],
+            ["Mushroom risotto", "£16", "28%"],
+            ["Apple galette", "£8", "19%"]
+          ] }
+        ] },
+        { "id": "h2s2", "name": "Suppliers", "cards": [
+          { "id": "h2c04", "kind": "table", "header": ["Supplier", "Product", "Delivery day", "Contact"], "rows": [
+            ["Hartley Farms", "Vegetables", "Mon & Thu", "Jess Hartley"],
+            ["Coastline Fish", "Fresh fish", "Tue & Fri", "Dev Patel"],
+            ["Brennan's Dairy", "Milk, cream, butter", "Daily", "Sean Brennan"]
+          ] },
+          { "id": "h2c05", "kind": "list", "items": ["Minimum order with Coastline is £150", "Hartley gives 5% off orders over £400", "Brennan's needs orders by 8 pm the day before"] },
+          { "id": "h2c06", "kind": "todo", "items": ["Get quote from a second flour mill", "Chase Coastline about short-weight salmon on 12 Sept", "Renegotiate Brennan's cream price"] }
+        ] },
+        { "id": "h2s3", "name": "Staff rota", "cards": [
+          { "id": "h2c07", "kind": "table", "header": ["Day", "Lunch lead", "Dinner lead"], "rows": [
+            ["Mon", "Aisha", "Marco"],
+            ["Tue", "Aisha", "Leon"],
+            ["Wed", "Closed", "Closed"],
+            ["Thu", "Leon", "Marco"]
+          ] },
+          { "id": "h2c08", "kind": "text", "text": "Rota is published every Thursday for the following week. Shift swaps need the sous chef's approval." },
+          { "id": "h2c09", "kind": "list", "items": ["Aisha: no Sundays", "Leon: max 4 shifts a week", "Kitchen porter Tomasz available evenings only"] }
+        ] },
+        { "id": "h2s4", "name": "Health inspection", "cards": [
+          { "id": "h2c10", "kind": "todo", "items": ["Recalibrate walk-in fridge thermometer", "Update allergen matrix for autumn menu", "Deep clean extraction hood"] },
+          { "id": "h2c11", "kind": "text", "text": "Last inspection on 14 June gave us a 4-star hygiene rating. Inspector flagged the handwash sink near pastry." },
+          { "id": "h2c12", "kind": "list", "items": ["Fridge temps logged twice daily", "Cooked food probed to 75 °C", "Date labels on every container"] }
+        ] }
+      ]
+    },
+    {
+      "id": "h3",
+      "title": "Quarry Open-Source Project Governance",
+      "sections": [
+        { "id": "h3s1", "name": "Maintainers", "cards": [
+          { "id": "h3c01", "kind": "table", "header": ["Maintainer", "Area", "Since"], "rows": [
+            ["Lina Okafor", "Core parser", "2019"],
+            ["Raj Mehta", "CLI & packaging", "2021"],
+            ["Sofia Duarte", "Docs", "2022"],
+            ["Ben Ito", "CI pipelines", "2023"]
+          ] },
+          { "id": "h3c02", "kind": "text", "text": "New maintainers are nominated by an existing maintainer and need a two-thirds vote. Inactive maintainers move to emeritus after 12 months." },
+          { "id": "h3c03", "kind": "list", "items": ["Steering meeting: first Tuesday monthly, 16:00 UTC", "Decisions recorded in GOVERNANCE.md", "Tie-breaks go to the project lead, Lina"] }
+        ] },
+        { "id": "h3s2", "name": "Release process", "cards": [
+          { "id": "h3c04", "kind": "list", "items": ["Freeze main 7 days before release", "Cut release branch release/x.y", "Tag rc1 and announce on the forum", "Publish to PyPI after 3 days without blockers"] },
+          { "id": "h3c05", "kind": "table", "header": ["Version", "Target date", "Release manager"], "rows": [
+            ["2.4.0", "15 Jan", "Raj Mehta"],
+            ["2.5.0", "30 Apr", "Ben Ito"]
+          ] },
+          { "id": "h3c06", "kind": "todo", "items": ["Automate changelog from PR labels", "Document the hotfix path for 2.3.x"] }
+        ] },
+        { "id": "h3s3", "name": "Contribution rules", "cards": [
+          { "id": "h3c07", "kind": "list", "items": ["All PRs need one approving review from a maintainer", "Sign off commits under the DCO", "Run make lint before pushing", "First-time contributors get the good-first-issue label"] },
+          { "id": "h3c08", "kind": "text", "text": "Code of conduct follows the Contributor Covenant 2.1. Reports go to conduct@quarry.dev and are handled within 72 hours." },
+          { "id": "h3c09", "kind": "todo", "items": ["Write a CONTRIBUTING section on test fixtures", "Add a PR template with a checklist", "Translate the guide into Spanish"] }
+        ] },
+        { "id": "h3s4", "name": "Funding", "cards": [
+          { "id": "h3c10", "kind": "table", "header": ["Source", "Amount", "Renewal"], "rows": [
+            ["Open Collective donations", "$1,800/month", "Rolling"],
+            ["Sovereign Tech Fund grant", "€60,000", "Sep 2027"],
+            ["Corporate sponsor: Fennel Labs", "$10,000/year", "Mar 2027"]
+          ] },
+          { "id": "h3c11", "kind": "list", "items": ["Funds pay for CI minutes and the docs host", "Maintainer stipends: $500/month each", "Travel fund for one conference per year"] },
+          { "id": "h3c12", "kind": "text", "text": "Spending over $2,000 needs approval from two maintainers. The treasurer is Sofia Duarte." }
+        ] }
+      ]
+    },
+    {
+      "id": "h4",
+      "title": "Elm Street Kitchen and Bath Renovation",
+      "sections": [
+        { "id": "h4s1", "name": "Contractors", "cards": [
+          { "id": "h4c01", "kind": "table", "header": ["Trade", "Company", "Contact", "Quote"], "rows": [
+            ["Plumbing", "FlowRight Plumbing", "Gary", "$6,400"],
+            ["Electrical", "Volt & Sons", "Mia", "$4,900"],
+            ["Tiling", "Stone Path Tiling", "Omar", "$3,200"]
+          ] },
+          { "id": "h4c02", "kind": "text", "text": "General contractor is Dunmore Builds, led by Kate Dunmore. They take a 15% margin on subcontractor work." },
+          { "id": "h4c03", "kind": "list", "items": ["Gary needs the water shut off at the main", "Mia wants the panel cleared of boxes", "Omar brings his own wet saw"] }
+        ] },
+        { "id": "h4s2", "name": "Permits", "cards": [
+          { "id": "h4c04", "kind": "todo", "items": ["Submit electrical permit application to city", "Schedule rough-in plumbing inspection", "Post permit card in front window"] },
+          { "id": "h4c05", "kind": "text", "text": "Building permit BP-2026-0817 was issued on 2 September. It expires after 180 days if no inspection passes." }
+        ] },
+        { "id": "h4s3", "name": "Materials", "cards": [
+          { "id": "h4c06", "kind": "list", "items": ["Floor tile: 12x24 porcelain, Ash Grey, 220 sq ft", "Cabinets: shaker style, sage green", "Countertop: quartz, Calacatta look", "Vanity: 48-inch floating oak"] },
+          { "id": "h4c07", "kind": "table", "header": ["Item", "Supplier", "Status"], "rows": [
+            ["Cabinets", "Kitchen Depot", "Ordered, 6-week lead"],
+            ["Quartz slab", "Rockline", "Template booked 20 Oct"],
+            ["Tile", "Tile Barn", "Delivered"]
+          ] },
+          { "id": "h4c08", "kind": "todo", "items": ["Pick grout colour", "Confirm sink cutout size with fabricator", "Return extra box of tile"] }
+        ] },
+        { "id": "h4s4", "name": "Schedule and budget", "cards": [
+          { "id": "h4c09", "kind": "table", "header": ["Phase", "Start", "End"], "rows": [
+            ["Demolition", "6 Oct", "10 Oct"],
+            ["Rough-in", "13 Oct", "24 Oct"],
+            ["Drywall", "27 Oct", "31 Oct"],
+            ["Finishes", "3 Nov", "21 Nov"]
+          ] },
+          { "id": "h4c10", "kind": "text", "text": "Total budget is $48,000 with a 10% contingency. We have spent $19,500 so far." },
+          { "id": "h4c11", "kind": "list", "items": ["Deposit to Dunmore: $8,000 paid", "Cabinets: $7,200 paid in full", "Tile: $2,100 paid", "Quartz: 50% deposit due at templating"] }
+        ] }
+      ]
+    }
+  ],
+  "cases": [
+    { "id": "H001", "canvas": "h1", "text": "Melt curves are being done at 37 degrees now instead of 25.",
+      "expected": { "card": "h1c01", "section": "h1s1", "action": "replace_item", "item": 1, "column": null, "row": null, "relation": "SUPERSEDES" },
+      "acceptable": [], "ambiguous": false, "trap": "h1c03", "overlap": "low",
+      "tags": ["paraphrase", "number", "text_card", "trap"], "why": "run temperature changed from 25 to 37" },
+    { "id": "H002", "canvas": "h1", "text": "Tom moved his plate reader booking to Wednesday afternoon.",
+      "expected": { "card": "h1c04", "section": "h1s2", "action": "cell", "item": 1, "column": "Slot", "row": null, "relation": "SUPERSEDES" },
+      "acceptable": [], "ambiguous": false, "trap": "h1c06", "overlap": "high",
+      "tags": ["table", "date", "trap"], "why": "only the slot cell of the plate reader row changes" },
+    { "id": "H003", "canvas": "h1", "text": "Ana is also applying to the Royal Society early-career award, due April 30.",
+      "expected": { "card": "h1c07", "section": "h1s3", "action": "table_row", "item": null, "column": null, "row": ["Early-career award", "Royal Society", "Apr 30", "Ana Ruiz"], "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["table", "date", "paraphrase"], "why": "another grant with funder, deadline, owner" },
+    { "id": "H004", "canvas": "h1", "text": "Once the aims page exists, circulate it to Dr. Kessler's co-investigators for comments.",
+      "expected": { "card": "h1c08", "section": "h1s3", "action": "after_item", "item": 0, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["todo", "paraphrase"], "why": "follow-up step to drafting the aims" },
+    { "id": "H005", "canvas": "h1", "text": "Reminder: no snacks or coffee once you're over the yellow tape.",
+      "expected": { "card": "h1c10", "section": "h1s4", "action": "duplicate", "item": 1, "column": null, "row": null, "relation": "DUPLICATE" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["duplicate_reworded", "negation", "list"], "why": "same no-food rule reworded" },
+    { "id": "H006", "canvas": "h1", "text": "Department directory names Dr. Osei as the person in charge of hazards for our floor, extension 4490.",
+      "expected": { "card": "h1c12", "section": "h1s4", "action": "replace_item", "item": 0, "column": null, "row": null, "relation": "CONTRADICTS" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["paraphrase", "text_card", "number"], "why": "different safety officer named, not clearly newer" },
+    { "id": "H007", "canvas": "h1", "text": "Instrument usage fees: $15/hr for the ultracentrifuge and $8/hr for the plate reader, from January.",
+      "expected": { "card": null, "section": "h1s2", "action": "new_block", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": "h1c04", "overlap": "low",
+      "tags": ["number", "trap"], "why": "usage charges fit equipment section but no card" },
+    { "id": "H008", "canvas": "h1", "text": "Journal club is moving to Fridays at 4 pm, starting with the AlphaFold paper.",
+      "expected": { "card": null, "section": null, "action": "new_section", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["nowhere", "date"], "why": "lab seminar life has no section" },
+    { "id": "H009", "canvas": "h1", "text": "Someone has to book the yearly fire extinguisher check.",
+      "expected": { "card": "h1c11", "section": "h1s4", "action": "append", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["todo", "paraphrase"], "why": "new safety task, unrelated to existing items" },
+    { "id": "H010", "canvas": "h1", "text": "Need a service quote for the plate reader to go into the equipment supplement budget.",
+      "expected": { "card": "h1c08", "section": "h1s3", "action": "append", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [ { "card": "h1c07", "section": "h1s3", "action": "replace_item", "item": 1, "column": null, "row": null, "relation": "EXTENDS" } ],
+      "ambiguous": true, "trap": "h1c04", "overlap": "low",
+      "tags": ["ambiguous", "todo", "trap"], "why": "grant task list or detail on supplement row" },
+
+    { "id": "H011", "canvas": "h2", "text": "Go-live for the new seasonal menu slipped a week, to the 10th.",
+      "expected": { "card": "h2c02", "section": "h2s1", "action": "replace_item", "item": 0, "column": null, "row": null, "relation": "SUPERSEDES" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["paraphrase", "date", "text_card"], "why": "launch date moved" },
+    { "id": "H012", "canvas": "h2", "text": "Mushroom risotto price rises to £17 from Monday.",
+      "expected": { "card": "h2c03", "section": "h2s1", "action": "cell", "item": 1, "column": "Price", "row": null, "relation": "SUPERSEDES" },
+      "acceptable": [], "ambiguous": false, "trap": "h2c01", "overlap": "high",
+      "tags": ["table", "number", "trap"], "why": "single price cell update" },
+    { "id": "H013", "canvas": "h2", "text": "Started getting sourdough from Kiln Bakery, dropped off Wednesdays and Saturdays; ask for Ruth.",
+      "expected": { "card": "h2c04", "section": "h2s2", "action": "table_row", "item": null, "column": null, "row": ["Kiln Bakery", "Sourdough", "Wed & Sat", "Ruth"], "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["table", "paraphrase"], "why": "new supplier row" },
+    { "id": "H014", "canvas": "h2", "text": "If they won't credit the underweight salmon, escalate to Dev's manager.",
+      "expected": { "card": "h2c06", "section": "h2s2", "action": "after_item", "item": 1, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["todo", "negation", "paraphrase"], "why": "escalation follows the chase task" },
+    { "id": "H015", "canvas": "h2", "text": "Hot dishes need a core reading of at least 75 before they go out.",
+      "expected": { "card": "h2c12", "section": "h2s4", "action": "duplicate", "item": 1, "column": null, "row": null, "relation": "DUPLICATE" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["duplicate_reworded", "number", "list"], "why": "same 75 degree probe rule" },
+    { "id": "H016", "canvas": "h2", "text": "Leon's cap is down to his college timetable, which ends in December.",
+      "expected": { "card": "h2c09", "section": "h2s3", "action": "replace_item", "item": 1, "column": null, "row": null, "relation": "EXTENDS" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["paraphrase", "list", "date"], "why": "reason and end date for shift limit" },
+    { "id": "H017", "canvas": "h2", "text": "Pest control: BugGone visits monthly, last report clear, next visit 2 Nov.",
+      "expected": { "card": null, "section": "h2s4", "action": "new_block", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["date"], "why": "hygiene topic but no pest card" },
+    { "id": "H018", "canvas": "h2", "text": "Party of 20 booked for the Adeyemi rehearsal dinner on 22 Nov, set menu at £55 a head.",
+      "expected": { "card": null, "section": null, "action": "new_section", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["nowhere", "number", "date"], "why": "private events have no section" },
+    { "id": "H019", "canvas": "h2", "text": "Mark tree nuts in the romesco and gluten in the barley risotto on the allergen sheet.",
+      "expected": { "card": "h2c10", "section": "h2s4", "action": "after_item", "item": 1, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": "h2c01", "overlap": "low",
+      "tags": ["todo", "trap", "paraphrase"], "why": "follows the allergen matrix task" },
+    { "id": "H020", "canvas": "h2", "text": "Coastline can't get halibut until spring, so the fish special needs rethinking.",
+      "expected": { "card": "h2c01", "section": "h2s1", "action": "append", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [ { "card": "h2c06", "section": "h2s2", "action": "append", "item": null, "column": null, "row": null, "relation": "NEW" } ],
+      "ambiguous": true, "trap": "h2c04", "overlap": "low",
+      "tags": ["ambiguous", "negation", "trap"], "why": "menu change or supplier follow-up" },
+
+    { "id": "H021", "canvas": "h3", "text": "The charter I read says a simple majority is enough to approve someone joining the core team.",
+      "expected": { "card": "h3c02", "section": "h3s1", "action": "replace_item", "item": 0, "column": null, "row": null, "relation": "CONTRADICTS" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["paraphrase", "text_card"], "why": "majority vs two-thirds, no newer source" },
+    { "id": "H022", "canvas": "h3", "text": "2.4.0 now goes out on 22 January and Sofia is running it instead of Raj.",
+      "expected": { "card": "h3c05", "section": "h3s2", "action": "replace_item", "item": 0, "column": null, "row": null, "relation": "SUPERSEDES" },
+      "acceptable": [], "ambiguous": false, "trap": "h3c01", "overlap": "high",
+      "tags": ["table", "date", "trap"], "why": "date and manager of 2.4.0 row both change" },
+    { "id": "H023", "canvas": "h3", "text": "Monthly crowd-funded income is up to roughly $2.3k now.",
+      "expected": { "card": "h3c10", "section": "h3s4", "action": "cell", "item": 0, "column": "Amount", "row": null, "relation": "SUPERSEDES" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["table", "number", "paraphrase"], "why": "donation amount updated" },
+    { "id": "H024", "canvas": "h3", "text": "Pencilling in 2.6.0 for late August, around the 28th; Lina will manage that one.",
+      "expected": { "card": "h3c05", "section": "h3s2", "action": "table_row", "item": null, "column": null, "row": ["2.6.0", "28 Aug", "Lina Okafor"], "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["table", "date"], "why": "new planned release" },
+    { "id": "H025", "canvas": "h3", "text": "Post the release candidate in the #packagers channel so distro folks can test it.",
+      "expected": { "card": "h3c04", "section": "h3s2", "action": "after_item", "item": 2, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["list", "paraphrase"], "why": "step right after tagging rc1" },
+    { "id": "H026", "canvas": "h3", "text": "Someone should set up a bot that labels stale pull requests after 60 days.",
+      "expected": { "card": "h3c09", "section": "h3s3", "action": "append", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": "h3c06", "overlap": "low",
+      "tags": ["todo", "trap", "number"], "why": "contribution-flow task, not release tooling" },
+    { "id": "H027", "canvas": "h3", "text": "We'll also cover the project's domain name and mailing-list hosting.",
+      "expected": { "card": "h3c11", "section": "h3s4", "action": "append", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["list", "paraphrase"], "why": "another thing funds pay for" },
+    { "id": "H028", "canvas": "h3", "text": "Each change has to carry a Signed-off-by trailer.",
+      "expected": { "card": "h3c07", "section": "h3s3", "action": "duplicate", "item": 1, "column": null, "row": null, "relation": "DUPLICATE" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["duplicate_reworded", "list"], "why": "same DCO sign-off rule" },
+    { "id": "H029", "canvas": "h3", "text": "Onboarding for maintainers: repo admin rights, a pairing week with Ben, invite to the steering calendar.",
+      "expected": { "card": null, "section": "h3s1", "action": "new_block", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["paraphrase"], "why": "maintainer topic but no onboarding card" },
+    { "id": "H030", "canvas": "h3", "text": "The Quarry name and logo are now registered trademarks in the EU; Sofia is drafting usage guidelines.",
+      "expected": { "card": null, "section": null, "action": "new_section", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["nowhere"], "why": "branding/trademark has no section" },
+
+    { "id": "H031", "canvas": "h4", "text": "The quartz slab will be 3 cm thick with a mitred edge.",
+      "expected": { "card": "h4c06", "section": "h4s3", "action": "replace_item", "item": 2, "column": null, "row": null, "relation": "EXTENDS" },
+      "acceptable": [], "ambiguous": false, "trap": "h4c07", "overlap": "low",
+      "tags": ["list", "number", "trap"], "why": "adds spec detail to countertop item" },
+    { "id": "H032", "canvas": "h4", "text": "Once the inspector passes the pipework, book the drywall crew.",
+      "expected": { "card": "h4c04", "section": "h4s2", "action": "after_item", "item": 1, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": "h4c05", "overlap": "low",
+      "tags": ["todo", "paraphrase", "trap"], "why": "follows the plumbing inspection task" },
+    { "id": "H033", "canvas": "h4", "text": "Need to choose handles for the sage cabinets: brushed brass or matte black.",
+      "expected": { "card": "h4c08", "section": "h4s3", "action": "append", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": "h4c06", "overlap": "low",
+      "tags": ["todo", "trap"], "why": "new materials decision task" },
+    { "id": "H034", "canvas": "h4", "text": "Kate's crew wants the driveway empty for the skip on demolition day.",
+      "expected": { "card": "h4c03", "section": "h4s1", "action": "append", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["list", "paraphrase"], "why": "another contractor site requirement" },
+    { "id": "H035", "canvas": "h4", "text": "Final clean and snagging walk-through penciled for 24-25 November.",
+      "expected": { "card": "h4c09", "section": "h4s4", "action": "table_row", "item": null, "column": null, "row": ["Final clean & snagging", "24 Nov", "25 Nov"], "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "high",
+      "tags": ["table", "date"], "why": "new schedule phase" },
+    { "id": "H036", "canvas": "h4", "text": "City approved our works licence at the start of September.",
+      "expected": { "card": "h4c05", "section": "h4s2", "action": "duplicate", "item": 0, "column": null, "row": null, "relation": "DUPLICATE" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["duplicate_reworded", "text_card", "date"], "why": "permit issuance already recorded" },
+    { "id": "H037", "canvas": "h4", "text": "Kitchen Depot has been settled completely for the cabinets, 7.2k.",
+      "expected": { "card": "h4c11", "section": "h4s4", "action": "duplicate", "item": 1, "column": null, "row": null, "relation": "DUPLICATE" },
+      "acceptable": [], "ambiguous": false, "trap": "h4c07", "overlap": "high",
+      "tags": ["duplicate_reworded", "number", "trap"], "why": "cabinet payment already listed" },
+    { "id": "H038", "canvas": "h4", "text": "HOA wants a copy of the permit and 48 hours' notice before a skip goes on the street.",
+      "expected": { "card": null, "section": "h4s2", "action": "new_block", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["number"], "why": "approval rules but no HOA card" },
+    { "id": "H039", "canvas": "h4", "text": "Weekly site meeting Fridays at 8 am with Kate to go over progress and spend.",
+      "expected": { "card": null, "section": "h4s4", "action": "new_block", "item": null, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [], "ambiguous": false, "trap": null, "overlap": "low",
+      "tags": ["date"], "why": "schedule/budget review cadence, no card fits" },
+    { "id": "H040", "canvas": "h4", "text": "Electrician found old aluminium wiring behind the panel, so expect extra work.",
+      "expected": { "card": "h4c03", "section": "h4s1", "action": "after_item", "item": 1, "column": null, "row": null, "relation": "NEW" },
+      "acceptable": [ { "card": "h4c01", "section": "h4s1", "action": "replace_item", "item": 1, "column": null, "row": null, "relation": "EXTENDS" } ],
+      "ambiguous": true, "trap": null, "overlap": "low",
+      "tags": ["ambiguous", "list", "paraphrase"], "why": "site note after Mia's panel item or detail on electrical row" }
+  ]
+}

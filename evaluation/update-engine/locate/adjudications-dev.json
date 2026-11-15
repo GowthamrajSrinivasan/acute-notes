@@ -1,0 +1,13 @@
+{
+  "note": "Decisions on dev label disagreements (label-comparison.md). Applied over dev.json at load (withAdjudications); dev.json is never edited. Rules from the 2026-11-14 review (plan §13.12). D058 needs no decision: inserting after the last item of a two-item todo is the same edit as appending, and the scorer now treats it so.",
+  "decisions": [
+    {
+      "case": "D019",
+      "original": { "card": "d2c04", "section": "d2s2", "action": "replace_item", "item": 1, "column": null, "row": null, "relation": "CONTRADICTS" },
+      "adjudicated": { "card": "d2c04", "section": "d2s2", "action": "cell", "item": 1, "column": "First response", "row": null, "relation": "CONTRADICTS" },
+      "rule": "Prefer the smallest edit that preserves the row's meaning and structure: only the Pro row's First response cell changes (4 hours → 2 hours), so a cell edit, not a whole-row edit. The author's relation (the contract disagrees with the table) is kept.",
+      "decidedBy": "reviewer's rule (review 2026-11-14), applied by the implementation agent; confirmed by the reviewer 2026-11-14",
+      "date": "2026-11-14"
+    }
+  ]
+}

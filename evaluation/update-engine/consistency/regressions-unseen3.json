@@ -1,0 +1,108 @@
+{
+  "split": "regressions-unseen3",
+  "note": "REGRESSION EVIDENCE, not independent evidence: copied word for word from the third unseen set (unseen3/pairs.json, recorded 2026-11-14/15, plan §12.22), with the reviewer's blind label. The §12.23 screen fix (\"the values agree\" counts only when values of the same kind were compared) was written against w31, so no score on it may be reported as unseen. `screen3` is what the frozen screen did at the recording; `expectedDecision` is the intended behaviour after §12.23. The historical unseen3 scores are unchanged. §12.24 adds the context-guard cases (w32, w40, w44), the prompt cases (w73, w80) and two counter-cases (w38 must stay scoped; w52 moved with no precision cost). `recordedAI` is the frozen recording's answer, replayed only. Still regression evidence, never an unseen score.",
+  "pairs": [
+    {
+      "id": "w31",
+      "category": "paraphrase",
+      "a": "Members can use the gym 24 hours a day, 7 days a week.",
+      "b": "The gym is closed to members every night between midnight and 5 a.m.",
+      "truth": "contradiction",
+      "screen3": "excluded (values_agree)",
+      "expectedDecision": "forward",
+      "rationale": "The rules compared no values: A states durations (24 hours, 7 days); B's only number is the clock time 5 a.m., parsed as a bare count. A vacuous 'the values agree' is not positive evidence of compatibility, so the pair must reach the AI.",
+      "expectedScoped": false
+    },
+    {
+      "id": "w32",
+      "category": "context-guard",
+      "a": "Since the 2024 rule change, the sports club's juniors train on Tuesdays.",
+      "b": "Junior training at the sports club has been on Thursdays since the 2024 change, with Tuesdays kept for seniors.",
+      "truth": "contradiction",
+      "screen3": "forward",
+      "recordedAI": "contradicts",
+      "fix": "screen §12.24",
+      "expectedDecision": "forward",
+      "expectedScoped": false,
+      "rationale": "Both sides state the same time (\"since the 2024 change\"). A time scope shared by both sides is not a difference in context."
+    },
+    {
+      "id": "w40",
+      "category": "context-guard",
+      "a": "The farm co-op sells its milk solely to Greenvale Dairies.",
+      "b": "Part of the co-op's milk goes to a local cheesemaker.",
+      "truth": "contradiction",
+      "screen3": "forward",
+      "recordedAI": "contradicts",
+      "fix": "screen §12.24",
+      "expectedDecision": "forward",
+      "expectedScoped": false,
+      "rationale": "\"a local cheesemaker\" is not the local environment. \"Solely\" makes A exclusive, so B's other buyer contradicts it."
+    },
+    {
+      "id": "w44",
+      "category": "context-guard",
+      "a": "Clients must sign the engagement letter before the law firm opens a file.",
+      "b": "Signing the engagement letter is optional; the firm can open a file without it.",
+      "truth": "contradiction",
+      "screen3": "forward",
+      "recordedAI": "contradicts",
+      "fix": "screen §12.24",
+      "expectedDecision": "forward",
+      "expectedScoped": false,
+      "rationale": "\"before the firm opens a file\" is a precondition, not a past time. Required vs optional under the same policy cannot both hold."
+    },
+    {
+      "id": "w73",
+      "category": "prompt",
+      "a": "All pull requests to the main branch need approval from at least two maintainers.",
+      "b": "Documentation-only pull requests to main can be merged with one approval.",
+      "truth": "contradiction",
+      "screen3": "forward",
+      "recordedAI": "compatible_context",
+      "fix": "judge prompt §12.24",
+      "expectedDecision": "forward",
+      "expectedScoped": false,
+      "rationale": "Not a guard case (never scoped). The recorded AI read \"documentation-only\" as a separate context, though \"All\" covers it. Fixed in the prompt; only a new model answer can show the effect."
+    },
+    {
+      "id": "w80",
+      "category": "prompt",
+      "a": "The cinema's adult ticket currently costs £11.",
+      "b": "As of this month, an adult ticket at the cinema is £9.50.",
+      "truth": "contradiction",
+      "screen3": "forward",
+      "recordedAI": "compatible_context",
+      "fix": "judge prompt §12.24",
+      "expectedDecision": "forward",
+      "expectedScoped": false,
+      "rationale": "Not a guard case. \"Currently\" and \"as of this month\" both mean now. Fixed in the prompt; only a new model answer can show the effect."
+    },
+    {
+      "id": "w38",
+      "category": "counter-case",
+      "a": "The dental practice's new-patient fee was raised to £60 in January.",
+      "b": "New patients at the dental practice pay £45.",
+      "truth": "contradiction",
+      "screen3": "forward",
+      "recordedAI": "contradicts",
+      "fix": "none",
+      "expectedDecision": "forward",
+      "expectedScoped": true,
+      "rationale": "The guard's intended case: \"was raised … in January\" sets A in a stated time that B lacks. It must stay held at possible."
+    },
+    {
+      "id": "w52",
+      "category": "counter-case",
+      "a": "The music festival allows refillable water bottles on site.",
+      "b": "The festival also provides free water refill stations near each stage.",
+      "truth": "compatible",
+      "screen3": "forward",
+      "recordedAI": "compatible",
+      "fix": "screen §12.24",
+      "expectedDecision": "forward",
+      "expectedScoped": false,
+      "rationale": "\"near each stage\" is not the staging environment. Recorded AI: compatible, so un-scoping it costs no precision on replay."
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "split": "regressions",
+  "note": "Known misses of the tier-1 rules, kept as explicit regression cases (2026-11-13 review). Never used to tune rules or prompts. r01 repeats held-out h03 word for word; heldout.json itself is unchanged. `expected` is what the rules say today (the miss), so a later rule change that catches them is visible.",
+  "pairs": [
+    { "id": "r01", "category": "numeric", "a": "Releases ship every two weeks.", "b": "Releases ship every week.", "truth": "contradiction", "expected": "compatible", "rationale": "Same cadence, different interval; a period with no number isn't read as a value (held-out h03)." },
+    { "id": "r02", "category": "numeric", "a": "Our worker retries three times before giving up.", "b": "Retries happen five times.", "truth": "contradiction", "expected": "compatible", "rationale": "Same retry count, different value; the extra clause dilutes the shared words (the Worker and Gateway cards of the 4e local e2e)." }
+  ]
+}

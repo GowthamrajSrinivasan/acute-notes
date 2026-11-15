@@ -1,0 +1,434 @@
+{
+  "note": "Reviewer decisions on disputed labels, stored apart from the evaluation set (dev.json, heldout.json and regressions.json are never edited; recordings are immutable). An entry without `decision` awaits the reviewer. Source of the model rationales: recordings/2026-11-13-judge-baseline/labels.json.",
+  "entries": [
+    {
+      "id": "d19",
+      "split": "dev",
+      "category": "value_swap",
+      "a": "Builds run on GitHub Actions.",
+      "b": "Builds run on Jenkins.",
+      "qualifiers": {
+        "a": [],
+        "b": []
+      },
+      "originalLabel": "contradiction",
+      "originalRationale": "Value swapped.",
+      "group": "both models against the original label",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "ambiguous",
+          "why": "Builds could run on both platforms, or in different environments/stages, or at different times."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "ambiguous",
+          "why": "Builds might run on both systems for different projects or at different times; unclear."
+        }
+      },
+      "classifier": {
+        "model": "openai/gpt-oss-120b",
+        "answer": "contradicts",
+        "why": "One says builds run on GitHub Actions, the other on Jenkins, for the same builds."
+      },
+      "rulesToday": "possible",
+      "decision": {
+        "label": "ambiguous",
+        "reason": "Ambiguous without knowing whether both statements claim exclusivity.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review",
+        "date": "2026-11-13",
+        "provisional": true
+      }
+    },
+    {
+      "id": "d37",
+      "split": "dev",
+      "category": "range",
+      "a": "Retries happen up to five times.",
+      "b": "Retries happen three times.",
+      "qualifiers": {
+        "a": [
+          "qualifier:up to"
+        ],
+        "b": []
+      },
+      "originalLabel": "compatible",
+      "originalRationale": "3 is within 'up to 5'.",
+      "group": "both models against the original label",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "contradiction",
+          "why": "One says retries happen up to five times, the other says exactly three times; they conflict on the maximum retry count."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "contradiction",
+          "why": "Five times and three times cannot both be true for the same retry policy."
+        }
+      },
+      "rulesToday": "compatible",
+      "decision": {
+        "label": "compatible",
+        "reason": "Compatible when describing a maximum versus an actual count; otherwise context-dependent.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review",
+        "date": "2026-11-13",
+        "provisional": true
+      }
+    },
+    {
+      "id": "d55",
+      "split": "dev",
+      "category": "ambiguous",
+      "a": "The limit is 100.",
+      "b": "The limit is 500.",
+      "qualifiers": {
+        "a": [],
+        "b": []
+      },
+      "originalLabel": "ambiguous",
+      "originalRationale": "Which limit? Can't tell without context.",
+      "group": "both models against the original label",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "contradiction",
+          "why": "A limit cannot be both 100 and 500 in the same context."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "contradiction",
+          "why": "Different numeric limits cannot both be true for same thing."
+        }
+      },
+      "classifier": {
+        "model": "openai/gpt-oss-120b",
+        "answer": "contradicts",
+        "why": "Both state a single limit value without any contextual distinction."
+      },
+      "rulesToday": "possible",
+      "decision": {
+        "label": "ambiguous",
+        "reason": "Insufficient context: stays ambiguous unless both claims unambiguously refer to the same subject, property and scope.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review",
+        "date": "2026-11-13",
+        "provisional": true
+      }
+    },
+    {
+      "id": "d56",
+      "split": "dev",
+      "category": "ambiguous",
+      "a": "It takes 5 minutes.",
+      "b": "It takes 2 hours.",
+      "qualifiers": {
+        "a": [],
+        "b": []
+      },
+      "originalLabel": "ambiguous",
+      "originalRationale": "No subject.",
+      "group": "both models against the original label",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "contradiction",
+          "why": "The same action cannot take both 5 minutes and 2 hours."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "contradiction",
+          "why": "5 minutes and 2 hours are mutually exclusive durations."
+        }
+      },
+      "classifier": {
+        "model": "openai/gpt-oss-120b",
+        "answer": "contradicts",
+        "why": "Both give different durations for the same unspecified process."
+      },
+      "rulesToday": "possible",
+      "decision": {
+        "label": "ambiguous",
+        "reason": "Insufficient context: stays ambiguous unless both claims unambiguously refer to the same subject, property and scope.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review",
+        "date": "2026-11-13",
+        "provisional": true
+      }
+    },
+    {
+      "id": "d01",
+      "split": "dev",
+      "category": "numeric",
+      "a": "Retries happen three times.",
+      "b": "The worker retries five times.",
+      "qualifiers": {
+        "a": [],
+        "b": []
+      },
+      "originalLabel": "contradiction",
+      "originalRationale": "Same claim, different count.",
+      "group": "the two models disagree",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "ambiguous",
+          "why": "Unclear if 'retries' and 'worker retries' refer to the same retry mechanism or different ones."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "contradiction",
+          "why": "Different retry counts cannot both be true for the same worker."
+        }
+      },
+      "rulesToday": "conflict",
+      "decision": {
+        "label": "ambiguous",
+        "reason": "Generic retries and worker retries are not explicitly the same mechanism. If they refer to the same retry policy, the counts contradict.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review (decided on the full statements)",
+        "date": "2026-11-13"
+      }
+    },
+    {
+      "id": "d17",
+      "split": "dev",
+      "category": "value_swap",
+      "a": "The payments team owns the gateway.",
+      "b": "The platform team owns the gateway.",
+      "qualifiers": {
+        "a": [],
+        "b": []
+      },
+      "originalLabel": "contradiction",
+      "originalRationale": "Owner swapped; rules can only call it possible.",
+      "group": "the two models disagree",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "contradiction",
+          "why": "The same gateway cannot be owned by two different teams."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "ambiguous",
+          "why": "Could be different teams owning different parts, or ownership changed; need more context."
+        }
+      },
+      "classifier": {
+        "model": "openai/gpt-oss-120b",
+        "answer": "contradicts",
+        "why": "Both statements claim ownership of the same gateway by different teams in the same context."
+      },
+      "rulesToday": "possible",
+      "decision": {
+        "label": "ambiguous",
+        "reason": "Payments and platform ownership could conflict, but neither statement establishes exclusive ownership or the same organizational scope.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review (decided on the full statements)",
+        "date": "2026-11-13"
+      }
+    },
+    {
+      "id": "d21",
+      "split": "dev",
+      "category": "temporal",
+      "a": "In 2023 the API allowed 100 requests per minute.",
+      "b": "The API allows 500 requests per minute.",
+      "qualifiers": {
+        "a": [
+          "time:2023",
+          "qualifier:per minute"
+        ],
+        "b": [
+          "qualifier:per minute"
+        ]
+      },
+      "originalLabel": "compatible",
+      "originalRationale": "A past value and the current one.",
+      "group": "the two models disagree",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "compatible",
+          "why": "Different time periods (2023 vs. current); API limits may have changed."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "ambiguous",
+          "why": "Could be about different years or contexts, but not explicitly stated."
+        }
+      },
+      "classifier": {
+        "model": "openai/gpt-oss-120b",
+        "answer": "compatible_context",
+        "why": "A specifies the 2023 limit, B gives an unspecified (likely later) limit."
+      },
+      "rulesToday": "possible",
+      "decision": {
+        "label": "compatible",
+        "reason": "A documented 2023 limit of 100 requests/minute can coexist with a current limit of 500.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review (decided on the full statements)",
+        "date": "2026-11-13"
+      }
+    },
+    {
+      "id": "h07",
+      "split": "heldout",
+      "category": "value_swap",
+      "a": "Alerts go to the on-call channel.",
+      "b": "Alerts go to the platform channel.",
+      "qualifiers": {
+        "a": [],
+        "b": []
+      },
+      "originalLabel": "contradiction",
+      "originalRationale": "A non-numeric value swapped; rules can only call it possible.",
+      "group": "the two models disagree",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "contradiction",
+          "why": "Alerts cannot go to both the on-call channel and the platform channel simultaneously in the same context."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "compatible",
+          "why": "Alerts could be routed to multiple channels."
+        }
+      },
+      "classifier": {
+        "model": "openai/gpt-oss-120b",
+        "answer": "contradicts",
+        "why": "Both statements refer to the same alert routing without any contextual distinction, yet they assign alerts to different channels."
+      },
+      "rulesToday": "possible",
+      "decision": {
+        "label": "compatible",
+        "reason": "Alerts can be delivered to multiple channels. Neither statement says they go only to its named destination.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review (decided on the full statements)",
+        "date": "2026-11-13"
+      }
+    },
+    {
+      "id": "h08",
+      "split": "heldout",
+      "category": "temporal",
+      "a": "In 2022 sessions expired after 8 hours.",
+      "b": "Sessions expire after 30 minutes.",
+      "qualifiers": {
+        "a": [
+          "time:2022"
+        ],
+        "b": []
+      },
+      "originalLabel": "compatible",
+      "originalRationale": "Different time: the past value and the current one.",
+      "group": "the two models disagree",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "compatible",
+          "why": "Different time periods: 2022 had 8-hour expiry, but current expiry is 30 minutes (a change over time)."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "ambiguous",
+          "why": "Could be a policy change over time or different environments."
+        }
+      },
+      "classifier": {
+        "model": "openai/gpt-oss-120b",
+        "answer": "compatible_context",
+        "why": "One statement specifies the year 2022, implying a past policy, while the other lacks a time reference and may describe the current policy."
+      },
+      "rulesToday": "possible",
+      "decision": {
+        "label": "compatible",
+        "reason": "An eight-hour expiry policy in 2022 can coexist with a current 30-minute expiry.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review (decided on the full statements)",
+        "date": "2026-11-13"
+      }
+    },
+    {
+      "id": "h14",
+      "split": "heldout",
+      "category": "range",
+      "a": "Sessions last up to 8 hours.",
+      "b": "Sessions last 30 minutes.",
+      "qualifiers": {
+        "a": [
+          "qualifier:up to"
+        ],
+        "b": []
+      },
+      "originalLabel": "compatible",
+      "originalRationale": "30 minutes is within 'up to 8 hours'.",
+      "group": "the two models disagree",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "contradiction",
+          "why": "Sessions cannot last both up to 8 hours and exactly 30 minutes in the same context."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "ambiguous",
+          "why": "'Up to 8 hours' includes 30 minutes; unclear if 30 minutes is a fixed or maximum duration."
+        }
+      },
+      "rulesToday": "compatible",
+      "decision": {
+        "label": "compatible",
+        "reason": "Thirty minutes falls within an upper limit of eight hours.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review (decided on the full statements)",
+        "date": "2026-11-13"
+      }
+    },
+    {
+      "id": "h19",
+      "split": "heldout",
+      "category": "extension",
+      "a": "Alerts go to the on-call channel.",
+      "b": "Alerts go to the on-call channel and to email.",
+      "qualifiers": {
+        "a": [],
+        "b": []
+      },
+      "originalLabel": "compatible",
+      "originalRationale": "Adds a destination; nothing contradicted.",
+      "group": "the two models disagree",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "contradiction",
+          "why": "A cannot be true if alerts also go to email; B specifies a superset of destinations."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "compatible",
+          "why": "B adds an additional destination; both can be true if A is a subset of B."
+        }
+      },
+      "rulesToday": "compatible",
+      "decision": {
+        "label": "compatible",
+        "reason": "The second statement extends the first by adding email delivery without denying on-call delivery.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review (decided on the full statements)",
+        "date": "2026-11-13"
+      }
+    },
+    {
+      "id": "r02",
+      "split": "regressions",
+      "category": "numeric",
+      "a": "Our worker retries three times before giving up.",
+      "b": "Retries happen five times.",
+      "qualifiers": {
+        "a": [
+          "qualifier:before giving up"
+        ],
+        "b": []
+      },
+      "originalLabel": "contradiction",
+      "originalRationale": "Same retry count, different value; the extra clause dilutes the shared words (the Worker and Gateway cards of the 4e local e2e).",
+      "group": "the two models disagree",
+      "models": {
+        "anthropic/claude-haiku-4.5": {
+          "label": "contradiction",
+          "why": "The worker cannot retry both three times and five times for the same operation."
+        },
+        "deepseek/deepseek-v3.2": {
+          "label": "ambiguous",
+          "why": "Unclear if 'retries' refers to the same worker or a different retry policy."
+        }
+      },
+      "classifier": {
+        "model": "openai/gpt-oss-120b",
+        "answer": "contradicts",
+        "why": "Both statements specify the number of retry attempts for the same worker, and three vs five attempts cannot both apply simultaneously."
+      },
+      "rulesToday": "compatible (near-miss)",
+      "decision": {
+        "label": "ambiguous",
+        "reason": "The worker-specific retry count is three, but the general statement about five retries does not identify that worker. The claims contradict only if they describe the same retry mechanism.",
+        "reviewer": "Gowthamraj Srinivasan, 2026-11-13 review (decided on the full statements)",
+        "date": "2026-11-13"
+      }
+    }
+  ]
+}

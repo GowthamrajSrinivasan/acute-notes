@@ -1,0 +1,9 @@
+{
+  "date": "2026-11-14",
+  "method": "One fresh Node 22 process per model (node --expose-gc), q8 weights loaded offline from the spike cache, then 64 texts embedded in batches of 16. addedMB = resident set size after minus before loading the library and the model.",
+  "results": [
+    { "hub": "Xenova/all-MiniLM-L6-v2", "baseMB": 68.9, "afterMB": 155.3, "addedMB": 86.4 },
+    { "hub": "Xenova/bge-small-en-v1.5", "baseMB": 68.9, "afterMB": 164.6, "addedMB": 95.7 },
+    { "hub": "Xenova/paraphrase-multilingual-MiniLM-L12-v2", "baseMB": 68.7, "afterMB": 432.6, "addedMB": 363.8 }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "split": "heldout",
+  "note": "Held out (intelligent-update-engine-plan §12.9 D): written before any rule, its SHA-256 recorded in plan §12.12 before the rules existed; never used to tune rules or prompts. Labels are provisional: author-labelled, not human- or model-consensus-validated.",
+  "pairs": [
+    { "id": "h01", "category": "numeric", "a": "Sessions expire after 30 minutes.", "b": "Sessions expire after 8 hours.", "truth": "contradiction", "expected": "conflict", "rationale": "Same claim, different duration." },
+    { "id": "h02", "category": "numeric", "a": "The bucket stores 2 TB of logs.", "b": "The bucket stores 500 GB of logs.", "truth": "contradiction", "expected": "conflict", "rationale": "Same claim, different size." },
+    { "id": "h03", "category": "numeric", "a": "Releases ship every two weeks.", "b": "Releases ship every week.", "truth": "contradiction", "expected": "conflict", "rationale": "Same cadence claim, different interval." },
+    { "id": "h04", "category": "negation", "a": "The endpoint is public.", "b": "The endpoint is not public.", "truth": "contradiction", "expected": "conflict", "rationale": "Negation of the same claim." },
+    { "id": "h05", "category": "negation", "a": "Users can export their data.", "b": "Users cannot export their data.", "truth": "contradiction", "expected": "conflict", "rationale": "Negation of the same claim." },
+    { "id": "h06", "category": "direction", "a": "Throughput rose after the upgrade.", "b": "Throughput fell after the upgrade.", "truth": "contradiction", "expected": "conflict", "rationale": "Opposite direction, same event." },
+    { "id": "h07", "category": "value_swap", "a": "Alerts go to the on-call channel.", "b": "Alerts go to the platform channel.", "truth": "contradiction", "expected": "possible", "rationale": "A non-numeric value swapped; rules can only call it possible." },
+    { "id": "h08", "category": "temporal", "a": "In 2022 sessions expired after 8 hours.", "b": "Sessions expire after 30 minutes.", "truth": "compatible", "expected": "possible", "rationale": "Different time: the past value and the current one." },
+    { "id": "h09", "category": "temporal", "a": "Previously the bucket stored 500 GB of logs.", "b": "The bucket stores 2 TB of logs.", "truth": "compatible", "expected": "possible", "rationale": "Different time." },
+    { "id": "h10", "category": "environment", "a": "In staging, sessions expire after 8 hours.", "b": "In production, sessions expire after 30 minutes.", "truth": "compatible", "expected": "possible", "rationale": "Different environments." },
+    { "id": "h11", "category": "environment", "a": "The QA cluster has 3 nodes.", "b": "The production cluster has 12 nodes.", "truth": "compatible", "expected": "possible", "rationale": "Different environments." },
+    { "id": "h12", "category": "scope", "a": "Enterprise plans keep logs for 90 days.", "b": "Standard plans keep logs for 14 days.", "truth": "compatible", "expected": "compatible", "rationale": "Different plans (subjects)." },
+    { "id": "h13", "category": "scope", "a": "On iOS the cache holds 50 MB.", "b": "On Android the cache holds 100 MB.", "truth": "compatible", "expected": "possible", "rationale": "Different platforms." },
+    { "id": "h14", "category": "range", "a": "Sessions last up to 8 hours.", "b": "Sessions last 30 minutes.", "truth": "compatible", "expected": "compatible", "rationale": "30 minutes is within 'up to 8 hours'." },
+    { "id": "h15", "category": "range", "a": "The queue holds at most 1000 messages.", "b": "The queue holds 5000 messages.", "truth": "contradiction", "expected": "conflict", "rationale": "5000 exceeds the stated maximum." },
+    { "id": "h16", "category": "subject_mismatch", "a": "The ingest job runs every 5 minutes.", "b": "The cleanup job runs every hour.", "truth": "compatible", "expected": "compatible", "rationale": "Different jobs." },
+    { "id": "h17", "category": "metric_mismatch", "a": "Median build time is 4 minutes.", "b": "Worst-case build time is 20 minutes.", "truth": "compatible", "expected": "compatible", "rationale": "Different statistics of one metric." },
+    { "id": "h18", "category": "restatement", "a": "Sessions expire after 30 minutes.", "b": "A session expires after half an hour.", "truth": "compatible", "expected": "compatible", "rationale": "The same value written differently." },
+    { "id": "h19", "category": "extension", "a": "Alerts go to the on-call channel.", "b": "Alerts go to the on-call channel and to email.", "truth": "compatible", "expected": "compatible", "rationale": "Adds a destination; nothing contradicted." }
+  ]
+}

@@ -1,0 +1,5 @@
+# Evaluation sets and the source they freeze are pinned by SHA-256 of their exact bytes
+# (FREEZE.json, DATA-FREEZE.json, sealed held-out hashes). Keep LF on every checkout,
+# including Windows clones with core.autocrlf=true, so those hashes stay valid.
+evaluation/** text=auto eol=lf
+src/ai/** text=auto eol=lf
