@@ -1,0 +1,485 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "u0_h1",
+      "role": "title",
+      "stableKey": "Running a shared connection pool § heading#0",
+      "type": "heading",
+      "content": {
+        "text": "Running a shared connection pool"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "Connection pooling: why, how to operate, and key takeaways."
+      }
+    },
+    {
+      "id": "g0",
+      "role": "notes",
+      "importance": "high",
+      "stableKey": "Running a shared connection pool › Why pool connections § group#0",
+      "type": "group",
+      "content": {
+        "label": "Why pool connections",
+        "arrangement": "grid",
+        "takeaway": "Connection pooling reduces latency and protects the database from traffic spikes."
+      }
+    },
+    {
+      "id": "u1_n1",
+      "title": "Cost of new database connections",
+      "stableKey": "Running a shared connection pool › Why pool connections § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Opening a new database connection for the Ledger service incurs a cost of approximately 30 ms. This delay is due to the necessity of a TLS handshake and an authentication round trip for each new connection."
+      }
+    },
+    {
+      "id": "u1_n2",
+      "title": "Connection pooling benefits",
+      "stableKey": "Running a shared connection pool › Why pool connections § text#1",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "A connection pool maintains a set of open connections, lending them to incoming requests. This mechanism allows most requests to bypass the overhead associated with establishing new connections, thereby reducing latency."
+      }
+    },
+    {
+      "id": "u1_n3",
+      "title": "Protection against traffic spikes",
+      "stableKey": "Running a shared connection pool › Why pool connections § text#2",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "The connection pool also serves as a protective measure by limiting the total number of connections the service can hold. This prevents the database from being overwhelmed during sudden traffic surges."
+      }
+    },
+    {
+      "id": "u1_ax1",
+      "title": "Cost of new connections",
+      "stableKey": "Running a shared connection pool › Why pool connections § text#3",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Opening a new database connection costs 30 ms due to TLS handshake and authentication."
+      }
+    },
+    {
+      "id": "u1_ax2",
+      "title": "Connection pooling benefits",
+      "stableKey": "Running a shared connection pool › Why pool connections § text#4",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Connection pooling avoids the 30 ms cost for most requests by reusing existing connections."
+      }
+    },
+    {
+      "id": "u1_ax3",
+      "title": "Protection against traffic spikes",
+      "stableKey": "Running a shared connection pool › Why pool connections § text#5",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The connection pool limits the number of open connections, safeguarding the database during traffic spikes."
+      }
+    },
+    {
+      "id": "g1",
+      "role": "flow",
+      "importance": "high",
+      "stableKey": "Running a shared connection pool › Operating the pool § group#0",
+      "type": "group",
+      "content": {
+        "label": "Operating the pool",
+        "arrangement": "chain",
+        "takeaway": "The Ledger connection pool is carefully sized, timed, and monitored for robust operation."
+      }
+    },
+    {
+      "id": "u2_n1",
+      "stableKey": "Running a shared connection pool › Operating the pool § shape#0",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Sizing the pool"
+      }
+    },
+    {
+      "id": "u2_n2",
+      "stableKey": "Running a shared connection pool › Operating the pool § text#0",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Each Ledger instance maintains a connection pool with a maximum of 20 connections.\n\nThe database supports a total of 400 connections, with 40 reserved for migrations and administrators.\n\nThis capacity allows for 18 Ledger instances at full size, leading to the autoscaler being capped at 18 instances.\n\nIncreasing the pool size is only beneficial when requests are waiting for a connection. If the database CPU is saturated, more connections will slow down queries.\n\nA pool sized for peak traffic will hold idle connections overnight, consuming memory on the database but incurring no other costs."
+      }
+    },
+    {
+      "id": "u2_n7",
+      "stableKey": "Running a shared connection pool › Operating the pool § shape#1",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Timeouts"
+      }
+    },
+    {
+      "id": "u2_n8",
+      "stableKey": "Running a shared connection pool › Operating the pool § text#5",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "A request will wait a maximum of 2 seconds to borrow a connection before failing with a `POOL_EXHAUSTED` error.\n\nThe 2-second wait limit is intentionally shorter than the 5-second request deadline, allowing the caller sufficient time to return a clear error.\n\nEach query has a statement timeout of `3s`, set using `SET statement_timeout = '3s'` when the connection is opened.\n\nThe statement timeout does not apply to migrations, which use reserved connections without a time limit.\n\nLong transactions hold their connections for their entire duration, so the team aims to keep transactions under 500 ms."
+      }
+    },
+    {
+      "id": "u2_n13",
+      "stableKey": "Running a shared connection pool › Operating the pool § shape#2",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · Health checks and failover"
+      }
+    },
+    {
+      "id": "u2_n14",
+      "stableKey": "Running a shared connection pool › Operating the pool § text#10",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Before lending an idle connection (idle for over 60 seconds), the pool executes `SELECT 1` to verify its functionality.\n\nIf a connection fails the health check, it is closed and replaced with a new one for the request.\n\nDuring a database failover, all open connections break. The pool is then drained and refilled from the new primary database.\n\nRefilling is rate-limited to 5 new connections per second per instance. This prevents 18 instances reconnecting simultaneously from overloading the new primary.\n\nRequests may experience `POOL_EXHAUSTED` errors for up to approximately 4 seconds until the pool is fully refilled."
+      }
+    },
+    {
+      "id": "u2_n19",
+      "stableKey": "Running a shared connection pool › Operating the pool § shape#3",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Connection leaks"
+      }
+    },
+    {
+      "id": "u2_n20",
+      "stableKey": "Running a shared connection pool › Operating the pool § text#15",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "A connection borrowed for more than 10 seconds is logged as a potential leak, along with the stack trace of the borrowing code.\n\nThe pool does not forcibly reclaim leaked connections, as the code holding them might still be actively using them.\n\nMost leaks identified by the team originated from error paths that returned prematurely without releasing the connection.\n\nLeak warnings are reviewed weekly. Recurring leaks result in a ticket for the responsible team."
+      }
+    },
+    {
+      "id": "u2_n24",
+      "stableKey": "Running a shared connection pool › Operating the pool § shape#4",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "5 · Watching the pool"
+      }
+    },
+    {
+      "id": "u2_n25",
+      "stableKey": "Running a shared connection pool › Operating the pool § text#19",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "The pool exposes three gauges: connections in use, idle connections, and requests waiting to borrow.\n\nAn alert is triggered, paging the on-call engineer, if requests have been waiting for more than 30 seconds consecutively.\n\nA persistent queue typically indicates slow queries rather than an undersized pool. The runbook prioritizes investigating slow statements over adjusting pool size.\n\nDuring a failover, the idle connection gauge drops to zero and recovers as the pool refills, providing a quick confirmation of failover completion."
+      }
+    },
+    {
+      "id": "u2_a1",
+      "title": "Pool Operation Overview",
+      "stableKey": "Running a shared connection pool › Operating the pool § text#23",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The Ledger connection pool is configured for optimal performance and resilience, balancing connection limits, timeouts, and health checks. It includes mechanisms for detecting and addressing connection leaks, and comprehensive monitoring to ensure operational stability."
+      }
+    },
+    {
+      "id": "u2_a2",
+      "title": "Key Operational Parameters",
+      "stableKey": "Running a shared connection pool › Operating the pool § text#24",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The system is designed with specific limits:\n- **Max connections per instance:** 20\n- **Total database connections:** 400 (40 reserved)\n- **Autoscaler cap:** 18 instances\n- **Connection wait timeout:** 2 seconds\n- **Statement timeout:** 3 seconds\n- **Long transaction target:** under 500 ms\n- **Connection leak detection:** 10 seconds\n- **Failover refill rate:** 5 connections/sec/instance\n- **Failover `POOL_EXHAUSTED` duration:** up to 4 seconds\n- **Alert trigger for waiting requests:** 30 seconds"
+      }
+    },
+    {
+      "id": "u2_a3",
+      "title": "Failover Resilience",
+      "stableKey": "Running a shared connection pool › Operating the pool § text#25",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "During a database failover, the system gracefully handles the transition by draining and refilling the connection pool from the new primary. The refill process is rate-limited to prevent overloading the new primary, with a temporary period of `POOL_EXHAUSTED` errors expected. The idle connection gauge serves as a quick indicator of failover completion."
+      }
+    },
+    {
+      "id": "u2_a4",
+      "title": "Connection Leak Management",
+      "stableKey": "Running a shared connection pool › Operating the pool § text#26",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The system actively monitors for connection leaks by logging connections held for over 10 seconds. While the pool doesn't forcibly reclaim these, leak warnings are reviewed weekly, and recurring issues are escalated to the owning team. This proactive approach helps maintain connection availability and system health."
+      }
+    },
+    {
+      "id": "u2_a5",
+      "title": "Monitoring and Alerting",
+      "stableKey": "Running a shared connection pool › Operating the pool § text#27",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The pool exports key metrics (connections in use, idle, waiting requests). An alert is triggered if requests wait for more than 30 seconds, indicating a potential issue. The runbook prioritizes investigating slow queries over pool size adjustments in such scenarios, reflecting a focus on root cause analysis."
+      }
+    },
+    {
+      "id": "g2",
+      "role": "decision",
+      "importance": "high",
+      "stableKey": "Running a shared connection pool › Takeaway § group#0",
+      "type": "group",
+      "content": {
+        "label": "Takeaway",
+        "arrangement": "grid",
+        "takeaway": "Connection pools offer benefits but require careful configuration with database limits."
+      }
+    },
+    {
+      "id": "u3_n1",
+      "stableKey": "Running a shared connection pool › Takeaway § shape#0",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Connection Pool Benefits"
+      }
+    },
+    {
+      "id": "u3_n2",
+      "stableKey": "Running a shared connection pool › Takeaway § text#0",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "A connection pool makes connections cheap and bounded."
+      }
+    },
+    {
+      "id": "u3_n3",
+      "stableKey": "Running a shared connection pool › Takeaway § shape#1",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Connection Pool Configuration"
+      }
+    },
+    {
+      "id": "u3_n4",
+      "stableKey": "Running a shared connection pool › Takeaway § text#1",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The pool's size, timeouts, and failover behavior must be configured in conjunction with the database's own limits."
+      }
+    },
+    {
+      "id": "u3_a1",
+      "title": "Status",
+      "stableKey": "Running a shared connection pool › Takeaway § text#2",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "No specific decisions are presented in this section; it provides a general statement about connection pools."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u1_n1",
+      "to": "u1_n2",
+      "type": "explained_by",
+      "label": "mitigated by"
+    },
+    {
+      "from": "u1_n2",
+      "to": "u1_n3",
+      "type": "supports",
+      "label": "additional benefit"
+    },
+    {
+      "from": "u1_ax1",
+      "to": "u1_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u1_ax2",
+      "to": "u1_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u1_ax3",
+      "to": "u1_n3",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_n1",
+      "to": "u2_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_n7",
+      "to": "u2_n8",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_n13",
+      "to": "u2_n14",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_n19",
+      "to": "u2_n20",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_n24",
+      "to": "u2_n25",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_n1",
+      "to": "u2_n7",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n7",
+      "to": "u2_n13",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n13",
+      "to": "u2_n19",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n19",
+      "to": "u2_n24",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n7",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n13",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n19",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n24",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a2",
+      "to": "u2_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a2",
+      "to": "u2_n8",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a2",
+      "to": "u2_n14",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a2",
+      "to": "u2_n20",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a2",
+      "to": "u2_n25",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a3",
+      "to": "u2_n14",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a3",
+      "to": "u2_n25",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a4",
+      "to": "u2_n20",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a5",
+      "to": "u2_n25",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n3",
+      "type": "relates_to",
+      "label": "requires configuration"
+    },
+    {
+      "from": "g1",
+      "to": "g2",
+      "type": "explained_by",
+      "label": "summarizes"
+    },
+    {
+      "from": "g0",
+      "to": "g1",
+      "type": "supports",
+      "label": "justifies"
+    }
+  ],
+  "metadata": {}
+}

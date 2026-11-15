@@ -30,8 +30,9 @@ import { getTaskRegistry, type TaskDefinition, type TaskRegistry } from "@/ai/ta
 import { planEnvelopeSchema } from "@/ai/visual-plan/schema";
 import { templateFor } from "@/ai/visual-plan/templates";
 import { VISUAL_TEMPLATES } from "@/ai/visual-plan/types";
-import { SECTION_KINDS, sectionKind } from "@/ai/visual-plan/sectionKinds";
+import { kindRules, SECTION_KINDS, sectionKind } from "@/ai/visual-plan/sectionKinds";
 import { outlineDocumentTask } from "./outline";
+import { SEMANTIC_CHECK_SYSTEM, semanticCheckRequest } from "@/ai/fidelity/semanticCheck";
 import { analysisPatchEnvelope, analysisPatchInput, needsAnalysisNodes, type AnalysisPatchInput } from "./analysisPatch";
 
 /** A section's current representation, as the model sees it on an update: plan-local ids ("p1", …) and unit-local keys. */
@@ -73,6 +74,19 @@ export const generateVisualPlanInput = z.object({
    * `numberSource`), shown instead of `text`, so blocks can be placed by reference (Wave B1).
    */
   numbered: z.string().min(1).optional(),
+  /**
+   * Knowledge Notes (knowledge-notes-plan §4.4, WP1.5): `distil` writes ideas in the model's own words, each node citing
+   * the source units it represents (`numbered` is then `labelSource`'s labelled view) and the section listing what it
+   * omitted. Absent or `preserve`: today's prompt, byte for byte (`preservePrompts.test.ts`). Set from
+   * `FIDELITY_CONFIG.noteModel`, a developer setting until R1.
+   */
+  noteModel: z.enum(["preserve", "distil"]).optional(),
+  /**
+   * Distil mode's one retry per section (knowledge-notes-plan §3.3, §3.4, WP1.10): what an earlier plan of this section got
+   * wrong about its sources — protected details missing, units neither cited nor omitted, a caveat omitted, a card citing
+   * nothing, and the meaning checks' hints — merged with `analysisRetry` into one call. Never set in `preserve`.
+   */
+  knowledgeRetry: z.object({ reasons: z.array(z.string().min(1).max(800)).min(1).max(60) }).optional(),
 });
 export type GenerateVisualPlanInput = z.infer<typeof generateVisualPlanInput>;
 
@@ -132,6 +146,48 @@ export const FIDELITY_RULE =
 
 `;
 
+/**
+ * Distil on the canvas, keep the source whole, link every idea back (knowledge-notes-plan §4.4): used instead of
+ * `FIDELITY_RULE` only when `noteModel` is `distil`. Cards hold ideas in the model's own words; protected details stay
+ * exact; every condition stays with its claim; every source unit is cited or omitted for a listed reason
+ * (`OMISSION_REASONS`), so the app can account for all of them (§3.2) and show the source beside the card (§5).
+ */
+export const DISTIL_RULE =
+  `Distil the content into ideas: a reader must understand it more easily than from the text itself, and lose nothing that matters.
+` +
+  `- Write each idea in your own words, one idea per card, with a "title" that states the point (e.g. "Hybrid search combines complementary signals", not "Hybrid search").
+` +
+  `- Be brief: a card's body holds only what its idea needs (often one sentence or two or three short bullets). ` +
+  `A card is never longer than the source passages it cites, except protected detail kept exact: count its words against theirs. ` +
+  `Don't repeat the title in the body, and add no preamble, recap or filler.
+` +
+  `- Split and link instead of padding: a card that would hold two ideas becomes two short cards, linked when the content relates them, rather than one long card.
+` +
+  `- Brevity never drops a limit. Keep every condition, limit and caveat with the claim it applies to, on the same card, in words a reader can't miss ` +
+  `("only when …", "unless …", "at most …", "but …") — never on a separate card a reader might skip, and never cut to make a card shorter.
+` +
+  `- Keep protected details exact: numbers with their units, versions, paths, identifiers, quoted text, decision and item ids (D1, A1, HK-3), ` +
+  `and action items with their owner, date and verb.
+` +
+  `- Represent only what the content says: never add facts, steps, examples or outcomes it doesn't contain.
+` +
+  `- Cite every source unit you represent. Each unit of the content below has a label: P2.3 is paragraph P2's third sentence, L1.4 list L1's fourth item, ` +
+  `T1.r4 table T1's fourth row (T1.r0 its header), C1 code block C1. Give each node "cites", the labels of the units it represents, e.g. "cites":["P1.2","L1.1"]. ` +
+  `Cite a unit only on a card that says what that unit says. A block placed by reference already cites its own units.
+` +
+  `- Omit a unit only when it is "filler" (greetings, sign-offs, "as discussed"), a "duplicate" of another unit (name that unit in "of"), "superseded" by a later statement, ` +
+  `or "meta" (talk about the text rather than its subject), and list every omission in "metadata.omitted", e.g. ` +
+  `[{"unit":"P3.1","reason":"filler"},{"unit":"L2.3","reason":"duplicate","of":"L1.1"}]. Every unit is either cited or omitted. ` +
+  `In a conversation, a question nobody answers is an open question and a reply agreeing to a proposal ("Same.", "I'd like that, yes.") is part of a decision: neither is filler.
+` +
+  `- Labels are for citing only: never write them in a card's text.
+` +
+  `Structure: the concepts, steps, options and components are nodes with short labels, linked as the content relates them; ` +
+  `what the content says about a "shape" (which holds only a label) goes in a "text" node linked from it with "explained_by". ` +
+  `A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+`;
+
 /** An analysis node as the reply's JSON shape shows it (the same node the analysis patch's shape and `analysisRule` ask for). */
 const ANALYSIS_NODE_EXAMPLE = `{"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}`;
 
@@ -139,8 +195,11 @@ const ANALYSIS_NODE_EXAMPLE = `{"id":"a1","type":"text","origin":"analysis","tit
  * Analyse on top, preserve underneath (content fidelity plan, Revision 2): the model's own reading of a section — its
  * takeaway and the analysis its kind calls for — on top of the content's details, marked as analysis (D-R2.1) so it
  * is never read as a fact the content states.
+ *
+ * `distil` (knowledge-notes-plan §4.4): the details are distilled cards, so the last line drops "in its own words,
+ * nothing left out"; the takeaway and analysis stay as they are.
  */
-export function analysisRule(kindAnalysis: string | null): string {
+export function analysisRule(kindAnalysis: string | null, distil = false): string {
   return (
     `Then analyse it — the reader must understand it at a glance, not only find its details:\n` +
     `- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.\n` +
@@ -149,7 +208,9 @@ export function analysisRule(kindAnalysis: string | null): string {
     `linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.\n` +
     `- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ` +
     `("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.\n` +
-    `- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.\n\n`
+    (distil
+      ? `- The content's ideas stay on their cards above. Analysis is added on top, never instead of them.\n\n`
+      : `- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.\n\n`)
   );
 }
 
@@ -214,6 +275,14 @@ function analysisRetryRules(missing: readonly string[]): string {
   );
 }
 
+/** Distil mode's one retry (WP1.10): what an earlier plan got wrong about its sources, to fix this time with everything else. */
+function knowledgeRetryRules(reasons: readonly string[]): string {
+  return (
+    `An earlier plan of this section had these problems with its sources. This time fix every one of them, together with everything else ` +
+    `(keep citing and omitting as described above):\n${reasons.map((r) => `- ${r}\n`).join("")}\n`
+  );
+}
+
 /** The update rules (F38b): report conceptual changes to the section's current representation, not a regeneration. */
 function updateRules(current: CurrentRepresentation, changes?: TextChanges): string {
   return (
@@ -275,11 +344,13 @@ export const generateVisualPlanTask: TaskDefinition<GenerateVisualPlanInput, unk
     const t = templateFor(input.template);
     const roles = t.recommendedRoles?.length ? ` Roles it's usually built around: ${t.recommendedRoles.map((r) => `"${r}"`).join(", ")} (optional).` : "";
     const k = input.section ? sectionKind(input.section.kind) : null;
+    // Knowledge Notes (§4.4): distil changes only the wording rules; `preserve` is today's prompt, byte for byte.
+    const distil = input.noteModel === "distil";
     // A section of an outlined document is described by its kind: what it is and how it is represented.
     const framing = k
       ? `This is one section, "${input.section!.label}", of a larger workspace. It is a "${k.id}" section: ${k.when}.
 ` +
-        `${k.rules}
+        `${kindRules(k, distil)}
 ` +
         `Node types to use: ${k.nodeTypes.map((n) => `"${n}"`).join(", ")}. Relationship types: ${t.allowedRelationTypes.map((r) => `"${r}"`).join(", ")}. ` +
         `The app shows the section's label as its title, so don't repeat it as a heading node.
@@ -307,17 +378,18 @@ export const generateVisualPlanTask: TaskDefinition<GenerateVisualPlanInput, unk
       prompt: withRepair(
         framing +
           `Reply with JSON only, exactly this shape:\n` +
-          `{"version":1,"template":"${input.template}","nodes":[<node>, ...${analysed ? `, ${ANALYSIS_NODE_EXAMPLE}` : ""}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"${k && !input.part ? `,"takeaway":"..."` : ""}}}\n\n` +
+          `{"version":1,"template":"${input.template}","nodes":[<node>, ...${analysed ? `, ${ANALYSIS_NODE_EXAMPLE}` : ""}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"${k && !input.part ? `,"takeaway":"..."` : ""}${distil ? `,"omitted":[{"unit":"P3.1","reason":"filler"}]` : ""}}}\n\n` +
           `Each node is one of (pick freely, mixing types is normal):\n${NODE_SHAPES}\n\n` +
           `Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. ` +
           `Use "role" on a node (e.g. "problem", "cause") where the template calls for it. ` +
           `Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. ` +
           `A "title" on a node becomes a small heading above it, when it helps.\n\n` +
-          FIDELITY_RULE +
+          (distil ? DISTIL_RULE : FIDELITY_RULE) +
           (input.template === "architecture" && !k ? ARCHITECTURE_RULE : "") +
           (input.numbered ? REFERENCE_RULE + (input.appended ? APPENDED_REFERENCE_NOTE : "") : "") +
-          (analysed && k ? analysisRule(k.analysis) : "") +
+          (analysed && k ? analysisRule(k.analysis, distil) : "") +
           (input.analysisRetry ? analysisRetryRules(input.analysisRetry.missing) : "") +
+          (input.knowledgeRetry ? knowledgeRetryRules(input.knowledgeRetry.reasons) : "") +
           (input.dense ? denseRules(input.dense.reason) : "") +
           (input.retry ? retryRules(input.retry.missing) : "") +
           (input.current ? (input.appended ? appendedRules(input.current) : updateRules(input.current, input.changes)) : "") +
@@ -351,7 +423,8 @@ export const generateSectionAnalysisTask: TaskDefinition<AnalysisPatchInput, unk
 ${nodes || "(none)"}
 
 ` +
-      analysisRule(k?.analysis ?? null) +
+      // Distil (§4.4): the plan's details are distilled cards, so the analysis doesn't ask for them "in its own words".
+      analysisRule(k?.analysis ?? null, input.noteModel === "distil") +
       `Reply with JSON only, exactly this shape:
 ` +
       `{"takeaway":"..."${wantNodes ? `,"nodes":[{"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"a1","to":"<a node id above>","type":"relates_to"}]` : ""}}
@@ -372,11 +445,89 @@ ${input.text}`;
   policy: { limitConcurrency: true },
 };
 
+export const checkCardMeaningInput = z.object({
+  items: z.array(z.object({ ref: z.string().min(1).max(20), source: z.string().min(1).max(20_000), card: z.string().min(1).max(20_000) })).min(1).max(200),
+});
+export type CheckCardMeaningInput = z.infer<typeof checkCardMeaningInput>;
+
+/**
+ * The optional model check of distilled cards (knowledge-notes-plan §3.4, `FIDELITY_CONFIG.semanticCheck`, off by default):
+ * one batched call per section asking, per card, whether it is supported by the text it cites. The prompt is
+ * `semanticCheck.ts`'s, measured offline on the labelled set; the reply is read leniently by `parseSemanticCheckReply`, and
+ * an item it doesn't answer is never treated as supported.
+ */
+export const checkCardMeaningTask: TaskDefinition<CheckCardMeaningInput, string> = {
+  task: "check_card_meaning",
+  inputSchema: checkCardMeaningInput,
+  outputSchema: z.string(),
+  outputFormat: "text",
+  timeoutMs: 90_000,
+  buildPrompt: ({ input, repairFeedback }) => ({ systemPrompt: SEMANTIC_CHECK_SYSTEM, prompt: withRepair(semanticCheckRequest(input.items), repairFeedback) }),
+  policy: { limitConcurrency: true },
+};
+
+/**
+ * The card-level resend of a citation-driven update (knowledge-notes-plan §6.1, WP3.1; `reconcile/citations.ts`, behind
+ * `CITATION_UPDATE_CONFIG.enabled`, off until R2). One call per section: the cards citing a changed passage, under local
+ * ids (`c1`, …), with their text, the passages they cite that did not change and each changed passage as before → after.
+ * The input never carries unit ids (§3.1) nor the local id → object map (`CardResendInput.objectOf` stays with the
+ * caller). The reply is read leniently by `readCardResendReply`: a card it doesn't answer stays as it is and is marked
+ * "source changed".
+ */
+export const resendCardsInput = z.object({
+  rule: z.string().min(1).max(4_000),
+  topic: z.string().max(500),
+  cards: z
+    .array(
+      z.object({
+        id: z.string().regex(/^c\d{1,4}$/),
+        title: z.string().max(2_000),
+        body: z.string().max(20_000),
+        unchanged: z.array(z.string().max(20_000)).max(200),
+        changes: z.array(z.object({ before: z.string().max(20_000), after: z.string().max(20_000) })).min(1).max(200),
+      }),
+    )
+    .min(1)
+    .max(100),
+});
+export type ResendCardsInput = z.infer<typeof resendCardsInput>;
+
+/** The request text of a card-level resend: the rule, then each card with its passages. */
+export function resendCardsRequest(input: ResendCardsInput): string {
+  const lines = (xs: readonly string[]) => xs.join("\n");
+  const cards = input.cards.map((c) =>
+    lines([
+      `Card ${c.id}`,
+      `Title: ${c.title}`,
+      "Body:",
+      c.body,
+      ...(c.unchanged.length ? ["Passages it cites that did not change:", ...c.unchanged.map((u) => `- ${u}`)] : []),
+      "Changed passages:",
+      ...c.changes.flatMap((ch) => [`- before: ${ch.before}`, `  after: ${ch.after}`]),
+    ]),
+  );
+  return lines([input.rule, "", `Section: ${input.topic || "(untitled)"}`, "", cards.join("\n\n")]);
+}
+
+export const resendCardsTask: TaskDefinition<ResendCardsInput, unknown> = {
+  task: "resend_cards",
+  inputSchema: resendCardsInput,
+  outputSchema: z.unknown(),
+  timeoutMs: 120_000,
+  buildPrompt: ({ input, repairFeedback }) => ({
+    systemPrompt: "You keep notes in a visual workspace up to date with their source. You change a card only as far as the source's change requires, and you reply with JSON only.",
+    prompt: withRepair(resendCardsRequest(input), repairFeedback),
+  }),
+  policy: { limitConcurrency: true },
+};
+
 /** Registers the Visualize tasks once (idempotent, so hot reload and tests can call it freely). */
 export function registerVisualizeTasks(registry: TaskRegistry): void {
   if (!registry.has(generateVisualPlanTask.task)) registry.register(generateVisualPlanTask);
   if (!registry.has(outlineDocumentTask.task)) registry.register(outlineDocumentTask);
   if (!registry.has(generateSectionAnalysisTask.task)) registry.register(generateSectionAnalysisTask);
+  if (!registry.has(checkCardMeaningTask.task)) registry.register(checkCardMeaningTask);
+  if (!registry.has(resendCardsTask.task)) registry.register(resendCardsTask);
 }
 
 registerVisualizeTasks(getTaskRegistry());

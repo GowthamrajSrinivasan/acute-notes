@@ -4,6 +4,9 @@
  * without a decision: "Apply update" adds its `apply` change to the accepted
  * set, "Keep mine" its `keep` (rebaseline) change, and an undecided conflict
  * adds nothing — the object is left exactly as it is.
+ *
+ * Impact offers (Stage 3, `ConflictItem.impact`) ride the same decisions: "Update this too" is `apply` (a claim-level
+ * patch, checked at accept), "Leave as is" is `keep` with nothing to add.
  */
 import type { ChangeSet, ConflictItem, ProposedChange } from "@/ai/changes/changeSet";
 import { canonicalContent } from "@/ai/content/fingerprint";
@@ -34,6 +37,8 @@ export function proposedText(conflict: ConflictItem): string {
     return snapshotText(c.element) ?? (label?.kind === "restore" ? snapshotText(label.element) : null) ?? "(as it was before the agent's change)";
   }
   if (c.kind === "remove") return "(removed: the agent added it)";
+  // An impact offer (Stage 3): the card's text with the same edit made, as planned.
+  if (c.kind === "patch_block") return conflict.impact?.proposed ?? "";
   const body = canonicalContent(c.content);
   return c.title ? `# ${c.title}\n\n${body}`.trim() : body;
 }
@@ -54,7 +59,7 @@ export function conflictName(conflict: ConflictItem): string {
   const c = conflict.apply;
   if (conflict.name) return conflict.name;
   if (c.kind === "update_shape") return c.label || "Shape";
-  if (c.kind === "restore" || c.kind === "remove") return "Object";
+  if (c.kind === "restore" || c.kind === "remove" || c.kind === "patch_block") return "Object";
   if (c.title) return c.title;
   const first = canonicalContent(c.content).split("\n").find((l) => l.trim()) ?? "";
   return first.replace(/^#+\s*/, "").replace(/^[-*]\s+(\[[ x]\]\s+)?/, "").slice(0, 60) || "Block";

@@ -244,8 +244,9 @@ it is any of these:
 - the section's takeaway source sentence (the unit the model's takeaway cites);
 - protected content (§3.3).
 
-The cue words are only an indicator. They are tuned on the labelled set (§7.2), and the list lives in
-`FIDELITY_CONFIG` so it can be changed without a release.
+The cue words are only an indicator. They are tuned on the labelled set (§7.2), and the lists live in
+config (`FIDELITY_CUES` in [config/fidelityCues.ts](../../src/config/fidelityCues.ts), beside `FIDELITY_CONFIG`) so they
+can be changed without a release.
 
 **Omission rules:**
 
@@ -304,7 +305,8 @@ qualifier, condition, cause and negation rules still do.
 A flagged card gets one retry with the reason (merged with the section's other retries), then **Needs review** if
 it is still flagged. It is never blocked or deleted.
 
-**Optional runtime model check** (`FIDELITY_CONFIG.semanticCheck`, **off** by default): one batched call per section,
+**Runtime model check** (`FIDELITY_CONFIG.semanticCheck`; **on for every citing card in distil mode since OD5b,
+approved 2026-10-20**, so the paragraph below describes OD5 as first approved): one batched call per section,
 only for cards still flagged after the retry. It asks whether each card is supported by its cited text and returns
 supported / partly / not supported with a reason. "Not supported" stays in Needs review. It needs the user's explicit
 setting and is counted in usage, because it costs money.
@@ -664,26 +666,26 @@ Each step is small enough to build and test in one sitting and ends in a state t
 **checkpoint** is where testing happens and the user is told the results. Steps marked **approval** need the user's
 go-ahead because they cost money.
 
-| Step | Work packages | Done when | Checkpoint |
-|---|---|---|---|
-| **S0.1** | WP0.1 Re-arrange scope | New scope tests pass; Re-arrange on one frame proposes nothing outside it | |
-| **S0.2** | WP0.2 Provenance guard | `provenanceGuard.test.ts` 7/7 | |
-| **S0.3** | WP0.3 Plan docs | Master plan says "next: Knowledge Notes Phase 1"; Oct 12 work written up | **C0:** typecheck, lint, full unit suite green; by-hand check of Re-arrange on one frame in the app |
-| **S1.1** | WP1.1, WP1.2 | Unit splitter and identity matrix (§7.1) pass, all offline | |
-| **S1.2** | WP1.3 | Types, storage and guard updated; old records load | |
-| **S1.3** | WP1.6, WP1.7, WP1.8 | Accounting, exactness and meaning rules unit-tested on hand-written cases | |
-| **S1.4** | WP1.9 (draft) | Labelled set and rubric drafted; per-kind report runs in CI | **C1a:** the user labels the set (OD7); G0 |
-| **S1.5** | WP1.4, WP1.5 | `DISTIL_RULE` and reply parsing behind the developer setting; `preserve` prompt snapshot unchanged | |
-| **S1.6** | WP1.10, WP1.11 | One merged retry, report v2, safety net off in distil mode; mock-AI tests | |
-| **S1.7** | WP1.12 | Fixtures 4–10 and report v2 | **C1b:** full offline suite; distil mode with the mock AI end to end; G1/G2 rule measures on the labelled set |
-| **S1.8** | — **approval** | First live run of distil mode: fixtures × 3, with the chosen provider (L1/L2) | **C1c:** first real-model results, per kind and per fixture |
-| **S2.1** | WP2.1, WP2.2 | Source tab, versions, two-way highlighting | |
-| **S2.2** | WP2.3, WP2.4 | Long sources, chips, budgets | |
-| **S2.3** | WP2.5, WP2.6, WP2.7 | Chips in outcome words, review queue, Add / Pin / Include | |
-| **S2.4** | WP2.9 | Export and import with sources | |
-| **S2.5** | WP2.8 | "Keep full detail" in the dialog (hidden until R1) | **C2:** e2e U1–U8; by-hand walk-through of the review flow |
-| **S2.6** | — **approval** | R1 live runs; judge rubric; comprehension study | **R1** decision with the user |
-| **S3.1–S3.4** | WP3.1–WP3.4 | Citation updates, fixture 10 | **C3** offline; then **approval** for live runs; **R2** decision with the user |
+| Step | Work packages | Done when | Checkpoint | Status |
+|---|---|---|---|---|
+| **S0.1** | WP0.1 Re-arrange scope | New scope tests pass; Re-arrange on one frame proposes nothing outside it | | Done 2026-10-19: `RearrangeInput.frames` (`reconcile/rearrange.ts`), `rearrange.test.ts` "on a selection" |
+| **S0.2** | WP0.2 Provenance guard | `provenanceGuard.test.ts` 7/7 | | Done 2026-10-19: `provenanceGuard.test.ts` green |
+| **S0.3** | WP0.3 Plan docs | Master plan says "next: Knowledge Notes Phase 1"; Oct 12 work written up | **C0:** typecheck, lint, full unit suite green; by-hand check of Re-arrange on one frame in the app | Done 2026-10-19: master plan L0 and A3; C0 suite green (the by-hand Re-arrange check isn't recorded) |
+| **S1.1** | WP1.1, WP1.2 | Unit splitter and identity matrix (§7.1) pass, all offline | | Done offline 2026-10-19: `fidelity/sourceUnits.ts` (`splitUnits`, `matchVersions`), identity matrix |
+| **S1.2** | WP1.3 | Types, storage and guard updated; old records load | | Done offline 2026-10-19: `domain/types.ts`, `ai/content/sources.ts` (`recordAcceptedSource`), repositories; old records load |
+| **S1.3** | WP1.6, WP1.7, WP1.8 | Accounting, exactness and meaning rules unit-tested on hand-written cases | | Done offline 2026-10-19: `fidelity/accounting.ts`, `exactness.ts`, `meaning.ts`, `quantities.ts`; cues in `config/fidelityCues.ts` |
+| **S1.4** | WP1.9 (draft) | Labelled set and rubric drafted; per-kind report runs in CI | **C1a:** the user labels the set (OD7); G0 | Done 2026-10-19 under **OD7a**: labels are model consensus, **provisional** (`__fixtures__/meaning/labelling-report.md`). The meaning rules fail on fresh pairs and are **hints only** ([evaluation](./meaning-rules-evaluation-2026-10-19.md)); the model check meets every target but stays off until **OD5b** (pending) |
+| **S1.5** | WP1.4, WP1.5 | `DISTIL_RULE` and reply parsing behind the developer setting; `preserve` prompt snapshot unchanged | | Done offline 2026-10-19: `visualize/tasks.ts` (`DISTIL_RULE`, `readDistilReply`), `config/fidelity.ts`; `preservePrompts` snapshots unchanged |
+| **S1.6** | WP1.10, WP1.11 | One merged retry, report v2, safety net off in distil mode; mock-AI tests | | Done offline 2026-10-19: `fidelity/knowledgeCheck.ts`, `knowledgeRun.ts` (one retry, report v2), `visualize/outlined.ts`; model check wired, off |
+| **S1.7** | WP1.12 | Fixtures 4–10 and report v2 | **C1b:** full offline suite; distil mode with the mock AI end to end; G1/G2 rule measures on the labelled set | Done offline 2026-10-19: fixtures 4–10 (`fidelity/__fixtures__/knowledge/`, fixture 10 `reconcile/__fixtures__/update-series/`), `e2e/fidelityScore.ts` report v2. C1b green with the mock AI (`e2e/local/knowledgeNotes.local.spec.ts`) |
+| **S1.8** | — **approval** | First live run of distil mode: fixtures × 3, with the chosen provider (L1/L2) | **C1c:** first real-model results, per kind and per fixture | **C1c run 2026-10-19** (approved; OpenRouter gemini-2.5-flash, model check off; [evidence](./knowledge-notes-live-2026-10-19.md)): fixtures 4–10 × 3, G1, G3 and G4 met on all 21 runs. But the golden baselines recorded the same day (distil gate 1 passes 1/13, preserve 3/13) show critical caveats lost, and some wrong citations, on cards counted Represented. G2 isn't measurable while the model check is off (OD5b). Not enough for R1. **Rerun 2026-10-20** (approved, $0.673; OD5b on, fixes for honest "Represented", citation sanity, sign-off cues, brevity prompt; [evidence](./knowledge-notes-live-2026-10-20.md)): G3/G4 on 21/21 runs; **G1 not met on 6 of 7** fixtures (the model check flags real dropped conditions, and falsely flags bare diagram labels: 26 of 39 "not supported"); golden 7 of 13 cases (cap): distil gate 1 2/7 vs preserve 3/7. The 2026-10-19 wrong citations were golden component/step matching, not a mapping bug. Still not enough for R1 |
+| **S2.1** | WP2.1, WP2.2 | Source tab, versions, two-way highlighting | | Done offline 2026-10-19: `components/source/` (`SourceTab.tsx`, `sourceData.ts`), mounted for distil objects |
+| **S2.2** | WP2.3, WP2.4 | Long sources, chips, budgets | | Done offline 2026-10-19: 200k source opens in ≤ 300 ms (U4); chips in `components/review/KnowledgeOverlay.tsx` |
+| **S2.3** | WP2.5, WP2.6, WP2.7 | Chips in outcome words, review queue, Add / Pin / Include | | Done offline 2026-10-19: `components/review/` (outcome chips, `KnowledgeReviewBar.tsx`, Add / Pin / Include), resolutions stored (`ai/content/sourceReview.ts`) |
+| **S2.4** | WP2.9 | Export and import with sources | | Done offline 2026-10-19: `portability/` bundle with sources; canvas export and workspace backup show "Include sources", its size and the warning |
+| **S2.5** | WP2.8 | "Keep full detail" in the dialog (hidden until R1) | **C2:** e2e U1–U8; by-hand walk-through of the review flow | C2 green offline 2026-10-19 (e2e U1–U8 with the mock AI). WP2.8 built 2026-10-19, **hidden until R1** (`FIDELITY_CONFIG.showNoteModelChoice: false`): once shown, a new Visualize distils by default and "Keep full detail" runs it with `preserve`, passed per run; `__acuteDev.setNoteModel` still stands in until then |
+| **S2.6** | — **approval** | R1 live runs; judge rubric; comprehension study | **R1** decision with the user | **Pending approval** (R1 live runs, judge rubric, comprehension study) |
+| **S3.1–S3.4** | WP3.1–WP3.4 | Citation updates, fixture 10 | **C3** offline; then **approval** for live runs; **R2** decision with the user | Built offline 2026-10-19 with the switch **off** (`CITATION_UPDATE_CONFIG.enabled`): `reconcile/citations.ts`, `citationUpdate.ts`, `resend_cards` task. WP3.4's cost measure needs an approved live run |
 
 ### Phase 0: prerequisites (offline, no AI spend; next)
 
@@ -704,7 +706,7 @@ These fix what is already wrong in the parts this plan builds on. They're small,
 | 1.3 | Types and storage: `ContentSourceVersion.units` / `lineage`, `AIMetadata.sourceUnits` / `review`, `noteModel`; repository schema bump with old records readable | `domain/types.ts`, `persistence/repositories/*`, `ai/content/sources.ts`, `ai/changes/changeSet.ts` | repository tests, old-record load test; add `sourceUnits`, `review` and `noteModel` to `RECONCILIATION_FIELD` in `provenanceGuard.test.ts`, and each new reader to its allowlist on purpose |
 | 1.4 | Prompt labels per unit (`P2.3`, `L1.4`, `T1.r4`) mapped to IDs | `fidelity/sourceBlocks.ts` (`numberSource`) | `sourceBlocks.test.ts` |
 | 1.5 | `DISTIL_RULE`, reply shape (`cites`, `metadata.omitted`), lenient parsing | `visualize/tasks.ts`, `visual-plan/sectionKinds.ts`, `visual-plan/schema.ts`, `validate.ts` | `tasks.test.ts`, `validate.test.ts`; `preserve` prompt snapshot unchanged |
-| 1.6 | Accounting, critical units, user-facing outcomes | `fidelity/accounting.ts` (new), cue lists in `config/fidelity.ts` | `accounting.test.ts` (new) |
+| 1.6 | Accounting, critical units, user-facing outcomes | `fidelity/accounting.ts` (new), cue lists in `config/fidelityCues.ts` | `accounting.test.ts` (new) |
 | 1.7 | Exactness tiers, normalisation, action items, named terms | `fidelity/exactness.ts` (new), reuses `information.ts` `keyTerms`, `analysisCheck.ts` `itemIds` | `exactness.test.ts` (new) |
 | 1.8 | Meaning rules (§3.4) | `fidelity/meaning.ts` (new) | `meaning.test.ts` (new) |
 | 1.9 | Labelled set and the CI measure of recall and false alarms | `fidelity/__fixtures__/meaning/pairs.json` (new), `meaning.eval.test.ts` (new) | runs in the unit suite |
@@ -775,6 +777,8 @@ turn on citation-based updates until R2.
 | OD5 | **Runtime model check off by default**, flagged cards only when on | Flagged cards stay visibly uncertain with the check off, and are never treated as verified | §3.4, G2, U8 |
 | OD6 | **Chat import switches after R1**, with its own live check | Its merge behaviour and hand-written content carry risks Visualize tests don't cover | §4.4, "Other open work" |
 | OD7 | **I draft the paraphrase pairs; the user or team labels them** | Labels follow a written rubric; disagreements are resolved before the set becomes a gate; categories are balanced and reported separately, with no single aggregate score | §7.2, G0 |
+| OD7a | **Amended 2026-10-19 by the user: no manual labelling.** Pairs are labelled by two independent models (ChatGPT GPT-6, and a Claude labeller that sees only the blind sheet); a pair is settled when they give the same definite answer, and excluded when they don't. The user's own decisions (`resolutions.json`) win | Labels settled this way are **provisional**: G0, G1 and G2 then measure the rules against model agreement, not human judgement, and must never be described as human-validated (positioning doc included). The labelling workflow for people stays in place, so human labels can replace them later | §7.2, G0, `labelling.json` `policy` |
+| OD5b | **Approved by the user 2026-10-20.** The deterministic meaning rules fail on fresh text (false alarms 33–83%, recall 0–60% in several kinds). The model check run on every card meets every target on the labelled set (fresh pairs: 0% false alarms; recall 100% except qualifier 83%) for about $0.00012 a card. Proposal: the model check runs on every card in distil mode (one batched call per section); the rules become hints only | Changes OD5 (off by default, flagged cards only); cost in usage; "uncertain is never shown as verified" stays. Evidence: `meaning-rules-evaluation-2026-10-19.md` | §3.4, G1, G2 |
 
 ## 13. Risks
 

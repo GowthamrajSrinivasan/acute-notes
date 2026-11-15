@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-not-always-unnegated",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "The negation is dropped: 'Merging does not always pay off' becomes 'Merging always pays off'. The negation-aware a.no-always must still catch it.",
+  "mutations": [
+    { "op": "replace_text", "node": "n3", "find": "Merging does not always pay off: if both", "replace": "Merging always pays off, even if both" }
+  ],
+  "expectFailing": ["a.no-always"]
+}

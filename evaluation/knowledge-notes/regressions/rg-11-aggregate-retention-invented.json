@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-aggregate-retention-invented",
+  "distortion": "invented_detail",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "Aggregate-table retention, which the source leaves TBD (u24), is filled in with an invented value.",
+  "mutations": [
+    { "op": "replace_text", "node": "c5", "find": "Aggregate-table retention: TBD.", "replace": "Aggregate-table retention: 1 year." }
+  ],
+  "expectFailing": ["a.aggregate-tbd"]
+}

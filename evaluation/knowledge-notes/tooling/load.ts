@@ -141,17 +141,21 @@ export interface Recording {
   dir: string;
 }
 
-/** Recorded live runs under `recordings/` (none until one is approved and made). */
-export function loadRecordings(root = DATASET_ROOT): { recordings: Recording[]; issues: string[] } {
+/**
+ * Recorded live runs under `recordings/` (none until one is approved and made), or under `base` (test fixtures). Every
+ * run directory needs a `meta.json` valid against `recording-meta.schema.json` whose `runId` is the directory's name.
+ */
+export function loadRecordings(root = DATASET_ROOT, base = join(root, "recordings")): { recordings: Recording[]; issues: string[] } {
   const issues: string[] = [];
-  const base = join(root, "recordings");
   if (!existsSync(base)) return { recordings: [], issues };
   const recordings: Recording[] = [];
-  for (const name of readdirSync(base, { withFileTypes: true })) {
+  for (const name of readdirSync(base, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
     if (!name.isDirectory()) continue;
     const dir = join(base, name.name);
     const meta = parse(recordingMetaSchema, join(dir, "meta.json"), issues);
-    if (meta) recordings.push({ meta, dir });
+    if (!meta) continue;
+    if (meta.runId !== name.name) issues.push(`${rel(join(dir, "meta.json"))}: runId ${meta.runId} must equal the directory name ${name.name}`);
+    else recordings.push({ meta, dir });
   }
   return { recordings, issues };
 }

@@ -235,7 +235,7 @@
     },
     {
       "id": "ku.queue-retention",
-      "title": "Events are kept 7 days, so a worker outage loses no uploads within that window",
+      "title": "Events are kept up to 7 days, so a worker outage within that window loses no uploads",
       "claim": "The queue keeps an event for up to 7 days, so a worker outage delays thumbnails but does not lose uploads.",
       "explanation": "Bounds the 'no upload is lost' property; it must sit on the queue element, never alone.",
       "type": "caveat",

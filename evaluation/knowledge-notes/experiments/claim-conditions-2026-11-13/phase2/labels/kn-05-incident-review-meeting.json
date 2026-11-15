@@ -1,0 +1,117 @@
+{
+  "caseId": "kn-05-incident-review-meeting",
+  "reviewer": "blind independent reviewer, 2026-11-13",
+  "records": [
+    {
+      "id": "r1",
+      "claimUnits": ["u22"], "claimSummary": "The checkout error-rate alert fires when the error rate is above 10%.",
+      "conditionUnits": ["u22"], "kind": "bound",
+      "conditionSummary": "Only when the rate stays above 10% for 15 minutes (sustained window).",
+      "mustConvey": "10% for 15 minutes",
+      "binding": "claim", "bindingReason": "Without the 15-minute window the alert would seem to fire as soon as errors pass 10%, which is false and hides why it took 22 minutes.",
+      "claimCards": ["u0_u0_n5", "u0_ax3", "u0_u0_n9"], "carriers": ["u0_u0_n5", "u0_ax3", "u0_u0_n9"],
+      "perClaimCard": { "u0_u0_n5": "carried", "u0_ax3": "carried", "u0_u0_n9": "carried" },
+      "confidence": "high", "notes": "Intra-sentence condition."
+    },
+    {
+      "id": "r2",
+      "claimUnits": ["u33"], "claimSummary": "Agreed: lower the error-rate alert to 5% over 5 minutes.",
+      "conditionUnits": ["u29"], "kind": "scope",
+      "conditionSummary": "The new threshold applies to the checkout alert specifically, not to alerts generally.",
+      "mustConvey": "checkout (specifically)",
+      "binding": "claim", "bindingReason": "Read as a general alert change the decision would be false; only the checkout alert changes.",
+      "claimCards": ["u0_u0_n10", "u0_u0_n11", "u0_ax1"], "carriers": ["u0_u0_n10", "u0_u0_n11", "u0_ax1"],
+      "perClaimCard": { "u0_u0_n10": "carried", "u0_u0_n11": "carried", "u0_ax1": "carried" },
+      "confidence": "medium", "notes": "The scope word 'checkout' also appears in the decision sentence itself (u33); recorded because u29 makes it explicit."
+    },
+    {
+      "id": "r3",
+      "claimUnits": ["u33"], "claimSummary": "Agreed: lower the checkout error-rate alert to 5% over 5 minutes.",
+      "conditionUnits": ["u30", "u31"], "kind": "caveat",
+      "conditionSummary": "Over the last 30 days it would have paged twice on noise (both during provider maintenance); judged acceptable.",
+      "mustConvey": "two noisy pages in 30 days, accepted",
+      "binding": "set", "bindingReason": "The decision stays true without the noise estimate; it is the accepted cost of the change.",
+      "claimCards": ["u0_u0_n10", "u0_u0_n11", "u0_ax1"], "carriers": ["u0_u0_n10"],
+      "perClaimCard": { "u0_u0_n10": "carried", "u0_u0_n11": "linked", "u0_ax1": "separated" },
+      "confidence": "high", "notes": "u0_u0_n10 -> u0_u0_n11 arrow; u0_ax1 only links to u0_u0_n11."
+    },
+    {
+      "id": "r4",
+      "claimUnits": ["u59"], "claimSummary": "Config changes will go through pull-request review.",
+      "conditionUnits": ["u59", "u56"], "kind": "scope",
+      "conditionSummary": "Only config changes to the payments service, and they need exactly one approval from the payments team.",
+      "mustConvey": "payments service; one payments-team approval",
+      "binding": "claim", "bindingReason": "Stated as all config changes (or as code's two approvals) the decision would be false.",
+      "claimCards": ["u0_u1_n1", "u0_ax1", "u0_u0_n19"], "carriers": ["u0_u1_n1", "u0_ax1"],
+      "perClaimCard": { "u0_u1_n1": "carried", "u0_ax1": "carried", "u0_u0_n19": "separated" },
+      "confidence": "medium", "notes": "u0_u0_n19 is the proposal (u54): it carries the payments scope but not the one-approval bound ('same review process as code' would imply two approvals). No arrow joins n19 to u0_u1_n1."
+    },
+    {
+      "id": "r5",
+      "claimUnits": ["u63"], "claimSummary": "Proposal: stop deploying to payments on Fridays.",
+      "conditionUnits": ["u63"], "kind": "bound",
+      "conditionSummary": "Only after 15:00 on Fridays, and only for payments.",
+      "mustConvey": "after 15:00 on Fridays; payments",
+      "binding": "claim", "bindingReason": "Without the 15:00 cut-off it reads as an all-Friday freeze, which is not what was proposed.",
+      "claimCards": ["u0_u1_n3"], "carriers": ["u0_u1_n3"],
+      "perClaimCard": { "u0_u1_n3": "carried" },
+      "confidence": "high", "notes": "Intra-sentence. u0_u1_n4 and u0_ax2 mention a 'Friday freeze' but only as the object of disagreement/investigation, not stating the proposal."
+    },
+    {
+      "id": "r6",
+      "claimUnits": ["u63"], "claimSummary": "Stop deploying to payments after 15:00 on Fridays.",
+      "conditionUnits": ["u74", "u75", "u76"], "kind": "fact",
+      "conditionSummary": "Not decided: the freeze is deferred pending Tomás's six-month incident analysis for the April 2 review.",
+      "mustConvey": "freeze not decided / open, pending analysis",
+      "binding": "claim", "bindingReason": "Presented as an outcome of the review, the freeze would be falsely stated as decided.",
+      "claimCards": ["u0_u1_n3", "u0_ax2"], "carriers": ["g0", "u0_u1_n6", "u0_ax2"],
+      "perClaimCard": { "u0_u1_n3": "frame", "u0_ax2": "carried" },
+      "confidence": "medium", "notes": "u0_u1_n3 says 'proposes' but not that it was left undecided; its frame g0 takeaway says 'Friday freeze open', and it is also linked to u0_u1_n6 (investigation). ax2 implies open via the pending analysis."
+    },
+    {
+      "id": "r7",
+      "claimUnits": ["u79"], "claimSummary": "Proposal: the pipeline rolls back automatically.",
+      "conditionUnits": ["u79"], "kind": "precondition",
+      "conditionSummary": "Only if the checkout error rate doubles within 10 minutes of a deploy.",
+      "mustConvey": "error rate doubles within 10 minutes of a deploy",
+      "binding": "claim", "bindingReason": "Without the trigger the proposal reads as rolling back every deploy or on any error.",
+      "claimCards": ["u0_u1_n7"], "carriers": ["u0_u1_n7"],
+      "perClaimCard": { "u0_u1_n7": "carried" },
+      "confidence": "high", "notes": "Intra-sentence."
+    },
+    {
+      "id": "r8",
+      "claimUnits": ["u79"], "claimSummary": "Proposal: automatic rollback on error-rate spike after deploy.",
+      "conditionUnits": ["u80", "u81", "u82", "u83"], "kind": "exception",
+      "conditionSummary": "Acceptable maybe for config; risky for code releases with a database migration (rolling back code without the migration can make things worse); possible exclusion of migration releases.",
+      "mustConvey": "database migration risk / exclude releases with migrations",
+      "binding": "set", "bindingReason": "The proposal sentence stays true as a proposal; the migration exception is a concern attached to it.",
+      "claimCards": ["u0_u1_n7"], "carriers": ["u0_u1_n8", "u0_ax2"],
+      "perClaimCard": { "u0_u1_n7": "linked" },
+      "confidence": "medium", "notes": "Arrow u0_u1_n7 -> u0_u1_n8 ('concerns')."
+    },
+    {
+      "id": "r9",
+      "claimUnits": ["u79"], "claimSummary": "Proposal: automatic rollback.",
+      "conditionUnits": ["u86", "u87", "u88"], "kind": "fact",
+      "conditionSummary": "Not decided: auto-rollback is an open question because migration frequency is unknown.",
+      "mustConvey": "open question / not agreed",
+      "binding": "claim", "bindingReason": "Without it the auto-rollback would read as an adopted action.",
+      "claimCards": ["u0_u1_n7"], "carriers": ["u0_u1_n9", "u0_ax2", "g0"],
+      "perClaimCard": { "u0_u1_n7": "frame" },
+      "confidence": "high", "notes": "g0 takeaway: 'auto-rollback and Friday freeze open'. u0_u1_n9 is two hops away (n7->n8->n9), not directly linked."
+    },
+    {
+      "id": "r10",
+      "claimUnits": ["u95", "u96"], "claimSummary": "Kenji drafts the customer email.",
+      "conditionUnits": ["u90", "u91", "u93", "u94"], "kind": "precondition",
+      "conditionSummary": "Whether the 2,300 failed checkouts were retried is unknown (nobody has checked the payment logs) and changes what the email says; draft it either way.",
+      "mustConvey": "retry status unknown; affects email content",
+      "binding": "set", "bindingReason": "The action item stays true; the open retry question only determines the email's content.",
+      "claimCards": ["u0_u1_n11", "u0_ax2"], "carriers": ["u0_u1_n10"],
+      "perClaimCard": { "u0_u1_n11": "linked", "u0_ax2": "separated" },
+      "confidence": "medium", "notes": "u0_ax2 says 'Marcus to investigate' retries, which the source does not assign; it does not say the email depends on it. ax2 has an arrow only to u0_u1_n11, not to the carrier u0_u1_n10."
+    }
+  ],
+  "notes": "Meeting transcript: coffee chatter (u2-u8, u101), timeline facts (u12-u20, u37, u97), causes (u14, u15, u49-u53) and debate arguments (u64-u73) are not recorded as conditions. Owners/due dates are elaborations of action items, not conditions. The decision on support posting the status page (u46) has no limiting condition beyond its own content. All nodes sit in a single frame g0 whose takeaway carries the open/decided status of the freeze and auto-rollback."
+}

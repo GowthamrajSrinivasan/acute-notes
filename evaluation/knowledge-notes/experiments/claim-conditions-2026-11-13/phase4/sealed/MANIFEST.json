@@ -1,0 +1,32 @@
+{
+  "sealedAt": "2026-11-13T16:20:25.859Z",
+  "case": "kn-13-connection-pool-runbook",
+  "status": "sealed: not opened by this evaluation; hashes only",
+  "spec": {
+    "file": "phase4/EVAL-SPEC-v3.md",
+    "sha256": null,
+    "note": "filled in when the user approves the spec; labelling starts only after that"
+  },
+  "disclosure": "Phase 2 printed kn-13 recording metadata (node/arrow counts) in a survey; no text was read. kn-13 is part of the golden dataset, so it may have been seen by earlier pipeline work outside this evaluation.",
+  "procedure": "EVAL-SPEC-v3.md section 7",
+  "sha256": {
+    "cases/kn-13-connection-pool-runbook/canvas.json": "541c43679b62dbfd5cb04aa453a5ef43aa34864cf0a708653e2deb95ea8cdc65",
+    "cases/kn-13-connection-pool-runbook/case.json": "ee6c20aaa5350bb072ffcc90625899bf8dd3ff56e2d856d441701e8cff079aa7",
+    "cases/kn-13-connection-pool-runbook/constraints.json": "4e8f831f317ecec80c5e2756230e689a303ec6891d583c530e417b057b30e427",
+    "cases/kn-13-connection-pool-runbook/evaluation.json": "db96444b35f5fa87d63aefdd76722e5c0e34d9770097923552aa62a5fa49b25f",
+    "cases/kn-13-connection-pool-runbook/knowledge.json": "b51667ca78bc6f1a0e38fbfce0fbd8a48b501cae8014e1d169b62f44cd5e9174",
+    "cases/kn-13-connection-pool-runbook/reference/plan.json": "afed27dde885a9a3909068fa68c1e050893db17c2db504400efaf5e9b9df034a",
+    "cases/kn-13-connection-pool-runbook/source.md": "f20d90029f6545dc10e82143ee3958a976f1268463066735e01d4cb11a8770f8",
+    "recordings/2026-10-19-distil-gemini-flash/kn-13-connection-pool-runbook/plan.json": "c2de2f09a57b11f98ba1958e8c7708ba15569febe1c3d545967d5c584c7bddec",
+    "recordings/2026-10-19-distil-gemini-flash/kn-13-connection-pool-runbook/replies.json": "fe75b28456c5b69555c7626cf3134c8309c5d45e63f197140672ecdb312e6563",
+    "recordings/2026-10-19-distil-gemini-flash/kn-13-connection-pool-runbook/run.json": "91b0e310e2eb759c6b21dcf740946e28b6ec84c6f8b943f226caf39cd12a5467",
+    "recordings/2026-10-19-distil-gemini-flash/kn-13-connection-pool-runbook/scene.json": "9dec8560b4951121d56a219e432d175a4babd493bcb3aa4877cdb32f6daf03a5",
+    "recordings/2026-10-19-preserve-gemini-flash/kn-13-connection-pool-runbook/plan.json": "7d59c44c4992c4f5078285ca75a5505388d44f119d01b2f3c075ed3718c00f6e",
+    "recordings/2026-10-19-preserve-gemini-flash/kn-13-connection-pool-runbook/replies.json": "4f8660ca2e93a14ced5e19bff046cd54cecde137d7706dd4ce94ccb9b5f25d1e",
+    "recordings/2026-10-19-preserve-gemini-flash/kn-13-connection-pool-runbook/scene.json": "24f28ab74109795cfc424682f9d5273ce79fa48d39f2333f0407682160660587",
+    "recordings/2026-10-20-distil-gemini-flash-od5b/kn-13-connection-pool-runbook/plan.json": "bca1653e55c26bed0eec3d0c632ac92631ab3874e8affef6d783e53e1d37175e",
+    "recordings/2026-10-20-distil-gemini-flash-od5b/kn-13-connection-pool-runbook/replies.json": "12713a26c383264a34f6b5fdc3ea602334717af638ccfab4fb48095f8156816e",
+    "recordings/2026-10-20-distil-gemini-flash-od5b/kn-13-connection-pool-runbook/run.json": "3acbe9bc52f30f00a768ac3967009ae570c4064936927d4edc751c9c40a4ad53",
+    "recordings/2026-10-20-distil-gemini-flash-od5b/kn-13-connection-pool-runbook/scene.json": "f37f2a8738ace032b81083bb34d815ab2780b54b7894fcd59ef1acb578f6dc88"
+  }
+}

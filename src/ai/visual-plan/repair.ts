@@ -13,6 +13,7 @@
  * its `parent`, so they stay in the same section.
  */
 import { fenceMask } from "@/ai/content/fences";
+import { shapeTextLosses } from "@/domain/canvas/diagramSchema";
 import { nodeStrings } from "@/ai/fidelity/information";
 import { TEXT_LIMITS } from "./schema";
 import type { VisualTemplateDefinition } from "./templates";
@@ -200,6 +201,12 @@ export function repairEntry(entry: unknown): Repaired {
         detailText(c.label);
         c.label = clip(c.label, L.shapeLabel);
         notes.push(`label over ${L.shapeLabel} characters shortened; the full wording is kept in a linked block`);
+      }
+      {
+        // A sublabel, tag or detail over its limit is shortened by the schema; the full wording is kept here, like a label's.
+        const lost = shapeTextLosses(c);
+        lost.overflow.forEach((text) => detailText(text));
+        notes.push(...lost.notes.map((n) => (lost.overflow.length ? `${n}; the full wording is kept in a linked block` : n)));
       }
       break;
     case "group":

@@ -1,0 +1,17 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-scope-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The HLD-only scope note (u3, u4, both critical) is left off: nothing tells the reader that code, modules and operations are not described.",
+  "mutations": [
+    {
+      "op": "remove_node",
+      "node": "n-scope"
+    }
+  ],
+  "expectFailing": [
+    "a.present-scope"
+  ]
+}

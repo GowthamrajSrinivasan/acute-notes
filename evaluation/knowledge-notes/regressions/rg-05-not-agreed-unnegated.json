@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-not-agreed-unnegated",
+  "distortion": "fabricated_agreement",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "The negation is dropped from the proposals frame's takeaway: 'Not agreed: a Friday deploy freeze and automatic rollback' becomes 'The team agreed to a Friday deploy freeze and automatic rollback'. The negation-aware a.no-fabricated-agreement must still catch it.",
+  "mutations": [
+    { "op": "replace_text", "node": "g3", "find": "Not agreed: a Friday deploy freeze", "replace": "The team agreed to a Friday deploy freeze" }
+  ],
+  "expectFailing": ["a.no-fabricated-agreement"]
+}

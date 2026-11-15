@@ -1,0 +1,1011 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "u0_h1",
+      "role": "title",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase § heading#0",
+      "type": "heading",
+      "content": {
+        "text": "Shelfwise inventory service: a tour of the codebase"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "Shelfwise inventory service: architecture, components, and interactions."
+      }
+    },
+    {
+      "id": "g0",
+      "role": "notes",
+      "importance": "high",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Overview § group#0",
+      "type": "group",
+      "content": {
+        "label": "Overview",
+        "arrangement": "grid",
+        "takeaway": "Shelfwise manages stock and reservations, structured into six functional code groups."
+      }
+    },
+    {
+      "id": "u1_n1",
+      "title": "Shelfwise Service Purpose",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Overview § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Shelfwise is a service responsible for tracking warehouse stock and managing reservations for incoming orders."
+      }
+    },
+    {
+      "id": "u1_n2",
+      "title": "Technical Details",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Overview § text#1",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "It is a deployable TypeScript service with a small admin frontend."
+      }
+    },
+    {
+      "id": "u1_n3",
+      "title": "Performance",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Overview § text#2",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "At its peak, Shelfwise processes approximately 3,000 reservations per hour."
+      }
+    },
+    {
+      "id": "u1_n4",
+      "title": "Codebase Structure Overview",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Overview § text#3",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "This tour organizes the code by responsibility, detailing module ownership, key files, and inter-group dependencies."
+      }
+    },
+    {
+      "id": "u1_n5",
+      "title": "Code Groups",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Overview § text#4",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "The code is divided into the following groups: presentation, API and orchestration, domain services, supplier integration, persistence and external systems, and observability and error handling."
+      }
+    },
+    {
+      "id": "u1_a1",
+      "title": "Purpose of this Overview",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Overview § text#5",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This section introduces the Shelfwise service, its technical characteristics, performance, and the organizational structure of its codebase for a guided tour."
+      }
+    },
+    {
+      "id": "g1",
+      "role": "cards",
+      "importance": "high",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Dependency rules § group#0",
+      "type": "group",
+      "content": {
+        "label": "Dependency rules",
+        "arrangement": "grid",
+        "takeaway": "Three rules ensure a readable, decoupled, and testable system structure."
+      }
+    },
+    {
+      "id": "u2_n1",
+      "title": "Domain modules independent of HTTP layer",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Dependency rules § text#0",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Domain modules (ledger, pricing rules) must not depend on the HTTP layer, ensuring they are usable in non-web contexts like scripts or tests."
+      }
+    },
+    {
+      "id": "u2_n2",
+      "title": "Ledger is the sole writer to Postgres for stock",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Dependency rules § text#1",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Only the ledger module is permitted to write stock data to Postgres. Other modules, such as the orchestrator and adapter, must interact with Postgres for stock updates through the ledger."
+      }
+    },
+    {
+      "id": "u2_n3",
+      "title": "Supplier feed adapter exclusively calls supplier API",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Dependency rules § text#2",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "The supplier feed adapter is the only component allowed to make calls to the supplier API."
+      }
+    },
+    {
+      "id": "u2_a1",
+      "title": "Purpose of Dependency Rules",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Dependency rules § text#3",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "These rules enforce a clear separation of concerns and maintain a structured architecture. They prevent tight coupling."
+      }
+    },
+    {
+      "id": "u2_fs1",
+      "title": "From the source",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Dependency rules § text#4",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "- Three rules keep the structure readable."
+      }
+    },
+    {
+      "id": "g2",
+      "role": "flow",
+      "importance": "high",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § group#0",
+      "type": "group",
+      "content": {
+        "label": "API and orchestration",
+        "arrangement": "chain",
+        "takeaway": "API handlers delegate to a reservation orchestrator that manages atomic stock reservations with a timeout."
+      }
+    },
+    {
+      "id": "u3_n1",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § shape#0",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · HTTP Handlers"
+      }
+    },
+    {
+      "id": "u3_n2",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § text#0",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "HTTP handlers in `src/api/routes.ts` are the sole entry point for requests. They validate the request body, attach a correlation ID, and delegate tasks without implementing business rules."
+      }
+    },
+    {
+      "id": "u3_n3",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § shape#1",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Reservation Orchestrator"
+      }
+    },
+    {
+      "id": "u3_n4",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § text#1",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The reservation orchestrator in `src/orders/reserve.ts` manages the entire reservation process, from initiation to completion."
+      }
+    },
+    {
+      "id": "u3_n5",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § shape#2",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · Request Stock Reservation"
+      }
+    },
+    {
+      "id": "u3_n6",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § shape#3",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Request Pricing Rules"
+      }
+    },
+    {
+      "id": "u3_n7",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § shape#4",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "5 · Publish StockReserved Event"
+      }
+    },
+    {
+      "id": "u3_n8",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § text#2",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The orchestrator requests stock reservation from the stock ledger and pricing information from pricing rules. Upon successful completion of both, it publishes a `StockReserved` event to the message broker."
+      }
+    },
+    {
+      "id": "u3_n9",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § text#3",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "If the stock ledger cannot reserve the full quantity, the orchestrator rejects the entire order; partial reservations are not allowed."
+      }
+    },
+    {
+      "id": "u3_n10",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § text#4",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Reservations not confirmed within 15 minutes are automatically released by the ledger, making the stock available again."
+      }
+    },
+    {
+      "id": "u3_a1",
+      "title": "Orchestration Flow",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › API and orchestration § text#5",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The API acts as a thin layer, delegating all business logic to the reservation orchestrator. The orchestrator ensures atomic reservations, either reserving the full quantity or rejecting the entire order. A time-based release mechanism prevents indefinite stock holding for unconfirmed reservations."
+      }
+    },
+    {
+      "id": "g3",
+      "role": "cards",
+      "importance": "high",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Domain services § group#0",
+      "type": "group",
+      "content": {
+        "label": "Domain services",
+        "arrangement": "grid",
+        "takeaway": "Two independent domain services manage stock and pricing with strict dependencies."
+      }
+    },
+    {
+      "id": "u4_n1",
+      "title": "Stock Ledger Module",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Domain services § text#0",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "The `src/ledger/ledger.ts` module:\n* Manages stock levels.\n* Records all changes (reserve, release, restock) as append-only ledger entries.\n* Writes entries to Postgres.\n* Is the *only* module permitted to write to stock tables; other modules must request changes through it."
+      }
+    },
+    {
+      "id": "u4_n2",
+      "title": "Pricing Rules Module",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Domain services § text#1",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "The `src/pricing/rules.ts` module:\n* Calculates order prices based on supplier price lists and active discounts.\n* Reads price lists from Redis, where they are cached for 300 seconds.\n* Does not modify stock levels."
+      }
+    },
+    {
+      "id": "u4_n3",
+      "title": "Domain Module Dependencies",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Domain services § text#2",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Domain modules:\n* Do not import anything from `src/api/` or `src/orders/`.\n* Follow an inward dependency rule: API calls orchestrator, orchestrator calls domain modules.\n* Depend solely on persistence and platform helpers."
+      }
+    },
+    {
+      "id": "u4_a1",
+      "title": "Key Characteristics",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Domain services § text#3",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The two domain services, stock ledger and pricing rules, are independent and have clearly defined responsibilities. They enforce strict boundaries on data access and dependencies."
+      }
+    },
+    {
+      "id": "g4",
+      "role": "flow",
+      "importance": "high",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § group#0",
+      "type": "group",
+      "content": {
+        "label": "Supplier integration",
+        "arrangement": "chain",
+        "takeaway": "Supplier feed adapter fetches, transforms, and records deliveries, logging unparsable data."
+      }
+    },
+    {
+      "id": "u5_n1",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § shape#0",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Supplier Feed Adapter"
+      }
+    },
+    {
+      "id": "u5_n2",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § text#0",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "The supplier feed adapter is located at `src/suppliers/feedAdapter.ts` and is responsible for ingesting restock information from suppliers."
+      }
+    },
+    {
+      "id": "u5_n3",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § shape#1",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Call Supplier API"
+      }
+    },
+    {
+      "id": "u5_n4",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § text#1",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "The adapter calls the supplier API every 10 minutes to fetch new delivery data."
+      }
+    },
+    {
+      "id": "u5_n5",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § shape#2",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · Convert Delivery to Restock"
+      }
+    },
+    {
+      "id": "u5_n6",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § text#2",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "Each delivery received from the supplier API is converted into a restock record."
+      }
+    },
+    {
+      "id": "u5_n7",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § shape#3",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Record in Stock Ledger"
+      }
+    },
+    {
+      "id": "u5_n8",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § text#3",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "The converted restock is then sent to the stock ledger for recording."
+      }
+    },
+    {
+      "id": "u5_n9",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § text#4",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "The adapter encapsulates knowledge of the supplier's data format, ensuring that any changes on the supplier's side are isolated to this single file."
+      }
+    },
+    {
+      "id": "u5_n10",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § shape#4",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "5 · Handle Unparsable Delivery"
+      }
+    },
+    {
+      "id": "u5_n11",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § text#5",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "If the adapter cannot parse a delivery, it logs the error and skips the delivery. There are no retries for unparsable data, as repeated attempts would yield the same failure."
+      }
+    },
+    {
+      "id": "u5_a1",
+      "title": "Process Overview",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § text#6",
+      "parent": "g4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The supplier integration process is a scheduled task that fetches, transforms, and records supplier deliveries. It handles parsing errors by logging and skipping, without retries."
+      }
+    },
+    {
+      "id": "u5_a2",
+      "title": "Error Handling",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Supplier integration § text#7",
+      "parent": "g4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The process explicitly logs and skips unparsable deliveries, preventing infinite retries of bad data. This ensures system stability but means unparsable deliveries are not processed."
+      }
+    },
+    {
+      "id": "g5",
+      "role": "cards",
+      "importance": "high",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems § group#0",
+      "type": "group",
+      "content": {
+        "label": "Persistence and external systems",
+        "arrangement": "grid",
+        "takeaway": "Key systems for persistence and external interactions are defined."
+      }
+    },
+    {
+      "id": "u6_n1",
+      "title": "Postgres: Source of Truth",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems § text#0",
+      "parent": "g5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "- Stores ledger entries and current stock levels.\n- Is the definitive source for stock information."
+      }
+    },
+    {
+      "id": "u6_n2",
+      "title": "Redis: Cache for Price Lists",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems § text#1",
+      "parent": "g5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "- Caches price lists.\n- Data can be rebuilt from the supplier feed if lost."
+      }
+    },
+    {
+      "id": "u6_n3",
+      "title": "Message Broker: Event Distribution",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems § text#2",
+      "parent": "g5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "- Carries `StockReserved` events to other services (e.g., fulfilment).\n- Hosts the dead-letter queue."
+      }
+    },
+    {
+      "id": "u6_n4",
+      "title": "Postgres Schema Changes",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems § text#3",
+      "parent": "g5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "- Located in `db/migrations/`.\n- Executed on every deployment."
+      }
+    },
+    {
+      "id": "u6_n5",
+      "title": "Supplier API: External Dependency",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems § text#4",
+      "parent": "g5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "- Operated by suppliers, outside Shelfwise control.\n- The only external system Shelfwise calls."
+      }
+    },
+    {
+      "id": "g6",
+      "role": "cards",
+      "importance": "high",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Observability and error handling § group#0",
+      "type": "group",
+      "content": {
+        "label": "Observability and error handling",
+        "arrangement": "grid",
+        "takeaway": "Structured logging and a specific retry policy handle API failures."
+      }
+    },
+    {
+      "id": "u7_n1",
+      "title": "Structured Logging",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Observability and error handling § text#0",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "- All modules use `src/platform/log.ts` for logging.\n- Each event is logged as a single JSON line.\n- Every log entry includes a correlation ID, added by HTTP handlers."
+      }
+    },
+    {
+      "id": "u7_n2",
+      "title": "Request and Retry Logging",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Observability and error handling § text#1",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "- HTTP handlers log each request.\n- The retry helper logs every failed attempt."
+      }
+    },
+    {
+      "id": "u7_n3",
+      "title": "Supplier API Call Retries",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Observability and error handling § text#2",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "- The feed adapter uses `src/platform/retry.ts` for supplier API calls due to potential failures.\n- The retry policy includes:\n - A maximum of 5 attempts per delivery.\n - Exponential backoff starting at 2 seconds, doubling with each failure, and capped at 60 seconds.\n - After the 5th failed attempt, the delivery is published to the `inventory.dlq` dead-letter queue on the message broker for staff review in the admin UI."
+      }
+    },
+    {
+      "id": "u7_n4",
+      "title": "Retry Scope",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Observability and error handling § text#3",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "- Retries are only for supplier calls.\n- Reservations are never automatically retried; failed reservations return an error to the caller."
+      }
+    },
+    {
+      "id": "g7",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Client and presentation § group#0",
+      "type": "group",
+      "content": {
+        "label": "Client and presentation",
+        "arrangement": "grid",
+        "takeaway": "The admin web UI is for warehouse staff, uses a REST API, and has no direct DB access."
+      }
+    },
+    {
+      "id": "u8_n1",
+      "title": "Admin Web UI Location",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Client and presentation § text#0",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "The admin web UI is located in the `web/admin/` directory."
+      }
+    },
+    {
+      "id": "u8_n2",
+      "title": "Admin Web UI Users and Functions",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Client and presentation § text#1",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "Warehouse staff utilize the admin web UI for:\n* Looking up stock levels\n* Placing manual holds\n* Reviewing failed supplier imports"
+      }
+    },
+    {
+      "id": "u8_n3",
+      "title": "Admin Web UI Architecture",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Client and presentation § text#2",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "The admin web UI does not contain its own stock logic. All screens interact with the service's REST API, and the UI never directly communicates with the database."
+      }
+    },
+    {
+      "id": "u8_ax1",
+      "title": "Admin Web UI Location",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Client and presentation § text#3",
+      "parent": "g7",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The Admin Web UI is located in the `web/admin/` directory."
+      }
+    },
+    {
+      "id": "u8_ax2",
+      "title": "Admin Web UI Users and Functions",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Client and presentation § text#4",
+      "parent": "g7",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Warehouse staff use the Admin Web UI to check stock levels, place manual holds, and review failed supplier imports."
+      }
+    },
+    {
+      "id": "u8_ax3",
+      "title": "Admin Web UI Architecture",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Client and presentation § text#5",
+      "parent": "g7",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The Admin Web UI operates by calling the service's REST API for all screen interactions and does not directly access the database. It contains no stock logic."
+      }
+    },
+    {
+      "id": "g8",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Where to start reading § group#0",
+      "type": "group",
+      "content": {
+        "label": "Where to start reading",
+        "arrangement": "grid",
+        "takeaway": "New contributors start with `reserve.ts`, then `ledger.ts`; tests are co-located."
+      }
+    },
+    {
+      "id": "u9_n1",
+      "title": "Starting Point for New Contributors",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Where to start reading § text#0",
+      "parent": "g8",
+      "type": "text",
+      "content": {
+        "markdown": "New contributors should begin by reading `src/orders/reserve.ts`."
+      }
+    },
+    {
+      "id": "u9_n2",
+      "title": "Why `src/orders/reserve.ts` is a Good Start",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Where to start reading § text#1",
+      "parent": "g8",
+      "type": "text",
+      "content": {
+        "markdown": "This file is approximately 120 lines long and demonstrates a complete reservation process, explicitly naming all its dependent modules."
+      }
+    },
+    {
+      "id": "u9_n3",
+      "title": "Next Reading Suggestion",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Where to start reading § text#2",
+      "parent": "g8",
+      "type": "text",
+      "content": {
+        "markdown": "After `src/orders/reserve.ts`, the next recommended file is `src/ledger/ledger.ts`."
+      }
+    },
+    {
+      "id": "u9_n4",
+      "title": "Purpose of `src/ledger/ledger.ts`",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Where to start reading § text#3",
+      "parent": "g8",
+      "type": "text",
+      "content": {
+        "markdown": "This module details the stock counting mechanism."
+      }
+    },
+    {
+      "id": "u9_n5",
+      "title": "Test File Location",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Where to start reading § text#4",
+      "parent": "g8",
+      "type": "text",
+      "content": {
+        "markdown": "Each module's tests are located alongside its corresponding code."
+      }
+    },
+    {
+      "id": "u9_a1",
+      "title": "Reading Path for New Contributors",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Where to start reading § text#5",
+      "parent": "g8",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "New contributors should start with `src/orders/reserve.ts` for an overview, then proceed to `src/ledger/ledger.ts` for stock management details. Tests are co-located with their modules."
+      }
+    },
+    {
+      "id": "g9",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Known gaps § group#0",
+      "type": "group",
+      "content": {
+        "label": "Known gaps",
+        "arrangement": "grid",
+        "takeaway": "Critical gaps exist in admin UI testing, stock consistency, and dead-letter alerts."
+      }
+    },
+    {
+      "id": "u10_n1",
+      "title": "Admin UI Test Coverage",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Known gaps § text#0",
+      "parent": "g9",
+      "type": "text",
+      "content": {
+        "markdown": "The admin UI currently lacks automated tests."
+      }
+    },
+    {
+      "id": "u10_n2",
+      "title": "Stock Consistency Under Load",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Known gaps § text#1",
+      "parent": "g9",
+      "type": "text",
+      "content": {
+        "markdown": "The reservation orchestrator and feed adapter can simultaneously modify product stock. The ledger uses a database row lock for consistency, but its effectiveness under peak load is unmeasured."
+      }
+    },
+    {
+      "id": "u10_n3",
+      "title": "Dead-Lettered Delivery Alerts",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Known gaps § text#2",
+      "parent": "g9",
+      "type": "text",
+      "content": {
+        "markdown": "Dead-lettered deliveries are only discovered when the admin UI is manually checked. There is no alert mechanism for when the `inventory.dlq` begins to accumulate messages."
+      }
+    },
+    {
+      "id": "u10_a1",
+      "title": "Summary of Gaps",
+      "stableKey": "Shelfwise inventory service: a tour of the codebase › Known gaps § text#3",
+      "parent": "g9",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Key gaps include a lack of automated tests for the admin UI, unmeasured stock consistency under peak load, and the absence of alerts for dead-lettered deliveries."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u2_n1",
+      "to": "u2_a1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_n2",
+      "to": "u2_a1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_n3",
+      "to": "u2_a1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n3",
+      "type": "flows_to",
+      "label": "POST /reservations"
+    },
+    {
+      "from": "u3_n3",
+      "to": "u3_n4",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n3",
+      "to": "u3_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u3_n3",
+      "to": "u3_n6",
+      "type": "flows_to"
+    },
+    {
+      "from": "u3_n5",
+      "to": "u3_n7",
+      "type": "flows_to",
+      "label": "if successful"
+    },
+    {
+      "from": "u3_n6",
+      "to": "u3_n7",
+      "type": "flows_to",
+      "label": "if successful"
+    },
+    {
+      "from": "u3_n7",
+      "to": "u3_n8",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n5",
+      "to": "u3_n9",
+      "type": "flows_to",
+      "label": "if ledger cannot reserve"
+    },
+    {
+      "from": "u3_n3",
+      "to": "u3_n10",
+      "type": "relates_to",
+      "label": "timeout condition"
+    },
+    {
+      "from": "u3_a1",
+      "to": "u3_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_a1",
+      "to": "u3_n3",
+      "type": "relates_to"
+    },
+    {
+      "from": "u5_n1",
+      "to": "u5_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "u5_n3",
+      "to": "u5_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u5_n5",
+      "to": "u5_n7",
+      "type": "flows_to"
+    },
+    {
+      "from": "u5_n5",
+      "to": "u5_n10",
+      "type": "flows_to",
+      "label": "if unparsable"
+    },
+    {
+      "from": "u5_n1",
+      "to": "u5_n9",
+      "type": "relates_to",
+      "label": "responsibility"
+    },
+    {
+      "from": "u5_a1",
+      "to": "u5_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u5_a2",
+      "to": "u5_n10",
+      "type": "relates_to"
+    },
+    {
+      "from": "u8_ax1",
+      "to": "u8_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u8_ax2",
+      "to": "u8_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u8_ax3",
+      "to": "u8_n3",
+      "type": "relates_to"
+    },
+    {
+      "from": "u9_n1",
+      "to": "u9_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u9_n1",
+      "to": "u9_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "u9_n3",
+      "to": "u9_n4",
+      "type": "explained_by"
+    },
+    {
+      "from": "g0",
+      "to": "g2",
+      "type": "references",
+      "label": "groups depend on each other"
+    },
+    {
+      "from": "g0",
+      "to": "g3",
+      "type": "references",
+      "label": "groups depend on each other"
+    },
+    {
+      "from": "g0",
+      "to": "g4",
+      "type": "references",
+      "label": "groups depend on each other"
+    },
+    {
+      "from": "g0",
+      "to": "g5",
+      "type": "references",
+      "label": "groups depend on each other"
+    },
+    {
+      "from": "g0",
+      "to": "g6",
+      "type": "references",
+      "label": "groups depend on each other"
+    },
+    {
+      "from": "g2",
+      "to": "g3",
+      "type": "calls",
+      "label": "orchestrator calls domain modules"
+    },
+    {
+      "from": "g2",
+      "to": "g5",
+      "type": "publishes",
+      "label": "publishes StockReserved event to message broker"
+    },
+    {
+      "from": "g3",
+      "to": "g5",
+      "type": "writes",
+      "label": "writes entries to Postgres"
+    },
+    {
+      "from": "g3",
+      "to": "g5",
+      "type": "reads",
+      "label": "reads price lists from Redis"
+    },
+    {
+      "from": "g4",
+      "to": "g3",
+      "type": "calls",
+      "label": "asks the stock ledger to record it"
+    },
+    {
+      "from": "g4",
+      "to": "g5",
+      "type": "calls",
+      "label": "calls the supplier API"
+    },
+    {
+      "from": "g6",
+      "to": "g5",
+      "type": "publishes",
+      "label": "published to the dead-letter queue"
+    }
+  ],
+  "metadata": {}
+}

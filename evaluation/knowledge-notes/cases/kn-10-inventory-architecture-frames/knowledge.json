@@ -1,0 +1,599 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "units": [
+    {
+      "id": "ku.purpose",
+      "title": "Shelfwise tracks warehouse stock and reserves it for orders",
+      "claim": "Shelfwise tracks how much stock each warehouse holds and reserves stock for incoming orders; it is one deployable TypeScript service with a small admin front end and handles about 3,000 reservations per hour at peak.",
+      "explanation": "Context for the whole canvas.",
+      "type": "concept",
+      "importance": "important",
+      "sourceUnits": [
+        "u1",
+        "u2",
+        "u3"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "3,000 reservations per hour"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": true,
+        "reason": "Context; if the peak figure is shown it stays exact."
+      }
+    },
+    {
+      "id": "ku.module-groups",
+      "title": "The code is organised in six responsibility groups",
+      "claim": "The modules fall into six responsibility groups: presentation, API and orchestration, domain services, supplier integration, persistence and external systems, and observability and error handling.",
+      "explanation": "The frames of the canvas follow these groups; the frame structure itself carries this idea, not a card.",
+      "type": "concept",
+      "importance": "important",
+      "sourceUnits": [
+        "u5"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": true,
+        "reason": "Represented by the frames (frame_present per group), not by an element."
+      }
+    },
+    {
+      "id": "ku.admin-ui",
+      "title": "The admin UI only talks to the REST API",
+      "claim": "The admin web UI in web/admin/ lets warehouse staff look up stock, place manual holds and review failed imports; it holds no stock logic, calls only the REST API and never talks to the database.",
+      "explanation": "Presentation module and its single dependency.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u6",
+        "u7",
+        "u8"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "web/admin/"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.http-handlers",
+      "title": "HTTP handlers are the only entry point and hold no business rules",
+      "claim": "The HTTP handlers in src/api/routes.ts are the only entry point; they validate the body, attach a correlation ID and pass work on, with no business rules.",
+      "explanation": "API module.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u9",
+        "u10"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "src/api/routes.ts"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.orchestrator",
+      "title": "The reservation orchestrator coordinates ledger, pricing and the StockReserved event",
+      "claim": "POST /reservations goes to the reservation orchestrator in src/orders/reserve.ts, which asks the stock ledger to reserve, asks the pricing rules for the price and, once both succeed, publishes StockReserved to the message broker.",
+      "explanation": "Orchestration module with three outgoing edges.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u11",
+        "u12",
+        "u13"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "src/orders/reserve.ts",
+        "StockReserved",
+        "POST /reservations"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.no-partial",
+      "title": "No partial reservations: the whole order is rejected",
+      "claim": "If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order and never makes a partial reservation.",
+      "explanation": "A condition on the orchestrator's main claim; stays on the orchestrator element.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u14"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.orchestrator",
+      "mustPreserve": [
+        "rejects the whole order",
+        "never a partial reservation"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.ledger",
+      "title": "The stock ledger owns stock levels as append-only entries",
+      "claim": "The stock ledger in src/ledger/ledger.ts owns stock levels, records every change as an append-only entry (reserve, release, restock) and writes the entries to Postgres; it is the only module allowed to write the stock tables.",
+      "explanation": "Domain module; sole writer of stock.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u16",
+        "u17",
+        "u18",
+        "u46"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "src/ledger/ledger.ts"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.hold-expiry",
+      "title": "Unconfirmed reservations are released after 15 minutes",
+      "claim": "A reservation that is not confirmed within 15 minutes is released by the ledger and the stock becomes available again.",
+      "explanation": "A condition on the ledger's reservations; stays on the ledger element.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u15"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.ledger",
+      "exactDetails": [
+        "15 minutes"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.pricing",
+      "title": "Pricing rules read cached price lists and never change stock",
+      "claim": "The pricing rules in src/pricing/rules.ts price an order from supplier price lists and active discounts, reading price lists from Redis where they are cached for 300 seconds, and never change stock.",
+      "explanation": "Domain module with a read edge to Redis.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u19",
+        "u20"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "src/pricing/rules.ts",
+        "300 seconds"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.dependency-direction",
+      "title": "Dependencies point inwards; domain never depends on HTTP",
+      "claim": "Dependencies point inwards: API calls the orchestrator, the orchestrator calls the domain modules, and the domain modules import nothing from src/api/ or src/orders/ and depend only on persistence and platform helpers, so they stay usable without a web server.",
+      "explanation": "The rule a reversed arrow would break.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u21",
+        "u22",
+        "u45"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "src/api/",
+        "src/orders/"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.feed-adapter",
+      "title": "The supplier feed adapter turns supplier deliveries into restocks",
+      "claim": "The supplier feed adapter in src/suppliers/feedAdapter.ts calls the supplier API every 10 minutes for new deliveries, converts each into a restock and asks the stock ledger to record it; it is the only module that knows the supplier's format and the only one that calls the supplier API.",
+      "explanation": "Integration module.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u23",
+        "u24",
+        "u25",
+        "u47"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "src/suppliers/feedAdapter.ts",
+        "10 minutes"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.unparseable-skipped",
+      "title": "Unparseable deliveries are logged and skipped, not retried",
+      "claim": "A delivery the adapter cannot parse is logged and skipped, not retried, because sending the same bad data again would fail the same way.",
+      "explanation": "A condition on the adapter; stays on the adapter element.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": [
+        "u26"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.feed-adapter",
+      "mustPreserve": [
+        "not retried"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.postgres",
+      "title": "Postgres is the source of truth for stock",
+      "claim": "Postgres holds the ledger entries and the current stock level per warehouse and product and is the source of truth for stock; schema changes live in db/migrations/ and run on every deploy.",
+      "explanation": "Persistence.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u27",
+        "u30"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "db/migrations/"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.redis",
+      "title": "Redis holds only rebuildable cached price lists",
+      "claim": "Redis holds cached price lists and nothing that cannot be rebuilt from the supplier feed.",
+      "explanation": "Persistence (cache).",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u28"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.broker",
+      "title": "The message broker carries StockReserved and hosts the dead-letter queue",
+      "claim": "The message broker carries StockReserved events to other services such as fulfilment and hosts the dead-letter queue.",
+      "explanation": "Persistence/messaging.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u29"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "StockReserved"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.supplier-api",
+      "title": "The supplier API is the only external system",
+      "claim": "The supplier API is run by the suppliers, outside Shelfwise's control, and is the only external system Shelfwise calls.",
+      "explanation": "External boundary.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u31"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.logger",
+      "title": "Every module logs through one structured logger",
+      "claim": "Every module logs through the structured logger in src/platform/log.ts, one JSON line per event with the correlation ID the HTTP handlers attached; the handlers log each request and the retry helper each failed attempt.",
+      "explanation": "Observability module.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u32",
+        "u33"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "src/platform/log.ts"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.retry-helper",
+      "title": "The feed adapter wraps supplier calls in the retry helper",
+      "claim": "Calls to the supplier API can fail, so the feed adapter wraps them in the retry helper in src/platform/retry.ts.",
+      "explanation": "Error-handling module.",
+      "type": "component",
+      "importance": "critical",
+      "sourceUnits": [
+        "u34"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "src/platform/retry.ts"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.retry-policy",
+      "title": "Retry policy: 5 attempts, backoff 2 s doubling to 60 s, then inventory.dlq",
+      "claim": "At most 5 attempts per delivery, with exponential backoff starting at 2 seconds, doubling after each failure and capped at 60 seconds; after the 5th failure the delivery is published to the dead-letter queue inventory.dlq on the message broker and staff review it in the admin UI.",
+      "explanation": "The one LLD-level detail: exact values belong in a detail card, not on the module box.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": [
+        "u36",
+        "u37",
+        "u38"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "5 attempts",
+        "2 seconds",
+        "60 seconds",
+        "inventory.dlq"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.retry-scope",
+      "title": "Only supplier calls are retried; reservations never are",
+      "claim": "Retries apply only to supplier calls; reservations are never retried automatically and a failed reservation is returned to the caller as an error.",
+      "explanation": "Bounds the retry policy; stays with it.",
+      "type": "caveat",
+      "importance": "critical",
+      "sourceUnits": [
+        "u39",
+        "u40"
+      ],
+      "provenance": "explicit",
+      "limits": "ku.retry-policy",
+      "mustPreserve": [
+        "only supplier calls",
+        "reservations are never retried"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.reading-order",
+      "title": "Start reading at src/orders/reserve.ts, then the ledger",
+      "claim": "New contributors start with src/orders/reserve.ts, which shows a whole reservation in about 120 lines, then src/ledger/ledger.ts; tests sit next to each module's code.",
+      "explanation": "Reading advice.",
+      "type": "action_item",
+      "importance": "supplementary",
+      "sourceUnits": [
+        "u41",
+        "u42",
+        "u43"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "src/orders/reserve.ts",
+        "src/ledger/ledger.ts"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": true,
+        "reason": "Not architecture; may be dropped."
+      }
+    },
+    {
+      "id": "ku.gap-row-lock",
+      "title": "Concurrent stock changes rely on an unmeasured row lock",
+      "claim": "The orchestrator and the feed adapter can change the same product's stock at once; the ledger relies on a database row lock, and whether that holds under peak load has not been measured.",
+      "explanation": "An open risk; must not be presented as solved.",
+      "type": "question",
+      "importance": "critical",
+      "sourceUnits": [
+        "u49"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.gap-ui-tests",
+      "title": "The admin UI has no automated tests",
+      "claim": "The admin UI has no automated tests yet.",
+      "explanation": "Known gap.",
+      "type": "caveat",
+      "importance": "important",
+      "sourceUnits": [
+        "u48"
+      ],
+      "provenance": "explicit",
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    },
+    {
+      "id": "ku.gap-dlq-alerting",
+      "title": "Nothing alerts when inventory.dlq fills up",
+      "claim": "Dead-lettered deliveries are only found when someone opens the admin UI; nothing alerts the team when inventory.dlq fills up.",
+      "explanation": "Known gap.",
+      "type": "caveat",
+      "importance": "important",
+      "sourceUnits": [
+        "u50"
+      ],
+      "provenance": "explicit",
+      "exactDetails": [
+        "inventory.dlq"
+      ],
+      "paraphrase": {
+        "allowed": true
+      },
+      "omission": {
+        "allowed": false
+      }
+    }
+  ],
+  "mustNotClaim": [
+    {
+      "claim": "The stock ledger (or pricing rules) depends on, calls or imports the HTTP handlers or the orchestrator.",
+      "why": "Dependencies point inwards; domain modules import nothing from src/api/ or src/orders/.",
+      "units": [
+        "u21",
+        "u22",
+        "u45"
+      ]
+    },
+    {
+      "claim": "The orchestrator or the feed adapter writes stock to Postgres directly.",
+      "why": "Only the ledger writes stock; the others go through it.",
+      "units": [
+        "u18",
+        "u46"
+      ]
+    },
+    {
+      "claim": "Failed reservations are retried automatically.",
+      "why": "Retries apply only to supplier calls; reservations fail fast.",
+      "units": [
+        "u39",
+        "u40"
+      ]
+    },
+    {
+      "claim": "Unparseable deliveries are retried.",
+      "why": "They are logged and skipped.",
+      "units": [
+        "u26"
+      ]
+    },
+    {
+      "claim": "The orchestrator makes partial reservations when stock is short.",
+      "why": "It rejects the whole order.",
+      "units": [
+        "u14"
+      ]
+    },
+    {
+      "claim": "Any file path or module the source does not name (for example src/services/, src/db/, a StockRepository class).",
+      "why": "Only the paths written in the source exist in this case.",
+      "units": [
+        "u6",
+        "u9",
+        "u11",
+        "u16",
+        "u19",
+        "u23",
+        "u30",
+        "u32",
+        "u34"
+      ]
+    },
+    {
+      "claim": "The row lock is proven to hold under peak load.",
+      "why": "It has not been measured.",
+      "units": [
+        "u49"
+      ]
+    }
+  ]
+}

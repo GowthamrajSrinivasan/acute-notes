@@ -20,6 +20,7 @@
  */
 import { randomUUID } from "node:crypto";
 import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
+import { DEFAULT_REMOTE_PROFILE, remoteToolAllowed, remoteToolRefusal, resolveRemoteProfile, sessionToolAllowed, type RemoteProfile } from "../tools/remoteProfile";
 import type { BridgeFrame, McpScope } from "./protocol";
 
 /** How long a client request waits for the tab's reply. */
@@ -46,6 +47,8 @@ export interface Caller {
   /** True unless this is a local bearer token on this machine's loopback; remote sessions can never auto-accept. */
   remote: boolean;
   scope: McpScope;
+  /** Remote sessions only: which tools they may see and call (`tools/remoteProfile.ts`). Missing or unknown → `restricted`. */
+  profile?: RemoteProfile;
 }
 
 interface Tab {
@@ -58,6 +61,8 @@ interface Session {
   credentialId: string;
   remote: boolean;
   scope: McpScope;
+  /** Set for remote sessions only. */
+  profile?: RemoteProfile;
 }
 
 interface Pending {
@@ -130,7 +135,8 @@ export class McpRelay {
     let sessionId: string;
     if (body.method === "initialize") {
       sessionId = randomUUID();
-      this.sessions.set(sessionId, { credentialId: caller.credentialId, remote: caller.remote, scope: caller.scope });
+      // A remote session's tool profile is fixed when it opens; anything but an explicit "full" is restricted.
+      this.sessions.set(sessionId, { credentialId: caller.credentialId, remote: caller.remote, scope: caller.scope, ...(caller.remote ? { profile: caller.profile ? resolveRemoteProfile(caller.profile) : DEFAULT_REMOTE_PROFILE } : {}) });
     } else if (!sessionHeader) {
       // Not an initialize and no session: a legacy-protocol request can't proceed (HTTP 400 per the Streamable HTTP
       // spec). Newer clients probe with a stateless \`server/discover\` first and read exactly this plain 400 as "this
@@ -148,12 +154,18 @@ export class McpRelay {
     const headers = { "mcp-session-id": sessionId };
     const session = this.sessions.get(sessionId)!;
     if (!isRequest) {
-      tab.send({ type: "message", sessionId, message: body as JSONRPCMessage, remote: session.remote, scope: session.scope });
+      tab.send(messageFrame(sessionId, body as JSONRPCMessage, session));
       return { status: 202, headers };
+    }
+    // Remote tool profile, enforced here as well as in the tab: a tool the session's profile doesn't list is refused
+    // before the tab ever sees the call, whoever knows its name.
+    if (body.method === "tools/call") {
+      const name = isObject(body.params) && typeof body.params.name === "string" ? body.params.name : "";
+      if (!sessionToolAllowed(session, name)) return { status: 200, body: rpcError(id, -32602, remoteToolRefusal(name || "(unnamed)")), headers };
     }
     const reply = await this.forward(tab, sessionId, id!, body as JSONRPCMessage, session);
     if (body.method === "initialize" && "error" in reply) this.sessions.delete(sessionId);
-    return { status: 200, body: reply, headers };
+    return { status: 200, body: body.method === "tools/list" && session.remote ? listedForProfile(reply, session.profile) : reply, headers };
   }
 
   /** The client ended its session (HTTP DELETE). Only the credential that opened it may end it. */
@@ -183,7 +195,7 @@ export class McpRelay {
         resolve(rpcError(id, RELAY_ERRORS.timeout, "Acute-Notes didn't answer in time.") as JSONRPCMessage);
       }, REPLY_TIMEOUT_MS);
       this.pending.set(key, { resolve, timer });
-      tab.send({ type: "message", sessionId, message, remote: session.remote, scope: session.scope });
+      tab.send(messageFrame(sessionId, message, session));
     });
   }
 
@@ -206,6 +218,19 @@ export class McpRelay {
     }
     this.pending.clear();
   }
+}
+
+/** One client message for the tab; a remote session's frame carries its tool profile (local frames are unchanged). */
+function messageFrame(sessionId: string, message: JSONRPCMessage, session: Session): BridgeFrame {
+  return { type: "message", sessionId, message, remote: session.remote, scope: session.scope, ...(session.remote ? { profile: session.profile ?? DEFAULT_REMOTE_PROFILE } : {}) };
+}
+
+/** A remote `tools/list` reply with only the tools its profile allows (the tab already leaves the others out). */
+function listedForProfile(reply: JSONRPCMessage, profile: RemoteProfile | undefined): JSONRPCMessage {
+  const result = (reply as { result?: unknown }).result;
+  if (!isObject(result) || !Array.isArray(result.tools)) return reply;
+  const tools = result.tools.filter((t: unknown) => isObject(t) && typeof t.name === "string" && remoteToolAllowed(profile, t.name));
+  return { ...reply, result: { ...result, tools } } as JSONRPCMessage;
 }
 
 function pendingKey(sessionId: string, id: Id): string {

@@ -1,0 +1,66 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-collapsed-one-frame",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "Every card is put into the context frame: options, trade-offs, criteria, evidence and the deferred decision collapse into one frame too large to read whole, and its links now cross.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n2",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n3",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n4",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n5",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n6",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n7",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n8",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n9",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n10",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n11",
+      "group": "g1"
+    }
+  ],
+  "expectFailing": [
+    "a.fit-screen",
+    "a.rendered-frames",
+    "a.crossings",
+    "a.frame-count"
+  ]
+}

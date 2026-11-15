@@ -1,0 +1,314 @@
+{
+  "reviewer": "R2",
+  "date": "2026-11-15",
+  "answers": [
+    {
+      "item": "H01",
+      "verdict": "not_a_condition",
+      "claimLinks": [],
+      "confidence": "medium",
+      "note": "States a dependency of the enrichment step; it limits no claim."
+    },
+    {
+      "item": "H02",
+      "verdict": "set",
+      "claimLinks": [
+        "u8"
+      ],
+      "confidence": "medium",
+      "note": "'Usually one day' takeaway holds, but no-minimum is a real caveat about the stage duration."
+    },
+    {
+      "item": "H03",
+      "verdict": "claim",
+      "claimLinks": [
+        "u36"
+      ],
+      "confidence": "medium",
+      "note": "Untested 1,800/min plus smaller staging copy explicitly warns the 1,200 and 2,000 results may not carry over; a reader would trust Option C at peak."
+    },
+    {
+      "item": "H04",
+      "verdict": "claim",
+      "claimLinks": [
+        "u47"
+      ],
+      "confidence": "medium",
+      "note": "Cost in recall is the trade-off of reranking fewer candidates; without it the latency saving looks free (R3)."
+    },
+    {
+      "item": "H05",
+      "verdict": "not_a_condition",
+      "claimLinks": [],
+      "confidence": "medium",
+      "note": "The 90 days is the table value itself, not a limit on another claim."
+    },
+    {
+      "item": "H06",
+      "verdict": "set",
+      "claimLinks": [
+        "u35"
+      ],
+      "confidence": "low",
+      "note": "One of the listed unknowns; real gap, but the no-retry-code finding stands. Could be read as the unknown itself, not a limit."
+    },
+    {
+      "item": "H07",
+      "verdict": "claim",
+      "claimLinks": [
+        "u13"
+      ],
+      "confidence": "high",
+      "note": "The $310 figure holds only at current volume; at 3x it is ~$900, which decides the choice (R3)."
+    },
+    {
+      "item": "H08",
+      "verdict": "set",
+      "claimLinks": [
+        "u7"
+      ],
+      "confidence": "medium",
+      "note": "Weakness is a real limit on BM25's exact-match strength; takeaway on exact matching unchanged."
+    },
+    {
+      "item": "H09",
+      "verdict": "claim",
+      "claimLinks": [
+        "u16"
+      ],
+      "confidence": "high",
+      "note": "R1: running migrations from every instance at startup would break the procedure."
+    },
+    {
+      "item": "H10",
+      "verdict": "not_a_condition",
+      "claimLinks": [],
+      "confidence": "low",
+      "note": "Elaboration of u49 (versioning does not help HTML); arguably a scope limit on the 'new name' invalidation."
+    },
+    {
+      "item": "H11",
+      "verdict": "set",
+      "claimLinks": [
+        "u1"
+      ],
+      "confidence": "medium",
+      "note": "Document-level prerequisite scope note (R5), linked to the tutorial claim."
+    },
+    {
+      "item": "H12",
+      "verdict": "claim",
+      "claimLinks": [
+        "u59"
+      ],
+      "confidence": "medium",
+      "note": "Without the one payments-team approval, 'same review as code' (two approvals) misstates the agreed rule; decision u59 is the target."
+    },
+    {
+      "item": "H13",
+      "verdict": "set",
+      "claimLinks": [
+        "u35"
+      ],
+      "confidence": "medium",
+      "note": "Cap is a real part of the policy, but with 5 attempts waits are 2,4,8,16 so it never binds; takeaway unchanged."
+    },
+    {
+      "item": "H14",
+      "verdict": "claim",
+      "claimLinks": [
+        "u25"
+      ],
+      "confidence": "medium",
+      "note": "The 800 ms trigger is the condition of the fallback; without it, 'skips reranking' is false."
+    },
+    {
+      "item": "H15",
+      "verdict": "claim",
+      "claimLinks": [
+        "u36"
+      ],
+      "confidence": "high",
+      "note": "Without it a reader treats citations as assurance of correctness/currency (explicit does-not-guarantee, R3)."
+    },
+    {
+      "item": "H16",
+      "verdict": "not_a_condition",
+      "claimLinks": [],
+      "confidence": "low",
+      "note": "Contrastive restatement of 'choice about tolerance'; could be a does-not-guarantee caveat."
+    },
+    {
+      "item": "H17",
+      "verdict": "set",
+      "claimLinks": [
+        "u40"
+      ],
+      "confidence": "medium",
+      "note": "Exclusion of election results is a real scope limit but 'used on article pages' stays true without it."
+    },
+    {
+      "item": "H18",
+      "verdict": "set",
+      "claimLinks": [
+        "u24"
+      ],
+      "confidence": "low",
+      "note": "Polling interval limits freshness of restocks; takeaway of what the adapter does is unchanged."
+    },
+    {
+      "item": "H19",
+      "verdict": "not_a_condition",
+      "claimLinks": [],
+      "confidence": "high",
+      "note": "Assignment of an action to a person; limits nothing."
+    },
+    {
+      "item": "H20",
+      "verdict": "not_a_condition",
+      "claimLinks": [],
+      "confidence": "high",
+      "note": "Expression of agreement; attribution only."
+    },
+    {
+      "item": "H21",
+      "verdict": "claim",
+      "claimLinks": [
+        "u35"
+      ],
+      "confidence": "medium",
+      "note": "Bound of 5 attempts: without it the retry policy reads as unbounded retries."
+    },
+    {
+      "item": "H22",
+      "verdict": "not_a_condition",
+      "claimLinks": [],
+      "confidence": "medium",
+      "note": "Known-gap statement that scopes no stated claim in the section."
+    },
+    {
+      "item": "H23",
+      "verdict": "claim",
+      "claimLinks": [
+        "u6"
+      ],
+      "confidence": "high",
+      "note": "Without the memory-window condition, 'keys protect against duplicates' is overbroad and misleading."
+    },
+    {
+      "item": "H24",
+      "verdict": "set",
+      "claimLinks": [
+        "u6"
+      ],
+      "confidence": "low",
+      "note": "Concrete 24h value elaborates the bounded-window caveat in u6; reader acting on 'charged once' could be misled, so could be claim."
+    },
+    {
+      "item": "H25",
+      "verdict": "set",
+      "claimLinks": [
+        "u8"
+      ],
+      "confidence": "medium",
+      "note": "Only published articles are ingested; drafts are not searchable; main point of ingestion unchanged."
+    },
+    {
+      "item": "H26",
+      "verdict": "set",
+      "claimLinks": [
+        "u27"
+      ],
+      "confidence": "medium",
+      "note": "Current state of idempotency is a real cost detail; 'all handlers must be idempotent before switching' stands."
+    },
+    {
+      "item": "H27",
+      "verdict": "ambiguous",
+      "claimLinks": [
+        "u35"
+      ],
+      "confidence": "low",
+      "note": "Reading 1: content of the Phase 1 claim, not a condition. Reading 2: scope limit on what the pipeline covers initially (set). Deciding question: is the clause the claim's content or a limit on a broader pipeline claim?"
+    },
+    {
+      "item": "H28",
+      "verdict": "claim",
+      "claimLinks": [
+        "u40"
+      ],
+      "confidence": "medium",
+      "note": "Staleness-tolerance is the condition for using stale-while-revalidate; a reader would apply it where staleness is unacceptable."
+    },
+    {
+      "item": "H29",
+      "verdict": "set",
+      "claimLinks": [
+        "u35"
+      ],
+      "confidence": "low",
+      "note": "Documentation gap caveat; limits the reading of 'no retry code' as 'no retries'; epistemic only."
+    },
+    {
+      "item": "H30",
+      "verdict": "claim",
+      "claimLinks": [
+        "u13"
+      ],
+      "confidence": "medium",
+      "note": "R1: raising the percentage by hand restarts the measurement window, breaking the 30-minute canary requirement."
+    },
+    {
+      "item": "H31",
+      "verdict": "claim",
+      "claimLinks": [
+        "u15"
+      ],
+      "confidence": "medium",
+      "note": "Without the trigger, 'must be recomputed' reads as unconditional and misleads maintenance planning."
+    },
+    {
+      "item": "H32",
+      "verdict": "claim",
+      "claimLinks": [
+        "u59"
+      ],
+      "confidence": "high",
+      "note": "Scope of the decision: without it, review would apply to all config changes, which was not agreed."
+    },
+    {
+      "item": "H33",
+      "verdict": "set",
+      "claimLinks": [
+        "u29"
+      ],
+      "confidence": "medium",
+      "note": "Real cost of Option B but secondary to the benefit takeaway (R3)."
+    },
+    {
+      "item": "H34",
+      "verdict": "claim",
+      "claimLinks": [
+        "u17"
+      ],
+      "confidence": "high",
+      "note": "R1: without 'all of them', proceeding after one healthy instance breaks the procedure."
+    },
+    {
+      "item": "H35",
+      "verdict": "not_a_condition",
+      "claimLinks": [],
+      "confidence": "medium",
+      "note": "One participant's argument in a disputed discussion; not a limit on a claim."
+    },
+    {
+      "item": "H36",
+      "verdict": "claim",
+      "claimLinks": [
+        "u63"
+      ],
+      "confidence": "high",
+      "note": "Without it the Friday freeze proposal reads as adopted; it was deferred."
+    }
+  ]
+}

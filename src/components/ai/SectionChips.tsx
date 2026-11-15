@@ -19,15 +19,30 @@ import { AIRuntime } from "@/ai/runtime";
 import { gatherRenderContext } from "@/components/canvas/renderPlanContext";
 import type { SceneElement } from "@/domain/canvas/adapter";
 import { newId } from "@/domain/ids";
+import { SectionOutcome } from "@/components/review/OutcomeChips";
+import { outcomeChipsOfSet } from "@/components/review/setOutcomes";
 
 export function SectionChips({ api, canvasId, set }: { api: ExcalidrawImperativeAPI; canvasId: string; set: ChangeSet }) {
   const layerRef = useRef<HTMLDivElement>(null);
   const [running, setRunning] = useState<string | null>(null);
   const [error, setError] = useState<{ key: string; message: string } | null>(null);
-  const reviews = useMemo(
-    () => sectionReviews(set, { canRegenerate: canRegenerate(set.operationId), regenerated: regeneratedSections(set.operationId) }),
-    [set],
-  );
+  // Distil (knowledge-notes-plan §5.3, WP2.5): each section in outcome words ("38 represented · 3 omitted · 1 needs review")
+  // instead of "AI placed N%"; a section that fell back keeps its "Structure only" chip. Preserve: unchanged.
+  const outcomes = useMemo(() => outcomeChipsOfSet(set), [set]);
+  const reviews = useMemo(() => {
+    const base = sectionReviews(set, { canRegenerate: canRegenerate(set.operationId), regenerated: regeneratedSections(set.operationId) });
+    if (!outcomes) return base;
+    const fellBack = new Set((set.analysis?.fallbacks ?? []).map((f) => f.label));
+    const byFrame = new Map(base.map((r) => [r.frameKey, r] as const));
+    return set.changes.flatMap((c) => {
+      if (c.kind !== "create_frame" || !c.overview) return [];
+      const label = c.overview.title;
+      const had = byFrame.get(c.key);
+      const chip = outcomes.get(label);
+      if (!chip || fellBack.has(label)) return had ? [had] : [];
+      return [{ frameKey: c.key, box: c.box, label, tone: chip.tone, text: chip.text, detail: chip.detail, ...(had?.action ? { action: had.action } : {}) }];
+    });
+  }, [set, outcomes]);
 
   useLayoutEffect(() => {
     if (!reviews.length) return;
@@ -74,7 +89,13 @@ export function SectionChips({ api, canvasId, set }: { api: ExcalidrawImperative
             title={[r.text, ...r.detail].join("\n")}
             onPointerDown={(e) => e.stopPropagation()}
           >
-            <span className="acute-section-chip__text">{r.text}</span>
+            {outcomes?.has(r.label) && !(set.analysis?.fallbacks ?? []).some((f) => f.label === r.label) ? (
+              <span className="acute-section-chip__text">
+                <SectionOutcome chip={outcomes.get(r.label)!} />
+              </span>
+            ) : (
+              <span className="acute-section-chip__text">{r.text}</span>
+            )}
             {r.action && (
               <button type="button" className="acute-section-chip__action" disabled={running !== null} onClick={() => void act(r.action!.key)}>
                 {running === r.action.key ? (r.action.label === "Retry" ? "Retrying…" : "Regenerating…") : r.action.label}

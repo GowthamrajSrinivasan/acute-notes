@@ -1,0 +1,380 @@
+{
+  "caseId": "kn-04-queue-choice",
+  "adjudicator": "phase 3 adjudicator (protocol v2), 2026-11-13",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u3"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u3"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u3"] },
+        { "who": "R2", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "conditionQuote": "loses any job that was queued but not yet started",
+      "claimQuote": "a deploy or a crash loses any job",
+      "rationale": "Reading claim: 'queued but not yet started' scopes which jobs are lost, and 'deploys lose jobs' overstates it. Reading not_a_condition: the sentence is context motivating the decision, not a limit on a claim. The source does not settle which.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n3", "u4_a1"],
+          "carriers": ["u4_n3"],
+          "perClaimCard": { "u4_n3": "carried", "u4_a1": "linked" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u14", "u15"],
+      "verdict": "set",
+      "claimUnits": ["u15"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u11", "u12", "u13"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u15"] }
+      ],
+      "conditionQuote": "Uses spare capacity on the existing primary",
+      "claimQuote": "Database job table | $0 extra",
+      "rationale": "The golden link's text ('assumes current volume… roughly $900… fourth machine') is u16–u17, i.e. c3; its unit ids are offset and do not describe u14/u15. On u14/u15 themselves, only the u15 note limits anything: '$0 extra' holds only while the primary has spare capacity, a scope the claim survives (set). R1 gave no record for these units.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n1", "u5_n2"],
+          "carriers": ["u5_n1"],
+          "perClaimCard": { "u5_n1": "carried", "u5_n2": "separated" },
+          "changedFromV1": {
+            "u5_n1": "no v1 record→carried: table Notes cell keeps 'Uses spare capacity on the existing primary'",
+            "u5_n2": "no v1 record→separated: chart shows $0, no arrows, g5 takeaway silent"
+          }
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u16", "u17"],
+      "verdict": "claim",
+      "claimUnits": ["u13", "u17"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u17"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u13"] }
+      ],
+      "conditionQuote": "The managed queue's figure assumes current volume. At three times today's volume it would be roughly $900 a month, while the broker's cost would stay flat until the cluster needs a fourth machine.",
+      "claimQuote": "Managed cloud queue | $310",
+      "rationale": "At the 3x volume the must-haves plan for, $310 is wrong by about 3x; R1 also split out the intra-sentence 'until a fourth machine' bound on the broker's flat cost (u17). Both blind reviewers agree on claim with u13.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n1", "u5_n2", "u5_n3", "u5_a1"],
+          "carriers": ["u5_n1", "u5_n3", "u5_a1"],
+          "perClaimCard": { "u5_n1": "carried", "u5_n2": "separated", "u5_n3": "carried", "u5_a1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u18"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u21", "u22", "u23", "u24", "u25"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u21", "u22", "u23", "u24", "u25"] },
+        { "who": "R2", "verdict": "ambiguous", "claimUnits": ["u21"] }
+      ],
+      "conditionQuote": "an option that fails either is out regardless of its score",
+      "claimQuote": "The remaining criteria are weighted for scoring",
+      "rationale": "Reading claim: weights alone suggest a high-scoring option is selectable even if it fails a must-have. Reading set: the weighting statement stays true and the gate is a separate rule. The source does not settle it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n2", "u1_a1"],
+          "carriers": ["g1", "u1_a1", "u1_n1"],
+          "perClaimCard": { "u1_n2": "frame", "u1_a1": "carried" },
+          "changedFromV1": {
+            "u1_a1": "carrier only→carried: it also states the weighted-scoring claim, alongside the non-negotiable criteria"
+          }
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u25"],
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u24"] },
+        { "who": "R2", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "conditionQuote": "Portability away from our cloud provider: 10%",
+      "claimQuote": "",
+      "rationale": "u25 is a criterion weight. The golden link's text (at-least-once delivery, idempotent handlers) is u27, covered by c6; its unit ids are offset."
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u27", "u44"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u26"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u26"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u26"] }
+      ],
+      "conditionQuote": "every job handler must be made idempotent before we switch; today only the email handler is",
+      "claimQuote": "Option A needs almost no operational work",
+      "rationale": "Reading set: ongoing operational work stays near zero; idempotency is an up-front adoption cost. Reading claim: 'almost no work' misleads about adopting A while handlers are not idempotent. 'Operational' could be read either way.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n1", "u2_a1"],
+          "carriers": ["u2_n1", "u2_a1", "u3_n3", "u3_a1"],
+          "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u28"],
+      "verdict": "set",
+      "claimUnits": ["u26"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u11", "u12", "u13"] },
+        { "who": "R1", "verdict": "set", "claimUnits": ["u26"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u26"] }
+      ],
+      "conditionQuote": "local development needs an emulator that does not support dead-lettering",
+      "claimQuote": "failed messages move to a dead-letter queue automatically",
+      "rationale": "Dead-lettering still works in production; the condition limits local testing and adds lock-in. The golden link's text (12 hours is an estimate) is u30, covered by c8; offset ids.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n1"],
+          "carriers": ["u2_n1"],
+          "perClaimCard": { "u2_n1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u30"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u14"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u14"] }
+      ],
+      "conditionQuote": "the 12 hours a month is an estimate, not a measurement",
+      "claimQuote": "Self-hosted broker | $540 | about 12 hours",
+      "rationale": "Reading claim: read as measured, the figure overstates confidence in the 40%-weighted effort criterion. Reading set: the figure is already hedged ('about') and stays true as an estimate. The source does not settle it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n1", "u5_n2", "u2_fs1", "u2_n1"],
+          "carriers": ["u2_n1", "u2_a1"],
+          "perClaimCard": { "u5_n1": "separated", "u5_n2": "separated", "u2_fs1": "linked", "u2_n1": "carried" },
+          "changedFromV1": {
+            "u2_n1": "carrier only→carried: its cell 'Estimated 12 hours/month (not measured)' states claim and condition together",
+            "u5_n1": "unchanged separated: re-checked g2->g5 'cost details' — a detail pointer, not a limiting label",
+            "u5_n2": "unchanged separated: same arrow, same reason"
+          }
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "conditionUnits": ["u31"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u8"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u30"] },
+        { "who": "R1", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u8"] }
+      ],
+      "conditionQuote": "Upgrades need a maintenance window.",
+      "claimQuote": "A message broker cluster of three virtual machines that we install, patch and monitor ourselves.",
+      "rationale": "R1 gave no record and its notes class u31 as a trade-off without a limiting clause (not_a_condition); R2 reads it as a real operational cost of Option B (set, low). Whether it is 'too minor to matter' is a judgement the source does not settle. The golden link's text (billing-transaction scope) is u33, covered by c10; offset ids.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n1"],
+          "carriers": ["u2_n1"],
+          "perClaimCard": { "u2_n1": "carried" },
+          "changedFromV1": {
+            "u2_n1": "no v1 record→carried: 'Upgrades need a maintenance window' sits in the Option B column"
+          }
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "conditionUnits": ["u33"],
+      "verdict": "claim",
+      "claimUnits": ["u32"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u32"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u32"] }
+      ],
+      "conditionQuote": "That guarantee only covers jobs created inside the billing database transaction; jobs enqueued by the reporting service, which has its own database, would not get it.",
+      "claimQuote": "a job can never be lost between the commit and the enqueue",
+      "rationale": "'Never be lost' is false for reporting-service jobs.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n1", "u2_a1"],
+          "carriers": ["u2_n1"],
+          "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c11",
+      "conditionUnits": ["u34"],
+      "verdict": "set",
+      "claimUnits": ["u15"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u15"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u15"] }
+      ],
+      "conditionQuote": "Polling also adds read load to the primary database, which is the main risk at month-end.",
+      "claimQuote": "Database job table | $0 extra | about 4 hours | Uses spare capacity on the existing primary",
+      "rationale": "'$0 extra' stays true; the read load is the main risk of using the primary.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n1", "u5_n2"],
+          "carriers": ["u2_n1", "u2_a1"],
+          "perClaimCard": { "u5_n1": "separated", "u5_n2": "separated" },
+          "changedFromV1": {
+            "u5_n1": "unchanged separated: re-checked g2->g5 'cost details' (frame with carriers to claim frame) — not a limiting label",
+            "u5_n2": "unchanged separated: same"
+          }
+        }
+      }
+    },
+    {
+      "id": "c12",
+      "conditionUnits": ["u36"],
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u33", "u34", "u35"] },
+        { "who": "R2", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "conditionQuote": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+      "claimQuote": "",
+      "rationale": "u36 is a measured result (a claim, limited by u38 in c13), not a condition. The golden link's text ('1,800 not tested… quarter of production size') is u38; offset ids."
+    },
+    {
+      "id": "c13",
+      "conditionUnits": ["u38"],
+      "verdict": "claim",
+      "claimUnits": ["u36", "u37"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u36", "u37"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u36"] }
+      ],
+      "conditionQuote": "We did not test 1,800 jobs per minute, and the staging copy is about a quarter of production size, so these results may not carry over.",
+      "claimQuote": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+      "rationale": "Without it the load-test figures read as evidence that Option C meets the 1,800/min must-have in production.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u6_n1"],
+          "carriers": ["u6_n1"],
+          "perClaimCard": { "u6_n1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c14",
+      "conditionUnits": ["u39", "u40"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u40"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u40"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u40"] }
+      ],
+      "conditionQuote": "We have not load-tested Options A or B. … but that is the provider's figure, not ours.",
+      "claimQuote": "The provider documents throughput far above our peak for Option A",
+      "rationale": "Reading claim: stated as our finding it implies A is verified against the must-have. Reading set: the claim is already attributed ('the provider documents') and stays true; this is an evidence gap. The source does not settle it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u6_n2"],
+          "carriers": ["u6_n2", "g6"],
+          "perClaimCard": { "u6_n2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c15",
+      "conditionUnits": ["u42", "u46"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u41", "u42"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u41", "u42"] },
+        { "who": "R2", "verdict": "ambiguous", "claimUnits": ["u36", "u41"] }
+      ],
+      "conditionQuote": "The decision is deferred until Option C has been measured at 1,800 jobs per minute on a production-sized database.",
+      "claimQuote": "This note does not recommend an option.",
+      "rationale": "Reading claim: without the specific bar (1,800/min, production-sized DB) any further C test would seem to unblock the decision, and presenting C as meeting throughput misleads. Reading set: 'does not recommend an option' stays true and this is the gating next step. R2's u36 link also kept as a reading.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n1", "u3_a1"],
+          "carriers": ["u3_n7", "u6_n1"],
+          "perClaimCard": { "u3_n1": "linked", "u3_a1": "linked" },
+          "changedFromV1": {
+            "u3_n1": "separated→linked: cross-frame arrow g3->g6 labelled 'requires more' (a dependency label) joins the claim card's frame to Evidence, whose u6_n1 names the untested 1,800/min rate and the quarter-size staging copy",
+            "u3_a1": "separated→linked: same g3->g6 'requires more' arrow"
+          }
+        }
+      }
+    },
+    {
+      "id": "a1",
+      "conditionUnits": ["u45"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u29"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u29"] }
+      ],
+      "conditionQuote": "Option B: a named owner for broker on-call and upgrades.",
+      "claimQuote": "Option B gives us priority queues and delayed delivery",
+      "rationale": "R2 reads an open prerequisite on Option B (set, parallel to u44 for A); R1's notes class u45 as a standalone requirement, not a limit on a claim. The claim it limits cannot be pinned down: u29 (benefits), u8 (the option) or u14/u30 (effort) all fit.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n1", "u2_a1"],
+          "carriers": ["u3_n5", "u3_a1"],
+          "perClaimCard": { "u2_n1": "linked", "u2_a1": "linked" },
+          "changedFromV1": {
+            "u2_n1": "no v1 record→linked: cross-frame arrow g3->g2 labelled 'defers decision on' (a deferral label) joins Decision status, which holds carrier u3_n5, to the claim card's frame",
+            "u2_a1": "no v1 record→linked: same g3->g2 arrow"
+          }
+        }
+      }
+    }
+  ],
+  "notes": "Golden links in this packet use unit ids offset from the packet's segmentation (c2, c5, c7, c9, c12 carry golden texts that belong to u16–17, u27, u30, u33, u38, i.e. to c3, c6, c8, c10, c13). Those candidates were judged on the units listed; golden readings are copied but not treated as evidence for them. v2 changes: g3->g6 'requires more' and g3->g2 'defers decision on' are dependency/deferral labels and count as cross-frame links; g2->g5 'cost details', g2->g6 'tested by', g2->g1 'evaluated by', g0->g4 'context for' do not. u0_ax1 ('presents the chosen background job queue') contradicts u41 outright; recorded as a fidelity error, not a condition record."
+}

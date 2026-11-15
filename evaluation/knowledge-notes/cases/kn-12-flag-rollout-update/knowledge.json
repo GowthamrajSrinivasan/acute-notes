@@ -1,0 +1,106 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-12-flag-rollout-update",
+  "units": [
+    {
+      "id": "ku.stages",
+      "title": "A rollout moves through internal, canary and general availability",
+      "claim": "A rollout has three stages: internal (staff accounts only, usually one working day with no minimum), canary (a small share of real traffic) and general availability (everyone, in steps of 25%, 50% and 100%); every move is recorded in the rollout tool.",
+      "explanation": "The unchanged concept: identical in v1 (u6–u11) and v2 (u37–u42). An update must leave its card alone.",
+      "type": "process",
+      "importance": "important",
+      "sourceUnits": ["u6", "u7", "u8", "u9", "u10", "u11", "u37", "u38", "u39", "u40", "u41", "u42"],
+      "provenance": "explicit",
+      "exactDetails": ["25%, 50% and 100%", "one working day"],
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": false, "reason": "The frame every other step hangs on." }
+    },
+    {
+      "id": "ku.canary-exposure",
+      "title": "Canary holds the flag at 5% of requests for a minimum time (30 minutes in v1, 60 in v2)",
+      "claim": "During canary the flag is on for 5% of requests, picked at random per request, and stays there for at least 30 minutes in the first version and at least 60 minutes in the revision, so the metrics cover a full traffic cycle of the slowest endpoint; a manual change restarts the window.",
+      "explanation": "The edited explanation: v2 rewords every sentence of the section (u43–u46 for u12–u15) and changes one number, 30 → 60 minutes. Same idea, so one knowledge id; the canvas card must end up with 60.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": ["u12", "u13", "u14", "u15", "u43", "u44", "u45", "u46"],
+      "provenance": "explicit",
+      "exactDetails": ["5%", "30 minutes", "60 minutes"],
+      "mustPreserve": ["at least / no less than (a minimum, not a fixed duration)", "manual change restarts the window"],
+      "paraphrase": { "allowed": true, "note": "The percentage and the duration stay exact for the version shown." },
+      "omission": { "allowed": false }
+    },
+    {
+      "id": "ku.advance-gate",
+      "title": "Canary advances only through the gate: the metrics check (v1), plus on-call approval (v2)",
+      "claim": "A flag advances from canary to general availability only when the automated metrics check passes (error rate and p95 latency against the previous 7 days); in the revision the on-call engineer must also approve the move, and may decline it while an incident is open.",
+      "explanation": "The changed dependency: in v1 the move depends on the metrics check alone (u16); in v2 on the metrics check AND on-call approval (u47, u50). The rest of the section is unchanged (u17–u19 = u48, u49, u51).",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": ["u16", "u17", "u18", "u19", "u47", "u48", "u49", "u50", "u51"],
+      "provenance": "explicit",
+      "exactDetails": ["7 days", "p95"],
+      "mustPreserve": ["only when", "and the on-call engineer approves (v2)"],
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": false }
+    },
+    {
+      "id": "ku.kill-switch",
+      "title": "Every flag needs a kill switch that turns it off within 1 minute",
+      "claim": "Every flag must have a kill switch that turns it off within 1 minute; it is tested in staging before canary (a flag without a tested kill switch cannot enter canary), anyone on the owning team may use it without approval, and turning the flag back on restarts the rollout from the internal stage.",
+      "explanation": "Unchanged between versions (u20–u24 = u52–u56). Its card was edited by the user on the v1 canvas (reconcile.json userEdits): the edit must survive the update.",
+      "type": "constraint",
+      "importance": "critical",
+      "sourceUnits": ["u20", "u21", "u22", "u23", "u24", "u52", "u53", "u54", "u55", "u56"],
+      "provenance": "explicit",
+      "exactDetails": ["1 minute"],
+      "mustPreserve": ["within 1 minute", "cannot enter canary without a tested kill switch"],
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": false }
+    },
+    {
+      "id": "ku.ga-monitoring",
+      "title": "During the ramp-up the owner watches the error dashboard and pages on-call if errors rise",
+      "claim": "While the flag ramps up, the owner watches the error dashboard (flagged and unflagged requests side by side) and pages the on-call engineer if errors rise, until the flag has been at 100% for one hour.",
+      "explanation": "Same idea in both versions, but v2 splits u25 into two sentences (u57, u58): an ambiguous unit match. Card-level reconcile should send it to review rather than rewrite it.",
+      "type": "process",
+      "importance": "important",
+      "sourceUnits": ["u25", "u26", "u27", "u57", "u58", "u59", "u60"],
+      "provenance": "explicit",
+      "exactDetails": ["100%", "one hour"],
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": false }
+    },
+    {
+      "id": "ku.cleanup",
+      "title": "A flag fully on for 30 days is removed from the code",
+      "claim": "A flag that has been fully on for 30 days is removed from the code; the owner opens a cleanup ticket at 100%, and flags past the deadline appear in the weekly stale-flag report.",
+      "explanation": "The removed concept: only in v1 (u28–u31). After the update its card's removal must be proposed, not kept silently.",
+      "type": "process",
+      "importance": "important",
+      "sourceUnits": ["u28", "u29", "u30", "u31"],
+      "provenance": "explicit",
+      "exactDetails": ["30 days", "100%"],
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": false, "reason": "Present in v1, so it is on the v1 canvas." }
+    },
+    {
+      "id": "ku.rollback-rehearsal",
+      "title": "Before general availability, the owner rehearses a rollback once in staging",
+      "claim": "Before general availability the owner rehearses a rollback once in staging (switch off, confirm the old behaviour, switch on), records it in the rollout tool, and it takes about 10 minutes with no approval.",
+      "explanation": "The new concept: only in v2 (u61–u63). The update must add it.",
+      "type": "process",
+      "importance": "important",
+      "sourceUnits": ["u61", "u62", "u63"],
+      "provenance": "explicit",
+      "exactDetails": ["10 minutes"],
+      "paraphrase": { "allowed": true },
+      "omission": { "allowed": true, "reason": "Not in v1, so not on the v1 canvas; the update adds it." }
+    }
+  ],
+  "mustNotClaim": [
+    { "claim": "After the v2 update, canary lasts at least 30 minutes.", "why": "v2 raises the minimum to 60 minutes; the old number is stale.", "units": ["u44"] },
+    { "claim": "After the v2 update, the metrics check alone lets a flag leave canary.", "why": "v2 adds on-call approval as a second condition.", "units": ["u47"] },
+    { "claim": "After the v2 update, flags are removed 30 days after reaching 100%.", "why": "v2 no longer contains the cleanup rule.", "units": ["u28"] },
+    { "claim": "The v1 canvas requires on-call approval to leave canary.", "why": "That condition only exists in v2.", "units": ["u16"] }
+  ]
+}

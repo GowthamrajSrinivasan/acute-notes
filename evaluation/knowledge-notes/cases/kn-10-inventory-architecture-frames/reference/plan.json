@@ -1,0 +1,363 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": {
+    "title": "Shelfwise inventory service: a tour of the codebase"
+  },
+  "nodes": [
+    {
+      "id": "g-ui",
+      "type": "group",
+      "content": {
+        "label": "Client & presentation",
+        "arrangement": "stack",
+        "takeaway": "Screens for staff; no stock logic of their own",
+        "diagram": "architecture"
+      }
+    },
+    {
+      "id": "n-ui",
+      "type": "shape",
+      "parent": "g-ui",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Admin web UI",
+        "kind": "frontend",
+        "sublabel": "web/admin/",
+        "details": [
+          "Stock lookup, manual holds, failed-import review",
+          "Calls only the REST API; never the database"
+        ]
+      }
+    },
+    {
+      "id": "g-api",
+      "type": "group",
+      "content": {
+        "label": "API & orchestration",
+        "arrangement": "stack",
+        "takeaway": "Validates, routes and coordinates; handlers hold no business rules",
+        "diagram": "architecture"
+      }
+    },
+    {
+      "id": "n-http",
+      "type": "shape",
+      "parent": "g-api",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "HTTP handlers",
+        "kind": "backend",
+        "sublabel": "src/api/routes.ts",
+        "details": [
+          "Only entry point for requests",
+          "Validates the body, attaches a correlation ID"
+        ]
+      }
+    },
+    {
+      "id": "n-orch",
+      "type": "shape",
+      "parent": "g-api",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Reservation orchestrator",
+        "kind": "backend",
+        "sublabel": "src/orders/reserve.ts",
+        "details": [
+          "Handles POST /reservations; publishes StockReserved once stock and price both succeed",
+          "Rejects the whole order if stock is short; never makes a partial reservation"
+        ]
+      }
+    },
+    {
+      "id": "g-domain",
+      "type": "group",
+      "content": {
+        "label": "Domain services",
+        "arrangement": "stack",
+        "takeaway": "Owns stock and prices; never depends on the HTTP layer",
+        "diagram": "architecture"
+      }
+    },
+    {
+      "id": "n-ledger",
+      "type": "shape",
+      "parent": "g-domain",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Stock ledger",
+        "kind": "backend",
+        "sublabel": "src/ledger/ledger.ts",
+        "details": [
+          "Owns stock levels: append-only entries (reserve, release, restock)",
+          "Only module that writes stock",
+          "Releases holds not confirmed within 15 minutes"
+        ]
+      }
+    },
+    {
+      "id": "n-pricing",
+      "type": "shape",
+      "parent": "g-domain",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Pricing rules",
+        "kind": "backend",
+        "sublabel": "src/pricing/rules.ts",
+        "details": [
+          "Prices from supplier price lists and active discounts",
+          "Price lists cached 300 seconds",
+          "Never changes stock"
+        ]
+      }
+    },
+    {
+      "id": "g-persistence",
+      "type": "group",
+      "content": {
+        "label": "Persistence & external systems",
+        "arrangement": "stack",
+        "takeaway": "Postgres is the source of truth; the supplier API is outside our control",
+        "diagram": "architecture"
+      }
+    },
+    {
+      "id": "n-postgres",
+      "type": "shape",
+      "parent": "g-persistence",
+      "importance": "high",
+      "content": {
+        "shape": "cylinder",
+        "label": "Postgres",
+        "kind": "database",
+        "sublabel": "Stock levels and entries; source of truth",
+        "details": [
+          "Migrations in db/migrations/, run on every deploy"
+        ]
+      }
+    },
+    {
+      "id": "n-redis",
+      "type": "shape",
+      "parent": "g-persistence",
+      "importance": "high",
+      "content": {
+        "shape": "cylinder",
+        "label": "Redis",
+        "kind": "store",
+        "sublabel": "Cached price lists, all rebuildable"
+      }
+    },
+    {
+      "id": "n-broker",
+      "type": "shape",
+      "parent": "g-persistence",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Message broker",
+        "kind": "messagebus",
+        "sublabel": "StockReserved events; dead-letter queue"
+      }
+    },
+    {
+      "id": "n-supplier",
+      "type": "shape",
+      "parent": "g-persistence",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Supplier API",
+        "kind": "external",
+        "sublabel": "External: run by the suppliers"
+      }
+    },
+    {
+      "id": "g-gaps",
+      "type": "group",
+      "content": {
+        "label": "Known gaps",
+        "arrangement": "grid",
+        "takeaway": "Unverified or missing today"
+      }
+    },
+    {
+      "id": "n-gaps",
+      "type": "text",
+      "parent": "g-gaps",
+      "importance": "medium",
+      "title": "Known gaps",
+      "content": {
+        "markdown": "- Orchestrator and adapter can change the same stock at once; the ledger relies on a database row lock; whether the row lock holds under peak load has not been measured.\n- No alert when `inventory.dlq` fills up: dead-lettered deliveries are found only in the admin UI.\n- The admin UI has no automated tests yet."
+      }
+    },
+    {
+      "id": "g-integration",
+      "type": "group",
+      "content": {
+        "label": "Supplier integration",
+        "arrangement": "stack",
+        "takeaway": "The only module that knows the supplier format",
+        "diagram": "architecture"
+      }
+    },
+    {
+      "id": "n-adapter",
+      "type": "shape",
+      "parent": "g-integration",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Supplier feed adapter",
+        "kind": "backend",
+        "sublabel": "src/suppliers/feedAdapter.ts",
+        "details": [
+          "Every 10 minutes: deliveries become restocks",
+          "Unparseable deliveries are logged and skipped; they aren't retried"
+        ]
+      }
+    },
+    {
+      "id": "g-obs",
+      "type": "group",
+      "content": {
+        "label": "Observability & error handling",
+        "arrangement": "stack",
+        "takeaway": "One structured log; retries only for supplier calls",
+        "diagram": "architecture"
+      }
+    },
+    {
+      "id": "n-logger",
+      "type": "shape",
+      "parent": "g-obs",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Structured logger",
+        "kind": "backend",
+        "sublabel": "src/platform/log.ts",
+        "details": [
+          "One JSON line per event, always with the correlation ID"
+        ]
+      }
+    },
+    {
+      "id": "n-retry",
+      "type": "shape",
+      "parent": "g-obs",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Retry helper",
+        "kind": "backend",
+        "sublabel": "src/platform/retry.ts",
+        "details": [
+          "Wraps supplier calls"
+        ]
+      }
+    },
+    {
+      "id": "n-policy",
+      "type": "text",
+      "parent": "g-obs",
+      "importance": "low",
+      "title": "Retry policy",
+      "content": {
+        "markdown": "- At most **5 attempts** per delivery\n- Exponential backoff: starts at **2 seconds**, doubles after each failure, capped at **60 seconds**\n- After the 5th failure: published to `inventory.dlq`, reviewed by staff in the admin UI\n\nApplies only to supplier calls. Reservations are never retried: a failed reservation goes back to the caller as an error."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "n-ui",
+      "to": "n-http",
+      "type": "calls",
+      "label": "calls the REST API"
+    },
+    {
+      "from": "n-http",
+      "to": "n-orch",
+      "type": "calls",
+      "label": "POST /reservations"
+    },
+    {
+      "from": "n-orch",
+      "to": "n-ledger",
+      "type": "calls",
+      "label": "reserves stock"
+    },
+    {
+      "from": "n-orch",
+      "to": "n-pricing",
+      "type": "calls",
+      "label": "prices the order"
+    },
+    {
+      "from": "n-orch",
+      "to": "n-broker",
+      "type": "publishes",
+      "label": "publishes StockReserved"
+    },
+    {
+      "from": "n-ledger",
+      "to": "n-postgres",
+      "type": "writes",
+      "label": "writes ledger entries"
+    },
+    {
+      "from": "n-pricing",
+      "to": "n-redis",
+      "type": "reads",
+      "label": "reads cached price lists"
+    },
+    {
+      "from": "n-adapter",
+      "to": "n-supplier",
+      "type": "calls",
+      "label": "fetches deliveries every 10 min"
+    },
+    {
+      "from": "n-adapter",
+      "to": "n-ledger",
+      "type": "calls",
+      "label": "records restocks"
+    },
+    {
+      "from": "n-adapter",
+      "to": "n-retry",
+      "type": "depends_on",
+      "label": "wraps supplier calls in retries"
+    },
+    {
+      "from": "n-retry",
+      "to": "n-broker",
+      "type": "publishes",
+      "label": "dead-letters to inventory.dlq"
+    },
+    {
+      "from": "n-http",
+      "to": "n-logger",
+      "type": "depends_on",
+      "label": "logs each request"
+    },
+    {
+      "from": "n-retry",
+      "to": "n-logger",
+      "type": "depends_on",
+      "label": "logs each failed attempt"
+    },
+    {
+      "from": "n-retry",
+      "to": "n-policy",
+      "type": "explained_by",
+      "label": "policy"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-domain-rule-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The domain frame's takeaway drops the dependency rule, and the API frame's takeaway mentions HTTP and 'no business rules'. The old e.domain-rule match ('http' + 'no ') let the API takeaway stand in for the missing rule.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "g-domain",
+      "find": "Owns stock and prices; never depends on the HTTP layer",
+      "replace": "Owns stock and prices"
+    },
+    {
+      "op": "replace_text",
+      "node": "g-api",
+      "find": "Validates, routes and coordinates; handlers hold no business rules",
+      "replace": "HTTP handlers validate and route; no business rules"
+    }
+  ],
+  "expectFailing": [
+    "a.present-domain-rule",
+    "a.domain-rule-text"
+  ]
+}

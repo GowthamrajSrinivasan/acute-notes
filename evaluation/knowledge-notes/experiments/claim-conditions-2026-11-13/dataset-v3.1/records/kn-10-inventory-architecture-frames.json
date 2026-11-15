@@ -1,0 +1,732 @@
+{
+  "caseId": "kn-10-inventory-architecture-frames",
+  "schema": "ClauseRecordV31 (review-v3/attachmentSchema.ts)",
+  "dataset": "v3.1-pre",
+  "records": [
+    {
+      "id": "k1",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u13"
+      ],
+      "clause": "once both succeed",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u13"
+          ],
+          "claimQuote": "publishes a StockReserved event to the message broker",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it, consumers would expect StockReserved for failed reservations too.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k1 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k1",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u13"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k2",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u14"
+      ],
+      "clause": "If the ledger cannot reserve the full quantity",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "the orchestrator rejects the whole order",
+          "evidence": "migrated: needs evidence",
+          "justification": "R4: the most specific claim this condition falsifies is its own consequent: without it, 'rejects the whole order' reads as unconditional. X's whole-sentence reading (u14 limiting u13) is kept as k3 via Y's y3.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k2 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k2",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k3",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u14"
+      ],
+      "clause": "it never makes a partial reservation",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u13"
+          ],
+          "claimQuote": "It asks the stock ledger to reserve the requested quantity",
+          "evidence": "migrated: needs evidence",
+          "justification": "All-or-nothing limit on the reserve step; without it a reader could assume partial fills. X's x2 linked u14 to u13 with the same meaning (X reading listed).",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k3 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k3",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u13"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k4",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u15"
+      ],
+      "clause": "not confirmed within 15 minutes",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u15"
+          ],
+          "claimQuote": "is released by the ledger and the stock becomes available again",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it, reservations would read as released unconditionally. u3_a1 says 'time-based release' but not the 15-minute limit; its arrows go to non-carriers: separated.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k4 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k4",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u15"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k5",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u20"
+      ],
+      "clause": "where they are cached for 300 seconds",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u20"
+          ],
+          "claimQuote": "They read price lists from Redis",
+          "evidence": "migrated: needs evidence",
+          "justification": "A staleness bound; the takeaway stands without it.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k5 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k5",
+            "verdict": "set",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u20"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k6",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u24"
+      ],
+      "clause": "Every 10 minutes",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u24"
+          ],
+          "claimQuote": "it calls the supplier API for new deliveries, converts each delivery into a restock and asks the stock ledger to record it",
+          "evidence": "migrated: needs evidence",
+          "justification": "Polling cadence; secondary to the takeaway.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k6 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k6",
+            "verdict": "set",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u24"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k7",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u26"
+      ],
+      "clause": "A delivery the adapter cannot parse is logged and skipped",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u24"
+          ],
+          "claimQuote": "converts each delivery into a restock and asks the stock ledger to record it",
+          "evidence": "migrated: needs evidence",
+          "justification": "'Each delivery' is false for unparsable deliveries, which are dropped.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k7 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k7",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u24"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k8",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u26"
+      ],
+      "clause": "it is not retried",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u38"
+          ],
+          "claimQuote": "after the 5th failed attempt, the delivery is published to the dead-letter queue `inventory.dlq` on the message broker, and staff review it in the admin UI",
+          "evidence": "migrated: needs evidence",
+          "justification": "R4: u34 already scopes retries to failed supplier calls, so a parse failure does not falsify it. The per-delivery policy ending in the DLQ for staff review (u36-u38) is what misleads: a reader would expect unparsable deliveries to be retried and then show up in the DLQ. Linked to u38.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k8 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k8",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u38"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k9",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u36"
+      ],
+      "clause": "at most 5 attempts per delivery",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u34"
+          ],
+          "claimQuote": "the feed adapter wraps them in the retry helper in `src/platform/retry.ts`",
+          "evidence": "migrated: needs evidence",
+          "justification": "Retry bound; without it retries read as unbounded.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k9 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k9",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u34"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k10",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u37"
+      ],
+      "clause": "capped at 60 seconds",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u37"
+          ],
+          "claimQuote": "exponential backoff that starts at 2 seconds, doubles after each failure",
+          "evidence": "migrated: needs evidence",
+          "justification": "With 5 attempts the cap barely matters to the takeaway.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k10 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k10",
+            "verdict": "set",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u37"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k11",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u38"
+      ],
+      "clause": "after the 5th failed attempt",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u38"
+          ],
+          "claimQuote": "the delivery is published to the dead-letter queue `inventory.dlq` on the message broker",
+          "evidence": "migrated: needs evidence",
+          "justification": "The trigger for dead-lettering; without it every delivery would read as dead-lettered.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k11 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k11",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u38"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k12",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u39"
+      ],
+      "clause": "Retries apply only to supplier calls.",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u35"
+          ],
+          "claimQuote": "The retry policy is:",
+          "evidence": "migrated: needs evidence",
+          "justification": "R4: u34 is already scoped to supplier calls, so the clause adds nothing there; it scopes the general retry policy (u35), which a reader could otherwise apply to reservations. u7_n3 places the policy next to supplier calls but does not say 'only'; u7_n4 has no arrow: separated.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k12 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k12",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u35"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k13",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u40"
+      ],
+      "clause": "Reservations are never retried automatically",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u12"
+          ],
+          "claimQuote": "The reservation orchestrator coordinates a reservation from start to finish.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R4: 'from start to finish' is the claim a reader would extend to 'handles failures through to completion'. u13 describes the happy-path steps, and u14 already covers its failure. Callers must handle their own retry.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k13 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k13",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u12"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k14",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u48"
+      ],
+      "clause": "The admin UI has no automated tests yet.",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "low",
+      "rule": "R4",
+      "status": "human_adjudicated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k14",
+            "verdict": "ambiguous",
+            "rule": "R4",
+            "status": "unresolved",
+            "claimUnits": [
+              "u43"
+            ],
+            "confidence": "low",
+            "readingA": "claim: u43 presupposes every module has tests; false for the admin UI, and a reader would assume admin changes are test-covered.",
+            "readingB": "set: u43 is about where tests live, not whether every part has them; the gap is a real caveat that changes no stated takeaway.",
+            "decidingQuestion": "Does u43 assert that every part of the codebase, including the admin front end, has automated tests?"
+          }
+        ],
+        "human": {
+          "item": "H22",
+          "verdictA": "not_a_condition",
+          "verdictB": "not_a_condition",
+          "linksA": [],
+          "linksB": [],
+          "answersA": {
+            "file": "review-v3/human-review/answers-A.json",
+            "sha256": "7ab024f0895b1ed83a93d384370da120bc50076570e9bc949a31866d97d3a39a"
+          },
+          "answersB": {
+            "file": "review-v3/human-review/answers-B.json",
+            "sha256": "0aec354c468b59d74ee6d490f4f9419bd34cfea1055f05072f5ecf6c8df5c4e0"
+          },
+          "sampleKey": {
+            "file": "review-v3/human-review/SAMPLE-KEY.json",
+            "sha256": "e7426e794225dec07c5ee21c1af226e01c3ffa600e0cfdb38cfc4290877b9a31"
+          },
+          "selector": "review-v3/human-review/discrepancies-2.json rows with pattern humans_agree_model_differs, re-checked against both answer files"
+        },
+        "migration": "Verdict set to the two humans' shared verdict; confidence is the lower of theirs. v3 readings kept above only as provenance."
+      }
+    },
+    {
+      "id": "k15",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u49"
+      ],
+      "clause": "whether that holds under peak load has not been measured",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u49"
+          ],
+          "claimQuote": "the ledger currently relies on a database row lock to keep them consistent",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: an explicit reliability warning on the consistency mechanism; without it a reader would assume stock stays consistent at peak.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k15 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k15",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u49"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k16",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u50"
+      ],
+      "clause": "only found when someone opens the admin UI",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u38"
+          ],
+          "claimQuote": "staff review it in the admin UI",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it, 'staff review it' reads as a dependable process; the review is ad hoc.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k16 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k16",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u38"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k17",
+      "case": "kn-10-inventory-architecture-frames",
+      "units": [
+        "u50"
+      ],
+      "clause": "nothing alerts the team when `inventory.dlq` starts to fill up",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u38"
+          ],
+          "claimQuote": "staff review it in the admin UI",
+          "evidence": "migrated: needs evidence",
+          "justification": "A reader would otherwise assume the DLQ is monitored.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k17 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k17",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u38"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -310,8 +310,11 @@ function recordedStyle(host: SceneElement): Partial<CompositeStyle> {
  *   host (which stays invisible);
  * - a host with no parts (copied, pasted or duplicated on its own) gets them drawn again; a duplicate that landed in
  *   its original's group first gets a group of its own;
- * - an ungrouped host is broken apart: it becomes a plain, visible rectangle, and its former parts plain lines;
- * - parts of a deleted host are deleted with it; a part whose host is gone entirely (copied on its own) becomes a plain line.
+ * - an ungrouped shape stays one shape (Ungroup can't break it into loose lines, master plan L4): its host gets a group
+ *   of its own again, with its label and the loose parts that still sit exactly where its outline goes; any part it
+ *   no longer has is drawn again;
+ * - parts of a deleted host are deleted with it; a part whose host is gone entirely (copied on its own) or that no
+ *   loose host claims becomes a plain line.
  *
  * `newId` makes ids for new groups and parts.
  */
@@ -338,8 +341,8 @@ export function normalizeComposites(elements: readonly SceneElement[], newId: ()
 
   const patches: CompositePatch[] = [];
   const created: CompositePartSpec[] = [];
-  const addParts = (host: SceneElement, kind: CompositeShapeKind, groupIds: string[], style: CompositeStyle) => {
-    for (const part of COMPOSITE_PARTS[kind]) {
+  const addParts = (host: SceneElement, kind: CompositeShapeKind, groupIds: string[], style: CompositeStyle, only: readonly ShapePart[] = COMPOSITE_PARTS[kind]) => {
+    for (const part of only) {
       created.push({
         id: newId(),
         hostId: host.id,
@@ -354,22 +357,38 @@ export function normalizeComposites(elements: readonly SceneElement[], newId: ()
     }
   };
 
-  for (const el of loose) {
-    if (compositePartOf(el)) {
-      patches.push({ id: el.id, fields: { customData: without(el.customData, "acuteShapePart") } });
-      continue;
+  // Ungrouped hosts: each takes a group of its own again, with its label and the loose parts drawn where its outline
+  // goes (what Ungroup left behind); a part it lacks is drawn again. The next pass then treats it as any grouped shape.
+  const claimed = new Set<string>();
+  for (const host of loose) {
+    const kind = compositeKindOf(host);
+    if (!kind) continue;
+    const groupIds = [newId(), ...host.groupIds.slice(1)];
+    patches.push({ id: host.id, fields: { groupIds } });
+    for (const label of labels.get(host.id) ?? []) patches.push({ id: label.id, fields: { groupIds } });
+    const missing: ShapePart[] = [];
+    for (const part of COMPOSITE_PARTS[kind]) {
+      const want = partGeometry(kind, part, host);
+      const found = loose.find(
+        (el) => !claimed.has(el.id) && compositePartOf(el) === part && (el.frameId ?? null) === (host.frameId ?? null) && near(el.x, want.x) && near(el.y, want.y) && samePoints(el.points, want.points),
+      );
+      if (!found) missing.push(part);
+      else {
+        claimed.add(found.id);
+        patches.push({ id: found.id, fields: { groupIds } });
+      }
     }
-    // Ungrouped: broken apart into a plain rectangle drawn in the shape's colours.
-    const style = recordedStyle(el);
-    patches.push({
-      id: el.id,
-      fields: {
-        strokeColor: el.strokeColor !== TRANSPARENT ? el.strokeColor : (style.strokeColor ?? DEFAULT_STROKE),
-        backgroundColor: el.backgroundColor !== TRANSPARENT ? el.backgroundColor : (style.backgroundColor ?? TRANSPARENT),
-        customData: without(el.customData, "acuteShape", "acuteShapeStyle"),
-      },
-    });
+    if (missing.length) {
+      const recorded = recordedStyle(host);
+      const style: CompositeStyle = {
+        strokeColor: host.strokeColor !== TRANSPARENT ? host.strokeColor : (recorded.strokeColor ?? DEFAULT_STROKE),
+        backgroundColor: host.backgroundColor !== TRANSPARENT ? host.backgroundColor : (recorded.backgroundColor ?? TRANSPARENT),
+      };
+      addParts(host, kind, groupIds, style, missing);
+    }
   }
+  // A loose part no host claimed: a plain line.
+  for (const el of loose) if (compositePartOf(el) && !claimed.has(el.id)) patches.push({ id: el.id, fields: { customData: without(el.customData, "acuteShapePart") } });
 
   for (const [group, [host, ...duplicates]] of hosts) {
     const kind = compositeKindOf(host!)!;

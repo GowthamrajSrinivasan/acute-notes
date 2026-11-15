@@ -51,7 +51,7 @@ import type { DocumentRecord } from "@/domain/types";
 import type { AgentStateRepository } from "@/persistence/repositories/types";
 import type { CurrentContext } from "../context/currentContext";
 import type { WorkspaceScan } from "../resources/workspaceScan";
-import { guarded, READ_ANNOTATIONS, ToolFailure, toolResult, WRITE_ANNOTATIONS, type ToolPolicy } from "./common";
+import { DESTRUCTIVE_ANNOTATIONS, guarded, READ_ANNOTATIONS, ToolFailure, toolResult, WRITE_ANNOTATIONS, type ToolPolicy } from "./common";
 import type { LiveCanvasActions } from "./liveCanvas";
 import type { MapSectionWriter } from "./repoMap";
 import { SECTION_SHAPE } from "./repoMap/schema";
@@ -71,6 +71,8 @@ export const PROJECT_READ_TOOLS = [
 ] as const;
 export const PROJECT_WRITE_TOOLS = ["create_project", "record_decision", "log_finding", "update_knowledge", "annotate", "update_progress", "sync_session", "revert_agent_changes"] as const;
 export const PROJECT_TOOL_NAMES = [...PROJECT_READ_TOOLS, ...PROJECT_WRITE_TOOLS] as const;
+/** Accepting these can remove, restore or replace existing content (`revert_agent_changes`: restore/remove; `update_knowledge`: replaces node fields). */
+const DESTRUCTIVE_PROJECT_TOOLS: ReadonlySet<string> = new Set<(typeof PROJECT_WRITE_TOOLS)[number]>(["revert_agent_changes", "update_knowledge"]);
 
 /** At most this many canvases are read into the workspace graph per call. */
 export const PROJECT_LIMITS_MCP = { canvases: 100, decisions: 50, changes: 50, sessions: 20, changedEntries: 50, nextEntries: 10 } as const;
@@ -262,7 +264,7 @@ export function registerProjectTools(server: McpServer, deps: ProjectToolDeps): 
         description: `${description} Proposes a change for the user's review; nothing changes until they accept it (or the user turned on auto-accept for this session).`,
         inputSchema,
         outputSchema,
-        annotations: WRITE_ANNOTATIONS,
+        annotations: DESTRUCTIVE_PROJECT_TOOLS.has(name) ? DESTRUCTIVE_ANNOTATIONS : WRITE_ANNOTATIONS,
       },
       ((args: z.infer<z.ZodObject<S>>) => guarded(() => run(args))) as never,
     );

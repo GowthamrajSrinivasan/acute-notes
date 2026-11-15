@@ -1,0 +1,25 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-retry-values-changed",
+  "distortion": "invented_detail",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The retry policy card invents different values: 3 attempts and a 30-second cap.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-policy",
+      "find": "At most **5 attempts** per delivery",
+      "replace": "At most **3 attempts** per delivery"
+    },
+    {
+      "op": "replace_text",
+      "node": "n-policy",
+      "find": "capped at **60 seconds**",
+      "replace": "capped at **30 seconds**"
+    }
+  ],
+  "expectFailing": [
+    "a.retry-values"
+  ]
+}

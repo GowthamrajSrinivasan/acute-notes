@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-backoff-not-doubling",
+  "distortion": "invented_detail",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The exponential backoff becomes a fixed 2-second wait with the same cap; the values survive but the doubling is lost.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-policy",
+      "find": "Exponential backoff: starts at **2 seconds**, doubles after each failure, capped at **60 seconds**",
+      "replace": "Fixed backoff: **2 seconds** between attempts, capped at **60 seconds**"
+    }
+  ],
+  "expectFailing": [
+    "a.retry-values"
+  ]
+}

@@ -1,0 +1,268 @@
+{
+  "caseId": "kn-10-inventory-architecture-frames",
+  "adjudicator": "phase 3 adjudicator (protocol v2), 2026-11-13",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u13"],
+      "verdict": "claim",
+      "claimUnits": ["u13"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u13"] }
+      ],
+      "conditionQuote": "once both succeed",
+      "claimQuote": "publishes a StockReserved event to the message broker",
+      "rationale": "Intra-sentence gate: without it the event would seem to be published even when the reservation or pricing step fails.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n8", "u3_n7"],
+          "carriers": ["u3_n8", "arrow:u3_n5->u3_n7", "arrow:u3_n6->u3_n7"],
+          "perClaimCard": { "u3_n8": "carried", "u3_n7": "arrow_label" },
+          "changedFromV1": { "u3_n7": "linked→arrow_label: arrows into u3_n7 from both steps are labelled 'if successful', which conveys the gate (arrow_label precedes linked under v2)" }
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u14"],
+      "verdict": "set",
+      "claimUnits": ["u13"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u11", "u12", "u13"] },
+        { "who": "R1", "verdict": "set", "claimUnits": ["u13"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u13"] }
+      ],
+      "conditionQuote": "If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order; it never makes a partial reservation.",
+      "claimQuote": "It asks the stock ledger to reserve the requested quantity",
+      "rationale": "All-or-nothing failure behaviour; the reserve request stays true without it, and publishing already waits on success.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n8", "u3_n5"],
+          "carriers": ["u3_n9", "u3_a1", "g2", "arrow:u3_n5->u3_n9"],
+          "perClaimCard": { "u3_n8": "frame", "u3_n5": "frame" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u15"],
+      "verdict": "set",
+      "claimUnits": ["u13"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u16", "u17", "u18", "u46"] },
+        { "who": "R1", "verdict": "set", "claimUnits": ["u13"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u13"] }
+      ],
+      "conditionQuote": "A reservation that is not confirmed within 15 minutes is released by the ledger and the stock becomes available again.",
+      "claimQuote": "It asks the stock ledger to reserve the requested quantity",
+      "rationale": "Expiry bound on a reservation; the reserve claim stays true but holds are temporary and the 15-minute value must be kept.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n8", "u3_n5"],
+          "carriers": ["u3_n10"],
+          "perClaimCard": { "u3_n8": "separated", "u3_n5": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u20"],
+      "verdict": "set",
+      "claimUnits": ["u19", "u20"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u20"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u19", "u20"] }
+      ],
+      "conditionQuote": "where they are cached for 300 seconds",
+      "claimQuote": "They read price lists from Redis",
+      "rationale": "Staleness bound on prices; reading from Redis stays true without it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n2", "u6_n2"],
+          "carriers": ["u4_n2"],
+          "perClaimCard": { "u4_n2": "carried", "u6_n2": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u24"],
+      "verdict": "set",
+      "claimUnits": ["u23"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u23"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u23"] }
+      ],
+      "conditionQuote": "Every 10 minutes it calls the supplier API for new deliveries",
+      "claimQuote": "brings in restocks from suppliers",
+      "rationale": "Polling interval bounds how fast restocks appear; the claim stays true without it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n2"],
+          "carriers": ["u5_n4"],
+          "perClaimCard": { "u5_n2": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u26"],
+      "verdict": "claim",
+      "claimUnits": ["u24"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u23", "u24", "u25", "u47"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u24"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u24"] }
+      ],
+      "conditionQuote": "A delivery the adapter cannot parse is logged and skipped; it is not retried",
+      "claimQuote": "converts each delivery into a restock and asks the stock ledger to record it",
+      "rationale": "'Each delivery' is false for unparseable deliveries, which are skipped.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n6", "u5_n5"],
+          "carriers": ["u5_n11", "u5_a1", "u5_a2", "g4", "arrow:u5_n5->u5_n10"],
+          "perClaimCard": { "u5_n6": "frame", "u5_n5": "frame" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u36", "u37", "u38"],
+      "verdict": "set",
+      "claimUnits": ["u34"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u34"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u34"] }
+      ],
+      "conditionQuote": "at most 5 attempts per delivery",
+      "claimQuote": "the feed adapter wraps them in the retry helper",
+      "rationale": "Bounds of the retry policy and the DLQ fallback; the wrapping claim stays true but the limits must be kept.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u7_n3"],
+          "carriers": ["u7_n3"],
+          "perClaimCard": { "u7_n3": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u39", "u40"],
+      "verdict": "set",
+      "claimUnits": ["u34", "u35"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u36", "u37", "u38"] },
+        { "who": "R1", "verdict": "set", "claimUnits": ["u34", "u35"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u34"] }
+      ],
+      "conditionQuote": "Retries apply only to supplier calls.",
+      "claimQuote": "the feed adapter wraps them in the retry helper",
+      "rationale": "Scope of the retry helper; no stated claim becomes false without it, but it prevents over-generalising retries to reservations.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u7_n3"],
+          "carriers": ["u7_n4"],
+          "perClaimCard": { "u7_n3": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "conditionUnits": ["u49"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u3", "u18", "u27", "u46"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u18", "u46"] },
+        { "who": "R2", "verdict": "ambiguous", "claimUnits": ["u3", "u27"] }
+      ],
+      "conditionQuote": "the ledger currently relies on a database row lock to keep them consistent; whether that holds under peak load has not been measured",
+      "claimQuote": "The ledger is the only module allowed to write to the stock tables; other modules ask it to make changes.",
+      "rationale": "The source files this under Known gaps without attaching it to a claim: it can be a caveat on single-writer (set) or undermine the peak-throughput and source-of-truth claims (u3 \"At peak it handles about 3,000 reservations per hour\", u27). Neither verdict nor claim link is settled.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n1", "u2_n2", "u1_n3", "u6_n1"],
+          "carriers": ["u10_n2", "u10_a1"],
+          "perClaimCard": { "u4_n1": "separated", "u2_n2": "separated", "u1_n3": "separated", "u6_n1": "separated" },
+          "changedFromV1": {
+            "u1_n3": "new card (claim link widened to R2's u3 reading); separated",
+            "u6_n1": "new card (claim link widened to R2's u27 reading); separated",
+            "g9": "dropped as carrier: takeaway 'stock consistency' does not convey the unmeasured row lock"
+          }
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "conditionUnits": ["u50"],
+      "verdict": "set",
+      "claimUnits": ["u38"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u38", "u7"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u38"] }
+      ],
+      "conditionQuote": "Dead-lettered deliveries are only found when someone opens the admin UI; nothing alerts the team when `inventory.dlq` starts to fill up.",
+      "claimQuote": "staff review it in the admin UI",
+      "rationale": "Gap in how DLQ items are noticed; the review claim stays literally true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u7_n3", "u8_n2"],
+          "carriers": ["u10_n3", "u10_a1", "g9"],
+          "perClaimCard": { "u7_n3": "separated", "u8_n2": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "a1",
+      "conditionUnits": ["u48"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u43"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R2", "verdict": "ambiguous", "claimUnits": ["u43"] },
+        { "who": "R1", "verdict": "not_recorded", "claimUnits": [] }
+      ],
+      "conditionQuote": "The admin UI has no automated tests yet.",
+      "claimQuote": "Each module keeps its tests next to its code.",
+      "rationale": "If the admin UI counts as a module, u43 is false for it (claim); if 'module' means the src/ modules, it is a separate gap (R1 left it as a standalone gap). The source does not define 'module'.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u9_n5", "u9_a1"],
+          "carriers": ["u10_n1", "u10_a1", "g9"],
+          "perClaimCard": { "u9_n5": "separated", "u9_a1": "separated" },
+          "changedFromV1": { "u9_n5": "no v1 record (new condition)", "u9_a1": "no v1 record (new condition)" }
+        }
+      }
+    }
+  ],
+  "notes": "Claim cards re-checked under v2. Only change in outcome: c1 u3_n7 linked→arrow_label ('if successful' labels). Frame-to-frame arrows (g0->*, g2->g3/g5, g3->g5, g4->g3/g5, g6->g5) carry descriptive labels (calls, writes, publishes, reads) that are not limiting relations, so none creates arrow_label or cross-frame linked outcomes. c2 and c6 keep frame on g2 'atomic stock reservations' and g4 'logging unparsable data' (medium confidence; g4 is weak on 'skipped')."
+}

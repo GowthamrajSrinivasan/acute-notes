@@ -35,7 +35,7 @@
       "parent": "g2",
       "importance": "high",
       "title": "Hybrid search merges both retrievers' lists",
-      "content": { "markdown": "Runs BM25 and vector search on the same query and merges their result lists. It **can improve recall when lexical and semantic signals are complementary**: each retriever finds relevant passages the other misses.\n\nIf both return the same passages, or one is poorly tuned for the collection, merging adds latency without adding much." }
+      "content": { "markdown": "Runs BM25 and vector search on the same query and merges their result lists. It **can improve recall when lexical and semantic signals are complementary**: each retriever finds relevant passages the other misses.\n\nMerging does not always pay off: if both return the same passages, or one is poorly tuned for the collection, merging adds latency without adding much." }
     },
     {
       "id": "n4",
@@ -56,7 +56,7 @@
     {
       "id": "g3",
       "type": "group",
-      "content": { "label": "Reranking with a cross-encoder", "arrangement": "stack", "takeaway": "Sharper top results, drawn only from what retrieval found." }
+      "content": { "label": "Reranking with a cross-encoder", "arrangement": "stack", "takeaway": "Sharper top results, drawn only from what retrieval found; not a guarantee of a correct answer." }
     },
     {
       "id": "n6",
@@ -64,7 +64,7 @@
       "parent": "g3",
       "importance": "medium",
       "title": "A cross-encoder rescores the fused candidates",
-      "content": { "markdown": "It reads the query and one passage together and outputs one relevance score, so it judges relevance far more accurately than either retriever. Too expensive for the whole collection, it runs only on the fused candidates. The top 8 passages are kept." }
+      "content": { "markdown": "It reads the query and one passage together and outputs one relevance score, so it judges relevance far more accurately than either retriever. That accuracy is expensive, so it runs only on the fused candidates, never on the whole collection. The top 8 passages are kept." }
     },
     {
       "id": "n7",
@@ -77,7 +77,7 @@
     {
       "id": "g4",
       "type": "group",
-      "content": { "label": "Generation from the top passages", "arrangement": "grid", "takeaway": "The model answers only from what it is given, cites it, or says that nothing fits." }
+      "content": { "label": "Generation from the top passages", "arrangement": "grid", "takeaway": "The model is told to answer only from what it is given and cite it, or to say that nothing fits." }
     },
     {
       "id": "n8",
@@ -92,8 +92,8 @@
       "type": "text",
       "parent": "g4",
       "importance": "high",
-      "title": "The model answers only from the top 8 passages and cites them",
-      "content": { "markdown": "It receives the question and the top 8 passages, answers only from them and cites the passages it used. If none of them addresses the question, it says so instead of answering from general knowledge.\n\n**Limit:** citations let a reader check each claim against its passage, but don't show whether that passage is current." }
+      "title": "The model is told to answer only from the top 8 passages and cite them",
+      "content": { "markdown": "It receives the question and the top 8 passages, and is instructed to answer only from them and cite the passages it used. If none of them addresses the question, it should say so instead of answering from general knowledge.\n\n**Limit:** citations let a reader check each claim against its passage, but don't show whether that passage is current." }
     },
     {
       "id": "n10",
@@ -101,7 +101,7 @@
       "parent": "g4",
       "importance": "low",
       "title": "Example: \"What does E-4012 mean?\"",
-      "content": { "markdown": "BM25 retrieves the error-code table, vector search the article on resumable uploads, and the reranker keeps both in the top 8, so the answer defines the code and explains the fix." }
+      "content": { "markdown": "BM25 retrieves the error-code table, vector search the article on resumable uploads, and the reranker keeps both in the top 8, so the answer can define the code and explain the fix." }
     },
     {
       "id": "g5",
@@ -130,7 +130,7 @@
       "parent": "g5",
       "importance": "high",
       "title": "Reranking adds about 120 ms per query",
-      "content": { "markdown": "Most of it is the cross-encoder running over up to 100 candidates, and it accounts for most of the cost increase.\n\n**Caveat:** these figures come from one collection and one query set. A collection with fewer codes may see a smaller gain from keyword search, and a different reranker has a different latency.\n\nWith a strict latency budget, rerank fewer candidates (say the top 30 of the fused list) at some cost in recall." }
+      "content": { "markdown": "Most of it is the cross-encoder running over up to 100 candidates, and it accounts for most of the cost increase.\n\n**Caveat:** these figures come from one collection and one query set. A collection with fewer codes may see a smaller gain from keyword search, and a different reranker has a different latency.\n\nTeams with a strict latency budget can rerank fewer candidates (say the top 30 of the fused list), at some cost in recall." }
     },
     {
       "id": "n13",

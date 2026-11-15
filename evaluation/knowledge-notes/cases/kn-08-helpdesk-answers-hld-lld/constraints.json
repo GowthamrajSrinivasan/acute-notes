@@ -17,7 +17,7 @@
     },
     {
       "quote": "The Query embedder turns the question into a vector using the same embedding model as the Ingestion worker.",
-      "why": "Query and passages must be embedded with the same model."
+      "why": "Query and passages are embedded with the same model: a design coupling the reader must not lose (the source states it as fact, not as 'must')."
     },
     {
       "quote": "If the Reranker does not respond within 800 ms, the Rerank client skips reranking, keeps the first 8 candidates in vector-similarity order and records `rerank_skipped = true` in the Answer log.",

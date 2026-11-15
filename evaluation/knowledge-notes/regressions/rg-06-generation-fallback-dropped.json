@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-generation-fallback-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "The generation card loses its fallback (u35): nothing says the model should say so when no passage addresses the question.",
+  "mutations": [
+    { "op": "replace_text", "node": "n9", "find": " If none of them addresses the question, it should say so instead of answering from general knowledge.", "replace": "" }
+  ],
+  "expectFailing": ["a.fallback-with-generation"]
+}

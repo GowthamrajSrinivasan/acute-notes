@@ -1,0 +1,931 @@
+{
+  "caseId": "kn-03-blue-green-deploy",
+  "schema": "ClauseRecordV31 (review-v3/attachmentSchema.ts)",
+  "dataset": "v3.1-pre",
+  "records": [
+    {
+      "id": "k1",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u2"
+      ],
+      "clause": "It assumes you already run the service behind a load balancer.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u1"
+          ],
+          "claimQuote": "This tutorial walks through a blue-green release of `orders-api`",
+          "evidence": "migrated: needs evidence",
+          "justification": "R5 document-level scope note, linked to the summary claim.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k1 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k1",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u1"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k2",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u6"
+      ],
+      "clause": "The cost is running twice the infrastructure during a release",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u3"
+          ],
+          "claimQuote": "You keep two identical production environments, called blue and green.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: real cost, secondary to the takeaway.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k2 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k2",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u3"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k3",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u6"
+      ],
+      "clause": "the idle environment is scaled down between releases",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u3"
+          ],
+          "claimQuote": "You keep two identical production environments",
+          "evidence": "migrated: needs evidence",
+          "justification": "Limits 'two identical production environments': they are identical only during a release. Real scope, takeaway unchanged: set. Found by Y only; accepted.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k3 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "low",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k3",
+            "verdict": "set",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u3"
+            ],
+            "confidence": "low"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k4",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u9"
+      ],
+      "clause": "only when the service can reach its database and its queue",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u9"
+          ],
+          "claimQuote": "A health endpoint, `GET /healthz`, that returns `200`",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: a shallow health check would pass broken instances in step 3.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k4 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k4",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u9"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k5",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u10"
+      ],
+      "clause": "that are backward compatible",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u16"
+          ],
+          "claimQuote": "Apply the database migrations from the new release",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both claim (R1). Links differ: 'Database migrations' in the prerequisite list asserts nothing without its adjective; the step that would do the wrong thing is u16 (R4). Y's extra words 'so the old version keeps working against the new schema' are rationale, not a second clause.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k5 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k5",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u16"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k6",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u10"
+      ],
+      "clause": "a rollback does not undo a migration",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u5"
+          ],
+          "claimQuote": "Because the old environment is still running, going back is the same one-step switch.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it, the one-step rollback appears to restore the full prior state.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k6 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k6",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u5"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k7",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u13"
+      ],
+      "clause": "If any migration is not backward compatible, do not use this procedure",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u4"
+          ],
+          "claimQuote": "you deploy the new version to the idle one, test it there, and then move traffic over in one step",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both claim (R1). R4: u1 only announces the tutorial; u4 states the method a reader would apply wrongly with an incompatible migration.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k7 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k7",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u4"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k8",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u15"
+      ],
+      "clause": "using the same build artifact that passed staging rather than a fresh build",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u15"
+          ],
+          "claimQuote": "Deploy version `2.8.0` to `orders-green`",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1 settles phase 3's ambiguity: a fresh build ships an untested artifact.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k8 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k8",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u15"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k9",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u16"
+      ],
+      "clause": "once, from a single job rather than from every green instance at startup",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u16"
+          ],
+          "claimQuote": "Apply the database migrations from the new release",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: concurrent migrations from every instance break the procedure.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k9 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k9",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u16"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k10",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u17"
+      ],
+      "clause": "until all of them return `200`",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u17"
+          ],
+          "claimQuote": "Poll the health endpoint on every green instance",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both claim (R1). R4: the most specific instruction lacking an exit criterion without the clause is the polling step itself.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k10 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k10",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u17"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k11",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u17"
+      ],
+      "clause": "If any instance is still failing health checks after 10 minutes, stop here and roll back",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u17"
+          ],
+          "claimQuote": "Poll the health endpoint on every green instance until all of them return `200`.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: timeout and abort branch.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k11 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k11",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u17"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k12",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u18"
+      ],
+      "clause": "If one fails, treat it like a failed health check and stop.",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u18"
+          ],
+          "claimQuote": "Send the smoke-test suite to green's internal address.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both claim (R1). R4: linked to its own step, consistent with k10.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k12 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k12",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u18"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k13",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u22"
+      ],
+      "clause": "for 15 minutes after the switch",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u22"
+          ],
+          "claimQuote": "Observe the 5xx error rate on green",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: observation window.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k13 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k13",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u22"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k14",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u22"
+      ],
+      "clause": "If the error rate rises above 2% at any point in that window, switch back",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u22"
+          ],
+          "claimQuote": "Observe the 5xx error rate on green for 15 minutes after the switch.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: threshold and action.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k14 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k14",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u22"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k15",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u23"
+      ],
+      "clause": "for 24 hours",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u23"
+          ],
+          "claimQuote": "Leave blue running, unchanged",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: standby duration.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k15 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k15",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u23"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k16",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u23"
+      ],
+      "clause": "unchanged",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u23"
+          ],
+          "claimQuote": "Leave blue running",
+          "evidence": "migrated: needs evidence",
+          "justification": "R5: a reader who changes blue loses the rollback target.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k16 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k16",
+            "verdict": "claim",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u23"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k17",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u24"
+      ],
+      "clause": "After 24 hours without a switch-back",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u24"
+          ],
+          "claimQuote": "scale blue down",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: scaling down early removes the rollback target.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k17 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k17",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u24"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k18",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u25"
+      ],
+      "clause": "before step 5",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u25"
+          ],
+          "claimQuote": "A rollback before step 5 is cheap",
+          "evidence": "migrated: needs evidence",
+          "justification": "'A rollback is cheap' is false after the switch.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k18 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k18",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u25"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k19",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u26"
+      ],
+      "clause": "but requests that were in flight on green during the switch may fail and need a client retry",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u26"
+          ],
+          "claimQuote": "A switch-back after step 5 is also fast",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: 'also fast, but' sets the benefit against the cost, and the contrast with u25 ('cheap, because customers never saw green') is the point: after step 5 customers are affected. Without the clause a reader treats switch-back as free. Claim.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k19 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k19",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u26"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k20",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u27"
+      ],
+      "clause": "Neither kind of rollback reverts the database",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u5"
+          ],
+          "claimQuote": "Because the old environment is still running, going back is the same one-step switch.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Same limit as k6, restated in a separate unit: a separate record.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k20 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k20",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u5"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k21",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u29"
+      ],
+      "clause": "Do not run the next release's migrations while blue is still on standby.",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u16"
+          ],
+          "claimQuote": "Apply the database migrations from the new release",
+          "evidence": "migrated: needs evidence",
+          "justification": "X's question is settled by R1 and R4. Reading A (linked to u29 itself) only makes a blanket ban out of a scoped ban: over-restrictive, not harmful. Reading B: running step 2 of the next release during standby breaks the rollback target. That is the wrong action, so the claim is u16. Against u16 the limiting words are the whole prohibition, so Y's span is used. X's 'while blue is still on standby' is contained in it.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k21 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k21",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u16"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k22",
+      "case": "kn-03-blue-green-deploy",
+      "units": [
+        "u30"
+      ],
+      "clause": "If you do, the standby may no longer work against the schema, and the switch-back stops being a safe option",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u5"
+          ],
+          "claimQuote": "Because the old environment is still running, going back is the same one-step switch.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Y reads it as rationale for u29. But it also states, independently, that the u5 rollback claim fails in a named case (the standby is still running yet unsafe). k21 links the prohibition to u16, so this is a distinct limit on u5: claim.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k22 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k22",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u5"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    }
+  ]
+}

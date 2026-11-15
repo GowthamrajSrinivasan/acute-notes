@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-collector-reject-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The collector still validates against the registry but no longer says it rejects what doesn't match (u8's quality gate).",
+  "mutations": [
+    { "op": "replace_text", "node": "s2", "find": "validates each event against a registered schema; rejects the rest", "replace": "validates each event against a registered schema" }
+  ],
+  "expectFailing": ["a.collector-rejects"]
+}

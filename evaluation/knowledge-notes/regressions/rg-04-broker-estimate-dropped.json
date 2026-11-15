@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-broker-estimate-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The broker's 12 hours a month loses its caveat on the table: it reads as a measured figure, though no one on the team has run the broker in production (u28).",
+  "mutations": [
+    { "op": "replace_text", "node": "n2", "find": "about 12 hours (an estimate: no one on the team has run this broker in production)", "replace": "about 12 hours" }
+  ],
+  "expectFailing": ["a.estimate-with-table"]
+}

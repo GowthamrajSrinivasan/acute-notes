@@ -246,8 +246,19 @@ export class CanvasHistory<E extends HistoryElement> {
     this.push({ id: this.nextEntryId++, changes: canvas, docs });
   }
 
+  /**
+   * Undo and redo end whatever is pending as its own step first, even while a gesture or edit still looks in progress:
+   * the renderer's last change event of a gesture (pointer up) can arrive after the user already pressed Undo when the
+   * app is busy. Skipping the commit then would leave the gesture pending and revert the step *before* it instead (a
+   * stretch undone as "remove the shape just inserted"). Same rule as `record`.
+   */
+  private endPendingStep(): void {
+    this.cancelTimer();
+    this.commitPending();
+  }
+
   undo(): boolean {
-    this.commit();
+    this.endPendingStep();
     const entry = this.undoStack.pop();
     if (!entry) return false;
     this.applyCanvas(entry.changes, "before");
@@ -258,7 +269,7 @@ export class CanvasHistory<E extends HistoryElement> {
   }
 
   redo(): boolean {
-    this.commit();
+    this.endPendingStep();
     const entry = this.redoStack.pop();
     if (!entry) return false;
     this.applyCanvas(entry.changes, "after");

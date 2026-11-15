@@ -1,0 +1,245 @@
+{
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "adjudicator": "phase 3 adjudicator (protocol v2), 2026-11-13",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u5"],
+      "verdict": "set",
+      "claimUnits": ["u5"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u5"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u5"] }
+      ],
+      "conditionQuote": "which is the only component allowed to talk to the external model provider",
+      "claimQuote": "and calls the Model Gateway",
+      "rationale": "Exclusivity rule on model access; the call claim stays true without it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n1", "u2_a1"],
+          "carriers": ["u2_n1"],
+          "perClaimCard": { "u2_n1": "carried", "u2_a1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u8"],
+      "verdict": "set",
+      "claimUnits": ["u8"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u8"] }
+      ],
+      "conditionQuote": "reads published articles from the Help Center CMS every 15 minutes",
+      "claimQuote": "Articles reach the Vector store through the Ingestion worker",
+      "rationale": "Freshness bound and published-only scope on ingestion; the ingestion claim stays true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n1", "u2_n2", "u2_a1"],
+          "carriers": ["u2_n1", "u2_n2", "u2_a2"],
+          "perClaimCard": { "u2_n1": "carried", "u2_n2": "carried", "u2_a1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u9"],
+      "verdict": "set",
+      "claimUnits": ["u6", "u8"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u6"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u8", "u6"] }
+      ],
+      "conditionQuote": "This document does not describe the Ingestion worker's internals, and how the Vector store is partitioned has not been decided.",
+      "claimQuote": "The Retrieval service reads from the Vector store, a Postgres database with the pgvector extension.",
+      "rationale": "Scope gap and open decision on the Vector store and Ingestion worker; the descriptions stay true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n1", "u2_a1", "u2_n2"],
+          "carriers": ["u2_n1", "u2_n2", "u2_a1", "u2_a2", "g1"],
+          "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried", "u2_n2": "carried" },
+          "changedFromV1": {
+            "u2_n2": "(not in v1)→carried: claim link includes u8 per R2; the card states the Ingestion worker and that partitioning is undecided"
+          }
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u16"],
+      "verdict": "set",
+      "claimUnits": ["u16"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u16"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u16"] }
+      ],
+      "conditionQuote": "using the same embedding model as the Ingestion worker",
+      "claimQuote": "The Query embedder turns the question into a vector",
+      "rationale": "Coupling requirement between query and ingestion embeddings; embedding the question stays true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n4"],
+          "carriers": ["u5_n4"],
+          "perClaimCard": { "u5_n4": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u25", "u26"],
+      "verdict": "claim",
+      "claimUnits": ["u21"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u21"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u21"], "note": "r1, covering u25" },
+        { "who": "R1", "verdict": "set", "claimUnits": ["u25"], "note": "r2, covering u26 (relevance caveat on the fallback)" },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u21"] }
+      ],
+      "conditionQuote": "If the Reranker does not respond within 800 ms, the Rerank client skips reranking, keeps the first 8 candidates in vector-similarity order",
+      "claimQuote": "The Rerank client sends the 50 candidates to the Reranker and keeps the top 8.",
+      "rationale": "On a Reranker timeout the kept 8 are not the reranked top 8, so u21 is false in that case. The u26 part (passages may be less relevant) is a set caveat on the fallback, per R1 r2; the card outcomes below are for the u21 claim cards, and u26 is visibly carried by u3_n10 and u3_a2.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n8", "u3_a1"],
+          "carriers": ["u3_n9", "u3_a2"],
+          "perClaimCard": { "u3_n8": "separated", "u3_a1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u27"],
+      "verdict": "set",
+      "claimUnits": ["u27", "u12"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u27", "u12"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u27"] }
+      ],
+      "conditionQuote": "limited to 6,000 tokens",
+      "claimQuote": "builds the prompt with the Context builder",
+      "rationale": "Size bound on the prompt; building the prompt stays true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u6_n2", "u6_n4", "u4_n1"],
+          "carriers": ["u6_n4"],
+          "perClaimCard": { "u6_n2": "separated", "u6_n4": "carried", "u4_n1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u28"],
+      "verdict": "set",
+      "claimUnits": ["u27"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u27"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u27"] }
+      ],
+      "conditionQuote": "The model call has a 20-second timeout.",
+      "claimQuote": "calls the Model Gateway",
+      "rationale": "Timeout bound on the model call; the call statement stays true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u6_n2", "u6_n6"],
+          "carriers": ["u6_n6"],
+          "perClaimCard": { "u6_n2": "separated", "u6_n6": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u29"],
+      "verdict": "claim",
+      "claimUnits": ["u24"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u24"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u24"] }
+      ],
+      "conditionQuote": "If it times out, `composeAnswer` returns an error and the API responds with HTTP 504; no partial answer is shown.",
+      "claimQuote": "The Answers API returns the answer to the Agent Console.",
+      "rationale": "On a model timeout no answer is returned, so the flow's final step is false in that case.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n16", "u3_a1", "u3_a3"],
+          "carriers": ["u6_n7"],
+          "perClaimCard": { "u3_n16": "separated", "u3_a1": "separated", "u3_a3": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "conditionUnits": ["u30"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u14", "u27", "u24"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u14", "u27"] },
+        { "who": "R2", "verdict": "ambiguous", "claimUnits": ["u14", "u24"] }
+      ],
+      "conditionQuote": "`composeAnswer` removes the sentence that carries it and marks the answer as partial, rather than rejecting the whole answer",
+      "claimQuote": "The Citation checker verifies that each citation in a draft answer points to one of the passages that were supplied.",
+      "rationale": "Against u14/u27 the verification statement stays true (set); against u24 the returned answer may be partial, which the flow does not say (claim). The source does not say which claim the handling limits, so both readings are kept.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n1", "u6_n2", "u6_n9", "u6_a1", "u3_n16", "u3_a1", "u3_a3"],
+          "carriers": ["u6_n9", "u6_a1"],
+          "perClaimCard": { "u4_n1": "separated", "u6_n2": "separated", "u6_n9": "carried", "u6_a1": "carried", "u3_n16": "separated", "u3_a1": "separated", "u3_a3": "separated" },
+          "changedFromV1": {
+            "u3_n16": "(not in v1)→separated: claim link widened to u24 per R2; only g5->g2 'step in' joins the frames, not a limiting label",
+            "u3_a1": "(not in v1)→separated: as u3_n16",
+            "u3_a3": "(not in v1)→separated: as u3_n16"
+          }
+        }
+      }
+    },
+    {
+      "id": "a1",
+      "conditionUnits": ["u34"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u31", "u32", "u33"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R2", "verdict": "set", "claimUnits": ["u31", "u32", "u33"] },
+        { "who": "R1", "verdict": "not_a_condition", "claimUnits": [], "note": "implicit: R1 notes call u34 'a scope note on the doc not on a claim'" }
+      ],
+      "conditionQuote": "The design does not give code locations for the Ingestion worker or the Reranker.",
+      "claimQuote": "`composeAnswer` is in `services/orchestrator/src/compose.ts`, lines 40–118.",
+      "rationale": "A real coverage gap in the code map, but each code-location sentence stays true and none is limited by it; whether a document-level scope note counts as a condition on the code map, or on no claim, is not settled by the source.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u7_n1", "u7_n2", "u7_n3"],
+          "carriers": ["u7_n4", "u7_a1"],
+          "perClaimCard": { "u7_n1": "separated", "u7_n2": "separated", "u7_n3": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    }
+  ],
+  "notes": "v2 re-check of labelled arrows: frame arrows g1->g0 'depends on', g2->g1 'uses components from', g3->g1/g4->g1 'details of', g5->g3 'part of', g5->g2 'step in', g6->g3/g4/g5 'code location'; card arrows u5_n2->u5_n3 'processes query', u6_n5->u6_n7 'on timeout'. The only cross-frame arrow joining a claim card's frame to a carrier frame for a separated card is g5->g2 'step in' (c8 and c9's u24 cards; carrier u6_n7/u6_n9 in g5) and g5->g3 'part of' (c6/c9 card u4_n1): both are structural, not limiting, so they do not count. 'on timeout' touches only u6_n5 (a label shape) and u6_n7 (the carrier), and does not by itself convey the 504/no-answer outcome. 'depends on' (g1->g0) connects frames with no relevant separated card. No v1 outcome changed. a1 g6 takeaway 'some components lack specified paths' was judged not to make the specific scope (Ingestion worker, Reranker) recognisable, so not frame; borderline."
+}

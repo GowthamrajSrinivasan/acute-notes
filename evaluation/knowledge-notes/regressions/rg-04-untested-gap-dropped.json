@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-untested-gap-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The evidence gap disappears: nothing says the managed queue and the broker were never load-tested, or that Option A's throughput is only the provider's figure (u37, u38).",
+  "mutations": [
+    { "op": "remove_node", "node": "n9" }
+  ],
+  "expectFailing": ["a.untested"]
+}

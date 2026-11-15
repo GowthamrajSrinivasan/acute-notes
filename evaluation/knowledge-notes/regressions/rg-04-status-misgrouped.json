@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-status-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The deferred-decision card is moved into the context frame: its links to the evidence and the criteria now cross another link and run over a third frame (and through a card).",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n10",
+      "group": "g1"
+    }
+  ],
+  "expectFailing": [
+    "a.links-over-frames",
+    "a.crossings",
+    "a.layout"
+  ]
+}

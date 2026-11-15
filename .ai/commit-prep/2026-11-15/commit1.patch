@@ -1,0 +1,1824 @@
+diff --git a/.ai/docs/open-intelligent-ui-audit.md b/.ai/docs/open-intelligent-ui-audit.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..70378028e2ed739328f0ec9575f4ca4e77d479d4
+--- /dev/null
++++ b/.ai/docs/open-intelligent-ui-audit.md
+@@ -0,0 +1,215 @@
++# Audit — adopting `open-intelligent-ui` / OpenUI for note-making in Acute
++
++Status: Draft · 2026-11-10 · owner: Gowthamraj
++
++**Phased implementation plan:** [[openui-integration-plan]] (`.ai/docs/openui-integration-plan.md`) — Phase 1
++(this audit's Option A) done 2026-11-13; Phases 2–5 and their sequencing against the parallel Intelligent
++Update Engine work are there, not here.
++
++**Question asked:** can we use [thesysdev/open-intelligent-ui](https://github.com/thesysdev/open-intelligent-ui)
++to make notes in the canvas "as the default way," the way ChatGPT's recent update makes notes — and
++how do we take complete advantage of it?
++
++**Verdict in one line:** Yes, but as a *new optional generative-UI rendering layer for AI-authored note
++cards (and a document/"notes" view)* — **behind a flag, fed by the existing `VisualPlan`** — **not** as a
++replacement for the Excalidraw canvas, BlockNote editing, or the knowledge-notes fidelity pipeline. The
++single biggest concrete win is **streaming + ~67% fewer tokens than JSON**, which lands directly on our
++cost targets.
++
++---
++
++## 1. First, untangle two different ChatGPT things
++
++The request conflates two separate OpenAI features. Being precise matters because they pull us in
++different directions:
++
++| ChatGPT feature | What it is | OSS analogue |
++|---|---|---|
++| **Notes / "writing blocks"** (Jun 2026) | Answers saved as editable **markdown documents** in your Library; full-screen editor; canvas was *retired* from GPT-5.5 in favour of this | **BlockNote** — which we already use |
++| **"Intelligent UI"** (what `open-intelligent-ui` recreates) | Answers stream as **interactive generative UI** — maps, charts, tables, forms, working tools the model composes itself | **OpenUI / `open-intelligent-ui`** |
++
++So "make notes like ChatGPT's latest update" is really the *writing-blocks/markdown-notes* direction, and
++**we already have that engine (BlockNote + Yjs).** `open-intelligent-ui` is the *other* feature — generative
++interactive UI. The honest framing for Acute: use OpenUI to make **AI-authored note cards richer and
++interactive** (and to offer a linear "notes document" view), not to reproduce ChatGPT's markdown editor —
++we have that.
++
++Sources: [OpenAI release notes](https://openai.com/products/release-notes/) ·
++[ChatGPT Canvas in 2026](https://www.ai-toolbox.co/chatgpt-management-and-productivity/how-to-use-chatgpt-canvas-guide-2026) ·
++[ChatGPT Notes / markdown editor](https://thewincentral.com/chatgpt-notes-feature-markdown-editor/)
++
++---
++
++## 2. What `open-intelligent-ui` / OpenUI actually is (facts)
++
++- **`open-intelligent-ui`** = a sample app (Next.js chat demo) recreating ChatGPT's Intelligent UI. The
++  *reusable* value is the standard it's built on: **OpenUI**.
++- **OpenUI** = "The Open Standard for Generative UI," **MIT-licensed**. Two packages matter to us:
++  - **`@openuidev/lang-core`** — framework-agnostic parser, prompt-generation, runtime evaluation, type
++    layer. No React/Vue/Svelte dependency. Usable server/edge-side.
++  - **`@openuidev/react-lang`** — React bindings: `defineComponent` + `createLibrary` (you define the
++    components the model is allowed to emit, with **Zod** prop schemas), `library.prompt()` (generates the
++    system prompt), and a streaming `Renderer`. **Reached 1.0.0 on 2026-10-12.**
++- **OpenUI Lang** = a compact, streaming-first DSL. Output looks like variable assignments:
++  ```
++  root  = Stack([title, content])
++  title = TextContent("Hello", "large-heavy")
++  ```
++  Each child streams and validates independently; the shell renders immediately while children arrive.
++  Claims **up to ~67% fewer tokens than equivalent JSON.**
++- **Model composes the layout** from your primitives — "no layout is fixed in the components." Interactive
++  bits use `action()` + `useTriggerAction`, and local state via `$variables` / `@Set` (no server round-trip).
++- **Thesys C1 is the *paid* hosted gateway — we do NOT need it.** The OSS path runs the renderer against
++  **any OpenAI-compatible endpoint, Azure, or a local model (Ollama)**. C1 only adds a managed gateway +
++  tuned model (`OUI-1`). This is important given our cost posture — we stay on our own provider registry.
++
++Sources: [open-intelligent-ui README](https://github.com/thesysdev/open-intelligent-ui) ·
++[openui repo](https://github.com/thesysdev/openui) ·
++[Defining Components docs](https://www.openui.com/docs/openui-lang/defining-components) ·
++[`@openuidev/react-lang` on npm](https://www.npmjs.com/package/@openuidev/react-lang) ·
++[How C1 works](https://www.openui.com/docs)
++
++---
++
++## 3. Fit against Acute's actual architecture
++
++Our note pipeline is already cleanly layered (this is the good news):
++
++```
++parse → outline → generate_visual_plan  →  VisualPlan / VisualNode   (provider-neutral AI plan)
++                                             │  src/ai/visual-plan/types.ts
++                           mapNode.ts  ──────┤  markdown → RichContent via injected parseMarkdown
++                                             ▼
++                        AcuteObject / RichContent (RichBlockObject)   (renderer-neutral domain)
++                                             │  src/domain/types.ts
++             domain/canvas/adapter.ts  ──────┤
++                                             ▼
++        Excalidraw canvas  +  BlockNote editor hosts  (RichBlockHost.tsx)   (concrete UI libs)
++```
++
++Only three places bind to concrete UI libraries: `ExcalidrawCanvas.tsx`, `domain/canvas/adapter.ts`, and
++the BlockNote `RichBlockHost`/`RichBlockEditor`. **The AI pipeline and domain model never import a
++renderer.** That means a generative-UI layer can be added at the rendering seam without touching
++generation — *provided it can consume (or produce) `AcuteObject`/`RichContent` plus the knowledge-notes
++`sourceUnits`/`review` metadata.*
++
++### Where OpenUI plugs in — two candidate seams
++
++1. **Card interior** (recommended first prototype). Today `mapNode.ts` turns a `VisualNode` into a
++   `RichBlockObject` whose body is BlockNote block-JSON. Alternative: for AI-authored cards, let the model
++   emit **OpenUI Lang** from an Acute component library, and render it inside a new host variant alongside
++   `RichBlockHost`. The card stops being fixed paragraph/heading/list blocks and becomes a composed
++   "idea card" (callout + citation chip + mini-table + source link) the model arranges itself.
++
++2. **"Notes" document view** (the ChatGPT-notes analogue). A linear, streaming panel (not the spatial
++   canvas) that renders a whole distilled note set as generative UI — a reading/summary surface over the
++   same `VisualPlan`. This is the closest literal match to "notes as the default output," and it sidesteps
++   the spatial-layout mismatch (below).
++
++### Technical compatibility — strong
++
++| Dimension | Acute | OpenUI | Fit |
++|---|---|---|---|
++| UI framework | React 19.3, Next 16.3 (App Router) | React + Next App Router | ✅ exact |
++| Language | TypeScript 6 | TypeScript | ✅ |
++| Schema lib | **Zod ^4** | **`zod/v4`** | ✅ same major — schemas interop |
++| Providers | own registry (Copilot/OpenAI/Azure/Anthropic/Ollama/Gemini…) | any OpenAI-compatible / Ollama | ✅ reuse registry |
++| Streaming | task runtime already streams | streaming-first DSL | ✅ |
++| Node | — | sample app wants Node 24+ | ⚠️ that's the *demo app*, not the libs |
++
++---
++
++## 4. The mismatches to be honest about
++
++These are why OpenUI is an **augmentation, not a replacement**:
++
++1. **OpenUI does not do 2D spatial canvas layout.** It composes *nested/linear* document UI. Our
++   `VisualPlan` → `layout.ts`/`place.ts`/`measure.ts`/`frameSplit.ts` engine does spatial placement on an
++   Excalidraw canvas (flow, concept_map, timeline, architecture…). OpenUI replaces the *inside of a card*
++   or a *document view* — it is not a substitute for the canvas layout engine.
++
++2. **OpenUI Lang is an ephemeral render format, not a persistence/collab format.** Notes at rest are
++   **BlockNote block-JSON backed by Yjs** (collaborative, versioned, exportable). OpenUI output would have
++   to be either (a) persisted as-is and treated as read-mostly AI output, or (b) mapped back to
++   `RichContent`. You lose in-place rich-text editing + Yjs collaboration on any card rendered purely as
++   OpenUI. **Conclusion: good for AI-generated, read-mostly cards; poor for user-editable collaborative
++   notes.**
++
++3. **The knowledge-notes fidelity machinery is built on `RichContent`/`Idea`.** Coverage (`accounting.ts`),
++   exactness (`exactness.ts`), meaning (`meaning.ts`), source units, review queue — all consume the domain
++   content model, not OpenUI Lang. OpenUI is an *extra rendering surface* over that pipeline; the citation /
++   coverage / review system stays as-is. Any OpenUI card must still carry `sourceUnits`/`review` so the
++   Source panel + two-way highlighting keep working.
++
++4. **Dependency / maintenance surface.** `@openuidev/*` is 1.0.0 as of 2026-10-12 — young. Adds a parser +
++   renderer runtime we don't control. Mitigate by (a) gating behind a flag like `noteModel`, (b) keeping it
++   read-path only at first, (c) `lang-core` is MIT so we can vendor if needed.
++
++---
++
++## 5. How to take "complete advantage" — where it genuinely wins
++
++Ranked by payoff for Acute specifically:
++
++1. **Token/cost reduction on generation.** Today the detailed `VisualPlan` shape lives *in the prompt text*
++   because most providers lack native structured output (`tasks.ts` lines ~20–26), and output is loosely
++   JSON-ish. OpenUI Lang is streaming-first and ~67% lighter than JSON. Emitting cards as OpenUI Lang —
++   with a prompt generated by `library.prompt()` — could cut both prompt and completion tokens.
++   **This maps straight onto the chat-import cost benchmark (baseline $0.47, target ≥40% lower) and the
++   deterministic-pipeline cost work.** → *Measure this first; it's the business case.*
++
++2. **Richer AI note cards without hand-coding every layout.** Define an Acute component library mirroring
++   `VISUAL_TEMPLATES` (IdeaCard, CitationChip, ComparisonTable, Callout, MiniMermaid, Timeline,
++   DecisionTree, SourceLink…). The model arranges them per card — more expressive than fixed BlockNote
++   blocks, with zero bespoke layout code per template.
++
++3. **Interactive, zero-round-trip cards.** `$variables` + `@Set` give toggles, "show/hide source," expand
++   /collapse, step-throughs — local state with no server call. Good for distilled idea cards with an
++   expandable source excerpt.
++
++4. **A streaming "notes" reading view** as the default *output* surface (the ChatGPT-notes framing), while
++   the spatial canvas remains the *workspace*.
++
++---
++
++## 6. Options (ranked)
++
++| # | Option | Effort | Risk | What it buys |
++|---|---|---|---|---|
++| **A** | **Prototype: card-interior renderer + token A/B** behind a flag (`noteRender: "blocknote" \| "openui"`). Define a minimal Acute OpenUI library; render AI cards via `@openuidev/react-lang` in a `RichBlockHost` variant; keep BlockNote for editing. Measure tokens vs today. | **S–M** | Low (read-path, flagged) | Validates the cost win + richer cards with minimal blast radius |
++| B | **Streaming "Notes" document panel** over `VisualPlan` (non-canvas reading view) | M | Low | Literal "notes as default output"; sidesteps spatial mismatch |
++| C | Adopt **OpenUI Lang as the AI output DSL** (replace prompt-embedded JSON VisualPlan with `library.prompt()` + Lang), still mapping Lang → `AcuteObject` for the canvas | M–L | Med | Biggest token win across *all* generation, canvas unaffected |
++| D | Replace BlockNote/Excalidraw with OpenUI | — | **High** | ❌ Not recommended — loses editing, Yjs collab, spatial layout, fidelity pipeline |
++
++Recommended path: **A → measure → then B and/or C** if the token numbers hold.
++
++---
++
++## 7. Concrete next steps for Option A
++
++1. **Spike the component library.** New `src/ai/openui/library.ts`: `defineComponent` for 4–5 card
++   primitives (IdeaCard, CitationChip, Callout, MiniTable, SourceLink) with Zod props that carry
++   `sourceUnits`. `createLibrary({ root: "IdeaCard", ... })`.
++2. **Generate the prompt** via `library.prompt({ preamble, additionalRules, examples })` and wire it as an
++   alternative output mode in `visualize/tasks.ts` (new task variant, flagged — do **not** touch the
++   default path).
++3. **Render host.** `src/components/blocks/OpenUiBlockHost.tsx` using `@openuidev/react-lang` `Renderer`,
++   mounted the same way `RichBlockHost` is from `ExcalidrawCanvas.tsx`, for cards flagged `openui`.
++4. **Persistence decision.** Store the emitted OpenUI Lang on the `RichBlockObject` (new field) and treat
++   those cards as AI-authored/read-mostly; editing falls back to regenerate or to a BlockNote conversion.
++5. **Measure.** Run the existing cost harness on the chat-import benchmark set: tokens + $ for
++   BlockNote-JSON path vs OpenUI-Lang path, same inputs. **Gate the decision on ≥ the 40% target.**
++6. **Keep fidelity intact.** Ensure OpenUI cards still emit `sourceUnits`/`review` so Source panel,
++   coverage chips, and the review queue are unaffected.
++
++> Per repo policy: **no AI/model runs, no paid generation, and no commits** without explicit go-ahead in
++> the same turn. Steps 1–4 are offline/scaffolding; step 5 needs approval before any model spend.
++
++---
++
++## 8. Open questions
++
++- Does `@openuidev/react-lang` tolerate `zod ^4` exactly as we pin it, or does it need `zod/v4` subpath? (verify on install)
++- Can OpenUI Lang be persisted + re-rendered deterministically (for export `portability/**` and Electron offline)?
++- Editing story: do we ever let users edit an OpenUI card, or are these strictly AI-authored read surfaces?
++- Does emitting Lang actually reduce *our* tokens given we'd still inline per-card source-unit citations?
+diff --git a/package-lock.json b/package-lock.json
+index 7f993d8ed23d97a467ea57c61a020b1ae386c4e0..4ed8f0e074d9419630c95773e9fc825c239e7e81 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -17,6 +17,7 @@
+         "@mantine/core": "^8.3.18",
+         "@mantine/hooks": "^8.3.18",
+         "@modelcontextprotocol/sdk": "^1.30.1",
++        "@openuidev/react-lang": "^1.1.0",
+         "html-to-image": "^1.11.13",
+         "idb": "^8.0.3",
+         "mdast-util-from-markdown": "^2.0.3",
+@@ -3112,6 +3113,95 @@
+         "node": ">=12.4.0"
+       }
+     },
++    "node_modules/@openuidev/devtools": {
++      "version": "0.3.1",
++      "resolved": "https://registry.npmjs.org/@openuidev/devtools/-/devtools-0.3.1.tgz",
++      "integrity": "sha512-kOCCsRGwY0w6xL1rVL1zOa9CO97ZrG6YGasRZyCv7FXaDAzbFkEgFy+FhYx6EP7sPKhkgr/jBqunADzhevpBDw==",
++      "license": "MIT",
++      "dependencies": {
++        "lucide-react": "^0.575.0"
++      },
++      "peerDependencies": {
++        "@openuidev/observability": ">=0.0.4 <0.1.0",
++        "@openuidev/react-lang": ">=1.0.0 <2.0.0",
++        "react": "^18.3.1 || ^19.0.0",
++        "react-dom": "^18.0.0 || ^19.0.0"
++      },
++      "peerDependenciesMeta": {
++        "@openuidev/react-lang": {
++          "optional": true
++        }
++      }
++    },
++    "node_modules/@openuidev/lang-core": {
++      "version": "1.1.0",
++      "resolved": "https://registry.npmjs.org/@openuidev/lang-core/-/lang-core-1.1.0.tgz",
++      "integrity": "sha512-aeiAmOr3TEWXEaEyUpJtUuz/+l2WUZap07zpn3RpZbUaYHpqB9YPAx23Fgd5UElcZlbg+wrrS4GyWSGcJ7fgyg==",
++      "hasInstallScript": true,
++      "license": "MIT",
++      "dependencies": {
++        "ci-info": "^4.4.0"
++      },
++      "peerDependencies": {
++        "@modelcontextprotocol/sdk": ">=1.0.0",
++        "zod": "^3.25.0 || ^4.0.0"
++      },
++      "peerDependenciesMeta": {
++        "@modelcontextprotocol/sdk": {
++          "optional": true
++        }
++      }
++    },
++    "node_modules/@openuidev/lang-core/node_modules/ci-info": {
++      "version": "4.5.0",
++      "resolved": "https://registry.npmjs.org/ci-info/-/ci-info-4.5.0.tgz",
++      "integrity": "sha512-d1uM8k5UZEyPza1n/MG3ko8nKupKN0KJpFsipgPcgaCCvV+IqIfJ+NzTjetlLM+UcXZx3+cLrNr76+eAO7G1Mw==",
++      "funding": [
++        {
++          "type": "github",
++          "url": "https://github.com/sponsors/sibiraj-s"
++        }
++      ],
++      "license": "MIT",
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/@openuidev/observability": {
++      "version": "0.0.4",
++      "resolved": "https://registry.npmjs.org/@openuidev/observability/-/observability-0.0.4.tgz",
++      "integrity": "sha512-4fjIrWu3TqTlfDE/m7cG10CH1vV7wQk5GPwMOmXeF9vJtkg92dg4Bdk3AjKgud7H7Xypwwjgt52VcLGZCE2CJQ==",
++      "license": "MIT"
++    },
++    "node_modules/@openuidev/react-lang": {
++      "version": "1.1.0",
++      "resolved": "https://registry.npmjs.org/@openuidev/react-lang/-/react-lang-1.1.0.tgz",
++      "integrity": "sha512-Winq28Li/anC6VhY3NhKPFkRudag9fwFlf5IzIysWJ1GkwuTX3jPAEzhYPScBplcVUNngAzkB8QHppWFymb50A==",
++      "license": "MIT",
++      "dependencies": {
++        "@openuidev/devtools": "^0.3.1",
++        "@openuidev/lang-core": "^1.1.0",
++        "@openuidev/observability": "^0.0.4"
++      },
++      "peerDependencies": {
++        "@modelcontextprotocol/sdk": ">=1.0.0",
++        "react": "*",
++        "react-dom": "*",
++        "react-native": "*",
++        "zod": "^3.25.0 || ^4.0.0"
++      },
++      "peerDependenciesMeta": {
++        "@modelcontextprotocol/sdk": {
++          "optional": true
++        },
++        "react-dom": {
++          "optional": true
++        },
++        "react-native": {
++          "optional": true
++        }
++      }
++    },
+     "node_modules/@oxc-project/types": {
+       "version": "0.151.0",
+       "resolved": "https://registry.npmjs.org/@oxc-project/types/-/types-0.151.0.tgz",
+@@ -11555,6 +11645,15 @@
+         "yallist": "^3.0.2"
+       }
+     },
++    "node_modules/lucide-react": {
++      "version": "0.575.0",
++      "resolved": "https://registry.npmjs.org/lucide-react/-/lucide-react-0.575.0.tgz",
++      "integrity": "sha512-VuXgKZrk0uiDlWjGGXmKV6MSk9Yy4l10qgVvzGn2AWBx1Ylt0iBexKOAoA6I7JO3m+M9oeovJd3yYENfkUbOeg==",
++      "license": "ISC",
++      "peerDependencies": {
++        "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0"
++      }
++    },
+     "node_modules/magic-string": {
+       "version": "0.30.21",
+       "resolved": "https://registry.npmjs.org/magic-string/-/magic-string-0.30.21.tgz",
+diff --git a/package.json b/package.json
+index c0fb2589f728ecc4e1efe2119c7a83cae4429417..6978783ec3b92e5f67a122cdc61656b3f8a82166 100644
+--- a/package.json
++++ b/package.json
+@@ -34,6 +34,7 @@
+     "@mantine/core": "^8.3.18",
+     "@mantine/hooks": "^8.3.18",
+     "@modelcontextprotocol/sdk": "^1.30.1",
++    "@openuidev/react-lang": "^1.1.0",
+     "html-to-image": "^1.11.13",
+     "idb": "^8.0.3",
+     "mdast-util-from-markdown": "^2.0.3",
+diff --git a/scripts/openui-benchmark.mjs b/scripts/openui-benchmark.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..3721b0e95eafdb9848eb06d172127f1c8c3037f2
+--- /dev/null
++++ b/scripts/openui-benchmark.mjs
+@@ -0,0 +1,77 @@
++#!/usr/bin/env node
++/**
++ * Phase 1 benchmark SCAFFOLD (`.ai/docs/open-intelligent-ui-audit.md` §7 step 5) — "benchmark the same imports
++ * against existing JSON generation." This script makes **no model calls**: it has no API key wiring and no
++ * provider import, by design, so it cannot be used to accidentally spend money.
++ *
++ * What it measures today, offline:
++ *   1. The OpenUI system prompt's own size for `acuteCardLibrary` (real, measurable instruction overhead).
++ *   2. A structural-size proxy for "today's path": the golden dataset's recorded `canvas.json` for the same
++ *      case, as a stand-in for the JSON-shaped card output `generate_visual_plan` produces (§13.15.11: most
++ *      providers have no native structured output, so this shape lives in the prompt/completion text today).
++ *      This is NOT a live model trace — it's the hand-authored golden reference, used only for a size proxy.
++ *
++ * What it does NOT measure (needs a live run, needs explicit go-ahead first — see the audit, §7 step 5):
++ *   - Actual completion tokens an LLM spends emitting OpenUI Lang for a real import, vs. today's JSON-shaped
++ *     VisualPlan completion, for the *same* input. That is the real comparison the acceptance criterion asks
++ *     for, and it requires calling a configured provider through the task runtime.
++ *
++ * Tokens are estimated as characters / 4, matching `scripts/ai-stats-summary.mjs`'s convention (provider-reported
++ * usage is always preferred over this estimate when one exists).
++ *
++ * Imports a .tsx module, so it needs Vite's transform — run it with vite-node (already a vitest dependency), not
++ * plain `node`:
++ *
++ *   npx vite-node scripts/openui-benchmark.mjs [case-dir] [--run]
++ */
++import { readFileSync, existsSync } from "node:fs";
++import { join } from "node:path";
++
++const CHARS_PER_TOKEN = 4;
++const DEFAULT_CASE = "evaluation/knowledge-notes/cases/kn-01-idempotency-keys";
++
++const args = process.argv.slice(2);
++if (args.includes("--run")) {
++  console.error(
++    "Not implemented. Measuring real generation tokens needs a live model call, which this repo's policy requires " +
++      "explicit per-turn approval for (see .ai/docs/open-intelligent-ui-audit.md §7 step 5). Run it manually once " +
++      "approved, through the existing eval harness, not this script.",
++  );
++  process.exit(1);
++}
++
++const caseDir = args.find((a) => !a.startsWith("--")) ?? DEFAULT_CASE;
++const tokens = (text) => Math.round(text.length / CHARS_PER_TOKEN);
++
++function loadJson(path) {
++  if (!existsSync(path)) return null;
++  return JSON.parse(readFileSync(path, "utf8"));
++}
++
++async function main() {
++  const { acuteCardSystemPrompt } = await import("../src/ai/openui/library.tsx");
++
++  const prompt = acuteCardSystemPrompt();
++  console.log(`OpenUI system prompt (acuteCardLibrary): ${prompt.length} chars, ~${tokens(prompt)} tokens`);
++
++  const canvasPath = join(caseDir, "canvas.json");
++  const canvas = loadJson(canvasPath);
++  if (!canvas) {
++    console.log(`\nNo canvas.json at ${canvasPath} — skipping the structural-size proxy.`);
++    return;
++  }
++  const canvasText = JSON.stringify(canvas);
++  console.log(
++    `\n"Today" structural proxy (${canvasPath}): ${canvasText.length} chars, ~${tokens(canvasText)} tokens ` +
++      "(golden reference, not a live completion — size proxy only)",
++  );
++  console.log(
++    "\nThis is instruction overhead + structural size only, not a cost comparison. The actual A/B — completion " +
++      "tokens for the same import through today's path vs. an OpenUI Lang path — needs a live run (see header).",
++  );
++}
++
++main().catch((err) => {
++  console.error(err);
++  process.exit(1);
++});
+diff --git a/src/ai/openui/hostContext.tsx b/src/ai/openui/hostContext.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..516710e48be1c74cf2c95a03d9b02245542dcf74
+--- /dev/null
++++ b/src/ai/openui/hostContext.tsx
+@@ -0,0 +1,42 @@
++"use client";
++
++/**
++ * What an OpenUI card may ask of the app around it (`.ai/docs/openui-integration-plan.md` Phases 2–3). Cards never import
++ * canvas, store or AI code: the host that renders them (the Notes view, the dev demo, a test) provides only the
++ * capabilities it has, and every component degrades to a static rendering when one is absent. Nothing here calls a model.
++ *
++ * - `unitText`: a cited source unit's passage, for expandable citations (Phase 2 "expandable sources").
++ * - `openSource`: show the passages in the Source tab / on the canvas.
++ * - `pin`: promotion into an editable canvas block (Phase 2), or "Show on canvas" for a note already there.
++ * - `navigate` / `noteTitle`: cross-note navigation (Phase 3 `NoteLink`).
++ */
++import { createContext, useContext, type ReactNode } from "react";
++
++export interface NotesPinAction {
++  /** Button text, e.g. "Pin to canvas" or "Show on canvas". */
++  label: string;
++  /** True once done (a pinned note shows "On canvas"). */
++  done?: boolean;
++  run(): void;
++}
++
++export interface NotesHost {
++  /** The note this card belongs to (the canvas object id, or a generated note's key). */
++  noteId?: string;
++  unitText?(unit: string): string | undefined;
++  openSource?(units: readonly string[]): void;
++  pin?: NotesPinAction;
++  navigate?(noteId: string): void;
++  noteTitle?(noteId: string): string | undefined;
++}
++
++const NotesHostContext = createContext<NotesHost>({});
++
++export function NotesHostProvider({ value, children }: { value: NotesHost; children: ReactNode }) {
++  return <NotesHostContext.Provider value={value}>{children}</NotesHostContext.Provider>;
++}
++
++/** The capabilities of the host rendering this card; `{}` outside any host. */
++export function useNotesHost(): NotesHost {
++  return useContext(NotesHostContext);
++}
+diff --git a/src/ai/openui/interactions.test.tsx b/src/ai/openui/interactions.test.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..97f9935d9ab201bdc085e391e46f572746605ecb
+--- /dev/null
++++ b/src/ai/openui/interactions.test.tsx
+@@ -0,0 +1,206 @@
++// @vitest-environment happy-dom
++/**
++ * Phase 3 acceptance (`.ai/docs/openui-integration-plan.md`): "meaningful interaction without additional model calls for
++ * basic UI actions". Each card is rendered from OpenUI Lang through the real `Renderer`, clicked, and checked — no
++ * mocks of the runtime, no network.
++ */
++import { createParser, Renderer } from "@openuidev/react-lang";
++import { act, type ReactElement } from "react";
++import { createRoot, type Root } from "react-dom/client";
++import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
++import { NotesHostProvider, type NotesHost } from "./hostContext";
++import { acuteCardLibrary } from "./library";
++
++(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
++
++let host: HTMLDivElement;
++let root: Root;
++beforeEach(() => {
++  host = document.createElement("div");
++  document.body.appendChild(host);
++  root = createRoot(host);
++});
++afterEach(() => {
++  act(() => root.unmount());
++  host.remove();
++});
++
++const render = (el: ReactElement) => act(() => root.render(el));
++const renderLang = (lang: string, notesHost: NotesHost = {}, onStateUpdate?: (s: Record<string, unknown>) => void) =>
++  render(
++    <NotesHostProvider value={notesHost}>
++      <Renderer response={lang} library={acuteCardLibrary} isStreaming={false} onStateUpdate={onStateUpdate} />
++    </NotesHostProvider>,
++  );
++const $ = (sel: string) => host.querySelector(sel) as HTMLElement | null;
++const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[];
++const click = (el: Element | null | undefined) => {
++  expect(el).toBeTruthy();
++  act(() => el!.dispatchEvent(new MouseEvent("click", { bubbles: true })));
++};
++const parse = (lang: string) => createParser(acuteCardLibrary.toJSONSchema()).parse(lang);
++
++const DECISION = `
++root = DecisionCard("Which queue should orders use?", [a, b], "SQS FIFO", "Orders need strict per-customer ordering.", ["u3"])
++a = DecisionOption("SQS Standard", ["Cheap", "Unlimited throughput"], ["Best-effort ordering"])
++b = DecisionOption("SQS FIFO", ["Strict ordering per group"], ["300 msg/s per group"])
++`.trim();
++
++const TIMELINE = `
++root = Timeline("Rollout", [e1, e2])
++e1 = TimelineEvent("Mon", "Canary at 5%", "Error rate held at baseline.", "u2")
++e2 = TimelineEvent("Wed", "Full rollout")
++`.trim();
++
++const FLOW = `root = FlowDiagram("Blue-green deploy", ["Deploy green", "Smoke test", "Switch traffic"], ["New version beside the old.", "Checks against green only.", "Load balancer flips."])`;
++const QUIZ = `root = QuizCard("What does an idempotency key prevent?", ["Slow responses", "Duplicate charges", "Expired tokens"], 1, "Retries return the original result.", "u4")`;
++const FLASH = `root = Flashcard("Idempotency keys", "Retries with the same key return the original result.", "u4")`;
++
++describe("every Phase 3 card parses cleanly", () => {
++  it.each([
++    ["DecisionCard", DECISION],
++    ["Timeline", TIMELINE],
++    ["FlowDiagram", FLOW],
++    ["QuizCard", QUIZ],
++    ["Flashcard", FLASH],
++    ["NoteLink", `root = NoteLink("n2", "See also")`],
++  ])("%s", (name, lang) => {
++    const r = parse(lang);
++    expect(r.meta.errors).toEqual([]);
++    expect(r.meta.incomplete).toBe(false);
++    expect(r.root?.typeName).toBe(name);
++  });
++});
++
++describe("DecisionCard", () => {
++  it("highlights the decision and lets the reader select options to compare", () => {
++    renderLang(DECISION);
++    const options = $$(".openui-decision__option");
++    expect(options).toHaveLength(2);
++    expect(options[1]!.dataset.chosen).toBe("true");
++    expect(options[0]!.dataset.chosen).toBeUndefined();
++    expect(host.textContent).toContain("Orders need strict per-customer ordering.");
++    expect(host.textContent).toContain("Best-effort ordering");
++
++    click(options[0]);
++    expect(options[0]!.getAttribute("aria-pressed")).toBe("true");
++    click(options[1]);
++    expect(options[0]!.getAttribute("aria-pressed")).toBe("false");
++    expect(options[1]!.getAttribute("aria-pressed")).toBe("true");
++    click(options[1]);
++    expect(options[1]!.getAttribute("aria-pressed")).toBe("false");
++  });
++
++  it("expands a cited passage only when the host can supply it", () => {
++    renderLang(DECISION);
++    expect($('span.openui-citation-chip[data-unit="u3"]')).toBeTruthy();
++    renderLang(DECISION, { unitText: (u) => (u === "u3" ? "FIFO queues keep order within a message group." : undefined) });
++    click($('button.openui-citation-chip[data-unit="u3"]'));
++    expect($(".openui-idea-card__passage")?.textContent).toBe("FIFO queues keep order within a message group.");
++  });
++});
++
++describe("Timeline", () => {
++  it("toggles an event's detail and passage; an event without either can't expand", () => {
++    renderLang(TIMELINE, { unitText: () => "Canary served 5% of traffic for 24 hours." });
++    const heads = $$(".openui-timeline__head");
++    expect(heads).toHaveLength(2);
++    // e2 has no detail and no unit.
++    expect((heads[1] as HTMLButtonElement).disabled).toBe(true);
++    expect($(".openui-timeline__detail")).toBeNull();
++
++    click(heads[0]);
++    expect($(".openui-timeline__detail")?.textContent).toContain("Error rate held at baseline.");
++    expect($(".openui-timeline__detail")?.textContent).toContain("Canary served 5% of traffic");
++    click(heads[0]);
++    expect($(".openui-timeline__detail")).toBeNull();
++  });
++});
++
++describe("FlowDiagram", () => {
++  it("renders connected steps and shows the selected step's detail", () => {
++    renderLang(FLOW);
++    const nodes = $$(".openui-flow__node");
++    expect(nodes).toHaveLength(3);
++    expect($$(".openui-flow__arrow")).toHaveLength(2);
++    expect($(".openui-flow__detail")).toBeNull();
++    click(nodes[2]);
++    expect(nodes[2]!.getAttribute("aria-pressed")).toBe("true");
++    expect($(".openui-flow__detail")?.textContent).toContain("Load balancer flips.");
++    click(nodes[2]);
++    expect($(".openui-flow__detail")).toBeNull();
++  });
++});
++
++describe("QuizCard", () => {
++  it("marks a wrong pick, shows the answer and explanation, and resets on Try again", () => {
++    renderLang(QUIZ);
++    const choices = $$(".openui-quiz__choice");
++    click(choices[0]);
++    expect($(".openui-quiz")?.dataset.state).toBe("incorrect");
++    expect($(".openui-quiz__verdict")?.textContent).toContain("Duplicate charges");
++    expect($(".openui-quiz__explanation")?.textContent).toBe("Retries return the original result.");
++    expect(choices[1]!.dataset.result).toBe("answer");
++    expect(choices[0]!.dataset.result).toBe("wrong");
++
++    click($(".openui-quiz__retry"));
++    expect($(".openui-quiz")?.dataset.state).toBe("open");
++    click($$(".openui-quiz__choice")[1]);
++    expect($(".openui-quiz")?.dataset.state).toBe("correct");
++  });
++
++  it("binds `selected` to a $variable: the pick lands in the Renderer's store (what a host persists) — no model round-trip", () => {
++    // The store is observed through onStateUpdate (what a host would persist via `initialState`).
++    const bound = `
++$pick = null
++root = QuizCard("What does an idempotency key prevent?", ["Slow responses", "Duplicate charges"], 1, "Retries return the original result.", null, $pick)
++`.trim();
++    const parsed = parse(bound);
++    expect(parsed.meta.errors).toEqual([]);
++
++    const updates: Record<string, unknown>[] = [];
++    const fetchSpy = vi.spyOn(globalThis, "fetch");
++    renderLang(bound, {}, (s) => updates.push({ ...s }));
++    click($$(".openui-quiz__choice")[1]);
++    expect($(".openui-quiz")?.dataset.state).toBe("correct");
++    expect(updates.at(-1)).toMatchObject({ $pick: 1 });
++
++    click($(".openui-quiz__retry"));
++    expect($(".openui-quiz")?.dataset.state).toBe("open");
++    expect(updates.at(-1)?.$pick ?? null).toBeNull();
++    expect(fetchSpy).not.toHaveBeenCalled();
++    fetchSpy.mockRestore();
++  });
++});
++
++describe("Flashcard", () => {
++  it("flips between prompt and answer", () => {
++    renderLang(FLASH);
++    const face = $(".openui-flashcard__face");
++    expect(face?.textContent).toContain("Idempotency keys");
++    click(face);
++    expect($(".openui-flashcard__face")?.textContent).toContain("Retries with the same key");
++    expect($('[data-unit="u4"]')).toBeTruthy();
++    click($(".openui-flashcard__face"));
++    expect($(".openui-flashcard__face")?.textContent).toContain("Prompt");
++  });
++});
++
++describe("NoteLink", () => {
++  it("navigates through the host, labelled with the target note's title", () => {
++    const navigate = vi.fn();
++    renderLang(`root = NoteLink("n2")`, { navigate, noteTitle: (id) => (id === "n2" ? "Keys expire" : undefined) });
++    const link = $("button.openui-note-link");
++    expect(link?.textContent).toContain("Keys expire");
++    click(link);
++    expect(navigate).toHaveBeenCalledWith("n2");
++  });
++
++  it("is plain text with no host, falling back to the label then the id", () => {
++    renderLang(`root = NoteLink("n2", "See also")`);
++    expect($("button.openui-note-link")).toBeNull();
++    expect($("span.openui-note-link")?.textContent).toBe("See also");
++    renderLang(`root = NoteLink("n9")`);
++    expect($("span.openui-note-link")?.textContent).toBe("n9");
++  });
++});
+diff --git a/src/ai/openui/interactions.tsx b/src/ai/openui/interactions.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..42e7e09828af01204612b54c258cafd1a2087fe9
+--- /dev/null
++++ b/src/ai/openui/interactions.tsx
+@@ -0,0 +1,384 @@
++"use client";
++
++/**
++ * Phase 3 knowledge-interaction components (`.ai/docs/openui-integration-plan.md` §1 Phase 3): decision, timeline,
++ * flow-diagram, quiz, flashcard and cross-note-link cards. Every interaction is component-local React state, a bound
++ * OpenUI `$variable` (QuizCard's `selected`), or a capability the host offers through `useNotesHost()` — never a model
++ * call (Phase 3 acceptance: "meaningful interaction without additional model calls for basic UI actions"). With no host,
++ * each renders statically and stays usable.
++ *
++ * Props are positional (the order of each Zod object's keys), so new props are only ever appended. `library.tsx`
++ * registers `interactionComponents`; styles live in `components/openui/interactions.css`.
++ *
++ * This module cannot import `library.tsx` (it imports us), so citations here are plain unit ids rendered as chips.
++ */
++import { defineComponent, reactive, useStateField, type DefinedComponent, type ElementNode } from "@openuidev/react-lang";
++import { useId, useState } from "react";
++import { z } from "zod/v4";
++import { useNotesHost } from "./hostContext";
++
++/** A child node's props as the parser left them (possibly partial while streaming). */
++function propsOf(node: unknown): Record<string, unknown> {
++  const p = (node as ElementNode | null | undefined)?.props;
++  return p && typeof p === "object" ? (p as Record<string, unknown>) : {};
++}
++const str = (v: unknown): string | undefined => (typeof v === "string" ? v : undefined);
++const strs = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
++
++/** Unit chips that expand to the cited passage when the host can supply it. */
++function UnitChips({ units }: { units: readonly string[] }) {
++  const host = useNotesHost();
++  const [open, setOpen] = useState<string | null>(null);
++  if (!units.length) return null;
++  const passage = open ? host.unitText?.(open) : undefined;
++  return (
++    <>
++      <div className="openui-idea-card__citations">
++        {units.map((u) =>
++          host.unitText?.(u) ? (
++            <button key={u} type="button" className="openui-citation-chip" data-unit={u} aria-expanded={open === u} onClick={() => setOpen((c) => (c === u ? null : u))}>
++              {u}
++            </button>
++          ) : (
++            <span key={u} className="openui-citation-chip" data-unit={u}>
++              {u}
++            </span>
++          ),
++        )}
++      </div>
++      {passage && <blockquote className="openui-idea-card__passage">{passage}</blockquote>}
++    </>
++  );
++}
++
++// ── DecisionCard ────────────────────────────────────────────────────────────
++
++const DecisionOption = defineComponent({
++  name: "DecisionOption",
++  description: "One option a DecisionCard weighs: its name and short pros/cons. Only used inside DecisionCard.options.",
++  props: z.object({
++    name: z.string(),
++    pros: z.array(z.string()).optional(),
++    cons: z.array(z.string()).optional(),
++  }),
++  component: ({ props }) => <OptionBody name={props.name} pros={props.pros ?? []} cons={props.cons ?? []} />,
++});
++
++function OptionBody({ name, pros, cons }: { name: string; pros: string[]; cons: string[] }) {
++  return (
++    <div className="openui-decision__option-body">
++      <span className="openui-decision__option-name">{name}</span>
++      {pros.length > 0 && (
++        <ul className="openui-decision__pros" aria-label="Pros">
++          {pros.map((p, i) => (
++            <li key={i}>{p}</li>
++          ))}
++        </ul>
++      )}
++      {cons.length > 0 && (
++        <ul className="openui-decision__cons" aria-label="Cons">
++          {cons.map((c, i) => (
++            <li key={i}>{c}</li>
++          ))}
++        </ul>
++      )}
++    </div>
++  );
++}
++
++function DecisionCardView({ question, options, chosen, rationale, citations }: { question: string; options: unknown[]; chosen?: string; rationale?: string; citations: string[] }) {
++  const [selected, setSelected] = useState<string | null>(null);
++  return (
++    <article className="openui-decision" data-note-id={useNotesHost().noteId}>
++      <h3 className="openui-decision__question">{question}</h3>
++      <div className="openui-decision__options" role="group" aria-label="Options">
++        {options.map((node, i) => {
++          const p = propsOf(node);
++          const name = str(p.name) ?? "";
++          return (
++            <button
++              key={`${i}-${name}`}
++              type="button"
++              className="openui-decision__option"
++              aria-pressed={selected === name}
++              data-chosen={chosen === name || undefined}
++              onClick={() => setSelected((s) => (s === name ? null : name))}
++            >
++              {chosen === name && <span className="openui-decision__badge">Decision</span>}
++              <OptionBody name={name} pros={strs(p.pros)} cons={strs(p.cons)} />
++            </button>
++          );
++        })}
++      </div>
++      {rationale && (
++        <p className="openui-decision__rationale">
++          <strong>Why:</strong> {rationale}
++        </p>
++      )}
++      <UnitChips units={citations} />
++    </article>
++  );
++}
++
++const DecisionCard = defineComponent({
++  name: "DecisionCard",
++  description:
++    "A decision and the options weighed for it. `options` are DecisionOption children; `chosen` is the exact name of the option decided on (omit if undecided); `rationale` says why; `citations` are source unit ids.",
++  props: z.object({
++    question: z.string(),
++    options: z.array(DecisionOption.ref),
++    chosen: z.string().optional(),
++    rationale: z.string().optional(),
++    citations: z.array(z.string()).optional().describe("Source unit ids, e.g. [\"u4\"]."),
++  }),
++  component: ({ props }) => (
++    <DecisionCardView question={props.question} options={(props.options ?? []) as unknown[]} chosen={props.chosen} rationale={props.rationale} citations={props.citations ?? []} />
++  ),
++});
++
++// ── Timeline ────────────────────────────────────────────────────────────────
++
++const TimelineEvent = defineComponent({
++  name: "TimelineEvent",
++  description: "One dated event in a Timeline: when, a short label, optional detail, optional source unit id. Only used inside Timeline.events.",
++  props: z.object({
++    when: z.string(),
++    label: z.string(),
++    detail: z.string().optional(),
++    unit: z.string().optional(),
++  }),
++  component: ({ props }) => (
++    <span className="openui-timeline__static">
++      <span className="openui-timeline__when">{props.when}</span> {props.label}
++    </span>
++  ),
++});
++
++function TimelineView({ title, events }: { title: string; events: unknown[] }) {
++  const host = useNotesHost();
++  const [open, setOpen] = useState<number | null>(null);
++  const baseId = useId();
++  return (
++    <article className="openui-timeline">
++      <h3 className="openui-timeline__title">{title}</h3>
++      <ol className="openui-timeline__list">
++        {events.map((node, i) => {
++          const p = propsOf(node);
++          const detail = str(p.detail);
++          const unit = str(p.unit);
++          const passage = unit ? host.unitText?.(unit) : undefined;
++          const expandable = !!(detail || passage);
++          const isOpen = open === i;
++          return (
++            <li key={i} className="openui-timeline__event" data-open={isOpen || undefined}>
++              <button
++                type="button"
++                className="openui-timeline__head"
++                aria-expanded={expandable ? isOpen : undefined}
++                aria-controls={expandable ? `${baseId}-${i}` : undefined}
++                disabled={!expandable}
++                onClick={() => setOpen((o) => (o === i ? null : i))}
++              >
++                <span className="openui-timeline__when">{str(p.when) ?? ""}</span>
++                <span className="openui-timeline__label">{str(p.label) ?? ""}</span>
++              </button>
++              {isOpen && (
++                <div className="openui-timeline__detail" id={`${baseId}-${i}`}>
++                  {detail && <p>{detail}</p>}
++                  {passage && (
++                    <blockquote className="openui-idea-card__passage" data-unit={unit}>
++                      {passage}
++                    </blockquote>
++                  )}
++                </div>
++              )}
++            </li>
++          );
++        })}
++      </ol>
++    </article>
++  );
++}
++
++const Timeline = defineComponent({
++  name: "Timeline",
++  description: "Events in time order (TimelineEvent children). Use for history, rollouts, incident sequences — not for unordered facts.",
++  props: z.object({
++    title: z.string(),
++    events: z.array(TimelineEvent.ref),
++  }),
++  component: ({ props }) => <TimelineView title={props.title} events={(props.events ?? []) as unknown[]} />,
++});
++
++// ── FlowDiagram ─────────────────────────────────────────────────────────────
++
++function FlowDiagramView({ title, steps, details }: { title: string; steps: string[]; details: string[] }) {
++  const [active, setActive] = useState<number | null>(null);
++  const detailId = useId();
++  const detail = active !== null ? details[active] : undefined;
++  return (
++    <article className="openui-flow">
++      <h3 className="openui-flow__title">{title}</h3>
++      <ol className="openui-flow__steps">
++        {steps.map((s, i) => (
++          <li key={i} className="openui-flow__step">
++            <button
++              type="button"
++              className="openui-flow__node"
++              aria-pressed={active === i}
++              aria-controls={details[i] ? detailId : undefined}
++              disabled={!details[i]}
++              onClick={() => setActive((a) => (a === i ? null : i))}
++            >
++              <span className="openui-flow__index">{i + 1}</span> {s}
++            </button>
++            {i < steps.length - 1 && (
++              <span className="openui-flow__arrow" aria-hidden="true">
++                →
++              </span>
++            )}
++          </li>
++        ))}
++      </ol>
++      {detail && (
++        <p className="openui-flow__detail" id={detailId} aria-live="polite">
++          <strong>
++            {active! + 1}. {steps[active!]}:
++          </strong>{" "}
++          {detail}
++        </p>
++      )}
++    </article>
++  );
++}
++
++const FlowDiagram = defineComponent({
++  name: "FlowDiagram",
++  description: "A short process as connected steps, left to right. `details[i]` explains step i and shows when the reader selects it. Keep to 2–7 steps.",
++  props: z.object({
++    title: z.string(),
++    steps: z.array(z.string()).min(1),
++    details: z.array(z.string()).optional(),
++  }),
++  component: ({ props }) => <FlowDiagramView title={props.title} steps={props.steps ?? []} details={props.details ?? []} />,
++});
++
++// ── QuizCard ────────────────────────────────────────────────────────────────
++
++function QuizCardView({ question, choices, answer, explanation, unit, binding }: { question: string; choices: string[]; answer: number; explanation?: string; unit?: string; binding: unknown }) {
++  const host = useNotesHost();
++  // Bound to a `$variable` when the Lang passes one (then the pick lives in the Renderer's store and other bound
++  // components see it); otherwise plain local state.
++  const field = useStateField<number | null>("selected", binding as number | null | undefined);
++  const [local, setLocal] = useState<number | null>(null);
++  const picked = field.isReactive ? (typeof field.value === "number" ? field.value : null) : local;
++  const pick = (i: number | null) => (field.isReactive ? field.setValue(i) : setLocal(i));
++  const answered = picked !== null;
++  const correct = answered && picked === answer;
++  const passage = unit ? host.unitText?.(unit) : undefined;
++  return (
++    <article className="openui-quiz" data-state={!answered ? "open" : correct ? "correct" : "incorrect"}>
++      <h3 className="openui-quiz__question">{question}</h3>
++      <div className="openui-quiz__choices" role="group" aria-label="Choices">
++        {choices.map((c, i) => (
++          <button
++            key={i}
++            type="button"
++            className="openui-quiz__choice"
++            aria-pressed={picked === i}
++            data-result={answered && i === answer ? "answer" : answered && i === picked ? "wrong" : undefined}
++            disabled={answered}
++            onClick={() => pick(i)}
++          >
++            {c}
++          </button>
++        ))}
++      </div>
++      {answered && (
++        <div className="openui-quiz__feedback" role="status">
++          <p className="openui-quiz__verdict">{correct ? "Correct." : `Not quite — the answer is “${choices[answer] ?? ""}”.`}</p>
++          {explanation && <p className="openui-quiz__explanation">{explanation}</p>}
++          {passage && <blockquote className="openui-idea-card__passage">{passage}</blockquote>}
++          <button type="button" className="openui-quiz__retry" onClick={() => pick(null)}>
++            Try again
++          </button>
++        </div>
++      )}
++    </article>
++  );
++}
++
++const QuizCard = defineComponent({
++  name: "QuizCard",
++  description:
++    "A multiple-choice check on one idea. `answer` is the 0-based index of the correct choice; `explanation` is shown after answering; `unit` is the source unit it tests. `selected` may be bound to a $variable to share the pick.",
++  props: z.object({
++    question: z.string(),
++    choices: z.array(z.string()).min(2),
++    answer: z.number().int().min(0),
++    explanation: z.string().optional(),
++    unit: z.string().optional(),
++    selected: reactive(z.number().int().nullable().optional()),
++  }),
++  component: ({ props }) => (
++    <QuizCardView question={props.question} choices={props.choices ?? []} answer={props.answer} explanation={props.explanation} unit={props.unit} binding={props.selected} />
++  ),
++});
++
++// ── Flashcard ───────────────────────────────────────────────────────────────
++
++function FlashcardView({ front, back, unit }: { front: string; back: string; unit?: string }) {
++  const [flipped, setFlipped] = useState(false);
++  return (
++    <article className="openui-flashcard" data-flipped={flipped || undefined}>
++      <button type="button" className="openui-flashcard__face" aria-pressed={flipped} aria-label={flipped ? "Show front" : "Show answer"} onClick={() => setFlipped((f) => !f)}>
++        <span className="openui-flashcard__side">{flipped ? "Answer" : "Prompt"}</span>
++        <span className="openui-flashcard__text">{flipped ? back : front}</span>
++      </button>
++      {flipped && unit && <UnitChips units={[unit]} />}
++    </article>
++  );
++}
++
++const Flashcard = defineComponent({
++  name: "Flashcard",
++  description: "A study card: `front` is a prompt (usually the idea's title), `back` the idea itself; the reader flips it. `unit` is the source unit.",
++  props: z.object({
++    front: z.string(),
++    back: z.string(),
++    unit: z.string().optional(),
++  }),
++  component: ({ props }) => <FlashcardView front={props.front} back={props.back} unit={props.unit} />,
++});
++
++// ── NoteLink ────────────────────────────────────────────────────────────────
++
++function NoteLinkView({ target, label }: { target: string; label?: string }) {
++  const host = useNotesHost();
++  const text = label ?? host.noteTitle?.(target) ?? target;
++  if (!host.navigate) {
++    return (
++      <span className="openui-note-link" data-target={target}>
++        {text}
++      </span>
++    );
++  }
++  return (
++    <button type="button" className="openui-note-link" data-target={target} onClick={() => host.navigate!(target)}>
++      <span aria-hidden="true">→</span> {text}
++    </button>
++  );
++}
++
++export const NoteLink = defineComponent({
++  name: "NoteLink",
++  description: "A link to another note in the same notes view, by its note id. Use for 'see also' between related ideas; never invent an id.",
++  props: z.object({
++    target: z.string().describe("The other note's id."),
++    label: z.string().optional(),
++  }),
++  component: ({ props }) => <NoteLinkView target={props.target} label={props.label} />,
++});
++
++// eslint-disable-next-line @typescript-eslint/no-explicit-any
++export const interactionComponents: DefinedComponent<any>[] = [DecisionOption, DecisionCard, TimelineEvent, Timeline, FlowDiagram, QuizCard, Flashcard, NoteLink];
+diff --git a/src/ai/openui/library.test.tsx b/src/ai/openui/library.test.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..2d74011c25e34a394d5b83a0de26ebd0f145f07a
+--- /dev/null
++++ b/src/ai/openui/library.test.tsx
+@@ -0,0 +1,92 @@
++/**
++ * Phase 1 acceptance (`.ai/docs/open-intelligent-ui-audit.md`, Option A): "validate streaming and deterministic
++ * rendering." No model calls here — a static OpenUI Lang fixture, parsed and rendered through the real
++ * `@openuidev/react-lang` runtime against `acuteCardLibrary`.
++ */
++import { createParser, createStreamingParser, type ElementNode } from "@openuidev/react-lang";
++import { renderToStaticMarkup } from "react-dom/server";
++import { describe, expect, it } from "vitest";
++import { acuteCardLibrary } from "./library";
++import { OpenUiCardRenderer } from "@/components/openui/OpenUiCardRenderer";
++
++const FIXTURE = `
++root = IdeaCard("Idempotency keys prevent duplicate charges", "When a client retries a payment request after a timeout, the server matches the request's idempotency key and returns the original result instead of charging twice.", "high", [c1, c2])
++c1 = CitationChip("u4")
++c2 = CitationChip("u7", "u7")
++`.trim();
++
++const schema = acuteCardLibrary.toJSONSchema();
++
++function asIdeaCard(root: ElementNode | null) {
++  if (!root || root.typeName !== "IdeaCard") throw new Error(`expected an IdeaCard root, got ${root?.typeName}`);
++  return root;
++}
++
++describe("acuteCardLibrary — deterministic parsing", () => {
++  it("parses the same fixture identically across independent parser instances", () => {
++    const first = createParser(schema).parse(FIXTURE);
++    const second = createParser(schema).parse(FIXTURE);
++
++    for (const result of [first, second]) {
++      expect(result.meta.incomplete).toBe(false);
++      expect(result.meta.errors).toEqual([]);
++      expect(result.meta.unresolved).toEqual([]);
++      expect(result.meta.statementCount).toBe(3);
++    }
++
++    const a = asIdeaCard(first.root);
++    const b = asIdeaCard(second.root);
++    expect(a.props).toEqual(b.props);
++  });
++
++  it("maps positional args to named props in the library's Zod key order", () => {
++    const { root } = createParser(schema).parse(FIXTURE);
++    const card = asIdeaCard(root);
++
++    expect(card.props.title).toBe("Idempotency keys prevent duplicate charges");
++    expect(card.props.importance).toBe("high");
++
++    const citations = card.props.citations as ElementNode[];
++    expect(citations).toHaveLength(2);
++    expect(citations[0]!.typeName).toBe("CitationChip");
++    expect(citations[0]!.props.unit).toBe("u4");
++    expect(citations[1]!.props.label).toBe("u7");
++  });
++});
++
++describe("acuteCardLibrary — streaming parser", () => {
++  it("converges to the same result as a one-shot parse as chunks arrive", () => {
++    const streaming = createStreamingParser(schema);
++    const chunkSize = 24;
++    let sawIncomplete = false;
++
++    for (let i = chunkSize; i < FIXTURE.length; i += chunkSize) {
++      const partial = streaming.set(FIXTURE.slice(0, i));
++      if (partial.meta.incomplete) sawIncomplete = true;
++    }
++    const final = streaming.set(FIXTURE, true);
++
++    // The point of streaming: it actually was incomplete at some point, not just complete from chunk one.
++    expect(sawIncomplete).toBe(true);
++    expect(final.meta.incomplete).toBe(false);
++    expect(final.meta.statementCount).toBe(3);
++
++    const oneShot = createParser(schema).parse(FIXTURE);
++    expect(asIdeaCard(final.root).props).toEqual(asIdeaCard(oneShot.root).props);
++  });
++});
++
++describe("OpenUiCardRenderer — renders the parsed tree", () => {
++  it("renders the card's title, body and citation chips to markup", () => {
++    const html = renderToStaticMarkup(<OpenUiCardRenderer response={FIXTURE} isStreaming={false} />);
++
++    expect(html).toContain("Idempotency keys prevent duplicate charges");
++    expect(html).toContain("openui-idea-card");
++    expect(html).toContain('data-unit="u4"');
++    expect(html).toContain('data-unit="u7"');
++  });
++
++  it("renders nothing unsafe when response is null (nothing streamed in yet)", () => {
++    expect(() => renderToStaticMarkup(<OpenUiCardRenderer response={null} isStreaming />)).not.toThrow();
++  });
++});
+diff --git a/src/ai/openui/library.tsx b/src/ai/openui/library.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..d21c496ab65d9d5f9db076045302654f74848f54
+--- /dev/null
++++ b/src/ai/openui/library.tsx
+@@ -0,0 +1,248 @@
++"use client";
++
++/**
++ * The OpenUI component library for Acute's note cards (`.ai/docs/open-intelligent-ui-audit.md` Option A, extended by
++ * `.ai/docs/openui-integration-plan.md` Phases 2–3): primitives a model — or the deterministic Notes view builder
++ * (`notesModel.ts`) — arranges into one distilled idea card, mirroring the vocabulary Visualize already uses
++ * (`VisualNode`, knowledge-notes `sourceUnits`/`CardReview`) without reading or writing any of that code.
++ *
++ * Interactive behaviour (expanding a citation's passage, "More", Pin) is component-local React state plus what the
++ * host offers through `useNotesHost()` — never a model call. Outside a host every component renders statically.
++ *
++ * Example OpenUI Lang this library accepts (positional args, in each component's Zod key order):
++ *
++ * ```
++ * root = IdeaCard("Idempotency keys prevent duplicate charges", "When a client retries a payment request after a
++ * timeout, the server matches the request's idempotency key and returns the original result instead of charging
++ * twice.", "high", [c1, c2])
++ * c1 = CitationChip("u4")
++ * c2 = CitationChip("u7", "u7")
++ * ```
++ *
++ * Props are positional, so a new prop is only ever appended (`detail`, `extras` came after Phase 1's four); reordering
++ * would silently change what stored or generated Lang means.
++ */
++import { createLibrary, defineComponent, type PromptOptions } from "@openuidev/react-lang";
++import { createContext, useContext, useId, useState, type ReactNode } from "react";
++import { z } from "zod/v4";
++import { useNotesHost } from "./hostContext";
++import { interactionComponents, NoteLink } from "./interactions";
++
++/** Which citation of the enclosing IdeaCard has its passage open (one at a time, shown under the chips). */
++interface OpenCitation {
++  open: string | null;
++  toggle(unit: string): void;
++}
++const OpenCitationContext = createContext<OpenCitation | null>(null);
++
++function CitationChipView({ unit, label }: { unit: string; label?: string }) {
++  const host = useNotesHost();
++  const card = useContext(OpenCitationContext);
++  const text = host.unitText?.(unit);
++  // Static chip when there's nothing to expand (no host, unknown unit, or outside an IdeaCard).
++  if (!text || !card) {
++    return (
++      <span className="openui-citation-chip" data-unit={unit} title={`Source unit ${unit}`}>
++        {label ?? unit}
++      </span>
++    );
++  }
++  const open = card.open === unit;
++  return (
++    <button
++      type="button"
++      className="openui-citation-chip"
++      data-unit={unit}
++      data-open={open || undefined}
++      aria-expanded={open}
++      title={open ? "Hide source passage" : "Show source passage"}
++      onClick={() => card.toggle(unit)}
++    >
++      {label ?? unit}
++    </button>
++  );
++}
++
++const CitationChip = defineComponent({
++  name: "CitationChip",
++  description:
++    "An inline marker citing one source unit this card represents. Use one per unit cited, never one chip for several units.",
++  props: z.object({
++    unit: z.string().describe('The source unit id, e.g. "u17". Never a heading or a made-up id.'),
++    label: z.string().optional().describe("Short label on the chip; defaults to the unit id."),
++  }),
++  component: ({ props }) => <CitationChipView unit={props.unit} label={props.label} />,
++});
++
++function SourceLinkView({ unit, label }: { unit: string; label?: string }) {
++  const host = useNotesHost();
++  return (
++    <button type="button" className="openui-source-link" data-unit={unit} onClick={host.openSource ? () => host.openSource!([unit]) : undefined}>
++      <span aria-hidden="true">↗</span> {label ?? "View source"}
++    </button>
++  );
++}
++
++const SourceLink = defineComponent({
++  name: "SourceLink",
++  description: "A prominent 'view in source' affordance for one unit, distinct from an inline CitationChip.",
++  props: z.object({
++    unit: z.string().describe("The source unit id this points at."),
++    label: z.string().optional().describe('Link text; defaults to "View source".'),
++  }),
++  component: ({ props }) => <SourceLinkView unit={props.unit} label={props.label} />,
++});
++
++const Callout = defineComponent({
++  name: "Callout",
++  description:
++    "A short aside flagging something about the idea itself (a caveat, an open question, why it needs review) — not a citation and not the idea's main body.",
++  props: z.object({
++    tone: z.enum(["info", "warning", "success"]).describe("info: context. warning: caveat/needs review. success: confirmed/resolved."),
++    text: z.string(),
++  }),
++  component: ({ props }) => (
++    <p className="openui-callout" data-tone={props.tone}>
++      {props.text}
++    </p>
++  ),
++});
++
++const ComparisonTable = defineComponent({
++  name: "ComparisonTable",
++  description: "A small table for comparing a few options or facts side by side. Keep it to a handful of rows; prose fits better in the card body otherwise.",
++  props: z.object({
++    columns: z.array(z.string()).min(1),
++    rows: z.array(z.array(z.string())),
++  }),
++  component: ({ props }) => (
++    <table className="openui-comparison-table">
++      <thead>
++        <tr>
++          {props.columns.map((col, i) => (
++            <th key={i}>{col}</th>
++          ))}
++        </tr>
++      </thead>
++      <tbody>
++        {props.rows.map((row, r) => (
++          <tr key={r}>
++            {row.map((cell, c) => (
++              <td key={c}>{cell}</td>
++            ))}
++          </tr>
++        ))}
++      </tbody>
++    </table>
++  ),
++});
++
++interface IdeaCardViewProps {
++  title: string;
++  body: string;
++  importance?: "low" | "medium" | "high";
++  detail?: string;
++  citations: ReactNode;
++  citedUnits: string[];
++  extras: ReactNode;
++}
++
++function IdeaCardView({ title, body, importance, detail, citations, citedUnits, extras }: IdeaCardViewProps) {
++  const host = useNotesHost();
++  const [openUnit, setOpenUnit] = useState<string | null>(null);
++  const [expanded, setExpanded] = useState(false);
++  const detailId = useId();
++  const passage = openUnit ? host.unitText?.(openUnit) : undefined;
++  return (
++    <article className="openui-idea-card" data-importance={importance ?? "medium"} data-note-id={host.noteId}>
++      <h3 className="openui-idea-card__title">{title}</h3>
++      {body && <p className="openui-idea-card__body">{body}</p>}
++      {detail && (
++        <>
++          {expanded && (
++            <p className="openui-idea-card__detail" id={detailId}>
++              {detail}
++            </p>
++          )}
++          <button type="button" className="openui-idea-card__more" aria-expanded={expanded} aria-controls={detailId} onClick={() => setExpanded((e) => !e)}>
++            {expanded ? "Less" : "More"}
++          </button>
++        </>
++      )}
++      {extras && <div className="openui-idea-card__extras">{extras}</div>}
++      {citedUnits.length > 0 && (
++        <OpenCitationContext.Provider value={{ open: openUnit, toggle: (u) => setOpenUnit((cur) => (cur === u ? null : u)) }}>
++          <div className="openui-idea-card__citations">{citations}</div>
++        </OpenCitationContext.Provider>
++      )}
++      {passage && (
++        <blockquote className="openui-idea-card__passage" data-unit={openUnit ?? undefined}>
++          {passage}
++        </blockquote>
++      )}
++      {(host.pin || (host.openSource && citedUnits.length > 0)) && (
++        <div className="openui-idea-card__actions">
++          {host.openSource && citedUnits.length > 0 && (
++            <button type="button" className="openui-idea-card__action" onClick={() => host.openSource!(citedUnits)}>
++              Open in source
++            </button>
++          )}
++          {host.pin && (
++            <button type="button" className="openui-idea-card__action" data-primary disabled={host.pin.done} onClick={() => host.pin!.run()}>
++              {host.pin.label}
++            </button>
++          )}
++        </div>
++      )}
++    </article>
++  );
++}
++
++const IdeaCard = defineComponent({
++  name: "IdeaCard",
++  description:
++    "The root of one distilled idea card: a title, the idea in the model's own words, how important it is, and the source units it represents. Optional `detail` is a longer explanation shown only when the reader asks for more; optional `extras` holds at most a couple of Callout/ComparisonTable/SourceLink/NoteLink children when truly needed — most cards are just title + body + citations.",
++  props: z.object({
++    title: z.string(),
++    body: z.string().describe("The distilled idea, in the model's own words — not a copy of the source sentence. One or two sentences."),
++    importance: z.enum(["low", "medium", "high"]).optional(),
++    citations: z.array(CitationChip.ref).optional().describe("One CitationChip per source unit this card represents."),
++    detail: z.string().optional().describe("Further explanation, hidden behind 'More' until the reader expands it."),
++    extras: z.array(z.union([Callout.ref, ComparisonTable.ref, SourceLink.ref, NoteLink.ref])).optional().describe("Optional asides under the body, including NoteLinks to related cards."),
++  }),
++  component: ({ props, renderNode }) => {
++    const citations = props.citations ?? [];
++    const citedUnits = citations.map((c) => (c as unknown as { props?: { unit?: unknown } }).props?.unit).filter((u): u is string => typeof u === "string");
++    return (
++      <IdeaCardView
++        title={props.title}
++        body={props.body}
++        importance={props.importance}
++        detail={props.detail}
++        citations={citations.length ? renderNode(citations) : null}
++        citedUnits={citedUnits}
++        extras={props.extras && props.extras.length ? renderNode(props.extras) : null}
++      />
++    );
++  },
++});
++
++/** The library: `IdeaCard` is the default root; any component may be a root (a Callout or table on its own, a Phase 3 card). */
++export const acuteCardLibrary = createLibrary({
++  id: "acute-notes-cards-v1",
++  root: "IdeaCard",
++  components: [CitationChip, SourceLink, Callout, ComparisonTable, IdeaCard, ...interactionComponents],
++});
++
++/** Generates the system prompt a model is given to emit this library's OpenUI Lang (`notesTask.ts`). */
++export function acuteCardSystemPrompt(promptOptions?: PromptOptions): string {
++  return acuteCardLibrary.prompt({
++    preamble:
++      "You distil a source document into idea cards. Each IdeaCard holds one idea in your own words, never a copy of the source sentence, and cites the source units (CitationChip) it represents.",
++    additionalRules: [
++      "Never cite a unit id you were not given.",
++      "Prefer one IdeaCard per idea; do not merge unrelated ideas into one card.",
++    ],
++    ...promptOptions,
++  });
++}
+diff --git a/src/components/openui/OpenUiCardRenderer.tsx b/src/components/openui/OpenUiCardRenderer.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..4cf5448a99a8f28aaca5f77db4f0158c23a8d1f7
+--- /dev/null
++++ b/src/components/openui/OpenUiCardRenderer.tsx
+@@ -0,0 +1,22 @@
++"use client";
++
++/**
++ * Phase 1 spike host (`.ai/docs/open-intelligent-ui-audit.md`, Option A): renders one or more `IdeaCard`s from raw
++ * OpenUI Lang. Read-only — there is no editor here. `RichBlockHost` + BlockNote remain the editable path; this
++ * component is never mounted there yet (`OPENUI_CONFIG.enabled` gates whether anything reaches it at all).
++ */
++import type { OpenUIError } from "@openuidev/react-lang";
++import { Renderer } from "@openuidev/react-lang";
++import { acuteCardLibrary } from "@/ai/openui/library";
++
++export interface OpenUiCardRendererProps {
++  /** Raw OpenUI Lang for the card(s), or null while nothing has arrived yet. */
++  response: string | null;
++  /** True while the source is still streaming in; disables form interactions. */
++  isStreaming?: boolean;
++  onError?: (errors: OpenUIError[]) => void;
++}
++
++export function OpenUiCardRenderer({ response, isStreaming, onError }: OpenUiCardRendererProps) {
++  return <Renderer response={response} library={acuteCardLibrary} isStreaming={isStreaming} onError={onError} />;
++}
+diff --git a/src/components/openui/interactions.css b/src/components/openui/interactions.css
+new file mode 100644
+index 0000000000000000000000000000000000000000..7f97a28eaf1b1e8dc92b8727fd7e7fb9c6269836
+--- /dev/null
++++ b/src/components/openui/interactions.css
+@@ -0,0 +1,302 @@
++/*
++ * Phase 3 knowledge-interaction cards (src/ai/openui/interactions.tsx). Uses the app's --acute-* tokens (globals.css),
++ * which flip under :root[data-theme="dark"]; fallbacks are the light values so the cards also work outside the app.
++ */
++.openui-decision,
++.openui-timeline,
++.openui-flow,
++.openui-quiz,
++.openui-flashcard {
++  border: 1px solid var(--acute-border, #e4e4e8);
++  border-radius: 10px;
++  padding: 16px 18px;
++  background: var(--acute-surface, #ffffff);
++  color: var(--acute-text, #1b1b1f);
++}
++.openui-decision__question,
++.openui-timeline__title,
++.openui-flow__title,
++.openui-quiz__question {
++  margin: 0 0 10px;
++  font-size: 15px;
++}
++
++/* Interactive surfaces share one button reset. */
++.openui-decision__option,
++.openui-timeline__head,
++.openui-flow__node,
++.openui-quiz__choice,
++.openui-quiz__retry,
++.openui-flashcard__face,
++.openui-note-link {
++  font: inherit;
++  color: inherit;
++  cursor: pointer;
++  text-align: left;
++}
++.openui-decision__option:focus-visible,
++.openui-timeline__head:focus-visible,
++.openui-flow__node:focus-visible,
++.openui-quiz__choice:focus-visible,
++.openui-quiz__retry:focus-visible,
++.openui-flashcard__face:focus-visible,
++.openui-note-link:focus-visible {
++  outline: 2px solid var(--acute-accent, #6965db);
++  outline-offset: 2px;
++}
++
++/* DecisionCard */
++.openui-decision__options {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
++  gap: 8px;
++}
++.openui-decision__option {
++  position: relative;
++  border: 1px solid var(--acute-border, #e4e4e8);
++  border-radius: 8px;
++  padding: 10px 12px;
++  background: var(--acute-surface-muted, #f5f5f7);
++}
++.openui-decision__option[aria-pressed="true"] {
++  border-color: var(--acute-accent, #6965db);
++  background: var(--acute-accent-soft, #e0dfff);
++}
++.openui-decision__option[data-chosen] {
++  border-width: 2px;
++  border-color: var(--acute-success, #2b8a3e);
++}
++.openui-decision__badge {
++  display: inline-block;
++  margin-bottom: 4px;
++  font-size: 11px;
++  font-weight: 600;
++  text-transform: uppercase;
++  letter-spacing: 0.04em;
++  color: var(--acute-success, #2b8a3e);
++}
++.openui-decision__option-name {
++  display: block;
++  font-weight: 600;
++  font-size: 14px;
++}
++.openui-decision__pros,
++.openui-decision__cons {
++  margin: 6px 0 0;
++  padding-left: 18px;
++  font-size: 13px;
++}
++.openui-decision__pros li::marker {
++  content: "+ ";
++  color: var(--acute-success, #2b8a3e);
++}
++.openui-decision__cons li::marker {
++  content: "− ";
++  color: var(--acute-danger, #c92a2a);
++}
++.openui-decision__rationale {
++  margin: 10px 0 0;
++  font-size: 13.5px;
++  color: var(--acute-text-muted, #6b6b76);
++}
++
++/* Timeline */
++.openui-timeline__list {
++  list-style: none;
++  margin: 0;
++  padding: 0 0 0 14px;
++  border-left: 2px solid var(--acute-border, #e4e4e8);
++}
++.openui-timeline__event {
++  position: relative;
++  padding: 2px 0 8px 10px;
++}
++.openui-timeline__event::before {
++  content: "";
++  position: absolute;
++  left: -21px;
++  top: 9px;
++  width: 10px;
++  height: 10px;
++  border-radius: 50%;
++  background: var(--acute-surface, #ffffff);
++  border: 2px solid var(--acute-accent, #6965db);
++}
++.openui-timeline__event[data-open]::before {
++  background: var(--acute-accent, #6965db);
++}
++.openui-timeline__head {
++  display: flex;
++  gap: 10px;
++  align-items: baseline;
++  border: 0;
++  background: none;
++  padding: 2px 0;
++}
++.openui-timeline__head:disabled {
++  cursor: default;
++}
++.openui-timeline__when {
++  font-family: ui-monospace, "SF Mono", Consolas, monospace;
++  font-size: 12px;
++  color: var(--acute-text-muted, #6b6b76);
++  min-width: 48px;
++}
++.openui-timeline__label {
++  font-size: 14px;
++}
++.openui-timeline__detail p {
++  margin: 4px 0 0;
++  font-size: 13.5px;
++  color: var(--acute-text-muted, #6b6b76);
++}
++
++/* FlowDiagram */
++.openui-flow__steps {
++  list-style: none;
++  margin: 0;
++  padding: 0;
++  display: flex;
++  flex-wrap: wrap;
++  align-items: center;
++  gap: 6px;
++}
++.openui-flow__step {
++  display: flex;
++  align-items: center;
++  gap: 6px;
++}
++.openui-flow__node {
++  border: 1px solid var(--acute-border, #e4e4e8);
++  border-radius: 8px;
++  padding: 8px 12px;
++  background: var(--acute-surface-muted, #f5f5f7);
++  font-size: 13.5px;
++}
++.openui-flow__node:disabled {
++  cursor: default;
++}
++.openui-flow__node[aria-pressed="true"] {
++  border-color: var(--acute-accent, #6965db);
++  background: var(--acute-accent-soft, #e0dfff);
++}
++.openui-flow__index {
++  display: inline-grid;
++  place-items: center;
++  width: 18px;
++  height: 18px;
++  margin-right: 4px;
++  border-radius: 50%;
++  font-size: 11px;
++  font-weight: 600;
++  background: var(--acute-accent, #6965db);
++  color: var(--acute-cta-text, #ffffff);
++}
++.openui-flow__arrow {
++  color: var(--acute-text-muted, #6b6b76);
++}
++.openui-flow__detail {
++  margin: 12px 0 0;
++  font-size: 13.5px;
++}
++
++/* QuizCard */
++.openui-quiz__choices {
++  display: grid;
++  gap: 6px;
++}
++.openui-quiz__choice {
++  border: 1px solid var(--acute-border, #e4e4e8);
++  border-radius: 8px;
++  padding: 8px 12px;
++  background: var(--acute-surface-muted, #f5f5f7);
++  font-size: 14px;
++}
++.openui-quiz__choice:disabled {
++  cursor: default;
++}
++.openui-quiz__choice[data-result="answer"] {
++  border-color: var(--acute-success, #2b8a3e);
++  box-shadow: inset 3px 0 0 var(--acute-success, #2b8a3e);
++}
++.openui-quiz__choice[data-result="wrong"] {
++  border-color: var(--acute-danger, #c92a2a);
++  box-shadow: inset 3px 0 0 var(--acute-danger, #c92a2a);
++}
++.openui-quiz__feedback {
++  margin-top: 10px;
++  font-size: 13.5px;
++}
++.openui-quiz__verdict {
++  margin: 0 0 4px;
++  font-weight: 600;
++}
++.openui-quiz[data-state="correct"] .openui-quiz__verdict {
++  color: var(--acute-success, #2b8a3e);
++}
++.openui-quiz[data-state="incorrect"] .openui-quiz__verdict {
++  color: var(--acute-danger, #c92a2a);
++}
++.openui-quiz__explanation {
++  margin: 0 0 8px;
++  color: var(--acute-text-muted, #6b6b76);
++}
++.openui-quiz__retry {
++  border: 1px solid var(--acute-border, #e4e4e8);
++  border-radius: 8px;
++  padding: 5px 10px;
++  background: var(--acute-surface, #ffffff);
++  font-size: 13px;
++}
++
++/* Flashcard */
++.openui-flashcard__face {
++  display: flex;
++  flex-direction: column;
++  gap: 6px;
++  width: 100%;
++  min-height: 96px;
++  border: 0;
++  background: none;
++  padding: 0;
++}
++.openui-flashcard__side {
++  font-size: 11px;
++  text-transform: uppercase;
++  letter-spacing: 0.04em;
++  color: var(--acute-text-muted, #6b6b76);
++}
++.openui-flashcard__text {
++  font-size: 15px;
++  line-height: 1.5;
++}
++.openui-flashcard[data-flipped] {
++  background: var(--acute-accent-soft, #e0dfff);
++}
++
++/* NoteLink */
++.openui-note-link {
++  display: inline-flex;
++  gap: 4px;
++  border: 0;
++  background: none;
++  padding: 0;
++  color: var(--acute-accent, #6965db);
++  font-size: 13.5px;
++}
++button.openui-note-link:hover {
++  text-decoration: underline;
++}
++span.openui-note-link {
++  cursor: default;
++  color: var(--acute-text-muted, #6b6b76);
++}
++
++@media (prefers-reduced-motion: no-preference) {
++  .openui-decision__option,
++  .openui-flow__node,
++  .openui-quiz__choice,
++  .openui-flashcard {
++    transition: background-color 120ms ease, border-color 120ms ease;
++  }
++}
+diff --git a/src/config/openui.ts b/src/config/openui.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..66cb4e1a82e7ff5819942c0cada19774fb45232c
+--- /dev/null
++++ b/src/config/openui.ts
+@@ -0,0 +1,27 @@
++/**
++ * OpenUI generative-UI note cards (`.ai/docs/open-intelligent-ui-audit.md`, `.ai/docs/openui-integration-plan.md`).
++ *
++ * Phase 1 (`OPENUI_CONFIG`): **off by default, and inert when off.** Nothing in `src/ai/visualize/**` or
++ * `src/components/blocks/**` reads it; cards on the canvas keep rendering through `RichBlockHost` + BlockNote.
++ *
++ * Phase 2–3 (`isOpenUiNotesEnabled`): the Notes view — a reading view over the canvas's cards, rendered with the OpenUI
++ * library, with promotion of generated notes into ordinary canvas blocks (`create_block`). A build switch like
++ * `isTopicMergeEnabled`: on in development while it's validated, off unless `NEXT_PUBLIC_OPENUI_NOTES` is exactly "on".
++ * It changes nothing on the canvas itself; the view only reads the canvas, and writes only when the user pins a note.
++ */
++export interface OpenUiConfig {
++  /** Developer setting only, like `FIDELITY_CONFIG.noteModel` was before its own gate. */
++  enabled: boolean;
++  /** Which path renders an AI-authored card's body. `blocknote` is today's behaviour, always available. */
++  noteRender: "blocknote" | "openui";
++}
++
++export const OPENUI_CONFIG: OpenUiConfig = {
++  enabled: false,
++  noteRender: "blocknote",
++};
++
++/** Read on every call so tests can stub the env. The literal `process.env.NEXT_PUBLIC_OPENUI_NOTES` must stay as-is for Next.js to inline it. */
++export function isOpenUiNotesEnabled(): boolean {
++  return process.env.NEXT_PUBLIC_OPENUI_NOTES === "on";
++}
+diff --git a/vitest.config.ts b/vitest.config.ts
+index 9808c03395220137548e989af5ccf21b5678983e..997181f16f5af36df9e68c8c431f49dfea71a1c6 100644
+--- a/vitest.config.ts
++++ b/vitest.config.ts
+@@ -6,7 +6,7 @@ export default defineConfig({
+     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+   },
+   test: {
+-    include: ["src/**/*.test.ts"],
++    include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+     // Contract tests make real network calls against live provider
+     // credentials (F36) — never part of the default run. See
+     // vitest.contract.config.ts / `npm run test:contract`.

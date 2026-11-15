@@ -23,6 +23,10 @@
  * — suggested by default, except for a selection's own content — which files
  * the new content under those notes' topics (`mergeIntoSource`) instead of
  * adding a separate copy. "Add as new notes" is the Visualize it always was.
+ *
+ * "Keep full detail" (knowledge-notes-plan WP2.8) is hidden until R1 (`FIDELITY_CONFIG.showNoteModelChoice`). Once
+ * shown, a new Visualize distils by default and the box runs that one Visualize with `preserve`; the choice goes with
+ * the run (`noteModel` on the ingest request), never into the global config.
  */
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useEffect, useRef, useState } from "react";
@@ -40,6 +44,7 @@ import { ContentTooLargeError } from "@/ai/content/parser";
 import { NoProviderConfiguredError, NothingToVisualizeLocallyError, ReadsFineAsTextError, type VisualizeProgress } from "@/ai/visualize/types";
 import { ingestContent, prepareProposal, SourceUnavailableError, sceneSourceObjects, type IngestPorts } from "@/ai/ingest/ingest";
 import { ECONOMY_LABEL, ECONOMY_NOTICE } from "./economyOption";
+import { KEEP_FULL_DETAIL_HELP, KEEP_FULL_DETAIL_LABEL, runNoteModel, showsNoteModelChoice } from "./noteModelOption";
 import { isTopicMergeEnabled } from "@/config/features";
 import type { SceneElement } from "@/domain/canvas/adapter";
 import { getPersistence } from "@/persistence";
@@ -92,6 +97,9 @@ export function errorInfo(err: unknown): ErrorInfo {
   return { message: "Something went wrong. Nothing was changed.", offerLocal: false, offerSettings: false };
 }
 
+/** The run's note model on the ingest request, only when the dialog chose one. */
+const withNoteModel = (noteModel: ReturnType<typeof runNoteModel>) => (noteModel ? { noteModel } : {});
+
 const wordCount = (text: string) => (text.trim() ? text.trim().split(/\s+/).length : 0);
 
 export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; home: DocumentHome }) {
@@ -106,6 +114,8 @@ export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; h
   const [targetId, setTargetId] = useState<string | null>(null);
   /** "Add new text as plain cards, no AI": per import, never remembered, off for every new open. */
   const [economy, setEconomy] = useState(false);
+  /** "Keep full detail" (WP2.8, shown from R1): per run, never remembered, off for every new open. */
+  const [keepFullDetail, setKeepFullDetail] = useState(false);
   const requestRef = useRef<AbortController | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
   /** The open request an auto-run (G3 "Use this option") last started for, so each starts once. */
@@ -123,6 +133,7 @@ export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; h
     setMode("new");
     setTargetId(null);
     setEconomy(false);
+    setKeepFullDetail(false);
   }
 
   // Merge is offered when the canvas already has notes; suggested by default (D7), except for a selection's own content.
@@ -164,6 +175,8 @@ export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; h
 
   const updating = !!store.updateSourceId;
   const merging = !updating && mode === "merge" && !!targets?.length && !!targetId;
+  /** "Keep full detail" applies to a new Visualize the outline plans (a forced template has its own rules). */
+  const showNoteModel = showsNoteModelChoice() && !updating && !merging && template === "auto";
 
   /** The text as Visualize reads it: timestamps and citation numbers removed per AI settings → Clean pasted answers. */
   const cleanText = () => cleanupAIText(text, getUiPref("aiCleanup"));
@@ -174,6 +187,7 @@ export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; h
     contentSources: getPersistence().contentSources,
     renderContext: () => gatherRenderContext(api),
     sourceObjects: sceneSourceObjects(() => api.getSceneElements() as unknown as readonly SceneElement[], (id) => getDocumentStore().get(id)),
+    scene: () => ({ elements: api.getSceneElements() as unknown as readonly SceneElement[], getDocument: (id) => getDocumentStore().get(id) }),
   });
 
   /** "Update from new content" (F39): reconcile the source's objects on this canvas with the new text. */
@@ -198,7 +212,15 @@ export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; h
       else if (merging && !forceLocalOnly) ({ changeSet, notices } = await runMerge(targetId!, controller.signal));
       else {
         const result = await ingestContent(
-          { mode: "new", text: cleanText(), template: template === "auto" ? undefined : template, forceLocalOnly, title: store.label ? `Visualize: ${store.label}` : "Visualize" },
+          {
+            mode: "new",
+            text: cleanText(),
+            template: template === "auto" ? undefined : template,
+            forceLocalOnly,
+            title: store.label ? `Visualize: ${store.label}` : "Visualize",
+            // Hidden (until R1): nothing passed, the run uses the configured note model as before.
+            ...withNoteModel(runNoteModel(keepFullDetail)),
+          },
           ports(),
           { signal: controller.signal, onProgress: setRunning },
         );
@@ -357,6 +379,15 @@ export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; h
           <div className="acute-visualize-dialog__templates">
             <span className="acute-visualize-dialog__label">Template</span>
             <TemplatePicker value={template} onChange={setTemplate} />
+          </div>
+        )}
+        {showNoteModel && (
+          <div className="acute-visualize-dialog__note-model">
+            <label className="acute-visualize-dialog__choice">
+              <input type="checkbox" checked={keepFullDetail} onChange={(e) => setKeepFullDetail(e.target.checked)} />
+              {KEEP_FULL_DETAIL_LABEL}
+            </label>
+            <p className="acute-visualize-dialog__destination">{KEEP_FULL_DETAIL_HELP}</p>
           </div>
         )}
         <p className="acute-visualize-dialog__destination">

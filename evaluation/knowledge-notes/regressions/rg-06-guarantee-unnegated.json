@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-guarantee-unnegated",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "The reranking frame's takeaway flips 'not a guarantee of a correct answer' into 'a guarantee of a correct answer'. The negation-aware a.no-rerank-guarantee must still catch it.",
+  "mutations": [
+    { "op": "replace_text", "node": "g3", "find": "; not a guarantee of a correct answer.", "replace": ", and a guarantee of a correct answer." }
+  ],
+  "expectFailing": ["a.no-rerank-guarantee"]
+}

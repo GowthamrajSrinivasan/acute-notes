@@ -9,6 +9,7 @@
  * - `openSource`: show the passages in the Source tab / on the canvas.
  * - `pin`: promotion into an editable canvas block (Phase 2), or "Show on canvas" for a note already there.
  * - `navigate` / `noteTitle`: cross-note navigation (Phase 3 `NoteLink`).
+ * - `recordStudy`: study answers for the device-local study history (study-mode plan Phase 3).
  */
 import { createContext, useContext, type ReactNode } from "react";
 
@@ -28,6 +29,12 @@ export interface NotesHost {
   pin?: NotesPinAction;
   navigate?(noteId: string): void;
   noteTitle?(noteId: string): string | undefined;
+  /**
+   * Study history (study-mode plan Phase 3): a QuizCard reports its first pick per mount, a Flashcard the reader's own
+   * "Got it" / "Missed it" grade after the reveal. Absent (the static demo, a read-only host): nothing is reported and
+   * a Flashcard shows no grade buttons.
+   */
+  recordStudy?(r: { kind: "quiz" | "flashcard"; correct: boolean }): void;
 }
 
 const NotesHostContext = createContext<NotesHost>({});

@@ -1,0 +1,13 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-12-unchanged-regenerated",
+  "distortion": "unnecessary_regeneration",
+  "caseId": "kn-12-flag-rollout-update",
+  "target": "reconcile",
+  "description": "Needless regeneration plus a stale number: the unchanged stages card is rewritten (update_clean) and the canary card keeps v1's 30 minutes.",
+  "mutations": [
+    { "op": "reconcile_set", "item": "rollout-stages § stages", "state": "update_clean" },
+    { "op": "reconcile_set", "item": "canary § window", "state": "update_clean", "text": "Canary: 5% of requests, picked at random per request, for at least 30 minutes; any manual change restarts the measurement." }
+  ],
+  "expectFailing": ["a.rc-stages", "a.rc-canary"]
+}

@@ -22,10 +22,20 @@ export type AITask =
   | "generate_visual_plan"
   | "outline_document"
   | "generate_section_analysis"
+  // Knowledge Notes §3.4: the optional model check of distilled cards against the source they cite (one batched call per section).
+  | "check_card_meaning"
+  // Knowledge Notes §6.1 (Phase 3, behind its switch until R2): the cards citing changed passages, rewritten only as far as the change needs.
+  | "resend_cards"
   // Topic merge (G2): which existing topic each part of new content belongs to.
   | "assign_to_topics"
   // Topic merge G3.3: where a document revises itself (a later statement replacing an earlier one in the same section).
   | "find_revisions"
+  // OpenUI Notes view (openui-integration-plan Phase 2): a source distilled into OpenUI Lang idea cards, streamed into the reading view.
+  | "generate_openui_notes"
+  // Update engine Stage 2d: where content with no source belongs, among the router's candidate cards — or a question back.
+  | "route_content"
+  // Update engine Stage 4f: whether pairs of statements the rules left "possible" contradict — evidence for the user only (not active).
+  | "judge_consistency"
   | "suggest"
   | "chat"
   // Acute Lens Phase 5 (plan §6): explain a node, map a question onto node keys, generate the next level.

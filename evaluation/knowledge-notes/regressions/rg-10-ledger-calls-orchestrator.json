@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-ledger-calls-orchestrator",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The orchestrator → ledger 'reserves stock' arrow is reversed, so the domain ledger appears to call the orchestration layer.",
+  "mutations": [
+    {
+      "op": "reverse_relationship",
+      "from": "n-orch",
+      "to": "n-ledger"
+    }
+  ],
+  "expectFailing": [
+    "a.rel-orch-ledger",
+    "a.no-ledger-to-orch"
+  ]
+}

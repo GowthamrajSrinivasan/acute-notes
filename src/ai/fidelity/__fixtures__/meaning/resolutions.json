@@ -1,0 +1,44 @@
+{
+  "h-sc-04": {
+    "outcome": "distorted",
+    "note": "The card drops the Growth-plan restriction and broadens eligibility. (Model baseline said faithful.)",
+    "by": "Gowthamraj Srinivasan (2026-10-19)",
+    "source": "Usage-based billing is available for customers on the Growth plan.",
+    "card": "Usage-based billing is available to customers."
+  },
+  "cp-18": {
+    "outcome": "distorted",
+    "note": "The card omits the material risk of conflicts between offline edits. (Model baseline said partly.)",
+    "by": "Gowthamraj Srinivasan (2026-10-19)",
+    "source": "The beta adds offline editing, though changes made offline may conflict with edits from others.",
+    "card": "The beta adds offline editing."
+  },
+  "to-26": {
+    "outcome": "distorted",
+    "note": "The card omits the debugging trade-off associated with flaky tests. (Model baseline said partly.)",
+    "by": "Gowthamraj Srinivasan (2026-10-19)",
+    "source": "Running tests in parallel shortens the pipeline, though flaky tests become harder to debug.",
+    "card": "Running tests in parallel shortens the pipeline."
+  },
+  "ng-08": {
+    "outcome": "faithful",
+    "note": "Rewritten card. The original card (\"No jobs run on public holidays.\") is distorted: it broadens the scope from this scheduler to all jobs (model baseline said distorted, rightly).",
+    "by": "Gowthamraj Srinivasan (2026-10-19)",
+    "source": "The scheduler doesn't run jobs on public holidays.",
+    "card": "The scheduler runs no jobs on public holidays."
+  },
+  "to-02": {
+    "outcome": "faithful",
+    "note": "Rewritten card. The original card (\"…but data loss is avoided\") is distorted: it turns protection into a guarantee (model baseline said distorted, rightly).",
+    "by": "Gowthamraj Srinivasan (2026-10-19)",
+    "source": "Synchronous replication protects against data loss at the cost of higher write latency.",
+    "card": "Synchronous replication has higher write latency but protects against data loss."
+  },
+  "qt-19": {
+    "outcome": "faithful",
+    "note": "Rubric v2: a requirement for N approvals means at least N approvals unless an exact count is stated. (Model baseline said faithful; draft said distorted.)",
+    "by": "Gowthamraj Srinivasan (2026-10-19)",
+    "source": "At least two approvals are required before merging.",
+    "card": "Two approvals are required before merging."
+  }
+}

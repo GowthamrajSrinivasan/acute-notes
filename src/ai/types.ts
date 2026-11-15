@@ -17,6 +17,12 @@ export interface AICapabilities {
   embeddings: boolean;
   modelSelection: boolean;
   maxContextTokens?: number;
+  /**
+   * Does `AIRequest.maxTokens` reach the model, so it stops at the cap? `"passed"`: handed to the model API (not
+   * independently verified against every endpoint); `"ignored"`: dropped. Absent = unknown, treated as ignored by
+   * callers that need a cap (the AI consistency check, §12.25).
+   */
+  outputCap?: "passed" | "ignored";
 }
 
 export interface AIModel {
@@ -55,6 +61,11 @@ export interface AIRequest {
   model?: string;
   temperature?: number;
   maxTokens?: number;
+  /**
+   * Reasoning effort for models that support it (§12.25: the AI consistency check asks for "low", the setting its
+   * reasoning reserve was sized for). Only sent when set; no other task sets it.
+   */
+  reasoningEffort?: "low" | "medium" | "high";
   /** Convenience for adapters with native structured output; the result is still validated by AIRuntime. */
   responseSchema?: unknown;
   signal?: AbortSignal;

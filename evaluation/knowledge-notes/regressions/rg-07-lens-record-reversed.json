@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-lens-record-reversed",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "lens",
+  "description": "In the L1 Lens frame the upload service → metadata database 'records photo as processing' edge (u13, critical) is reversed, which also breaks the post-photo navigation path.",
+  "mutations": [
+    {
+      "op": "lens_reverse_edge",
+      "level": 1,
+      "from": "upload-service",
+      "to": "metadata-db"
+    }
+  ],
+  "expectFailing": [
+    "a.lens-edge-l1-upload-metadata",
+    "a.lens-path"
+  ]
+}

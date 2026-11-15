@@ -1,0 +1,1295 @@
+{
+  "caseId": "kn-06-hybrid-search-reranking",
+  "schema": "ClauseRecordV31 (review-v3/attachmentSchema.ts)",
+  "dataset": "v3.1-pre",
+  "records": [
+    {
+      "id": "k1",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u9"
+      ],
+      "clause": "Its weakness is vocabulary mismatch",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u7"
+          ],
+          "claimQuote": "Its strength is exact matching.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Human reviewers (item H08) both gave set. A: A real limitation of BM25 that pairs with 'its strength is exact matching'; the strength claim stays true without it, but the notes need the weakness. | B: Weakness is a real limit on BM25's exact-match strength; takeaway on exact matching unchanged.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k1 link (both humans gave the same link); claimQuote copied from v3"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "human_adjudicated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k1",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u7"
+            ],
+            "confidence": "medium"
+          }
+        ],
+        "human": {
+          "item": "H08",
+          "verdictA": "set",
+          "verdictB": "set",
+          "linksA": [
+            "u7"
+          ],
+          "linksB": [
+            "u7"
+          ],
+          "answersA": {
+            "file": "review-v3/human-review/answers-A.json",
+            "sha256": "7ab024f0895b1ed83a93d384370da120bc50076570e9bc949a31866d97d3a39a"
+          },
+          "answersB": {
+            "file": "review-v3/human-review/answers-B.json",
+            "sha256": "0aec354c468b59d74ee6d490f4f9419bd34cfea1055f05072f5ecf6c8df5c4e0"
+          },
+          "sampleKey": {
+            "file": "review-v3/human-review/SAMPLE-KEY.json",
+            "sha256": "e7426e794225dec07c5ee21c1af226e01c3ffa600e0cfdb38cfc4290877b9a31"
+          },
+          "selector": "review-v3/human-review/discrepancies-2.json rows with pattern humans_agree_model_differs, re-checked against both answer files"
+        },
+        "migration": "Verdict set to the two humans' shared verdict; confidence is the lower of theirs. v3 readings kept above only as provenance."
+      }
+    },
+    {
+      "id": "k2",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u12"
+      ],
+      "clause": "Embeddings are weaker on exact codes and identifiers.",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u11"
+          ],
+          "claimQuote": "Passages that mean the same thing end up close together even when they share no words",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it vector retrieval reads as a full replacement for BM25, which u14 shows is false for code queries.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k2 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k2",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u11"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k3",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u13"
+      ],
+      "clause": "To the encoder, `E-4012` and `E-4021` look almost the same",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k3",
+            "verdict": "not_a_condition",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k4",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u14"
+      ],
+      "clause": "that consisted mainly of an error code",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "vector retrieval alone missed the correct passage for 31 of 50 queries",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without the query scope the 62% miss rate reads as general, which is false.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k4 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k4",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k5",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u14"
+      ],
+      "clause": "In our tests",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "vector retrieval alone missed the correct passage for 31 of 50 queries",
+          "evidence": "migrated: needs evidence",
+          "justification": "Provenance of the figure; the takeaway (weak on codes) holds either way.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k5 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k5",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k6",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u15"
+      ],
+      "clause": "Embeddings must also be recomputed",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u10"
+          ],
+          "claimQuote": "Vector retrieval turns the query and every passage into embeddings",
+          "evidence": "migrated: needs evidence",
+          "justification": "Split from x6, which combined the maintenance cost with its trigger (k7). The cost is real but secondary to how vector retrieval works (R3 set).",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k6 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k6",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u10"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k7",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u15"
+      ],
+      "clause": "whenever the encoder changes",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u15"
+          ],
+          "claimQuote": "Embeddings must also be recomputed",
+          "evidence": "migrated: needs evidence",
+          "justification": "The trigger bounds when the 6-hour recompute is needed; without it a reader would think it recurs constantly or with every content change and plan wrongly.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k7 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k7",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u15"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k8",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u15"
+      ],
+      "clause": "for this collection takes about 6 hours",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u15"
+          ],
+          "claimQuote": "Embeddings must also be recomputed whenever the encoder changes",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both say set; links differed. R4: the most specific claim is the recompute sentence it sizes.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k8 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k8",
+            "verdict": "set",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u15"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k9",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u17"
+      ],
+      "clause": "when lexical and semantic signals are complementary",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u17"
+          ],
+          "claimQuote": "Hybrid search can improve recall",
+          "evidence": "migrated: needs evidence",
+          "justification": "The benefit is explicitly conditional; without it hybrid reads as always improving recall.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k9 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k9",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u17"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k10",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u18"
+      ],
+      "clause": "If both retrievers tend to return the same passages",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u17"
+          ],
+          "claimQuote": "Hybrid search can improve recall",
+          "evidence": "migrated: needs evidence",
+          "justification": "A case where merging only adds latency; omitting it presents the benefit as free.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k10 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k10",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "agreed",
+            "claimUnits": [
+              "u17"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k11",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u18"
+      ],
+      "clause": "if one of them is poorly tuned for the collection",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u17"
+          ],
+          "claimQuote": "Hybrid search can improve recall",
+          "evidence": "migrated: needs evidence",
+          "justification": "A second, separate failure case for the recall benefit.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k11 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k11",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "agreed",
+            "claimUnits": [
+              "u17"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k12",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u23"
+      ],
+      "clause": "and usually fewer because some passages appear in both lists",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k12",
+            "verdict": "not_a_condition",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k13",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u25"
+      ],
+      "clause": "but it roughly doubled the time spent reranking",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u25"
+          ],
+          "claimQuote": "Raising the limit to 100 per retriever put the right passage in the list slightly more often ... so we kept 50",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: the cost decides the choice; X's span also included the decision ('so we kept 50'), which is the claim, not the clause. R4: linked to u25, where the benefit is weighed against it.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k13 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k13",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u25"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k14",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u29"
+      ],
+      "clause": "only on the fused candidates, never on the whole collection",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u29"
+          ],
+          "claimQuote": "the cross-encoder runs",
+          "evidence": "migrated: needs evidence",
+          "justification": "Running the cross-encoder over the collection would be the wrong design.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k14 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k14",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u29"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k15",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u29"
+      ],
+      "clause": "That accuracy is expensive",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u28"
+          ],
+          "claimQuote": "it judges relevance far more accurately than either retriever",
+          "evidence": "migrated: needs evidence",
+          "justification": "The accuracy claim stands without it; its operative consequence is k14.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k15 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k15",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u28"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k16",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u31"
+      ],
+      "clause": "but it does not guarantee that the final answer is correct",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u31"
+          ],
+          "claimQuote": "Reranking improves the precision of the top results",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: the source says explicitly the benefit is not guaranteed.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k16 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k16",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u31"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k17",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u32"
+      ],
+      "clause": "if the right passage is not among the candidates, reranking cannot recover it",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u31"
+          ],
+          "claimQuote": "Reranking improves the precision of the top results",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it reranking could be thought to compensate for weak retrieval.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k17 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k17",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "agreed",
+            "claimUnits": [
+              "u31"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k18",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u33"
+      ],
+      "clause": "and still out of date, which no relevance score will detect",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u28"
+          ],
+          "claimQuote": "it judges relevance far more accurately than either retriever",
+          "evidence": "migrated: needs evidence",
+          "justification": "The source returns to staleness twice more (u36, u49), so it is a deliberate limit on trusting relevance, not an aside; a reader would act on stale top passages without it. Y's narrower span adopted.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k18 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k18",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u28"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k19",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u35"
+      ],
+      "clause": "If none of the passages addresses the question",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u35"
+          ],
+          "claimQuote": "it should say so rather than answer from its general knowledge",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: without the trigger the model would decline to answer in every case.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k19 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k19",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u35"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k20",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u36"
+      ],
+      "clause": "but they do not show whether the passage itself is current",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u36"
+          ],
+          "claimQuote": "Citations let a reader check each claim against its passage",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it citations read as full verification.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k20 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k20",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u36"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k21",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u39"
+      ],
+      "clause": "On an internal test set of 400 questions",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u44"
+          ],
+          "claimQuote": "Hybrid + reranker | 88% | 190 ms | $0.95",
+          "evidence": "migrated: needs evidence",
+          "justification": "Provenance; the operative generalisation warning is k24.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k21 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k21",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u44"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k22",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u42"
+      ],
+      "clause": "Vector only | 68% | 60 ms | $0.10",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k22",
+            "verdict": "not_a_condition",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k23",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u45"
+      ],
+      "clause": "Reranking adds about 120 ms per query",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u31"
+          ],
+          "claimQuote": "Reranking improves the precision of the top results",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: the section's point is that relevance is bought with time (u38, u47 acts on it). R4: the u44 row already shows 190 ms so it isn't misled; the reranking benefit claim (u31) is.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k23 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k23",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u31"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k24",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u45"
+      ],
+      "clause": "it accounts for most of the cost increase",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u31"
+          ],
+          "claimQuote": "Reranking improves the precision of the top results",
+          "evidence": "migrated: needs evidence",
+          "justification": "Same reasoning as k23 for the money side of the trade-off.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k24 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k24",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u31"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k25",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u46"
+      ],
+      "clause": "These figures come from one collection and one query set",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u41",
+            "u42",
+            "u43",
+            "u44"
+          ],
+          "claimQuote": "Hybrid + reranker | 88% | 190 ms | $0.95",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: an explicit reliability warning on figures used to compare configurations. R4: linked to the measured rows, not the u39 lead-in.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k25 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k25",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u41",
+              "u42",
+              "u43",
+              "u44"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k26",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u46"
+      ],
+      "clause": "a collection with fewer exact identifiers may see a smaller gain from BM25",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u43"
+          ],
+          "claimQuote": "Hybrid (RRF) | 79% | 70 ms | $0.12",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: the source explicitly warns the hybrid gain depends on identifier density, so a team with prose-heavy content would overestimate it.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k26 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k26",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u43"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k27",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u46"
+      ],
+      "clause": "a different reranker will have a different latency",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u45"
+          ],
+          "claimQuote": "Reranking adds about 120 ms per query",
+          "evidence": "migrated: needs evidence",
+          "justification": "Colours the latency figure; the takeaway that reranking is the costly step stands.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k27 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k27",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u45"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k28",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u47"
+      ],
+      "clause": "at some cost in recall",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u47"
+          ],
+          "claimQuote": "can rerank fewer candidates",
+          "evidence": "migrated: needs evidence",
+          "justification": "The option is presented as a trade; without the cost it reads as free latency savings.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k28 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k28",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u47"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k29",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u47"
+      ],
+      "clause": "Teams with a strict latency budget",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u47"
+          ],
+          "claimQuote": "can rerank fewer candidates",
+          "evidence": "migrated: needs evidence",
+          "justification": "Scopes who would use the option; the option's takeaway holds without it.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k29 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k29",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u47"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k30",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u49"
+      ],
+      "clause": "Each step helps only under its own conditions",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u48"
+          ],
+          "claimQuote": "Hybrid search widens the net, reranking sorts the catch",
+          "evidence": "migrated: needs evidence",
+          "justification": "The summary's own qualifier; without it each step reads as unconditionally helpful.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k30 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k30",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u48"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k31",
+      "case": "kn-06-hybrid-search-reranking",
+      "units": [
+        "u49"
+      ],
+      "clause": "none of them makes the final answer certain to be right",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u48"
+          ],
+          "claimQuote": "Hybrid search widens the net, reranking sorts the catch",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: explicit 'not guaranteed' on the pipeline's benefit.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k31 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k31",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u48"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    }
+  ]
+}

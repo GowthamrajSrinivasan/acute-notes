@@ -1,0 +1,1223 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "This note was written for the billing team's architecture review and replaces the earlier draft shared in chat.",
+        "hash": "x1g22xcn5i",
+        "topic": "Choosing a queue for background jobs",
+        "span": {
+          "start": 40,
+          "end": 151
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "The billing service runs about 40,000 background jobs a day: rendering invoice PDFs, sending receipt emails and retrying failed webhooks.",
+        "hash": "vb53kqcihp",
+        "topic": "Choosing a queue for background jobs › Context",
+        "span": {
+          "start": 165,
+          "end": 302
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "Today they run in an in-process worker pool, so a deploy or a crash loses any job that was queued but not yet started.",
+        "hash": "24b6ibca4dw",
+        "topic": "Choosing a queue for background jobs › Context",
+        "span": {
+          "start": 303,
+          "end": 421
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "Last quarter that lost 37 invoice emails that customers had to request again.",
+        "hash": "1sk6ab3o0kd",
+        "topic": "Choosing a queue for background jobs › Context",
+        "span": {
+          "start": 422,
+          "end": 499
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "Peak load is 600 jobs per minute, during the month-end billing run.",
+        "hash": "ej0l0io7c2",
+        "topic": "Choosing a queue for background jobs › Context",
+        "span": {
+          "start": 500,
+          "end": 567
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "**Option A: managed cloud queue.** A queue service run by our cloud provider.",
+        "hash": "1nqbc8c0gnv",
+        "topic": "Choosing a queue for background jobs › Options",
+        "span": {
+          "start": 581,
+          "end": 658
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "We send messages to it and workers poll for them; the provider handles storage, scaling and redelivery.",
+        "hash": "ncmmpkwkar",
+        "topic": "Choosing a queue for background jobs › Options",
+        "span": {
+          "start": 659,
+          "end": 762
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "sentence",
+        "text": "**Option B: self-hosted broker.** A message broker cluster of three virtual machines that we install, patch and monitor ourselves.",
+        "hash": "gw47vdqd9g",
+        "topic": "Choosing a queue for background jobs › Options",
+        "span": {
+          "start": 764,
+          "end": 894
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "sentence",
+        "text": "**Option C: database job table.** A `jobs` table in the existing billing Postgres database.",
+        "hash": "1uiuxry1uiy",
+        "topic": "Choosing a queue for background jobs › Options",
+        "span": {
+          "start": 896,
+          "end": 987
+        },
+        "prev": "u8",
+        "next": "u10"
+      },
+      {
+        "id": "u10",
+        "kind": "sentence",
+        "text": "Workers claim rows with `SELECT ...",
+        "hash": "1lzqbxtck84",
+        "topic": "Choosing a queue for background jobs › Options",
+        "span": {
+          "start": 988,
+          "end": 1023
+        },
+        "prev": "u9",
+        "next": "u11"
+      },
+      {
+        "id": "u11",
+        "kind": "sentence",
+        "text": "FOR UPDATE SKIP LOCKED` and mark them done.",
+        "hash": "1j0f5nzr9f6",
+        "topic": "Choosing a queue for background jobs › Options",
+        "span": {
+          "start": 1024,
+          "end": 1067
+        },
+        "prev": "u10",
+        "next": "u12"
+      },
+      {
+        "id": "u12",
+        "kind": "table_row",
+        "text": "Option | Monthly infrastructure | Monthly team effort | Notes",
+        "hash": "1noe2jolt69",
+        "topic": "Choosing a queue for background jobs › Costs",
+        "span": {
+          "start": 1079,
+          "end": 1144
+        },
+        "prev": "u11",
+        "next": "u13"
+      },
+      {
+        "id": "u13",
+        "kind": "table_row",
+        "text": "Managed cloud queue | $310 | about 2 hours | Priced per million requests; grows with volume",
+        "hash": "1o3bjs1eydz",
+        "topic": "Choosing a queue for background jobs › Costs",
+        "span": {
+          "start": 1163,
+          "end": 1258
+        },
+        "prev": "u12",
+        "next": "u14"
+      },
+      {
+        "id": "u14",
+        "kind": "table_row",
+        "text": "Self-hosted broker | $540 | about 12 hours | Three VMs plus upgrades and on-call",
+        "hash": "mubk32gq61",
+        "topic": "Choosing a queue for background jobs › Costs",
+        "span": {
+          "start": 1259,
+          "end": 1343
+        },
+        "prev": "u13",
+        "next": "u15"
+      },
+      {
+        "id": "u15",
+        "kind": "table_row",
+        "text": "Database job table | $0 extra | about 4 hours | Uses spare capacity on the existing primary",
+        "hash": "11vaye815ag",
+        "topic": "Choosing a queue for background jobs › Costs",
+        "span": {
+          "start": 1344,
+          "end": 1439
+        },
+        "prev": "u14",
+        "next": "u16"
+      },
+      {
+        "id": "u16",
+        "kind": "sentence",
+        "text": "The managed queue's figure assumes current volume.",
+        "hash": "218yhfo0u0t",
+        "topic": "Choosing a queue for background jobs › Costs",
+        "span": {
+          "start": 1441,
+          "end": 1491
+        },
+        "prev": "u15",
+        "next": "u17"
+      },
+      {
+        "id": "u17",
+        "kind": "sentence",
+        "text": "At three times today's volume it would be roughly $900 a month, while the broker's cost would stay flat until the cluster needs a fourth machine.",
+        "hash": "1liunnbacin",
+        "topic": "Choosing a queue for background jobs › Costs",
+        "span": {
+          "start": 1492,
+          "end": 1637
+        },
+        "prev": "u16",
+        "next": "u18"
+      },
+      {
+        "id": "u18",
+        "kind": "sentence",
+        "text": "Two criteria are must-haves; an option that fails either is out regardless of its score:",
+        "hash": "2dfe6nqg0c",
+        "topic": "Choosing a queue for background jobs › Selection criteria",
+        "span": {
+          "start": 1662,
+          "end": 1750
+        },
+        "prev": "u17",
+        "next": "u19"
+      },
+      {
+        "id": "u19",
+        "kind": "list_item",
+        "text": "No job is lost when a worker crashes or the service is deployed.",
+        "hash": "qrpauucnk6",
+        "topic": "Choosing a queue for background jobs › Selection criteria",
+        "span": {
+          "start": 1755,
+          "end": 1819
+        },
+        "prev": "u18",
+        "next": "u20"
+      },
+      {
+        "id": "u20",
+        "kind": "list_item",
+        "text": "The queue absorbs 1,800 jobs per minute (three times today's peak) without manual intervention.",
+        "hash": "mw7tjih229",
+        "topic": "Choosing a queue for background jobs › Selection criteria",
+        "span": {
+          "start": 1823,
+          "end": 1918
+        },
+        "prev": "u19",
+        "next": "u21"
+      },
+      {
+        "id": "u21",
+        "kind": "sentence",
+        "text": "The remaining criteria are weighted for scoring:",
+        "hash": "1y7se07rio1",
+        "topic": "Choosing a queue for background jobs › Selection criteria",
+        "span": {
+          "start": 1920,
+          "end": 1968
+        },
+        "prev": "u20",
+        "next": "u22"
+      },
+      {
+        "id": "u22",
+        "kind": "list_item",
+        "text": "Operational effort: 40%",
+        "hash": "1bm8ziq0pct",
+        "topic": "Choosing a queue for background jobs › Selection criteria",
+        "span": {
+          "start": 1972,
+          "end": 1995
+        },
+        "prev": "u21",
+        "next": "u23"
+      },
+      {
+        "id": "u23",
+        "kind": "list_item",
+        "text": "Monthly cost: 30%",
+        "hash": "2otwaywwrz",
+        "topic": "Choosing a queue for background jobs › Selection criteria",
+        "span": {
+          "start": 1998,
+          "end": 2015
+        },
+        "prev": "u22",
+        "next": "u24"
+      },
+      {
+        "id": "u24",
+        "kind": "list_item",
+        "text": "Developer experience, including local testing: 20%",
+        "hash": "1ztnwxx4d6k",
+        "topic": "Choosing a queue for background jobs › Selection criteria",
+        "span": {
+          "start": 2018,
+          "end": 2068
+        },
+        "prev": "u23",
+        "next": "u25"
+      },
+      {
+        "id": "u25",
+        "kind": "list_item",
+        "text": "Portability away from our cloud provider: 10%",
+        "hash": "mxuznbshpv",
+        "topic": "Choosing a queue for background jobs › Selection criteria",
+        "span": {
+          "start": 2071,
+          "end": 2116
+        },
+        "prev": "u24",
+        "next": "u26"
+      },
+      {
+        "id": "u26",
+        "kind": "sentence",
+        "text": "Option A needs almost no operational work, and failed messages move to a dead-letter queue automatically.",
+        "hash": "2fbls9gurzs",
+        "topic": "Choosing a queue for background jobs › Benefits and trade-offs",
+        "span": {
+          "start": 2146,
+          "end": 2251
+        },
+        "prev": "u25",
+        "next": "u27"
+      },
+      {
+        "id": "u27",
+        "kind": "sentence",
+        "text": "The catch is that the service delivers each message at least once, so every job handler must be made idempotent before we switch; today only the email handler is.",
+        "hash": "ohxtpglf5m",
+        "topic": "Choosing a queue for background jobs › Benefits and trade-offs",
+        "span": {
+          "start": 2252,
+          "end": 2414
+        },
+        "prev": "u26",
+        "next": "u28"
+      },
+      {
+        "id": "u28",
+        "kind": "sentence",
+        "text": "It also ties us to one provider's API, and local development needs an emulator that does not support dead-lettering.",
+        "hash": "2bkw93ub24s",
+        "topic": "Choosing a queue for background jobs › Benefits and trade-offs",
+        "span": {
+          "start": 2415,
+          "end": 2531
+        },
+        "prev": "u27",
+        "next": "u29"
+      },
+      {
+        "id": "u29",
+        "kind": "sentence",
+        "text": "Option B gives us priority queues and delayed delivery, which would let month-end invoices jump ahead of webhook retries.",
+        "hash": "gt9oreoflo",
+        "topic": "Choosing a queue for background jobs › Benefits and trade-offs",
+        "span": {
+          "start": 2533,
+          "end": 2654
+        },
+        "prev": "u28",
+        "next": "u30"
+      },
+      {
+        "id": "u30",
+        "kind": "sentence",
+        "text": "No one on the team has run this broker in production, so the 12 hours a month is an estimate, not a measurement.",
+        "hash": "6evp9et6u9",
+        "topic": "Choosing a queue for background jobs › Benefits and trade-offs",
+        "span": {
+          "start": 2655,
+          "end": 2767
+        },
+        "prev": "u29",
+        "next": "u31"
+      },
+      {
+        "id": "u31",
+        "kind": "sentence",
+        "text": "Upgrades need a maintenance window.",
+        "hash": "axvkiyg8wr",
+        "topic": "Choosing a queue for background jobs › Benefits and trade-offs",
+        "span": {
+          "start": 2768,
+          "end": 2803
+        },
+        "prev": "u30",
+        "next": "u32"
+      },
+      {
+        "id": "u32",
+        "kind": "sentence",
+        "text": "Option C writes a job in the same transaction as the billing change that causes it, so a job can never be lost between the commit and the enqueue.",
+        "hash": "1frsdmx64cr",
+        "topic": "Choosing a queue for background jobs › Benefits and trade-offs",
+        "span": {
+          "start": 2805,
+          "end": 2951
+        },
+        "prev": "u31",
+        "next": "u33"
+      },
+      {
+        "id": "u33",
+        "kind": "sentence",
+        "text": "That guarantee only covers jobs created inside the billing database transaction; jobs enqueued by the reporting service, which has its own database, would not get it.",
+        "hash": "ds9hlz2jea",
+        "topic": "Choosing a queue for background jobs › Benefits and trade-offs",
+        "span": {
+          "start": 2952,
+          "end": 3118
+        },
+        "prev": "u32",
+        "next": "u34"
+      },
+      {
+        "id": "u34",
+        "kind": "sentence",
+        "text": "Polling also adds read load to the primary database, which is the main risk at month-end.",
+        "hash": "2fs942ir3bc",
+        "topic": "Choosing a queue for background jobs › Benefits and trade-offs",
+        "span": {
+          "start": 3119,
+          "end": 3208
+        },
+        "prev": "u33",
+        "next": "u35"
+      },
+      {
+        "id": "u35",
+        "kind": "sentence",
+        "text": "We load-tested Option C on a staging copy of the database with synthetic jobs.",
+        "hash": "227awy4011s",
+        "topic": "Choosing a queue for background jobs › Evidence",
+        "span": {
+          "start": 3223,
+          "end": 3301
+        },
+        "prev": "u34",
+        "next": "u36"
+      },
+      {
+        "id": "u36",
+        "kind": "sentence",
+        "text": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+        "hash": "17nz657lpkf",
+        "topic": "Choosing a queue for background jobs › Evidence",
+        "span": {
+          "start": 3302,
+          "end": 3371
+        },
+        "prev": "u35",
+        "next": "u37"
+      },
+      {
+        "id": "u37",
+        "kind": "sentence",
+        "text": "At 2,000 jobs per minute, primary CPU reached 85% and p95 latency rose to 240 ms.",
+        "hash": "15aepyfq2x7",
+        "topic": "Choosing a queue for background jobs › Evidence",
+        "span": {
+          "start": 3372,
+          "end": 3453
+        },
+        "prev": "u36",
+        "next": "u38"
+      },
+      {
+        "id": "u38",
+        "kind": "sentence",
+        "text": "We did not test 1,800 jobs per minute, and the staging copy is about a quarter of production size, so these results may not carry over.",
+        "hash": "27x092kve5c",
+        "topic": "Choosing a queue for background jobs › Evidence",
+        "span": {
+          "start": 3454,
+          "end": 3589
+        },
+        "prev": "u37",
+        "next": "u39"
+      },
+      {
+        "id": "u39",
+        "kind": "sentence",
+        "text": "We have not load-tested Options A or B.",
+        "hash": "1rbvac1h8ou",
+        "topic": "Choosing a queue for background jobs › Evidence",
+        "span": {
+          "start": 3591,
+          "end": 3630
+        },
+        "prev": "u38",
+        "next": "u40"
+      },
+      {
+        "id": "u40",
+        "kind": "sentence",
+        "text": "The provider documents throughput far above our peak for Option A, but that is the provider's figure, not ours.",
+        "hash": "22bt5qtc2oy",
+        "topic": "Choosing a queue for background jobs › Evidence",
+        "span": {
+          "start": 3631,
+          "end": 3742
+        },
+        "prev": "u39",
+        "next": "u41"
+      },
+      {
+        "id": "u41",
+        "kind": "sentence",
+        "text": "This note does not recommend an option.",
+        "hash": "1lgzn5nisf2",
+        "topic": "Choosing a queue for background jobs › Decision status",
+        "span": {
+          "start": 3764,
+          "end": 3803
+        },
+        "prev": "u40",
+        "next": "u42"
+      },
+      {
+        "id": "u42",
+        "kind": "sentence",
+        "text": "The decision is deferred until Option C has been measured at 1,800 jobs per minute on a production-sized database.",
+        "hash": "18suctvqm9",
+        "topic": "Choosing a queue for background jobs › Decision status",
+        "span": {
+          "start": 3804,
+          "end": 3918
+        },
+        "prev": "u41",
+        "next": "u43"
+      },
+      {
+        "id": "u43",
+        "kind": "sentence",
+        "text": "Until then, each option carries an open requirement:",
+        "hash": "5ly7vsc3m9",
+        "topic": "Choosing a queue for background jobs › Decision status",
+        "span": {
+          "start": 3919,
+          "end": 3971
+        },
+        "prev": "u42",
+        "next": "u44"
+      },
+      {
+        "id": "u44",
+        "kind": "list_item",
+        "text": "Option A: every job handler made idempotent.",
+        "hash": "ydnnjtr2cq",
+        "topic": "Choosing a queue for background jobs › Decision status",
+        "span": {
+          "start": 3975,
+          "end": 4019
+        },
+        "prev": "u43",
+        "next": "u45"
+      },
+      {
+        "id": "u45",
+        "kind": "list_item",
+        "text": "Option B: a named owner for broker on-call and upgrades.",
+        "hash": "2g882zzfzwv",
+        "topic": "Choosing a queue for background jobs › Decision status",
+        "span": {
+          "start": 4022,
+          "end": 4078
+        },
+        "prev": "u44",
+        "next": "u46"
+      },
+      {
+        "id": "u46",
+        "kind": "list_item",
+        "text": "Option C: a passing load test at 1,800 jobs per minute.",
+        "hash": "4ul6pwlwyl",
+        "topic": "Choosing a queue for background jobs › Decision status",
+        "span": {
+          "start": 4081,
+          "end": 4136
+        },
+        "prev": "u45",
+        "next": "u47"
+      },
+      {
+        "id": "u47",
+        "kind": "sentence",
+        "text": "Priya will bring the load-test result to the next architecture review.",
+        "hash": "ujajwt5c2l",
+        "topic": "Choosing a queue for background jobs › Decision status",
+        "span": {
+          "start": 4138,
+          "end": 4208
+        },
+        "prev": "u46",
+        "next": "u48"
+      },
+      {
+        "id": "u48",
+        "kind": "sentence",
+        "text": "Thanks to everyone who commented on the first draft.",
+        "hash": "1xyotx7n8c1",
+        "topic": "Choosing a queue for background jobs › Decision status",
+        "span": {
+          "start": 4209,
+          "end": 4261
+        },
+        "prev": "u47"
+      }
+    ],
+    "nextId": 49
+  },
+  "cites": {
+    "u0_n1": [
+      "u1"
+    ],
+    "u1_n1": [
+      "u18",
+      "u19",
+      "u20"
+    ],
+    "u1_n2": [
+      "u21",
+      "u22",
+      "u23",
+      "u24",
+      "u25"
+    ],
+    "u2_n1": [
+      "u6",
+      "u7",
+      "u8",
+      "u9",
+      "u10",
+      "u11",
+      "u26",
+      "u27",
+      "u28",
+      "u29",
+      "u30",
+      "u31",
+      "u32",
+      "u33",
+      "u34"
+    ],
+    "u2_fs1": [
+      "u30"
+    ],
+    "u3_n1": [
+      "u41",
+      "u42"
+    ],
+    "u3_n3": [
+      "u44"
+    ],
+    "u3_n5": [
+      "u45"
+    ],
+    "u3_n7": [
+      "u42",
+      "u46"
+    ],
+    "u3_n8": [
+      "u47"
+    ],
+    "u3_fs1": [
+      "u48"
+    ],
+    "u4_n1": [
+      "u2"
+    ],
+    "u4_n2": [
+      "u3"
+    ],
+    "u4_n3": [
+      "u3"
+    ],
+    "u4_n4": [
+      "u4"
+    ],
+    "u4_n5": [
+      "u5"
+    ],
+    "u5_n1": [
+      "u12",
+      "u13",
+      "u14",
+      "u15"
+    ],
+    "u5_n3": [
+      "u16",
+      "u17"
+    ],
+    "u5_a1": [
+      "u17"
+    ],
+    "u6_n1": [
+      "u35",
+      "u36",
+      "u37",
+      "u38"
+    ],
+    "u6_n2": [
+      "u39",
+      "u40"
+    ]
+  },
+  "omitted": [
+    {
+      "unit": "u43",
+      "reason": "meta"
+    },
+    {
+      "unit": "u48",
+      "reason": "filler"
+    }
+  ],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "cited",
+      "u3": "cited",
+      "u4": "cited",
+      "u5": "cited",
+      "u6": "cited",
+      "u7": "cited",
+      "u8": "cited",
+      "u9": "cited",
+      "u10": "cited",
+      "u11": "cited",
+      "u12": "cited",
+      "u13": "cited",
+      "u14": "cited",
+      "u15": "cited",
+      "u16": "cited",
+      "u17": "cited",
+      "u18": "cited",
+      "u19": "cited",
+      "u20": "cited",
+      "u21": "cited",
+      "u22": "cited",
+      "u23": "cited",
+      "u24": "cited",
+      "u25": "cited",
+      "u26": "cited",
+      "u27": "cited",
+      "u28": "cited",
+      "u29": "cited",
+      "u30": "cited",
+      "u31": "cited",
+      "u32": "cited",
+      "u33": "cited",
+      "u34": "cited",
+      "u35": "cited",
+      "u36": "cited",
+      "u37": "cited",
+      "u38": "cited",
+      "u39": "cited",
+      "u40": "cited",
+      "u41": "cited",
+      "u42": "cited",
+      "u43": "omitted",
+      "u44": "cited",
+      "u45": "cited",
+      "u46": "cited",
+      "u47": "cited",
+      "u48": "cited"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "represented",
+      "u3": "represented",
+      "u4": "represented",
+      "u5": "represented",
+      "u6": "represented",
+      "u7": "represented",
+      "u8": "represented",
+      "u9": "represented",
+      "u10": "represented",
+      "u11": "represented",
+      "u12": "represented",
+      "u13": "represented",
+      "u14": "represented",
+      "u15": "represented",
+      "u16": "represented",
+      "u17": "represented",
+      "u18": "represented",
+      "u19": "represented",
+      "u20": "represented",
+      "u21": "represented",
+      "u22": "represented",
+      "u23": "represented",
+      "u24": "represented",
+      "u25": "represented",
+      "u26": "represented",
+      "u27": "represented",
+      "u28": "represented",
+      "u29": "represented",
+      "u30": "represented",
+      "u31": "represented",
+      "u32": "represented",
+      "u33": "represented",
+      "u34": "represented",
+      "u35": "represented",
+      "u36": "represented",
+      "u37": "represented",
+      "u38": "represented",
+      "u39": "represented",
+      "u40": "represented",
+      "u41": "represented",
+      "u42": "represented",
+      "u43": "omitted",
+      "u44": "represented",
+      "u45": "represented",
+      "u46": "represented",
+      "u47": "represented",
+      "u48": "represented"
+    },
+    "critical": {
+      "u2": [
+        "protected"
+      ],
+      "u3": [
+        "limitation",
+        "protected"
+      ],
+      "u4": [
+        "protected"
+      ],
+      "u5": [
+        "protected"
+      ],
+      "u8": [
+        "protected"
+      ],
+      "u12": [
+        "protected"
+      ],
+      "u13": [
+        "protected"
+      ],
+      "u14": [
+        "protected"
+      ],
+      "u15": [
+        "protected"
+      ],
+      "u17": [
+        "protected"
+      ],
+      "u18": [
+        "protected"
+      ],
+      "u19": [
+        "condition"
+      ],
+      "u20": [
+        "protected"
+      ],
+      "u22": [
+        "protected"
+      ],
+      "u23": [
+        "protected"
+      ],
+      "u24": [
+        "protected"
+      ],
+      "u25": [
+        "protected"
+      ],
+      "u26": [
+        "protected"
+      ],
+      "u27": [
+        "requirement"
+      ],
+      "u28": [
+        "limitation",
+        "protected"
+      ],
+      "u29": [
+        "protected"
+      ],
+      "u30": [
+        "protected"
+      ],
+      "u32": [
+        "requirement"
+      ],
+      "u33": [
+        "requirement"
+      ],
+      "u34": [
+        "limitation",
+        "protected"
+      ],
+      "u35": [
+        "protected"
+      ],
+      "u36": [
+        "protected"
+      ],
+      "u37": [
+        "protected"
+      ],
+      "u38": [
+        "protected"
+      ],
+      "u39": [
+        "protected"
+      ],
+      "u40": [
+        "limitation"
+      ],
+      "u41": [
+        "limitation"
+      ],
+      "u42": [
+        "protected"
+      ],
+      "u45": [
+        "protected"
+      ],
+      "u46": [
+        "protected"
+      ],
+      "u47": [
+        "protected"
+      ],
+      "u48": [
+        "protected"
+      ]
+    },
+    "flags": [
+      {
+        "code": "uncited_card",
+        "card": "u3_n2",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n4",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n6",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u5_n2",
+        "detail": "the card cites no passage of the source"
+      }
+    ],
+    "sections": [
+      {
+        "topic": "Choosing a queue for background jobs",
+        "represented": 1,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Choosing a queue for background jobs › Context",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Choosing a queue for background jobs › Options",
+        "represented": 6,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Choosing a queue for background jobs › Costs",
+        "represented": 6,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Choosing a queue for background jobs › Selection criteria",
+        "represented": 8,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Choosing a queue for background jobs › Benefits and trade-offs",
+        "represented": 9,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Choosing a queue for background jobs › Evidence",
+        "represented": 6,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Choosing a queue for background jobs › Decision status",
+        "represented": 7,
+        "omitted": 1,
+        "needsReview": 0,
+        "highOmittedShare": false
+      }
+    ]
+  },
+  "flags": [
+    {
+      "code": "uncited_card",
+      "card": "u3_n2",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n4",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n6",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u5_n2",
+      "detail": "the card cites no passage of the source"
+    }
+  ],
+  "hints": [
+    {
+      "code": "unsupported_number",
+      "card": "u1_n1",
+      "detail": "the card names \"jobs/minute\"; the source doesn't",
+      "evidence": {
+        "card": "jobs/minute"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u7",
+      "card": "u2_n1",
+      "detail": "the card says \"due to\"; the source states no cause",
+      "evidence": {
+        "card": "due to"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u9",
+      "card": "u2_n1",
+      "detail": "the card says \"due to\"; the source states no cause",
+      "evidence": {
+        "card": "due to"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u28",
+      "card": "u2_n1",
+      "detail": "source says \"It also ties us to one provider's API, and local development needs an emulator that does not support dead-lettering.\"; the card drops the negation",
+      "evidence": {
+        "source": "It also ties us to one provider's API, and local development needs an emulator that does not support dead-lettering.",
+        "card": "Features | Automatic dead-letter queue."
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u33",
+      "card": "u2_n1",
+      "detail": "the card says \"due to\"; the source states no cause",
+      "evidence": {
+        "card": "due to"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u2_n1",
+      "detail": "the card names \"ms/month\"; the source doesn't",
+      "evidence": {
+        "card": "ms/month"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u44",
+      "card": "u3_n3",
+      "detail": "source names \"Option A\"; no card citing it does",
+      "evidence": {
+        "source": "Option A"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u45",
+      "card": "u3_n5",
+      "detail": "source names \"Option B\"; no card citing it does",
+      "evidence": {
+        "source": "Option B"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u46",
+      "card": "u3_n7",
+      "detail": "source names \"Option C\"; no card citing it does",
+      "evidence": {
+        "source": "Option C"
+      }
+    },
+    {
+      "code": "caveat_dropped",
+      "unit": "u3",
+      "card": "u4_n2",
+      "detail": "the card drops the source's caveat \"but not yet started\"",
+      "evidence": {
+        "source": "but not yet started"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u4",
+      "card": "u4_n4",
+      "detail": "the card says \"due to\"; the source states no cause",
+      "evidence": {
+        "card": "due to"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u35",
+      "card": "u6_n1",
+      "detail": "the card says \"due to\"; the source states no cause",
+      "evidence": {
+        "card": "due to"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u35",
+      "card": "u6_n1",
+      "detail": "source says \"We load-tested Option C on a staging copy of the database with synthetic jobs.\"; the card negates it",
+      "evidence": {
+        "source": "We load-tested Option C on a staging copy of the database with synthetic jobs.",
+        "card": "These results may not be directly transferable to production due to the staging environment's smaller size (one-quarter of production) and the untested 1,800 jobs/minute scenario."
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u36",
+      "card": "u6_n1",
+      "detail": "the card says \"due to\"; the source states no cause",
+      "evidence": {
+        "card": "due to"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u38",
+      "card": "u6_n1",
+      "detail": "source says \"We did not test 1,800 jobs per minute, and the staging copy is about a quarter of production size\"; the card drops the negation",
+      "evidence": {
+        "source": "We did not test 1,800 jobs per minute, and the staging copy is about a quarter of production size",
+        "card": "Option C was load-tested on a staging database copy using synthetic jobs."
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u6_n1",
+      "detail": "the card names \"jobs/minute\"; the source doesn't",
+      "evidence": {
+        "card": "jobs/minute"
+      }
+    }
+  ],
+  "reviews": {
+    "u3_n2": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n4": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n6": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u5_n2": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    }
+  }
+}

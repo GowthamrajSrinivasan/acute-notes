@@ -33,6 +33,10 @@ import { newContentSourceId } from "@/ai/content/sources";
 import { failureCause, type AnalysisReport } from "@/ai/fidelity/analysis";
 import { SHORT_SOURCE_CHARS } from "@/ai/fidelity/analysisCheck";
 import { rememberInput, rememberRun } from "@/ai/fidelity/regenerate";
+import type { UnitSet } from "@/ai/fidelity/contracts";
+import { finishKnowledgeRun, rememberKnowledgeRun, unitOutcomesOf } from "@/ai/fidelity/knowledgeRun";
+import { splitUnits } from "@/ai/fidelity/sourceUnits";
+import { FIDELITY_CONFIG, organisationFor } from "@/config/fidelity";
 import { ensureStableKeys, mergeUnitPlans } from "@/ai/reconcile/keys";
 import { groupByUnit } from "@/ai/visual-plan/groups";
 import { stopwatch } from "./timing";
@@ -46,6 +50,17 @@ import type { VisualPlan } from "@/ai/visual-plan/types";
 
 function abortError(): DOMException {
   return new DOMException("Visualize was cancelled.", "AbortError");
+}
+
+/** The revisions (G3.3) found for a text by its latest AI runs, so a kept run rendered again doesn't ask the model again. */
+const revisionsFound = new Map<string, Revision[]>();
+/** At least as many texts as `regenerate.ts` keeps runs of (5), so every kept run finds its own. */
+const MAX_REVISION_TEXTS = 8;
+
+function keepRevisions(text: string, revisions: Revision[]): void {
+  revisionsFound.delete(text);
+  revisionsFound.set(text, revisions);
+  while (revisionsFound.size > MAX_REVISION_TEXTS) revisionsFound.delete(revisionsFound.keys().next().value!);
 }
 
 function throwIfAborted(signal: AbortSignal | undefined): void {
@@ -70,6 +85,11 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
   let aiTemplate: string | undefined;
   let fidelity: VisualizeResult["fidelity"];
   let outlinedRun: OutlinedResult | null = null;
+  /**
+   * Distil mode (knowledge-notes-plan WP1.10, a developer setting until R1): the units of the text this run's version
+   * stores, so every section is labelled with the ids the version will keep, and its cards cite them.
+   */
+  let sourceUnits: UnitSet | undefined;
   const notes: string[] = [];
   const notices: string[] = [];
   /** The local plan is a good enough answer when AI isn't available (a structured document AI would only improve). */
@@ -91,7 +111,12 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
     let units = analysisUnits(parsed, input.text);
     // Where the text changes its mind (G3.3): the later statement wins. The earlier one is left out of what is analysed (and of the
     // safety net), and kept on its section's "Changed over time" page; the source keeps the user's text as pasted.
-    revisions = await detectRevisions(runtime, units, signal);
+    // A kept run rendered again ("Retry" / "Regenerate" and its layout probes, `options.reuse`) has the same text: it keeps the
+    // revisions found the first time instead of asking again. Asking again could also find others, and its reused sections
+    // were analysed without the first answer's earlier statements.
+    const known = options.reuse ? revisionsFound.get(input.text) : undefined;
+    revisions = known ?? (await detectRevisions(runtime, units, signal));
+    keepRevisions(input.text, revisions);
     if (revisions.length) {
       const text = withoutRevised(input.text, revisions);
       const again = await analyzeContent(text, { format: input.format, signal });
@@ -103,7 +128,16 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
       // then generate each semantic section with its kind's rules (F42 Phase 2). A failed outline is handled inside:
       // each part becomes a section of its own, with every node type allowed.
       if (!input.template) {
-        const outlined: OutlinedResult = await visualizeOutlined(units, runtime, { signal, onProgress: analyzing, ...(options.reuse ? { reuse: options.reuse } : {}) });
+        // The run's note model: the dialog's per-run choice (WP2.8, shown from R1), else the configured one.
+        const noteModel = input.noteModel ?? FIDELITY_CONFIG.noteModel;
+        if (noteModel === "distil") sourceUnits = await splitUnits(input.text).catch(() => undefined);
+        const outlined: OutlinedResult = await visualizeOutlined(units, runtime, {
+          signal,
+          noteModel,
+          onProgress: analyzing,
+          ...(options.reuse ? { reuse: options.reuse } : {}),
+          ...(sourceUnits ? { sourceUnits } : {}),
+        });
         outlinedRun = outlined;
         rawPlan = outlined.raw;
         aiTemplate = "sectioned";
@@ -157,7 +191,11 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
   watch.lap(usedLocalTier ? "local plan" : "analyze");
 
   report({ stage: "planning_layout", label: "Planning layout…" });
-  const validated = validateVisualPlan(rawPlan);
+  // Distil: the run's knowledge, when its units are the version's (`noteModel` on the set and so on every object, §6.2). Its layout
+  // follows the organisation rules of its note model (organisation-layout plan §3.0): a distil run is laid out with "v2".
+  const knowledge = !usedLocalTier && sourceUnits && outlinedRun?.knowledge ? { units: sourceUnits, sections: outlinedRun.knowledge.sections } : null;
+  const organisation = organisationFor(knowledge ? "distil" : "preserve");
+  const validated = validateVisualPlan(rawPlan, organisation === "v2" ? { organisation } : {});
   const keyed = ensureStableKeys(validated.plan);
   const plan = revisions.length ? withChoiceNodes(keyed, [], revisions) : keyed;
   const warnings = [...notes, ...validated.warnings];
@@ -166,7 +204,7 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
   if (validated.losses.length) console.warn(`[acute-notes] Visualize: the plan lost ${validated.losses.length} item(s) in validation: ${validated.losses.join(" | ")}`);
   if (lostNodes) notices.push(`${lostNodes} ${lostNodes === 1 ? "part" : "parts"} of AI's plan couldn't be shown and ${lostNodes === 1 ? "was" : "were"} left out.`);
   throwIfAborted(signal);
-  const metadata = provenanceMetadata(input.operationId, provenance);
+  const metadata: ChangeSet["metadata"] = { ...provenanceMetadata(input.operationId, provenance), ...(knowledge ? { noteModel: "distil" as const } : {}) };
   // Every run starts a content source (F37); it's recorded only if the result is accepted.
   const contentSource = {
     sourceId: newContentSourceId(),
@@ -177,6 +215,8 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
     text: input.text,
     plan,
     ...(revisions.length ? { revisions } : {}),
+    // The units the cards cite are the version's own (recorded with it on Accept).
+    ...(knowledge ? { units: knowledge.units } : {}),
   };
   report({ stage: "planning_layout", label: "Drawing the canvas…" });
   const changeSet = await renderVisualPlan(plan, {
@@ -186,6 +226,7 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
     context: input.context,
     contentSource,
     ...(parseMarkdown ? { parseMarkdown } : {}),
+    ...(organisation === "v2" ? { organisation } : {}),
   });
 
   watch.lap("validate + render");
@@ -193,6 +234,13 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
   const fidelityReport = fidelity && !usedLocalTier && fidelity.units > 0 ? fidelity : undefined;
   if (fidelityReport) changeSet.fidelity = fidelityReport;
   changeSet.analysis = analysis;
+  if (knowledge) {
+    // Distil (WP1.10–1.11): each card's citations and review, stamped on its object when written; the report v2; and the
+    // run's output for the golden recorder (`__acuteDev.knowledgeRun`).
+    const finished = finishKnowledgeRun({ units: knowledge.units, plan, sections: knowledge.sections, superseded: revisions.map((r) => r.earlier) });
+    changeSet.knowledge = { cards: finished.cards, report: finished.report, units: unitOutcomesOf(finished.run) };
+    rememberKnowledgeRun(contentSource.sourceId, finished.run);
+  }
   // Kept so a structure-only result can be run again with AI ("Analyse with AI" / "Retry" in the review).
   if (analysis.mode === "structure") {
     const { operationId: _op, context: _ctx, ...rest } = input;

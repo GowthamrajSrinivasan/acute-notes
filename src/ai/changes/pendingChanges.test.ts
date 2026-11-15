@@ -67,3 +67,16 @@ describe("PendingChanges: one set per producer session per canvas (D40)", () => 
     expect(() => pending.propose("cv_2", set("op_2", "mcp_b", [move("shared")]))).not.toThrow();
   });
 });
+
+describe("PendingChanges: stale-target follow-ups", () => {
+  it("what an accept left for a decision replaces the set under a follow-up id and stays selected", () => {
+    const pending = new PendingChanges();
+    pending.propose("cv", set("op_a", "mcp_a", [move("x")]));
+    pending.propose("cv", set("op_b", "mcp_b", [move("y")]));
+    pending.select("cv", "op_a");
+    const conflicts = [{ target: "x", apply: { kind: "update_block", target: "x", content: [{ type: "paragraph", content: "p" }], expectedFingerprint: "c1" }, changedSinceProposal: true }];
+    pending.replace("cv", "op_a", { ...(set("op_a.r1", "mcp_a", []) as unknown as ChangeSet), conflicts } as ChangeSet);
+    expect(pending.get("cv")?.operationId).toBe("op_a.r1");
+    expect(pending.list("cv").map((s) => s.operationId)).toEqual(["op_a.r1", "op_b"]);
+  });
+});

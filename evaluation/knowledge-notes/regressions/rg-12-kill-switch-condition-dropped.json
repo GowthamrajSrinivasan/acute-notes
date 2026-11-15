@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-12-kill-switch-condition-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-12-flag-rollout-update",
+  "target": "plan",
+  "description": "The kill-switch card loses its critical condition (u22): nothing says a flag without a tested kill switch cannot enter canary; 'tested in staging before canary' alone doesn't make it a prerequisite.",
+  "mutations": [
+    { "op": "replace_text", "node": "n4", "find": ": a flag without a tested kill switch cannot enter canary", "replace": "" }
+  ],
+  "expectFailing": ["a.kill-switch-canary-condition"]
+}

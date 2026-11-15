@@ -1,0 +1,134 @@
+{
+  "caseId": "kn-06-hybrid-search-reranking",
+  "reviewer": "R2",
+  "verdicts": [
+    {
+      "candidate": "c1",
+      "verdict": "set",
+      "claimUnits": ["u7"],
+      "conditionQuote": "Its weakness is vocabulary mismatch",
+      "claimQuote": "Its strength is exact matching.",
+      "confidence": "medium",
+      "note": "A real limitation of BM25 that motivates hybrid search; the strength claim stays true without it."
+    },
+    {
+      "candidate": "c2",
+      "verdict": "set",
+      "claimUnits": ["u11"],
+      "conditionQuote": "Embeddings are weaker on exact codes and identifiers.",
+      "claimQuote": "Passages that mean the same thing end up close together even when they share no words",
+      "confidence": "medium",
+      "note": "Limitation of vector retrieval (31 of 50 code queries missed); the semantic-matching claim remains true but the weakness must be in the notes."
+    },
+    {
+      "candidate": "c3",
+      "verdict": "set",
+      "claimUnits": ["u10"],
+      "conditionQuote": "Embeddings must also be recomputed whenever the encoder changes, which for this collection takes about 6 hours.",
+      "claimQuote": "Vector retrieval turns the query and every passage into embeddings",
+      "confidence": "high",
+      "note": "An operational cost of vector retrieval, not a falsifier of any claim."
+    },
+    {
+      "candidate": "c4",
+      "verdict": "claim",
+      "claimUnits": ["u17"],
+      "conditionQuote": "when lexical and semantic signals are complementary, that is, when each retriever finds relevant passages that the other misses",
+      "claimQuote": "Hybrid search can improve recall",
+      "confidence": "high",
+      "note": "Intra-sentence condition, reinforced by u18's failure cases; 'hybrid improves recall' stated unconditionally is misleading."
+    },
+    {
+      "candidate": "c5",
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "conditionQuote": "Each retriever returns its top 50 passages, so the fused list holds at most 100 candidates",
+      "claimQuote": "",
+      "confidence": "medium",
+      "note": "A configuration parameter and its arithmetic consequence; it does not limit another claim."
+    },
+    {
+      "candidate": "c6",
+      "verdict": "set",
+      "claimUnits": ["u28"],
+      "conditionQuote": "the cross-encoder runs only on the fused candidates, never on the whole collection",
+      "claimQuote": "it judges relevance far more accurately than either retriever",
+      "confidence": "medium",
+      "note": "Cost-driven scope restriction on the reranker; the accuracy claim stays true, but the scope matters (it underpins u32)."
+    },
+    {
+      "candidate": "c7",
+      "verdict": "claim",
+      "claimUnits": ["u31"],
+      "conditionQuote": "but it does not guarantee that the final answer is correct. The reranker can only reorder what retrieval found: if the right passage is not among the candidates, reranking cannot recover it.",
+      "claimQuote": "Reranking improves the precision of the top results",
+      "confidence": "medium",
+      "note": "Intra-sentence 'but' plus u32/u33 limits; stating that reranking improves results without them implies it fixes retrieval misses or ensures correct answers. u49 restates the same caveat in the summary."
+    },
+    {
+      "candidate": "c8",
+      "verdict": "set",
+      "claimUnits": ["u34"],
+      "conditionQuote": "If none of the passages addresses the question, it should say so rather than answer from its general knowledge.",
+      "claimQuote": "is instructed to answer only from them and to cite the passages it used",
+      "confidence": "medium",
+      "note": "A fallback rule for the no-relevant-passage case; the generation instruction claim stays true without it."
+    },
+    {
+      "candidate": "c9",
+      "verdict": "claim",
+      "claimUnits": ["u36"],
+      "conditionQuote": "but they do not show whether the passage itself is current",
+      "claimQuote": "Citations let a reader check each claim against its passage",
+      "confidence": "medium",
+      "note": "Intra-sentence caveat; without it citations would read as a guarantee of correctness/currency."
+    },
+    {
+      "candidate": "c10",
+      "verdict": "claim",
+      "claimUnits": ["u43", "u44"],
+      "conditionQuote": "These figures come from one collection and one query set; a collection with fewer exact identifiers may see a smaller gain from BM25, and a different reranker will have a different latency.",
+      "claimQuote": "Hybrid + reranker | 88% | 190 ms | $0.95",
+      "confidence": "high",
+      "note": "Generalisation limit on the whole results table (u41-u45); reporting the numbers as general would be misleading."
+    },
+    {
+      "candidate": "c11",
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "conditionQuote": "Vector only | 68% | 60 ms | $0.10",
+      "claimQuote": "",
+      "confidence": "high",
+      "note": "A data row of the results table, not a limit on any claim."
+    },
+    {
+      "candidate": "c12",
+      "verdict": "claim",
+      "claimUnits": ["u47"],
+      "conditionQuote": "at some cost in recall",
+      "claimQuote": "Teams with a strict latency budget can rerank fewer candidates",
+      "confidence": "medium",
+      "note": "Intra-sentence trade-off; without it reranking fewer candidates reads as a free latency saving. Could alternatively be read as a set-level option limiting u45's latency cost."
+    }
+  ],
+  "additional": [
+    {
+      "conditionUnits": ["u25"],
+      "verdict": "set",
+      "claimUnits": ["u23"],
+      "conditionQuote": "Raising the limit to 100 per retriever put the right passage in the list slightly more often, but it roughly doubled the time spent reranking, so we kept 50.",
+      "claimQuote": "Each retriever returns its top 50 passages",
+      "confidence": "medium",
+      "note": "Recall-vs-latency trade-off behind the 50-per-retriever setting."
+    },
+    {
+      "conditionUnits": ["u45"],
+      "verdict": "set",
+      "claimUnits": ["u44"],
+      "conditionQuote": "Reranking adds about 120 ms per query, most of it spent running the cross-encoder over up to 100 candidates, and it accounts for most of the cost increase.",
+      "claimQuote": "Hybrid + reranker | 88% | 190 ms | $0.95",
+      "confidence": "medium",
+      "note": "Latency and cost price of the reranker's relevance gain; the gain stays true but the cost must be kept."
+    }
+  ]
+}

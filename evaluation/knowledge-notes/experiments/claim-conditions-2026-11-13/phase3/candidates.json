@@ -1,0 +1,2748 @@
+{
+  "kn-01-idempotency-keys": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u2"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "kn01.replay.completed",
+          "claimUnits": [
+            "u2"
+          ],
+          "binding": "claim",
+          "summary": "only for a request that already completed"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u6",
+        "u7"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.expiry-window → ku.replay",
+          "claimUnits": [
+            "u2"
+          ],
+          "summary": "Keys protect against duplicates only while the server remembers them; stored results expire after 24 hours, after which a retry is treated as a new payment."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn01.replay.window",
+          "claimUnits": [
+            "u2"
+          ],
+          "binding": "claim",
+          "summary": "only while it remembers the key: 24 hours"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u8"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.key-reuse → ku.replay",
+          "claimUnits": [
+            "u2"
+          ],
+          "summary": "A key does not make two different requests safe: a reused key with a different amount must be rejected, not answered with the old result."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn01.replay.reuse",
+          "claimUnits": [
+            "u2"
+          ],
+          "binding": "claim",
+          "summary": "a reused key with a different amount is rejected"
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u9"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "kn01.takeaway.bounded",
+          "claimUnits": [
+            "u9"
+          ],
+          "binding": "claim",
+          "summary": "within a bounded window; not a general guarantee"
+        }
+      ]
+    }
+  ],
+  "kn-02-edge-cache-invalidation": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u10",
+        "u11",
+        "u55"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.ttl-window → ku.ttl",
+          "claimUnits": [
+            "u6",
+            "u7",
+            "u8"
+          ],
+          "summary": "The TTL is a guess made in advance: a headline corrected 60 seconds after publishing can stay old for up to the remaining 240 seconds of a 300-second TTL, and nothing the origin does shortens that wait."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.ttl.guess",
+          "claimUnits": [
+            "u6"
+          ],
+          "binding": "set",
+          "summary": "the TTL is a guess made in advance"
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.ttl.cannot-shorten",
+          "claimUnits": [
+            "u11"
+          ],
+          "binding": "set",
+          "summary": "nothing the origin does shortens that wait"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u16",
+        "u17",
+        "u18"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.purge-eventual → ku.purge-url",
+          "claimUnits": [
+            "u13",
+            "u14",
+            "u15"
+          ],
+          "summary": "A purge is accepted quickly but applied by each edge location on its own schedule, so for a while some locations serve the new version and others the old one."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.purge.eventual",
+          "claimUnits": [
+            "u13",
+            "u14"
+          ],
+          "binding": "claim",
+          "summary": "eventually consistent: locations apply it at different times"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u19",
+        "u20",
+        "u21"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.url-scope → ku.purge-url",
+          "claimUnits": [
+            "u13",
+            "u14",
+            "u15"
+          ],
+          "summary": "A URL purge removes only that URL: the home page, section page and RSS feed showing the same headline keep the old copy, and a query-string variant is a separate cache entry."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.purge.scope",
+          "claimUnits": [
+            "u13",
+            "u14"
+          ],
+          "binding": "set",
+          "summary": "only that exact URL; other pages and query variants keep the old copy"
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u22"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.purge-rate-limit → ku.purge-url",
+          "claimUnits": [
+            "u13",
+            "u14",
+            "u15"
+          ],
+          "summary": "Purge APIs are rate limited: Larkspur's plan allows 1000 purge calls per minute, which a bulk correction across the archive can exhaust."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.purge.rate",
+          "claimUnits": [
+            "u13"
+          ],
+          "binding": "set",
+          "summary": "rate limited: 1,000 calls per minute"
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u26"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "kn02.walkthrough.bound",
+          "claimUnits": [
+            "u27"
+          ],
+          "binding": "set",
+          "summary": "half within 2 seconds, slowest 20 seconds"
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u32",
+        "u33"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.tag-discipline → ku.surrogate",
+          "claimUnits": [
+            "u28",
+            "u29",
+            "u30"
+          ],
+          "summary": "Surrogate keys move responsibility to the origin: a page is purged by a key only if the origin tagged it, and a missing tag leaves a stale page with no error anywhere."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.surrogate.tagged",
+          "claimUnits": [
+            "u30"
+          ],
+          "binding": "claim",
+          "summary": "only pages the origin tagged with that key"
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.surrogate.silent",
+          "claimUnits": [
+            "u30"
+          ],
+          "binding": "set",
+          "summary": "a missing tag leaves a stale page with no error"
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u35",
+        "u36"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.tag-burst → ku.surrogate",
+          "claimUnits": [
+            "u28",
+            "u29",
+            "u30"
+          ],
+          "summary": "Tag purges can be large: purging section-politics at Larkspur removes about 12000 cached objects, and the origin must absorb the burst of misses."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.surrogate.burst",
+          "claimUnits": [
+            "u30"
+          ],
+          "binding": "set",
+          "summary": "about 12,000 objects at once; the origin absorbs the misses"
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u41"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.swr-bound → ku.swr",
+          "claimUnits": [
+            "u37",
+            "u38",
+            "u39"
+          ],
+          "summary": "An expired copy is served for at most 60 seconds past its TTL; after that the edge waits for the origin as on an ordinary miss."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.swr.bound",
+          "claimUnits": [
+            "u38"
+          ],
+          "binding": "claim",
+          "summary": "at most 60 seconds past the TTL"
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "conditionUnits": [
+        "u42"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "kn02.sie.condition",
+          "claimUnits": [
+            "u42"
+          ],
+          "binding": "claim",
+          "summary": "only while the origin is returning errors"
+        }
+      ]
+    },
+    {
+      "id": "c10",
+      "conditionUnits": [
+        "u43",
+        "u44"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.stale-tolerance → ku.swr",
+          "claimUnits": [
+            "u37",
+            "u38",
+            "u39"
+          ],
+          "summary": "Serving stale is a choice about tolerance, not a way to make content fresher: it hides a slow origin but some readers see a copy older than the TTL suggests."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.swr.tolerance",
+          "claimUnits": [
+            "u37",
+            "u38"
+          ],
+          "binding": "set",
+          "summary": "a choice about tolerance, not freshness"
+        }
+      ]
+    },
+    {
+      "id": "c11",
+      "conditionUnits": [
+        "u49",
+        "u50"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.html-caveat → ku.versioned",
+          "claimUnits": [
+            "u45",
+            "u46",
+            "u47",
+            "u48"
+          ],
+          "summary": "Versioning does not help for HTML entry pages: they are requested at fixed addresses and point to the new asset names, so they still need a TTL, a purge or both."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.versioned.html",
+          "claimUnits": [
+            "u45",
+            "u46"
+          ],
+          "binding": "set",
+          "summary": "does not help for HTML entry pages"
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.versioned.still-need",
+          "claimUnits": [
+            "u49"
+          ],
+          "binding": "set",
+          "summary": "they still need a TTL, a purge or both"
+        }
+      ]
+    },
+    {
+      "id": "c12",
+      "conditionUnits": [
+        "u51",
+        "u52"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.old-assets → ku.versioned",
+          "claimUnits": [
+            "u45",
+            "u46",
+            "u47",
+            "u48"
+          ],
+          "summary": "If HTML stays cached longer than the origin keeps old asset files, it can send readers to files that no longer exist, so old asset versions should stay available at least as long as the longest HTML TTL."
+        },
+        {
+          "kind": "r1",
+          "ref": "kn02.versioned.old-assets",
+          "claimUnits": [
+            "u46",
+            "u47"
+          ],
+          "binding": "set",
+          "summary": "keep old assets at least as long as the longest HTML TTL"
+        }
+      ]
+    },
+    {
+      "id": "c13",
+      "conditionUnits": [
+        "u62"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "kn02.takeaway.struggles",
+          "claimUnits": [
+            "u62"
+          ],
+          "binding": "set",
+          "summary": "when the origin struggles"
+        }
+      ]
+    }
+  ],
+  "kn-03-blue-green-deploy": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u2"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r14",
+          "claimUnits": [
+            "u1"
+          ],
+          "binding": "set",
+          "summary": "Assumes the service already runs behind a load balancer."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u6"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r13",
+          "claimUnits": [
+            "u3",
+            "u4"
+          ],
+          "binding": "set",
+          "summary": "Costs twice the infrastructure during a release; idle environment scaled down between releases."
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u9"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r3",
+          "claimUnits": [
+            "u9"
+          ],
+          "binding": "claim",
+          "summary": "Returns 200 only when the service can reach its database and its queue."
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u10",
+        "u27"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r1",
+          "claimUnits": [
+            "u5"
+          ],
+          "binding": "claim",
+          "summary": "Rollback does not revert the database; both versions share one DB, so migrations must be backward compatible for the switch-back to work."
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u13"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.non-compatible → ku.prereq-migrations",
+          "claimUnits": [
+            "u10"
+          ],
+          "summary": "If any migration is not backward compatible, do not use this procedure; split it into an additive release and a later cleanup release."
+        },
+        {
+          "kind": "r1",
+          "ref": "r2",
+          "claimUnits": [
+            "u16"
+          ],
+          "binding": "claim",
+          "summary": "If any migration is not backward compatible, do not use this procedure; split it into an additive release and a later cleanup release."
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u15"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r4",
+          "claimUnits": [
+            "u15"
+          ],
+          "binding": "claim",
+          "summary": "Use the same build artifact that passed staging, not a fresh build."
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u16"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r5",
+          "claimUnits": [
+            "u16"
+          ],
+          "binding": "claim",
+          "summary": "Once, from a single job, not from every green instance at startup."
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u17"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r6",
+          "claimUnits": [
+            "u17"
+          ],
+          "binding": "claim",
+          "summary": "If any instance still fails after 10 minutes, stop and roll back (tear down green, blue keeps serving)."
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "conditionUnits": [
+        "u18"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r7",
+          "claimUnits": [
+            "u18"
+          ],
+          "binding": "claim",
+          "summary": "If any smoke test fails, treat it as a failed health check and stop."
+        }
+      ]
+    },
+    {
+      "id": "c10",
+      "conditionUnits": [
+        "u22"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r8",
+          "claimUnits": [
+            "u22"
+          ],
+          "binding": "claim",
+          "summary": "If the 5xx rate exceeds 2% at any point in the 15-minute window, switch back to blue ($BLUE_TG_ARN); continue only if at or below 2%."
+        }
+      ]
+    },
+    {
+      "id": "c11",
+      "conditionUnits": [
+        "u23",
+        "u24"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r9",
+          "claimUnits": [
+            "u24"
+          ],
+          "binding": "claim",
+          "summary": "Only after 24 hours on standby without a switch-back."
+        }
+      ]
+    },
+    {
+      "id": "c12",
+      "conditionUnits": [
+        "u25"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r12",
+          "claimUnits": [
+            "u25"
+          ],
+          "binding": "claim",
+          "summary": "Only before step 5 (the traffic switch)."
+        }
+      ]
+    },
+    {
+      "id": "c13",
+      "conditionUnits": [
+        "u26"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r11",
+          "claimUnits": [
+            "u22"
+          ],
+          "binding": "set",
+          "summary": "After step 5, requests in flight on green during the switch may fail and need a client retry."
+        }
+      ]
+    },
+    {
+      "id": "c14",
+      "conditionUnits": [
+        "u29",
+        "u30"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r10",
+          "claimUnits": [
+            "u23"
+          ],
+          "binding": "claim",
+          "summary": "Do not run the next release's migrations while blue is on standby, or the standby may not work against the schema and switch-back stops being safe."
+        }
+      ]
+    }
+  ],
+  "kn-04-queue-choice": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u3"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r12",
+          "claimUnits": [
+            "u3"
+          ],
+          "binding": "claim",
+          "summary": "Only jobs queued but not yet started are lost."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u14",
+        "u15"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.cost-growth → ku.cost-table",
+          "claimUnits": [
+            "u11",
+            "u12",
+            "u13"
+          ],
+          "summary": "The managed queue's figure assumes current volume; at three times today's volume it would be roughly $900 a month, while the broker's cost stays flat until the cluster needs a fourth machine."
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u16",
+        "u17"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r2",
+          "claimUnits": [
+            "u13"
+          ],
+          "binding": "claim",
+          "summary": "Figure assumes current volume; at 3x volume it would be roughly $900/month."
+        },
+        {
+          "kind": "r1",
+          "ref": "r3",
+          "claimUnits": [
+            "u17"
+          ],
+          "binding": "claim",
+          "summary": "Only until the cluster needs a fourth machine."
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u18"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r1",
+          "claimUnits": [
+            "u21",
+            "u22",
+            "u23",
+            "u24",
+            "u25"
+          ],
+          "binding": "claim",
+          "summary": "Two must-haves gate the scoring: an option failing either is out regardless of its score."
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u25"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.a-at-least-once → ku.a-benefits",
+          "claimUnits": [
+            "u24"
+          ],
+          "summary": "The managed queue delivers each message at least once, so every job handler must be made idempotent before switching; today only the email handler is."
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u27",
+        "u44"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r4",
+          "claimUnits": [
+            "u26"
+          ],
+          "binding": "set",
+          "summary": "At-least-once delivery: every job handler must be made idempotent before switching; today only the email handler is."
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u28"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.b-effort-estimate → ku.cost-table",
+          "claimUnits": [
+            "u11",
+            "u12",
+            "u13"
+          ],
+          "summary": "No one on the team has run this broker in production, so its 12 hours a month is an estimate, not a measurement."
+        },
+        {
+          "kind": "r1",
+          "ref": "r5",
+          "claimUnits": [
+            "u26"
+          ],
+          "binding": "set",
+          "summary": "Local development's emulator does not support dead-lettering."
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u30"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r6",
+          "claimUnits": [
+            "u14"
+          ],
+          "binding": "claim",
+          "summary": "No one on the team has run this broker in production, so 12 hours is an estimate, not a measurement."
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "conditionUnits": [
+        "u31"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.c-scope → ku.c-transactional",
+          "claimUnits": [
+            "u30"
+          ],
+          "summary": "The transactional guarantee only covers jobs created inside the billing database transaction; jobs enqueued by the reporting service, which has its own database, would not get it."
+        }
+      ]
+    },
+    {
+      "id": "c10",
+      "conditionUnits": [
+        "u33"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r7",
+          "claimUnits": [
+            "u32"
+          ],
+          "binding": "claim",
+          "summary": "Only for jobs created inside the billing database transaction; reporting-service jobs (own database) don't get it."
+        }
+      ]
+    },
+    {
+      "id": "c11",
+      "conditionUnits": [
+        "u34"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r8",
+          "claimUnits": [
+            "u15"
+          ],
+          "binding": "set",
+          "summary": "Polling adds read load to the primary database, the main risk at month-end."
+        }
+      ]
+    },
+    {
+      "id": "c12",
+      "conditionUnits": [
+        "u36"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.load-test-limits → ku.load-test",
+          "claimUnits": [
+            "u33",
+            "u34",
+            "u35"
+          ],
+          "summary": "1,800 jobs per minute was not tested, and the staging copy is about a quarter of production size, so the results may not carry over."
+        }
+      ]
+    },
+    {
+      "id": "c13",
+      "conditionUnits": [
+        "u38"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r9",
+          "claimUnits": [
+            "u36",
+            "u37"
+          ],
+          "binding": "claim",
+          "summary": "1,800 jobs/min not tested and staging is about a quarter of production size, so results may not carry over."
+        }
+      ]
+    },
+    {
+      "id": "c14",
+      "conditionUnits": [
+        "u39",
+        "u40"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r10",
+          "claimUnits": [
+            "u40"
+          ],
+          "binding": "claim",
+          "summary": "That is the provider's figure, not ours; Options A and B were not load-tested."
+        }
+      ]
+    },
+    {
+      "id": "c15",
+      "conditionUnits": [
+        "u42",
+        "u46"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r11",
+          "claimUnits": [
+            "u41",
+            "u42"
+          ],
+          "binding": "claim",
+          "summary": "Deferred until Option C is measured at 1,800 jobs per minute on a production-sized database."
+        }
+      ]
+    }
+  ],
+  "kn-05-incident-review-meeting": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u22"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r1",
+          "claimUnits": [
+            "u22"
+          ],
+          "binding": "claim",
+          "summary": "Only when the rate stays above 10% for 15 minutes (sustained window)."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u29"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r2",
+          "claimUnits": [
+            "u33"
+          ],
+          "binding": "claim",
+          "summary": "The new threshold applies to the checkout alert specifically, not to alerts generally."
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u30",
+        "u31"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r3",
+          "claimUnits": [
+            "u33"
+          ],
+          "binding": "set",
+          "summary": "Over the last 30 days it would have paged twice on noise (both during provider maintenance); judged acceptable."
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u55",
+        "u56",
+        "u57",
+        "u58",
+        "u59",
+        "u60"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.freeze-objection → ku.freeze-proposal",
+          "claimUnits": [
+            "u53",
+            "u54"
+          ],
+          "summary": "Leila disagreed: a freeze moves the risk to Monday morning when traffic is higher, and the cause was the missing review, not the day; recovery took 25 minutes after the alert with Marcus on call. Tomás countered that fewer people slows recovery for any cause and that a pattern may show across incidents."
+        },
+        {
+          "kind": "r1",
+          "ref": "r4",
+          "claimUnits": [
+            "u59"
+          ],
+          "binding": "claim",
+          "summary": "Only config changes to the payments service, and they need exactly one approval from the payments team."
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u61",
+        "u62"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.freeze-undecided → ku.freeze-proposal",
+          "claimUnits": [
+            "u53",
+            "u54"
+          ],
+          "summary": "The facilitator did not settle it: the freeze is not decided."
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u63"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r5",
+          "claimUnits": [
+            "u63"
+          ],
+          "binding": "claim",
+          "summary": "Only after 15:00 on Fridays, and only for payments."
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u71",
+        "u72",
+        "u73"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.rollback-open → ku.rollback-proposal",
+          "claimUnits": [
+            "u66",
+            "u67",
+            "u68",
+            "u69",
+            "u70"
+          ],
+          "summary": "Auto-rollback was left as an open question: nobody knows how many releases include migrations."
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u74",
+        "u75",
+        "u76"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r6",
+          "claimUnits": [
+            "u63"
+          ],
+          "binding": "claim",
+          "summary": "Not decided: the freeze is deferred pending Tomás's six-month incident analysis for the April 2 review."
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "conditionUnits": [
+        "u79"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r7",
+          "claimUnits": [
+            "u79"
+          ],
+          "binding": "claim",
+          "summary": "Only if the checkout error rate doubles within 10 minutes of a deploy."
+        }
+      ]
+    },
+    {
+      "id": "c10",
+      "conditionUnits": [
+        "u80",
+        "u81",
+        "u82",
+        "u83"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r8",
+          "claimUnits": [
+            "u79"
+          ],
+          "binding": "set",
+          "summary": "Acceptable maybe for config; risky for code releases with a database migration (rolling back code without the migration can make things worse); possible exclusion of migration releases."
+        }
+      ]
+    },
+    {
+      "id": "c11",
+      "conditionUnits": [
+        "u86",
+        "u87",
+        "u88"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r9",
+          "claimUnits": [
+            "u79"
+          ],
+          "binding": "claim",
+          "summary": "Not decided: auto-rollback is an open question because migration frequency is unknown."
+        }
+      ]
+    },
+    {
+      "id": "c12",
+      "conditionUnits": [
+        "u90",
+        "u91",
+        "u93",
+        "u94"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r10",
+          "claimUnits": [
+            "u95",
+            "u96"
+          ],
+          "binding": "set",
+          "summary": "Whether the 2,300 failed checkouts were retried is unknown (nobody has checked the payment logs) and changes what the email says; draft it either way."
+        }
+      ]
+    }
+  ],
+  "kn-06-hybrid-search-reranking": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u9"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.bm25-mismatch → ku.bm25",
+          "claimUnits": [
+            "u4",
+            "u5",
+            "u6",
+            "u7",
+            "u8"
+          ],
+          "summary": "Keyword retrieval's weakness is vocabulary mismatch: 'why does my upload stall' does not match a passage that only says 'transfers pause when the connection drops'."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u12",
+        "u13",
+        "u14"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.vector-exact-weakness → ku.vector",
+          "claimUnits": [
+            "u10",
+            "u11"
+          ],
+          "summary": "Embeddings are weaker on exact codes and identifiers: E-4012 and E-4021 look almost the same to the encoder, and vector retrieval alone missed the correct passage for 31 of 50 error-code queries."
+        },
+        {
+          "kind": "r1",
+          "ref": "r11",
+          "claimUnits": [
+            "u14"
+          ],
+          "binding": "claim",
+          "summary": "Only for queries consisting mainly of an error code."
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u15"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r12",
+          "claimUnits": [
+            "u15"
+          ],
+          "binding": "claim",
+          "summary": "Whenever the encoder changes."
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u17",
+        "u18"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.hybrid-condition → ku.hybrid",
+          "claimUnits": [
+            "u16",
+            "u17"
+          ],
+          "summary": "The gain depends on the signals being complementary, each retriever finding relevant passages the other misses; if both return the same passages or one is poorly tuned, merging adds latency without adding much."
+        },
+        {
+          "kind": "r1",
+          "ref": "r1",
+          "claimUnits": [
+            "u17"
+          ],
+          "binding": "claim",
+          "summary": "Only when lexical and semantic signals are complementary; if both return the same passages or one is poorly tuned, merging adds latency without much gain."
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u23"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r2",
+          "claimUnits": [
+            "u23"
+          ],
+          "binding": "claim",
+          "summary": "At most 100 candidates, usually fewer due to overlap."
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u29"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r3",
+          "claimUnits": [
+            "u27",
+            "u28",
+            "u29"
+          ],
+          "binding": "claim",
+          "summary": "Because it is expensive, it runs only on the fused candidates, never on the whole collection."
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u31",
+        "u32",
+        "u33",
+        "u49"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.rerank-limits → ku.rerank-precision",
+          "claimUnits": [
+            "u31"
+          ],
+          "summary": "Reranking does not guarantee a correct answer: it can only reorder what retrieval found, so a right passage missing from the candidates can't be recovered, and a relevant passage may still be out of date."
+        },
+        {
+          "kind": "r1",
+          "ref": "r4",
+          "claimUnits": [
+            "u31"
+          ],
+          "binding": "set",
+          "summary": "It does not guarantee that the final answer is correct."
+        },
+        {
+          "kind": "r1",
+          "ref": "r5",
+          "claimUnits": [
+            "u31",
+            "u28"
+          ],
+          "binding": "claim",
+          "summary": "It can only reorder what retrieval found; if the right passage is not among the candidates, reranking cannot recover it."
+        },
+        {
+          "kind": "r1",
+          "ref": "r6",
+          "claimUnits": [
+            "u28"
+          ],
+          "binding": "set",
+          "summary": "A passage can be highly relevant yet out of date, which no relevance score detects."
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u35"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r7",
+          "claimUnits": [
+            "u34"
+          ],
+          "binding": "set",
+          "summary": "If none of the passages addresses the question, it should say so rather than answer from general knowledge."
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "conditionUnits": [
+        "u36"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.citation-limit → ku.generation",
+          "claimUnits": [
+            "u34",
+            "u35"
+          ],
+          "summary": "Citations let a reader check each claim against its passage, but do not show whether the passage itself is current."
+        },
+        {
+          "kind": "r1",
+          "ref": "r8",
+          "claimUnits": [
+            "u36"
+          ],
+          "binding": "set",
+          "summary": "They do not show whether the passage itself is current."
+        }
+      ]
+    },
+    {
+      "id": "c10",
+      "conditionUnits": [
+        "u39",
+        "u46"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r9",
+          "claimUnits": [
+            "u41",
+            "u42",
+            "u43",
+            "u44"
+          ],
+          "binding": "claim",
+          "summary": "Figures come from one collection and one 400-question query set; fewer exact identifiers may mean a smaller BM25 gain, and a different reranker has different latency."
+        }
+      ]
+    },
+    {
+      "id": "c11",
+      "conditionUnits": [
+        "u42"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.figures-caveat → ku.rerank-latency",
+          "claimUnits": [
+            "u41"
+          ],
+          "summary": "These figures come from one collection and one query set; a collection with fewer exact identifiers may gain less from BM25, and a different reranker will have a different latency."
+        }
+      ]
+    },
+    {
+      "id": "c12",
+      "conditionUnits": [
+        "u47"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r10",
+          "claimUnits": [
+            "u47"
+          ],
+          "binding": "set",
+          "summary": "At some cost in recall."
+        }
+      ]
+    }
+  ],
+  "kn-07-photo-sharing-hld": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u7"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r4",
+          "claimUnits": [
+            "u7"
+          ],
+          "binding": "set",
+          "summary": "The signed URL is short-lived."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u9"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r2",
+          "claimUnits": [
+            "u9"
+          ],
+          "binding": "set",
+          "summary": "The rate limit is 120 requests per minute per account."
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u10"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.gateway-fails-closed → ku.gateway",
+          "claimUnits": [
+            "u8",
+            "u9"
+          ],
+          "summary": "If the auth service cannot be reached, the gateway rejects the request instead of letting it through unchecked."
+        },
+        {
+          "kind": "r1",
+          "ref": "r1",
+          "claimUnits": [
+            "u9"
+          ],
+          "binding": "claim",
+          "summary": "If the auth service cannot be reached, the gateway rejects the request (fails closed) rather than letting it through."
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u11"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r3",
+          "claimUnits": [
+            "u8"
+          ],
+          "binding": "claim",
+          "summary": "Photo bytes are served to clients by the CDN, never by the gateway."
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u18"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r12",
+          "claimUnits": [
+            "u18",
+            "u32"
+          ],
+          "binding": "claim",
+          "summary": "Only followers who have notifications turned on are alerted."
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u19"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.queue-retention → ku.message-queue",
+          "claimUnits": [
+            "u13",
+            "u15",
+            "u17",
+            "u18"
+          ],
+          "summary": "The queue keeps an event for up to 7 days, so a worker outage delays thumbnails but does not lose uploads."
+        },
+        {
+          "kind": "r1",
+          "ref": "r6",
+          "claimUnits": [
+            "u19"
+          ],
+          "binding": "claim",
+          "summary": "Because the queue keeps an event for up to 7 days."
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u20"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.stuck-photos → ku.workers",
+          "claimUnits": [
+            "u15",
+            "u16",
+            "u17",
+            "u31"
+          ],
+          "summary": "A photo whose processing keeps failing stays in the processing state and is not shown in any feed."
+        },
+        {
+          "kind": "r1",
+          "ref": "r7",
+          "claimUnits": [
+            "u31",
+            "u32"
+          ],
+          "binding": "claim",
+          "summary": "A photo whose processing keeps failing stays 'processing' and is never shown in any feed."
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u23"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r8",
+          "claimUnits": [
+            "u14",
+            "u23"
+          ],
+          "binding": "set",
+          "summary": "Feed pages are cached for 60 seconds."
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "conditionUnits": [
+        "u27"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r11",
+          "claimUnits": [
+            "u18",
+            "u32"
+          ],
+          "binding": "set",
+          "summary": "Pinhole only sends requests and does not control when an alert arrives."
+        }
+      ]
+    },
+    {
+      "id": "c10",
+      "conditionUnits": [
+        "u34"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r5",
+          "claimUnits": [
+            "u34"
+          ],
+          "binding": "set",
+          "summary": "Cost: a new photo takes a few seconds to appear in feeds."
+        }
+      ]
+    },
+    {
+      "id": "c11",
+      "conditionUnits": [
+        "u35"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r9",
+          "claimUnits": [
+            "u35"
+          ],
+          "binding": "set",
+          "summary": "Originals can be up to 25 MB (the deciding fact)."
+        }
+      ]
+    },
+    {
+      "id": "c12",
+      "conditionUnits": [
+        "u38"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r10",
+          "claimUnits": [
+            "u38"
+          ],
+          "binding": "set",
+          "summary": "We accept that their outages are outside our control."
+        }
+      ]
+    },
+    {
+      "id": "c13",
+      "conditionUnits": [
+        "u39"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r13",
+          "claimUnits": [
+            "u20"
+          ],
+          "binding": "set",
+          "summary": "How failed processing is retried and when a stuck photo is cleaned up is not decided yet."
+        }
+      ]
+    }
+  ],
+  "kn-08-helpdesk-answers-hld-lld": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u5"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r3",
+          "claimUnits": [
+            "u5"
+          ],
+          "binding": "set",
+          "summary": "The Model Gateway is the only component allowed to talk to the external model provider."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u8"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r4",
+          "claimUnits": [
+            "u8"
+          ],
+          "binding": "set",
+          "summary": "It reads only published articles, every 15 minutes (so new articles can lag up to ~15 min)."
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u9"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r5",
+          "claimUnits": [
+            "u6"
+          ],
+          "binding": "set",
+          "summary": "How the Vector store is partitioned has not been decided (and the Ingestion worker's internals are not described)."
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u16"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r10",
+          "claimUnits": [
+            "u16"
+          ],
+          "binding": "set",
+          "summary": "It must use the same embedding model as the Ingestion worker."
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u25",
+        "u26"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.rerank-fallback → ku.flow-rerank",
+          "claimUnits": [
+            "u21"
+          ],
+          "summary": "If the Reranker does not respond within 800 ms, reranking is skipped, the first 8 candidates are kept in vector-similarity order and rerank_skipped = true is logged; faster, but the 8 passages may be less relevant."
+        },
+        {
+          "kind": "r1",
+          "ref": "r1",
+          "claimUnits": [
+            "u21"
+          ],
+          "binding": "claim",
+          "summary": "If the Reranker does not respond within 800 ms, reranking is skipped, the first 8 candidates in vector-similarity order are kept and rerank_skipped = true is logged."
+        },
+        {
+          "kind": "r1",
+          "ref": "r2",
+          "claimUnits": [
+            "u25"
+          ],
+          "binding": "set",
+          "summary": "Skipping keeps the request fast but the 8 passages may then be less relevant."
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u27"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r6",
+          "claimUnits": [
+            "u27",
+            "u12"
+          ],
+          "binding": "set",
+          "summary": "The prompt is limited to 6,000 tokens."
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u28"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r7",
+          "claimUnits": [
+            "u27"
+          ],
+          "binding": "set",
+          "summary": "The model call has a 20-second timeout."
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u29"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r8",
+          "claimUnits": [
+            "u24"
+          ],
+          "binding": "claim",
+          "summary": "If the model call times out, composeAnswer returns an error, the API responds HTTP 504, and no partial answer is shown."
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "conditionUnits": [
+        "u30"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r9",
+          "claimUnits": [
+            "u14",
+            "u27"
+          ],
+          "binding": "set",
+          "summary": "On a non-matching citation, composeAnswer removes the sentence carrying it and marks the answer partial, rather than rejecting the whole answer."
+        }
+      ]
+    }
+  ],
+  "kn-09-billing-codebase-map": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u4"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r1",
+          "claimUnits": [
+            "u1"
+          ],
+          "binding": "set",
+          "summary": "Refunds, dunning and the customer portal are out of scope."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u22"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r2",
+          "claimUnits": [
+            "u21"
+          ],
+          "binding": "claim",
+          "summary": "Events flagged is_test are skipped."
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u28",
+        "u29"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r3",
+          "claimUnits": [
+            "u27"
+          ],
+          "binding": "claim",
+          "summary": "No call site for discountFor found; the link is unconfirmed until traced."
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u31"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r4",
+          "claimUnits": [
+            "u30"
+          ],
+          "binding": "set",
+          "summary": "The request times out after 8 seconds."
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u34",
+        "u35"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.tax-retries-unknown → ku.tax-client",
+          "claimUnits": [
+            "u30",
+            "u31",
+            "u33"
+          ],
+          "summary": "How retries work for the tax provider is not documented: TaxClient.quote has no retry code, and whether callers or the Taxwell library retry, and what happens to an invoice when a quote times out, is unknown."
+        },
+        {
+          "kind": "r1",
+          "ref": "r5",
+          "claimUnits": [
+            "u30",
+            "u18"
+          ],
+          "binding": "set",
+          "summary": "Retry behaviour is undocumented: quote has no retry code, and caller/library retries and the invoice's fate on timeout are unknown."
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u42",
+        "u43"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.publish-failure-unknown → ku.publish",
+          "claimUnits": [
+            "u39",
+            "u40"
+          ],
+          "summary": "If publishing fails after the commit, the code logs the error and returns, so an invoice can exist without its event; no re-send job was found and whether one is planned is unknown."
+        },
+        {
+          "kind": "r1",
+          "ref": "r6",
+          "claimUnits": [
+            "u39",
+            "u40"
+          ],
+          "binding": "claim",
+          "summary": "If publishing fails after commit, the code logs and returns, so an invoice can exist without its event; no re-send job found."
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u46"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r7",
+          "claimUnits": [
+            "u45"
+          ],
+          "binding": "set",
+          "summary": "taxCents stays undefined until TaxClient.quote returns."
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u49"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r8",
+          "claimUnits": [
+            "u48"
+          ],
+          "binding": "claim",
+          "summary": "This is an interpretation, not a rule the code enforces; nothing stops another module querying price_plans."
+        }
+      ]
+    }
+  ],
+  "kn-10-inventory-architecture-frames": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u13"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r1",
+          "claimUnits": [
+            "u13"
+          ],
+          "binding": "claim",
+          "summary": "Only once both the ledger reservation and the pricing step succeed."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u14"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.no-partial → ku.orchestrator",
+          "claimUnits": [
+            "u11",
+            "u12",
+            "u13"
+          ],
+          "summary": "If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order and never makes a partial reservation."
+        },
+        {
+          "kind": "r1",
+          "ref": "r2",
+          "claimUnits": [
+            "u13"
+          ],
+          "binding": "set",
+          "summary": "If the ledger cannot reserve the full quantity, the whole order is rejected; never a partial reservation."
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u15"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.hold-expiry → ku.ledger",
+          "claimUnits": [
+            "u16",
+            "u17",
+            "u18",
+            "u46"
+          ],
+          "summary": "A reservation that is not confirmed within 15 minutes is released by the ledger and the stock becomes available again."
+        },
+        {
+          "kind": "r1",
+          "ref": "r3",
+          "claimUnits": [
+            "u13"
+          ],
+          "binding": "set",
+          "summary": "A reservation not confirmed within 15 minutes is released and the stock becomes available again."
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u20"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r9",
+          "claimUnits": [
+            "u20"
+          ],
+          "binding": "set",
+          "summary": "Price lists are cached for 300 seconds."
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u24"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r10",
+          "claimUnits": [
+            "u23"
+          ],
+          "binding": "set",
+          "summary": "It polls the supplier API every 10 minutes."
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u26"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.unparseable-skipped → ku.feed-adapter",
+          "claimUnits": [
+            "u23",
+            "u24",
+            "u25",
+            "u47"
+          ],
+          "summary": "A delivery the adapter cannot parse is logged and skipped, not retried, because sending the same bad data again would fail the same way."
+        },
+        {
+          "kind": "r1",
+          "ref": "r6",
+          "claimUnits": [
+            "u24"
+          ],
+          "binding": "claim",
+          "summary": "A delivery it cannot parse is logged and skipped, not retried."
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u36",
+        "u37",
+        "u38"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r4",
+          "claimUnits": [
+            "u34"
+          ],
+          "binding": "set",
+          "summary": "At most 5 attempts per delivery; backoff 2 s doubling capped at 60 s; after 5th failure, published to inventory.dlq for staff review."
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u39",
+        "u40"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.retry-scope → ku.retry-policy",
+          "claimUnits": [
+            "u36",
+            "u37",
+            "u38"
+          ],
+          "summary": "Retries apply only to supplier calls; reservations are never retried automatically and a failed reservation is returned to the caller as an error."
+        },
+        {
+          "kind": "r1",
+          "ref": "r5",
+          "claimUnits": [
+            "u34",
+            "u35"
+          ],
+          "binding": "set",
+          "summary": "Retries apply only to supplier calls; reservations are never retried automatically and failures return an error to the caller."
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "conditionUnits": [
+        "u49"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r8",
+          "claimUnits": [
+            "u18",
+            "u46"
+          ],
+          "binding": "set",
+          "summary": "Orchestrator and adapter can change the same product at once; consistency relies on a row lock unmeasured under peak load."
+        }
+      ]
+    },
+    {
+      "id": "c10",
+      "conditionUnits": [
+        "u50"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r7",
+          "claimUnits": [
+            "u38",
+            "u7"
+          ],
+          "binding": "set",
+          "summary": "They are only found when someone opens the admin UI; nothing alerts when inventory.dlq fills."
+        }
+      ]
+    }
+  ],
+  "kn-11-ambiguous-analytics-proposal": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u6"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r1",
+          "claimUnits": [
+            "u6"
+          ],
+          "binding": "claim",
+          "summary": "or sooner when the app goes to the background"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u7"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r2",
+          "claimUnits": [
+            "u7"
+          ],
+          "binding": "claim",
+          "summary": "account id only for signed-in users"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u11"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.enrichment-user-service → ku.enrichment",
+          "claimUnits": [
+            "u10",
+            "u12"
+          ],
+          "summary": "Enrichment 'uses' the user service, but the source doesn't say how: a call per event, a cached lookup and a read from a replica are all consistent with the text."
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u12"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r4",
+          "claimUnits": [
+            "u10"
+          ],
+          "binding": "claim",
+          "summary": "if the account cannot be found, the event is passed on without account attributes"
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u13",
+        "u21"
+      ],
+      "sources": [
+        {
+          "kind": "golden",
+          "ref": "ku.freshness-conflict → ku.warehouse-load",
+          "claimUnits": [
+            "u13",
+            "u14"
+          ],
+          "summary": "The design section says enriched events are written to the warehouse in hourly batches; the freshness section says events reach the warehouse in real time. The source does not resolve which is meant."
+        },
+        {
+          "kind": "r1",
+          "ref": "r5",
+          "claimUnits": [
+            "u21"
+          ],
+          "binding": "claim",
+          "summary": "enriched events are written to the warehouse in hourly batches (contradicts real time)"
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u15"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r6",
+          "claimUnits": [
+            "u11"
+          ],
+          "binding": "set",
+          "summary": "user service expected to stay lightly loaded, so enrichment should avoid adding much traffic"
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u16"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r3",
+          "claimUnits": [
+            "u16"
+          ],
+          "binding": "claim",
+          "summary": "every event type must be registered before clients can send it"
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u17"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r11",
+          "claimUnits": [
+            "u17"
+          ],
+          "binding": "claim",
+          "summary": "only breaking changes require a new version"
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "conditionUnits": [
+        "u24"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r8",
+          "claimUnits": [
+            "u22"
+          ],
+          "binding": "set",
+          "summary": "how long aggregated tables are kept is TBD"
+        }
+      ]
+    },
+    {
+      "id": "c10",
+      "conditionUnits": [
+        "u33"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r7",
+          "claimUnits": [
+            "u22"
+          ],
+          "binding": "claim",
+          "summary": "the components table lists warehouse raw events retention as 90 days (contradicts 30)"
+        }
+      ]
+    },
+    {
+      "id": "c11",
+      "conditionUnits": [
+        "u36"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r9",
+          "claimUnits": [
+            "u36"
+          ],
+          "binding": "claim",
+          "summary": "once the mobile SDK is ready; no date set"
+        }
+      ]
+    },
+    {
+      "id": "c12",
+      "conditionUnits": [
+        "u38"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r10",
+          "claimUnits": [
+            "u42"
+          ],
+          "binding": "set",
+          "summary": "the cost of running the pipeline has not been estimated"
+        }
+      ]
+    }
+  ],
+  "kn-12-flag-rollout-update": [
+    {
+      "id": "c1",
+      "conditionUnits": [
+        "u3"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r12",
+          "claimUnits": [
+            "u2"
+          ],
+          "binding": "set",
+          "summary": "does not cover experiments, which follow their own process"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "conditionUnits": [
+        "u7"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r1",
+          "claimUnits": [
+            "u7"
+          ],
+          "binding": "claim",
+          "summary": "only for staff accounts"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "conditionUnits": [
+        "u8"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r2",
+          "claimUnits": [
+            "u8"
+          ],
+          "binding": "claim",
+          "summary": "usually; the guide sets no minimum"
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "conditionUnits": [
+        "u12"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r3",
+          "claimUnits": [
+            "u12"
+          ],
+          "binding": "claim",
+          "summary": "5% of requests chosen at random per request, not per user"
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "conditionUnits": [
+        "u13"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r4",
+          "claimUnits": [
+            "u12",
+            "u13"
+          ],
+          "binding": "claim",
+          "summary": "for at least 30 minutes"
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "conditionUnits": [
+        "u14"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r5",
+          "claimUnits": [
+            "u13"
+          ],
+          "binding": "set",
+          "summary": "raising the percentage by hand restarts the measurement window"
+        }
+      ]
+    },
+    {
+      "id": "c7",
+      "conditionUnits": [
+        "u16",
+        "u18"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r6",
+          "claimUnits": [
+            "u16"
+          ],
+          "binding": "claim",
+          "summary": "only when the automated metrics check passes; if it fails the flag stays in canary"
+        }
+      ]
+    },
+    {
+      "id": "c8",
+      "conditionUnits": [
+        "u20"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r7",
+          "claimUnits": [
+            "u20"
+          ],
+          "binding": "claim",
+          "summary": "within 1 minute"
+        }
+      ]
+    },
+    {
+      "id": "c9",
+      "conditionUnits": [
+        "u21",
+        "u22"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r8",
+          "claimUnits": [
+            "u9"
+          ],
+          "binding": "claim",
+          "summary": "a flag cannot enter canary without a kill switch tested in staging and recorded in the rollout tool"
+        }
+      ]
+    },
+    {
+      "id": "c10",
+      "conditionUnits": [
+        "u24"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r9",
+          "claimUnits": [
+            "u24"
+          ],
+          "binding": "set",
+          "summary": "turning it back on restarts the rollout from the internal stage"
+        }
+      ]
+    },
+    {
+      "id": "c11",
+      "conditionUnits": [
+        "u27"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r10",
+          "claimUnits": [
+            "u25"
+          ],
+          "binding": "claim",
+          "summary": "keeps watching until the flag has been at 100% for one hour"
+        }
+      ]
+    },
+    {
+      "id": "c12",
+      "conditionUnits": [
+        "u28"
+      ],
+      "sources": [
+        {
+          "kind": "r1",
+          "ref": "r11",
+          "claimUnits": [
+            "u28"
+          ],
+          "binding": "claim",
+          "summary": "after it has been fully on for 30 days"
+        }
+      ]
+    }
+  ]
+}

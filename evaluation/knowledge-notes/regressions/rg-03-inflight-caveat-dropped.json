@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-inflight-caveat-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The switch-back card loses its caveat (u36): in-flight requests on green may fail and need a client retry.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n16",
+      "find": "\n\n**Caveat:** requests in flight on green during the switch may fail and need a client retry.",
+      "replace": ""
+    }
+  ],
+  "expectFailing": [
+    "a.inflight"
+  ]
+}

@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meaning labelling</title>
+<!--
+  Blind labelling of the paraphrase set (knowledge-notes-plan §7.2, OD7, gate G0). Open this file in a browser
+  (double-click it; no server, no network). It never shows the drafted label, the expected rule, the kind, the notes
+  or the pair ids, and it shuffles the order per labeller. Answers are saved in this browser as you go; "Export"
+  writes the file to put in src/ai/fidelity/__fixtures__/meaning/labels/. See .ai/docs/meaning-labelling-rubric.md.
+-->
+<style>
+  :root { --bg:#fbfbfa; --panel:#fff; --ink:#1d1d1b; --muted:#6b6b66; --line:#e2e1dc; --accent:#2f5bd3;
+          --faithful:#1f7a4d; --partly:#a86a00; --distorted:#b3261e; --unsure:#5b5b8f; color-scheme:light; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161615; --panel:#1f1f1d; --ink:#ecebe6; --muted:#a3a29c; --line:#34332f; --accent:#8aa8ff;
+            --faithful:#5fc28f; --partly:#e3a93b; --distorted:#f07a72; --unsure:#a9a9e0; color-scheme:dark; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:860px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  .muted { color:var(--muted); }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; margin:16px 0; }
+  .row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  label.field { display:flex; flex-direction:column; gap:4px; font-size:13px; color:var(--muted); }
+  input[type=text], select, textarea { font:inherit; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:6px 8px; }
+  textarea { width:100%; min-height:64px; resize:vertical; }
+  button { font:inherit; border:1px solid var(--line); background:var(--panel); color:var(--ink); border-radius:6px; padding:6px 12px; cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .text { font-size:17px; line-height:1.55; padding:10px 12px; border-left:3px solid var(--line); margin:6px 0 14px; }
+  .tag { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+  .answers { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:8px; margin:8px 0 12px; }
+  .answers button { padding:10px; text-align:left; }
+  .answers button kbd { float:right; color:var(--muted); font-size:12px; }
+  .answers button[aria-pressed=true][data-a=faithful] { border-color:var(--faithful); box-shadow:inset 0 0 0 2px var(--faithful); }
+  .answers button[aria-pressed=true][data-a=partly] { border-color:var(--partly); box-shadow:inset 0 0 0 2px var(--partly); }
+  .answers button[aria-pressed=true][data-a=distorted] { border-color:var(--distorted); box-shadow:inset 0 0 0 2px var(--distorted); }
+  .answers button[aria-pressed=true][data-a=unsure] { border-color:var(--unsure); box-shadow:inset 0 0 0 2px var(--unsure); }
+  .bar { height:6px; background:var(--line); border-radius:3px; overflow:hidden; }
+  .bar > div { height:100%; background:var(--accent); }
+  .warn { color:var(--distorted); font-size:13px; min-height:1.2em; }
+  details summary { cursor:pointer; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  td, th { border-top:1px solid var(--line); padding:6px; vertical-align:top; text-align:left; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Meaning labelling</h1>
+  <div class="muted">Would a reader of the card alone come away believing something the source does not say?</div>
+
+  <section class="panel" id="setup">
+    <div class="row">
+      <label class="field">Your name<input type="text" id="name" placeholder="e.g. gowtham" autocomplete="off"></label>
+      <label class="field">What to label
+        <select id="mode">
+          <option value="all">All pairs</option>
+          <option value="sample">Second labeller: the 50-pair sample only</option>
+        </select>
+      </label>
+    </div>
+    <p class="row">
+      <label class="field">pairs.json<input type="file" id="pairsFile" accept=".json"></label>
+      <label class="field">labelling.json (for the sample)<input type="file" id="configFile" accept=".json"></label>
+      <label class="field">Continue from a labels file (optional)<input type="file" id="resumeFile" accept=".json"></label>
+    </p>
+    <div class="muted" style="font-size:13px">All three files are in <code>src/ai/fidelity/__fixtures__/meaning/</code>. Nothing leaves this browser.</div>
+    <p><button class="primary" id="start">Start</button> <span class="warn" id="setupWarn"></span></p>
+  </section>
+
+  <section id="work" hidden>
+    <div class="row" style="justify-content:space-between">
+      <div id="progressText" class="muted"></div>
+      <div class="row">
+        <label class="muted" style="font-size:13px"><input type="checkbox" id="onlyOpen"> unanswered only</label>
+        <button id="export" class="primary">Export labels</button>
+      </div>
+    </div>
+    <div class="bar" style="margin-top:8px"><div id="progressBar" style="width:0"></div></div>
+
+    <div class="panel">
+      <div class="tag">Source</div>
+      <div class="text" id="source"></div>
+      <div class="tag">Card</div>
+      <div class="text" id="card"></div>
+      <div class="answers" role="group" aria-label="Answer">
+        <button data-a="faithful">Faithful <kbd>1</kbd></button>
+        <button data-a="partly">Partly <kbd>2</kbd></button>
+        <button data-a="distorted">Distorted <kbd>3</kbd></button>
+        <button data-a="unsure">Unsure <kbd>4</kbd></button>
+      </div>
+      <label class="field">Note: required for partly and unsure; for distorted, name the false belief in one sentence
+        <textarea id="note" placeholder="The card says … ; the source says …"></textarea>
+      </label>
+      <div class="warn" id="noteWarn"></div>
+      <div class="row" style="justify-content:space-between">
+        <button id="prev">‹ Previous <kbd>←</kbd></button>
+        <span class="muted" id="position"></span>
+        <button id="next">Next <kbd>→</kbd></button>
+      </div>
+    </div>
+
+    <details class="panel">
+      <summary>Rubric, short version</summary>
+      <table>
+        <tr><th>Label</th><th>Test</th></tr>
+        <tr><td><b>Faithful</b></td><td>A reader who acts on the card makes the same decision as one who read the source. Shorter is fine; stronger, wider, reversed or new is not.</td></tr>
+        <tr><td><b>Partly</b></td><td>Mostly right, but one arguable detail is lost or bent. You'd want the author to look, but can't point to a clearly false claim. Always say why.</td></tr>
+        <tr><td><b>Distorted</b></td><td>You can name the false belief in one sentence: a hedge removed, a condition or scope dropped or widened, a negation flipped, cause and effect swapped, a number or unit changed, a cost dropped or inverted, an absolute added.</td></tr>
+        <tr><td><b>Unsure</b></td><td>You can't decide. Say what you'd need to know. It is discussed like a partly.</td></tr>
+      </table>
+      <p class="muted">Judge meaning, not style. The card stands alone: don't fill in from the source. One false belief is enough. Hedges are equivalent within their class (can / may / might / could; usually / typically / generally). Numbers are exact after formatting (1,000 = 1000 = one thousand). A requirement for N means at least N unless an exact count is stated; a limit ("up to 3") is different. Full rubric: <code>.ai/docs/meaning-labelling-rubric.md</code>.</p>
+    </details>
+  </section>
+</main>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const RUBRIC_VERSION = 2;
+  let pairs = [], config = null, order = [], index = 0, labeller = "", mode = "all";
+  let labels = {}; // id -> {answer, note, source, card, at}
+
+  const readJson = (input) => new Promise((resolve, reject) => {
+    const file = input.files && input.files[0];
+    if (!file) return resolve(null);
+    const r = new FileReader();
+    r.onload = () => { try { resolve(JSON.parse(r.result)); } catch (e) { reject(new Error(file.name + " is not valid JSON")); } };
+    r.onerror = () => reject(new Error("could not read " + file.name));
+    r.readAsText(file);
+  });
+
+  // A seeded shuffle, so one labeller always sees the same order and two labellers see different ones.
+  function seeded(seed) {
+    let h = 1779033703 ^ seed.length;
+    for (let i = 0; i < seed.length; i++) { h = Math.imul(h ^ seed.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    return () => { h = Math.imul(h ^ (h >>> 16), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; };
+  }
+  function shuffle(list, seed) {
+    const rand = seeded(seed), a = list.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+
+  const storeKey = () => "meaning-labels:" + labeller.toLowerCase();
+  function save() { try { localStorage.setItem(storeKey(), JSON.stringify(labels)); } catch (e) { /* storage blocked: export still works */ } }
+  function load() { try { return JSON.parse(localStorage.getItem(storeKey()) || "{}"); } catch (e) { return {}; } }
+
+  const current = (id) => { const l = labels[id], p = pairs.find((x) => x.id === id); return l && p && l.source === p.source && l.card === p.card ? l : null; };
+  const needsNote = (a) => a === "partly" || a === "unsure";
+
+  $("start").onclick = async () => {
+    $("setupWarn").textContent = "";
+    try {
+      labeller = $("name").value.trim();
+      mode = $("mode").value;
+      if (!labeller) throw new Error("Enter your name first.");
+      const pf = await readJson($("pairsFile"));
+      if (!pf || !Array.isArray(pf.pairs)) throw new Error("Choose pairs.json.");
+      pairs = pf.pairs.map((p) => ({ id: p.id, source: p.source, card: p.card })); // nothing else is kept: blind
+      config = await readJson($("configFile"));
+      let ids = pairs.map((p) => p.id);
+      if (mode === "sample") {
+        if (!config || !Array.isArray(config.sample)) throw new Error("The sample needs labelling.json.");
+        const s = new Set(config.sample); ids = ids.filter((id) => s.has(id));
+      }
+      labels = load();
+      const resume = await readJson($("resumeFile"));
+      if (resume && resume.labels) Object.assign(labels, resume.labels);
+      // Answers to a pair whose text has changed since are dropped: it is labelled again.
+      for (const id of Object.keys(labels)) if (!current(id)) delete labels[id];
+      save();
+      order = shuffle(ids, labeller.toLowerCase() + "|" + mode);
+      index = Math.max(0, order.findIndex((id) => !current(id)));
+      $("setup").hidden = true; $("work").hidden = false;
+      render();
+    } catch (e) { $("setupWarn").textContent = e.message; }
+  };
+
+  function visible() { return $("onlyOpen").checked ? order.filter((id) => !current(id) || id === order[index]) : order; }
+
+  function render() {
+    const id = order[index], p = pairs.find((x) => x.id === id), l = current(id);
+    $("source").textContent = p.source;
+    $("card").textContent = p.card;
+    document.querySelectorAll(".answers button").forEach((b) => b.setAttribute("aria-pressed", String(!!l && l.answer === b.dataset.a)));
+    $("note").value = l && l.note ? l.note : "";
+    $("noteWarn").textContent = "";
+    const done = order.filter((x) => current(x)).length;
+    $("progressText").textContent = `${labeller}: ${done} of ${order.length} answered` + (mode === "sample" ? " (sample)" : "");
+    $("progressBar").style.width = (100 * done / order.length) + "%";
+    $("position").textContent = `${index + 1} / ${order.length}`;
+  }
+
+  function answer(a) {
+    const id = order[index], p = pairs.find((x) => x.id === id);
+    const prev = current(id);
+    labels[id] = { answer: a, ...(prev && prev.note ? { note: prev.note } : {}), source: p.source, card: p.card, at: new Date().toISOString() };
+    const note = $("note").value.trim();
+    if (note) labels[id].note = note;
+    save(); render();
+    if (needsNote(a) && !note) { $("noteWarn").textContent = "Add a note: why is it " + a + "?"; $("note").focus(); }
+  }
+
+  function commitNote() {
+    const id = order[index], l = current(id);
+    if (!l) return true;
+    const note = $("note").value.trim();
+    if (note) l.note = note; else delete l.note;
+    save();
+    if (needsNote(l.answer) && !note) { $("noteWarn").textContent = "Add a note before moving on: why is it " + l.answer + "?"; return false; }
+    return true;
+  }
+
+  function move(step) {
+    if (!commitNote()) return;
+    const ids = visible(); let pos = ids.indexOf(order[index]) + step;
+    if (pos < 0 || pos >= ids.length) return;
+    index = order.indexOf(ids[pos]); render();
+  }
+
+  document.querySelectorAll(".answers button").forEach((b) => (b.onclick = () => answer(b.dataset.a)));
+  $("prev").onclick = () => move(-1);
+  $("next").onclick = () => move(1);
+  $("note").addEventListener("change", commitNote);
+  $("onlyOpen").onchange = render;
+  document.addEventListener("keydown", (e) => {
+    if ($("work").hidden || e.target === $("note") || e.target.tagName === "INPUT") return;
+    const keys = { "1": "faithful", "2": "partly", "3": "distorted", "4": "unsure" };
+    if (keys[e.key]) answer(keys[e.key]);
+    else if (e.key === "ArrowRight") move(1);
+    else if (e.key === "ArrowLeft") move(-1);
+  });
+
+  $("export").onclick = () => {
+    if (!commitNote()) return;
+    const out = { labeller, rubricVersion: RUBRIC_VERSION, labels: {} };
+    for (const id of Object.keys(labels).sort()) if (current(id)) out.labels[id] = labels[id];
+    const blob = new Blob([JSON.stringify(out, null, 2) + "\n"], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = labeller.toLowerCase().replace(/[^a-z0-9]+/g, "-") + ".json";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-11-14T16:59:18.912Z",
+  "decision": "EVAL-SPEC-v3 approved for evaluation preparation with the v3.1 amendment (user, 2026-11-14). Snapshot v3 provisionally accepted, not the final reference. kn-13 stays sealed: no labelling, scoring or inspection without separate authorization.",
+  "sha256": {
+    "phase4/EVAL-SPEC-v3.md": "73589b06a31f583cc09a6e3fe86aaf56503f4b6183148bf16c0a305a8df50857",
+    "review-v3/EVAL-SPEC-v3.1-AMENDMENT.md": "528c302097402523af134acca25c4ab788603ee929547535b3f41aed1e398af8",
+    "review-v3/attachmentSchema.ts": "b60ff1bf5fde44a258f4528dda47243cf7ddef44ff7459e19f0915c0a7d67eac"
+  },
+  "note": "attachmentSchema.ts rehashed 2026-11-14 after a type-only fix (noUncheckedIndexedAccess guards); no rule changed."
+}

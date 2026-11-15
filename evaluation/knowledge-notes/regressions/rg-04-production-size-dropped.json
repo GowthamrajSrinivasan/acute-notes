@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-production-size-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The deferral loses its condition: the decision waits only for 1,800 a minute, not for a measurement on a production-sized database, so another quarter-size staging run would seem to settle it (u40).",
+  "mutations": [
+    { "op": "replace_text", "node": "n10", "find": " on a production-sized database", "replace": "" }
+  ],
+  "expectFailing": ["a.deferral-condition"]
+}

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-12-kill-switch-dependency-reversed",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-12-flag-rollout-update",
+  "target": "plan",
+  "description": "The dependency is reversed: the kill switch now depends on the canary, instead of canary depending on a tested kill switch (u22).",
+  "mutations": [
+    { "op": "reverse_relationship", "from": "n2", "to": "n4" }
+  ],
+  "expectFailing": ["a.rel-kill-switch"]
+}

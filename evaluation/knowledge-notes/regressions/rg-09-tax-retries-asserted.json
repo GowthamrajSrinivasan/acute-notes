@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-tax-retries-asserted",
+  "distortion": "invented_detail",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The tax client is said to retry failed requests, without numbers or backoff; the card still says the policy is not documented, so only the tightened a.no-retry-policy can catch it.",
+  "mutations": [
+    { "op": "replace_text", "node": "s_tax", "find": "Retries: unknown — not documented; quote() has no retry code", "replace": "Retries: TaxClient.quote retries failed requests; the policy is not documented" }
+  ],
+  "expectFailing": ["a.no-retry-policy"]
+}

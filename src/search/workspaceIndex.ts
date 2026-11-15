@@ -248,8 +248,35 @@ export class WorkspaceIndex implements SearchIndex {
    * text work, one changed object each.
    */
   planScene(canvasId: string, elements: readonly SceneElement[], getDocument: GetDocument): WorkUnit[] {
-    const labels = labelsOf(elements);
+    const { items, embeds, edges, seen } = this.collectScene(canvasId, elements, getDocument);
     const units: WorkUnit[] = [];
+    for (const item of items) this.track(item.id, item.stamp, item.z, units, item.work);
+    this.embeds.set(canvasId, embeds);
+    this.edges.set(canvasId, edges);
+    const previous = this.sceneIds.get(canvasId);
+    // Removals are cheap and done now, so a superseded plan can never leave a deleted object behind.
+    if (previous) for (const id of previous) if (!seen.has(id)) this.remove(id);
+    this.sceneIds.set(canvasId, seen);
+    this.version++;
+    return units;
+  }
+
+  /**
+   * Whether the index holds `canvasId`'s scene as it is now (intelligent-update-engine-plan Stage 4b, the index invariant):
+   * the objects whose indexed stamp differs from the scene's (changed, not yet or wrongly indexed) and the objects still
+   * indexed that the scene no longer has. No side effects. Empty `stale` and `extra` mean in sync.
+   */
+  verifyScene(canvasId: string, elements: readonly SceneElement[], getDocument: GetDocument): { stale: string[]; extra: string[] } {
+    const { items, seen } = this.collectScene(canvasId, elements, getDocument);
+    const stale = items.filter((i) => this.stamps.get(i.id) !== i.stamp).map((i) => i.id);
+    const extra = [...(this.sceneIds.get(canvasId) ?? [])].filter((id) => !seen.has(id) && this.entries.has(id));
+    return { stale, extra };
+  }
+
+  /** One pass over a scene: each indexable object with its change stamp and the work that indexes it; embeds and relations. */
+  private collectScene(canvasId: string, elements: readonly SceneElement[], getDocument: GetDocument) {
+    const labels = labelsOf(elements);
+    const items: { id: string; stamp: string; z: number; work: () => void }[] = [];
     const seen = new Set<string>();
     const embeds = new Map<string, string>();
     const edges: RelationEdge[] = [];
@@ -266,18 +293,23 @@ export class WorkspaceIndex implements SearchIndex {
         edges.push({ arrowId: el.id, canvasId, from, to, ...(type ? { type } : {}), ...(label ? { label: redactSecrets(label) } : {}) });
         if (!type && !label) continue;
         seen.add(el.id);
-        this.track(el.id, `rel:${type ?? ""}|${label ?? ""}|${from}|${to}`, z, units, () =>
-          this.put(
-            {
-              id: el.id,
-              kind: "relation",
-              ref: { workspaceId: this.workspaceId, canvasId, elementId: el.id },
-              text: bound([type?.replace(/_/g, " "), label].filter(Boolean).join(" ")),
-            },
-            4,
-            z,
-          ),
-        );
+        const at = z;
+        items.push({
+          id: el.id,
+          stamp: `rel:${type ?? ""}|${label ?? ""}|${from}|${to}`,
+          z,
+          work: () =>
+            this.put(
+              {
+                id: el.id,
+                kind: "relation",
+                ref: { workspaceId: this.workspaceId, canvasId, elementId: el.id },
+                text: bound([type?.replace(/_/g, " "), label].filter(Boolean).join(" ")),
+              },
+              4,
+              at,
+            ),
+        });
         continue;
       }
       if (el.type === "line" || (el.type === "text" && el.containerId)) continue;
@@ -296,18 +328,15 @@ export class WorkspaceIndex implements SearchIndex {
       }
       seen.add(el.id);
       const version = (el as { version?: number }).version;
-      const stamp = `el:${version ?? `${el.type}:${el.originalText ?? el.text ?? ""}`}|${labels.get(el.id) ?? ""}|${docStamp}`;
       const at = z;
-      this.track(el.id, stamp, z, units, () => this.indexElement(canvasId, el, labels, getDocument, at));
+      items.push({
+        id: el.id,
+        stamp: `el:${version ?? `${el.type}:${el.originalText ?? el.text ?? ""}`}|${labels.get(el.id) ?? ""}|${docStamp}`,
+        z,
+        work: () => this.indexElement(canvasId, el, labels, getDocument, at),
+      });
     }
-    this.embeds.set(canvasId, embeds);
-    this.edges.set(canvasId, edges);
-    const previous = this.sceneIds.get(canvasId);
-    // Removals are cheap and done now, so a superseded plan can never leave a deleted object behind.
-    if (previous) for (const id of previous) if (!seen.has(id)) this.remove(id);
-    this.sceneIds.set(canvasId, seen);
-    this.version++;
-    return units;
+    return { items, embeds, edges, seen };
   }
 
   /** Work to bring pages and blocks up to date with `records` (records absent from it are dropped). */
@@ -364,9 +393,11 @@ export class WorkspaceIndex implements SearchIndex {
       if (e) e.position = position;
       return;
     }
+    // Stamped only once the work succeeded (Stage 4b): a failed unit leaves the old stamp, so the object stays due —
+    // never recorded as indexed when it isn't.
     units.push(() => {
-      this.stamps.set(id, stamp);
       work();
+      this.stamps.set(id, stamp);
     });
   }
 
@@ -536,10 +567,23 @@ export class WorkspaceIndex implements SearchIndex {
     return out;
   }
 
+  /**
+   * Every indexed object a query could return, by the same rules (`kinds`, `canvasId`; relations only when asked for), in
+   * result order. For tiers built on top of this one (the router's vector tier, intelligent-update-engine-plan Stage 2a)
+   * to stay in step with it incrementally.
+   */
+  objects(filter: { canvasId?: string; kinds?: readonly IndexKindFilter[] } = {}): IndexedObject[] {
+    const kinds = filter.kinds?.length ? new Set<string>(filter.kinds) : null;
+    return [...this.entries.values()].filter((e) => this.visible(e, kinds, filter.canvasId, undefined)).sort((a, b) => this.compare(a, b)).map(publicView);
+  }
+
   private visible(e: Entry, kinds: ReadonlySet<string> | null, canvasId: string | undefined, exclude: ReadonlySet<string> | undefined): boolean {
     if (kinds ? !kinds.has(SHAPES.has(e.kind) ? "shape" : e.kind) && !kinds.has(e.kind) : e.kind === "relation") return false;
     // A block shown on an indexed canvas is found as that element, never twice.
     if (e.group === 3 && this.elementFor(e.id)) return false;
+    // Stage 4b (the index invariant): a block of a canvas whose scene is indexed, that no live element there shows, is a
+    // deleted card's document kept for undo — not part of the committed canvas, so never found (undo shows it again).
+    if (e.group === 3 && e.ref.canvasId && this.sceneIds.has(e.ref.canvasId)) return false;
     if (exclude && (exclude.has(e.id) || (e.ref.documentId && exclude.has(e.ref.documentId)) || (e.ref.elementId && exclude.has(e.ref.elementId)))) return false;
     if (exclude && e.kind === "page") {
       const preview = this.elementFor(e.id, canvasId);

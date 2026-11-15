@@ -1,0 +1,56 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-collapsed-one-frame",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "Every card is put into the release-steps frame: the concept, prerequisites and rollback paths collapse into one frame too large to read whole, and its links now cross.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n1",
+      "group": "g3"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n2",
+      "group": "g3"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n3",
+      "group": "g3"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n4",
+      "group": "g3"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n5",
+      "group": "g3"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n17",
+      "group": "g3"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n15",
+      "group": "g3"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n16",
+      "group": "g3"
+    }
+  ],
+  "expectFailing": [
+    "a.fit-screen",
+    "a.rendered-frames",
+    "a.crossings",
+    "a.frame-count"
+  ]
+}

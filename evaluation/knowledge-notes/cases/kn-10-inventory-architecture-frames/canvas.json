@@ -1,0 +1,1088 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "template": "sectioned",
+  "templateNote": "Sectioned: frames plus labelled calls/reads/writes/publishes/depends_on. One architecture frame per responsibility group the source names (u5), each with a takeaway stating what it owns; module boxes carry their file path; the retry policy's exact values sit in a detail card linked to the retry helper rather than on the box (HLD on the boxes, LLD in the card).",
+  "frames": [
+    {
+      "id": "f.presentation",
+      "title": "Client & presentation",
+      "titleMatch": {
+        "all": [
+          [
+            "presentation",
+            "client",
+            "front end",
+            "frontend"
+          ]
+        ]
+      },
+      "purpose": "What staff see.",
+      "rationale": "The source's first responsibility group (u5).",
+      "children": [
+        "e.admin-ui"
+      ],
+      "arrangement": "stack",
+      "diagram": "architecture",
+      "expansion": "Takeaway states ownership: screens only, no stock logic.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.api",
+      "title": "API & orchestration",
+      "titleMatch": {
+        "all": [
+          [
+            "orchestrat",
+            "api layer",
+            "request handling"
+          ]
+        ]
+      },
+      "purpose": "Entry point and the reservation workflow.",
+      "rationale": "Owns the request path and coordination (u9-u13).",
+      "children": [
+        "e.http",
+        "e.orchestrator"
+      ],
+      "arrangement": "stack",
+      "diagram": "architecture",
+      "expansion": "Takeaway: validates, routes and coordinates; no business rules in the handlers.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.domain",
+      "title": "Domain services",
+      "titleMatch": {
+        "all": [
+          [
+            "domain",
+            "business logic",
+            "core logic"
+          ]
+        ]
+      },
+      "purpose": "Stock and price rules.",
+      "rationale": "Owns stock levels and prices; the inner layer every arrow points into (u21, u22).",
+      "children": [
+        "e.ledger",
+        "e.pricing"
+      ],
+      "arrangement": "stack",
+      "diagram": "architecture",
+      "expansion": "Takeaway: owns stock and prices; never depends on the HTTP layer.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.integration",
+      "title": "Supplier integration",
+      "titleMatch": {
+        "all": [
+          [
+            "integration",
+            "supplier feed",
+            "adapter"
+          ]
+        ]
+      },
+      "purpose": "The one module that talks to suppliers.",
+      "rationale": "Isolates the supplier format (u25).",
+      "children": [
+        "e.feed-adapter"
+      ],
+      "arrangement": "stack",
+      "diagram": "architecture",
+      "expansion": "Takeaway: the only module that knows the supplier format.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.persistence",
+      "title": "Persistence & external systems",
+      "titleMatch": {
+        "all": [
+          [
+            "persistence",
+            "storage",
+            "infrastructure",
+            "data store"
+          ]
+        ]
+      },
+      "purpose": "Postgres, Redis, the message broker and the supplier API.",
+      "rationale": "Grouped as the source groups them (u5, s6). The supplier API is marked as external within the frame (kind external).",
+      "children": [
+        "e.postgres",
+        "e.redis",
+        "e.broker",
+        "e.supplier-api"
+      ],
+      "arrangement": "stack",
+      "diagram": "architecture",
+      "expansion": "Takeaway: Postgres is the source of truth; the supplier API is outside our control.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.observability",
+      "title": "Observability & error handling",
+      "titleMatch": {
+        "all": [
+          [
+            "observability",
+            "error handling",
+            "logging",
+            "reliability"
+          ]
+        ]
+      },
+      "purpose": "Logging and retries, with the exact retry policy.",
+      "rationale": "Cross-cutting helpers kept apart from domain logic (u32-u40).",
+      "children": [
+        "e.logger",
+        "e.retry",
+        "e.retry-policy"
+      ],
+      "arrangement": "stack",
+      "diagram": "architecture",
+      "expansion": "Takeaway: one structured log; retries only for supplier calls.",
+      "separateFrom": [
+        {
+          "frame": "f.domain",
+          "reason": "Cross-cutting helpers are not domain logic."
+        }
+      ],
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.gaps",
+      "title": "Known gaps",
+      "titleMatch": {
+        "all": [
+          [
+            "gap",
+            "known issue",
+            "limitation",
+            "risk"
+          ]
+        ]
+      },
+      "purpose": "What is unverified or missing.",
+      "rationale": "Kept visible and apart so nobody reads the row lock as proven.",
+      "children": [
+        "e.known-gaps"
+      ],
+      "arrangement": "grid",
+      "expansion": "None.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e.admin-ui",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "presentation module",
+      "content": "Admin web UI (web/admin/): stock lookup, manual holds, failed-import review; calls only the REST API",
+      "knowledge": [
+        "ku.admin-ui"
+      ],
+      "match": {
+        "all": [
+          [
+            "admin"
+          ],
+          [
+            "ui",
+            "web",
+            "front"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.presentation",
+      "kind": "frontend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.http",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "API module",
+      "content": "HTTP handlers (src/api/routes.ts): only entry point, validate + correlation ID, no business rules",
+      "knowledge": [
+        "ku.http-handlers"
+      ],
+      "match": {
+        "all": [
+          [
+            "http handler",
+            "routes.ts",
+            "api handler",
+            "route handler",
+            "http layer"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.api",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.orchestrator",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "orchestration module with its all-or-nothing condition",
+      "content": "Reservation orchestrator (src/orders/reserve.ts): reserve, price, publish StockReserved; rejects the whole order if stock is short",
+      "knowledge": [
+        "ku.orchestrator",
+        "ku.no-partial"
+      ],
+      "match": {
+        "all": [
+          [
+            "orchestrat",
+            "reserve.ts"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.api",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.ledger",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "domain module with its hold-expiry condition",
+      "content": "Stock ledger (src/ledger/ledger.ts): owns stock, append-only entries, sole writer; releases unconfirmed holds after 15 minutes",
+      "knowledge": [
+        "ku.ledger",
+        "ku.hold-expiry"
+      ],
+      "match": {
+        "all": [
+          [
+            "ledger"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.domain",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.pricing",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "domain module",
+      "content": "Pricing rules (src/pricing/rules.ts): price lists and discounts, cached 300 seconds, never change stock",
+      "knowledge": [
+        "ku.pricing"
+      ],
+      "match": {
+        "all": [
+          [
+            "pricing",
+            "price rule"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.domain",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.domain-rule",
+      "element": "takeaway",
+      "planNodeTypes": [
+        "group",
+        "text"
+      ],
+      "role": "ownership and dependency rule of the domain frame",
+      "content": "Owns stock and prices; never depends on the HTTP layer",
+      "knowledge": [
+        "ku.dependency-direction"
+      ],
+      "match": {
+        "all": [
+          [
+            "http",
+            "web server",
+            "api layer",
+            "src/api"
+          ],
+          [
+            "never",
+            "not ",
+            "no "
+          ],
+          [
+            "domain",
+            "ledger",
+            "pricing",
+            "inward"
+          ],
+          [
+            "depend",
+            "import",
+            "usable without",
+            "inward"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": null,
+      "outsideFrameReason": "The Domain services frame's own takeaway (group.content.takeaway), or a rule card; not a module box.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.feed-adapter",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "integration module with its parse-failure condition",
+      "content": "Supplier feed adapter (src/suppliers/feedAdapter.ts): every 10 minutes, deliveries → restocks; unparseable deliveries logged and skipped, not retried",
+      "knowledge": [
+        "ku.feed-adapter",
+        "ku.unparseable-skipped"
+      ],
+      "match": {
+        "all": [
+          [
+            "feed adapter",
+            "feedadapter",
+            "supplier adapter"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.integration",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.postgres",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "database",
+      "content": "Postgres: ledger entries and stock levels; source of truth; migrations in db/migrations/",
+      "knowledge": [
+        "ku.postgres"
+      ],
+      "match": {
+        "all": [
+          [
+            "postgres"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.persistence",
+      "kind": "database",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.redis",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "cache",
+      "content": "Redis: cached price lists, all rebuildable",
+      "knowledge": [
+        "ku.redis"
+      ],
+      "match": {
+        "all": [
+          [
+            "redis"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.persistence",
+      "kind": "store",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.broker",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "message bus",
+      "content": "Message broker: StockReserved events; hosts the dead-letter queue",
+      "knowledge": [
+        "ku.broker"
+      ],
+      "match": {
+        "all": [
+          [
+            "broker",
+            "message bus",
+            "event bus"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.persistence",
+      "kind": "messagebus",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.supplier-api",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "external system",
+      "content": "Supplier API (external, run by suppliers)",
+      "knowledge": [
+        "ku.supplier-api"
+      ],
+      "match": {
+        "all": [
+          [
+            "supplier api",
+            "supplier system",
+            "supplier service"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.persistence",
+      "kind": "external",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.logger",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "observability module",
+      "content": "Structured logger (src/platform/log.ts): one JSON line per event with correlation ID",
+      "knowledge": [
+        "ku.logger"
+      ],
+      "match": {
+        "all": [
+          [
+            "logger",
+            "log.ts",
+            "logging"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.observability",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.retry",
+      "element": "shape",
+      "planNodeTypes": [
+        "shape"
+      ],
+      "role": "error-handling module",
+      "content": "Retry helper (src/platform/retry.ts): wraps supplier calls",
+      "knowledge": [
+        "ku.retry-helper"
+      ],
+      "match": {
+        "all": [
+          [
+            "retry helper",
+            "retry.ts",
+            "retrier",
+            "retry module"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.observability",
+      "kind": "backend",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.retry-policy",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text",
+        "page",
+        "table"
+      ],
+      "role": "LLD detail card",
+      "content": "Retry policy: 5 attempts; backoff 2 s doubling, capped at 60 s; then inventory.dlq; supplier calls only, reservations never retried",
+      "knowledge": [
+        "ku.retry-policy",
+        "ku.retry-scope"
+      ],
+      "match": {
+        "all": [
+          [
+            "retr"
+          ],
+          [
+            "attempt"
+          ],
+          [
+            "backoff",
+            "back-off",
+            "back off"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.observability",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.known-gaps",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text",
+        "page"
+      ],
+      "role": "known gaps",
+      "content": "Known gaps: no admin UI tests; unmeasured row lock under peak load; no alert on inventory.dlq",
+      "knowledge": [
+        "ku.gap-row-lock",
+        "ku.gap-ui-tests",
+        "ku.gap-dlq-alerting"
+      ],
+      "match": {
+        "all": [
+          [
+            "lock"
+          ],
+          [
+            "measured",
+            "peak",
+            "load"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.gaps",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r.ui-http",
+      "from": "e.admin-ui",
+      "to": "e.http",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "api",
+              "rest",
+              "request"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Every screen calls the REST API.",
+      "evidence": [
+        "u8"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.http-orch",
+      "from": "e.http",
+      "to": "e.orchestrator",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "reservation",
+              "post",
+              "reserve"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "POST /reservations goes to the orchestrator.",
+      "evidence": [
+        "u11"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.orch-ledger",
+      "from": "e.orchestrator",
+      "to": "e.ledger",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "reserve"
+            ],
+            [
+              "stock",
+              "quantity"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The orchestrator asks the ledger to reserve stock.",
+      "evidence": [
+        "u13"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.orch-pricing",
+      "from": "e.orchestrator",
+      "to": "e.pricing",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "price",
+              "pricing"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The orchestrator asks the pricing rules for the price.",
+      "evidence": [
+        "u13"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.orch-broker",
+      "from": "e.orchestrator",
+      "to": "e.broker",
+      "type": "publishes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "stockreserved",
+              "stock reserved"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The orchestrator publishes StockReserved.",
+      "evidence": [
+        "u13"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.ledger-postgres",
+      "from": "e.ledger",
+      "to": "e.postgres",
+      "type": "writes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "entr",
+              "stock",
+              "write"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The ledger writes its entries to Postgres (sole writer).",
+      "evidence": [
+        "u17",
+        "u18"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.pricing-redis",
+      "from": "e.pricing",
+      "to": "e.redis",
+      "type": "reads",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "price list",
+              "price",
+              "cache"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "Pricing reads cached price lists from Redis.",
+      "evidence": [
+        "u20"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.adapter-supplier",
+      "from": "e.feed-adapter",
+      "to": "e.supplier-api",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "deliver",
+              "poll",
+              "fetch",
+              "10 min"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The adapter calls the supplier API every 10 minutes.",
+      "evidence": [
+        "u24",
+        "u47"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.adapter-ledger",
+      "from": "e.feed-adapter",
+      "to": "e.ledger",
+      "type": "calls",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "restock",
+              "record"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The adapter asks the ledger to record restocks.",
+      "evidence": [
+        "u24"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.adapter-retry",
+      "from": "e.feed-adapter",
+      "to": "e.retry",
+      "type": "depends_on",
+      "acceptableTypes": [
+        "depends_on",
+        "calls"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "retr",
+              "wrap"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The adapter wraps supplier calls in the retry helper.",
+      "evidence": [
+        "u34"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.retry-broker",
+      "from": "e.retry",
+      "to": "e.broker",
+      "type": "publishes",
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "dead-letter",
+              "dead letter",
+              "dlq"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "After the 5th failure the delivery is published to inventory.dlq.",
+      "evidence": [
+        "u38"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.http-logger",
+      "from": "e.http",
+      "to": "e.logger",
+      "type": "depends_on",
+      "acceptableTypes": [
+        "depends_on",
+        "calls",
+        "writes"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "log"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The handlers log each request (with the correlation ID).",
+      "evidence": [
+        "u32",
+        "u33"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.retry-logger",
+      "from": "e.retry",
+      "to": "e.logger",
+      "type": "depends_on",
+      "acceptableTypes": [
+        "depends_on",
+        "calls",
+        "writes"
+      ],
+      "label": {
+        "required": true,
+        "match": {
+          "all": [
+            [
+              "log"
+            ]
+          ]
+        }
+      },
+      "direction": "directed",
+      "explanation": "The retry helper logs each failed attempt.",
+      "evidence": [
+        "u33"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.retry-policy",
+      "from": "e.retry",
+      "to": "e.retry-policy",
+      "type": "explained_by",
+      "acceptableTypes": [
+        "explained_by",
+        "references",
+        "relates_to",
+        "supports",
+        "derived_from"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "bidirectional",
+      "explanation": "The detail card spells out the helper's policy.",
+      "evidence": [
+        "u36",
+        "u37",
+        "u38"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "together": [
+    {
+      "elements": [
+        "e.http",
+        "e.orchestrator"
+      ],
+      "reason": "The request path and its coordinator form one responsibility group."
+    },
+    {
+      "elements": [
+        "e.ledger",
+        "e.pricing"
+      ],
+      "reason": "The two domain modules."
+    },
+    {
+      "elements": [
+        "e.retry",
+        "e.retry-policy"
+      ],
+      "reason": "The policy belongs with the helper it configures."
+    }
+  ],
+  "keepSeparate": [
+    {
+      "elements": [
+        "e.logger",
+        "e.ledger"
+      ],
+      "reason": "Cross-cutting observability is not domain logic."
+    },
+    {
+      "elements": [
+        "e.http",
+        "e.ledger"
+      ],
+      "reason": "The HTTP layer and the domain are separate layers; mixing them hides the dependency rule."
+    },
+    {
+      "elements": [
+        "e.feed-adapter",
+        "e.supplier-api"
+      ],
+      "reason": "Our adapter and the external API it calls are on opposite sides of the boundary."
+    }
+  ],
+  "hierarchy": [
+    {
+      "main": "e.retry",
+      "supporting": [
+        "e.retry-policy"
+      ],
+      "reason": "The policy is LLD detail of the helper; it hangs off it and is not weighted above it."
+    }
+  ],
+  "unsupported": [
+    {
+      "capability": "canvas.frame-nesting",
+      "ideal": "An 'External' sub-frame for the supplier API inside persistence & external systems.",
+      "expectedToday": "Frames can't nest: the supplier API is a shape with kind external inside the persistence & external frame (as the source groups it), or in a separate External frame."
+    },
+    {
+      "capability": "lens.drill-from-plan",
+      "ideal": "The retry helper expands to a detail frame or page with the policy.",
+      "expectedToday": "A text or page card linked to the helper with explained_by."
+    },
+    {
+      "capability": "ai.cites",
+      "ideal": "Each module box cites its units and its file path's unit.",
+      "expectedToday": "Not checkable; matching is by content."
+    }
+  ]
+}

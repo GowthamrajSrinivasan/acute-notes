@@ -1,0 +1,169 @@
+/* ---- Review (knowledge-notes-plan §4.2, §5.3; Lane H) ------------------------
+   Theme tokens from globals.css (--acute-*). Amber (--acute-warning) means "needs review", as elsewhere in the
+   indicator budget; grey is muted text. The queue reuses the review bar (.acute-review). */
+
+/* Source chip: "3 sources" in a card's corner. */
+.acute-kn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  color: var(--acute-text-muted);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.acute-kn-chip:disabled {
+  cursor: default;
+}
+.acute-kn-chip__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--acute-text-muted);
+}
+.acute-kn-chip--review {
+  border-color: color-mix(in srgb, var(--acute-warning) 55%, var(--acute-border));
+  color: var(--acute-text);
+}
+.acute-kn-chip--review .acute-kn-chip__dot {
+  background: var(--acute-warning);
+}
+.acute-kn-chip--unavailable {
+  opacity: 0.6;
+}
+.acute-kn-chip:focus-visible {
+  outline: 2px solid var(--acute-accent);
+  outline-offset: 1px;
+}
+
+/* Counts in outcome words. */
+.acute-kn-counts__omitted {
+  color: var(--acute-text-muted);
+}
+.acute-kn-counts__review {
+  color: var(--acute-warning);
+  font-weight: 600;
+}
+.acute-kn-counts--note {
+  color: var(--acute-text-muted);
+}
+.acute-kn-totals {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.acute-kn-totals__warning {
+  flex-basis: 100%;
+  color: var(--acute-text-muted);
+  font-size: 12px;
+}
+
+/* Review queue: card and passage side by side, the reason above. */
+.acute-kn-queue {
+  max-width: min(720px, calc(100% - 32px));
+}
+.acute-kn-queue__reasons {
+  flex-basis: 100%;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--acute-text);
+}
+.acute-kn-queue__compare {
+  display: grid;
+  flex-basis: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.acute-kn-queue__side {
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+}
+.acute-kn-queue__side h4 {
+  margin: 0 0 2px;
+  color: var(--acute-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.acute-kn-queue__side p {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+}
+.acute-kn-queue mark {
+  background: color-mix(in srgb, var(--acute-warning) 25%, transparent);
+  color: inherit;
+  border-radius: 2px;
+}
+
+/* ---- Mounted on the canvas (integrator, knowledge-notes-plan §4.2, §5.1) ---------------------------------------
+   A card's source chip sits on its bottom-right corner (the "added" dot is top-right, stale top-left, dense
+   bottom-left), the same size at any zoom. A passage's citing cards are outlined while the passage is selected. */
+.acute-kn-chip-slot {
+  position: absolute;
+  pointer-events: auto;
+  transform: translate(-100%, -50%) scale(calc(1 / var(--acute-marker-zoom, 1)));
+  transform-origin: 100% 50%;
+}
+.acute-kn-outline {
+  position: absolute;
+  box-sizing: border-box;
+  border: calc(2px / var(--acute-marker-zoom, 1)) solid var(--acute-accent);
+  border-radius: calc(6px / var(--acute-marker-zoom, 1));
+  box-shadow: 0 0 0 calc(4px / var(--acute-marker-zoom, 1)) color-mix(in srgb, var(--acute-accent) 20%, transparent);
+  pointer-events: none;
+}
+
+/* The side panel's Properties | Source tabs (OD1). While Source shows, the panel's own sections are hidden. */
+.acute-kn-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 0 0 8px;
+}
+.acute-kn-tabs button {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text-muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.acute-kn-tabs button[aria-selected="true"] {
+  border-color: var(--acute-accent);
+  color: var(--acute-text);
+  font-weight: 600;
+}
+.acute-kn-panel--source > :not(.acute-kn-source-slot) {
+  display: none !important;
+}
+.acute-kn-source-slot .acute-source {
+  max-height: min(70vh, 640px);
+}
+/* "Review N" when no change set is under review: a small bar of its own at the bottom of the canvas. */
+.acute-kn-reviewbar {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  z-index: 5;
+  transform: translateX(-50%);
+  max-width: min(720px, calc(100% - 32px));
+}
+/* The walking queue sits in this bar, not at the review bar's own place (they'd cover each other). */
+.acute-kn-reviewbar .acute-review {
+  position: static;
+  transform: none;
+}

@@ -253,6 +253,32 @@ describe("CanvasHistory", () => {
     expect(t.view()).toEqual([]);
   });
 
+  it("undo during a gesture that still looks in progress undoes that gesture, never the step before it", () => {
+    const t = setup();
+    t.act(t.add({ id: "r", index: "a0", x: 0 })); // inserted: its own step
+    // A stretch whose pointer-up change event hasn't arrived yet (a busy app): the history still sees the gesture.
+    t.history.noteUserInput();
+    t.setScene(t.set("r", { x: 50 })(t.scene));
+    t.observe({ interacting: true, editing: false });
+    t.history.undo();
+    expect(t.view()).toEqual(["r@0"]); // the stretch is undone; the shape is still there
+    t.history.undo();
+    expect(t.view()).toEqual([]);
+    t.history.redo();
+    t.history.redo();
+    expect(t.view()).toEqual(["r@50"]);
+  });
+
+  it("undo during an edit that still looks in progress undoes that edit, never the step before it", () => {
+    const t = setup();
+    t.act(t.add({ id: "r", index: "a0", x: 0 }));
+    t.history.noteUserInput();
+    t.setScene(t.set("r", { text: "typed" })(t.scene));
+    t.observe({ interacting: false, editing: true });
+    t.history.undo();
+    expect(t.view()).toEqual(["r@0"]);
+  });
+
   it("drops the oldest steps beyond the limit", () => {
     let scene: El[] = [];
     const history = new CanvasHistory<El>({

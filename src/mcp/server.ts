@@ -29,6 +29,7 @@ import { CURRENT_CONTEXT_URI, parseResourceUri, URI_TEMPLATES, type ResourceKind
 import { sessionAutoAccept } from "@/ai/changes/autoAccept";
 import { resolvePolicy } from "./tools/common";
 import type { AgentStateRepository } from "@/persistence/repositories/types";
+import { remoteToolAllowed, resolveRemoteProfile, type RemoteProfile } from "./tools/remoteProfile";
 import { availableToolNames, getLiveCanvasActions, registerAcuteTools, type IngestToolOptions, type LensFocusHost, type LiveCanvasActions, type RepoMapToolOptions, type ToolCallUsage, type ToolPolicySource } from "./tools";
 
 export const MCP_SERVER_NAME = "acute-notes";
@@ -69,6 +70,11 @@ export interface AcuteMcpServerDeps {
    * change it proposes waits for the user's explicit review.
    */
   remote?: boolean;
+  /**
+   * A remote session's tool profile (`./tools/remoteProfile`), chosen by the server: only the tools it lists are
+   * registered, so the rest are neither listed nor callable. Missing or unknown → `restricted`. Ignored when not remote.
+   */
+  remoteProfile?: RemoteProfile;
 }
 
 /** `acute://context/current` when no canvas of this workspace is open. */
@@ -110,8 +116,30 @@ const DESCRIPTIONS: Record<ResourceKind, { title: string; description: string; v
   todo: { title: "Todo block", description: "A todo block on a canvas, by its object id: items with checked state and nesting.", variable: "objectId" },
 };
 
+/**
+ * Remote sessions: every tool registered on `server` from now on that `profile` doesn't list is removed again at once,
+ * so it is never listed and a `tools/call` naming it fails ("not found") without running anything. Opt-in by name: a new
+ * tool is excluded until it is added to the profile.
+ */
+function restrictToProfile(server: McpServer, profile: RemoteProfile): void {
+  const register = server.registerTool.bind(server) as (...a: unknown[]) => { remove(): void };
+  (server as unknown as { registerTool: typeof register }).registerTool = (...a: unknown[]) => {
+    const tool = register(...a);
+    if (!remoteToolAllowed(profile, a[0] as string)) tool.remove();
+    return tool;
+  };
+}
+
+const SESSION_LOOP_FULL =
+  "Session loop: before significant work call get_session_context with your task and honour its warnings (constraints and enforced decisions); " +
+  "record durable knowledge as you go (record_decision, log_finding, update_progress); after the work call sync_session once with a summary and next. ";
+const SESSION_LOOP_RESTRICTED =
+  "Session loop: before significant work call get_session_context with your task and honour its warnings (constraints and enforced decisions); " +
+  "record findings, open questions and risks with log_finding. This session is limited to the tools it lists. ";
+
 export function createAcuteMcpServer(deps: AcuteMcpServerDeps): McpServer {
   if (deps.remote && deps.sessionId) sessionAutoAccept.markRemote(deps.sessionId);
+  const profile: RemoteProfile | null = deps.remote ? resolveRemoteProfile(deps.remoteProfile) : null;
   const repoMap = deps.remote ? undefined : deps.repoMap;
   const ingest = deps.remote ? undefined : deps.ingest;
   const reader = new ResourceReader(deps.services, deps.workspaceId);
@@ -128,8 +156,7 @@ export function createAcuteMcpServer(deps: AcuteMcpServerDeps): McpServer {
         "or acute://workspace/{id}; payloads link to other resources by URI. Every payload is bounded: `truncated` says when something was left out. " +
         "Read tools search and read the workspace. Write tools never change anything directly: each proposes a change on the open canvas " +
         "for the user to review, and returns status \"proposed\" (one proposal per session can wait for review at a time). " +
-        "Session loop: before significant work call get_session_context with your task and honour its warnings (constraints and enforced decisions); " +
-        "record durable knowledge as you go (record_decision, log_finding, update_progress); after the work call sync_session once with a summary and next. " +
+        (profile === "restricted" ? SESSION_LOOP_RESTRICTED : SESSION_LOOP_FULL) +
         "Acute is the documented understanding of the project, not a substitute for the source code: when they disagree, the code wins — record the divergence. " +
         "Never fabricate project state. For a project file with these instructions, read acute://setup/instructions/{claude|codex|cursor}.",
     },
@@ -167,8 +194,9 @@ export function createAcuteMcpServer(deps: AcuteMcpServerDeps): McpServer {
 
   const currentPayload = async (): Promise<CurrentContext | CurrentContextUnavailable> => {
     const ctx = await scopedContext();
+    const names = availableToolNames(deps.toolPolicy, { repoMap: !!repoMap, ingest: !!ingest });
     return ctx
-      ? { ...ctx, availableTools: availableToolNames(deps.toolPolicy, { repoMap: !!repoMap, ingest: !!ingest }) }
+      ? { ...ctx, availableTools: profile ? names.filter((n) => remoteToolAllowed(profile, n)) : names }
       : { uri: CURRENT_CONTEXT_URI, version: CURRENT_CONTEXT_VERSION, available: false };
   };
 
@@ -193,6 +221,7 @@ export function createAcuteMcpServer(deps: AcuteMcpServerDeps): McpServer {
     writes: () => resolvePolicy(deps.toolPolicy).allowWrites,
   });
 
+  if (profile) restrictToProfile(server, profile);
   registerAcuteTools(server, {
     services: deps.services,
     reader,

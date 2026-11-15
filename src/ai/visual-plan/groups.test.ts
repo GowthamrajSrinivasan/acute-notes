@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { analyzeContent } from "@/ai/content/analyze";
 import { layoutPlan } from "@/ai/renderer/layout";
-import { groupByUnit, groupTitleKey, ungroup, withoutUnitSections } from "./groups";
-import type { VisualPlan } from "./types";
+import { normalizeSubGroups } from "./grouping";
+import { groupByUnit, groupTitleKey, ungroup, withoutUnitSections, wrapSections } from "./groups";
+import type { VisualNode, VisualPlan } from "./types";
 import { validateVisualPlan } from "./validate";
 
 const text = (id: string, extra: Record<string, unknown> = {}) => ({ id, type: "text", content: { markdown: `Note ${id}` }, ...extra });
@@ -157,5 +158,67 @@ describe("local tier: a numbered list of steps in a section is a chain of connec
     const layout = layoutPlan(plan);
     expect(layout.get(steps[0]!.id)!.y).toBe(layout.get(steps[1]!.id)!.y);
     expect(layout.get(steps[0]!.id)!.x).toBeLessThan(layout.get(steps[1]!.id)!.x);
+  });
+});
+
+describe("sub-groups (organisation-layout F3/F5)", () => {
+  // The F3 reproduction: a "Persistence" section whose model reply has an "External" sub-group of two shapes.
+  const raw = {
+    version: 1,
+    template: "architecture",
+    nodes: [
+      { id: "ext", type: "group", stableKey: "p § group#1", content: { label: "External", arrangement: "grid" } },
+      { id: "db", type: "shape", stableKey: "p § shape#0", content: { shape: "rectangle", label: "Orders DB" } },
+      { id: "sup", type: "shape", stableKey: "p § shape#1", parent: "ext", content: { shape: "rectangle", label: "Supplier API" } },
+      { id: "pay", type: "shape", stableKey: "p § shape#2", parent: "ext", content: { shape: "rectangle", label: "Payments API" } },
+    ],
+    relationships: [],
+  };
+  const sections = [{ key: "p", label: "Persistence", arrangement: "grid" as const }];
+  type RawNode = { id: string; parent?: string };
+  const parentsOf = (plan: unknown) => Object.fromEntries((plan as { nodes: RawNode[] }).nodes.map((n) => [n.id, n.parent ?? null]));
+
+  it("v1 (default): every node of the section goes straight into it, and validation drops the emptied sub-group as today", () => {
+    const wrapped = wrapSections(raw, sections);
+    expect(parentsOf(wrapped)).toEqual({ g0: null, ext: "g0", db: "g0", sup: "g0", pay: "g0" });
+    expect(wrapSections(raw, sections, { organisation: "v1" })).toEqual(wrapped);
+    const { plan, warnings } = validateVisualPlan(wrapped);
+    expect(warnings).toEqual(['group "ext": groups can\'t be nested, so it was made top-level', 'group "ext": has no members, dropped']);
+    expect(parentsOf(plan)).toEqual({ g0: null, db: "g0", sup: "g0", pay: "g0" });
+  });
+
+  it("v2: the model's sub-group keeps its two shapes, inside the section", () => {
+    const wrapped = wrapSections(raw, sections, { organisation: "v2" }) as { nodes: VisualNode[] };
+    expect(parentsOf(wrapped)).toEqual({ g0: null, ext: "g0", db: "g0", sup: "ext", pay: "ext" });
+    // What validation keeps in v2 (its `sanitizeGroups` calls `normalizeSubGroups`, an integrator request): External, with both shapes.
+    const { nodes, warnings } = normalizeSubGroups(wrapped.nodes);
+    expect(warnings).toEqual([]);
+    expect(nodes.filter((n) => n.parent === "ext").map((n) => n.id)).toEqual(["sup", "pay"]);
+  });
+
+  it("v2 keeps a parent only when it is a group of the same section", () => {
+    const other = {
+      ...raw,
+      nodes: [...raw.nodes, { id: "q", type: "group", stableKey: "q § group#1", content: { label: "Elsewhere", arrangement: "grid" } }, { id: "x", type: "text", stableKey: "p § text#0", parent: "q", content: { markdown: "x" } }],
+    };
+    const wrapped = wrapSections(other, [...sections, { key: "q", label: "Q", arrangement: "grid" as const }], { organisation: "v2" });
+    expect(parentsOf(wrapped).x).toBe("g0");
+  });
+
+  it("ungroup turns a sub-group into a plain heading with its own stable key, and a section into a section title", () => {
+    const plan: VisualPlan = {
+      version: 1,
+      template: "sectioned",
+      nodes: [
+        { id: "s", type: "group", stableKey: "p § group#0", content: { label: "Persistence", arrangement: "grid" } },
+        { id: "ext", type: "group", parent: "s", stableKey: "p § group#1", content: { label: "External", arrangement: "grid" } },
+        { id: "sup", type: "shape", parent: "ext", content: { shape: "rectangle", label: "Supplier API" } },
+      ],
+      relationships: [],
+    };
+    const flat = ungroup(plan);
+    expect(flat.nodes[0]).toMatchObject({ id: "s", type: "heading", role: "section", stableKey: "p § group#0" });
+    expect(flat.nodes[1]).toEqual({ id: "ext", type: "heading", stableKey: "p § group#1", content: { text: "External" } });
+    expect(flat.nodes.every((n) => n.parent === undefined)).toBe(true);
   });
 });

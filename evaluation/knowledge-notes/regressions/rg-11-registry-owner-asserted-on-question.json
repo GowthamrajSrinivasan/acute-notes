@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-registry-owner-asserted-on-question",
+  "distortion": "invented_detail",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The registry's owner is filled in on the open-question card in subject-first order ('the data team owns the registry'), which the original owner check (registry … owner: team) missed.",
+  "mutations": [
+    { "op": "replace_text", "node": "c3", "find": "neither the platform team nor the data team owns the registry yet; each has suggested the other", "replace": "the data team owns the registry" }
+  ],
+  "expectFailing": ["a.no-invented-owner"]
+}

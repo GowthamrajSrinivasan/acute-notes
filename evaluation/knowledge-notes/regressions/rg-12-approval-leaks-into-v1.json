@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-12-approval-leaks-into-v1",
+  "distortion": "invented_detail",
+  "caseId": "kn-12-flag-rollout-update",
+  "target": "plan",
+  "description": "v2's on-call approval leaks into the v1 canvas's gate card, worded 'the on-call engineer must approve', which the original pattern (on-call approves/sign-off, adjacent) missed.",
+  "mutations": [
+    { "op": "replace_text", "node": "n3", "find": "A flag leaves canary only when the metrics check passes", "replace": "A flag leaves canary only when the metrics check passes and the on-call engineer must approve" }
+  ],
+  "expectFailing": ["a.no-v2-in-v1"]
+}

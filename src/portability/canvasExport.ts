@@ -30,3 +30,9 @@ export async function downloadCanvas(
   const { canvasToMarkdown } = await import("./canvasMarkdown");
   downloadText(bundleFileName(bundle, ".md"), canvasToMarkdown(bundle, undefined, markdownOptions), "text/markdown");
 }
+
+/** The count and size (UTF-8 bytes) of the sources a JSON export of the canvas would carry, for the export dialog. */
+export async function canvasSourcesSizeOf(home: DocumentHome): Promise<{ count: number; bytes: number }> {
+  const { canvasSourcesSize } = await import("./workspaceBundle");
+  return canvasSourcesSize(getPersistence(), home.workspaceId, home.canvasId);
+}

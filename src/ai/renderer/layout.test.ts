@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { VALID_PLAN_FIXTURES } from "@/ai/visual-plan/fixtures";
-import { groupTitleKey } from "@/ai/visual-plan/groups";
+import { groupTitleKey, subGroupKey, subGroupTitleKey } from "@/ai/visual-plan/groups";
 import type { VisualNode, VisualPlan, VisualRelationship } from "@/ai/visual-plan/types";
-import { GROUP_ROW_MAX_WIDTH, layoutPlan, SECTIONS_MAX_WIDTH } from "./layout";
+import { GROUP_ROW_MAX_WIDTH, layoutPlan, SECTIONS_MAX_WIDTH, sectionOfNodes, subGroupMembers } from "./layout";
 
 /** Every node placed, with a finite, non-overlapping-with-itself box (plus one title box per group, F42). */
 function assertFullyPlaced(plan: VisualPlan, layout: ReturnType<typeof layoutPlan>) {
@@ -431,5 +431,88 @@ describe("layoutPlan — architecture column gaps fit link labels", () => {
 
   it("never widens past the cap", () => {
     expect(gap(plan("x".repeat(200)))).toBe(320);
+  });
+});
+
+describe("layoutPlan — real sizes (organisation-layout F2)", () => {
+  const nodes: VisualNode[] = [
+    { id: "g", type: "group", content: { label: "Section", arrangement: "grid" } },
+    ...[0, 1, 2, 3, 4, 5].map((i): VisualNode => ({ id: `t${i}`, type: "text", parent: "g", content: { markdown: `A point that is long enough to fill a card, number ${i}` } })),
+  ];
+  const plan: VisualPlan = { version: 1, template: "sectioned", nodes, relationships: [] };
+
+  it("without sizes, or with an empty map, the layout is exactly today's", () => {
+    expect(layoutPlan(plan, {})).toEqual(layoutPlan(plan));
+    expect(layoutPlan(plan, { sizes: new Map() })).toEqual(layoutPlan(plan));
+    for (const fixture of Object.values(VALID_PLAN_FIXTURES)) expect(layoutPlan(fixture, { sizes: new Map() })).toEqual(layoutPlan(fixture));
+  });
+
+  it("a taller card pushes its row down, and the card keeps the size it was given", () => {
+    const before = layoutPlan(plan);
+    const t0 = before.get("t0")!;
+    const after = layoutPlan(plan, { sizes: new Map([["t0", { width: t0.width, height: t0.height + 400 }]]) });
+    expect(after.get("t0")!.height).toBe(t0.height + 400);
+    // The card below t0 (same column, next row) moves down by the extra height; nothing overlaps.
+    const below = [...before].find(([id, b]) => id.startsWith("t") && id !== "t0" && Math.abs(b.x - t0.x) < 1 && b.y > t0.y)![0];
+    expect(after.get(below)!.y - before.get(below)!.y).toBe(400);
+    const ids = nodes.filter((n) => n.type !== "group").map((n) => n.id);
+    for (const a of ids) for (const b of ids) if (a < b) expect(overlaps(after.get(a)!, after.get(b)!), `${a}/${b}`).toBe(false);
+  });
+});
+
+describe("layoutPlan — sub-groups (organisation v2, plan §3.2)", () => {
+  const shape = (id: string, parent: string, label = id): VisualNode => ({ id, type: "shape", parent, content: { shape: "rectangle", label } });
+  const plan: VisualPlan = {
+    version: 1,
+    template: "sectioned",
+    nodes: [
+      { id: "s", type: "group", content: { label: "Persistence & external systems", arrangement: "grid" } },
+      { id: "ext", type: "group", parent: "s", content: { label: "External", arrangement: "stack" } },
+      shape("db", "s", "Orders DB"),
+      shape("cache", "s", "Cache"),
+      shape("sup", "ext", "Supplier API"),
+      shape("pay", "ext", "Payments API"),
+      { id: "t", type: "group", content: { label: "Services", arrangement: "grid" } },
+      shape("svc", "t", "Inventory service"),
+    ],
+    relationships: [
+      { from: "svc", to: "sup", type: "calls", label: "reorders" },
+      { from: "svc", to: "db", type: "writes" },
+    ],
+  };
+  const v2 = layoutPlan(plan, { organisation: "v2" });
+  const inside = (inner: { x: number; y: number; width: number; height: number }, outer: typeof inner) =>
+    inner.x >= outer.x && inner.y >= outer.y && inner.x + inner.width <= outer.x + outer.width && inner.y + inner.height <= outer.y + outer.height;
+
+  it("draws the sub-group inside its section: its members inside the backdrop, the backdrop and its title inside the frame", () => {
+    const backdrop = v2.get(subGroupKey("s", 0))!;
+    const title = v2.get(subGroupTitleKey("s", 0))!;
+    expect(backdrop).toBeDefined();
+    expect(inside(backdrop, v2.get("s")!)).toBe(true);
+    expect(inside(title, backdrop)).toBe(true);
+    for (const m of ["sup", "pay"]) expect(inside(v2.get(m)!, backdrop), m).toBe(true);
+    for (const m of ["db", "cache"]) expect(overlaps(v2.get(m)!, backdrop), m).toBe(false);
+    // The sub-group is not a frame of its own.
+    expect(v2.has("ext")).toBe(false);
+  });
+
+  it("nothing overlaps: the section's cards, the backdrop, its title and its members", () => {
+    const ids = ["db", "cache", subGroupKey("s", 0), groupTitleKey("s")];
+    for (const a of ids) for (const b of ids) if (a < b) expect(overlaps(v2.get(a)!, v2.get(b)!), `${a}/${b}`).toBe(false);
+    expect(overlaps(v2.get("sup")!, v2.get("pay")!)).toBe(false);
+    expect(overlaps(v2.get(subGroupTitleKey("s", 0))!, v2.get("sup")!)).toBe(false);
+    expect(overlaps(v2.get("s")!, v2.get("t")!)).toBe(false);
+  });
+
+  it("lists each backdrop's members, and sections resolve sub-group members to the outer frame", () => {
+    expect(subGroupMembers(plan)).toEqual(new Map([[subGroupKey("s", 0), ["sup", "pay"]]]));
+    expect(sectionOfNodes(plan, { organisation: "v2" }).get("sup")).toBe("s");
+    expect(sectionOfNodes(plan).get("sup")).toBe("ext");
+  });
+
+  it("v1 is today's: a nested group lays out as a frame of its own (validation never lets one through in v1)", () => {
+    const v1 = layoutPlan(plan);
+    expect(v1.has("ext")).toBe(true);
+    expect(v1.has(subGroupKey("s", 0))).toBe(false);
   });
 });

@@ -435,7 +435,7 @@
     {
       "id": "ku.versioned",
       "title": "A content hash in the file name makes old copies irrelevant",
-      "claim": "The build puts a hash of each file's contents into its name, so a changed file gets a new URL, the old copy is never requested again, and versioned assets can be cached for a year (max-age=31536000); most build tools do this automatically.",
+      "claim": "The build puts a hash of each file's contents into its name, so a changed file gets a new URL, the old copy is never requested again, and versioned assets can be cached for a year (max-age=31536000); most build tools can do this automatically.",
       "explanation": "The cleanest technique, for static assets.",
       "type": "concept",
       "importance": "critical",
@@ -483,7 +483,7 @@
     {
       "id": "ku.old-assets",
       "title": "Keep old assets as long as the longest HTML TTL",
-      "claim": "If HTML stays cached longer than the origin keeps old asset files, it sends readers to files that no longer exist, so old asset versions must stay available at least as long as the longest HTML TTL.",
+      "claim": "If HTML stays cached longer than the origin keeps old asset files, it can send readers to files that no longer exist, so old asset versions should stay available at least as long as the longest HTML TTL.",
       "explanation": "A requirement that follows from the HTML caveat.",
       "type": "constraint",
       "importance": "critical",

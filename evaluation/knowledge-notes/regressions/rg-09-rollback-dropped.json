@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-rollback-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The all-or-nothing write loses its condition: 'if the line insert fails, the invoice row is still kept'.",
+  "mutations": [
+    { "op": "replace_text", "node": "t_txn", "find": "If either insert fails, the transaction rolls back and neither row is kept.", "replace": "If the line insert fails, the invoice row is still kept." }
+  ],
+  "expectFailing": ["a.transaction-detail", "a.transaction"]
+}

@@ -66,9 +66,9 @@ import { aiPanel, openAISettings, useAIMode, useAIPanel, useConversationsVersion
 import { visualizeDialog } from "./visualizeStore";
 import { loadLatest } from "@/ai/content/sources";
 import { existingObjects, sectionsOfObjects, sourcesOf } from "@/ai/reconcile/existing";
-import { rearrangeSource } from "@/ai/reconcile/rearrange";
-import { newId } from "@/domain/ids";
+import { proposeRearrange } from "./rearrangeAction";
 import { freshIndex, useWorkspaceIndexer } from "@/search/liveIndex";
+import { placeDialog } from "./placeContent";
 import { getPersistence } from "@/persistence";
 import { prefersReducedMotion } from "@/components/canvas/motion";
 
@@ -638,17 +638,10 @@ export function AIPanel({ api, home }: { api: ExcalidrawImperativeAPI; home: Doc
                   close();
                   return;
                 }
-                void loadLatest(getPersistence().contentSources, sourceId).then((latest) => {
-                  if (!latest) return api.setToast({ message: "The original content for this isn't on this device.", duration: 4000 });
-                  const set = rearrangeSource({
-                    plan: latest.version.plan,
-                    existing: existingObjects(scene, (id) => getDocumentStore().get(id), sourceId),
-                    scene,
-                    operationId: newId("op"),
-                    frames,
-                  });
-                  if (!set) return api.setToast({ message: "Nothing to re-arrange — the layout already matches.", duration: 4000 });
-                  getPendingChanges().propose(home.canvasId, set);
+                // The source's own organisation rules (distil → v2), cards the user placed kept where they are, and the result checked (`rearrangeAction.ts`).
+                void proposeRearrange(api, home.canvasId, sourceId, frames).then((outcome) => {
+                  if (outcome === "no_source") api.setToast({ message: "The original content for this isn't on this device.", duration: 4000 });
+                  else if (outcome === "nothing") api.setToast({ message: "Nothing to re-arrange — the layout already matches.", duration: 4000 });
                 });
                 close();
                 return;
@@ -1217,6 +1210,12 @@ function Transcript({
               <button type="button" className="acute-ask-ai__primary" onClick={() => onInsert(t)}>
                 {t.kind === "tasks" ? "Insert as todo list" : "Insert on canvas"}
               </button>
+              {t.kind === "note" && (
+                // Stage 2d: the answer placed where it belongs in the notes, instead of as a card on its own.
+                <button type="button" className="acute-ask-ai__secondary" onClick={() => placeDialog.open(t.text)} title="Find the cards this belongs with: update one, or add it beside them">
+                  Place in notes…
+                </button>
+              )}
             </div>
           </div>
         ),

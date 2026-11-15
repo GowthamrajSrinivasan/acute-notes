@@ -13,6 +13,7 @@ import type { AIModel, AIProviderConfig } from "@/ai/types";
 import { describeUsage, getAIUsageRepository, thisMonth, type AIUsageSummary } from "@/ai/usage/usageRepository";
 import { setUiPref, useUiPref, type AIChangeMarkers } from "@/state/uiPrefs";
 import { CleanupSettings } from "./CleanupSettings";
+import { UpdateBehaviourSettings } from "./UpdateBehaviourSettings";
 import { ResponseStyleSettings } from "./ResponseStyleSettings";
 
 const GROUPS: readonly { type: AIConnectionAccessType; label: string; hint: string }[] = [
@@ -212,6 +213,7 @@ export function AIConnectionsDialog({ onClose }: { onClose: () => void }) {
           </div>
           <ResponseStyleSettings />
           <CleanupSettings />
+          <UpdateBehaviourSettings />
           {GROUPS.map((group) => {
             const descriptors = AI_PROVIDER_DESCRIPTORS.filter((d) => d.accessType === group.type && !d.hidden);
             if (!descriptors.length) return null;

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-must-have-gate-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The must-haves lose their gate rule: nothing says an option that fails either is out regardless of its score, so they read as two more scored criteria (u16).",
+  "mutations": [
+    { "op": "replace_text", "node": "n6", "find": "An option that fails either is out, regardless of its score:\n", "replace": "" }
+  ],
+  "expectFailing": ["a.must-haves-gate"]
+}

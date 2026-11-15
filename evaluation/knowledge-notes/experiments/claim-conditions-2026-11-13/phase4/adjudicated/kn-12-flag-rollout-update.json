@@ -1,0 +1,485 @@
+{
+  "caseId": "kn-12-flag-rollout-update",
+  "adjudicator": "claude-opus-5.5 (phase 4 adjudicator)",
+  "records": [
+    {
+      "id": "k1",
+      "units": ["u3"],
+      "clause": "It does not cover experiments, which follow their own process.",
+      "verdict": "set",
+      "rule": "R5",
+      "claimUnits": ["u2"],
+      "claimQuote": "It explains how a flag goes from off to fully on, and what has to be true before each step.",
+      "status": "agreed",
+      "from": { "X": "x1", "Y": "y1" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u2"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u2"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u2"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R5 document-level scope note. Claim cards' arrows (u0_ax1->u0_n2) do not reach the carriers u0_n3/u0_ax2.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u0_n2", "u0_ax1"],
+        "carriers": ["u0_n3", "u0_ax2"],
+        "perClaimCard": { "u0_n2": "separated", "u0_ax1": "separated" }
+      } }
+    },
+    {
+      "id": "k2",
+      "units": ["u7"],
+      "clause": "only for staff accounts",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u7"],
+      "claimQuote": "In the internal stage the flag is on",
+      "status": "agreed",
+      "from": { "X": "x2", "Y": "y2" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u7"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u7"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u7"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it, the internal stage reads as on for everyone.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u1_n2"],
+        "carriers": ["u1_n2"],
+        "perClaimCard": { "u1_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k3",
+      "units": ["u8"],
+      "clause": "usually",
+      "verdict": "set",
+      "rule": "R2",
+      "claimUnits": ["u8"],
+      "claimQuote": "The internal stage usually lasts one working day",
+      "status": "agreed",
+      "from": { "X": "x3", "Y": "y3" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u8"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: a hedge that colours a typical duration; the takeaway is the same.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u1_n2"],
+        "carriers": ["u1_n2"],
+        "perClaimCard": { "u1_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k4",
+      "units": ["u8"],
+      "clause": "the guide sets no minimum for it",
+      "verdict": "set",
+      "rule": "R1",
+      "claimUnits": ["u8"],
+      "claimQuote": "The internal stage usually lasts one working day",
+      "status": "agreed",
+      "from": { "X": "x4", "Y": "y4" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u8"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it, a reader might treat one day as a minimum. Over-waiting is only inefficient (R1): set.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u1_n2"],
+        "carriers": ["u1_n2"],
+        "perClaimCard": { "u1_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k5",
+      "units": ["u12"],
+      "clause": "chosen at random per request rather than per user",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u12"],
+      "claimQuote": "During canary the flag is on for 5% of requests",
+      "status": "agreed",
+      "from": { "X": "x5", "Y": "y5" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u12"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u12"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u9", "u12"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it, a reader assumes sticky per-user exposure and would misjudge user-visible behaviour during canary.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u1_n4"],
+        "carriers": ["u1_n4"],
+        "perClaimCard": { "u1_n4": "carried" }
+      } }
+    },
+    {
+      "id": "k6",
+      "units": ["u13"],
+      "clause": "for at least 30 minutes",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u13"],
+      "claimQuote": "It must stay at that level",
+      "status": "agreed",
+      "from": { "X": "x6", "Y": "y6" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u12", "u13", "u16"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: a short canary breaks the procedure (u15).",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u1_n4"],
+        "carriers": ["u1_n4"],
+        "perClaimCard": { "u1_n4": "carried" }
+      } }
+    },
+    {
+      "id": "k7",
+      "units": ["u14"],
+      "clause": "does not raise the percentage by hand during this time",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u13"],
+      "claimQuote": "It must stay at that level for at least 30 minutes",
+      "status": "agreed",
+      "from": { "X": "x7", "Y": "y7" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u13"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: a manual change restarts the window, so ignoring this breaks the measurement. u1_n4 conveys it as the restart consequence.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u1_n4"],
+        "carriers": ["u1_n4"],
+        "perClaimCard": { "u1_n4": "carried" }
+      } }
+    },
+    {
+      "id": "k8",
+      "units": ["u16"],
+      "clause": "only when the automated metrics check passes",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u16"],
+      "claimQuote": "A flag advances from canary to general availability",
+      "status": "agreed",
+      "from": { "X": "x8", "Y": "y8" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u16"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The gate condition for advancing.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u1_n6", "u1_a1"],
+        "carriers": ["u1_n6", "u1_a1", "arrow:u1_n5->u1_n7"],
+        "perClaimCard": { "u1_n6": "carried", "u1_a1": "carried" }
+      } }
+    },
+    {
+      "id": "k9",
+      "units": ["u18"],
+      "clause": "If the check fails",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u18"],
+      "claimQuote": "the flag stays in canary and the owner investigates before trying again",
+      "status": "agreed",
+      "from": { "X": "x9", "Y": "y9" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u18"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u18"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u16"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Intra-sentence trigger; without it the flag would always stay in canary.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u1_n6"],
+        "carriers": ["u1_n6", "arrow:u1_n5->u1_n3"],
+        "perClaimCard": { "u1_n6": "carried" }
+      } }
+    },
+    {
+      "id": "k10",
+      "units": ["u18"],
+      "clause": "the owner investigates before trying again",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u18"],
+      "claimQuote": "the flag stays in canary",
+      "status": "agreed",
+      "from": { "X": "x10", "Y": "y10" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u18"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u18"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u16"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: retrying without investigating would break the procedure. X's span contains Y's ('before trying again'); same limit, same unit, so one record. u1_n6 'remains in canary for investigation' conveys it, though 'before trying again' is only implicit.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u1_n6"],
+        "carriers": ["u1_n6", "arrow:u1_n5->u1_n3"],
+        "perClaimCard": { "u1_n6": "carried" }
+      } }
+    },
+    {
+      "id": "k11",
+      "units": ["u20"],
+      "clause": "within 1 minute",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u20"],
+      "claimQuote": "Every flag must have a kill switch that turns it off",
+      "status": "agreed",
+      "from": { "X": "x11", "Y": "y11" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u20"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u20"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u20"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: a slow kill switch fails the stated requirement. g2's takeaway restates the requirement with only 'rapid' (not the 1-minute limit) and its one arrow label is about testing: separated. u2_a1 says 'rapid' but joins carrier u2_n1 by a card arrow: linked.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u2_n1", "u2_a1", "g2"],
+        "carriers": ["u2_n1"],
+        "perClaimCard": { "u2_n1": "carried", "u2_a1": "linked", "g2": "separated" }
+      } }
+    },
+    {
+      "id": "k12",
+      "units": ["u21"],
+      "clause": "before the flag enters canary",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u21"],
+      "claimQuote": "The kill switch is tested in staging",
+      "status": "agreed",
+      "from": { "X": "x12", "Y": "y12" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u21"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u21"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: testing after canary exposes real traffic without a verified kill switch. u2_a2's frame g2 is touched by g1->g2 'kill switch tested before canary': arrow_label.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u2_n2", "u2_a2"],
+        "carriers": ["u2_n2", "arrow:g1->g2"],
+        "perClaimCard": { "u2_n2": "carried", "u2_a2": "arrow_label" }
+      } }
+    },
+    {
+      "id": "k13",
+      "units": ["u21"],
+      "clause": "and the test is recorded in the rollout tool",
+      "verdict": "set",
+      "rule": "R1",
+      "claimUnits": ["u21"],
+      "claimQuote": "The kill switch is tested in staging before the flag enters canary",
+      "status": "adjudicated",
+      "from": { "X": "x13" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u21"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: part of what must hold before canary (u4). Skipping the record leaves the procedure incomplete but does not clearly do the wrong thing: set.",
+      "confidence": "low",
+      "notes": { "distil": {
+        "claimCards": ["u2_n2"],
+        "carriers": ["u2_n2", "u2_a2"],
+        "perClaimCard": { "u2_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k14",
+      "units": ["u21"],
+      "clause": "in staging",
+      "verdict": "set",
+      "rule": "R1",
+      "claimUnits": ["u21"],
+      "claimQuote": "The kill switch is tested in staging before the flag enters canary",
+      "status": "adjudicated",
+      "from": { "Y": "y13" },
+      "readings": [
+        { "who": "Y", "verdict": "set", "claimUnits": ["u21"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: scopes where the test happens. The 'before canary' clause (k12) already keeps the test away from real traffic, so this is secondary: set.",
+      "confidence": "low",
+      "notes": { "distil": {
+        "claimCards": ["u2_n2"],
+        "carriers": ["u2_n2", "u2_a2"],
+        "perClaimCard": { "u2_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k15",
+      "units": ["u22"],
+      "clause": "without a tested kill switch",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u22"],
+      "claimQuote": "A flag without a tested kill switch cannot enter canary.",
+      "status": "agreed",
+      "from": { "X": "x14", "Y": "y14" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u22"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u22"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it, no flag could enter canary.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u2_n3"],
+        "carriers": ["u2_n3", "g2", "u2_a2"],
+        "perClaimCard": { "u2_n3": "carried" }
+      } }
+    },
+    {
+      "id": "k16",
+      "units": ["u24"],
+      "clause": "turning it back on starts the rollout again from the internal stage",
+      "verdict": "claim",
+      "rule": "R3",
+      "claimUnits": ["u24"],
+      "claimQuote": "Turning a flag off is always safe",
+      "status": "agreed",
+      "from": { "X": "x15", "Y": "y15" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u24"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u24"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u24"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: the cost of the 'always safe' action is presented as weighed against it; without it, turning off reads as free.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u2_n5"],
+        "carriers": ["u2_n5"],
+        "perClaimCard": { "u2_n5": "carried" }
+      } }
+    },
+    {
+      "id": "k17",
+      "units": ["u27"],
+      "clause": "until the flag has been at 100% for one hour",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u25"],
+      "claimQuote": "While the flag ramps up, the owner watches the error dashboard",
+      "status": "agreed",
+      "from": { "X": "x16", "Y": "y17" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u25"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u25"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u25"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: 'while the flag ramps up' alone would end watching on reaching 100%, an hour too early.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u1_n8"],
+        "carriers": ["u1_n8"],
+        "perClaimCard": { "u1_n8": "carried" }
+      } }
+    },
+    {
+      "id": "k18",
+      "units": ["u28"],
+      "clause": "that has been fully on for 30 days",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u28"],
+      "claimQuote": "A flag that has been fully on for 30 days is removed from the code.",
+      "status": "agreed",
+      "from": { "X": "x17", "Y": "y18" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u28"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u28"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u28"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it, flags would be removed at any time.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u3_n2", "u3_n5"],
+        "carriers": ["u3_n2", "u3_n1", "g3", "u3_a2", "arrow:g1->g3"],
+        "perClaimCard": { "u3_n2": "carried", "u3_n5": "frame" }
+      } }
+    },
+    {
+      "id": "k19",
+      "units": ["u30"],
+      "clause": "that miss the deadline",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u30"],
+      "claimQuote": "Flags that miss the deadline are listed in the weekly stale-flag report.",
+      "status": "adjudicated",
+      "from": { "X": "x18", "Y": "y19" },
+      "readings": [
+        { "who": "X", "verdict": "ambiguous", "claimUnits": ["u30"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u30"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u28"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "General test: a restrictive relative clause with limiting force (R5 does not apply; it is not a descriptive adjective). Without it every flag appears in the report, which is false. The reader also loses the fact that missing the 30-day deadline is what gets a flag reported. Answers X's question: yes, a reader would act differently.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u3_n7", "u3_n6"],
+        "carriers": ["u3_n7", "u3_a2", "g3", "arrow:u3_n1->u3_n6"],
+        "perClaimCard": { "u3_n7": "carried", "u3_n6": "frame" }
+      } }
+    },
+    {
+      "id": "k20",
+      "units": ["u25"],
+      "clause": "if errors rise",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u25"],
+      "claimQuote": "pages the on-call engineer",
+      "status": "adjudicated",
+      "from": { "X": "x19", "Y": "y16" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u25"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u25"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: the trigger for escalation. Without it the instruction is to page on-call during every ramp, which is the wrong procedure (paging with no signal), not merely untidy. Parallel to 'If the check fails' (k9).",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u1_n8"],
+        "carriers": ["u1_n8"],
+        "perClaimCard": { "u1_n8": "carried" }
+      } }
+    }
+  ],
+  "rejected": [],
+  "notes": "20 records (15 claim, 5 set). x10/y10 (u18) are nested spans of one limit; kept as one record. Unit text taken from the adjudication packet (source.v1.md)."
+}

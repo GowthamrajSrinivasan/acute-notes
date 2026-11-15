@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-smoke-fail-branch-unlabeled",
+  "distortion": "condition_dropped",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The smoke test's fail branch (u24) loses its label, so the path to the rollback reads as unconditional.",
+  "mutations": [
+    {
+      "op": "set_label",
+      "from": "n9",
+      "to": "n15",
+      "label": null
+    }
+  ],
+  "expectFailing": [
+    "a.rel-smoke-rollback"
+  ]
+}

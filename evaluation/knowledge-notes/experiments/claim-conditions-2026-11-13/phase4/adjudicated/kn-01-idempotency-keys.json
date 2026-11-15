@@ -1,0 +1,271 @@
+{
+  "caseId": "kn-01-idempotency-keys",
+  "adjudicator": "phase4-adjudicator-A (Claude, evidence-led; source-only binding, then visibility)",
+  "records": [
+    {
+      "id": "k1",
+      "units": ["u2"],
+      "clause": "If the server has already completed a request with that key",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u2"],
+      "claimQuote": "it returns the stored result instead of performing the operation again",
+      "status": "agreed",
+      "from": { "X": "x1", "Y": "y1" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "phase3", "verdict": "not_a_condition", "claimUnits": ["u2"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "Without the antecedent the server would return a stored result for any keyed request, including a retry of a request still in flight or never completed; false in the case the clause excludes. Phase 3's not_a_condition is overridden by both blind annotators and the general test.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g1", "v1:g2"],
+          "carriers": ["v1:g2"],
+          "perClaimCard": { "v1:g1": "separated", "v1:g2": "carried" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g1", "v2:g2", "v2:g4"],
+          "carriers": ["v2:g2", "v2:g5"],
+          "perClaimCard": { "v2:g1": "separated", "v2:g2": "carried", "v2:g4": "separated" }
+        }
+      }
+    },
+    {
+      "id": "k2",
+      "units": ["u6"],
+      "clause": "while the server still remembers them",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u6"],
+      "claimQuote": "Keys only protect against duplicates",
+      "status": "agreed",
+      "from": { "X": "x2", "Y": "y2" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u6"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u6"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u2"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "Without the retention bound, 'keys protect against duplicates' is false after the stored result is forgotten. Y's span adds 'only protect against duplicates', which is the claim words; X's minimal span used. Claim cards are cards asserting that keys protect against / prevent duplicates.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g1", "v1:g3"],
+          "carriers": ["v1:g3"],
+          "perClaimCard": { "v1:g1": "separated", "v1:g3": "carried" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g1", "v2:g6"],
+          "carriers": ["v2:g6"],
+          "perClaimCard": { "v2:g1": "separated", "v2:g6": "carried" }
+        }
+      }
+    },
+    {
+      "id": "k3",
+      "units": ["u7"],
+      "clause": "stored results expire after 24 hours, so a retry sent after that window is treated as a new payment",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u2"],
+      "claimQuote": "If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.",
+      "status": "agreed",
+      "from": { "X": "x3", "Y": "y3" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u2"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "A retry after 24 hours is charged again, falsifying u2 in that case. Generic 'time window' wording (v1:g5, v2:g9) does not convey the expiry-then-new-payment limit and is not counted as a carrier.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g1", "v1:g2"],
+          "carriers": ["v1:g3"],
+          "perClaimCard": { "v1:g1": "separated", "v1:g2": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g1", "v2:g2", "v2:g4"],
+          "carriers": ["v2:g7"],
+          "perClaimCard": { "v2:g1": "separated", "v2:g2": "separated", "v2:g4": "separated" }
+        }
+      }
+    },
+    {
+      "id": "k4",
+      "units": ["u7"],
+      "clause": "In this design",
+      "verdict": "set",
+      "rule": "R5",
+      "claimUnits": ["u7"],
+      "claimQuote": "stored results expire after 24 hours",
+      "status": "adjudicated",
+      "from": { "X": "x4" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u7"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u2"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R5: scopes the 24-hour figure to this design rather than to idempotency keys in general. A real scope, but the takeaway (results expire after a window) is unchanged without it, so set, not claim. Found by X only; accepted.",
+      "confidence": "low",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g3"],
+          "carriers": ["v1:g3"],
+          "perClaimCard": { "v1:g3": "carried" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g7"],
+          "carriers": ["v2:g7"],
+          "perClaimCard": { "v2:g7": "carried" }
+        }
+      }
+    },
+    {
+      "id": "k5",
+      "units": ["u8"],
+      "clause": "Keys also do not make two different requests safe",
+      "verdict": "claim",
+      "rule": "R3",
+      "claimUnits": ["u2"],
+      "claimQuote": "it returns the stored result instead of performing the operation again",
+      "status": "agreed",
+      "from": { "X": "x5", "Y": "y4" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u2"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R3 'does not guarantee': without it a reader treats any reuse of a key as a safe replay. Distinct from k6 (the required server behaviour).",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g1", "v1:g2"],
+          "carriers": ["v1:g4"],
+          "perClaimCard": { "v1:g1": "separated", "v1:g2": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g1", "v2:g2", "v2:g4"],
+          "carriers": ["v2:g8"],
+          "perClaimCard": { "v2:g1": "separated", "v2:g2": "separated", "v2:g4": "separated" }
+        }
+      }
+    },
+    {
+      "id": "k6",
+      "units": ["u8"],
+      "clause": "if a client reuses a key with a different amount, the server must reject the request rather than return the old result",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u2"],
+      "claimQuote": "it returns the stored result instead of performing the operation again",
+      "status": "agreed",
+      "from": { "X": "x6", "Y": "y5" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u2"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R1: implementing u2 without this rule returns a stale confirmation for a different payment, which is the wrong behaviour.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g1", "v1:g2"],
+          "carriers": ["v1:g4"],
+          "perClaimCard": { "v1:g1": "separated", "v1:g2": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g1", "v2:g2", "v2:g4"],
+          "carriers": ["v2:g8"],
+          "perClaimCard": { "v2:g1": "separated", "v2:g2": "separated", "v2:g4": "separated" }
+        }
+      }
+    },
+    {
+      "id": "k7",
+      "units": ["u9"],
+      "clause": "within a bounded window",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u9"],
+      "claimQuote": "idempotency keys make retries safe",
+      "status": "agreed",
+      "from": { "X": "x7", "Y": "y6" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "Unbounded 'retries are safe' is false after the window.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g5"],
+          "carriers": ["v1:g3", "v1:g5"],
+          "perClaimCard": { "v1:g5": "carried" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g9"],
+          "carriers": ["v2:g6", "v2:g7", "v2:g9"],
+          "perClaimCard": { "v2:g9": "carried" }
+        }
+      }
+    },
+    {
+      "id": "k8",
+      "units": ["u9"],
+      "clause": "they are not a general guarantee against duplicate operations",
+      "verdict": "claim",
+      "rule": "R3",
+      "claimUnits": ["u9"],
+      "claimQuote": "idempotency keys make retries safe within a bounded window",
+      "status": "agreed",
+      "from": { "X": "x8", "Y": "y7" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R3: the source says explicitly that the benefit is not guaranteed. v1:g4/v2:g8 convey the neighbouring u8 clause, not this one, so are not carriers.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g5"],
+          "carriers": ["v1:g5"],
+          "perClaimCard": { "v1:g5": "carried" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g9"],
+          "carriers": ["v2:g9"],
+          "perClaimCard": { "v2:g9": "carried" }
+        }
+      }
+    }
+  ],
+  "rejected": [],
+  "notes": "Claim cards for a u2 link are the cards that assert the server returns the stored result / prevents duplicates on retry: v1:g1, v1:g2; v2:g1, v2:g2, v2:g4 (kept as in phase 3; v2:g5 and v2:g3 treated as example cards). Titles like 'Idempotency Keys Prevent Duplicate Operations' (v1:g1, v2:g1) are unconditional and never carry a limit. Citations ignored throughout."
+}

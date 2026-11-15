@@ -14,6 +14,7 @@ import { PendingChanges } from "@/ai/changes/pendingChanges";
 import { recordAcceptedSource } from "@/ai/content/sources";
 import { fingerprintContent, fingerprintShape } from "@/ai/content/fingerprint";
 import type { SceneElement } from "@/domain/canvas/adapter";
+import { fingerprintOf, labelsByContainer, objectContent } from "@/ai/reconcile/objects";
 import type { AIMetadata, DocumentRecord, RichContent } from "@/domain/types";
 import { createMemoryServices } from "@/persistence/repositories/memory";
 import type { PersistenceServices } from "@/persistence/repositories/types";
@@ -164,6 +165,17 @@ export class FakeCanvas {
         return e ? { x: e.x, y: e.y, width: e.width, height: e.height } : undefined;
       },
       write: (set: ChangeSet, changes: readonly ProposedChange[]) => this.write(set, changes),
+      contentOf: (id: string) => {
+        const ref = live.get(id)?.customData?.acute as { documentId?: string } | undefined;
+        const doc = ref?.documentId ? this.docs.get(ref.documentId) : undefined;
+        return doc ? { content: doc.snapshot, fingerprint: fingerprintContent(doc.snapshot) } : null;
+      },
+      // As the real writer: a shape's label (stale-target protection for `update_shape`).
+      shapeOf: (id: string) => {
+        const e = live.get(id);
+        const content = e ? objectContent(e as unknown as SceneElement, labelsByContainer(this.elements as unknown as SceneElement[]), () => null) : null;
+        return content?.kind === "shape" ? { shape: content.shape, fingerprint: fingerprintOf(content) } : null;
+      },
     };
   }
 

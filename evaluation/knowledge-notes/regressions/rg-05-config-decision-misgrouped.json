@@ -1,0 +1,13 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-config-decision-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "The agreed config review lands among the unagreed proposals, whose frame is titled 'Undecided proposals'. f.decisions used to match any title containing 'decided' (so 'undecided' and 'nothing was decided' too), which let a.decision-config-in-frame pass.",
+  "mutations": [
+    { "op": "replace_text", "node": "g3", "find": "Proposed, not agreed", "replace": "Undecided proposals" },
+    { "op": "move_to_group", "node": "n7", "group": "g3" }
+  ],
+  "expectFailing": ["a.decision-config-in-frame", "a.config-apart-freeze", "a.decisions-together"]
+}

@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-reservations-retried",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The policy card loses its scope: 'the orchestrator also retries failed reservations' replaces 'reservations are never retried'. The old pattern only knew 'reservations are retried'.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-policy",
+      "find": "Applies only to supplier calls. Reservations are never retried: a failed reservation goes back to the caller as an error.",
+      "replace": "Applies to supplier calls; the orchestrator also retries failed reservations."
+    }
+  ],
+  "expectFailing": [
+    "a.no-retried-reservations"
+  ]
+}

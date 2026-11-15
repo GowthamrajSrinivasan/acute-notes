@@ -151,8 +151,15 @@ export function acceptParts(
     const { parts: _parts, mergeKey: _mergeKey, session: _session, conflicts: _conflicts, ...envelope } = set;
     const sub: ChangeSet = { ...envelope, changes, ...(s.part.contentSource ? { contentSource: s.part.contentSource } : {}) };
     const cv = canvas();
-    const resolved = resolveChangeSet(sub, (id) => cv.boxOf(id) !== undefined);
+    const resolved = resolveChangeSet(
+      sub,
+      (id) => cv.boxOf(id) !== undefined,
+      (id) => cv.contentOf?.(id) ?? null,
+      (id) => cv.shapeOf?.(id) ?? null,
+    );
     dropped.push(...resolved.dropped);
+    // A changed target is never written; a merged set's accept reports it (its next update offers it again), as for a stale patch.
+    dropped.push(...resolved.stale.map((c): DroppedChange => ({ change: c.apply, reason: "target_changed" })));
     if (!resolved.changes.length) return;
     for (const [k, id] of cv.write(sub, resolved.changes)) created.set(k, id);
     applied.push(...resolved.changes);

@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "22"
+  },
   "scripts": {
     "postinstall": "patch-package && node scripts/copy-excalidraw-assets.mjs",
     "predev": "node scripts/copy-excalidraw-assets.mjs",
@@ -31,6 +34,7 @@
     "@blocknote/react": "^0.55.0",
     "@excalidraw/excalidraw": "^0.18.1",
     "@github/copilot-sdk": "^1.0.14",
+    "@huggingface/transformers": "4.3.2",
     "@mantine/core": "^8.3.18",
     "@mantine/hooks": "^8.3.18",
     "@modelcontextprotocol/sdk": "^1.30.1",

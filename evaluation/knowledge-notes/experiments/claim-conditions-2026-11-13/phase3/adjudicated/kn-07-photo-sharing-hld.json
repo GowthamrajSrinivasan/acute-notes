@@ -1,0 +1,358 @@
+{
+  "caseId": "kn-07-photo-sharing-hld",
+  "adjudicator": "phase 3 adjudicator (protocol v2), 2026-11-13",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u7"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u7"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u7"] },
+        { "who": "R2", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "conditionQuote": "with a short-lived signed URL",
+      "claimQuote": "Clients upload a photo directly to object storage",
+      "rationale": "'Short-lived' is a real validity bound on the upload URL (set reading), but it is also defensibly an adjective describing the mechanism, a limit too minor to matter (not_a_condition reading). The source gives no further weight either way; R1 itself marked it low confidence.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n19", "u2_n22", "u3_n2", "u4_n4"],
+          "carriers": ["u2_n19"],
+          "perClaimCard": { "u2_n19": "carried", "u2_n22": "separated", "u3_n2": "separated", "u4_n4": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u9"],
+      "verdict": "set",
+      "claimUnits": ["u9"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u9"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u9"] }
+      ],
+      "conditionQuote": "applies a rate limit of 120 requests per minute per account",
+      "claimQuote": "The gateway terminates TLS, checks the caller's access token with the auth service, applies a rate limit",
+      "rationale": "A numeric bound on gateway traffic; the gateway's role stays true without the value.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n20"],
+          "carriers": ["u2_n20"],
+          "perClaimCard": { "u2_n20": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u10"],
+      "verdict": "claim",
+      "claimUnits": ["u9"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u8", "u9"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u9"] }
+      ],
+      "conditionQuote": "If the auth service cannot be reached, the gateway rejects the request instead of letting it through unchecked.",
+      "claimQuote": "checks the caller's access token with the auth service, applies a rate limit of 120 requests per minute per account, and routes the request to the right service",
+      "rationale": "u9 states check-then-route unconditionally; when the auth service is unreachable the check cannot happen and the request is not routed but rejected, so u9 is false for that case and silent on fail-open vs fail-closed. R1 reads it so (golden links it to u8+u9 without a binding); R2's set reading treats it as an added property but the 'instead of letting it through' wording marks a case where u9's routing does not occur.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n20"],
+          "carriers": ["u2_n20"],
+          "perClaimCard": { "u2_n20": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u11"],
+      "verdict": "claim",
+      "claimUnits": ["u8"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u8"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u8"] }
+      ],
+      "conditionQuote": "Photo bytes are served to clients by the CDN, never by the gateway.",
+      "claimQuote": "Every client request enters through the API gateway.",
+      "rationale": "Photo byte loads bypass the gateway, so 'every client request' is misleading without the exception.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n20"],
+          "carriers": ["u2_n20"],
+          "perClaimCard": { "u2_n20": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u18"],
+      "verdict": "claim",
+      "claimUnits": ["u18", "u32"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u18", "u32"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u18"] }
+      ],
+      "conditionQuote": "followers who have notifications turned on",
+      "claimQuote": "asks the push-notification provider to alert followers",
+      "rationale": "Without the scope the alert claim (and the u32 flow step) reads as alerting all followers, which is false for followers with notifications off.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n23", "u3_n8", "u3_a2"],
+          "carriers": ["u2_n23"],
+          "perClaimCard": { "u2_n23": "carried", "u3_n8": "separated", "u3_a2": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u19"],
+      "verdict": "claim",
+      "claimUnits": ["u19"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u13", "u15", "u17", "u18"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u19"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u19"] }
+      ],
+      "conditionQuote": "The queue keeps an event for up to 7 days",
+      "claimQuote": "a worker outage delays thumbnails but does not lose uploads",
+      "rationale": "'Does not lose uploads' is false for an outage longer than the 7-day retention.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n26"],
+          "carriers": ["u2_n26"],
+          "perClaimCard": { "u2_n26": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u20"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u16", "u31", "u32"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u15", "u16", "u17", "u31"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u31", "u32"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u32"] }
+      ],
+      "conditionQuote": "A photo whose processing keeps failing stays in the \"processing\" state and is not shown in any feed.",
+      "claimQuote": "A media processing worker picks up the event, creates the thumbnails and marks the photo \"ready\".",
+      "rationale": "Claim reading (R1; golden links it to the worker claims without a binding): the worker/flow steps state unconditionally that the photo is marked ready and reaches feeds, false for a photo whose processing keeps failing. Set reading (R2): the flow section describes the success path, which stays true, and the failure path is a separate caveat. The source presents the flow as the main path without saying whether it is meant as guaranteed, so it does not settle this.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n8", "u3_a2", "u3_n6", "u2_n24"],
+          "carriers": ["u2_n26"],
+          "perClaimCard": { "u3_n8": "separated", "u3_a2": "separated", "u3_n6": "separated", "u2_n24": "separated" },
+          "changedFromV1": {
+            "u3_n6": "(not in v1)→separated: claim link widened to the worker step u31 (golden/R1); no arrow or frame text conveys the failure path",
+            "u2_n24": "(not in v1)→separated: claim link widened to u16 (golden); only reaches carrier u2_n26 through a chain via u2_n13, which does not count"
+          }
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u23"],
+      "verdict": "set",
+      "claimUnits": ["u14", "u23"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u14", "u23"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u14"] }
+      ],
+      "conditionQuote": "for 60 seconds",
+      "claimQuote": "keeps ready-made feed pages in the cache",
+      "rationale": "Cache lifetime bound; caching feed pages stays true without it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n29", "u2_n23", "u4_n8"],
+          "carriers": ["u2_n29"],
+          "perClaimCard": { "u2_n29": "carried", "u2_n23": "separated", "u4_n8": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "conditionUnits": ["u27"],
+      "verdict": "set",
+      "claimUnits": ["u18", "u32"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u18", "u32"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u18"] }
+      ],
+      "conditionQuote": "Pinhole only sends it requests and does not control when an alert arrives",
+      "claimQuote": "asks the push-notification provider to alert followers who have notifications turned on",
+      "rationale": "Delivery-timing caveat; the 'asks the provider' claim stays true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n23", "u3_n8"],
+          "carriers": ["u5_n3"],
+          "perClaimCard": { "u2_n23": "separated", "u3_n8": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "conditionUnits": ["u34"],
+      "verdict": "set",
+      "claimUnits": ["u34"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u34"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u34"] }
+      ],
+      "conditionQuote": "The cost is that a new photo takes a few seconds to appear in feeds.",
+      "claimQuote": "the upload service and the workers only meet through the message queue",
+      "rationale": "The stated trade-off of the queue decision; the decision stays true.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n1", "u4_n2", "u4_a1"],
+          "carriers": ["u4_n2"],
+          "perClaimCard": { "u4_n1": "linked", "u4_n2": "carried", "u4_a1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c11",
+      "conditionUnits": ["u35"],
+      "verdict": "set",
+      "claimUnits": ["u35"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u35"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u35"] }
+      ],
+      "conditionQuote": "Originals can be up to 25 MB",
+      "claimQuote": "clients send bytes straight to object storage and the upload service only signs the URL and records the result",
+      "rationale": "Size bound and deciding fact; the direct-upload decision stays true without it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n3", "u4_n4", "u2_n19", "u4_a1"],
+          "carriers": ["u4_n4"],
+          "perClaimCard": { "u4_n3": "linked", "u4_n4": "carried", "u2_n19": "separated", "u4_a1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c12",
+      "conditionUnits": ["u38"],
+      "verdict": "set",
+      "claimUnits": ["u38"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u38"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u38"] }
+      ],
+      "conditionQuote": "we accept that their outages are outside our control",
+      "claimQuote": "We use a third-party CDN and push-notification provider instead of running our own",
+      "rationale": "Accepted risk of the buy decision; the decision stays true.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n9", "u4_n10", "u4_a1"],
+          "carriers": ["u4_n10"],
+          "perClaimCard": { "u4_n9": "linked", "u4_n10": "carried", "u4_a1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c13",
+      "conditionUnits": ["u39"],
+      "verdict": "set",
+      "claimUnits": ["u20"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u20"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u20"] }
+      ],
+      "conditionQuote": "How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet.",
+      "claimQuote": "A photo whose processing keeps failing stays in the \"processing\" state and is not shown in any feed.",
+      "rationale": "Open question on the failure path; the stated stuck-state behaviour holds for now.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n26"],
+          "carriers": ["u6_n1", "u6_a1"],
+          "perClaimCard": { "u2_n26": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "a1",
+      "conditionUnits": ["u2"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u1"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R2", "verdict": "set", "claimUnits": ["u1"] },
+        { "who": "R1", "verdict": "not_a_condition", "claimUnits": [], "note": "implicit: R1 made no record and listed u1-u6 as purpose/scope, not limits" }
+      ],
+      "conditionQuote": "The design is sized for about 2 million daily active users at launch.",
+      "claimQuote": "Pinhole lets people post photos and see the photos of the accounts they follow in a feed.",
+      "rationale": "A real capacity scope of the whole design, but it limits no particular claim sentence (u1 is a feature statement that stays true at any scale), so the claim it limits cannot be pinned down; R1 treated it as scope description, R2 as a set condition.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n1", "u1_ax1"],
+          "carriers": ["u1_n2", "u1_ax2", "subtitle", "g0"],
+          "perClaimCard": { "u1_n1": "frame", "u1_ax1": "frame" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "a2",
+      "conditionUnits": ["u40"],
+      "verdict": "set",
+      "claimUnits": ["u14"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R2", "verdict": "set", "claimUnits": ["u14"] },
+        { "who": "R1", "verdict": "not_a_condition", "claimUnits": [], "note": "implicit: R1 notes call u40 'an open question with no limited claim'" }
+      ],
+      "conditionQuote": "Whether the feed service should precompute feeds for accounts with very many followers is left to the feed service's own low-level design.",
+      "claimQuote": "The feed service builds each person's feed from the photos of the accounts they follow",
+      "rationale": "The open question is explicitly about how the feed service builds feeds (u14) for high-follower accounts, so there is a claim it qualifies; u14 stays true, so it is a set caveat, parallel to the agreed open-question record c13.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n23"],
+          "carriers": ["u6_n2", "u6_a1"],
+          "perClaimCard": { "u2_n23": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    }
+  ],
+  "notes": "v2 re-check: the only labelled arrows are g1->g2 'data flow example', g1->g3 'justification', g1->g4 'external components' and u5_n1->u5_n2/u5_n3 'details', u5_n1->u5_n4 'contrast'. None expresses a limiting/dependency relation toward a carrier and none conveys a condition, so no card moved to arrow_label or cross-frame linked; in particular c9 (u2_n23 in g1, carrier u5_n3 in g4) stays separated because 'external components' is not a limiting label. No v1 outcome changed; c7 gained two claim cards from the wider claim link. Citations ignored throughout ('From the source:' fragments are visible text and were read as such)."
+}

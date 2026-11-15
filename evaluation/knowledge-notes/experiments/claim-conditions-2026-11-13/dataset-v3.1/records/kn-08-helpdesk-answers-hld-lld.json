@@ -1,0 +1,576 @@
+{
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "schema": "ClauseRecordV31 (review-v3/attachmentSchema.ts)",
+  "dataset": "v3.1-pre",
+  "records": [
+    {
+      "id": "k1",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u5"
+      ],
+      "clause": "which is the only component allowed to talk to the external model provider",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u5"
+          ],
+          "claimQuote": "calls the Model Gateway",
+          "evidence": "migrated: needs evidence",
+          "justification": "An exclusivity constraint; without it a builder could let other components call the provider directly.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k1 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k1",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u5"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k2",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u8"
+      ],
+      "clause": "every 15 minutes",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u8"
+          ],
+          "claimQuote": "Articles reach the Vector store through the Ingestion worker",
+          "evidence": "migrated: needs evidence",
+          "justification": "A real freshness bound, but the ingestion claim's takeaway stands without it.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k2 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k2",
+            "verdict": "set",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u8"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k3",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u8"
+      ],
+      "clause": "published",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u8"
+          ],
+          "claimQuote": "which reads published articles from the Help Center CMS",
+          "evidence": "migrated: needs evidence",
+          "justification": "The adjective scopes ingestion to published articles (drafts excluded); a real scope but secondary to the takeaway.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k3 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "low",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k3",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u8"
+            ],
+            "confidence": "low"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k4",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u9"
+      ],
+      "clause": "This document does not describe the Ingestion worker's internals",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u8"
+          ],
+          "claimQuote": "Articles reach the Vector store through the Ingestion worker",
+          "evidence": "migrated: needs evidence",
+          "justification": "Document scope note linked to the claim it scopes (R5).",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k4 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k4",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u8"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k5",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u9"
+      ],
+      "clause": "how the Vector store is partitioned has not been decided",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u6"
+          ],
+          "claimQuote": "The Retrieval service reads from the Vector store, a Postgres database with the pgvector extension.",
+          "evidence": "migrated: needs evidence",
+          "justification": "An open decision the notes must contain; u6 stays true without it.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k5 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k5",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u6"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k6",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u16"
+      ],
+      "clause": "using the same embedding model as the Ingestion worker",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u16"
+          ],
+          "claimQuote": "The Query embedder turns the question into a vector",
+          "evidence": "migrated: needs evidence",
+          "justification": "A required invariant: embedding queries with a different model would break retrieval, so a builder would act wrongly without it.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k6 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k6",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u16"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k7+k8",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u25"
+      ],
+      "clause": "If the Reranker does not respond within 800 ms",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u25"
+          ],
+          "claimQuote": "the Rerank client skips reranking, keeps the first 8 candidates in vector-similarity order",
+          "evidence": "migrated: needs evidence",
+          "justification": "Link 1 of 2 (R4: both links genuinely mislead). Without the trigger the fallback reads as always skipping reranking.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k7 (claimQuote and rationale copied)"
+        },
+        {
+          "level": "section",
+          "units": [
+            "u21"
+          ],
+          "claimQuote": "The Rerank client sends the 50 candidates to the Reranker and keeps the top 8.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Link 2 of 2 (R4): the main-flow step reads as always reranked; the timeout exception makes it false in that case.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k8 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated_merged",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k7",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u25"
+            ],
+            "confidence": "high"
+          },
+          {
+            "id": "k8",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u21"
+            ],
+            "confidence": "medium"
+          }
+        ],
+        "migration": "A3: v3 split by claim into one record per link; merged into one record with a local and a section link (levels derived mechanically); confidence is the lower of the two"
+      }
+    },
+    {
+      "id": "k9",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u26"
+      ],
+      "clause": "but the 8 passages may then be less relevant",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u26"
+          ],
+          "claimQuote": "Skipping reranking keeps the request fast",
+          "evidence": "migrated: needs evidence",
+          "justification": "The sentence's point is the trade-off; without it the fallback looks free.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k9 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k9",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u26"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k10",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u27"
+      ],
+      "clause": "limited to 6,000 tokens",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u27"
+          ],
+          "claimQuote": "builds the prompt with the Context builder",
+          "evidence": "migrated: needs evidence",
+          "justification": "A hard limit in an operation-level spec; implementing prompt building without it would do the wrong thing.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k10 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k10",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u27"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k11",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u28"
+      ],
+      "clause": "a 20-second timeout",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u27"
+          ],
+          "claimQuote": "calls the Model Gateway",
+          "evidence": "migrated: needs evidence",
+          "justification": "The source builds a stated failure path (u29: error, HTTP 504, no partial answer) on this bound, so an unbounded model call would mislead a builder.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k11 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k11",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u27"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k12",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u29"
+      ],
+      "clause": "If it times out",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u29"
+          ],
+          "claimQuote": "`composeAnswer` returns an error and the API responds with HTTP 504; no partial answer is shown",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without the trigger composeAnswer would appear always to fail with 504.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k12 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k12",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u29"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k13",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u30"
+      ],
+      "clause": "If the Citation checker finds a citation that does not match any supplied passage",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u30"
+          ],
+          "claimQuote": "`composeAnswer` removes the sentence that carries it and marks the answer as partial, rather than rejecting the whole answer",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without the trigger, sentences would appear always removed and answers always partial.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k13 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k13",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u30"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k14",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "units": [
+        "u34"
+      ],
+      "clause": "The design does not give code locations for the Ingestion worker or the Reranker.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u31"
+          ],
+          "claimQuote": "`composeAnswer` is in `services/orchestrator/src/compose.ts`",
+          "evidence": "migrated: needs evidence",
+          "justification": "Scope note on the code-location section; set per R5. The g6 takeaway ('some components lack specified paths') does not name the components, so it is not counted as a carrier.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k14 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k14",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u31"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    }
+  ]
+}

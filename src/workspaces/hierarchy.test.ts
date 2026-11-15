@@ -2,6 +2,8 @@ import * as Y from "yjs";
 import { describe, expect, it } from "vitest";
 import { canvasDocId } from "@/sync/docIds";
 import type { AgentChangeRecord, AgentSessionRecord } from "@/ai/changes/agentState";
+import { saveSourceOutcomes, sourceReviewKey } from "@/ai/content/sourceReview";
+import { recordAttempt } from "@/ai/study/store";
 import type { DocumentRecord } from "@/domain/types";
 import { createMemoryServices } from "@/persistence/repositories/memory";
 import type { PersistenceServices } from "@/persistence/repositories/types";
@@ -139,6 +141,58 @@ describe("workspace hierarchy", () => {
     expect(await s.agentState.listSessions(ws)).toEqual([]);
     expect((await s.agentState.listChanges(keep.workspace.id)).map((r) => r.id)).toEqual(["chg_kept"]);
     expect((await s.agentState.listSessions(keep.workspace.id)).map((r) => r.id)).toEqual(["mcp_kept"]);
+  });
+
+  it("deletes the workspace's device-local study history (index and every shard), and no other workspace's (study plan issue C)", async () => {
+    const keys = new Map<string, unknown>();
+    const s: PersistenceServices = {
+      ...createMemoryServices(),
+      meta: { get: async <T,>(k: string) => keys.get(k) as T | undefined, set: async (k, v) => void keys.set(k, v), delete: async (k) => void keys.delete(k) },
+    };
+    const { ws, p1 } = await seed(s);
+    const keep = await createWorkspace(s, "Keep");
+    const attempt = (workspaceId: string, sourceId: string | null, canvasId: string) =>
+      recordAttempt(s.meta, workspaceId, {
+        concept: sourceId ? { key: `c:${sourceId}:u1`, local: false, sourceId, units: ["u1"], sourceVersion: 1 } : { key: `l:${canvasId}:el1`, local: true },
+        canvasId,
+        title: "T",
+        kind: "quiz",
+        correct: false,
+        at: 1,
+      });
+    await attempt(ws, "src_a", p1);
+    await attempt(ws, "src_b", p1);
+    await attempt(ws, null, p1);
+    await attempt(keep.workspace.id, "src_c", keep.canvas.id);
+    keys.set("unrelated", 1);
+
+    await deleteWorkspace(s, ws);
+    expect([...keys.keys()].filter((k) => k === `study.${ws}` || k.startsWith(`study.${ws}.`))).toEqual([]);
+    expect([...keys.keys()].sort()).toEqual([`study.${keep.workspace.id}`, `study.${keep.workspace.id}.src_c`, "unrelated"].sort());
+  });
+
+  it("deletes its canvases' content sources and their sourceReview: keys, and no other workspace's (handoff open item)", async () => {
+    const keys = new Map<string, unknown>();
+    const s: PersistenceServices = {
+      ...createMemoryServices(),
+      meta: { get: async <T,>(k: string) => keys.get(k) as T | undefined, set: async (k, v) => void keys.set(k, v), delete: async (k) => void keys.delete(k) },
+    };
+    const { ws, p1 } = await seed(s);
+    const keep = await createWorkspace(s, "Keep");
+    const add = async (id: string, workspaceId: string, canvasId: string) => {
+      for (let v = 1; v <= 2; v++) {
+        await s.contentSources.append({ id, workspaceId, canvasId, origin: "paste", tier: "local", template: "auto", latestVersion: v, createdAt: 1, updatedAt: 1 } as never, { sourceId: id, version: v, text: `v${v}`, plan: null, createdAt: v } as never);
+        await saveSourceOutcomes(s.meta, id, v, { outcome: { u1: "represented" }, reasons: {}, flags: [] });
+      }
+    };
+    await add("src_gone", ws, p1);
+    await add("src_kept", keep.workspace.id, keep.canvas.id);
+
+    await deleteWorkspace(s, ws);
+    expect(await s.contentSources.get("src_gone")).toBeNull();
+    expect(await s.contentSources.get("src_kept")).not.toBeNull();
+    expect([...keys.keys()].filter((k) => k.startsWith("sourceReview:")).sort()).toEqual([sourceReviewKey("src_kept", 1), sourceReviewKey("src_kept", 2)]);
+    expect([...keys.keys()].filter((k) => k.startsWith(`study.${ws}`))).toEqual([]);
   });
 });
 

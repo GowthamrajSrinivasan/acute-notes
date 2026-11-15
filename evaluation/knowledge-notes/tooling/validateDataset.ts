@@ -7,6 +7,7 @@ import { RELATION_TYPES } from "@/domain/types";
 import { normalize } from "./evaluate";
 import type { CaseBundle, Dataset } from "./load";
 import { ARCHITECTURE_RELATIONS } from "./evaluate";
+import { RUN_CAPABILITIES, RUN_CHECK_REQUIRES } from "./runOutput";
 import { GATE_OF_DIMENSION, RUBRIC_DIMENSIONS, type Check } from "./schemas";
 
 const PRODUCT_RELATIONS: readonly string[] = RELATION_TYPES;
@@ -26,9 +27,12 @@ export function wordCount(textValue: string): number {
   return (textValue.match(/\S+/g) ?? []).length;
 }
 
-/** Numbers in a claim (3, 0.5, 1000, 60%) that must be backed by the units it cites. */
+/**
+ * Number tokens (3, 0.5, 1000, 2.8.0) in a text, tokenised the same way for a claim and for its cited units. Digits
+ * glued to letters (v1, p95, a41c9e2) are identifiers, not numbers: `exactDetails` covers those.
+ */
 function numbersIn(value: string): string[] {
-  return (normalize(value).match(/\d+(?:\.\d+)?/g) ?? []).filter((n) => n.length > 0);
+  return normalize(value).match(/(?<![\p{L}\d.])\d+(?:\.\d+)*(?![\p{L}\d])/gu) ?? [];
 }
 
 export function validateCase(c: CaseBundle, capabilityIds: ReadonlySet<string>): string[] {
@@ -92,7 +96,8 @@ export function validateCase(c: CaseBundle, capabilityIds: ReadonlySet<string>):
     // No unsupported facts: every exact detail and every number in the claim is in a cited unit.
     const quotes = normalize(k.sourceUnits.map((u) => units.get(u)?.quote ?? "").join(" \n "));
     for (const d of k.exactDetails ?? []) if (!quotes.includes(normalize(d))) kn(`${k.id}: exact detail "${d}" is not in its cited units`);
-    for (const n of numbersIn(k.claim)) if (!new RegExp(`(^|[^\\d.])${n.replace(".", "\\.")}([^\\d]|$)`).test(quotes)) kn(`${k.id}: number ${n} in the claim is not in its cited units`);
+    const quoted = new Set(numbersIn(quotes));
+    for (const n of numbersIn(k.claim)) if (!quoted.has(n)) kn(`${k.id}: number ${n} in the claim is not in its cited units`);
     if (k.provenance !== "explicit" && !k.review?.required) kn(`${k.id}: ${k.provenance} knowledge must require review`);
   }
   // Every unit is accounted for: represented by knowledge, or omittable with a reason (plan §3.2).
@@ -246,8 +251,9 @@ export function validateCase(c: CaseBundle, capabilityIds: ReadonlySet<string>):
     for (const cap of a.requires ?? []) if (!capabilityIds.has(cap)) where(`unknown capability ${cap}`);
     if (a.target === "lens" && !c.lens) where("targets Lens but the case has no lens.json");
     if (a.target === "reconcile" && !c.reconcile) where("targets reconcile but the case has no reconcile.json");
-    if (a.check) for (const problem of checkRefs(a.check, { elements, frames, relationships: new Set(c.canvas.relationships.map((r) => r.id)), lensKeys, lensEdges, lensPaths, lensFrames, reconcileItems }, referenced)) where(problem);
+    if (a.check) for (const problem of checkRefs(a.check, { elements, frames, relationships: new Set(c.canvas.relationships.map((r) => r.id)), lensKeys, lensEdges, lensPaths, lensFrames, reconcileItems, units }, referenced)) where(problem);
     if (a.check && targetOf(a.check) !== a.target) where(`check ${a.check.check} reads ${targetOf(a.check)}, not ${a.target}`);
+    if (a.organisation && a.target !== "render") where(`organisation ${a.organisation} scopes a render assertion only, not ${a.target}`);
   }
   // Enough criteria to decide pass/fail.
   const asserts = c.evaluation.assertions;
@@ -261,7 +267,19 @@ export function validateCase(c: CaseBundle, capabilityIds: ReadonlySet<string>):
   return p;
 }
 
-const RENDER_CHECKS: readonly string[] = ["layout_no_fatal", "layout_crossings_max", "cards_no_overlap", "children_inside_frames", "frames_no_overlap"];
+const RENDER_CHECKS: readonly string[] = [
+  "layout_no_fatal",
+  "layout_crossings_max",
+  "cards_no_overlap",
+  "children_inside_frames",
+  "frames_no_overlap",
+  "reading_order_max",
+  "frames_fit_screen",
+  "links_over_frames_max",
+  "rendered_frame_count",
+  "subgroup_contains",
+  "frame_part_contains",
+];
 
 function targetOf(check: Check): "plan" | "lens" | "reconcile" | "render" {
   if (check.check.startsWith("lens_")) return "lens";
@@ -279,6 +297,7 @@ interface Known {
   lensPaths: ReadonlySet<string>;
   lensFrames: ReadonlySet<string>;
   reconcileItems: ReadonlySet<string>;
+  units: ReadonlyMap<string, unknown>;
 }
 
 function checkRefs(check: Check, k: Known, referenced: { elements: Set<string>; relationships: Set<string>; frames: Set<string> }): string[] {
@@ -349,6 +368,14 @@ function checkRefs(check: Check, k: Known, referenced: { elements: Set<string>; 
     case "reconcile_state":
       if (!k.reconcileItems.has(check.item)) out.push(`unknown reconcile item ${check.item}`);
       break;
+    case "cites":
+      el(check.element);
+      break;
+    case "review_flagged":
+      for (const u of check.units ?? []) if (!k.units.has(u)) out.push(`unknown unit ${u}`);
+      break;
+    case "units_accounted":
+      break;
     case "frame_count":
     case "architecture_edges_labeled":
     case "layout_no_fatal":
@@ -356,6 +383,17 @@ function checkRefs(check: Check, k: Known, referenced: { elements: Set<string>; 
     case "cards_no_overlap":
     case "children_inside_frames":
     case "frames_no_overlap":
+    case "reading_order_max":
+    case "frames_fit_screen":
+    case "links_over_frames_max":
+      break;
+    case "rendered_frame_count":
+      if (check.min > check.max) out.push(`rendered_frame_count: min ${check.min} > max ${check.max}`);
+      break;
+    case "subgroup_contains":
+    case "frame_part_contains":
+      fr(check.frame);
+      check.elements.forEach(el);
       break;
   }
   return out;
@@ -373,7 +411,12 @@ export function validateDataset(d: Dataset): string[] {
     for (const a of c.evaluation.assertions) {
       if (a.support === "implemented") for (const r of a.requires ?? []) if (status.get(r) !== "implemented") p.push(`${c.id}/${a.id}: marked implemented but requires ${r} (${status.get(r)})`);
       if (a.support === "future" && (a.requires ?? []).every((r) => status.get(r) === "implemented")) p.push(`${c.id}/${a.id}: marked future but every capability it requires is implemented`);
+      // A run check (cites, units_accounted, review_flagged) runs today only once the product produces what it reads.
+      const runNeeds = a.check && a.check.check in RUN_CHECK_REQUIRES ? RUN_CHECK_REQUIRES[a.check.check as keyof typeof RUN_CHECK_REQUIRES] : [];
+      if (a.support === "implemented") for (const r of runNeeds) if (status.get(r) !== "implemented") p.push(`${c.id}/${a.id}: check ${a.check!.check} needs ${r}, which is ${status.get(r) ?? "unknown"}`);
     }
+  // Every capability a run can provide (runOutput.ts) is in the inventory.
+  for (const id of Object.keys(RUN_CAPABILITIES)) if (!status.has(id)) p.push(`runOutput.ts: capability ${id} isn't in capabilities.json`);
   const dims = new Set(d.rubrics.map((r) => r.dimension));
   for (const dim of RUBRIC_DIMENSIONS) if (!dims.has(dim)) p.push(`rubrics: no rubric for ${dim}`);
   const byCase = new Map(d.cases.map((c) => [c.id, c]));

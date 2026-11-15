@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { itemIds, missingAnalysis } from "./analysisCheck";
-import { expandSourceRefs, numberSource } from "./sourceBlocks";
+import { expandSourceRefs, labelSource, numberSource } from "./sourceBlocks";
+import { splitUnits } from "./sourceUnits";
 
 const SOURCE = [
   "## Decisions",
@@ -114,5 +115,49 @@ describe("the analysis must cover the items a source names (decision and status 
     expect(missingAnalysis(reply("D1 is decided."), "decision", items)).toEqual(["an analysis line for D2, D3, D4, D5"]);
     expect(missingAnalysis(reply("D1, D2 and D3 are proposed; D10 is unrelated."), "decision", items)).toEqual([]);
     expect(missingAnalysis(reply("D1 is decided."), "comparison", items)).toEqual([]);
+  });
+});
+
+describe("labelSource (knowledge-notes-plan WP1.4)", () => {
+  const PROSE = ["## Retries", "", "Retries can help. They must stop after 3 attempts.", "", "- Use a key", "  - Derived from the order id", "- Log it"].join("\n");
+
+  it("labels each block's units: P<n>.<k> sentences, L<n>.<k> items, T<n>.r<k> rows (r0 the header), C<n> code", async () => {
+    const { labelled, labels, blockUnits, blocks } = await labelSource(SOURCE);
+    expect(Object.keys(labels)).toEqual(["P1.1", "T1.r0", "T1.r1", "T1.r2", "L1.1", "L1.2", "C1"]);
+    expect(Object.values(labels)).toEqual(["u1", "u2", "u3", "u4", "u5", "u6", "u7"]);
+    expect(labelled).toBe(
+      [
+        "## Decisions",
+        "[P1]\nP1.1 Intro sentence of the reply, long enough to count.",
+        "[T1]\nT1.r0 |   | Decision | My proposal |\n|---|---|---|\nT1.r1 | D1 | Draft 03's checklist | Replace it with the gate |\nT1.r2 | D2 | The skill change | Merge v3, keep Draft 03 frozen |",
+        "[L1]\nL1.1 Receive the two SR3 files\nL1.2 Correct the tracker",
+        "[C1] ```sh\npixi run verify-ci\n```",
+      ].join("\n\n"),
+    );
+    // The same blocks as numberSource, so references expand the same way; a block placed by reference cites its units.
+    expect(blocks).toEqual((await numberSource(SOURCE)).blocks);
+    expect(blockUnits).toEqual({ P1: ["u1"], T1: ["u2", "u3", "u4"], L1: ["u5", "u6"], C1: ["u7"] });
+  });
+
+  it("splits paragraphs into sentences and numbers nested items in the list's order", async () => {
+    const { labelled, labels } = await labelSource(PROSE);
+    expect(labelled).toBe("## Retries\n\n[P1]\nP1.1 Retries can help.\nP1.2 They must stop after 3 attempts.\n\n[L1]\nL1.1 Use a key\nL1.2 Derived from the order id\nL1.3 Log it");
+    expect(Object.keys(labels)).toEqual(["P1.1", "P1.2", "L1.1", "L1.2", "L1.3"]);
+  });
+
+  it("maps labels to the source version's own unit ids when given them (a section of a larger document)", async () => {
+    const whole = `# Intro\n\nA first section sentence here.\n\n${PROSE}`;
+    const { units } = await splitUnits(whole);
+    const { labels } = await labelSource(PROSE, units);
+    expect(labels).toEqual({ "P1.1": "u2", "P1.2": "u3", "L1.1": "u4", "L1.2": "u5", "L1.3": "u6" });
+  });
+
+  it("repeated sentences keep their own ids, in order; a unit the version doesn't have is shown without a label", async () => {
+    const text = "Check the logs first.\n\nThen restart the service.\n\nCheck the logs first.";
+    const { units } = await splitUnits(text);
+    expect((await labelSource(text, units)).labels).toEqual({ "P1.1": "u1", "P2.1": "u2", "P3.1": "u3" });
+    const { labels, labelled } = await labelSource(`${text}\n\nA sentence the version never had.`, units);
+    expect(labels).toEqual({ "P1.1": "u1", "P2.1": "u2", "P3.1": "u3" });
+    expect(labelled.endsWith("[P4]\nA sentence the version never had.")).toBe(true);
   });
 });

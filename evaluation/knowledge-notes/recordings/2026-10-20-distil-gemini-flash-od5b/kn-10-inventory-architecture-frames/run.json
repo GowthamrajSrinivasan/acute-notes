@@ -1,0 +1,1590 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "Shelfwise is the service that keeps track of how much stock each warehouse holds and reserves stock for incoming orders.",
+        "hash": "1l71fjchxhl",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Overview",
+        "span": {
+          "start": 68,
+          "end": 188
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "It is one deployable TypeScript service with a small admin front end.",
+        "hash": "u3xtmnv7kj",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Overview",
+        "span": {
+          "start": 189,
+          "end": 258
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "At peak it handles about 3,000 reservations per hour.",
+        "hash": "26g0uzcd00a",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Overview",
+        "span": {
+          "start": 259,
+          "end": 312
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "This tour walks through the code by responsibility: what each group of modules owns, which files to open first, and how the groups depend on each other.",
+        "hash": "12ndjp5pbtq",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Overview",
+        "span": {
+          "start": 313,
+          "end": 465
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "The groups are presentation, API and orchestration, domain services, supplier integration, persistence and external systems, and observability and error handling.",
+        "hash": "urfiuummts",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Overview",
+        "span": {
+          "start": 466,
+          "end": 628
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "The admin web UI lives in `web/admin/`.",
+        "hash": "stwik248rk",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Client and presentation",
+        "span": {
+          "start": 658,
+          "end": 697
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "Warehouse staff use it to look up stock levels, place manual holds and review failed supplier imports.",
+        "hash": "pm3ggq7dsr",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Client and presentation",
+        "span": {
+          "start": 698,
+          "end": 800
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "sentence",
+        "text": "It holds no stock logic of its own: every screen calls the service's REST API, and the UI never talks to the database directly.",
+        "hash": "gnr07de8lx",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Client and presentation",
+        "span": {
+          "start": 801,
+          "end": 928
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "sentence",
+        "text": "The HTTP handlers in `src/api/routes.ts` are the only entry point for requests.",
+        "hash": "1qed7j6rzbo",
+        "topic": "Shelfwise inventory service: a tour of the codebase › API and orchestration",
+        "span": {
+          "start": 956,
+          "end": 1035
+        },
+        "prev": "u8",
+        "next": "u10"
+      },
+      {
+        "id": "u10",
+        "kind": "sentence",
+        "text": "They validate the request body, attach a correlation ID and pass the work on; they contain no business rules.",
+        "hash": "83qm2810d7",
+        "topic": "Shelfwise inventory service: a tour of the codebase › API and orchestration",
+        "span": {
+          "start": 1036,
+          "end": 1145
+        },
+        "prev": "u9",
+        "next": "u11"
+      },
+      {
+        "id": "u11",
+        "kind": "sentence",
+        "text": "A `POST /reservations` request goes to the reservation orchestrator in `src/orders/reserve.ts`.",
+        "hash": "oaf4wu8uq3",
+        "topic": "Shelfwise inventory service: a tour of the codebase › API and orchestration",
+        "span": {
+          "start": 1146,
+          "end": 1241
+        },
+        "prev": "u10",
+        "next": "u12"
+      },
+      {
+        "id": "u12",
+        "kind": "sentence",
+        "text": "The reservation orchestrator coordinates a reservation from start to finish.",
+        "hash": "1j35f6l5pu3",
+        "topic": "Shelfwise inventory service: a tour of the codebase › API and orchestration",
+        "span": {
+          "start": 1243,
+          "end": 1319
+        },
+        "prev": "u11",
+        "next": "u13"
+      },
+      {
+        "id": "u13",
+        "kind": "sentence",
+        "text": "It asks the stock ledger to reserve the requested quantity, asks the pricing rules for the order's price, and, once both succeed, publishes a StockReserved event to the message broker.",
+        "hash": "8kbf4tk7qs",
+        "topic": "Shelfwise inventory service: a tour of the codebase › API and orchestration",
+        "span": {
+          "start": 1320,
+          "end": 1504
+        },
+        "prev": "u12",
+        "next": "u14"
+      },
+      {
+        "id": "u14",
+        "kind": "sentence",
+        "text": "If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order; it never makes a partial reservation.",
+        "hash": "25xwijaexvt",
+        "topic": "Shelfwise inventory service: a tour of the codebase › API and orchestration",
+        "span": {
+          "start": 1505,
+          "end": 1632
+        },
+        "prev": "u13",
+        "next": "u15"
+      },
+      {
+        "id": "u15",
+        "kind": "sentence",
+        "text": "A reservation that is not confirmed within 15 minutes is released by the ledger and the stock becomes available again.",
+        "hash": "155nof0qowr",
+        "topic": "Shelfwise inventory service: a tour of the codebase › API and orchestration",
+        "span": {
+          "start": 1633,
+          "end": 1751
+        },
+        "prev": "u14",
+        "next": "u16"
+      },
+      {
+        "id": "u16",
+        "kind": "sentence",
+        "text": "The stock ledger in `src/ledger/ledger.ts` owns stock levels.",
+        "hash": "1f8hzx2rmue",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Domain services",
+        "span": {
+          "start": 1773,
+          "end": 1834
+        },
+        "prev": "u15",
+        "next": "u17"
+      },
+      {
+        "id": "u17",
+        "kind": "sentence",
+        "text": "It records every change as an append-only ledger entry (reserve, release, restock) and writes those entries to Postgres.",
+        "hash": "1o1aeohvrjx",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Domain services",
+        "span": {
+          "start": 1835,
+          "end": 1955
+        },
+        "prev": "u16",
+        "next": "u18"
+      },
+      {
+        "id": "u18",
+        "kind": "sentence",
+        "text": "The ledger is the only module allowed to write to the stock tables; other modules ask it to make changes.",
+        "hash": "fg1oztimzn",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Domain services",
+        "span": {
+          "start": 1956,
+          "end": 2061
+        },
+        "prev": "u17",
+        "next": "u19"
+      },
+      {
+        "id": "u19",
+        "kind": "sentence",
+        "text": "The pricing rules in `src/pricing/rules.ts` work out the price of an order from the supplier price lists and any active discounts.",
+        "hash": "1s5b4cl3aws",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Domain services",
+        "span": {
+          "start": 2063,
+          "end": 2193
+        },
+        "prev": "u18",
+        "next": "u20"
+      },
+      {
+        "id": "u20",
+        "kind": "sentence",
+        "text": "They read price lists from Redis, where they are cached for 300 seconds, and they never change stock.",
+        "hash": "1ouzlu6d81z",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Domain services",
+        "span": {
+          "start": 2194,
+          "end": 2295
+        },
+        "prev": "u19",
+        "next": "u21"
+      },
+      {
+        "id": "u21",
+        "kind": "sentence",
+        "text": "Neither domain module imports anything from `src/api/` or `src/orders/`.",
+        "hash": "1dbod45sayn",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Domain services",
+        "span": {
+          "start": 2297,
+          "end": 2369
+        },
+        "prev": "u20",
+        "next": "u22"
+      },
+      {
+        "id": "u22",
+        "kind": "sentence",
+        "text": "Dependencies point inwards: the API layer calls the orchestrator, the orchestrator calls the domain modules, and the domain modules depend only on persistence and the platform helpers.",
+        "hash": "ap8voub9u3",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Domain services",
+        "span": {
+          "start": 2370,
+          "end": 2554
+        },
+        "prev": "u21",
+        "next": "u23"
+      },
+      {
+        "id": "u23",
+        "kind": "sentence",
+        "text": "The supplier feed adapter in `src/suppliers/feedAdapter.ts` brings in restocks from suppliers.",
+        "hash": "1cf4qdps9nj",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Supplier integration",
+        "span": {
+          "start": 2581,
+          "end": 2675
+        },
+        "prev": "u22",
+        "next": "u24"
+      },
+      {
+        "id": "u24",
+        "kind": "sentence",
+        "text": "Every 10 minutes it calls the supplier API for new deliveries, converts each delivery into a restock and asks the stock ledger to record it.",
+        "hash": "1o13ykkh4hf",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Supplier integration",
+        "span": {
+          "start": 2676,
+          "end": 2816
+        },
+        "prev": "u23",
+        "next": "u25"
+      },
+      {
+        "id": "u25",
+        "kind": "sentence",
+        "text": "The adapter is the only module that knows the supplier's data format, so a change on the supplier's side stays inside this one file.",
+        "hash": "10jusjv8bcg",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Supplier integration",
+        "span": {
+          "start": 2817,
+          "end": 2949
+        },
+        "prev": "u24",
+        "next": "u26"
+      },
+      {
+        "id": "u26",
+        "kind": "sentence",
+        "text": "A delivery the adapter cannot parse is logged and skipped; it is not retried, because sending the same bad data again would fail the same way.",
+        "hash": "1ww05jkdw14",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Supplier integration",
+        "span": {
+          "start": 2950,
+          "end": 3092
+        },
+        "prev": "u25",
+        "next": "u27"
+      },
+      {
+        "id": "u27",
+        "kind": "sentence",
+        "text": "Postgres holds the ledger entries and the current stock level per warehouse and product; it is the source of truth for stock.",
+        "hash": "1x0i0z33zum",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems",
+        "span": {
+          "start": 3131,
+          "end": 3256
+        },
+        "prev": "u26",
+        "next": "u28"
+      },
+      {
+        "id": "u28",
+        "kind": "sentence",
+        "text": "Redis holds cached price lists and nothing that cannot be rebuilt from the supplier feed.",
+        "hash": "tmg866vts8",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems",
+        "span": {
+          "start": 3257,
+          "end": 3346
+        },
+        "prev": "u27",
+        "next": "u29"
+      },
+      {
+        "id": "u29",
+        "kind": "sentence",
+        "text": "The message broker carries StockReserved events to other services, such as fulfilment, and also hosts the dead-letter queue described below.",
+        "hash": "7ca752rktx",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems",
+        "span": {
+          "start": 3347,
+          "end": 3487
+        },
+        "prev": "u28",
+        "next": "u30"
+      },
+      {
+        "id": "u30",
+        "kind": "sentence",
+        "text": "Postgres schema changes live in `db/migrations/` and run on every deploy.",
+        "hash": "rleka0kt51",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems",
+        "span": {
+          "start": 3488,
+          "end": 3561
+        },
+        "prev": "u29",
+        "next": "u31"
+      },
+      {
+        "id": "u31",
+        "kind": "sentence",
+        "text": "The supplier API is run by the suppliers, outside our control, and is the only external system Shelfwise calls.",
+        "hash": "1st66ynmvwp",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems",
+        "span": {
+          "start": 3562,
+          "end": 3673
+        },
+        "prev": "u30",
+        "next": "u32"
+      },
+      {
+        "id": "u32",
+        "kind": "sentence",
+        "text": "Every module logs through the structured logger in `src/platform/log.ts`, which writes one JSON line per event and always includes the correlation ID that the HTTP handlers attached.",
+        "hash": "4j93fn4lvh",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Observability and error handling",
+        "span": {
+          "start": 3712,
+          "end": 3894
+        },
+        "prev": "u31",
+        "next": "u33"
+      },
+      {
+        "id": "u33",
+        "kind": "sentence",
+        "text": "The handlers log each request, and the retry helper logs each failed attempt.",
+        "hash": "1z6kp0qbxug",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Observability and error handling",
+        "span": {
+          "start": 3895,
+          "end": 3972
+        },
+        "prev": "u32",
+        "next": "u34"
+      },
+      {
+        "id": "u34",
+        "kind": "sentence",
+        "text": "Calls to the supplier API can fail, so the feed adapter wraps them in the retry helper in `src/platform/retry.ts`.",
+        "hash": "2ksy9ql15x",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Observability and error handling",
+        "span": {
+          "start": 3974,
+          "end": 4088
+        },
+        "prev": "u33",
+        "next": "u35"
+      },
+      {
+        "id": "u35",
+        "kind": "sentence",
+        "text": "The retry policy is:",
+        "hash": "1lkp1qg9b4u",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Observability and error handling",
+        "span": {
+          "start": 4089,
+          "end": 4109
+        },
+        "prev": "u34",
+        "next": "u36"
+      },
+      {
+        "id": "u36",
+        "kind": "list_item",
+        "text": "at most 5 attempts per delivery;",
+        "hash": "12tpkaiz4qj",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Observability and error handling",
+        "span": {
+          "start": 4113,
+          "end": 4145
+        },
+        "prev": "u35",
+        "next": "u37"
+      },
+      {
+        "id": "u37",
+        "kind": "list_item",
+        "text": "exponential backoff that starts at 2 seconds, doubles after each failure and is capped at 60 seconds;",
+        "hash": "kzya8cly78",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Observability and error handling",
+        "span": {
+          "start": 4148,
+          "end": 4249
+        },
+        "prev": "u36",
+        "next": "u38"
+      },
+      {
+        "id": "u38",
+        "kind": "list_item",
+        "text": "after the 5th failed attempt, the delivery is published to the dead-letter queue `inventory.dlq` on the message broker, and staff review it in the admin UI.",
+        "hash": "cacp4ksz46",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Observability and error handling",
+        "span": {
+          "start": 4252,
+          "end": 4408
+        },
+        "prev": "u37",
+        "next": "u39"
+      },
+      {
+        "id": "u39",
+        "kind": "sentence",
+        "text": "Retries apply only to supplier calls.",
+        "hash": "1q90b4brde1",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Observability and error handling",
+        "span": {
+          "start": 4410,
+          "end": 4447
+        },
+        "prev": "u38",
+        "next": "u40"
+      },
+      {
+        "id": "u40",
+        "kind": "sentence",
+        "text": "Reservations are never retried automatically: a failed reservation is returned to the caller as an error.",
+        "hash": "1uga06dq0ev",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Observability and error handling",
+        "span": {
+          "start": 4448,
+          "end": 4553
+        },
+        "prev": "u39",
+        "next": "u41"
+      },
+      {
+        "id": "u41",
+        "kind": "sentence",
+        "text": "New contributors usually start with `src/orders/reserve.ts`, because it shows a whole reservation in about 120 lines and names every module it depends on.",
+        "hash": "181yyy0q488",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Where to start reading",
+        "span": {
+          "start": 4582,
+          "end": 4736
+        },
+        "prev": "u40",
+        "next": "u42"
+      },
+      {
+        "id": "u42",
+        "kind": "sentence",
+        "text": "After that, `src/ledger/ledger.ts` explains how stock is counted.",
+        "hash": "k8dn7a6r2o",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Where to start reading",
+        "span": {
+          "start": 4737,
+          "end": 4802
+        },
+        "prev": "u41",
+        "next": "u43"
+      },
+      {
+        "id": "u43",
+        "kind": "sentence",
+        "text": "Each module keeps its tests next to its code.",
+        "hash": "cfwgcz5jx1",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Where to start reading",
+        "span": {
+          "start": 4803,
+          "end": 4848
+        },
+        "prev": "u42",
+        "next": "u44"
+      },
+      {
+        "id": "u44",
+        "kind": "sentence",
+        "text": "Three rules keep the structure readable.",
+        "hash": "vbmpah4hbb",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Dependency rules",
+        "span": {
+          "start": 4871,
+          "end": 4911
+        },
+        "prev": "u43",
+        "next": "u45"
+      },
+      {
+        "id": "u45",
+        "kind": "sentence",
+        "text": "First, nothing in the domain modules may depend on the HTTP layer; the ledger and the pricing rules must stay usable from a script or a test without a web server.",
+        "hash": "28xdi4kbh5v",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Dependency rules",
+        "span": {
+          "start": 4912,
+          "end": 5074
+        },
+        "prev": "u44",
+        "next": "u46"
+      },
+      {
+        "id": "u46",
+        "kind": "sentence",
+        "text": "Second, only the ledger writes stock to Postgres; the orchestrator and the adapter go through it.",
+        "hash": "29ops7eh1xe",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Dependency rules",
+        "span": {
+          "start": 5075,
+          "end": 5172
+        },
+        "prev": "u45",
+        "next": "u47"
+      },
+      {
+        "id": "u47",
+        "kind": "sentence",
+        "text": "Third, only the supplier feed adapter calls the supplier API.",
+        "hash": "27s25tltw5c",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Dependency rules",
+        "span": {
+          "start": 5173,
+          "end": 5234
+        },
+        "prev": "u46",
+        "next": "u48"
+      },
+      {
+        "id": "u48",
+        "kind": "sentence",
+        "text": "The admin UI has no automated tests yet.",
+        "hash": "20jpcbobk5d",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Known gaps",
+        "span": {
+          "start": 5251,
+          "end": 5291
+        },
+        "prev": "u47",
+        "next": "u49"
+      },
+      {
+        "id": "u49",
+        "kind": "sentence",
+        "text": "The reservation orchestrator and the feed adapter can both change the same product's stock at once, and the ledger currently relies on a database row lock to keep them consistent; whether that holds under peak load has not been measured.",
+        "hash": "2acsvdpkcal",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Known gaps",
+        "span": {
+          "start": 5292,
+          "end": 5529
+        },
+        "prev": "u48",
+        "next": "u50"
+      },
+      {
+        "id": "u50",
+        "kind": "sentence",
+        "text": "Dead-lettered deliveries are only found when someone opens the admin UI; nothing alerts the team when `inventory.dlq` starts to fill up.",
+        "hash": "1eaf0tabdb6",
+        "topic": "Shelfwise inventory service: a tour of the codebase › Known gaps",
+        "span": {
+          "start": 5530,
+          "end": 5666
+        },
+        "prev": "u49"
+      }
+    ],
+    "nextId": 51
+  },
+  "cites": {
+    "u1_n1": [
+      "u1",
+      "u2"
+    ],
+    "u1_n2": [
+      "u3"
+    ],
+    "u1_n3": [
+      "u4"
+    ],
+    "u1_n4": [
+      "u5"
+    ],
+    "u2_n1": [
+      "u6"
+    ],
+    "u2_n2": [
+      "u6",
+      "u8"
+    ],
+    "u2_n3": [
+      "u9"
+    ],
+    "u2_n4": [
+      "u9",
+      "u10"
+    ],
+    "u2_n5": [
+      "u11",
+      "u12"
+    ],
+    "u2_n6": [
+      "u11",
+      "u12",
+      "u13",
+      "u14",
+      "u15"
+    ],
+    "u2_n7": [
+      "u16"
+    ],
+    "u2_n8": [
+      "u16",
+      "u17",
+      "u18"
+    ],
+    "u2_n9": [
+      "u19"
+    ],
+    "u2_n10": [
+      "u19",
+      "u20"
+    ],
+    "u2_n11": [
+      "u23"
+    ],
+    "u2_n12": [
+      "u23",
+      "u24",
+      "u25",
+      "u26"
+    ],
+    "u2_n13": [
+      "u27"
+    ],
+    "u2_n14": [
+      "u27",
+      "u30"
+    ],
+    "u2_n15": [
+      "u28"
+    ],
+    "u2_n16": [
+      "u28"
+    ],
+    "u2_n17": [
+      "u29"
+    ],
+    "u2_n18": [
+      "u29",
+      "u38"
+    ],
+    "u2_n19": [
+      "u31"
+    ],
+    "u2_n20": [
+      "u31"
+    ],
+    "u2_n21": [
+      "u32"
+    ],
+    "u2_n22": [
+      "u32"
+    ],
+    "u2_n23": [
+      "u34"
+    ],
+    "u2_n24": [
+      "u34",
+      "u35",
+      "u36",
+      "u37",
+      "u38",
+      "u39",
+      "u40"
+    ],
+    "u3_n1": [
+      "u45"
+    ],
+    "u3_n2": [
+      "u46"
+    ],
+    "u3_n3": [
+      "u47"
+    ],
+    "u3_fs1": [
+      "u44"
+    ],
+    "u4_n1": [
+      "u41"
+    ],
+    "u4_n2": [
+      "u41"
+    ],
+    "u4_n3": [
+      "u42"
+    ],
+    "u4_n4": [
+      "u43"
+    ],
+    "u5_n1": [
+      "u48"
+    ],
+    "u5_n2": [
+      "u49"
+    ],
+    "u5_n3": [
+      "u50"
+    ]
+  },
+  "omitted": [
+    {
+      "unit": "u44",
+      "reason": "meta"
+    }
+  ],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "cited",
+      "u3": "cited",
+      "u4": "cited",
+      "u5": "cited",
+      "u6": "cited",
+      "u7": "review",
+      "u8": "cited",
+      "u9": "cited",
+      "u10": "cited",
+      "u11": "cited",
+      "u12": "cited",
+      "u13": "cited",
+      "u14": "cited",
+      "u15": "cited",
+      "u16": "cited",
+      "u17": "cited",
+      "u18": "cited",
+      "u19": "cited",
+      "u20": "cited",
+      "u21": "review",
+      "u22": "review",
+      "u23": "cited",
+      "u24": "cited",
+      "u25": "cited",
+      "u26": "cited",
+      "u27": "cited",
+      "u28": "cited",
+      "u29": "cited",
+      "u30": "cited",
+      "u31": "cited",
+      "u32": "cited",
+      "u33": "review",
+      "u34": "cited",
+      "u35": "cited",
+      "u36": "cited",
+      "u37": "cited",
+      "u38": "cited",
+      "u39": "cited",
+      "u40": "cited",
+      "u41": "cited",
+      "u42": "cited",
+      "u43": "cited",
+      "u44": "cited",
+      "u45": "cited",
+      "u46": "cited",
+      "u47": "cited",
+      "u48": "cited",
+      "u49": "cited",
+      "u50": "cited"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "represented",
+      "u3": "represented",
+      "u4": "represented",
+      "u5": "represented",
+      "u6": "represented",
+      "u7": "needs_review",
+      "u8": "represented",
+      "u9": "represented",
+      "u10": "represented",
+      "u11": "represented",
+      "u12": "represented",
+      "u13": "represented",
+      "u14": "represented",
+      "u15": "represented",
+      "u16": "represented",
+      "u17": "represented",
+      "u18": "represented",
+      "u19": "represented",
+      "u20": "represented",
+      "u21": "needs_review",
+      "u22": "needs_review",
+      "u23": "represented",
+      "u24": "represented",
+      "u25": "represented",
+      "u26": "represented",
+      "u27": "represented",
+      "u28": "represented",
+      "u29": "represented",
+      "u30": "represented",
+      "u31": "represented",
+      "u32": "represented",
+      "u33": "needs_review",
+      "u34": "represented",
+      "u35": "represented",
+      "u36": "represented",
+      "u37": "represented",
+      "u38": "represented",
+      "u39": "represented",
+      "u40": "represented",
+      "u41": "represented",
+      "u42": "represented",
+      "u43": "represented",
+      "u44": "represented",
+      "u45": "represented",
+      "u46": "represented",
+      "u47": "represented",
+      "u48": "represented",
+      "u49": "represented",
+      "u50": "represented"
+    },
+    "critical": {
+      "u3": [
+        "protected"
+      ],
+      "u6": [
+        "protected"
+      ],
+      "u8": [
+        "requirement"
+      ],
+      "u9": [
+        "requirement",
+        "protected"
+      ],
+      "u11": [
+        "protected"
+      ],
+      "u14": [
+        "limitation",
+        "requirement",
+        "condition"
+      ],
+      "u15": [
+        "protected"
+      ],
+      "u16": [
+        "protected"
+      ],
+      "u17": [
+        "protected"
+      ],
+      "u18": [
+        "requirement"
+      ],
+      "u19": [
+        "protected"
+      ],
+      "u20": [
+        "requirement",
+        "protected"
+      ],
+      "u21": [
+        "protected"
+      ],
+      "u22": [
+        "requirement"
+      ],
+      "u23": [
+        "protected"
+      ],
+      "u24": [
+        "protected"
+      ],
+      "u25": [
+        "requirement"
+      ],
+      "u26": [
+        "limitation"
+      ],
+      "u28": [
+        "limitation"
+      ],
+      "u29": [
+        "protected"
+      ],
+      "u30": [
+        "protected"
+      ],
+      "u31": [
+        "requirement"
+      ],
+      "u32": [
+        "protected"
+      ],
+      "u34": [
+        "protected"
+      ],
+      "u36": [
+        "requirement",
+        "protected"
+      ],
+      "u37": [
+        "protected"
+      ],
+      "u38": [
+        "protected"
+      ],
+      "u39": [
+        "requirement"
+      ],
+      "u40": [
+        "requirement"
+      ],
+      "u41": [
+        "protected"
+      ],
+      "u42": [
+        "protected"
+      ],
+      "u44": [
+        "protected"
+      ],
+      "u45": [
+        "requirement"
+      ],
+      "u46": [
+        "requirement"
+      ],
+      "u47": [
+        "requirement"
+      ],
+      "u50": [
+        "requirement",
+        "condition",
+        "protected"
+      ]
+    },
+    "flags": [
+      {
+        "code": "unaccounted",
+        "unit": "u7",
+        "detail": "neither on a card nor omitted: \"Warehouse staff use it to look up stock levels, place manual holds and review f…\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u21",
+        "detail": "neither on a card nor omitted: \"Neither domain module imports anything from `src/api/` or `src/orders/`.\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u22",
+        "detail": "neither on a card nor omitted: \"Dependencies point inwards: the API layer calls the orchestrator, the orchestra…\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u33",
+        "detail": "neither on a card nor omitted: \"The handlers log each request, and the retry helper logs each failed attempt.\""
+      }
+    ],
+    "sections": [
+      {
+        "topic": "Shelfwise inventory service: a tour of the codebase › Overview",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Shelfwise inventory service: a tour of the codebase › Client and presentation",
+        "represented": 2,
+        "omitted": 0,
+        "needsReview": 1,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Shelfwise inventory service: a tour of the codebase › API and orchestration",
+        "represented": 7,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Shelfwise inventory service: a tour of the codebase › Domain services",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 2,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Shelfwise inventory service: a tour of the codebase › Supplier integration",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Shelfwise inventory service: a tour of the codebase › Persistence and external systems",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Shelfwise inventory service: a tour of the codebase › Observability and error handling",
+        "represented": 8,
+        "omitted": 0,
+        "needsReview": 1,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Shelfwise inventory service: a tour of the codebase › Where to start reading",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Shelfwise inventory service: a tour of the codebase › Dependency rules",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Shelfwise inventory service: a tour of the codebase › Known gaps",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      }
+    ]
+  },
+  "flags": [
+    {
+      "code": "unaccounted",
+      "unit": "u7",
+      "detail": "neither on a card nor omitted: \"Warehouse staff use it to look up stock levels, place manual holds and review f…\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u21",
+      "detail": "neither on a card nor omitted: \"Neither domain module imports anything from `src/api/` or `src/orders/`.\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u22",
+      "detail": "neither on a card nor omitted: \"Dependencies point inwards: the API layer calls the orchestrator, the orchestra…\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u33",
+      "detail": "neither on a card nor omitted: \"The handlers log each request, and the retry helper logs each failed attempt.\""
+    }
+  ],
+  "hints": [
+    {
+      "code": "named_term_changed",
+      "unit": "u11",
+      "card": "u2_n5",
+      "detail": "source names \"POST /reservations\"; no card citing it does",
+      "evidence": {
+        "source": "POST /reservations"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u11",
+      "card": "u2_n6",
+      "detail": "source names \"POST /reservations\"; no card citing it does",
+      "evidence": {
+        "source": "POST /reservations"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u32",
+      "card": "u2_n21",
+      "detail": "source names \"HTTP\"; no card citing it does",
+      "evidence": {
+        "source": "HTTP"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u32",
+      "card": "u2_n22",
+      "detail": "source names \"HTTP\"; no card citing it does",
+      "evidence": {
+        "source": "HTTP"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u11",
+      "card": "u2_n6",
+      "detail": "source says \"A `POST /reservations` request goes to the reservation orchestrator in `src/orders/reserve.ts`.\"; the card negates it",
+      "evidence": {
+        "source": "A `POST /reservations` request goes to the reservation orchestrator in `src/orders/reserve.ts`.",
+        "card": "If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order, never making a partial reservation."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u12",
+      "card": "u2_n6",
+      "detail": "source says \"The reservation orchestrator coordinates a reservation from start to finish.\"; the card negates it",
+      "evidence": {
+        "source": "The reservation orchestrator coordinates a reservation from start to finish.",
+        "card": "If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order, never making a partial reservation."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u13",
+      "card": "u2_n6",
+      "detail": "source says \"It asks the stock ledger to reserve the requested quantity, asks the pricing rules for the order's price, and, once both succeed, publishes a StockReserved event to the message broker.\"; the card negates it",
+      "evidence": {
+        "source": "It asks the stock ledger to reserve the requested quantity, asks the pricing rules for the order's price, and, once both succeed, publishes a StockReserved event to the message broker.",
+        "card": "If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order, never making a partial reservation."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u14",
+      "card": "u2_n6",
+      "detail": "source says \"If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order\"; the card drops the negation",
+      "evidence": {
+        "source": "If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order",
+        "card": "The reservation orchestrator in `src/orders/reserve.ts` coordinates reservations."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u45",
+      "card": "u3_n1",
+      "detail": "source says \"First, nothing in the domain modules may depend on the HTTP layer\"; the card drops the negation",
+      "evidence": {
+        "source": "First, nothing in the domain modules may depend on the HTTP layer",
+        "card": "Domain modules independent of HTTP layer"
+      }
+    },
+    {
+      "code": "absolute_added",
+      "card": "u3_n1",
+      "detail": "the card says \"ensures\"; the source doesn't",
+      "evidence": {
+        "card": "ensures"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u4_n2",
+      "detail": "the card names \"reserve.ts\"; the source doesn't",
+      "evidence": {
+        "card": "reserve.ts"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u4_n3",
+      "detail": "the card names \"src/orders/reserve.ts\"; the source doesn't",
+      "evidence": {
+        "card": "src/orders/reserve.ts"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u48",
+      "card": "u5_n1",
+      "detail": "source says \"The admin UI has no automated tests yet.\"; the card drops the negation",
+      "evidence": {
+        "source": "The admin UI has no automated tests yet.",
+        "card": "Admin UI Test Coverage"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u50",
+      "card": "u5_n3",
+      "detail": "source says \"when someone opens the admin UI\"",
+      "evidence": {
+        "source": "when someone opens the admin UI"
+      }
+    },
+    {
+      "code": "critical_dropped",
+      "card": "u5_n3",
+      "unit": "u50",
+      "detail": "the card drops the requirement \"only found when someone opens the admin UI\"",
+      "evidence": {
+        "source": "only found when someone opens the admin UI"
+      }
+    }
+  ],
+  "reviews": {
+    "u1_n1": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u1_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u1_n3": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u1_n4": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n1": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n3": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n4": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n5": {
+      "reasons": [],
+      "hints": [
+        "source names \"POST /reservations\"; no card citing it does"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n6": {
+      "reasons": [],
+      "hints": [
+        "source names \"POST /reservations\"; no card citing it does",
+        "source says \"A `POST /reservations` request goes to the reservation orchestrator in `src/orders/reserve.ts`.\"; the card negates it",
+        "source says \"The reservation orchestrator coordinates a reservation from start to finish.\"; the card negates it",
+        "source says \"It asks the stock ledger to reserve the requested quantity, asks the pricing rules for the order's price, and, once both succeed, publishes a StockReserved event to the message broker.\"; the card negates it",
+        "source says \"If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order\"; the card drops the negation"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n7": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n8": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n9": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n10": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n11": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n12": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n13": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n14": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n15": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n16": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n17": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n18": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n19": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n20": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n21": {
+      "reasons": [],
+      "hints": [
+        "source names \"HTTP\"; no card citing it does"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n22": {
+      "reasons": [],
+      "hints": [
+        "source names \"HTTP\"; no card citing it does"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n23": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n24": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u3_n1": {
+      "reasons": [],
+      "hints": [
+        "source says \"First, nothing in the domain modules may depend on the HTTP layer\"; the card drops the negation",
+        "the card says \"ensures\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u3_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u3_n3": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u3_fs1": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u4_n1": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u4_n2": {
+      "reasons": [],
+      "hints": [
+        "the card names \"reserve.ts\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u4_n3": {
+      "reasons": [],
+      "hints": [
+        "the card names \"src/orders/reserve.ts\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u4_n4": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u5_n1": {
+      "reasons": [],
+      "hints": [
+        "source says \"The admin UI has no automated tests yet.\"; the card drops the negation"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u5_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u5_n3": {
+      "reasons": [],
+      "hints": [
+        "source says \"when someone opens the admin UI\"",
+        "the card drops the requirement \"only found when someone opens the admin UI\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    }
+  }
+}

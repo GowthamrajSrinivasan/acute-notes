@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-discount-in-plans-read",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The pricing card folds the unconfirmed discounts read into the verified plan read: 'Reads price_plans and discounts via loadPlan(planId)'. The hedged line elsewhere on the card stays, so only the tightened a.no-confident-discount can catch it.",
+  "mutations": [
+    { "op": "replace_text", "node": "s_price", "find": "Loads the plan with loadPlan(planId)", "replace": "Reads price_plans and discounts via loadPlan(planId)" }
+  ],
+  "expectFailing": ["a.no-confident-discount"]
+}

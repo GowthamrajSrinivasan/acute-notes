@@ -1,0 +1,910 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "kn-12-flag-rollout-update",
+  "title": "Feature flag rollout guide (v1 to v2 update)",
+  "scenario": "Source update and reconciliation: a rollout guide is revised. Between v1 and v2 one concept is unchanged, one explanation is reworded with one changed number, one concept is new, one is removed, one dependency gains a second condition, and the user has edited a card on the v1 canvas whose text must survive. One sentence is split in two (an ambiguous match).",
+  "sourceType": "technical_documentation",
+  "audience": "Engineers who own feature flags",
+  "objective": "Keep a canvas made from v1 in step with v2 by changing only what changed, and never overwrite the user's own edit.",
+  "complexity": "medium",
+  "sourceFiles": [
+    {
+      "version": 1,
+      "path": "source.v1.md",
+      "words": 523,
+      "title": "Feature flag rollout guide (v1)"
+    },
+    {
+      "version": 2,
+      "path": "source.v2.md",
+      "words": 541,
+      "title": "Feature flag rollout guide (v2)"
+    }
+  ],
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "Feature flag rollout guide",
+      "version": 1
+    },
+    {
+      "id": "s2",
+      "heading": "Rollout stages",
+      "version": 1
+    },
+    {
+      "id": "s3",
+      "heading": "Canary",
+      "version": 1
+    },
+    {
+      "id": "s4",
+      "heading": "Advancing from canary",
+      "version": 1
+    },
+    {
+      "id": "s5",
+      "heading": "Kill switch",
+      "version": 1
+    },
+    {
+      "id": "s6",
+      "heading": "Monitoring during general availability",
+      "version": 1
+    },
+    {
+      "id": "s7",
+      "heading": "Flag cleanup",
+      "version": 1
+    },
+    {
+      "id": "s8",
+      "heading": "Feature flag rollout guide",
+      "version": 2
+    },
+    {
+      "id": "s9",
+      "heading": "Rollout stages",
+      "version": 2
+    },
+    {
+      "id": "s10",
+      "heading": "Canary",
+      "version": 2
+    },
+    {
+      "id": "s11",
+      "heading": "Advancing from canary",
+      "version": 2
+    },
+    {
+      "id": "s12",
+      "heading": "Kill switch",
+      "version": 2
+    },
+    {
+      "id": "s13",
+      "heading": "Monitoring during general availability",
+      "version": 2
+    },
+    {
+      "id": "s14",
+      "heading": "Rollback rehearsal",
+      "version": 2
+    }
+  ],
+  "units": [
+    {
+      "id": "u1",
+      "version": 1,
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "This guide is for engineers who own a feature flag in the Orbit platform.",
+      "omittable": {
+        "reason": "meta",
+        "note": "Audience of the guide."
+      }
+    },
+    {
+      "id": "u2",
+      "version": 1,
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "It explains how a flag goes from off to fully on, and what has to be true before each step.",
+      "omittable": {
+        "reason": "meta",
+        "note": "Describes the guide itself."
+      }
+    },
+    {
+      "id": "u3",
+      "version": 1,
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "It does not cover experiments, which follow their own process.",
+      "tags": [
+        "limitation"
+      ],
+      "omittable": {
+        "reason": "meta",
+        "note": "Scope of the guide."
+      }
+    },
+    {
+      "id": "u4",
+      "version": 1,
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "Each section below names the condition that must hold before the flag moves on.",
+      "omittable": {
+        "reason": "meta",
+        "note": "Describes the guide's structure."
+      }
+    },
+    {
+      "id": "u5",
+      "version": 1,
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "Questions about the guide go to the platform team.",
+      "omittable": {
+        "reason": "filler"
+      }
+    },
+    {
+      "id": "u6",
+      "version": 1,
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "A rollout moves through three stages: internal, canary and general availability.",
+      "tags": [
+        "terminology"
+      ]
+    },
+    {
+      "id": "u7",
+      "version": 1,
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "In the internal stage the flag is on only for staff accounts, so problems reach colleagues before they reach customers."
+    },
+    {
+      "id": "u8",
+      "version": 1,
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "The internal stage usually lasts one working day, but the guide sets no minimum for it.",
+      "tags": [
+        "condition"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "one working day"
+        }
+      ]
+    },
+    {
+      "id": "u9",
+      "version": 1,
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "Canary then exposes a small share of real traffic to the change."
+    },
+    {
+      "id": "u10",
+      "version": 1,
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "General availability turns the flag on for everyone, in steps of 25%, 50% and 100%.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "25%, 50% and 100%"
+        }
+      ]
+    },
+    {
+      "id": "u11",
+      "version": 1,
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "Each stage is recorded in the rollout tool, which keeps the history of who moved the flag and when."
+    },
+    {
+      "id": "u12",
+      "version": 1,
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "During canary the flag is on for 5% of requests, chosen at random per request rather than per user.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "5%"
+        }
+      ]
+    },
+    {
+      "id": "u13",
+      "version": 1,
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "It must stay at that level for at least 30 minutes, so that the metrics cover a full traffic cycle of the slowest endpoint.",
+      "tags": [
+        "numeric",
+        "condition"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "The minimum canary duration (v1: 30 minutes)."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "30 minutes"
+        }
+      ]
+    },
+    {
+      "id": "u14",
+      "version": 1,
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "The owner does not raise the percentage by hand during this time, because a manual change restarts the measurement window.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u15",
+      "version": 1,
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "Short canaries are the most common reason a bad flag reaches general availability."
+    },
+    {
+      "id": "u16",
+      "version": 1,
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "A flag advances from canary to general availability only when the automated metrics check passes.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "The gate out of canary (v1: metrics check only)."
+      }
+    },
+    {
+      "id": "u17",
+      "version": 1,
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "The metrics check compares the error rate and p95 latency of flagged requests with the same requests over the previous 7 days.",
+      "tags": [
+        "definition",
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "7 days"
+        },
+        {
+          "tier": "warn",
+          "kind": "named_term",
+          "value": "p95 latency"
+        }
+      ]
+    },
+    {
+      "id": "u18",
+      "version": 1,
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "If the check fails, the flag stays in canary and the owner investigates before trying again.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u19",
+      "version": 1,
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "The rollout tool runs the check automatically at the end of the canary window."
+    },
+    {
+      "id": "u20",
+      "version": 1,
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Every flag must have a kill switch that turns it off within 1 minute.",
+      "tags": [
+        "numeric"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "The kill-switch requirement and its bound."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "1 minute"
+        }
+      ]
+    },
+    {
+      "id": "u21",
+      "version": 1,
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "The kill switch is tested in staging before the flag enters canary, and the test is recorded in the rollout tool.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u22",
+      "version": 1,
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "A flag without a tested kill switch cannot enter canary.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "Canary depends on a tested kill switch."
+      }
+    },
+    {
+      "id": "u23",
+      "version": 1,
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Anyone on the owning team may use the kill switch without asking for approval."
+    },
+    {
+      "id": "u24",
+      "version": 1,
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Turning a flag off is always safe; turning it back on starts the rollout again from the internal stage.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u25",
+      "version": 1,
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "While the flag ramps up, the owner watches the error dashboard and pages the on-call engineer if errors rise.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u26",
+      "version": 1,
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "The dashboard shows flagged and unflagged requests side by side, so a difference between them points at the flag rather than at the platform."
+    },
+    {
+      "id": "u27",
+      "version": 1,
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "The owner keeps watching until the flag has been at 100% for one hour.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "one hour"
+        }
+      ]
+    },
+    {
+      "id": "u28",
+      "version": 1,
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "A flag that has been fully on for 30 days is removed from the code.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "30 days"
+        }
+      ]
+    },
+    {
+      "id": "u29",
+      "version": 1,
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "The owner opens a cleanup ticket when the flag reaches 100%, and the ticket links to the rollout record.",
+      "tags": [
+        "action_item"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "100%"
+        }
+      ]
+    },
+    {
+      "id": "u30",
+      "version": 1,
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Flags that miss the deadline are listed in the weekly stale-flag report."
+    },
+    {
+      "id": "u31",
+      "version": 1,
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Old flags make the code harder to read and slow down every later rollout."
+    },
+    {
+      "id": "u32",
+      "version": 2,
+      "section": "s8",
+      "kind": "sentence",
+      "quote": "This guide is for engineers who own a feature flag in the Orbit platform.",
+      "omittable": {
+        "reason": "meta",
+        "note": "Audience of the guide."
+      }
+    },
+    {
+      "id": "u33",
+      "version": 2,
+      "section": "s8",
+      "kind": "sentence",
+      "quote": "It explains how a flag goes from off to fully on, and what has to be true before each step.",
+      "omittable": {
+        "reason": "meta",
+        "note": "Describes the guide itself."
+      }
+    },
+    {
+      "id": "u34",
+      "version": 2,
+      "section": "s8",
+      "kind": "sentence",
+      "quote": "It does not cover experiments, which follow their own process.",
+      "tags": [
+        "limitation"
+      ],
+      "omittable": {
+        "reason": "meta",
+        "note": "Scope of the guide."
+      }
+    },
+    {
+      "id": "u35",
+      "version": 2,
+      "section": "s8",
+      "kind": "sentence",
+      "quote": "Each section below names the condition that must hold before the flag moves on.",
+      "omittable": {
+        "reason": "meta",
+        "note": "Describes the guide's structure."
+      }
+    },
+    {
+      "id": "u36",
+      "version": 2,
+      "section": "s8",
+      "kind": "sentence",
+      "quote": "Questions about the guide go to the platform team.",
+      "omittable": {
+        "reason": "filler"
+      }
+    },
+    {
+      "id": "u37",
+      "version": 2,
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "A rollout moves through three stages: internal, canary and general availability.",
+      "tags": [
+        "terminology"
+      ]
+    },
+    {
+      "id": "u38",
+      "version": 2,
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "In the internal stage the flag is on only for staff accounts, so problems reach colleagues before they reach customers."
+    },
+    {
+      "id": "u39",
+      "version": 2,
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "The internal stage usually lasts one working day, but the guide sets no minimum for it.",
+      "tags": [
+        "condition"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "one working day"
+        }
+      ]
+    },
+    {
+      "id": "u40",
+      "version": 2,
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "Canary then exposes a small share of real traffic to the change."
+    },
+    {
+      "id": "u41",
+      "version": 2,
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "General availability turns the flag on for everyone, in steps of 25%, 50% and 100%.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "25%, 50% and 100%"
+        }
+      ]
+    },
+    {
+      "id": "u42",
+      "version": 2,
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "Each stage is recorded in the rollout tool, which keeps the history of who moved the flag and when."
+    },
+    {
+      "id": "u43",
+      "version": 2,
+      "section": "s10",
+      "kind": "sentence",
+      "quote": "In the canary stage, 5% of requests see the flag, picked at random for each request instead of for each user.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "5%"
+        }
+      ]
+    },
+    {
+      "id": "u44",
+      "version": 2,
+      "section": "s10",
+      "kind": "sentence",
+      "quote": "The flag has to remain at 5% for no less than 60 minutes, so the metrics span a complete traffic cycle of the slowest endpoint.",
+      "tags": [
+        "numeric",
+        "condition"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "The minimum canary duration, changed from 30 to 60 minutes in v2."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "60 minutes"
+        }
+      ]
+    },
+    {
+      "id": "u45",
+      "version": 2,
+      "section": "s10",
+      "kind": "sentence",
+      "quote": "Owners leave the percentage alone during this window, since any manual change restarts the measurement.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u46",
+      "version": 2,
+      "section": "s10",
+      "kind": "sentence",
+      "quote": "Most bad flags that reach general availability got there through a canary that was too short."
+    },
+    {
+      "id": "u47",
+      "version": 2,
+      "section": "s11",
+      "kind": "sentence",
+      "quote": "A flag advances from canary to general availability only when the automated metrics check passes and the on-call engineer approves the move in the rollout tool.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "The gate out of canary now has two conditions: the metrics check and on-call approval."
+      }
+    },
+    {
+      "id": "u48",
+      "version": 2,
+      "section": "s11",
+      "kind": "sentence",
+      "quote": "The metrics check compares the error rate and p95 latency of flagged requests with the same requests over the previous 7 days.",
+      "tags": [
+        "definition",
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "7 days"
+        },
+        {
+          "tier": "warn",
+          "kind": "named_term",
+          "value": "p95 latency"
+        }
+      ]
+    },
+    {
+      "id": "u49",
+      "version": 2,
+      "section": "s11",
+      "kind": "sentence",
+      "quote": "If the check fails, the flag stays in canary and the owner investigates before trying again.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u50",
+      "version": 2,
+      "section": "s11",
+      "kind": "sentence",
+      "quote": "The on-call engineer may decline the move while an incident is open, even when the check passes.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u51",
+      "version": 2,
+      "section": "s11",
+      "kind": "sentence",
+      "quote": "The rollout tool runs the check automatically at the end of the canary window."
+    },
+    {
+      "id": "u52",
+      "version": 2,
+      "section": "s12",
+      "kind": "sentence",
+      "quote": "Every flag must have a kill switch that turns it off within 1 minute.",
+      "tags": [
+        "numeric"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "The kill-switch requirement and its bound."
+      },
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "1 minute"
+        }
+      ]
+    },
+    {
+      "id": "u53",
+      "version": 2,
+      "section": "s12",
+      "kind": "sentence",
+      "quote": "The kill switch is tested in staging before the flag enters canary, and the test is recorded in the rollout tool.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u54",
+      "version": 2,
+      "section": "s12",
+      "kind": "sentence",
+      "quote": "A flag without a tested kill switch cannot enter canary.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "Canary depends on a tested kill switch."
+      }
+    },
+    {
+      "id": "u55",
+      "version": 2,
+      "section": "s12",
+      "kind": "sentence",
+      "quote": "Anyone on the owning team may use the kill switch without asking for approval."
+    },
+    {
+      "id": "u56",
+      "version": 2,
+      "section": "s12",
+      "kind": "sentence",
+      "quote": "Turning a flag off is always safe; turning it back on starts the rollout again from the internal stage.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u57",
+      "version": 2,
+      "section": "s13",
+      "kind": "sentence",
+      "quote": "While the flag ramps up, the owner watches the error dashboard.",
+      "tags": [
+        "ambiguous"
+      ],
+      "ambiguity": {
+        "note": "v1's single sentence (u25) is split in two in v2 (u57, u58): no hash match and two partial candidates, so a unit matcher must call the lineage ambiguous."
+      }
+    },
+    {
+      "id": "u58",
+      "version": 2,
+      "section": "s13",
+      "kind": "sentence",
+      "quote": "If errors rise, the owner pages the on-call engineer.",
+      "tags": [
+        "ambiguous",
+        "condition"
+      ],
+      "ambiguity": {
+        "note": "Second half of the split v1 sentence u25."
+      }
+    },
+    {
+      "id": "u59",
+      "version": 2,
+      "section": "s13",
+      "kind": "sentence",
+      "quote": "The dashboard shows flagged and unflagged requests side by side, so a difference between them points at the flag rather than at the platform."
+    },
+    {
+      "id": "u60",
+      "version": 2,
+      "section": "s13",
+      "kind": "sentence",
+      "quote": "The owner keeps watching until the flag has been at 100% for one hour.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "one hour"
+        }
+      ]
+    },
+    {
+      "id": "u61",
+      "version": 2,
+      "section": "s14",
+      "kind": "sentence",
+      "quote": "Before general availability, the owner rehearses a rollback once in staging: switch the flag off, confirm that the old behaviour returns, and switch it on again.",
+      "tags": [
+        "condition"
+      ]
+    },
+    {
+      "id": "u62",
+      "version": 2,
+      "section": "s14",
+      "kind": "sentence",
+      "quote": "The rehearsal is recorded in the rollout tool next to the staging test."
+    },
+    {
+      "id": "u63",
+      "version": 2,
+      "section": "s14",
+      "kind": "sentence",
+      "quote": "It takes about 10 minutes and needs no approval.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "10 minutes"
+        }
+      ]
+    }
+  ],
+  "safeToOmit": [
+    {
+      "units": [
+        "u1",
+        "u2",
+        "u3",
+        "u4",
+        "u5"
+      ],
+      "why": "v1 introduction: audience, structure and scope of the guide, plus a contact line."
+    },
+    {
+      "units": [
+        "u32",
+        "u33",
+        "u34",
+        "u35",
+        "u36"
+      ],
+      "why": "The same introduction in v2."
+    }
+  ],
+  "capabilities": [
+    "reconcile.section-level",
+    "reconcile.user-edit-conflict",
+    "reconcile.stable-keys",
+    "reconcile.card-level",
+    "prov.content-source-versions",
+    "canvas.text-card",
+    "canvas.frame",
+    "ai.sectioned-template",
+    "ai.cites",
+    "ai.source-unit-ids"
+  ],
+  "provenance": {
+    "synthetic": true,
+    "note": "Original text written for this dataset. The Orbit platform, the rollout tool, every percentage and duration, and the runbook id in the user's edit (RB-12) are invented. v2 is a deliberate revision of v1 written to exercise reconciliation."
+  },
+  "review": {
+    "status": "reviewed",
+    "authoredBy": "Claude Code (assistant-drafted by hand; not produced by the Acute pipeline)",
+    "reviewers": [
+      "model: Claude (subagent), 2026-10-19 — not a human review"
+    ],
+    "approvedAt": null,
+    "notes": "Model review 2026-10-19 (not a human review; needs a person before approval). All 63 quotes occur in their version; the v1 critical units (u13, u16, u20, u22) and their v2 counterparts (u44, u47, u52, u54) are marked alike; no v1 unit is marked superseded, which is right: accounting is per version and 30 → 60 minutes is lineage (reconcile.json), not a superseded statement within one version. Reconcile items checked against the v1/v2 diff and the user edit: change kinds, states and unitsBefore/unitsAfter are right (stages identical; canary reworded with 30 → 60; the gate gains on-call approval and u50; kill switch identical plus the user's edit; monitoring's u25 split into u57 + u58; cleanup removed; rehearsal added). The reference reconcile is faithful ('no less than 60 minutes', both gate conditions, the whole user note). Changed: (1) reconcile: i.kill-switch mustKeep now needs the whole user note ('during an incident use the Orbit console toggle, not the API'), not only 'Runbook RB-12': a truncated note passed. (2) evaluation: a.no-v2-in-v1 caught 'on-call approves' but not 'the on-call engineer must approve' or 'approval from on-call'; it now matches on-call and approv/sign within one clause in either order, and '60 min'; raised to critical (on the v1 canvas it changes the critical u13 / u16). New critical a.kill-switch-canary-condition (u22: a flag without a tested kill switch cannot enter canary; 'tested in staging before canary' alone doesn't say canary is blocked). a.rel-kill-switch raised to critical (it is u22's dependency). (3) case / knowledge: protected numbers added where a numeric unit had none (u8/u39 'one working day', u27/u60 'one hour', u29 '100%', u63 '10 minutes'); exactDetails completed (ku.stages 'one working day', ku.advance-gate 'p95', ku.ga-monitoring '100%' and 'one hour', ku.cleanup '100%'). Follow-up: regressions rg-12-approval-leaks-into-v1, rg-12-kill-switch-condition-dropped, rg-12-kill-switch-dependency-reversed and rg-12-user-note-truncated added. Open findings: i.canary is 'edited' + update_clean, which holds for section-level reconcile; under the §3.1 matcher every canary sentence is reworded below 0.8 word overlap, so card-level lineage would call u12–u15 removed and u43–u46 new and propose remove + add (a person should decide what card-level reconcile must do for a fully reworded section); reconcile checks can only require literal mustKeep strings, so i.canary doesn't require 'at least / no less than' (a fixed '60 minutes' passes) and i.advance-gate doesn't catch 'metrics check OR on-call approval' or a dropped 'only'; u57/u58 carry ambiguity for lineage reasons and the derived review_flagged check is not version-aware, so a v1 run checked with it would expect v2 units in Needs review; u14 (a manual change restarts the window), u18 (a failed check keeps the flag in canary), u25/u58 (page on-call if errors rise) and u50 (on-call may decline during an incident) are conditions left non-critical; e.canary matches '5%' + 'minute', which another card with both would also satisfy. Authoring note: v2 units get new ids (u32-u63) even where the sentence is unchanged; the lineage is recorded in reconcile.json (unitsBefore / unitsAfter), and knowledge units keep one id across versions. Render checks (Lane J, 2026-10-19): a.reading-order (0) and a.rendered-frames (2–5) added; regression rg-12-collapsed-one-frame. a.crossings stays at 1 although the reference measures 0: its two links share a card and can't cross. No frames_fit_screen or links_over_frames_max: no plan mutation makes a frame oversized or a link pass over a third frame here."
+  }
+}

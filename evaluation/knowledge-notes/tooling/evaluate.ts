@@ -12,11 +12,17 @@
  *
  * Only `method: "deterministic"` assertions are decided here. Judged ones come back as `needs_judgement`, and
  * assertions whose `support` is `future` come back as `not_evaluable`. Neither is ever reported as a pass.
+ *
+ * The one exception: a `future` assertion that needs a run's own output (citations, unit accounting, the review
+ * queue) is decided when the run carries that output (`actual.run`, a `KnowledgeRunOutput`): see `runOutput.ts`.
+ * Without it, it stays `not_evaluable`.
  */
+import { subGroupLayout } from "@/ai/renderer/layout";
 import type { VisualNode, VisualPlan, VisualRelationship } from "@/ai/visual-plan/types";
 import type { RelationType } from "@/domain/types";
 import type { RenderFacts } from "./render";
-import { GATE_OF_DIMENSION, type Assertion, type Check, type ExpectedCanvas, type ExpectedLens, type ExpectedReconcile, type LensProjection, type ReconcileOutcome } from "./schemas";
+import { derivedCheck, RUN_CHECKS, runCapabilities, runCheck, type RunEvidence } from "./runOutput";
+import { GATE_OF_DIMENSION, type Assertion, type Check, type ExpectedCanvas, type ExpectedKnowledge, type ExpectedLens, type ExpectedReconcile, type LensProjection, type ReconcileOutcome, type SourceCase } from "./schemas";
 
 export type AssertionStatus = "pass" | "fail" | "needs_judgement" | "not_evaluable" | "no_input";
 
@@ -34,6 +40,9 @@ export interface Expectations {
   canvas: ExpectedCanvas;
   lens?: ExpectedLens;
   reconcile?: ExpectedReconcile;
+  /** The case's source units and knowledge: what the run checks (cites, accounting, review) read against. */
+  source?: SourceCase;
+  knowledge?: ExpectedKnowledge;
 }
 
 export interface ActualOutput {
@@ -42,6 +51,8 @@ export interface ActualOutput {
   reconcile?: ReconcileOutcome;
   /** The plan rendered and measured (`renderFacts`), for gate 3. */
   render?: RenderFacts;
+  /** The run's own output besides the plan (units, cites, omissions, accounting, flags), when it has any. */
+  run?: RunEvidence;
 }
 
 // ---------------------------------------------------------------- text
@@ -53,7 +64,9 @@ export function normalize(value: string): string {
     .replace(/[‘’‛]/g, "'")
     .replace(/[“”‟]/g, '"')
     .replace(/[‐-―−]/g, "-")
-    .replace(/[*_`]/g, "")
+    .replace(/[*`]/g, "")
+    // Emphasis underscores go; the ones inside identifiers (rerank_skipped, $GREEN_TG_ARN) stay.
+    .replace(/(^|[^\p{L}\p{N}_])_+(?=[\p{L}\p{N}])|(?<=[\p{L}\p{N}])_+(?=[^\p{L}\p{N}_]|$)/gu, "$1")
     .replace(/(\d),(?=\d{3}\b)/g, "$1")
     .replace(/\s+/g, " ")
     .trim()
@@ -101,15 +114,40 @@ export function matchesAll(textValue: string, groups: readonly (readonly string[
 
 // ---------------------------------------------------------------- plan lookups
 
+/** Element kinds that are things that happen or code, not parts of the system: a numbered flow step may stand for them. */
+const STEP_LIKE_KINDS: ReadonlySet<string> = new Set(["step", "event", "function"]);
+
+/** A shape labelled as a numbered flow step ("1 · POST /v1/answers", "2. Check session", "3) Fetch"), as the cases' references draw steps. */
+export function isNumberedStep(n: VisualNode): boolean {
+  return n.type === "shape" && /^\s*\d+(?:\.\d+)*\s*[·.)]\s+\S/.test(n.content.label);
+}
+
 class PlanView {
   readonly nodes: VisualNode[];
   readonly groups: VisualNode[];
   readonly text = new Map<string, string>();
+  private readonly byId: Map<string, VisualNode>;
 
   constructor(readonly plan: VisualPlan, readonly canvas: ExpectedCanvas) {
     this.nodes = plan.nodes.filter((n) => n.type !== "group");
     this.groups = plan.nodes.filter((n) => n.type === "group");
+    this.byId = new Map(plan.nodes.map((n) => [n.id, n] as const));
     for (const n of plan.nodes) this.text.set(n.id, nodeText(n));
+  }
+
+  /**
+   * The frame a node sits in: its parent, walked up through sub-groups to the top-level group (organisation-layout
+   * plan F13), so two cards in one frame read as together even when one is in a sub-group of it.
+   */
+  frameOf(n: VisualNode): string | undefined {
+    let at = n.parent;
+    for (let hops = 0; at && hops < this.plan.nodes.length; hops++) {
+      const p = this.byId.get(at);
+      const up = p?.type === "group" && p.parent ? this.byId.get(p.parent) : undefined;
+      if (up?.type !== "group") break;
+      at = up.id;
+    }
+    return at;
   }
 
   element(id: string) {
@@ -124,10 +162,18 @@ class PlanView {
     return f;
   }
 
-  /** Plan nodes standing for an expected element. */
+  /**
+   * Plan nodes standing for an expected element. A component (an element whose `kind` is a part of the system, not a
+   * step, event or function) is never stood for by a numbered flow step ("3 · Call Supplier API"): a step that names a
+   * component is about what happens there, and taking it for the component would score the step's citations against
+   * the component's passages (live 2026-10-20, kn-08 and kn-10). With no component shape, the element is not found.
+   */
   candidates(elementId: string): VisualNode[] {
     const e = this.element(elementId);
-    return this.plan.nodes.filter((n) => (e.planNodeTypes as readonly string[]).includes(n.type) && matchesAll(this.text.get(n.id) ?? "", e.match.all));
+    const component = e.kind !== undefined && !STEP_LIKE_KINDS.has(e.kind);
+    return this.plan.nodes.filter(
+      (n) => (e.planNodeTypes as readonly string[]).includes(n.type) && matchesAll(this.text.get(n.id) ?? "", e.match.all) && !(component && isNumberedStep(n)),
+    );
   }
 
   /** Group nodes (frames) standing for an expected frame. */
@@ -135,6 +181,11 @@ class PlanView {
     const f = this.frame(frameId);
     return this.groups.filter((g) => matchesAll(this.text.get(g.id) ?? "", f.titleMatch.all));
   }
+}
+
+/** Plan nodes standing for an expected element, matched by content (what every plan check uses). */
+export function planCandidates(plan: VisualPlan, canvas: ExpectedCanvas, elementId: string): VisualNode[] {
+  return new PlanView(plan, canvas).candidates(elementId);
 }
 
 function relationLabel(r: VisualRelationship): string {
@@ -156,8 +207,8 @@ function planCheck(view: PlanView, check: Check): Outcome {
       if (!frames.size) return { ok: false, detail: `frame ${check.frame} not found` };
       const c = view.candidates(check.element);
       if (!c.length) return { ok: false, detail: `element ${check.element} not found` };
-      const inside = c.filter((n) => n.parent && frames.has(n.parent));
-      return inside.length ? { ok: true, detail: `${inside[0]!.id} in ${inside[0]!.parent}` } : { ok: false, detail: `${check.element} is outside ${check.frame} (parents: ${c.map((n) => n.parent ?? "none").join(", ")})` };
+      const inside = c.filter((n) => frames.has(view.frameOf(n) ?? ""));
+      return inside.length ? { ok: true, detail: `${inside[0]!.id} in ${view.frameOf(inside[0]!)}` } : { ok: false, detail: `${check.element} is outside ${check.frame} (parents: ${c.map((n) => view.frameOf(n) ?? "none").join(", ")})` };
     }
     case "element_kind": {
       const c = view.candidates(check.element);
@@ -180,14 +231,14 @@ function planCheck(view: PlanView, check: Check): Outcome {
       return n >= check.min && n <= check.max ? { ok: true, detail: `${n} frames` } : { ok: false, detail: `${n} frames, expected ${check.min}–${check.max}` };
     }
     case "together": {
-      const parents = check.elements.map((e) => new Set(view.candidates(e).map((n) => n.parent ?? "")));
+      const parents = check.elements.map((e) => new Set(view.candidates(e).map((n) => view.frameOf(n) ?? "")));
       const missing = check.elements.filter((_, i) => !parents[i]!.size);
       if (missing.length) return { ok: false, detail: `not found: ${missing.join(", ")}` };
       const shared = [...parents[0]!].filter((p) => p && parents.every((s) => s.has(p)));
       return shared.length ? { ok: true, detail: `together in ${shared[0]}` } : { ok: false, detail: `${check.elements.join(", ")} are in different frames: ${check.why}` };
     }
     case "apart": {
-      const [a, b] = check.elements.map((e) => new Set(view.candidates(e).map((n) => n.parent).filter((p): p is string => !!p)));
+      const [a, b] = check.elements.map((e) => new Set(view.candidates(e).map((n) => view.frameOf(n)).filter((p): p is string => !!p)));
       const shared = [...a!].filter((p) => b!.has(p));
       return shared.length ? { ok: false, detail: `${check.elements.join(" and ")} share frame ${shared[0]}: ${check.why}` } : { ok: true, detail: "apart" };
     }
@@ -195,14 +246,14 @@ function planCheck(view: PlanView, check: Check): Outcome {
       const main = view.candidates(check.main);
       if (!main.length) return { ok: false, detail: `main idea ${check.main} not found: ${check.why}` };
       const mainIds = new Set(main.map((n) => n.id));
-      const mainParents = new Set(main.map((n) => n.parent ?? ""));
+      const mainParents = new Set(main.map((n) => view.frameOf(n) ?? ""));
       const rank = { high: 3, medium: 2, low: 1 } as const;
       const mainRank = Math.max(...main.map((n) => (n.importance ? rank[n.importance] : 2)));
       for (const s of check.supporting) {
         const sup = view.candidates(s);
         if (!sup.length) return { ok: false, detail: `supporting ${s} not found` };
         const linked = sup.some((n) => view.plan.relationships.some((r) => (r.from === n.id && mainIds.has(r.to)) || (r.to === n.id && mainIds.has(r.from))));
-        const nearby = sup.some((n) => mainParents.has(n.parent ?? ""));
+        const nearby = sup.some((n) => mainParents.has(view.frameOf(n) ?? ""));
         if (!linked && !nearby) return { ok: false, detail: `${s} is neither linked to nor beside ${check.main}: ${check.why}` };
         const outranks = sup.some((n) => n.importance && rank[n.importance] > mainRank);
         if (outranks) return { ok: false, detail: `${s} is weighted above ${check.main}: ${check.why}` };
@@ -316,6 +367,10 @@ function lensCheck(expected: ExpectedLens, proj: LensProjection, check: Check): 
       const withLines = all.find((n) => keys.has(n.key) && n.evidence?.some((ev) => ev.lines));
       if (drill) return { ok: false, detail: `${check.key} drills to ${drill.toFrameKey}: ${check.why}` };
       if (withLines) return { ok: false, detail: `${check.key} carries code line evidence: ${check.why}` };
+      // Internals drawn below it without a drill link: deeper nodes named after it.
+      const level = node(check.key).level;
+      const internals = all.filter((n) => n.level > level && !keys.has(n.key) && matchesAll(n.label, node(check.key).match.all));
+      if (internals.length) return { ok: false, detail: `${check.key} has invented internals at L${internals[0]!.level} ("${internals[0]!.label}"): ${check.why}` };
       return { ok: true, detail: "no invented detail" };
     }
     case "lens_path": {
@@ -353,7 +408,7 @@ function reconcileCheck(expected: ExpectedReconcile, outcome: ReconcileOutcome, 
 
 // ---------------------------------------------------------------- render checks (gate 3)
 
-function renderCheck(facts: RenderFacts, check: Check): Outcome {
+function renderCheck(facts: RenderFacts, check: Check, view: PlanView | undefined): Outcome {
   const list = (xs: string[], what: string) => (xs.length ? { ok: false, detail: `${xs.length} ${what}: ${xs.slice(0, 5).join("; ")}` } : { ok: true, detail: `no ${what}` });
   switch (check.check) {
     case "layout_no_fatal":
@@ -366,20 +421,100 @@ function renderCheck(facts: RenderFacts, check: Check): Outcome {
       return list(facts.outsideFrames, "cards outside their frame");
     case "frames_no_overlap":
       return list(facts.frameOverlaps, "overlapping frames");
+    case "reading_order_max": {
+      const { inversions, detail } = facts.geometry.readingOrder;
+      return inversions <= check.max ? { ok: true, detail: `${inversions} frames out of reading order` } : { ok: false, detail: `${inversions} frames out of reading order, at most ${check.max}: ${detail.slice(0, 5).join("; ")}` };
+    }
+    case "frames_fit_screen":
+      return list(facts.geometry.oversizedFrames, "frames too large to read whole");
+    case "links_over_frames_max": {
+      const over = facts.geometry.linksOverFrames;
+      return over.length <= check.max ? { ok: true, detail: `${over.length} links over a third frame` } : { ok: false, detail: `${over.length} links over a third frame, at most ${check.max}: ${over.slice(0, 5).join("; ")}` };
+    }
+    case "rendered_frame_count":
+      return facts.frames >= check.min && facts.frames <= check.max ? { ok: true, detail: `${facts.frames} frames drawn` } : { ok: false, detail: `${facts.frames} frames drawn, expected ${check.min}–${check.max}` };
+    case "subgroup_contains":
+      return view ? subgroupContains(facts, check, view) : { ok: false, detail: "subgroup_contains needs the plan to find its elements" };
+    case "frame_part_contains":
+      return view ? framePartContains(facts, check, view) : { ok: false, detail: "frame_part_contains needs the plan to find its elements" };
     default:
       return { ok: false, detail: `${check.check} does not read a rendered plan` };
   }
 }
 
+/** The elements share one sub-group of `frame` (label matched when given), and rendered, each sits inside its backdrop. */
+function subgroupContains(facts: RenderFacts, check: Extract<Check, { check: "subgroup_contains" }>, view: PlanView): Outcome {
+  const frames = new Set(view.frameCandidates(check.frame).map((g) => g.id));
+  if (!frames.size) return { ok: false, detail: `frame ${check.frame} not found` };
+  const parentOf = new Map(view.plan.nodes.map((n) => [n.id, n.parent] as const));
+  const { subOf } = subGroupLayout(view.plan);
+  const fits = (sub: string | undefined): sub is string => !!sub && frames.has(parentOf.get(sub) ?? "") && (!check.label || matchesAll(view.text.get(sub) ?? "", check.label));
+  const subsPer = check.elements.map((e) => new Set(view.candidates(e).map((n) => subOf.get(n.id)).filter(fits)));
+  const loose = check.elements.filter((_, i) => !subsPer[i]!.size);
+  if (loose.length) return { ok: false, detail: `${loose.join(", ")} not in a sub-group of ${check.frame}${check.label ? " with that label" : ""}: ${check.why}` };
+  const shared = [...subsPer[0]!].filter((s) => subsPer.every((set) => set.has(s)));
+  if (!shared.length) return { ok: false, detail: `${check.elements.join(", ")} are in different sub-groups: ${check.why}` };
+  const drawn = facts.subGroups.find((s) => shared.includes(s.id));
+  if (!drawn) return { ok: false, detail: `sub-group ${shared[0]} isn't drawn (sub-groups are drawn with organisation v2)` };
+  const members = new Set(check.elements.flatMap((e) => view.candidates(e).filter((n) => subOf.get(n.id) === drawn.id).map((n) => n.id)));
+  const outside = facts.geometry.outsideSubGroups.filter((o) => members.has(o.slice(0, o.indexOf(" outside "))));
+  return outside.length ? { ok: false, detail: `${outside.length} outside their sub-group's backdrop: ${outside.slice(0, 5).join("; ")}` } : { ok: true, detail: `together in sub-group ${drawn.id}` };
+}
+
+/**
+ * The elements are drawn in one frame of the section `frame` names: its own frame, or a part of it when the renderer
+ * split it (`<group>::part<i>`, frameSplit.ts), whose drawn title matches `title` when given.
+ */
+function framePartContains(facts: RenderFacts, check: Extract<Check, { check: "frame_part_contains" }>, view: PlanView): Outcome {
+  const groups = view.frameCandidates(check.frame).map((g) => g.id);
+  if (!groups.length) return { ok: false, detail: `frame ${check.frame} not found` };
+  const ofSection = facts.drawnFrames.filter((f) => groups.some((g) => f.key === g || f.key.startsWith(`${g}::part`)));
+  if (!ofSection.length) return { ok: false, detail: `no frame of ${check.frame} was drawn` };
+  const titled = check.title ? ofSection.filter((f) => matchesAll(f.title, check.title!)) : ofSection;
+  if (!titled.length) return { ok: false, detail: `no frame of ${check.frame} is titled ${check.title!.map((g) => g.join("|")).join(" + ")} (drawn: ${ofSection.map((f) => `"${f.title}"`).join(", ")}): ${check.why}` };
+  const ids = check.elements.map((e) => new Set(view.candidates(e).map((n) => n.id)));
+  const missing = check.elements.filter((_, i) => !ids[i]!.size);
+  if (missing.length) return { ok: false, detail: `not found: ${missing.join(", ")}` };
+  const holding = titled.find((f) => ids.every((set) => f.children.some((k) => set.has(k))));
+  if (holding) return { ok: true, detail: `together in ${holding.key} "${holding.title}"` };
+  const where = check.elements.map((e, i) => `${e} in ${ofSection.filter((f) => f.children.some((k) => ids[i]!.has(k))).map((f) => f.key).join("/") || "no frame of the section"}`);
+  return { ok: false, detail: `${check.elements.join(", ")} aren't drawn in one ${check.title ? "such " : ""}frame (${where.join("; ")}): ${check.why}` };
+}
+
 // ---------------------------------------------------------------- entry point
+
+const isRunCheck = (check: Check | undefined): check is Check => !!check && RUN_CHECKS.includes(check.check);
+
+/** A run check: needs the plan (to find elements), the case's units and knowledge, and the run's output. */
+function evaluateRunCheck(check: Check, expected: Expectations, actual: ActualOutput, view: PlanView | undefined): { status: AssertionStatus; detail: string } {
+  if (!view) return { status: "no_input", detail: "no plan given" };
+  if (!expected.source || !expected.knowledge) return { status: "not_evaluable", detail: "the case's units and knowledge weren't given" };
+  if (!actual.run) return { status: "not_evaluable", detail: "the run carries no output besides its plan (no units, cites, accounting or flags)" };
+  const outcome = runCheck({ run: actual.run, source: expected.source, knowledge: expected.knowledge, canvas: expected.canvas, candidates: (id) => view.candidates(id) }, check)!;
+  if (!outcome.ok && /^the run carries no/.test(outcome.detail)) return { status: "not_evaluable", detail: outcome.detail };
+  return { status: outcome.ok ? "pass" : "fail", detail: outcome.detail };
+}
 
 export function evaluate(assertions: readonly Assertion[], expected: Expectations, actual: ActualOutput): AssertionResult[] {
   const view = actual.plan ? new PlanView(actual.plan, expected.canvas) : undefined;
+  const provided = runCapabilities(actual.run);
   return assertions.map((a) => {
     const base = { id: a.id, gate: GATE_OF_DIMENSION[a.dimension], severity: a.severity, dimension: a.dimension };
     if (a.method !== "deterministic") return { ...base, status: "needs_judgement", detail: a.judge?.question ?? a.description };
-    if (a.support === "future") return { ...base, status: "not_evaluable", detail: `future capability: ${(a.requires ?? []).join(", ")}` };
+    if (a.support === "future") {
+      // Checkable on this run only when the run provides every capability the assertion needs and there is a run
+      // check for it (its own, or derived from what it needs). Otherwise: not_evaluable, never passed.
+      const check = a.check ? (isRunCheck(a.check) ? a.check : undefined) : derivedCheck(a);
+      const missing = (a.requires ?? []).filter((r) => !provided.has(r as never));
+      if (!check || missing.length) return { ...base, status: "not_evaluable", detail: `future capability: ${(a.requires ?? []).join(", ")}${actual.run && check ? ` (this run lacks ${missing.join(", ")})` : ""}` };
+      const r = evaluateRunCheck(check, expected, actual, view);
+      return { ...base, ...r, detail: `from the run's output${a.check ? "" : ` (derived ${check.check} check)`}: ${r.detail}` };
+    }
     if (!a.check) return { ...base, status: "not_evaluable", detail: "no check" };
+    if (isRunCheck(a.check)) return { ...base, ...evaluateRunCheck(a.check, expected, actual, view) };
+    // Scoped to one set of organisation rules (frame splitting is v2's): decided only on a render made with them.
+    if (a.organisation && actual.render && actual.render.organisation !== a.organisation)
+      return { ...base, status: "not_evaluable", detail: `decided on an organisation ${a.organisation} render; this one is ${actual.render.organisation}` };
     let outcome: Outcome;
     if (a.target === "plan") {
       if (!view) return { ...base, status: "no_input", detail: "no plan given" };
@@ -392,7 +527,7 @@ export function evaluate(assertions: readonly Assertion[], expected: Expectation
       outcome = reconcileCheck(expected.reconcile, actual.reconcile, a.check);
     } else {
       if (!actual.render) return { ...base, status: "no_input", detail: "no rendered plan given" };
-      outcome = renderCheck(actual.render, a.check);
+      outcome = renderCheck(actual.render, a.check, view);
     }
     return { ...base, status: outcome.ok ? "pass" : "fail", detail: outcome.detail };
   });

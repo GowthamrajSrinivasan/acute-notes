@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": { "title": "Running a shared connection pool" },
+  "nodes": [
+    { "id": "t0", "type": "heading", "role": "title", "content": { "text": "Running a shared connection pool" } },
+    {
+      "id": "g1",
+      "type": "group",
+      "content": { "label": "Why pool connections", "arrangement": "grid", "takeaway": "Reusing open connections skips a 30 ms setup per request and bounds what the service can hold." }
+    },
+    {
+      "id": "n1",
+      "type": "text",
+      "parent": "g1",
+      "importance": "high",
+      "title": "A pool skips the 30 ms connection setup",
+      "content": { "markdown": "A new connection costs the Ledger service about 30 ms (a TLS handshake and an authentication round trip). The pool keeps connections open and lends them to requests, so most requests skip that cost." }
+    },
+    {
+      "id": "n2",
+      "type": "text",
+      "parent": "g1",
+      "importance": "medium",
+      "title": "The pool caps the service's connections",
+      "content": { "markdown": "Because the pool limits how many connections the service can hold, a traffic spike can't flood the database with new ones." }
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "content": { "label": "Operating the pool", "arrangement": "grid", "takeaway": "Size, timeouts and failover behaviour are each set against the database's own limits." }
+    },
+    { "id": "h1", "type": "heading", "parent": "g2", "content": { "text": "Sizing the pool" } },
+    {
+      "id": "s1",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "20 connections per instance, so at most 18 instances",
+      "content": { "markdown": "Each Ledger instance runs a pool of at most 20 connections, and the autoscaler is capped at 18 instances so that every instance can run at full size." }
+    },
+    {
+      "id": "s1x",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Where 18 comes from",
+      "content": { "markdown": "The database accepts 400 connections in total; 40 are reserved for migrations and administrators. The rest, at 20 per instance, leaves room for 18 instances." }
+    },
+    {
+      "id": "s2",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "A bigger pool helps only while requests wait for a connection",
+      "content": { "markdown": "Raising the pool size shortens the queue for a connection, and that is all it does.\n\n**Limit:** once the database CPU is saturated, more connections make every query slower, not faster." }
+    },
+    {
+      "id": "s3",
+      "type": "text",
+      "parent": "g2",
+      "importance": "low",
+      "title": "Peak sizing keeps idle connections at night",
+      "content": { "markdown": "A pool sized for peak traffic holds idle connections overnight. They cost memory on the database, but nothing else." }
+    },
+    { "id": "h2", "type": "heading", "parent": "g2", "content": { "text": "Timeouts" } },
+    {
+      "id": "w1",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Borrowing a connection waits at most 2 seconds",
+      "content": { "markdown": "A request that can't borrow a connection within 2 seconds fails with `POOL_EXHAUSTED`." }
+    },
+    {
+      "id": "w1x",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Why the wait is shorter than the deadline",
+      "content": { "markdown": "The 2-second wait is deliberately shorter than the 5-second request deadline, so the caller still has time to return a clear error." }
+    },
+    {
+      "id": "w2",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Every query times out after 3 seconds",
+      "content": { "markdown": "The statement timeout is set when the connection opens: `SET statement_timeout = '3s'`.\n\n**Except migrations:** they run on their own reserved connections with no statement timeout." }
+    },
+    {
+      "id": "w3",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Transactions stay under 500 ms",
+      "content": { "markdown": "A long transaction holds its connection for its whole duration, so the team keeps transactions under 500 ms." }
+    },
+    { "id": "h3", "type": "heading", "parent": "g2", "content": { "text": "Health checks and failover" } },
+    {
+      "id": "f1",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Connections idle over 60 seconds are checked before lending",
+      "content": { "markdown": "Before lending a connection that has been idle for more than 60 seconds, the pool runs `SELECT 1` to check that it still works." }
+    },
+    {
+      "id": "f1b",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "A connection that fails the check is replaced",
+      "content": { "markdown": "It is closed and replaced, and the request gets a fresh connection instead of an error." }
+    },
+    {
+      "id": "f2",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "A failover drains the whole pool",
+      "content": { "markdown": "During a database failover every open connection breaks at once, so the pool is drained and refilled from the new primary.\n\n**Until it is refilled:** requests may see `POOL_EXHAUSTED` errors for up to about 4 seconds." }
+    },
+    {
+      "id": "f3",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Refilling is limited to 5 connections per second",
+      "content": { "markdown": "Each instance opens at most 5 new connections per second while it refills." }
+    },
+    {
+      "id": "f3x",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Why the refill is slowed down",
+      "content": { "markdown": "So that 18 instances reconnecting together don't overload the new primary." }
+    },
+    { "id": "h5", "type": "heading", "parent": "g2", "content": { "text": "Connection leaks" } },
+    {
+      "id": "l1",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Borrowed for over 10 seconds: logged as a possible leak",
+      "content": { "markdown": "The log entry carries the stack trace of the code that borrowed the connection.\n\n**Not reclaimed:** the pool never takes a leaked connection back by force, because the code holding it may still be using it." }
+    },
+    {
+      "id": "l2",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Most leaks come from early returns on error paths",
+      "content": { "markdown": "Error paths that returned early without releasing the connection caused most of the leaks the team has found." }
+    },
+    {
+      "id": "l2x",
+      "type": "text",
+      "parent": "g2",
+      "importance": "low",
+      "title": "What happens to a leak warning",
+      "content": { "markdown": "Leak warnings are reviewed every week; a leak that comes back gets a ticket for the team that owns the code." }
+    },
+    { "id": "h4", "type": "heading", "parent": "g2", "content": { "text": "Watching the pool" } },
+    {
+      "id": "m1",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Three gauges: in use, idle, waiting",
+      "content": { "markdown": "The pool exports connections in use, idle connections, and requests waiting to borrow one." }
+    },
+    {
+      "id": "m2",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "On-call is paged after 30 seconds of waiting",
+      "content": { "markdown": "The alert fires when requests have been waiting to borrow a connection for more than 30 seconds in a row." }
+    },
+    {
+      "id": "m3",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "A long queue usually means slow queries, not a small pool",
+      "content": { "markdown": "So the runbook starts with the slowest statements, not with the pool size." }
+    },
+    {
+      "id": "m4",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "The idle gauge shows when a failover is over",
+      "content": { "markdown": "It drops to zero during a failover and recovers as the pool refills: a quick way to confirm the failover has finished." }
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "content": { "label": "Takeaway", "arrangement": "grid" }
+    },
+    {
+      "id": "k1",
+      "type": "text",
+      "parent": "g3",
+      "importance": "high",
+      "title": "Set the pool together with the database's limits",
+      "content": { "markdown": "A pool makes connections cheap and bounded, but its size, its timeouts and its failover behaviour have to be set together with the database's own limits." }
+    }
+  ],
+  "relationships": [
+    { "from": "s1", "to": "s1x", "type": "explained_by", "label": "why 18" },
+    { "from": "w1", "to": "w1x", "type": "explained_by", "label": "why 2 s" },
+    { "from": "f3", "to": "f3x", "type": "explained_by", "label": "why" },
+    { "from": "f2", "to": "f3", "type": "flows_to", "label": "refill" },
+    { "from": "f1", "to": "f1b", "type": "flows_to", "label": "fails" },
+    { "from": "l1", "to": "l2x", "type": "explained_by", "label": "then" },
+    { "from": "n2", "to": "s1", "type": "relates_to", "label": "set per instance" }
+  ]
+}

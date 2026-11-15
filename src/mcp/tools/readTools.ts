@@ -15,9 +15,13 @@ import { RESOURCE_LIMITS } from "../resources/serializers";
 import { resourceUri } from "../resources/uris";
 import { guarded, plural, READ_ANNOTATIONS, ToolFailure, toolResult } from "./common";
 import { McpSearchIndex, SEARCH_KINDS, SEARCH_LIMITS } from "./search";
+import { registerStudyTools } from "./studyTools";
 import type { WorkspaceScan } from "../resources/workspaceScan";
+import type { MetaRepository } from "@/persistence/repositories/types";
 
-export const READ_TOOL_NAMES = ["search_workspace", "get_canvas", "get_page", "get_selected_content", "get_related_objects"] as const;
+export const READ_TOOL_NAMES = ["search_workspace", "get_canvas", "get_page", "get_selected_content", "get_related_objects", "suggest_placement", "get_consistency", "get_weak_concepts"] as const;
+
+export const PLACEMENT_LIMITS = { contentChars: 4_000, defaultResults: 5, maxResults: 10 } as const;
 
 export const RELATED_LIMITS = { defaultResults: 25, maxResults: 50, canvases: 100 } as const;
 
@@ -27,6 +31,8 @@ export interface ReadToolDeps {
   workspaceId: string;
   /** The current context, already scoped: null unless it is this workspace's. */
   currentContext(): Promise<CurrentContext | null>;
+  /** The device's meta store, read-only (`get_consistency`, `get_weak_concepts`). Absent: those tools say so. */
+  meta?: Pick<MetaRepository, "get">;
 }
 
 const id = z.string().min(1).max(200);
@@ -144,6 +150,87 @@ export function registerReadTools(server: McpServer, deps: ReadToolDeps): void {
   );
 
   server.registerTool(
+    "suggest_placement",
+    {
+      title: "Suggest placement",
+      description:
+        "Where new content with no source (a note, a finding, a pasted line) belongs on a canvas: the cards it fits with, best first, each with " +
+        "what to do there (`update`: the card already makes this claim — edit that sentence; `insert_near`: add a new card beside it, in its section; " +
+        "`none`: it already says this), the claim and its intent (SUPERSEDES, EXTENDS, CONTRADICTS…), the evidence, and two separate confidences: " +
+        "`routing` (is this the right place?) and `update` (does the edit take the new information in correctly?). `decision` is `route`, " +
+        "`NEEDS_CLARIFICATION` (two places fit about equally — ask the user) or `NEW` (no card is close: create one). Deterministic, no model, " +
+        "read-only: apply a choice with update_block (an update) or create_block (a new card), which the user reviews. A CONTRADICTS claim needs the " +
+        "user's decision; never apply it on your own.",
+      inputSchema: {
+        content: z.string().trim().min(1).max(PLACEMENT_LIMITS.contentChars).describe("The content to place."),
+        canvasId: id.optional().describe("Defaults to the open canvas."),
+        limit: z.number().int().min(1).max(PLACEMENT_LIMITS.maxResults).optional().describe(`At most this many candidates (default ${PLACEMENT_LIMITS.defaultResults}).`),
+      },
+      annotations: READ_ANNOTATIONS,
+    },
+    (args) =>
+      guarded(async () => {
+        const canvasId = args.canvasId ?? (await deps.currentContext())?.canvas.id;
+        if (!canvasId) throw new ToolFailure("No canvasId was given and no canvas of this workspace is open.");
+        const r = await search.route(args.content, canvasId, args.limit ?? PLACEMENT_LIMITS.defaultResults);
+        const candidates = r.candidates.map((c) => ({
+          id: c.id,
+          title: c.descriptor.title,
+          ...(c.descriptor.section ? { section: c.descriptor.section.name } : {}),
+          summary: c.descriptor.summary,
+          action: c.action,
+          routingConfidence: c.routing,
+          updateConfidence: c.update,
+          ...(c.claim ? { claim: { sentence: c.claim.sentence, intent: c.claim.intent, needsDecision: c.claim.escalate } } : {}),
+          evidence: c.evidence,
+        }));
+        const top = r.candidates[0];
+        const summary =
+          r.decision === "NEW"
+            ? `No card on this canvas is close to this content: create a new card.`
+            : r.decision === "NEEDS_CLARIFICATION"
+              ? `More than one place fits about equally (${r.reason}): ask the user which.`
+              : `Best fit: ${quote(top!.descriptor.title)} (${top!.id}) — ${top!.action === "update" ? "update the card" : top!.action === "none" ? "it already says this" : "add a card beside it"}; routing ${top!.routing}, update ${top!.update}.`;
+        return toolResult(summary, { canvasId, decision: r.decision, reason: r.reason, candidates, sections: r.sections.slice(0, 5).map((s) => ({ id: s.section.id, name: s.section.name, score: s.score })) });
+      }),
+  );
+
+  server.registerTool(
+    "get_consistency",
+    {
+      title: "Get consistency",
+      description:
+        "Cards on a canvas that may disagree with each other (the consistency check after each accepted change, Stage 4): each pair's two " +
+        "statements and cards, why (`reason`), how sure the rules are (`strength`: `conflict` = they can't both be true, `possible` = needs a " +
+        "look, e.g. a different environment or time), and its status (`possible`, `confirmed` by the user, `deferred`). Read-only: only the user " +
+        "decides or resolves a conflict. Don't edit a card to settle one unless the user asks; a fix goes through update_block, which they review.",
+      inputSchema: {
+        canvasId: id.optional().describe("Defaults to the open canvas."),
+        includeDeferred: z.boolean().optional().describe("Also list deferred ones (default false)."),
+      },
+      annotations: READ_ANNOTATIONS,
+    },
+    (args) =>
+      guarded(async () => {
+        const canvasId = args.canvasId ?? (await deps.currentContext())?.canvas.id;
+        if (!canvasId) throw new ToolFailure("No canvasId was given and no canvas of this workspace is open.");
+        if (!deps.meta) throw new ToolFailure("Consistency records aren't available in this connection.");
+        const stored = (await deps.meta.get<unknown[]>(`consistency.${canvasId}`)) ?? [];
+        type Stored = { id: string; status: string; strength: string; kind: string; a: { elementId: string; cardName: string; sentence: string }; b: { elementId: string; cardName: string; sentence: string }; evidence?: { reason?: string } };
+        const wanted = new Set(["possible", "confirmed", ...(args.includeDeferred ? ["deferred"] : [])]);
+        const conflicts = (Array.isArray(stored) ? (stored as Stored[]) : [])
+          .filter((c) => c && wanted.has(c.status))
+          .slice(0, 50)
+          .map((c) => ({ id: c.id, status: c.status, strength: c.strength, kind: c.kind, reason: c.evidence?.reason ?? "", a: c.a, b: c.b }));
+        const confirmed = conflicts.filter((c) => c.status === "confirmed").length;
+        const summary = conflicts.length
+          ? `${plural(conflicts.length, "possible conflict", "possible conflicts")} on this canvas (${confirmed} confirmed by the user). Tell the user; don't resolve them yourself.`
+          : "No open conflicts on this canvas.";
+        return toolResult(summary, { canvasId, conflicts });
+      }),
+  );
+
+  server.registerTool(
     "get_canvas",
     {
       title: "Get canvas",
@@ -247,4 +334,7 @@ export function registerReadTools(server: McpServer, deps: ReadToolDeps): void {
         return toolResult(summary, result);
       }),
   );
+
+  // Study Mode Phase 4 (study-mode plan §6): `get_weak_concepts`, read-only, same workspace scope and meta reader.
+  registerStudyTools(server, { scan, workspaceId: deps.workspaceId, currentContext: deps.currentContext, ...(deps.meta ? { meta: deps.meta } : {}) });
 }

@@ -1,0 +1,176 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-12-flag-rollout-update",
+  "template": "sectioned",
+  "templateNote": "Describes the canvas made from v1 (reference/plan.json is that canvas). The element for v2-only knowledge is conditional on the update; the element for v1-only knowledge is mandatory for v1 and is expected to be proposed for removal by the update (reconcile.json).",
+  "frames": [
+    {
+      "id": "f.rollout",
+      "title": "Rollout stages and the canary gate",
+      "titleMatch": { "all": [["stage", "canary"]] },
+      "purpose": "The path a flag takes and what it takes to move along it.",
+      "rationale": "Stages, the canary window and the gate out of canary are one sequence; the gate means nothing without the canary it closes.",
+      "children": ["e.stages", "e.canary", "e.advance-gate"],
+      "arrangement": "chain",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.safety",
+      "title": "Safety nets: kill switch and monitoring",
+      "titleMatch": { "all": [["safety", "kill switch", "monitor", "rollback"]] },
+      "purpose": "What protects users while the flag is live.",
+      "rationale": "The kill switch and the dashboard watch are both about stopping damage, not about moving forward.",
+      "children": ["e.kill-switch", "e.ga-monitoring", "e.rehearsal"],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.cleanup",
+      "title": "After rollout: flag cleanup",
+      "titleMatch": { "all": [["cleanup", "clean up", "clean-up", "after rollout"]] },
+      "purpose": "What happens once the flag is fully on (v1 only).",
+      "rationale": "A separate phase after the rollout; v2 drops it, so its frame is expected to empty and go.",
+      "children": ["e.cleanup"],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e.stages",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "the unchanged concept",
+      "content": "Three stages: internal (staff accounts), canary (small share of traffic), general availability in steps of 25%, 50%, 100%",
+      "knowledge": ["ku.stages"],
+      "match": { "all": [["staff"], ["internal"]] },
+      "hierarchy": "primary",
+      "frame": "f.rollout",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.canary",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "the edited explanation (30 → 60 minutes)",
+      "content": "Canary: 5% of requests for at least 30 minutes (v1); a manual change restarts the window",
+      "knowledge": ["ku.canary-exposure"],
+      "match": { "all": [["5%", "5 percent", "five percent"], ["minute"]] },
+      "hierarchy": "secondary",
+      "frame": "f.rollout",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.advance-gate",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "the changed dependency",
+      "content": "Canary advances to general availability only when the metrics check passes (v1)",
+      "knowledge": ["ku.advance-gate"],
+      "match": { "all": [["metrics check", "metric check"]] },
+      "hierarchy": "secondary",
+      "frame": "f.rollout",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.kill-switch",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "the card the user edits",
+      "content": "Every flag needs a kill switch that turns it off within 1 minute; tested in staging before canary",
+      "knowledge": ["ku.kill-switch"],
+      "match": { "all": [["kill switch", "kill-switch"], ["1 minute", "one minute", "60 seconds"]] },
+      "hierarchy": "primary",
+      "frame": "f.safety",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.ga-monitoring",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "the ambiguous match (one sentence split in two)",
+      "content": "During the ramp-up, watch the error dashboard and page on-call if errors rise",
+      "knowledge": ["ku.ga-monitoring"],
+      "match": { "all": [["dashboard"]] },
+      "hierarchy": "secondary",
+      "frame": "f.safety",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.rehearsal",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "the new concept",
+      "content": "Rehearse a rollback once in staging before general availability (about 10 minutes, no approval)",
+      "knowledge": ["ku.rollback-rehearsal"],
+      "match": { "all": [["rehears"]] },
+      "hierarchy": "secondary",
+      "frame": "f.safety",
+      "requirement": "conditional",
+      "condition": "after the v2 update (v2 only; must not appear on the v1 canvas)",
+      "support": "implemented"
+    },
+    {
+      "id": "e.cleanup",
+      "element": "text_card",
+      "planNodeTypes": ["text"],
+      "role": "the removed concept",
+      "content": "Remove a flag from the code 30 days after it is fully on",
+      "knowledge": ["ku.cleanup"],
+      "match": { "all": [["30 days"], ["remov", "delet", "clean"]] },
+      "hierarchy": "secondary",
+      "frame": "f.cleanup",
+      "requirement": "mandatory",
+      "condition": "v1 only: the update proposes its removal",
+      "support": "implemented"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r.canary-to-gate",
+      "from": "e.canary",
+      "to": "e.advance-gate",
+      "type": "flows_to",
+      "acceptableTypes": ["flows_to", "depends_on", "explained_by", "relates_to"],
+      "label": { "required": false, "text": "advances when" },
+      "direction": "directed",
+      "explanation": "The canary window ends at the gate.",
+      "evidence": ["u16", "u19"],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.canary-needs-kill-switch",
+      "from": "e.canary",
+      "to": "e.kill-switch",
+      "type": "depends_on",
+      "acceptableTypes": ["depends_on"],
+      "label": { "required": false, "text": "needs a tested kill switch" },
+      "direction": "directed",
+      "explanation": "A flag without a tested kill switch cannot enter canary.",
+      "evidence": ["u21", "u22"],
+      "provenance": "explicit",
+      "inferenceAllowed": false,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "together": [{ "elements": ["e.stages", "e.canary", "e.advance-gate"], "reason": "One sequence: the stages, the canary window and the gate out of it." }],
+  "keepSeparate": [{ "elements": ["e.cleanup", "e.canary"], "reason": "Cleanup happens after the rollout; it is a separate phase (and the one v2 removes)." }],
+  "unsupported": [
+    { "capability": "reconcile.card-level", "ideal": "The update resends only the cards whose cited units changed: canary (u12–u15 → u43–u46) and the gate (u16 → u47, u50). The stages and kill-switch cards are untouched without a model call; the monitoring card is marked 'source changed' and goes to Needs review because its unit was split.", "expectedToday": "Section-level: the changed sections (Canary, Advancing, Monitoring, the removed Flag cleanup, the new Rollback rehearsal) are resent whole; unchanged sections (Rollout stages, Kill switch) are kept without a model call. The split sentence is not detected as ambiguous: its card comes back as update_clean or unchanged." },
+    { "capability": "ai.cites", "ideal": "Every v1 card cites v1 units; after the update the same card cites the v2 units of the same idea.", "expectedToday": "Cards carry no citations; matching is by content and stable keys." }
+  ]
+}

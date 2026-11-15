@@ -1,0 +1,321 @@
+{
+  "caseId": "kn-06-hybrid-search-reranking",
+  "adjudicator": "phase 3 adjudicator (protocol v2), 2026-11-13",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u9"],
+      "verdict": "set",
+      "claimUnits": ["u7"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u4", "u5", "u6", "u7", "u8"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u7"] }
+      ],
+      "conditionQuote": "Its weakness is vocabulary mismatch",
+      "claimQuote": "Its strength is exact matching.",
+      "rationale": "Only one blind reading (R1 gave no record). A real limitation of BM25 that must be in the notes, but the strength claim stays true without it; the golden link to the BM25 description overlaps u7.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n1", "u2_a1", "g1"],
+          "carriers": ["u2_n1", "u2_a1"],
+          "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried", "g1": "separated" },
+          "changedFromV1": {
+            "u2_n1": "no v1 record→carried: 'struggles with vocabulary mismatch' in the same card",
+            "u2_a1": "no v1 record→carried: 'fails with semantic variations'",
+            "g1": "no v1 record→separated: takeaway 'Keyword retrieval is precise' without the weakness; g0->g1 and g1->g2 are unlabelled"
+          }
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u12", "u13", "u14"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u11", "u14"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u10", "u11"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u11"] }
+      ],
+      "conditionQuote": "Embeddings are weaker on exact codes and identifiers. … for 31 of 50 queries that consisted mainly of an error code.",
+      "claimQuote": "Passages that mean the same thing end up close together even when they share no words",
+      "rationale": "The span holds two different limits: R1 read the intra-sentence scope of the 31/50 figure ('queries that consisted mainly of an error code'; claim, since the figure is false for all queries); R2 read the exact-code weakness against the semantic-matching claim (set), the claim the golden link also points at. One record cannot take both verdicts, so both readings are kept.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n2", "u2_a1", "g1"],
+          "carriers": ["u2_n2", "u2_a1"],
+          "perClaimCard": { "u2_n2": "carried", "u2_a1": "carried", "g1": "separated" },
+          "changedFromV1": {
+            "g1": "not a claim card→separated: added under the u11 link; takeaway 'vector retrieval is semantic' without the exact-code weakness, frame arrows unlabelled"
+          }
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u15"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u15", "u10"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u15"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u10"] }
+      ],
+      "conditionQuote": "Embeddings must also be recomputed whenever the encoder changes, which for this collection takes about 6 hours.",
+      "claimQuote": "Vector retrieval turns the query and every passage into embeddings",
+      "rationale": "R1: 'whenever the encoder changes' is the trigger of the 6-hour recompute; without it the cost reads as recurring (claim). R2: the whole sentence is an operational cost of vector retrieval (set). Both are defensible readings of the same sentence.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n2"],
+          "carriers": ["u2_n2"],
+          "perClaimCard": { "u2_n2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u17", "u18"],
+      "verdict": "claim",
+      "claimUnits": ["u17"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u16", "u17"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u17"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u17"] }
+      ],
+      "conditionQuote": "when lexical and semantic signals are complementary, that is, when each retriever finds relevant passages that the other misses",
+      "claimQuote": "Hybrid search can improve recall",
+      "rationale": "Intra-sentence condition reinforced by u18; when the retrievers overlap or one is poorly tuned, 'hybrid improves recall' is false.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n9", "u3_ax1", "u3_ax4", "g2", "g1", "u2_a1", "u7_n2"],
+          "carriers": ["u3_n9", "u3_ax1", "u3_ax4"],
+          "perClaimCard": { "u3_n9": "carried", "u3_ax1": "carried", "u3_ax4": "carried", "g2": "separated", "g1": "separated", "u2_a1": "separated", "u7_n2": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u23"],
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u23"] },
+        { "who": "R2", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "conditionQuote": "so the fused list holds at most 100 candidates, and usually fewer because some passages appear in both lists",
+      "claimQuote": "Each retriever returns its top 50 passages",
+      "rationale": "'At most 100' is the arithmetic consequence of two top-50 lists, not a limit on another statement; dropping it makes nothing in u23 or elsewhere false (u26 already scopes reranking to the fused candidates). R1's record is withdrawn as a configuration fact.",
+      "confidence": "medium"
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u29"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u27", "u28", "u29"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u27", "u28", "u29"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u28"] }
+      ],
+      "conditionQuote": "the cross-encoder runs only on the fused candidates, never on the whole collection",
+      "claimQuote": "it judges relevance far more accurately than either retriever",
+      "rationale": "R1: read as scoring the whole collection, the reranker description is false. R2: the accuracy claim stays true; this is a cost-driven scope (and u26 already says it rescored the fused candidates). The source does not settle which claim it limits or how.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n2", "u4_ax2"],
+          "carriers": ["u4_n2", "u4_ax2"],
+          "perClaimCard": { "u4_n2": "carried", "u4_ax2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u31", "u32", "u33", "u49"],
+      "verdict": "claim",
+      "claimUnits": ["u31", "u28"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u31"] },
+        { "who": "R1", "verdict": "set", "claimUnits": ["u31"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u31", "u28"] },
+        { "who": "R1", "verdict": "set", "claimUnits": ["u28"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u31"] }
+      ],
+      "conditionQuote": "but it does not guarantee that the final answer is correct. The reranker can only reorder what retrieval found: if the right passage is not among the candidates, reranking cannot recover it.",
+      "claimQuote": "Reranking improves the precision of the top results",
+      "rationale": "R1 split the span into three (u31 caveat set, u32 bound claim, u33 staleness set). For the u32 bound, R1 and R2 agree on claim with u31 linked: a reader told only that reranking improves results would infer it can fix retrieval misses. The merged record takes the strongest component; R1's set readings for u31's 'no guarantee' and u33 are kept.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n5", "u4_ax1", "g3", "u7_n4", "u4_n2"],
+          "carriers": ["u4_n5", "g3", "u4_ax1", "u4_ax3", "u4_n6", "u7_n7", "g6"],
+          "perClaimCard": { "u4_n5": "carried", "u4_ax1": "carried", "g3": "carried", "u7_n4": "frame", "u4_n2": "frame" },
+          "changedFromV1": {
+            "u4_ax1": "separated (r4) / carried (r5)→carried: records merged; 'constrained by… the quality of initial retrieval' conveys the u32 bound",
+            "g3": "separated (r4) / carried (r5)→carried: records merged; takeaway 'limited by initial retrieval and cannot detect outdated information'",
+            "u7_n4": "frame (r4) / carried (r5)→frame: 'organizes the retrieved results' only implies the bound; g6 takeaway says no step guarantees correctness"
+          }
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u35"],
+      "verdict": "set",
+      "claimUnits": ["u34"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u34"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u34"] }
+      ],
+      "conditionQuote": "If none of the passages addresses the question, it should say so rather than answer from its general knowledge.",
+      "claimQuote": "is instructed to answer only from them and to cite the passages it used",
+      "rationale": "A fallback rule for the no-relevant-passage case; the instruction claim stays true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n2", "g4", "u5_a1", "u7_n6"],
+          "carriers": ["u5_n4"],
+          "perClaimCard": { "u5_n2": "separated", "g4": "separated", "u5_a1": "separated", "u7_n6": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "conditionUnits": ["u36"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u36"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u34", "u35"] },
+        { "who": "R1", "verdict": "set", "claimUnits": ["u36"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u36"] }
+      ],
+      "conditionQuote": "but they do not show whether the passage itself is current",
+      "claimQuote": "Citations let a reader check each claim against its passage",
+      "rationale": "R1: citations still let a reader check claims; currency is a caveat (set). R2: without the 'but', citations read as a guarantee of correctness (claim). The source does not settle it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n6", "g4", "u5_a1"],
+          "carriers": ["u5_n6", "g4", "u5_a1"],
+          "perClaimCard": { "u5_n6": "carried", "g4": "carried", "u5_a1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "conditionUnits": ["u39", "u46"],
+      "verdict": "claim",
+      "claimUnits": ["u41", "u42", "u43", "u44"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u41", "u42", "u43", "u44"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u43", "u44"] }
+      ],
+      "conditionQuote": "These figures come from one collection and one query set; a collection with fewer exact identifiers may see a smaller gain from BM25, and a different reranker will have a different latency.",
+      "claimQuote": "Hybrid + reranker | 88% | 190 ms | $0.95",
+      "rationale": "Generalisation limit on the results table; reported as general figures they mislead for another collection or reranker.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u6_n2", "u6_n3", "u6_a1", "g5"],
+          "carriers": ["u6_n5"],
+          "perClaimCard": { "u6_n2": "separated", "u6_n3": "separated", "u6_a1": "separated", "g5": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c11",
+      "conditionUnits": ["u42"],
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u41"] },
+        { "who": "R2", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "conditionQuote": "Vector only | 68% | 60 ms | $0.10",
+      "claimQuote": "",
+      "rationale": "A data row, not a limit. The golden link's text ('figures come from one collection…') is u46, covered by c10; offset ids."
+    },
+    {
+      "id": "c12",
+      "conditionUnits": ["u47"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u47"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u47"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u47"] }
+      ],
+      "conditionQuote": "at some cost in recall",
+      "claimQuote": "Teams with a strict latency budget can rerank fewer candidates",
+      "rationale": "R1: the option still exists; recall is its price (set). R2: without it, reranking fewer reads as a free latency saving (claim). The source does not settle it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u6_n6"],
+          "carriers": ["u6_n6"],
+          "perClaimCard": { "u6_n6": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "a1",
+      "conditionUnits": ["u25"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u23"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u23"] }
+      ],
+      "conditionQuote": "Raising the limit to 100 per retriever put the right passage in the list slightly more often, but it roughly doubled the time spent reranking, so we kept 50.",
+      "claimQuote": "Each retriever returns its top 50 passages",
+      "rationale": "R1's notes call u25 a design rationale (not_a_condition); R2 reads a recall cost of the top-50 setting (set). Both defensible: it is a rationale that also discloses a known recall loss.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n14", "u3_ax3"],
+          "carriers": ["u3_n14", "u3_ax3"],
+          "perClaimCard": { "u3_n14": "carried", "u3_ax3": "carried" },
+          "changedFromV1": {
+            "u3_n14": "no v1 record→carried: 'slightly improved recall but doubled reranking time, so 50 was maintained'",
+            "u3_ax3": "no v1 record→carried: 'a trade-off between recall improvement and reranking time'"
+          }
+        }
+      }
+    },
+    {
+      "id": "a2",
+      "conditionUnits": ["u45"],
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R2", "verdict": "set", "claimUnits": ["u44"] }
+      ],
+      "conditionQuote": "Reranking adds about 120 ms per query, most of it spent running the cross-encoder over up to 100 candidates, and it accounts for most of the cost increase.",
+      "claimQuote": "Hybrid + reranker | 88% | 190 ms | $0.95",
+      "rationale": "The latency and cost price is already part of the u44 row it is linked to; u45 explains where they come from (elaboration/cause), so it limits nothing that row does not already state. R1 gave no record."
+    }
+  ],
+  "notes": "All frame-to-frame arrows in this note set are unlabelled and card arrows carry only 'then', 'example', 'illustrates' labels, so the v2 amendment changes no outcome. Changes from v1 come from re-adjudicated verdicts (c5 withdrawn as not_a_condition), merged records (c7 = v1 r4+r5+r6), and new records (c1, a1). Frames g1–g5 are listed as claim cards where their takeaway states the claim, as v1 did. c11's golden link has offset ids (text belongs to u46/c10)."
+}

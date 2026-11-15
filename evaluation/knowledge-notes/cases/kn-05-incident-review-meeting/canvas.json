@@ -18,7 +18,7 @@
     {
       "id": "f.decisions",
       "title": "Agreed decisions",
-      "titleMatch": { "all": [["decisions", "decided", "what we agreed", "agreed changes"]] },
+      "titleMatch": { "all": [["decisions", "what was decided", "we decided", "what we agreed", "agreed changes", "agreements", "agreed decisions"]] },
       "purpose": "Only what the meeting explicitly agreed.",
       "rationale": "A reader must be able to trust that everything here was agreed.",
       "children": ["e.decision-alert", "e.decision-status-page", "e.decision-config"],

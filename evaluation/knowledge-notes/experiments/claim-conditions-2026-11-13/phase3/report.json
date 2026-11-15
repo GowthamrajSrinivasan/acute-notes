@@ -1,0 +1,1197 @@
+{
+  "frozenAt": "2026-11-13T15:53:10.808Z",
+  "cost": "$0 (no model call)",
+  "cases": {
+    "kn-01-idempotency-keys": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "not_a_condition": 1,
+        "claim": 3
+      },
+      "status": {
+        "adjudicated": 1,
+        "agreed": 3
+      },
+      "verdictByStatus": {
+        "adjudicated:not_a_condition": 1,
+        "agreed:claim": 3
+      },
+      "noteSets": {
+        "openui-v1": {
+          "cards": 5,
+          "uncitedCards": 0,
+          "records": {
+            "byVerdict": {
+              "claim": 3
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 3,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 0,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 4,
+            "outcomes": {
+              "separated": 3,
+              "carried": 1
+            },
+            "failures": [
+              "c2|v1:g1:separated",
+              "c2|v1:g2:separated",
+              "c3|v1:g2:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 0,
+              "outcomes": {}
+            },
+            "outcomeChangedByV2": [],
+            "otherLabelChanges": 0
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 2,
+            "claimCardRefs": 4,
+            "carriersNotCitingCondition": 1,
+            "carrierRefs": 4,
+            "integrityFailuresOnCitedClaimCards": 1,
+            "integrityFailuresOnUncitedClaimCards": 2
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 1,
+              "tn": 1,
+              "precision": 1,
+              "recall": 0.67
+            }
+          }
+        },
+        "openui-v2": {
+          "cards": 9,
+          "uncitedCards": 0,
+          "records": {
+            "byVerdict": {
+              "claim": 3
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 3,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 0,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 5,
+            "outcomes": {
+              "separated": 4,
+              "carried": 1
+            },
+            "failures": [
+              "c2|v2:g1:separated",
+              "c2|v2:g2:separated",
+              "c2|v2:g4:separated",
+              "c3|v2:g2:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 0,
+              "outcomes": {}
+            },
+            "outcomeChangedByV2": [],
+            "otherLabelChanges": 0
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 2,
+            "claimCardRefs": 5,
+            "carriersNotCitingCondition": 1,
+            "carrierRefs": 5,
+            "integrityFailuresOnCitedClaimCards": 2,
+            "integrityFailuresOnUncitedClaimCards": 2
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 4,
+              "tn": 1,
+              "precision": null,
+              "recall": 0
+            }
+          }
+        }
+      }
+    },
+    "kn-02-edge-cache-invalidation": {
+      "duplicatesDropped": 3,
+      "verdicts": {
+        "set": 8,
+        "claim": 5,
+        "ambiguous": 2,
+        "not_a_condition": 1
+      },
+      "status": {
+        "agreed": 11,
+        "adjudicated": 4,
+        "unresolved": 1
+      },
+      "verdictByStatus": {
+        "agreed:set": 4,
+        "agreed:claim": 5,
+        "adjudicated:set": 4,
+        "unresolved:ambiguous": 1,
+        "agreed:ambiguous": 1,
+        "agreed:not_a_condition": 1
+      },
+      "noteSets": {
+        "openui-v1": {
+          "cards": 14,
+          "uncitedCards": 0,
+          "records": {
+            "byVerdict": {
+              "set": 8,
+              "claim": 5,
+              "ambiguous": 2
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 13,
+              "gaps": [
+                "c4",
+                "c8",
+                "a1"
+              ]
+            },
+            "ambiguous": {
+              "records": 2,
+              "gaps": [
+                "c5"
+              ]
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 5,
+            "outcomes": {
+              "separated": 3,
+              "absent": 1,
+              "carried": 1
+            },
+            "failures": [
+              "c2|v1:g4:separated",
+              "c6|v1:g6:separated",
+              "c8|v1:g8:absent",
+              "c12|v1:g11:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 1,
+              "outcomes": {
+                "absent": 1
+              }
+            },
+            "outcomeChangedByV2": [],
+            "otherLabelChanges": 0
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 1,
+            "claimCardRefs": 14,
+            "carriersNotCitingCondition": 1,
+            "carrierRefs": 11,
+            "integrityFailuresOnCitedClaimCards": 4,
+            "integrityFailuresOnUncitedClaimCards": 0
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 4,
+              "fp": 1,
+              "fn": 0,
+              "tn": 0,
+              "precision": 0.8,
+              "recall": 1
+            }
+          }
+        },
+        "openui-v2": {
+          "cards": 48,
+          "uncitedCards": 10,
+          "records": {
+            "byVerdict": {
+              "set": 8,
+              "claim": 5,
+              "ambiguous": 2
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 13,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 2,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 5,
+            "outcomes": {
+              "separated": 4,
+              "carried": 1
+            },
+            "failures": [
+              "c2|v2:g11:separated",
+              "c2|v2:g12:separated",
+              "c6|v2:g26:separated",
+              "c8|v2:g31:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 4,
+              "outcomes": {
+                "separated": 4
+              }
+            },
+            "outcomeChangedByV2": [],
+            "otherLabelChanges": 0
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 7,
+            "claimCardRefs": 19,
+            "carriersNotCitingCondition": 8,
+            "carrierRefs": 24,
+            "integrityFailuresOnCitedClaimCards": 2,
+            "integrityFailuresOnUncitedClaimCards": 2
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 2,
+              "fp": 1,
+              "fn": 2,
+              "tn": 0,
+              "precision": 0.67,
+              "recall": 0.5
+            }
+          }
+        }
+      }
+    },
+    "kn-03-blue-green-deploy": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "set": 3,
+        "claim": 9,
+        "ambiguous": 2
+      },
+      "status": {
+        "agreed": 8,
+        "adjudicated": 4,
+        "unresolved": 2
+      },
+      "verdictByStatus": {
+        "agreed:set": 2,
+        "adjudicated:claim": 3,
+        "agreed:claim": 6,
+        "unresolved:ambiguous": 2,
+        "adjudicated:set": 1
+      },
+      "noteSets": {
+        "distil": {
+          "records": {
+            "byVerdict": {
+              "set": 3,
+              "claim": 9,
+              "ambiguous": 2
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 12,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 2,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 14,
+            "outcomes": {
+              "carried": 7,
+              "separated": 7
+            },
+            "failures": [
+              "c4|u0_n1:separated",
+              "c4|u0_n2:separated",
+              "c5|u0_n1:separated",
+              "c5|u2_n4:separated",
+              "c11|u0_n1:separated",
+              "c11|u0_n2:separated",
+              "c14|u2_n15:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 2,
+              "outcomes": {
+                "carried": 2
+              }
+            },
+            "outcomeChangedByV2": [],
+            "otherLabelChanges": 5
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 4,
+            "claimCardRefs": 21,
+            "carriersNotCitingCondition": 6,
+            "carrierRefs": 23,
+            "integrityFailuresOnCitedClaimCards": 5,
+            "integrityFailuresOnUncitedClaimCards": 2
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 2,
+              "fp": 2,
+              "fn": 5,
+              "tn": 5,
+              "precision": 0.5,
+              "recall": 0.29
+            }
+          }
+        }
+      }
+    },
+    "kn-04-queue-choice": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "ambiguous": 8,
+        "set": 3,
+        "claim": 3,
+        "not_a_condition": 2
+      },
+      "status": {
+        "unresolved": 8,
+        "adjudicated": 3,
+        "agreed": 5
+      },
+      "verdictByStatus": {
+        "unresolved:ambiguous": 8,
+        "adjudicated:set": 1,
+        "agreed:claim": 3,
+        "adjudicated:not_a_condition": 2,
+        "agreed:set": 2
+      },
+      "noteSets": {
+        "distil": {
+          "records": {
+            "byVerdict": {
+              "ambiguous": 8,
+              "set": 3,
+              "claim": 3
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 6,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 8,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 7,
+            "outcomes": {
+              "carried": 5,
+              "separated": 2
+            },
+            "failures": [
+              "c3|u5_n2:separated",
+              "c3|u5_a1:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 16,
+              "outcomes": {
+                "carried": 7,
+                "linked": 6,
+                "frame": 1,
+                "separated": 2
+              }
+            },
+            "outcomeChangedByV2": [
+              "c15|u3_n1: separated→linked: cross-frame arrow g3->g6 labelled 'requires more' (a dependency label) joins the claim card's frame to Evidence, whose u6_n1 names the untested 1,800/min rate and the quarter-size staging copy",
+              "c15|u3_a1: separated→linked: same g3->g6 'requires more' arrow"
+            ],
+            "otherLabelChanges": 11
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 12,
+            "claimCardRefs": 28,
+            "carriersNotCitingCondition": 10,
+            "carrierRefs": 26,
+            "integrityFailuresOnCitedClaimCards": 1,
+            "integrityFailuresOnUncitedClaimCards": 1
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 0,
+              "fp": 2,
+              "fn": 2,
+              "tn": 3,
+              "precision": 0,
+              "recall": 0
+            }
+          }
+        }
+      }
+    },
+    "kn-05-incident-review-meeting": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "claim": 7,
+        "set": 3,
+        "not_a_condition": 2
+      },
+      "status": {
+        "agreed": 9,
+        "adjudicated": 3
+      },
+      "verdictByStatus": {
+        "agreed:claim": 7,
+        "agreed:set": 2,
+        "adjudicated:not_a_condition": 2,
+        "adjudicated:set": 1
+      },
+      "noteSets": {
+        "distil": {
+          "records": {
+            "byVerdict": {
+              "claim": 7,
+              "set": 3
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 10,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 0,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 14,
+            "outcomes": {
+              "carried": 11,
+              "separated": 1,
+              "frame": 2
+            },
+            "failures": [
+              "c4|u0_u0_n19:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 0,
+              "outcomes": {}
+            },
+            "outcomeChangedByV2": [],
+            "otherLabelChanges": 0
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 10,
+            "claimCardRefs": 20,
+            "carriersNotCitingCondition": 10,
+            "carrierRefs": 20,
+            "integrityFailuresOnCitedClaimCards": 0,
+            "integrityFailuresOnUncitedClaimCards": 1
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 0,
+              "fp": 4,
+              "fn": 1,
+              "tn": 9,
+              "precision": 0,
+              "recall": 0
+            }
+          }
+        }
+      }
+    },
+    "kn-06-hybrid-search-reranking": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "set": 2,
+        "ambiguous": 6,
+        "claim": 3,
+        "not_a_condition": 3
+      },
+      "status": {
+        "adjudicated": 5,
+        "unresolved": 6,
+        "agreed": 3
+      },
+      "verdictByStatus": {
+        "adjudicated:set": 1,
+        "unresolved:ambiguous": 6,
+        "agreed:claim": 2,
+        "adjudicated:not_a_condition": 3,
+        "adjudicated:claim": 1,
+        "agreed:set": 1
+      },
+      "noteSets": {
+        "distil": {
+          "records": {
+            "byVerdict": {
+              "set": 2,
+              "ambiguous": 6,
+              "claim": 3
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 5,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 6,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 16,
+            "outcomes": {
+              "carried": 6,
+              "separated": 8,
+              "frame": 2
+            },
+            "failures": [
+              "c4|g2:separated",
+              "c4|g1:separated",
+              "c4|u2_a1:separated",
+              "c4|u7_n2:separated",
+              "c10|u6_n2:separated",
+              "c10|u6_n3:separated",
+              "c10|u6_a1:separated",
+              "c10|g5:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 12,
+              "outcomes": {
+                "carried": 11,
+                "separated": 1
+              }
+            },
+            "outcomeChangedByV2": [],
+            "otherLabelChanges": 9
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 23,
+            "claimCardRefs": 35,
+            "carriersNotCitingCondition": 12,
+            "carrierRefs": 25,
+            "integrityFailuresOnCitedClaimCards": 1,
+            "integrityFailuresOnUncitedClaimCards": 7
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 3,
+              "fp": 4,
+              "fn": 5,
+              "tn": 4,
+              "precision": 0.43,
+              "recall": 0.38
+            }
+          }
+        }
+      }
+    },
+    "kn-07-photo-sharing-hld": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "ambiguous": 3,
+        "set": 8,
+        "claim": 4
+      },
+      "status": {
+        "unresolved": 3,
+        "agreed": 10,
+        "adjudicated": 2
+      },
+      "verdictByStatus": {
+        "unresolved:ambiguous": 3,
+        "agreed:set": 7,
+        "adjudicated:claim": 1,
+        "agreed:claim": 3,
+        "adjudicated:set": 1
+      },
+      "noteSets": {
+        "distil": {
+          "records": {
+            "byVerdict": {
+              "ambiguous": 3,
+              "set": 8,
+              "claim": 4
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 12,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 3,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 6,
+            "outcomes": {
+              "carried": 4,
+              "separated": 2
+            },
+            "failures": [
+              "c5|u3_n8:separated",
+              "c5|u3_a2:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 10,
+              "outcomes": {
+                "carried": 1,
+                "separated": 7,
+                "frame": 2
+              }
+            },
+            "outcomeChangedByV2": [],
+            "otherLabelChanges": 2
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 11,
+            "claimCardRefs": 34,
+            "carriersNotCitingCondition": 5,
+            "carrierRefs": 20,
+            "integrityFailuresOnCitedClaimCards": 1,
+            "integrityFailuresOnUncitedClaimCards": 1
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 1,
+              "fp": 0,
+              "fn": 1,
+              "tn": 4,
+              "precision": 1,
+              "recall": 0.5
+            }
+          }
+        }
+      }
+    },
+    "kn-08-helpdesk-answers-hld-lld": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "set": 6,
+        "claim": 2,
+        "ambiguous": 2
+      },
+      "status": {
+        "agreed": 8,
+        "unresolved": 2
+      },
+      "verdictByStatus": {
+        "agreed:set": 6,
+        "agreed:claim": 2,
+        "unresolved:ambiguous": 2
+      },
+      "noteSets": {
+        "distil": {
+          "records": {
+            "byVerdict": {
+              "set": 6,
+              "claim": 2,
+              "ambiguous": 2
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 8,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 2,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 5,
+            "outcomes": {
+              "separated": 5
+            },
+            "failures": [
+              "c5|u3_n8:separated",
+              "c5|u3_a1:separated",
+              "c8|u3_n16:separated",
+              "c8|u3_a1:separated",
+              "c8|u3_a3:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 10,
+              "outcomes": {
+                "separated": 8,
+                "carried": 2
+              }
+            },
+            "outcomeChangedByV2": [],
+            "otherLabelChanges": 4
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 7,
+            "claimCardRefs": 29,
+            "carriersNotCitingCondition": 4,
+            "carrierRefs": 19,
+            "integrityFailuresOnCitedClaimCards": 2,
+            "integrityFailuresOnUncitedClaimCards": 3
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 3,
+              "fp": 0,
+              "fn": 2,
+              "tn": 0,
+              "precision": 1,
+              "recall": 0.6
+            }
+          }
+        }
+      }
+    },
+    "kn-09-billing-codebase-map": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "set": 6,
+        "claim": 3,
+        "ambiguous": 2
+      },
+      "status": {
+        "agreed": 7,
+        "unresolved": 2,
+        "adjudicated": 2
+      },
+      "verdictByStatus": {
+        "agreed:set": 4,
+        "agreed:claim": 3,
+        "unresolved:ambiguous": 2,
+        "adjudicated:set": 2
+      },
+      "noteSets": {
+        "distil": {
+          "records": {
+            "byVerdict": {
+              "set": 6,
+              "claim": 3,
+              "ambiguous": 2
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 9,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 2,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 8,
+            "outcomes": {
+              "carried": 1,
+              "frame": 2,
+              "separated": 4,
+              "linked": 1
+            },
+            "failures": [
+              "c6|u1_n12:separated",
+              "c6|u3_n7:separated",
+              "c6|u1_a1:separated",
+              "c8|g7:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 6,
+              "outcomes": {
+                "carried": 6
+              }
+            },
+            "outcomeChangedByV2": [],
+            "otherLabelChanges": 1
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 11,
+            "claimCardRefs": 25,
+            "carriersNotCitingCondition": 15,
+            "carrierRefs": 28,
+            "integrityFailuresOnCitedClaimCards": 0,
+            "integrityFailuresOnUncitedClaimCards": 4
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 1,
+              "fp": 2,
+              "fn": 3,
+              "tn": 2,
+              "precision": 0.33,
+              "recall": 0.25
+            }
+          }
+        }
+      }
+    },
+    "kn-10-inventory-architecture-frames": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "claim": 2,
+        "set": 7,
+        "ambiguous": 2
+      },
+      "status": {
+        "agreed": 9,
+        "unresolved": 2
+      },
+      "verdictByStatus": {
+        "agreed:claim": 2,
+        "agreed:set": 7,
+        "unresolved:ambiguous": 2
+      },
+      "noteSets": {
+        "distil": {
+          "records": {
+            "byVerdict": {
+              "claim": 2,
+              "set": 7,
+              "ambiguous": 2
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 9,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 2,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 4,
+            "outcomes": {
+              "carried": 1,
+              "arrow_label": 1,
+              "frame": 2
+            },
+            "failures": [],
+            "ambiguousPairs": {
+              "n": 6,
+              "outcomes": {
+                "separated": 6
+              }
+            },
+            "outcomeChangedByV2": [
+              "c1|u3_n7: linked→arrow_label: arrows into u3_n7 from both steps are labelled 'if successful', which conveys the gate (arrow_label precedes linked under v2)"
+            ],
+            "otherLabelChanges": 5
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 3,
+            "claimCardRefs": 21,
+            "carriersNotCitingCondition": 10,
+            "carrierRefs": 21,
+            "integrityFailuresOnCitedClaimCards": 0,
+            "integrityFailuresOnUncitedClaimCards": 0
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 4,
+              "precision": null,
+              "recall": null
+            }
+          }
+        }
+      }
+    },
+    "kn-11-ambiguous-analytics-proposal": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "ambiguous": 5,
+        "claim": 5,
+        "set": 4
+      },
+      "status": {
+        "unresolved": 5,
+        "agreed": 8,
+        "adjudicated": 1
+      },
+      "verdictByStatus": {
+        "unresolved:ambiguous": 5,
+        "agreed:claim": 5,
+        "agreed:set": 3,
+        "adjudicated:set": 1
+      },
+      "noteSets": {
+        "distil": {
+          "records": {
+            "byVerdict": {
+              "ambiguous": 5,
+              "claim": 5,
+              "set": 4
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 9,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 5,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 11,
+            "outcomes": {
+              "carried": 4,
+              "separated": 6,
+              "frame": 1
+            },
+            "failures": [
+              "c5|u6_n3:separated",
+              "c5|u6_a1:separated",
+              "c5|g5:separated",
+              "c10|u7_n1:separated",
+              "c10|g6:separated",
+              "c11|u2_n2:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 9,
+              "outcomes": {
+                "carried": 5,
+                "linked": 1,
+                "separated": 3
+              }
+            },
+            "outcomeChangedByV2": [
+              "c12|g9: linked→separated: the only joining arrow g8->g9 is labelled 'leads to', a sequence label that v2 excludes for cross-frame links"
+            ],
+            "otherLabelChanges": 10
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 9,
+            "claimCardRefs": 29,
+            "carriersNotCitingCondition": 8,
+            "carrierRefs": 22,
+            "integrityFailuresOnCitedClaimCards": 3,
+            "integrityFailuresOnUncitedClaimCards": 3
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 1,
+              "fp": 1,
+              "fn": 5,
+              "tn": 4,
+              "precision": 0.5,
+              "recall": 0.17
+            }
+          }
+        }
+      }
+    },
+    "kn-12-flag-rollout-update": {
+      "duplicatesDropped": 0,
+      "verdicts": {
+        "set": 3,
+        "claim": 5,
+        "ambiguous": 5
+      },
+      "status": {
+        "agreed": 7,
+        "unresolved": 5,
+        "adjudicated": 1
+      },
+      "verdictByStatus": {
+        "agreed:set": 3,
+        "agreed:claim": 4,
+        "unresolved:ambiguous": 5,
+        "adjudicated:claim": 1
+      },
+      "noteSets": {
+        "distil": {
+          "records": {
+            "byVerdict": {
+              "set": 3,
+              "claim": 5,
+              "ambiguous": 5
+            }
+          },
+          "coverage": {
+            "claimOrSet": {
+              "records": 8,
+              "gaps": []
+            },
+            "ambiguous": {
+              "records": 5,
+              "gaps": []
+            },
+            "arrowLabelOnlyCarriers": []
+          },
+          "integrity": {
+            "claimPairs": 12,
+            "outcomes": {
+              "carried": 7,
+              "separated": 2,
+              "arrow_label": 2,
+              "frame": 1
+            },
+            "failures": [
+              "c5|u1_n6:separated",
+              "c5|u1_a1:separated"
+            ],
+            "ambiguousPairs": {
+              "n": 7,
+              "outcomes": {
+                "carried": 5,
+                "frame": 2
+              }
+            },
+            "outcomeChangedByV2": [
+              "c9|u1_n4: separated→arrow_label: frame arrow g1->g2 touching the card's frame is labelled 'kill switch tested before canary' (v2 §2 example)",
+              "c9|u1_a1: separated→arrow_label: same g1->g2 label"
+            ],
+            "otherLabelChanges": 5
+          },
+          "citations": {
+            "claimCardsNotCitingClaim": 6,
+            "claimCardRefs": 23,
+            "carriersNotCitingCondition": 7,
+            "carrierRefs": 23,
+            "integrityFailuresOnCitedClaimCards": 1,
+            "integrityFailuresOnUncitedClaimCards": 1
+          },
+          "rules": {
+            "claimPairs": {
+              "tp": 1,
+              "fp": 5,
+              "fn": 1,
+              "tn": 5,
+              "precision": 0.17,
+              "recall": 0.5
+            }
+          }
+        }
+      }
+    }
+  },
+  "goldenAssertions": {
+    "kn-01-idempotency-keys": {
+      "coverage": {
+        "v1": {
+          "fail": 2,
+          "pass": 3
+        },
+        "v2": {
+          "fail": 1,
+          "pass": 4
+        },
+        "failingV2": [
+          "critical:a.definition"
+        ]
+      },
+      "source_fidelity": {
+        "v1": {
+          "pass": 2,
+          "fail": 3,
+          "needs_judgement": 1
+        },
+        "v2": {
+          "fail": 2,
+          "pass": 3,
+          "needs_judgement": 1
+        },
+        "failingV2": [
+          "critical:a.window-with-claim",
+          "critical:a.reuse-with-claim"
+        ]
+      },
+      "traceability": {
+        "v1": {
+          "pass": 1
+        },
+        "v2": {
+          "pass": 1
+        },
+        "failingV2": []
+      }
+    },
+    "kn-02-edge-cache-invalidation": {
+      "coverage": {
+        "v1": {
+          "pass": 9
+        },
+        "v2": {
+          "pass": 9
+        },
+        "failingV2": []
+      },
+      "source_fidelity": {
+        "v1": {
+          "fail": 11,
+          "pass": 5,
+          "needs_judgement": 1
+        },
+        "v2": {
+          "fail": 10,
+          "pass": 6,
+          "needs_judgement": 1
+        },
+        "failingV2": [
+          "critical:a.ttl-window",
+          "critical:a.purge-eventual",
+          "critical:a.purge-scope",
+          "major:a.purge-rate",
+          "major:a.walkthrough-numbers",
+          "critical:a.propagation-bound",
+          "critical:a.swr-bound",
+          "critical:a.stale-tolerance",
+          "critical:a.html-caveat",
+          "minor:a.exact-ids"
+        ]
+      },
+      "traceability": {
+        "v1": {
+          "pass": 1
+        },
+        "v2": {
+          "pass": 1
+        },
+        "failingV2": []
+      }
+    }
+  }
+}

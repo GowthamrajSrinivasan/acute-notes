@@ -1,0 +1,161 @@
+{
+  "caseId": "kn-03-blue-green-deploy",
+  "reviewer": "blind independent reviewer, 2026-11-13",
+  "records": [
+    {
+      "id": "r1",
+      "claimUnits": ["u5"], "claimSummary": "Because the old environment keeps running, going back is the same one-step switch (easy rollback).",
+      "conditionUnits": ["u10", "u27"], "kind": "caveat",
+      "conditionSummary": "Rollback does not revert the database; both versions share one DB, so migrations must be backward compatible for the switch-back to work.",
+      "mustConvey": "rollback does not undo/revert a migration; migrations must be backward compatible (shared database)",
+      "binding": "claim", "bindingReason": "With a non-backward-compatible migration, the one-step switch back leaves the old version on a schema it cannot use, so 'going back is the same one-step switch' is false.",
+      "claimCards": ["u0_n1", "u0_n2"], "carriers": ["u1_n3", "u3_n3"],
+      "perClaimCard": { "u0_n1": "separated", "u0_n2": "separated" },
+      "confidence": "high", "notes": "u0_n2 says 'easy rollback ... rapid recovery'. g0 takeaway ('safe, zero-downtime releases') does not convey the DB limit; u0_n1->u0_n2 arrow joins two claim cards, not a carrier."
+    },
+    {
+      "id": "r2",
+      "claimUnits": ["u16"], "claimSummary": "Step 2: apply the new release's database migrations (as part of this blue-green procedure).",
+      "conditionUnits": ["u13"], "kind": "precondition",
+      "conditionSummary": "If any migration is not backward compatible, do not use this procedure; split it into an additive release and a later cleanup release.",
+      "mustConvey": "not backward compatible -> do not use this procedure; split into additive then cleanup release",
+      "binding": "claim", "bindingReason": "For a non-backward-compatible migration, following step 2 as written is exactly what the source forbids.",
+      "claimCards": ["u2_n4"], "carriers": ["u1_n3"],
+      "perClaimCard": { "u2_n4": "separated" },
+      "confidence": "medium", "notes": "u2_n4 mentions 'confirming backward compatibility' as an expected result but not that the procedure must not be used / migration must be split. g2->g3 is a frame-level arrow, not to a carrier."
+    },
+    {
+      "id": "r3",
+      "claimUnits": ["u9"], "claimSummary": "A GET /healthz endpoint that returns 200 is required.",
+      "conditionUnits": ["u9"], "kind": "bound",
+      "conditionSummary": "Returns 200 only when the service can reach its database and its queue.",
+      "mustConvey": "200 only when it can reach database and queue",
+      "binding": "claim", "bindingReason": "A health endpoint that returns 200 without checking DB/queue reachability would pass step 3 while the service is broken.",
+      "claimCards": ["u1_n2"], "carriers": ["u1_n2"],
+      "perClaimCard": { "u1_n2": "carried" },
+      "confidence": "high", "notes": "intra-sentence"
+    },
+    {
+      "id": "r4",
+      "claimUnits": ["u15"], "claimSummary": "Deploy version 2.8.0 to orders-green.",
+      "conditionUnits": ["u15"], "kind": "precondition",
+      "conditionSummary": "Use the same build artifact that passed staging, not a fresh build.",
+      "mustConvey": "same build artifact that passed staging (not a fresh build)",
+      "binding": "claim", "bindingReason": "Deploying a fresh build would ship an untested artifact, violating the step.",
+      "claimCards": ["u2_n2"], "carriers": ["u2_n2"],
+      "perClaimCard": { "u2_n2": "carried" },
+      "confidence": "medium", "notes": "intra-sentence. u4_n1 ('starts from a fresh build') paraphrases u1 and could mislead, but it is not the deploy claim card."
+    },
+    {
+      "id": "r5",
+      "claimUnits": ["u16"], "claimSummary": "Apply the database migrations from the new release.",
+      "conditionUnits": ["u16"], "kind": "bound",
+      "conditionSummary": "Once, from a single job, not from every green instance at startup.",
+      "mustConvey": "once, from a single job",
+      "binding": "claim", "bindingReason": "Running migrations from every green instance at startup would apply them repeatedly/concurrently, which the step rules out.",
+      "claimCards": ["u2_n4"], "carriers": ["u2_n4"],
+      "perClaimCard": { "u2_n4": "carried" },
+      "confidence": "medium", "notes": "intra-sentence"
+    },
+    {
+      "id": "r6",
+      "claimUnits": ["u17"], "claimSummary": "Poll the health endpoint on every green instance until all return 200.",
+      "conditionUnits": ["u17"], "kind": "bound",
+      "conditionSummary": "If any instance still fails after 10 minutes, stop and roll back (tear down green, blue keeps serving).",
+      "mustConvey": "10 minutes; stop and roll back / tear down green",
+      "binding": "claim", "bindingReason": "Without the 10-minute bound, 'poll until all return 200' implies waiting indefinitely instead of aborting.",
+      "claimCards": ["u2_n6"], "carriers": ["u2_n6"],
+      "perClaimCard": { "u2_n6": "carried" },
+      "confidence": "high", "notes": "intra-unit. Step shapes (u2_n5 etc.) are titles only and are not treated as claim cards. u2_a2 mentions health-check rollback but not the 10 minutes."
+    },
+    {
+      "id": "r7",
+      "claimUnits": ["u18"], "claimSummary": "Smoke-test green; expected all smoke tests pass.",
+      "conditionUnits": ["u18"], "kind": "exception",
+      "conditionSummary": "If any smoke test fails, treat it as a failed health check and stop.",
+      "mustConvey": "if one fails, stop (as a failed health check)",
+      "binding": "claim", "bindingReason": "Proceeding to the switch after a failed smoke test is what the condition forbids.",
+      "claimCards": ["u2_n8"], "carriers": ["u2_n8", "u2_a2"],
+      "perClaimCard": { "u2_n8": "carried" },
+      "confidence": "high", "notes": "intra-unit"
+    },
+    {
+      "id": "r8",
+      "claimUnits": ["u22"], "claimSummary": "Watch green's 5xx error rate for 15 minutes after the switch, then continue.",
+      "conditionUnits": ["u22"], "kind": "bound",
+      "conditionSummary": "If the 5xx rate exceeds 2% at any point in the 15-minute window, switch back to blue ($BLUE_TG_ARN); continue only if at or below 2%.",
+      "mustConvey": "above 2% within the 15-minute window -> switch back to blue",
+      "binding": "claim", "bindingReason": "Continuing when the error rate exceeded 2% is the opposite of the instruction.",
+      "claimCards": ["u2_n13"], "carriers": ["u2_n13", "u2_a2"],
+      "perClaimCard": { "u2_n13": "carried" },
+      "confidence": "high", "notes": "intra-unit"
+    },
+    {
+      "id": "r9",
+      "claimUnits": ["u24"], "claimSummary": "Retire blue: scale it down; it becomes the idle environment for the next release.",
+      "conditionUnits": ["u23", "u24"], "kind": "precondition",
+      "conditionSummary": "Only after 24 hours on standby without a switch-back.",
+      "mustConvey": "after 24 hours without a switch-back",
+      "binding": "claim", "bindingReason": "Scaling blue down before 24 hours, or after a switch-back, removes the rollback target / the live environment.",
+      "claimCards": ["u2_n17", "u2_a3"], "carriers": ["u2_n17", "u2_n15", "u2_a3", "g2"],
+      "perClaimCard": { "u2_n17": "carried", "u2_a3": "carried" },
+      "confidence": "high", "notes": "u2_a3 says 'after a 24-hour standby period' (omits 'without a switch-back' but the 24h bound is recognisable)."
+    },
+    {
+      "id": "r10",
+      "claimUnits": ["u23"], "claimSummary": "Blue, left running unchanged on standby for 24 hours, is your rollback target.",
+      "conditionUnits": ["u29", "u30"], "kind": "precondition",
+      "conditionSummary": "Do not run the next release's migrations while blue is on standby, or the standby may not work against the schema and switch-back stops being safe.",
+      "mustConvey": "no next-release migrations while blue is on standby",
+      "binding": "claim", "bindingReason": "If the next release's migrations run during standby, blue is no longer a safe rollback target.",
+      "claimCards": ["u2_n15"], "carriers": ["u3_n5", "u3_n6"],
+      "perClaimCard": { "u2_n15": "separated" },
+      "confidence": "high", "notes": "g3 takeaway 'avoid migrations on standby' also conveys it, but g3 is not u2_n15's frame; only a frame-level g2->g3 arrow exists."
+    },
+    {
+      "id": "r11",
+      "claimUnits": ["u22"], "claimSummary": "Switching back to blue returns all traffic within about 30 seconds (fast rollback).",
+      "conditionUnits": ["u26"], "kind": "caveat",
+      "conditionSummary": "After step 5, requests in flight on green during the switch may fail and need a client retry.",
+      "mustConvey": "in-flight requests may fail and need client retry",
+      "binding": "set", "bindingReason": "The switch-back is still fast; the condition only adds a cost to it.",
+      "claimCards": ["u2_n13"], "carriers": ["u3_n2"],
+      "perClaimCard": { "u2_n13": "separated" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r12",
+      "claimUnits": ["u25"], "claimSummary": "A rollback is cheap because customers never saw green.",
+      "conditionUnits": ["u25"], "kind": "scope",
+      "conditionSummary": "Only before step 5 (the traffic switch).",
+      "mustConvey": "before step 5 / before switching traffic",
+      "binding": "claim", "bindingReason": "After step 5 customers have seen green, so 'cheap, customers never saw it' is false.",
+      "claimCards": ["u3_n1"], "carriers": ["u3_n1"],
+      "perClaimCard": { "u3_n1": "carried" },
+      "confidence": "high", "notes": "intra-sentence"
+    },
+    {
+      "id": "r13",
+      "claimUnits": ["u3", "u4"], "claimSummary": "Keep two identical production environments and switch traffic between them.",
+      "conditionUnits": ["u6"], "kind": "caveat",
+      "conditionSummary": "Costs twice the infrastructure during a release; idle environment scaled down between releases.",
+      "mustConvey": "twice the infrastructure during a release",
+      "binding": "set", "bindingReason": "The approach still works; the condition is its cost.",
+      "claimCards": ["u0_n1"], "carriers": ["u0_n1", "u0_n2"],
+      "perClaimCard": { "u0_n1": "carried" },
+      "confidence": "medium", "notes": "u0_n2 only says 'still incurs some expense' (no 'twice')."
+    },
+    {
+      "id": "r14",
+      "claimUnits": ["u1"], "claimSummary": "The tutorial walks through a blue-green release of orders-api.",
+      "conditionUnits": ["u2"], "kind": "precondition",
+      "conditionSummary": "Assumes the service already runs behind a load balancer.",
+      "mustConvey": "already behind a load balancer",
+      "binding": "set", "bindingReason": "The tutorial description stays true; the assumption scopes who can follow it.",
+      "claimCards": ["u4_n1"], "carriers": ["u4_n2", "u4_a1"],
+      "perClaimCard": { "u4_n1": "separated" },
+      "confidence": "medium", "notes": "u4_n1 and its carriers share frame g4 but g4's label/takeaway do not mention the load balancer and there is no arrow."
+    }
+  ],
+  "notes": "No records for u8, u11, u12 (prerequisites stated as standalone requirements, not limits on another claim), u20/u21 (command and timing facts), u28 (advice), u1/u31 boilerplate. Step title shapes (u2_n1..u2_n16 shapes) are not treated as claim cards. u4_n1/u4_a1 restate u1's 'fresh build' while u15 requires the staging artifact; not a condition issue but potentially confusing. Rollback-related conditions (r1, r10, r11) are systematically split: claims sit in g0/g2, conditions in g1/g3, joined only by frame-level arrows."
+}

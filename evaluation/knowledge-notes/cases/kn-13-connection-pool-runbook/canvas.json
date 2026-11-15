@@ -1,0 +1,1019 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-13-connection-pool-runbook",
+  "template": "sectioned",
+  "templateNote": "Three sections: why, operating, takeaway. 'Operating the pool' is one section with five sub-topics (plain headings), as the source has it; splitting it into five plan sections would be a valid organisation too, but this case tests that one large section renders readably.",
+  "frames": [
+    {
+      "id": "f.why",
+      "title": "Why pool connections",
+      "titleMatch": {
+        "all": [
+          [
+            "why"
+          ]
+        ]
+      },
+      "purpose": "Why the service pools connections at all.",
+      "rationale": "Three sentences of motivation, separate from operations.",
+      "children": [
+        "e.setup",
+        "e.cap"
+      ],
+      "arrangement": "grid",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.operating",
+      "title": "Operating the pool",
+      "titleMatch": {
+        "all": [
+          [
+            "operat",
+            "running the pool",
+            "run the pool",
+            "managing the pool"
+          ]
+        ]
+      },
+      "purpose": "Everything an operator sets or watches: sizing, timeouts, health checks and failover, leaks, monitoring.",
+      "rationale": "One section in the source and in the plan. It is too large to read whole, so the renderer draws it as parts along its five sub-topics; the plan still has one group, and every caveat and explanation stays in its claim's part.",
+      "children": [
+        "e.pool-size",
+        "e.why-18",
+        "e.bigger-pool",
+        "e.idle-night",
+        "e.borrow",
+        "e.wait-why",
+        "e.statement",
+        "e.transactions",
+        "e.idle-check",
+        "e.replace",
+        "e.failover",
+        "e.refill",
+        "e.refill-why",
+        "e.leak-log",
+        "e.leak-cause",
+        "e.leak-review",
+        "e.gauges",
+        "e.alert",
+        "e.queue",
+        "e.idle-gauge"
+      ],
+      "arrangement": "grid",
+      "expansion": "Rendered with organisation v2: split at its sub-topic headings into frames titled 'Operating the pool — <sub-topic>' (part 1 keeps 'Operating the pool').",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "f.takeaway",
+      "title": "Takeaway",
+      "titleMatch": {
+        "all": [
+          [
+            "takeaway",
+            "summary",
+            "in short"
+          ]
+        ]
+      },
+      "purpose": "The document's closing point.",
+      "rationale": "May also be the operating section's takeaway line instead of a frame.",
+      "children": [
+        "e.takeaway"
+      ],
+      "requirement": "optional",
+      "support": "implemented"
+    }
+  ],
+  "elements": [
+    {
+      "id": "e.setup",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "main idea",
+      "content": "A pool skips the 30 ms connection setup",
+      "knowledge": [
+        "ku.setup-cost"
+      ],
+      "match": {
+        "all": [
+          [
+            "30 ms",
+            "30ms",
+            "30 milliseconds"
+          ],
+          [
+            "skip",
+            "avoid",
+            "reuse",
+            "lend"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.why",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.cap",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim",
+      "content": "The pool caps the service's connections, protecting the database from a spike",
+      "knowledge": [
+        "ku.cap-protects"
+      ],
+      "match": {
+        "all": [
+          [
+            "cap",
+            "limit",
+            "bound"
+          ],
+          [
+            "spike",
+            "flood",
+            "burst"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.why",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.pool-size",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "rule",
+      "content": "20 connections per instance; autoscaler capped at 18 instances",
+      "knowledge": [
+        "ku.pool-size"
+      ],
+      "match": {
+        "all": [
+          [
+            "20"
+          ],
+          [
+            "18"
+          ],
+          [
+            "autoscal"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.operating",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.why-18",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "explanation",
+      "content": "400 connections, 40 reserved for migrations and administrators: room for 18 instances",
+      "knowledge": [
+        "ku.why-18"
+      ],
+      "match": {
+        "all": [
+          [
+            "400"
+          ],
+          [
+            "40 ",
+            "40 are",
+            "40 of",
+            "reserved"
+          ],
+          [
+            "migration",
+            "administrator",
+            "admin"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.operating",
+      "layout": "Linked to (explaining) the sizing rule, in the same part when the section is split.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.bigger-pool",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim with its limit",
+      "content": "A bigger pool helps only while requests wait; past CPU saturation more connections slow every query",
+      "knowledge": [
+        "ku.bigger-pool",
+        "ku.cpu-saturated"
+      ],
+      "match": {
+        "all": [
+          [
+            "pool size",
+            "bigger pool",
+            "larger pool",
+            "more connections"
+          ],
+          [
+            "wait",
+            "queue"
+          ],
+          [
+            "only",
+            "help"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.operating",
+      "layout": "The saturation limit is on this card, never a card of its own.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.idle-night",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim",
+      "content": "Peak sizing keeps idle connections at night (memory only)",
+      "knowledge": [
+        "ku.idle-night"
+      ],
+      "match": {
+        "all": [
+          [
+            "idle"
+          ],
+          [
+            "night",
+            "overnight",
+            "off-peak"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.operating",
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "e.borrow",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "rule",
+      "content": "Borrowing waits at most 2 seconds, then fails with POOL_EXHAUSTED",
+      "knowledge": [
+        "ku.borrow-wait"
+      ],
+      "match": {
+        "all": [
+          [
+            "2 seconds",
+            "2 s",
+            "2-second",
+            "two seconds"
+          ],
+          [
+            "borrow"
+          ],
+          [
+            "pool_exhausted",
+            "fails"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.operating",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.wait-why",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "explanation",
+      "content": "The wait is shorter than the 5-second request deadline on purpose",
+      "knowledge": [
+        "ku.wait-vs-deadline"
+      ],
+      "match": {
+        "all": [
+          [
+            "5-second",
+            "5 second",
+            "5 s"
+          ],
+          [
+            "deadline"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.operating",
+      "layout": "Linked to (explaining) the borrow limit, in the same part.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.statement",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim with its limit",
+      "content": "Every query times out after 3 seconds, except migrations",
+      "knowledge": [
+        "ku.statement-timeout",
+        "ku.migrations-exempt"
+      ],
+      "match": {
+        "all": [
+          [
+            "3 seconds",
+            "3s",
+            "3 s"
+          ],
+          [
+            "statement",
+            "quer"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.operating",
+      "layout": "The migrations exception is on this card.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.transactions",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim",
+      "content": "Transactions stay under 500 ms",
+      "knowledge": [
+        "ku.short-transactions"
+      ],
+      "match": {
+        "all": [
+          [
+            "500 ms",
+            "500ms"
+          ],
+          [
+            "transaction"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.operating",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.idle-check",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim",
+      "content": "Connections idle over 60 seconds are checked with SELECT 1 before lending",
+      "knowledge": [
+        "ku.idle-check"
+      ],
+      "match": {
+        "all": [
+          [
+            "60 seconds",
+            "60 s"
+          ],
+          [
+            "select 1",
+            "check"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.operating",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.replace",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim",
+      "content": "A connection that fails the check is replaced",
+      "knowledge": [
+        "ku.replace-failed"
+      ],
+      "match": {
+        "all": [
+          [
+            "fail"
+          ],
+          [
+            "replac",
+            "fresh"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.operating",
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "e.failover",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim with its limit",
+      "content": "A failover drains and refills the pool; POOL_EXHAUSTED for up to about 4 seconds",
+      "knowledge": [
+        "ku.failover-drain",
+        "ku.failover-errors"
+      ],
+      "match": {
+        "all": [
+          [
+            "failover",
+            "fail over"
+          ],
+          [
+            "drain",
+            "every open connection",
+            "all connections"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.operating",
+      "layout": "The 4-second error window is on this card.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.refill",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim",
+      "content": "Refilling is limited to 5 new connections per second per instance",
+      "knowledge": [
+        "ku.refill-rate"
+      ],
+      "match": {
+        "all": [
+          [
+            "5 new connections",
+            "5 connections",
+            "5 per second",
+            "5 a second"
+          ],
+          [
+            "refill",
+            "reconnect"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.operating",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.refill-why",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "explanation",
+      "content": "So 18 instances reconnecting together don't overload the new primary",
+      "knowledge": [
+        "ku.refill-why"
+      ],
+      "match": {
+        "all": [
+          [
+            "overload",
+            "overwhelm"
+          ],
+          [
+            "primary"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.operating",
+      "layout": "Linked to (explaining) the refill limit, in the same part.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.leak-log",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim with its limit",
+      "content": "Borrowed over 10 seconds: logged as a possible leak, never taken back by force",
+      "knowledge": [
+        "ku.leak-log",
+        "ku.no-reclaim"
+      ],
+      "match": {
+        "all": [
+          [
+            "10 seconds",
+            "10 s"
+          ],
+          [
+            "leak"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.operating",
+      "layout": "'Not reclaimed' is on this card.",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.leak-cause",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim",
+      "content": "Most leaks come from early returns on error paths",
+      "knowledge": [
+        "ku.leak-cause"
+      ],
+      "match": {
+        "all": [
+          [
+            "error path",
+            "early return",
+            "returned early",
+            "returns on error"
+          ],
+          [
+            "leak",
+            "releas"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.operating",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.leak-review",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim",
+      "content": "Leak warnings are reviewed weekly; a recurring leak gets a ticket",
+      "knowledge": [
+        "ku.leak-review"
+      ],
+      "match": {
+        "all": [
+          [
+            "week"
+          ],
+          [
+            "ticket",
+            "review"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.operating",
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "e.gauges",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim",
+      "content": "Three gauges: in use, idle, waiting",
+      "knowledge": [
+        "ku.gauges"
+      ],
+      "match": {
+        "all": [
+          [
+            "gauge"
+          ],
+          [
+            "in use"
+          ],
+          [
+            "waiting",
+            "idle"
+          ]
+        ]
+      },
+      "hierarchy": "detail",
+      "frame": "f.operating",
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "e.alert",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "rule",
+      "content": "On-call is paged after 30 seconds of waiting in a row",
+      "knowledge": [
+        "ku.page-alert"
+      ],
+      "match": {
+        "all": [
+          [
+            "30 seconds",
+            "30 s"
+          ],
+          [
+            "page",
+            "alert",
+            "on-call"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.operating",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.queue",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "diagnosis rule",
+      "content": "A sustained queue usually means slow queries, not a small pool",
+      "knowledge": [
+        "ku.queue-slow-queries"
+      ],
+      "match": {
+        "all": [
+          [
+            "queue"
+          ],
+          [
+            "slow quer",
+            "slowest"
+          ],
+          [
+            "pool"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.operating",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.idle-gauge",
+      "element": "text_card",
+      "planNodeTypes": [
+        "text"
+      ],
+      "role": "claim",
+      "content": "The idle gauge shows when a failover is over",
+      "knowledge": [
+        "ku.idle-gauge-failover"
+      ],
+      "match": {
+        "all": [
+          [
+            "idle gauge",
+            "idle connections"
+          ],
+          [
+            "failover"
+          ],
+          [
+            "zero",
+            "finished",
+            "over",
+            "recover"
+          ]
+        ]
+      },
+      "hierarchy": "secondary",
+      "frame": "f.operating",
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "e.takeaway",
+      "element": "takeaway",
+      "planNodeTypes": [
+        "text",
+        "group",
+        "heading"
+      ],
+      "role": "takeaway",
+      "content": "Set the pool's size, timeouts and failover together with the database's own limits",
+      "knowledge": [
+        "ku.takeaway"
+      ],
+      "match": {
+        "all": [
+          [
+            "database's own limits",
+            "database limits",
+            "database's limits",
+            "limits of the database"
+          ],
+          [
+            "size",
+            "timeout",
+            "failover"
+          ]
+        ]
+      },
+      "hierarchy": "primary",
+      "frame": "f.takeaway",
+      "requirement": "mandatory",
+      "support": "implemented"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r.size-why",
+      "from": "e.pool-size",
+      "to": "e.why-18",
+      "type": "explained_by",
+      "acceptableTypes": [
+        "explained_by",
+        "supports",
+        "references",
+        "relates_to"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "bidirectional",
+      "explanation": "The arithmetic explains the cap of 18 instances.",
+      "evidence": [
+        "u5",
+        "u6"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.wait-why",
+      "from": "e.borrow",
+      "to": "e.wait-why",
+      "type": "explained_by",
+      "acceptableTypes": [
+        "explained_by",
+        "supports",
+        "references",
+        "relates_to"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "bidirectional",
+      "explanation": "The deadline explains why the wait is 2 seconds.",
+      "evidence": [
+        "u10"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.refill-why",
+      "from": "e.refill",
+      "to": "e.refill-why",
+      "type": "explained_by",
+      "acceptableTypes": [
+        "explained_by",
+        "supports",
+        "references",
+        "relates_to"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "bidirectional",
+      "explanation": "Protecting the new primary explains the refill limit.",
+      "evidence": [
+        "u17"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "mandatory",
+      "support": "implemented"
+    },
+    {
+      "id": "r.drain-refill",
+      "from": "e.failover",
+      "to": "e.refill",
+      "type": "flows_to",
+      "acceptableTypes": [
+        "flows_to",
+        "relates_to",
+        "explained_by",
+        "depends_on"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "directed",
+      "explanation": "After the drain, the pool refills at a limited rate.",
+      "evidence": [
+        "u16",
+        "u17"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "r.check-replace",
+      "from": "e.idle-check",
+      "to": "e.replace",
+      "type": "flows_to",
+      "acceptableTypes": [
+        "flows_to",
+        "relates_to",
+        "explained_by"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "directed",
+      "explanation": "A failed check leads to a replacement.",
+      "evidence": [
+        "u14",
+        "u15"
+      ],
+      "provenance": "explicit",
+      "inferenceAllowed": true,
+      "reviewRequired": false,
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "r.leak-review",
+      "from": "e.leak-log",
+      "to": "e.leak-review",
+      "type": "explained_by",
+      "acceptableTypes": [
+        "explained_by",
+        "supports",
+        "references",
+        "relates_to",
+        "flows_to"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "directed",
+      "explanation": "What happens to a logged leak.",
+      "evidence": [
+        "u19",
+        "u22"
+      ],
+      "provenance": "inferred",
+      "inferenceAllowed": true,
+      "reviewRequired": true,
+      "requirement": "optional",
+      "support": "implemented"
+    },
+    {
+      "id": "r.cap-size",
+      "from": "e.cap",
+      "to": "e.pool-size",
+      "type": "relates_to",
+      "acceptableTypes": [
+        "relates_to",
+        "flows_to",
+        "explained_by",
+        "implements"
+      ],
+      "label": {
+        "required": false
+      },
+      "direction": "directed",
+      "explanation": "The cap is set per instance.",
+      "evidence": [
+        "u3",
+        "u4"
+      ],
+      "provenance": "inferred",
+      "inferenceAllowed": true,
+      "reviewRequired": true,
+      "requirement": "optional",
+      "support": "implemented"
+    }
+  ],
+  "together": [
+    {
+      "elements": [
+        "e.pool-size",
+        "e.why-18",
+        "e.bigger-pool",
+        "e.borrow",
+        "e.wait-why",
+        "e.statement",
+        "e.transactions",
+        "e.idle-check",
+        "e.failover",
+        "e.refill",
+        "e.refill-why",
+        "e.leak-log",
+        "e.leak-cause",
+        "e.alert",
+        "e.queue",
+        "e.idle-gauge"
+      ],
+      "reason": "One section of the source: the plan keeps it one group, even when it is drawn as several parts."
+    }
+  ],
+  "hierarchy": [
+    {
+      "main": "e.pool-size",
+      "supporting": [
+        "e.why-18"
+      ],
+      "reason": "The arithmetic supports the sizing rule."
+    },
+    {
+      "main": "e.borrow",
+      "supporting": [
+        "e.wait-why"
+      ],
+      "reason": "The deadline explains the wait limit."
+    }
+  ],
+  "unsupported": [
+    {
+      "capability": "ai.cites",
+      "ideal": "Each card cites its units (sizing u4–u7, timeouts u9–u13, failover u14–u18, leaks u19–u22, watching u23–u26).",
+      "expectedToday": "Not checkable; matching is by content."
+    },
+    {
+      "capability": "canvas.frame-split-oversized",
+      "ideal": "A section too large to read whole is drawn as parts along its sub-topics, each titled 'Section — sub-topic', with every card's caveat and explanation in its part.",
+      "expectedToday": "Organisation v2 (distil) splits it at render time (renderer/frameSplit.ts); organisation v1 draws one oversized frame. The v2-only render assertions say so."
+    }
+  ]
+}

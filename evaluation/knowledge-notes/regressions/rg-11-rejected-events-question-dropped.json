@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-rejected-events-question-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The open question about what happens to rejected events is silently dropped from the open-questions list.",
+  "mutations": [
+    { "op": "replace_text", "node": "c5", "find": "\n- Rejected events: dropped, or kept for debugging?", "replace": "" }
+  ],
+  "expectFailing": ["a.rejected-open"]
+}

@@ -127,6 +127,7 @@ export function registerAcuteTools(server: McpServer, deps: AcuteToolDeps): void
     scan: new WorkspaceScan(deps.services, deps.workspaceId),
     workspaceId: deps.workspaceId,
     currentContext: deps.currentContext,
+    ...(deps.services.meta ? { meta: deps.services.meta } : {}),
   });
   registerWriteTools(server, {
     workspaceId: deps.workspaceId,

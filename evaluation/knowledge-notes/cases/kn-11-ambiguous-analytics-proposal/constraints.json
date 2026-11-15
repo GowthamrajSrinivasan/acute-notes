@@ -1,0 +1,171 @@
+{
+  "id": "kn-11-ambiguous-analytics-proposal",
+  "kind": "architecture_proposal",
+  "source": "# Proposal: product-analytics event pipeline (draft v0.3)\n\n## Context\n\nThe growth team wants to understand how customers use the Lumen web and mobile apps. Today, product events are scattered across three logging tools, and nobody can answer a simple funnel question without exporting CSV files by hand. This proposal describes a single pipeline that collects product-analytics events, enriches them and makes them available in the warehouse. The first questions the team wants answered are how many new accounts finish onboarding, and which features paying customers use in their first month.\n\n## Proposed design\n\nClient SDKs in the web and mobile apps send events to a collector service over HTTPS. Clients batch events and send them every 10 seconds, or sooner when the app goes to the background. Each event carries an event name, a timestamp, an anonymous device id and, for signed-in users, an account id. The collector validates each event against the schema registry and rejects events that do not match a registered schema. Accepted events are published to the `analytics.events` topic on the message bus.\n\nAn enrichment step consumes the topic and adds account attributes, such as plan tier and region. The enrichment step uses the user service. If an account cannot be found, the event is passed on without account attributes. Enriched events are then written to the warehouse in hourly batches, where the analytics team builds dashboards on them. The first dashboards will cover the onboarding funnel and weekly active accounts per plan tier.\n\nWe expect the user service to stay lightly loaded, so enrichment should avoid adding much traffic to it.\n\n## Schema registry\n\nEvery event type must be registered before clients can send it. Schemas are versioned, and a breaking change requires a new version rather than an edit to the existing one. Ownership of the schema registry has not been decided; the platform team and the data team have each suggested the other.\n\n## Freshness\n\nProduct managers have asked to see feature adoption as it happens, especially during launches. Launch reviews usually happen within 2 hours of a release. With this pipeline, events reach the warehouse in real time, so launch dashboards stay current.\n\n## Retention and privacy\n\nRaw events will be kept for 30 days and then deleted; only aggregated tables are kept longer. Deleting raw events after a fixed period also limits what an access request has to search. How long the aggregated tables are kept is TBD. Events must not contain email addresses or free-text input from users. IP addresses are truncated by the collector before an event is published.\n\n## Non-goals\n\nThis pipeline is not meant for operational monitoring or alerting; error logs and service metrics stay in the existing observability stack. It will not replace the billing system's records of revenue.\n\n## Components\n\n| Component | Owner | Retention |\n|---|---|---|\n| Collector | Platform team | none |\n| `analytics.events` topic | Platform team | 7 days |\n| Enrichment | Data team | none |\n| Warehouse raw events | Data team | 90 days |\n| Schema registry | TBD | indefinite |\n\n## Rollout\n\nPhase 1 covers the web app's sign-up and checkout events. Phase 2 adds mobile events once the mobile SDK is ready; no date has been set for it. Phase 1 is expected to take about 6 weeks for 2 engineers. The cost of running the pipeline has not been estimated yet.\n\n## Open questions\n\n- Who owns the schema registry?\n- What happens to events the collector rejects: are they dropped, or kept somewhere for debugging?\n- Should mobile events use the same schemas as web events?\n\n## Next step\n\nWe ask for approval to start phase 1 while the open questions are settled in parallel.\n",
+  "critical": [
+    {
+      "quote": "The collector validates each event against the schema registry and rejects events that do not match a registered schema.",
+      "why": "Validation against the registry is the pipeline's only quality gate."
+    },
+    {
+      "quote": "The enrichment step uses the user service.",
+      "why": "'Uses' doesn't say whether enrichment calls the service per event, caches lookups or reads a replica; that choice changes load and failure modes."
+    },
+    {
+      "quote": "Enriched events are then written to the warehouse in hourly batches, where the analytics team builds dashboards on them.",
+      "why": "Hourly batches contradict 'in real time' (u21)."
+    },
+    {
+      "quote": "Every event type must be registered before clients can send it.",
+      "why": "No unregistered event type is accepted."
+    },
+    {
+      "quote": "Ownership of the schema registry has not been decided; the platform team and the data team have each suggested the other.",
+      "why": "No owner: must not be filled in with either team."
+    },
+    {
+      "quote": "With this pipeline, events reach the warehouse in real time, so launch dashboards stay current.",
+      "why": "'In real time' contradicts hourly batches (u13); with hourly batches a launch review 2 hours in sees at most two loads."
+    },
+    {
+      "quote": "Raw events will be kept for 30 days and then deleted; only aggregated tables are kept longer.",
+      "why": "30 days here, 90 days in the components table (u32)."
+    },
+    {
+      "quote": "How long the aggregated tables are kept is TBD.",
+      "why": "Missing value; must stay TBD."
+    },
+    {
+      "quote": "Events must not contain email addresses or free-text input from users.",
+      "why": "Privacy rule."
+    },
+    {
+      "quote": "| Warehouse raw events | Data team | 90 days |",
+      "why": "90 days here, 30 days in the retention section (u22)."
+    },
+    {
+      "quote": "The cost of running the pipeline has not been estimated yet.",
+      "why": "Missing estimate; must not be invented."
+    },
+    {
+      "quote": "What happens to events the collector rejects: are they dropped, or kept somewhere for debugging?",
+      "why": "The only statement about rejected events; it is a question, not a design."
+    }
+  ],
+  "exact": [
+    "10 seconds",
+    "analytics.events",
+    "2 hours",
+    "30 days",
+    "7 days",
+    "90 days",
+    "6 weeks",
+    "2 engineers"
+  ],
+  "groups": {
+    "together": [
+      [
+        "Conflict: 'hourly batches' (design) vs 'in real time' (freshness); matters because launch reviews happen within 2 hours",
+        "Conflict: raw events kept 30 days (text) vs 90 days (components table)",
+        "Who owns the schema registry? Not decided; platform and data teams each suggested the other",
+        "Enrichment 'uses' the user service: per-event call, cache or replica read? Not stated; the service should stay lightly loaded",
+        "Also open: aggregate-table retention (TBD), what happens to rejected events, running cost, phase 2 date, mobile schemas"
+      ],
+      [
+        "One pipeline instead of three logging tools, to answer funnel questions without CSV exports",
+        "No email addresses or free text in events; the collector truncates IP addresses",
+        "Phase 1: web sign-up and checkout events, about 6 weeks for 2 engineers; approval asked to start while questions are settled"
+      ]
+    ],
+    "apart": [
+      [
+        "Conflict: 'hourly batches' (design) vs 'in real time' (freshness); matters because launch reviews happen within 2 hours",
+        "Warehouse (dashboards); write cadence and raw retention disputed"
+      ],
+      [
+        "Who owns the schema registry? Not decided; platform and data teams each suggested the other",
+        "Schema registry: every event type registered, versioned; owner not decided"
+      ],
+      [
+        "Enrichment 'uses' the user service: per-event call, cache or replica read? Not stated; the service should stay lightly loaded",
+        "User service (keep lightly loaded)"
+      ]
+    ]
+  },
+  "hierarchy": [
+    {
+      "main": "One pipeline instead of three logging tools, to answer funnel questions without CSV exports",
+      "supporting": [
+        "Phase 1: web sign-up and checkout events, about 6 weeks for 2 engineers; approval asked to start while questions are settled"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "Web & mobile SDKs (batch every 10 s)",
+      "to": "Collector service: validates against registered schemas, rejects the rest, truncates IPs (platform team)",
+      "type": "calls",
+      "label": "events over HTTPS"
+    },
+    {
+      "from": "Collector service: validates against registered schemas, rejects the rest, truncates IPs (platform team)",
+      "to": "Schema registry: every event type registered, versioned; owner not decided",
+      "type": "depends_on",
+      "label": "validates against schemas"
+    },
+    {
+      "from": "Collector service: validates against registered schemas, rejects the rest, truncates IPs (platform team)",
+      "to": "Message bus topic analytics.events (7 days)",
+      "type": "publishes",
+      "label": "accepted events"
+    },
+    {
+      "from": "Message bus topic analytics.events (7 days)",
+      "to": "Enrichment: adds plan tier and region; how it gets account data is unclear",
+      "type": "flows_to",
+      "label": "consumed by enrichment"
+    },
+    {
+      "from": "Enrichment: adds plan tier and region; how it gets account data is unclear",
+      "to": "User service (keep lightly loaded)",
+      "type": "relates_to",
+      "label": "uses (how is unclear)"
+    },
+    {
+      "from": "Enrichment: adds plan tier and region; how it gets account data is unclear",
+      "to": "Warehouse (dashboards); write cadence and raw retention disputed",
+      "type": "writes",
+      "label": "enriched events"
+    }
+  ],
+  "mustNotSay": [
+    {
+      "text": "Raw events are kept for 90 days. (or: for 30 days.)",
+      "why": "The source gives both values; stating one silently resolves the conflict."
+    },
+    {
+      "text": "Events reach the warehouse in real time. (or: in hourly batches.)",
+      "why": "The source says both; stating one as the design silently resolves the conflict."
+    },
+    {
+      "text": "The platform team (or the data team) owns the schema registry.",
+      "why": "Ownership is explicitly undecided."
+    },
+    {
+      "text": "Enrichment calls the user service synchronously for every event. (or: reads from a user-service replica.)",
+      "why": "The source only says 'uses'; the kind of dependency is not stated."
+    },
+    {
+      "text": "Rejected events are written to a dead-letter queue.",
+      "why": "Invented: what happens to rejected events is an open question."
+    },
+    {
+      "text": "Rejected events are dropped. (or: kept for debugging.)",
+      "why": "The source asks exactly this (u39); stating either answer silently settles an open question."
+    },
+    {
+      "text": "The pipeline will cost about $X per month.",
+      "why": "Cost has not been estimated."
+    }
+  ]
+}

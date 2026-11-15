@@ -1,0 +1,312 @@
+{
+  "caseId": "kn-12-flag-rollout-update",
+  "adjudicator": "phase 3 adjudicator (protocol v2), 2026-11-13",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u3"],
+      "verdict": "set",
+      "claimUnits": ["u2"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u2"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u2"] }
+      ],
+      "conditionQuote": "It does not cover experiments, which follow their own process.",
+      "claimQuote": "It explains how a flag goes from off to fully on",
+      "rationale": "Scope exclusion; the guide still explains flag rollout.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_n2", "u0_ax1"],
+          "carriers": ["u0_n3", "u0_ax2"],
+          "perClaimCard": { "u0_n2": "separated", "u0_ax1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u7"],
+      "verdict": "claim",
+      "claimUnits": ["u7"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u7"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u7"] }
+      ],
+      "conditionQuote": "only for staff accounts",
+      "claimQuote": "In the internal stage the flag is on",
+      "rationale": "For customer accounts the flag is off in the internal stage.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n2"],
+          "carriers": ["u1_n2"],
+          "perClaimCard": { "u1_n2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u8"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u8"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u8"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u8"] }
+      ],
+      "conditionQuote": "but the guide sets no minimum for it",
+      "claimQuote": "The internal stage usually lasts one working day",
+      "rationale": "If 'usually' is part of the claim it already hedges and 'no minimum' only blocks a misreading (set); if the claim is 'lasts one working day', it reads as a required minimum the guide does not set (claim).",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n2"],
+          "carriers": ["u1_n2"],
+          "perClaimCard": { "u1_n2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u12"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u9", "u12"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u12"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u9"] }
+      ],
+      "conditionQuote": "chosen at random per request rather than per user",
+      "claimQuote": "During canary the flag is on for 5% of requests",
+      "rationale": "Read as 5% of users, u12 misdescribes exposure (claim); read as specifying u9's 'small share of real traffic', u9 stays true (set). Different claim links, both defensible.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n4"],
+          "carriers": ["u1_n4"],
+          "perClaimCard": { "u1_n4": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u13"],
+      "verdict": "claim",
+      "claimUnits": ["u12", "u13", "u16"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u12", "u13"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u16"] }
+      ],
+      "conditionQuote": "It must stay at that level for at least 30 minutes",
+      "claimQuote": "A flag advances from canary to general availability only when the automated metrics check passes.",
+      "rationale": "Same verdict, non-overlapping links. The source ties them: u19 'runs the check automatically at the end of the canary window', so the 30-minute minimum bounds both the canary stage (u12) and when advancing can happen (u16); both links kept.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n4", "u1_n6", "u1_a1"],
+          "carriers": ["u1_n4"],
+          "perClaimCard": { "u1_n4": "carried", "u1_n6": "separated", "u1_a1": "separated" },
+          "changedFromV1": {
+            "u1_n6": "new card (R2's u16 link); mentions 'end of the canary window' but no 30-minute bound; separated",
+            "u1_a1": "new card (R2's u16 link: 'gatekeeper between canary and general availability'); separated"
+          }
+        }
+      }
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u14"],
+      "verdict": "set",
+      "claimUnits": ["u13"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u13"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u13"] }
+      ],
+      "conditionQuote": "a manual change restarts the measurement window",
+      "claimQuote": "It must stay at that level for at least 30 minutes",
+      "rationale": "Operational rule with consequence; the 30-minute rule stays true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n4"],
+          "carriers": ["u1_n4"],
+          "perClaimCard": { "u1_n4": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u16", "u18"],
+      "verdict": "claim",
+      "claimUnits": ["u16"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u16"] }
+      ],
+      "conditionQuote": "only when the automated metrics check passes",
+      "claimQuote": "A flag advances from canary to general availability",
+      "rationale": "Intra-sentence gate; a flag whose check fails does not advance (u18).",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n6", "u1_a1"],
+          "carriers": ["u1_n6", "u1_a1", "arrow:u1_n5->u1_n7", "arrow:u1_n5->u1_n3"],
+          "perClaimCard": { "u1_n6": "carried", "u1_a1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u20"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u20"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u20"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u20"] }
+      ],
+      "conditionQuote": "turns it off within 1 minute",
+      "claimQuote": "Every flag must have a kill switch",
+      "rationale": "Without the bound a slow kill switch would seem to satisfy the rule (claim), yet 'every flag must have a kill switch' stays true and the bound is a performance requirement (set).",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n1"],
+          "carriers": ["u2_n1"],
+          "perClaimCard": { "u2_n1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "conditionUnits": ["u21", "u22"],
+      "verdict": "claim",
+      "claimUnits": ["u9"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "conditionQuote": "A flag without a tested kill switch cannot enter canary.",
+      "claimQuote": "Canary then exposes a small share of real traffic to the change.",
+      "rationale": "Prerequisite gate for entering canary; omitting it misstates the stage sequence.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n4", "u1_a1"],
+          "carriers": ["u2_n2", "u2_n3", "u2_a2", "arrow:g1->g2"],
+          "perClaimCard": { "u1_n4": "arrow_label", "u1_a1": "arrow_label" },
+          "changedFromV1": {
+            "u1_n4": "separated→arrow_label: frame arrow g1->g2 touching the card's frame is labelled 'kill switch tested before canary' (v2 §2 example)",
+            "u1_a1": "separated→arrow_label: same g1->g2 label"
+          }
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "conditionUnits": ["u24"],
+      "verdict": "set",
+      "claimUnits": ["u24"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u24"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u24"] }
+      ],
+      "conditionQuote": "turning it back on starts the rollout again from the internal stage",
+      "claimQuote": "Turning a flag off is always safe",
+      "rationale": "Cost of using the kill switch; 'always safe' stays true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n5"],
+          "carriers": ["u2_n5"],
+          "perClaimCard": { "u2_n5": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c11",
+      "conditionUnits": ["u27"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u25"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u25"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u25"] }
+      ],
+      "conditionQuote": "until the flag has been at 100% for one hour",
+      "claimQuote": "While the flag ramps up, the owner watches the error dashboard",
+      "rationale": "'While the flag ramps up' can imply watching stops at 100% (claim) or merely say watching happens during ramp-up, which stays true (set). The source wording supports both.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n8"],
+          "carriers": ["u1_n8"],
+          "perClaimCard": { "u1_n8": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c12",
+      "conditionUnits": ["u28"],
+      "verdict": "claim",
+      "claimUnits": ["u28"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u28"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u28"] }
+      ],
+      "conditionQuote": "that has been fully on for 30 days",
+      "claimQuote": "is removed from the code",
+      "rationale": "Intra-sentence timing condition; a flag fully on for fewer than 30 days is not removed.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n2", "u3_n1", "u3_n5", "g3"],
+          "carriers": ["u3_n1", "u3_n2", "u3_a2", "g3", "arrow:g1->g3"],
+          "perClaimCard": { "u3_n2": "carried", "u3_n1": "carried", "u3_n5": "frame", "g3": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "a1",
+      "conditionUnits": ["u30"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u28"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R2", "verdict": "ambiguous", "claimUnits": ["u28"] },
+        { "who": "R1", "verdict": "not_recorded", "claimUnits": [] }
+      ],
+      "conditionQuote": "Flags that miss the deadline are listed in the weekly stale-flag report.",
+      "claimQuote": "A flag that has been fully on for 30 days is removed from the code.",
+      "rationale": "It either shows removal is not guaranteed (claim) or is enforcement follow-up (set); R1 recorded nothing. The source does not settle it.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n2", "u3_n5", "g3"],
+          "carriers": ["u3_n7", "u3_a2", "u3_n6", "g3", "arrow:u3_n1->u3_n6"],
+          "perClaimCard": { "u3_n2": "frame", "u3_n5": "frame", "g3": "carried" },
+          "changedFromV1": { "u3_n2": "no v1 record (new condition)", "u3_n5": "no v1 record (new condition)", "g3": "no v1 record (new condition)" }
+        }
+      }
+    }
+  ],
+  "notes": "Claim cards re-checked under v2. Outcome changes: c9 u1_n4 and u1_a1 separated→arrow_label via the g1->g2 label 'kill switch tested before canary'. Arrow labels 'if check passes'/'if check fails' and g1->g3 'after 100% for 30 days' added as carriers; they don't change outcomes because the cards they touch are already carried/frame or are not claim cards. c5 claim link widened to include R2's u16 reading (adjudicated)."
+}

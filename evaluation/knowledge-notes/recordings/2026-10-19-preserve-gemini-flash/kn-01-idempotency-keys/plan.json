@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "g0",
+      "role": "annotated",
+      "importance": "high",
+      "stableKey": "Idempotency keys § group#0",
+      "type": "group",
+      "content": {
+        "label": "Idempotency keys",
+        "arrangement": "stack",
+        "takeaway": "Idempotency keys ensure safe retries within a 24-hour window, preventing duplicate operations."
+      }
+    },
+    {
+      "id": "u0_n1",
+      "stableKey": "Idempotency keys § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "An idempotency key is a unique value that a client attaches to a request so that the server can recognise a retry of the same operation¹. If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.\n\nFor example, a checkout client sends `Idempotency-Key: 7f3c-91ab` with a payment request. The connection drops before the response arrives, so the client retries with the same key. The server finds the stored result for `7f3c-91ab` and returns the original confirmation, and the customer is charged once.\n\nKeys only protect against duplicates while the server still remembers them². In this design, stored results expire after 24 hours, so a retry sent after that window is treated as a new payment. Keys also do not make two different requests safe³: if a client reuses a key with a different amount, the server must reject the request rather than return the old result.\n\nIn short, idempotency keys make retries safe within a bounded window; they are not a general guarantee against duplicate operations."
+      }
+    },
+    {
+      "id": "u0_n2",
+      "stableKey": "Idempotency keys § text#1",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "¹ Prevents duplicate operations from being processed multiple times.\n² The server's memory of keys is finite.\n³ Reusing a key with different request parameters will result in rejection."
+      }
+    },
+    {
+      "id": "u0_ax1",
+      "title": "Annotation's Contribution",
+      "stableKey": "Idempotency keys § text#2",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The annotation clarifies the core function of idempotency keys: preventing duplicate operations. This is the primary benefit and purpose of their use."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u0_n1",
+      "to": "u0_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u0_ax1",
+      "to": "u0_n2",
+      "type": "relates_to"
+    }
+  ],
+  "metadata": {
+    "title": "Idempotency keys"
+  }
+}

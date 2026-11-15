@@ -219,7 +219,7 @@ describe("Acute-Notes MCP server (F20)", () => {
     expect((await read(client, "acute://context/current")).availableTools).toContain("create_block");
     const readOnly = await connect(await seed(), { getCurrentContext: async () => ctx, toolPolicy: { allowWrites: false } });
     // Read-only: the read tools only — including Phase 7B's reads, never a write.
-    expect((await read(readOnly, "acute://context/current")).availableTools).toEqual(["search_workspace", "get_canvas", "get_page", "get_selected_content", "get_related_objects", ...PROJECT_READ_TOOLS, ...OBJECT_READ_TOOLS, ...LENS_READ_TOOLS]);
+    expect((await read(readOnly, "acute://context/current")).availableTools).toEqual(["search_workspace", "get_canvas", "get_page", "get_selected_content", "get_related_objects", "suggest_placement", "get_consistency", "get_weak_concepts", ...PROJECT_READ_TOOLS, ...OBJECT_READ_TOOLS, ...LENS_READ_TOOLS]);
 
     const foreign = await connect(await seed(), { getCurrentContext: async () => ({ ...ctx, workspace: { id: OTHER, name: "Private" } }) });
     expect(await read(foreign, "acute://context/current")).toEqual({ uri: "acute://context/current", version: 1, available: false });
@@ -240,5 +240,21 @@ describe("Acute-Notes MCP server (F20)", () => {
     expect(canvas.objects).toHaveLength(RESOURCE_LIMITS.objects);
     expect(canvas.truncated).toBe(true);
     expect(text.length).toBeLessThan(150_000);
+  });
+});
+
+describe("get_consistency (Stage 4e): the open consistency records, read-only", () => {
+  it("lists possible and confirmed conflicts of a canvas (deferred on request), never dismissed or closed ones", async () => {
+    const services = await seed();
+    const side = (id: string, sentence: string) => ({ elementId: id, cardName: id, sentence, sentenceHash: "h" });
+    const rec = (id: string, status: string) => ({ id, canvasId: "cv_1", status, strength: "conflict", kind: "differs", a: side("a", "Retries happen three times."), b: side("b", "The worker retries five times."), evidence: { by: "rule", reason: "“three” here, “five” there", at: 1 }, history: [] });
+    await services.meta.set("consistency.cv_1", [rec("p", "possible"), rec("c", "confirmed"), rec("d", "deferred"), rec("x", "dismissed"), rec("z", "closed")]);
+    const client = await connect(services);
+    const call = async (args: Record<string, unknown>) => JSON.parse(((await client.callTool({ name: "get_consistency", arguments: args })).content as { text: string }[]).at(-1)!.text);
+    const open = await call({ canvasId: "cv_1" });
+    expect(open.conflicts.map((c: { id: string }) => c.id)).toEqual(["p", "c"]);
+    expect(open.conflicts[0]).toMatchObject({ strength: "conflict", reason: "“three” here, “five” there", a: { sentence: "Retries happen three times." } });
+    expect((await call({ canvasId: "cv_1", includeDeferred: true })).conflicts.map((c: { id: string }) => c.id)).toEqual(["p", "c", "d"]);
+    expect((await call({ canvasId: "cv_none" })).conflicts).toEqual([]);
   });
 });

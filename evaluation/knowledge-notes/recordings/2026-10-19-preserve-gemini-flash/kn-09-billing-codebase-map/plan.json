@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "u0_h1",
+      "role": "title",
+      "stableKey": "Ledgerline billing service: codebase map § heading#0",
+      "type": "heading",
+      "content": {
+        "text": "Ledgerline billing service: codebase map"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "Ledgerline billing service invoice path: usage, pricing, tax, persistence, events"
+      }
+    },
+    {
+      "id": "g0",
+      "role": "flow",
+      "importance": "high",
+      "stableKey": "Ledgerline billing service: codebase map › Invoice generation entry point § group#0",
+      "type": "group",
+      "content": {
+        "label": "Invoice generation entry point",
+        "arrangement": "chain",
+        "takeaway": "Invoice generation follows a fixed sequence: collect, price, tax, then persist and publish."
+      }
+    },
+    {
+      "id": "u1_n1",
+      "stableKey": "Ledgerline billing service: codebase map › Invoice generation entry point § step#1",
+      "parent": "g0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · generateInvoice(accountId, period)"
+      }
+    },
+    {
+      "id": "u1_n2",
+      "stableKey": "Ledgerline billing service: codebase map › Invoice generation entry point § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "The `generateInvoice(accountId, period)` function is defined in `billing/invoices/generate.ts`, lines 12–58. It is the only exported function in that file. The admin console's \"Regenerate invoice\" action calls it from `billing/admin/regenerate.ts`."
+      }
+    },
+    {
+      "id": "u1_n3",
+      "stableKey": "Ledgerline billing service: codebase map › Invoice generation entry point § step#2",
+      "parent": "g0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · collectUsage(accountId, period)"
+      }
+    },
+    {
+      "id": "u1_n4",
+      "stableKey": "Ledgerline billing service: codebase map › Invoice generation entry point § step#3",
+      "parent": "g0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · priceUsage(lines, plan)"
+      }
+    },
+    {
+      "id": "u1_n5",
+      "stableKey": "Ledgerline billing service: codebase map › Invoice generation entry point § step#4",
+      "parent": "g0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · TaxClient.quote(draft)"
+      }
+    },
+    {
+      "id": "u1_n6",
+      "stableKey": "Ledgerline billing service: codebase map › Invoice generation entry point § step#5",
+      "parent": "g0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "5 · Write invoice and publish event"
+      }
+    },
+    {
+      "id": "u1_n7",
+      "stableKey": "Ledgerline billing service: codebase map › Invoice generation entry point § text#1",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "This step is described under \"Persistence and events\"."
+      }
+    },
+    {
+      "id": "u1_a1",
+      "title": "Process Overview",
+      "stableKey": "Ledgerline billing service: codebase map › Invoice generation entry point § text#2",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The `generateInvoice` function orchestrates a fixed sequence of steps: usage collection, pricing, tax calculation, and finally persistence with event publishing."
+      }
+    },
+    {
+      "id": "u1_src~text",
+      "title": "Also in the source",
+      "stableKey": "Ledgerline billing service: codebase map › Invoice generation entry point § text#3",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "generateInvoice does its work in a fixed order. First, the code calls collectUsage(accountId, period) to get the usage lines for the period. Second, it calls priceUsage(lines, plan) to turn those lines into priced lines."
+      }
+    },
+    {
+      "id": "g1",
+      "role": "cards",
+      "importance": "high",
+      "stableKey": "Ledgerline billing service: codebase map › Modules on the invoice path § group#0",
+      "type": "group",
+      "content": {
+        "label": "Modules on the invoice path",
+        "arrangement": "grid",
+        "takeaway": "Five billing modules process invoices, interacting only via `index.ts` files."
+      }
+    },
+    {
+      "id": "u2_n1",
+      "title": "billing/invoices",
+      "stableKey": "Ledgerline billing service: codebase map › Modules on the invoice path § text#0",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "- Holds the entry point\n- Holds the draft type\n- Holds the write to the invoice tables"
+      }
+    },
+    {
+      "id": "u2_n2",
+      "title": "billing/usage",
+      "stableKey": "Ledgerline billing service: codebase map › Modules on the invoice path § text#1",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "- Turns raw usage events into usage lines"
+      }
+    },
+    {
+      "id": "u2_n3",
+      "title": "billing/pricing",
+      "stableKey": "Ledgerline billing service: codebase map › Modules on the invoice path § text#2",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "- Turns usage lines into priced lines"
+      }
+    },
+    {
+      "id": "u2_n4",
+      "title": "billing/tax",
+      "stableKey": "Ledgerline billing service: codebase map › Modules on the invoice path § text#3",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "- Wraps the external tax provider"
+      }
+    },
+    {
+      "id": "u2_n5",
+      "title": "billing/events",
+      "stableKey": "Ledgerline billing service: codebase map › Modules on the invoice path § text#4",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "- Publishes billing events for other services to consume"
+      }
+    },
+    {
+      "id": "u2_a1",
+      "title": "Module Interaction",
+      "stableKey": "Ledgerline billing service: codebase map › Modules on the invoice path § text#5",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Each module exposes functions via `index.ts`. Imports between modules only use these `index.ts` files."
+      }
+    },
+    {
+      "id": "u2_src~text",
+      "title": "Also in the source",
+      "stableKey": "Ledgerline billing service: codebase map › Modules on the invoice path § text#6",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "The modules import each other only through those index files; I found no import that reaches into another module's internal files."
+      }
+    },
+    {
+      "id": "g2",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Ledgerline billing service: codebase map › Usage and pricing § group#0",
+      "type": "group",
+      "content": {
+        "label": "Usage and pricing",
+        "arrangement": "stack",
+        "takeaway": "Usage collection and pricing are handled by two functions, with one unconfirmed dependency."
+      }
+    },
+    {
+      "id": "u3_n1",
+      "stableKey": "Ledgerline billing service: codebase map › Usage and pricing § text#0",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The code in `billing/usage/collect.ts` defines `collectUsage(accountId, period)`. It reads the `usage_events` table, selecting the account's rows whose `occurred_at` falls inside the period, and groups them by meter into usage lines. Events flagged `is_test` are skipped. It does not write to any table.\n\nThe code in `billing/pricing/priceUsage.ts` defines `priceUsage(lines, plan)`. It reads the `price_plans` table through a helper in the same file, `loadPlan(planId)`, and multiplies each line's quantity by the plan's unit price. Prices are held as integer cents throughout, never as floating-point amounts.\n\n`priceUsage` probably also reads the `discounts` table. The file imports a helper called `discountFor`, and the name suggests a discount lookup, but I did not find a call site and have not confirmed that it ever runs. Treat this link as unconfirmed until someone traces it."
+      }
+    },
+    {
+      "id": "u3_a1",
+      "title": "Summary",
+      "stableKey": "Ledgerline billing service: codebase map › Usage and pricing § text#3",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This section describes the two main functions for usage collection and pricing: `collectUsage` and `priceUsage`. It also highlights an unconfirmed dependency on the `discounts` table."
+      }
+    },
+    {
+      "id": "g3",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Ledgerline billing service: codebase map › Tax § group#0",
+      "type": "group",
+      "content": {
+        "label": "Tax",
+        "arrangement": "stack",
+        "takeaway": "Taxwell integration lacks defined retry and timeout handling, risking invoice generation."
+      }
+    },
+    {
+      "id": "u4_n1",
+      "stableKey": "Ledgerline billing service: codebase map › Tax § text#0",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "- The `TaxClient` class in `billing/tax/client.ts` has a `quote(draft)` method.\n- This method sends the draft invoice to Taxwell, an external tax provider, via HTTPS.\n- The request has an 8-second timeout, set on line 21.\n- The API key is sourced from the `TAXWELL_API_KEY` environment variable during client construction.\n- The response includes a tax amount per line, which `generateInvoice` incorporates into the draft before saving."
+      }
+    },
+    {
+      "id": "u4_n2",
+      "stableKey": "Ledgerline billing service: codebase map › Tax § text#1",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "- Retry mechanisms for the tax provider are undocumented.\n- `TaxClient.quote` lacks retry code.\n- It's unclear if callers retry, if the Taxwell client library retries, or what occurs if a quote times out."
+      }
+    },
+    {
+      "id": "u4_a1",
+      "title": "Summary",
+      "stableKey": "Ledgerline billing service: codebase map › Tax § text#2",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The tax integration with Taxwell is implemented, but critical retry behavior and timeout handling are undefined, posing a risk to invoice generation."
+      }
+    },
+    {
+      "id": "u4_src~text",
+      "title": "Also in the source",
+      "stableKey": "Ledgerline billing service: codebase map › Tax § text#3",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "How retries work for the tax provider is not documented."
+      }
+    },
+    {
+      "id": "g4",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Ledgerline billing service: codebase map › Persistence and events § group#0",
+      "type": "group",
+      "content": {
+        "label": "Persistence and events",
+        "arrangement": "stack",
+        "takeaway": "Invoice persistence is transactional, but event publishing has no retry mechanism."
+      }
+    },
+    {
+      "id": "u5_n1",
+      "stableKey": "Ledgerline billing service: codebase map › Persistence and events § text#0",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "- The code writes the finished invoice to two tables, `invoices` and `invoice_lines`, inside one database transaction in `billing/invoices/generate.ts`, lines 44–52.\n- If either insert fails, the transaction rolls back and neither row is kept.\n- The `invoices` row is written with the status `finalized`; I found no code path that writes any other status."
+      }
+    },
+    {
+      "id": "u5_n2",
+      "stableKey": "Ledgerline billing service: codebase map › Persistence and events § text#1",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "- After the transaction commits, `generateInvoice` calls `publishInvoiceFinalized(invoice)` in `billing/events/publish.ts`.\n- That function publishes an `invoice.finalized` message to the `billing-events` topic.\n- The payment and email services subscribe to that topic; I did not read their code."
+      }
+    },
+    {
+      "id": "u5_n3",
+      "stableKey": "Ledgerline billing service: codebase map › Persistence and events § text#2",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "- What happens when publishing fails after the commit is unknown.\n- The code logs the error and returns, so an invoice can exist without its event, but I found no job that re-sends missed events and no note saying whether one is planned."
+      }
+    },
+    {
+      "id": "g5",
+      "role": "annotated",
+      "importance": "low",
+      "stableKey": "Ledgerline billing service: codebase map › Data contract § group#0",
+      "type": "group",
+      "content": {
+        "label": "Data contract",
+        "arrangement": "stack",
+        "takeaway": "The `InvoiceDraft` interface defines the data structure, with `taxCents` conditionally populated."
+      }
+    },
+    {
+      "id": "u6_n1",
+      "stableKey": "Ledgerline billing service: codebase map › Data contract § text#0",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "The draft passed between the steps has this shape, defined in `billing/invoices/types.ts`¹:\n\n```ts\nexport interface InvoiceDraft {\n accountId: string;\n period: BillingPeriod;\n lines: PricedLine[];\n subtotalCents: number;\n taxCents?: number;\n}\n```\n\n`taxCents` stays undefined until `TaxClient.quote` returns². I did not read the definitions of `BillingPeriod` and `PricedLine`³."
+      }
+    },
+    {
+      "id": "u6_n2",
+      "stableKey": "Ledgerline billing service: codebase map › Data contract § text#1",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "¹ The `InvoiceDraft` interface is defined in `billing/invoices/types.ts`.\n² The `taxCents` field is optional and populated by the `TaxClient.quote` function.\n³ The definitions for `BillingPeriod` and `PricedLine` were not reviewed."
+      }
+    },
+    {
+      "id": "u6_a1",
+      "title": "Key Observation",
+      "stableKey": "Ledgerline billing service: codebase map › Data contract § text#2",
+      "parent": "g5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The `InvoiceDraft` interface is central to the billing process, with `taxCents` being an optional field populated by an external service. The definitions of `BillingPeriod` and `PricedLine` are currently unexamined, which could be a future area of investigation."
+      }
+    },
+    {
+      "id": "g6",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Ledgerline billing service: codebase map › Interpretation § group#0",
+      "type": "group",
+      "content": {
+        "label": "Interpretation",
+        "arrangement": "stack",
+        "takeaway": "`billing/pricing` is the pricing boundary, and `generateInvoice` orchestrates calls without its own logic."
+      }
+    },
+    {
+      "id": "u7_n1",
+      "stableKey": "Ledgerline billing service: codebase map › Interpretation § text#0",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "My reading is that `billing/pricing` acts, in effect, as the pricing boundary: as far as I could see, no code outside it reads `price_plans`, so a pricing change should only need edits there. This is an interpretation of the current structure, not a rule the code enforces; nothing stops another module from querying `price_plans` directly."
+      }
+    },
+    {
+      "id": "u7_n2",
+      "stableKey": "Ledgerline billing service: codebase map › Interpretation § text#1",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "In the same spirit, `generateInvoice` behaves like an orchestrator. It holds no pricing or tax logic of its own and only sequences the calls, which is why it reads so short for the work it starts."
+      }
+    },
+    {
+      "id": "g7",
+      "role": "cards",
+      "importance": "low",
+      "stableKey": "Ledgerline billing service: codebase map › Open questions § group#0",
+      "type": "group",
+      "content": {
+        "label": "Open questions",
+        "arrangement": "grid",
+        "takeaway": "Four open questions on billing process and data model."
+      }
+    },
+    {
+      "id": "u8_n1",
+      "title": "Monthly run trigger",
+      "stableKey": "Ledgerline billing service: codebase map › Open questions § text#0",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "- What starts the regular monthly run? The admin action is clear, but I could not find the scheduler that calls `generateInvoice` for every account."
+      }
+    },
+    {
+      "id": "u8_n2",
+      "title": "Discount application",
+      "stableKey": "Ledgerline billing service: codebase map › Open questions § text#1",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "- Does `priceUsage` really apply discounts? See the unconfirmed link above."
+      }
+    },
+    {
+      "id": "u8_n3",
+      "title": "billing-events topic owner",
+      "stableKey": "Ledgerline billing service: codebase map › Open questions § text#2",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "- Who owns the `billing-events` topic? No owner is listed in the repository."
+      }
+    },
+    {
+      "id": "u8_n4",
+      "title": "Invoices table status column",
+      "stableKey": "Ledgerline billing service: codebase map › Open questions § text#3",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "- Why does the `invoices` table have a status column if every row is written as `finalized`? It may be reserved for drafts, but nothing in the code says so."
+      }
+    },
+    {
+      "id": "u8_a1",
+      "title": "Summary",
+      "stableKey": "Ledgerline billing service: codebase map › Open questions § text#4",
+      "parent": "g7",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Four open questions regarding billing process automation, discount logic, ownership, and data model consistency."
+      }
+    },
+    {
+      "id": "g8",
+      "role": "decision",
+      "importance": "low",
+      "stableKey": "Ledgerline billing service: codebase map › Summary § group#0",
+      "type": "group",
+      "content": {
+        "label": "Summary",
+        "arrangement": "grid",
+        "takeaway": "The invoice path is verified, but discount probability and tax retry behavior are not."
+      }
+    },
+    {
+      "id": "u9_n1",
+      "stableKey": "Ledgerline billing service: codebase map › Summary § shape#0",
+      "parent": "g8",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Verified Invoice Path"
+      }
+    },
+    {
+      "id": "u9_n2",
+      "stableKey": "Ledgerline billing service: codebase map › Summary § text#0",
+      "parent": "g8",
+      "type": "text",
+      "content": {
+        "markdown": "The verified invoice path is a fixed sequence inside `generateInvoice`."
+      }
+    },
+    {
+      "id": "u9_n3",
+      "stableKey": "Ledgerline billing service: codebase map › Summary § shape#1",
+      "parent": "g8",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Collect Usage"
+      }
+    },
+    {
+      "id": "u9_n4",
+      "stableKey": "Ledgerline billing service: codebase map › Summary § shape#2",
+      "parent": "g8",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Price Usage"
+      }
+    },
+    {
+      "id": "u9_n5",
+      "stableKey": "Ledgerline billing service: codebase map › Summary § shape#3",
+      "parent": "g8",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Quote Tax"
+      }
+    },
+    {
+      "id": "u9_n6",
+      "stableKey": "Ledgerline billing service: codebase map › Summary § shape#4",
+      "parent": "g8",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Write Invoice Tables"
+      }
+    },
+    {
+      "id": "u9_n7",
+      "stableKey": "Ledgerline billing service: codebase map › Summary § shape#5",
+      "parent": "g8",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Publish `invoice.finalized`"
+      }
+    },
+    {
+      "id": "u9_n8",
+      "stableKey": "Ledgerline billing service: codebase map › Summary § text#1",
+      "parent": "g8",
+      "type": "text",
+      "content": {
+        "markdown": "Two parts of the map are not verified:\n* The discounts read is only probable.\n* The tax provider's retry behaviour is unknown."
+      }
+    },
+    {
+      "id": "u9_a1",
+      "title": "Status",
+      "stableKey": "Ledgerline billing service: codebase map › Summary § text#2",
+      "parent": "g8",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "D1 (Discounts Read) - needs verification: only probable. D2 (Tax Provider Retry) - needs verification: unknown behavior."
+      }
+    },
+    {
+      "id": "g9",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Ledgerline billing service: codebase map › About this map § group#0",
+      "type": "group",
+      "content": {
+        "label": "About this map",
+        "arrangement": "grid",
+        "takeaway": "This map details the invoice path of Ledgerline billing service based on manual code review at commit `a41c9e2`."
+      }
+    },
+    {
+      "id": "u10_n1",
+      "stableKey": "Ledgerline billing service: codebase map › About this map § text#0",
+      "parent": "g9",
+      "type": "text",
+      "content": {
+        "markdown": "This note maps the invoice path of the Ledgerline billing service as of commit `a41c9e2`. I read the code by hand; nothing here was generated by a tool. Every statement says how I know it: \"the code does\" means I read it in the file named, \"my reading\" is my own interpretation, \"probably\" means I suspect it but did not confirm it, and \"unknown\" means I looked and could not find out. Refunds, dunning and the customer portal are out of scope."
+      }
+    },
+    {
+      "id": "u10_ax1",
+      "title": "Purpose and Scope",
+      "stableKey": "Ledgerline billing service: codebase map › About this map § text#1",
+      "parent": "g9",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This section introduces a manually generated map of the Ledgerline billing service's invoice path, specifically at commit `a41c9e2`. It clarifies the methodology and limitations of the analysis, explicitly excluding refunds, dunning, and the customer portal."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u1_n1",
+      "to": "u1_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "u1_n3",
+      "to": "u1_n4",
+      "type": "flows_to"
+    },
+    {
+      "from": "u1_n4",
+      "to": "u1_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u1_n5",
+      "to": "u1_n6",
+      "type": "flows_to"
+    },
+    {
+      "from": "u3_a1",
+      "to": "u3_n1",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n1",
+      "to": "u4_a1",
+      "type": "supports"
+    },
+    {
+      "from": "u4_n2",
+      "to": "u4_a1",
+      "type": "supports"
+    },
+    {
+      "from": "u6_n1",
+      "to": "u6_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u6_n1",
+      "to": "u6_a1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u8_a1",
+      "to": "u8_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u8_a1",
+      "to": "u8_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u8_a1",
+      "to": "u8_n3",
+      "type": "relates_to"
+    },
+    {
+      "from": "u8_a1",
+      "to": "u8_n4",
+      "type": "relates_to"
+    },
+    {
+      "from": "u9_n1",
+      "to": "u9_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u9_n2",
+      "to": "u9_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "u9_n3",
+      "to": "u9_n4",
+      "type": "flows_to"
+    },
+    {
+      "from": "u9_n4",
+      "to": "u9_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u9_n5",
+      "to": "u9_n6",
+      "type": "flows_to"
+    },
+    {
+      "from": "u9_n6",
+      "to": "u9_n7",
+      "type": "flows_to"
+    },
+    {
+      "from": "u9_n1",
+      "to": "u9_n8",
+      "type": "relates_to",
+      "label": "unverified parts"
+    },
+    {
+      "from": "u10_ax1",
+      "to": "u10_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "g0",
+      "to": "g1",
+      "type": "calls",
+      "label": "uses modules"
+    },
+    {
+      "from": "g0",
+      "to": "g2",
+      "type": "calls",
+      "label": "collects and prices usage"
+    },
+    {
+      "from": "g0",
+      "to": "g3",
+      "type": "calls",
+      "label": "quotes tax"
+    },
+    {
+      "from": "g0",
+      "to": "g4",
+      "type": "calls",
+      "label": "persists and publishes"
+    },
+    {
+      "from": "g0",
+      "to": "g5",
+      "type": "reads",
+      "label": "uses draft shape"
+    },
+    {
+      "from": "g2",
+      "to": "g7",
+      "type": "references",
+      "label": "unconfirmed discount link"
+    },
+    {
+      "from": "g3",
+      "to": "g7",
+      "type": "references",
+      "label": "unknown retry behavior"
+    },
+    {
+      "from": "g4",
+      "to": "g7",
+      "type": "references",
+      "label": "unknown event publishing failure"
+    },
+    {
+      "from": "g8",
+      "to": "g0",
+      "type": "references",
+      "label": "summarizes flow"
+    },
+    {
+      "from": "g8",
+      "to": "g2",
+      "type": "references",
+      "label": "unverified discount"
+    },
+    {
+      "from": "g8",
+      "to": "g3",
+      "type": "references",
+      "label": "unverified tax retry"
+    },
+    {
+      "from": "g9",
+      "to": "g8",
+      "type": "references",
+      "label": "scope"
+    }
+  ],
+  "metadata": {}
+}

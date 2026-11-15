@@ -20,6 +20,9 @@ import { getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
 import type { DocumentRecord } from "@/domain/types";
 import { queryWords as rankedQueryWords } from "@/search/ranking";
 import { WorkspaceIndex, type IndexHit } from "@/search/workspaceIndex";
+import { DescriptorCache } from "@/ai/router/descriptors";
+import { VectorTier } from "@/ai/router/embedding";
+import { routeContent, type RouteResult } from "@/ai/router/router";
 import { isStandalone } from "../context/currentContext";
 import { sortPages } from "../resources/serializers";
 import { resourceUri } from "../resources/uris";
@@ -92,6 +95,20 @@ export class McpSearchIndex {
     this.queue = run.catch(() => undefined);
     return run;
   }
+
+  /**
+   * Where content with no source belongs on a canvas (`suggest_placement`, intelligent-update-engine-plan Stage 2c): the
+   * Node Router over this same index, with a vector tier and descriptors kept for the session (incremental).
+   */
+  async route(content: string, canvasId: string, limit?: number): Promise<RouteResult> {
+    await this.refresh();
+    this.tier ??= new VectorTier(this.index);
+    const scene = await this.scan.scene(canvasId);
+    return routeContent({ text: content, canvasId, tier: this.tier, scene, descriptors: this.descriptors, ...(limit ? { limit } : {}) });
+  }
+
+  private tier: VectorTier | null = null;
+  private readonly descriptors = new DescriptorCache();
 
   async search(query: string, options: { limit?: number; kinds?: readonly SearchKind[] } = {}): Promise<SearchResult> {
     const { partial } = await this.refresh();

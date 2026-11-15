@@ -1,0 +1,633 @@
+{
+  "labeller": "Claude Sonnet (fresh, blind B)",
+  "type": "model",
+  "model": "sonnet",
+  "validation": "Not validated by a person. Blind: saw only its own shuffled sheet of the fresh pairs. Never edited.",
+  "importedFrom": "baselines/fresh-b-sonnet.sheet.md",
+  "rubricVersion": 2,
+  "labels": {
+    "h2-qt-01": {
+      "answer": "faithful",
+      "source": "The upload limit is 2,000 files per batch.",
+      "card": "A batch can contain up to two thousand files.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-12": {
+      "answer": "distorted",
+      "note": "Annual plans are refunded pro rata, which the source denies.",
+      "source": "Customers can cancel at any time, but annual plans are not refunded pro rata.",
+      "card": "Customers can cancel at any time and get a pro-rata refund on annual plans.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-12": {
+      "answer": "distorted",
+      "note": "Abuse traffic increased, the opposite of the source.",
+      "source": "Tightening rate limits decreased abuse traffic.",
+      "card": "Abuse traffic rose once rate limits were tightened.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-08": {
+      "answer": "distorted",
+      "note": "New hires can work remotely from day one, though they must be on-site the first month.",
+      "source": "Staff can work remotely up to three days a week, but new hires must be on-site for their first month.",
+      "card": "Staff, new hires included, can work remotely up to three days a week from day one.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-01": {
+      "answer": "faithful",
+      "source": "Single sign-on is available on the Enterprise plan.",
+      "card": "Enterprise-plan customers can use single sign-on.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-09": {
+      "answer": "faithful",
+      "source": "Storage is billed at $0.02 per GB per month.",
+      "card": "Each gigabyte stored costs two cents a month.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-06": {
+      "answer": "distorted",
+      "note": "Spot instances keep jobs running uninterrupted, though the source says interruption is a risk.",
+      "source": "Running the analysis on spot instances lowers compute cost but risks jobs being interrupted.",
+      "card": "Running the analysis on spot instances lowers compute cost and keeps jobs running without interruption.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-08": {
+      "answer": "distorted",
+      "note": "Shipping volume is ten times lower than stated.",
+      "source": "The warehouse ships roughly 12,000 parcels per day.",
+      "card": "The warehouse ships roughly 1,200 parcels per day.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-06": {
+      "answer": "distorted",
+      "note": "The run lasted minutes rather than hours.",
+      "source": "The training run used 8 GPUs for 36 hours.",
+      "card": "The training run used 8 GPUs for 36 minutes.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-11": {
+      "answer": "faithful",
+      "source": "Employees accrue 1.5 vacation days per month.",
+      "card": "Each month, staff earn a day and a half of vacation.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-12": {
+      "answer": "distorted",
+      "note": "The signature step can be skipped for any value, not just under $50.",
+      "source": "Drivers may skip the signature step when the parcel is under $50 in value.",
+      "card": "Drivers may skip the signature step for parcels of any value.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-04": {
+      "answer": "distorted",
+      "note": "Orders are held when addresses match, the reverse of the source.",
+      "source": "Orders are held for manual review unless the billing and shipping addresses match.",
+      "card": "Orders are held for manual review if the billing and shipping addresses match.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-10": {
+      "answer": "distorted",
+      "note": "Escalation happens for all customers, not only enterprise contracts.",
+      "source": "Support tickets are escalated to tier 2 only when the customer is on an enterprise contract.",
+      "card": "Support tickets are escalated to tier 2 regardless of the customer's contract.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-03": {
+      "answer": "faithful",
+      "source": "Latency at p99 stayed under 250 ms.",
+      "card": "The 99th-percentile latency remained below 0.25 seconds.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-06": {
+      "answer": "distorted",
+      "note": "The app needs a network connection, the opposite of the source.",
+      "source": "The iOS app works without a network connection.",
+      "card": "The iOS app requires a network connection.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-02": {
+      "answer": "distorted",
+      "note": "Deleted files can be restored after retention, contrary to the source.",
+      "source": "Deleted files are not recoverable after the 30-day retention period.",
+      "card": "Deleted files can be restored after the 30-day retention period.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-07": {
+      "answer": "faithful",
+      "source": "Longer password-reset token lifetimes improve usability while widening the window for misuse.",
+      "card": "Making reset tokens last longer is friendlier for users, but gives attackers more time to abuse them.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-10": {
+      "answer": "distorted",
+      "note": "The rate limit is per second rather than per minute.",
+      "source": "The API allows at most 100 requests per minute per key.",
+      "card": "The API allows at most 100 requests per second per key.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-09": {
+      "answer": "faithful",
+      "source": "Fine-tuning is supported for the base models in the 7B family.",
+      "card": "The 7B family's base models can be fine-tuned.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-04": {
+      "answer": "distorted",
+      "note": "Delivery always takes 5 days rather than 3 to 5.",
+      "source": "Delivery takes 3 to 5 business days.",
+      "card": "Delivery takes 5 business days.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-10": {
+      "answer": "distorted",
+      "note": "Read replicas are available for any database type on Pro, not only PostgreSQL.",
+      "source": "Read replicas are available for PostgreSQL databases on the Pro tier.",
+      "card": "Read replicas are available for databases on the Pro tier.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-08": {
+      "answer": "distorted",
+      "note": "Missing the window is certain rather than likely.",
+      "source": "Shipments to remote postcodes are likely to miss the next-day window.",
+      "card": "Shipments to remote postcodes will miss the next-day window.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-12": {
+      "answer": "distorted",
+      "note": "Invalidation is certain rather than possible.",
+      "source": "Rotating the signing key could invalidate sessions that are still in flight.",
+      "card": "Rotating the signing key invalidates in-flight sessions.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-04": {
+      "answer": "distorted",
+      "note": "The delivery delay of up to an hour is dropped, so batching looks free of downside.",
+      "source": "Batching notifications cuts send costs but delays delivery by up to an hour.",
+      "card": "Batching notifications cuts send costs.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-05": {
+      "answer": "faithful",
+      "source": "The courier picks up from all depots daily, but not on public holidays.",
+      "card": "Depots get a daily courier pickup; public holidays are skipped.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-09": {
+      "answer": "faithful",
+      "source": "Retry storms from clients overloaded the authentication service.",
+      "card": "The authentication service was overwhelmed by waves of client retries.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-05": {
+      "answer": "faithful",
+      "source": "Free returns apply provided that the item is sent back within 30 days.",
+      "card": "Items sent back inside 30 days qualify for free returns.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-09": {
+      "answer": "faithful",
+      "source": "The API is backward compatible, apart from the removal of the legacy /v1/export endpoint.",
+      "card": "The API stays backward compatible with one exception: the old /v1/export endpoint is gone.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-07": {
+      "answer": "faithful",
+      "source": "Except during a declared incident, production deploys require two reviewers.",
+      "card": "Two reviewers must sign off on production deploys, a requirement waived while an incident is declared.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-01": {
+      "answer": "faithful",
+      "source": "Adding an index on customer_id cut the report's query time from minutes to seconds.",
+      "card": "The report's query went from minutes to seconds because of a new index on customer_id.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-07": {
+      "answer": "faithful",
+      "source": "Offline sync works across all devices, though attachments larger than 25 MB are left on the server.",
+      "card": "Offline sync covers every device. Attachments over 25 MB remain on the server.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-09": {
+      "answer": "faithful",
+      "source": "A stale cache entry might be served for up to a minute after an update.",
+      "card": "After an update, readers could still get the old cached value for as long as sixty seconds.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-05": {
+      "answer": "faithful",
+      "source": "Two approvals are required to merge into main.",
+      "card": "Merging into main needs at least a pair of approvals.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-01": {
+      "answer": "faithful",
+      "source": "The free tier does not include API access.",
+      "card": "API access is excluded from the free tier.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-03": {
+      "answer": "faithful",
+      "source": "Most customers who churn in the first month never complete the onboarding checklist.",
+      "card": "The majority of first-month churners don't finish the onboarding checklist.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-07": {
+      "answer": "faithful",
+      "source": "The new retention policy affects only logs from the staging environment.",
+      "card": "Staging logs are the sole target of the new retention policy.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-10": {
+      "answer": "distorted",
+      "note": "Corporate filters always treat these emails as spam, rather than often flagging them.",
+      "source": "Password-reset emails are often flagged as spam by corporate mail filters.",
+      "card": "Corporate mail filters treat password-reset emails as spam.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-12": {
+      "answer": "distorted",
+      "note": "Higher-resolution thumbnails keep pages light, while the source says they increase page weight.",
+      "source": "Higher-resolution thumbnails look sharper on retina screens but increase page weight.",
+      "card": "Higher-resolution thumbnails look sharper on retina screens and keep pages light.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-03": {
+      "answer": "faithful",
+      "source": "The dashboard refreshes every minute, although the revenue widget updates only hourly.",
+      "card": "Dashboard data refreshes each minute. The revenue widget is the exception, updating once an hour.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-11": {
+      "answer": "faithful",
+      "source": "Refunds are not issued for partially used subscription months.",
+      "card": "Partially used subscription months are non-refundable.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-11": {
+      "answer": "faithful",
+      "source": "Candidates referred by employees are typically hired faster than applicants from job boards.",
+      "card": "Employee referrals generally move through hiring more quickly than job-board applicants.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-06": {
+      "answer": "distorted",
+      "note": "Conversions rose, while the source says they stayed flat.",
+      "source": "The recommendation model improved click-through rate, but conversions stayed flat.",
+      "card": "The recommendation model improved click-through rate and lifted conversions too.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-08": {
+      "answer": "distorted",
+      "note": "Trial accounts are deleted after 14 days regardless of payment method.",
+      "source": "Trial accounts are deleted after 14 days if no payment method has been added.",
+      "card": "Trial accounts are deleted after 14 days.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-02": {
+      "answer": "distorted",
+      "note": "Workspaces have exactly 50 members rather than up to 50.",
+      "source": "Each workspace supports up to 50 members.",
+      "card": "Each workspace has 50 members.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-01": {
+      "answer": "faithful",
+      "source": "Synchronous replication guarantees zero data loss on failover but adds write latency.",
+      "card": "With synchronous replication, failover loses no data; the price is slower writes.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-03": {
+      "answer": "faithful",
+      "source": "Dark mode is available in the iOS app.",
+      "card": "iOS app users can switch to dark mode.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-02": {
+      "answer": "distorted",
+      "note": "The one-to-two-second delay is stated as certain rather than typical.",
+      "source": "Cold starts on the serverless tier typically add between one and two seconds to the first request.",
+      "card": "On the serverless tier, a cold start delays the first request by one to two seconds.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-10": {
+      "answer": "distorted",
+      "note": "All volumes are encrypted by default, ignoring the pre-2022 exception.",
+      "source": "Encryption at rest is enabled by default, except for volumes created before 2022.",
+      "card": "Encryption at rest is enabled by default on every volume, whatever its creation date.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-05": {
+      "answer": "faithful",
+      "source": "Contractors do not have access to payroll data.",
+      "card": "Payroll data is off-limits to contractors.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-12": {
+      "answer": "distorted",
+      "note": "There was one breach, whereas the source says there were none.",
+      "source": "We have never had a breach involving payment card data.",
+      "card": "Our one breach involved payment card data.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-06": {
+      "answer": "distorted",
+      "note": "Two-day shipping covers all of the US, including non-contiguous areas.",
+      "source": "Two-day shipping is offered on orders within the contiguous United States.",
+      "card": "Two-day shipping is offered on orders within the United States.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-07": {
+      "answer": "faithful",
+      "source": "No customer data leaves the EU region.",
+      "card": "Customer data stays within the EU region.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-10": {
+      "answer": "distorted",
+      "note": "The SDK collects device identifiers, the opposite of the source.",
+      "source": "The vendor's SDK does not collect device identifiers.",
+      "card": "The vendor's SDK gathers device identifiers.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-07": {
+      "answer": "faithful",
+      "source": "Refund requests are usually processed within three business days.",
+      "card": "Refunds are normally handled in three business days or fewer.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-11": {
+      "answer": "faithful",
+      "source": "Weekend phone support is offered to premium-support subscribers in North America.",
+      "card": "North American premium-support subscribers get phone support on weekends.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-08": {
+      "answer": "distorted",
+      "note": "Unverified sellers can list items above $500, the opposite of the source.",
+      "source": "Unverified sellers cannot list items above $500.",
+      "card": "Items above $500 may be listed by unverified sellers.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-04": {
+      "answer": "distorted",
+      "note": "Compression reliably halves backup size, whereas the source says it may roughly halve it.",
+      "source": "Enabling compression may reduce backup size by roughly half for text-heavy databases.",
+      "card": "For text-heavy databases, turning on compression halves the backup size.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-05": {
+      "answer": "faithful",
+      "source": "Longer warehouse pick routes lead to slower order fulfilment.",
+      "card": "Order fulfilment slows down as a consequence of longer pick routes in the warehouse.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-12": {
+      "answer": "distorted",
+      "note": "Guests can comment on any document, not only shared ones.",
+      "source": "Guest users can comment on shared documents.",
+      "card": "Guest users can comment on documents.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-01": {
+      "answer": "faithful",
+      "source": "The nightly export runs only when the previous day's ledger has been closed.",
+      "card": "Until the prior day's ledger is closed, the nightly export does not run.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-11": {
+      "answer": "faithful",
+      "source": "Tests pass on Linux and macOS, while two suites still fail on Windows.",
+      "card": "On Windows, two test suites remain broken; Linux and macOS are green.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-08": {
+      "answer": "distorted",
+      "note": "All full-time employees get the stipend, not only those in Canada.",
+      "source": "Full-time employees in Canada receive a wellness stipend.",
+      "card": "Full-time employees receive a wellness stipend.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-04": {
+      "answer": "faithful",
+      "source": "Accounts lock after five failed logins, though admins are exempt.",
+      "card": "Every account, admins included, locks after five failed logins.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-04": {
+      "answer": "distorted",
+      "note": "Managers can approve reports of any amount, dropping the under-$1,000 limit.",
+      "source": "Managers can approve expense reports under $1,000.",
+      "card": "Managers can approve expense reports.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-03": {
+      "answer": "faithful",
+      "source": "Requests cannot exceed 10 MB.",
+      "card": "Requests are capped at 10 MB.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-02": {
+      "answer": "distorted",
+      "note": "International transfers settle the same day, whereas the source says they can take up to three days.",
+      "source": "Most payments settle the same day, but international transfers can take up to three days.",
+      "card": "Most payments settle the same day, including international transfers.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-02": {
+      "answer": "distorted",
+      "note": "1.5x applies to any extra hours, dropping the 40-hour threshold.",
+      "source": "Overtime is paid at 1.5x only when the employee has worked more than 40 hours that week.",
+      "card": "Overtime is paid at 1.5x whenever an employee works extra hours.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-09": {
+      "answer": "faithful",
+      "source": "Self-hosting the search cluster avoids licence fees but means the team must handle upgrades and on-call.",
+      "card": "A self-hosted search cluster has no licence fees; upgrades and on-call become the team's job.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cp-01": {
+      "answer": "faithful",
+      "source": "The migration tool copies all tables automatically, except those with custom triggers, which must be moved by hand.",
+      "card": "The migration tool copies tables automatically. Tables that have custom triggers have to be moved manually.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-02": {
+      "answer": "distorted",
+      "note": "Admins everywhere can export, not only those in the EU region.",
+      "source": "Admins in the EU region can export audit logs as CSV.",
+      "card": "Admins can export audit logs as CSV.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-03": {
+      "answer": "faithful",
+      "source": "Raising the learning rate made training diverge.",
+      "card": "Training diverged as a result of a higher learning rate.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-05": {
+      "answer": "faithful",
+      "source": "Larger batch sizes tend to speed up training but can hurt final accuracy on small datasets.",
+      "card": "On small datasets, bigger batches generally train faster, though final accuracy might suffer.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-07": {
+      "answer": "faithful",
+      "source": "Sessions expire after 30 minutes of inactivity.",
+      "card": "After half an hour idle, a session expires.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-03": {
+      "answer": "faithful",
+      "source": "Quantizing the model to 4 bits shrinks its memory footprint, though accuracy drops slightly.",
+      "card": "A 4-bit quantized model takes less memory and is marginally less accurate.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-07": {
+      "answer": "faithful",
+      "source": "Clock skew between nodes can cause token validation to fail.",
+      "card": "Token validation may fail when node clocks drift apart.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-02": {
+      "answer": "distorted",
+      "note": "Prices are kept current, whereas the source says they may be up to five minutes old.",
+      "source": "Caching product pages speeds up load times at the cost of showing prices that may be up to five minutes old.",
+      "card": "Caching product pages speeds up load times while keeping prices current.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-08": {
+      "answer": "distorted",
+      "note": "Poor sleep caused lower productivity, whereas the source reports only correlation.",
+      "source": "Poor sleep was correlated with lower productivity scores in the survey.",
+      "card": "In the survey, poor sleep lowered productivity scores.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-qt-12": {
+      "answer": "distorted",
+      "note": "The failure rate is about 10%, collapsing the 5-10% range to its upper end.",
+      "source": "Between 5% and 10% of uploads fail checksum validation.",
+      "card": "Roughly 10% of uploads fail checksum validation.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-02": {
+      "answer": "distorted",
+      "note": "Garbage collection causes memory pressure, reversing the source's cause and effect.",
+      "source": "High memory pressure causes the garbage collector to run more often.",
+      "card": "Frequent garbage collection runs cause high memory pressure.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-06": {
+      "answer": "distorted",
+      "note": "All older-vendor Android devices fail, whereas the source says only some do.",
+      "source": "Some Android devices from older vendors fail to deliver push notifications while in battery-saver mode.",
+      "card": "Older-vendor Android devices don't deliver push notifications in battery-saver mode.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-08": {
+      "answer": "distorted",
+      "note": "The storage footprint is compact, whereas the source says it grows considerably.",
+      "source": "Event sourcing gives a full audit history but makes the storage footprint grow considerably.",
+      "card": "Event sourcing gives a full audit history with a compact storage footprint.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-09": {
+      "answer": "faithful",
+      "source": "The scheduler did not retry jobs that failed with a validation error.",
+      "card": "The scheduler gave up immediately on jobs that hit a validation error.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-sc-05": {
+      "answer": "faithful",
+      "source": "Automatic virus scanning applies to uploaded PDF and Office files.",
+      "card": "Uploaded PDFs and Office documents are scanned for viruses automatically.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-03": {
+      "answer": "faithful",
+      "source": "Unless the user opts in, location data is not uploaded.",
+      "card": "Location data stays on the device for anyone who hasn't opted in.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-11": {
+      "answer": "faithful",
+      "source": "Offline mode lets field staff work without signal, with the downside that conflicting edits must be resolved by hand later.",
+      "card": "Field staff can keep working with no signal in offline mode; any conflicting edits then need manual resolution.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-05": {
+      "answer": "faithful",
+      "source": "The express carrier is faster but charges twice as much as standard shipping.",
+      "card": "Standard shipping costs half what the express carrier charges, and it is less fast.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-11": {
+      "answer": "faithful",
+      "source": "The model checkpoint is uploaded only after validation loss improves.",
+      "card": "No checkpoint is uploaded unless validation loss gets better.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-06": {
+      "answer": "distorted",
+      "note": "The pricing page caused the spike, whereas the source reports only coincidence in timing.",
+      "source": "Ticket volume spiked in the same week the new pricing page went live.",
+      "card": "The new pricing page caused ticket volume to spike.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-to-10": {
+      "answer": "distorted",
+      "note": "Support response times stayed fast, whereas the source says they stretched.",
+      "source": "A four-day work week improved retention but stretched response times on support.",
+      "card": "A four-day work week improved retention and kept support response times fast.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-04": {
+      "answer": "distorted",
+      "note": "Bandwidth costs rose, the opposite of the source.",
+      "source": "Enabling the CDN reduced origin bandwidth costs.",
+      "card": "Origin bandwidth costs grew after the CDN was switched on.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-06": {
+      "answer": "distorted",
+      "note": "Scaling triggers on any CPU spike above 80%, dropping the five-minute duration.",
+      "source": "The autoscaler adds nodes when CPU stays above 80% for five minutes.",
+      "card": "The autoscaler adds nodes whenever CPU goes above 80%.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cd-09": {
+      "answer": "faithful",
+      "source": "If the battery falls below 15%, the app pauses background sync.",
+      "card": "Background sync is suspended once battery drops under 15 percent.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-11": {
+      "answer": "faithful",
+      "source": "Shorter onboarding reduced first-week drop-off.",
+      "card": "First-week drop-off fell thanks to a shorter onboarding.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ng-04": {
+      "answer": "distorted",
+      "note": "The script rewrites existing rows, the opposite of the source.",
+      "source": "The migration script never modifies existing rows.",
+      "card": "The migration script rewrites existing rows in place.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-cs-10": {
+      "answer": "distorted",
+      "note": "Slow releases caused schema changes, reversing the source's cause and effect.",
+      "source": "Frequent schema changes slowed down the data team's releases.",
+      "card": "The data team's slow releases led to frequent schema changes.",
+      "at": "2026-10-19T11:56:57.831Z"
+    },
+    "h2-ql-01": {
+      "answer": "faithful",
+      "source": "Retrying a failed webhook delivery can occasionally produce duplicate events on the receiver side.",
+      "card": "Receivers may sometimes see the same event twice when a failed webhook is retried.",
+      "at": "2026-10-19T11:56:57.831Z"
+    }
+  }
+}

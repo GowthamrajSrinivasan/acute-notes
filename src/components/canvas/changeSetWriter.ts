@@ -8,7 +8,7 @@ import { CaptureUpdateAction, convertToExcalidrawElements, newElementWith, resto
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import type { ChangeSetCanvas } from "@/ai/changes/accept";
-import type { Box, ChangeSet, ChangeTarget, ProposedChange } from "@/ai/changes/changeSet";
+import { knowledgeOf, type Box, type ChangeSet, type ChangeTarget, type ProposedChange } from "@/ai/changes/changeSet";
 import { frameNameBand, placeLabel, routeConnectors, sectionAvoid } from "@/ai/changes/routing";
 import { relationStyle } from "@/ai/changes/relationStyle";
 import { blockLink, getEmbedRef, isWhereAcutePlacedIt, pageLink, withLayoutHint, withRelation, type SceneElement } from "@/domain/canvas/adapter";
@@ -35,13 +35,47 @@ const boxOf = (el: ExcalidrawElement): Box => ({ x: el.x, y: el.y, width: el.wid
 
 /** The change-set canvas for `api`, with the scene as it is right now. */
 export function changeSetCanvas(api: ExcalidrawImperativeAPI, home: DocumentHome): ChangeSetCanvas {
-  const live = new Map(api.getSceneElements().map((el) => [el.id, el as ExcalidrawElement] as const));
+  const scene = api.getSceneElements();
+  const live = new Map(scene.map((el) => [el.id, el as ExcalidrawElement] as const));
+  let byContainer: Map<string, string> | undefined;
+  const labels = () => (byContainer ??= labelsByContainer(scene as unknown as readonly SceneElement[]));
   return {
     boxOf: (id) => {
       const el = live.get(id);
       return el ? boxOf(el) : undefined;
     },
     write: (set, changes) => writeChanges(api, home, set, changes),
+    // A claim-level patch is checked against the content as stored now, in the same canonical form as its baseline.
+    contentOf: (id) => {
+      const el = live.get(id);
+      const content = el && !el.isDeleted ? objectContent(el as unknown as SceneElement, new Map(), (docId) => getDocumentStore().get(docId)) : null;
+      if (!content || content.kind === "shape") return null;
+      return { content: content.content, fingerprint: fingerprintOf(content), ...(content.kind === "page" ? { title: content.title } : {}) };
+    },
+    // An `update_shape`'s baseline is checked against the shape's label as it is now (stale-target protection).
+    shapeOf: (id) => {
+      const el = live.get(id);
+      const content = el && !el.isDeleted ? objectContent(el as unknown as SceneElement, labels(), () => null) : null;
+      return content?.kind === "shape" ? { shape: content.shape, fingerprint: fingerprintOf(content) } : null;
+    },
+  };
+}
+
+/**
+ * Stale-target protection (`ai/changes/staleTarget.ts`): the live fingerprint of a block, page or shape by element id —
+ * the same reading `contentOf` / `shapeOf` make at Accept, so an untouched target always matches the baseline stamped at
+ * proposal time. Null for anything else, a deleted element, or a document not loaded.
+ */
+export function liveFingerprints(api: ExcalidrawImperativeAPI): (id: string) => string | null {
+  const scene = api.getSceneElements();
+  const live = new Map(scene.map((el) => [el.id, el as ExcalidrawElement] as const));
+  let byContainer: Map<string, string> | undefined;
+  return (id) => {
+    const el = live.get(id);
+    if (!el || el.isDeleted) return null;
+    // A shape's label is its bound text: read once per proposal, only when a shape is asked about.
+    const content = objectContent(el as unknown as SceneElement, el.type === "embeddable" ? new Map() : (byContainer ??= labelsByContainer(scene as unknown as readonly SceneElement[])), (docId) => getDocumentStore().get(docId));
+    return content ? fingerprintOf(content) : null;
   };
 }
 
@@ -91,7 +125,9 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
   /** Provenance for one object: the set's, plus its reconciliation link (F37) when the set comes from a content source. */
   // A split set's pieces (F42 Phase 4) link to the split block's source, at its version, as pieces of its node.
   const split = set.split;
-  const link = source ? { sourceId: source.sourceId, version: source.version } : split ? { sourceId: split.sourceId, version: split.version } : null;
+  // A card made from a passage (Add to canvas / Include, knowledge-notes-plan §5.1) links to its source version, opted out of updates.
+  const passage = set.passage;
+  const link = source ? { sourceId: source.sourceId, version: source.version } : split ? { sourceId: split.sourceId, version: split.version } : passage ? { sourceId: passage.sourceId, version: passage.version } : null;
   const metadataFor = (stableNodeKey: string | undefined, fingerprint: string, previous?: unknown): ObjectMetadata => {
     if (!link || !stableNodeKey) return metadata;
     const ai: AIMetadata = {
@@ -102,6 +138,9 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
       stableNodeKey,
       contentFingerprint: fingerprint,
       ...(split ? { splitOf: split.of, splitFingerprint: split.fingerprint } : {}),
+      ...(passage && !source && !split ? { excludeFromReconciliation: true } : {}),
+      // Distil mode (knowledge-notes-plan §4.1, WP1.10): the card's cited units and review, from the set's knowledge.
+      ...knowledgeOf(set, stableNodeKey),
     };
     return { ai };
   };
@@ -112,6 +151,12 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
    */
   const updatedMetadata = (stableNodeKey: string | undefined, fingerprint: string, previous: ObjectMetadata | undefined): ObjectMetadata =>
     source && stableNodeKey ? metadataFor(stableNodeKey, fingerprint, previous?.ai) : (previous ?? {});
+  /** Stage 1e: an update's content is the user's wording (a merge onto their edit) or AI's own (any other update), never left stale. */
+  const withWording = (meta: ObjectMetadata, userWording: true | undefined): ObjectMetadata => {
+    if (!meta.ai) return meta;
+    const { userWording: _old, ...ai } = meta.ai;
+    return { ...meta, ai: userWording ? { ...ai, userWording } : ai };
+  };
   /** The object's external source records (F43: repo path at a commit), when the change carries them; they replace any previous ones. */
   const withRefs = (meta: ObjectMetadata, refs: readonly SourceRef[] | undefined): ObjectMetadata =>
     refs?.length && meta.ai ? { ...meta, ai: { ...meta.ai, sourceRefs: [...refs] } } : meta;
@@ -238,6 +283,20 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
 
   // 2. Moves of existing objects (before connectors, so they bind to where objects end up).
   for (const c of changes) if (c.kind === "move") moveElement(c.target, c.to, current, replaced);
+  // A move into another section's frame (a card whose cited passages moved there, knowledge-notes-plan §6.1): it and its
+  // label join that frame; the frame it left is refitted too.
+  for (const c of changes) {
+    if (c.kind !== "move" || !c.frame) continue;
+    const el = current(c.target);
+    const frame = current(c.frame);
+    if (!el || el.isDeleted || !frame || frame.isDeleted || frame.type !== "frame" || el.frameId === frame.id) continue;
+    if (el.frameId) refit.add(el.frameId);
+    replaced.set(el.id, newElementWith(el, { frameId: frame.id }));
+    for (const ref of (el.boundElements as BoundRef[] | null) ?? []) {
+      const bound = current(ref.id);
+      if (bound && !bound.isDeleted && bound.type === "text") replaced.set(bound.id, newElementWith(bound, { frameId: frame.id }));
+    }
+  }
   // A frame whose members were moved to make room grows to keep them inside it.
   for (const c of changes) {
     const frameId = c.kind === "move" ? current(c.target)?.frameId : null;
@@ -334,14 +393,14 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
   const boundOf = (el: ExcalidrawElement) =>
     ((el.boundElements as BoundRef[] | null) ?? []).map((b) => current(b.id)).filter((b): b is ExcalidrawElement => !!b && !b.isDeleted);
   for (const c of changes) {
-    if (c.kind !== "update_block" && c.kind !== "update_shape" && c.kind !== "update_node" && c.kind !== "set_lens" && c.kind !== "remove" && c.kind !== "rebaseline") continue;
+    if (c.kind !== "update_block" && c.kind !== "update_shape" && c.kind !== "update_node" && c.kind !== "set_lens" && c.kind !== "remove" && c.kind !== "rebaseline" && c.kind !== "mark_review") continue;
     const el = current(c.target);
     if (!el || el.isDeleted) continue;
     const ref = getEmbedRef(el);
     if (c.kind === "update_block") {
       if (ref?.kind === "rich-block") {
         const previous = getDocumentStore().get(ref.documentId)?.metadata;
-        const documentId = createBlockDocument(home, c.content, withRefs(updatedMetadata(c.stableNodeKey, fingerprintContent(c.content), previous), c.sourceRefs));
+        const documentId = createBlockDocument(home, c.content, withWording(withRefs(updatedMetadata(c.stableNodeKey, fingerprintContent(c.content), previous), c.sourceRefs), c.userWording));
         replaced.set(el.id, newElementWith(el, { link: blockLink(documentId), customData: { ...el.customData, acute: { ...ref, documentId } } }));
       } else if (ref?.kind === "page-preview") {
         const old = getDocumentStore().get(ref.pageId);
@@ -349,7 +408,7 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
         const pageId = createPage(home.workspaceId, home.canvasId, {
           title,
           content: c.content,
-          metadata: withRefs(updatedMetadata(c.stableNodeKey, fingerprintContent(c.content, title), old?.metadata), c.sourceRefs),
+          metadata: withWording(withRefs(updatedMetadata(c.stableNodeKey, fingerprintContent(c.content, title), old?.metadata), c.sourceRefs), c.userWording),
         });
         replaced.set(el.id, newElementWith(el, { link: pageLink(pageId), customData: { ...el.customData, acute: { ...ref, pageId } } }));
       }
@@ -360,7 +419,7 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
         relabelled.add(label.id);
       }
       const previous = (el.customData?.acuteMeta as ObjectMetadata | undefined)?.ai;
-      replaced.set(el.id, newElementWith(el, { customData: { ...el.customData, acuteMeta: withRefs(metadataFor(c.stableNodeKey, fingerprintShape(shapeKindOf(el as unknown as SceneElement) ?? el.type, c.label), previous), c.sourceRefs) } }));
+      replaced.set(el.id, newElementWith(el, { customData: { ...el.customData, acuteMeta: withWording(withRefs(metadataFor(c.stableNodeKey, fingerprintShape(shapeKindOf(el as unknown as SceneElement) ?? el.type, c.label), previous), c.sourceRefs), undefined) } }));
     } else if (c.kind === "update_node") {
       // Shapes only; the Lens half is never in a patch, so key / expandsTo / sources pass through untouched.
       if (el.type !== "rectangle" && el.type !== "ellipse" && el.type !== "diamond") continue;
@@ -373,6 +432,16 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
         if (c.level !== undefined) replaced.set(el.id, newElementWith(el, { customData: withFrameLens(el.customData, { ...getFrameLens(el), level: c.level ?? undefined }) }));
       } else if (c.expandsTo !== undefined) {
         replaced.set(el.id, newElementWith(el, { customData: withNodeLens(el.customData, { ...getNodeLens(el), expandsTo: c.expandsTo ?? undefined }) }));
+      }
+    } else if (c.kind === "mark_review") {
+      // A card's review state after a citation-driven update (§6.1): only `metadata.ai.review` changes, never its content or baseline.
+      if (ref?.kind === "rich-block" || ref?.kind === "page-preview") {
+        const docId = ref.kind === "rich-block" ? ref.documentId : ref.pageId;
+        const rec = getDocumentStore().get(docId);
+        if (rec?.metadata?.ai) getDocumentStore().update(docId, { metadata: { ...rec.metadata, ai: { ...rec.metadata.ai, review: c.review } } });
+      } else {
+        const meta = el.customData?.acuteMeta as ObjectMetadata | undefined;
+        if (meta?.ai) replaced.set(el.id, newElementWith(el, { customData: { ...el.customData, acuteMeta: { ...meta, ai: { ...meta.ai, review: c.review } } } }));
       }
     } else if (c.kind === "remove") {
       replaced.set(el.id, newElementWith(el, { isDeleted: true }));
@@ -392,10 +461,10 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
       const version = source ? { contentSourceVersion: source.version } : {};
       if (now.kind === "shape") {
         const previous = (el.customData?.acuteMeta as ObjectMetadata | undefined)?.ai;
-        replaced.set(el.id, newElementWith(el, { customData: { ...el.customData, acuteMeta: { ai: { ...(previous ?? set.metadata), ...version, contentFingerprint: fingerprint } } } }));
+        replaced.set(el.id, newElementWith(el, { customData: { ...el.customData, acuteMeta: { ai: { ...(previous ?? set.metadata), ...version, contentFingerprint: fingerprint, userWording: true } } } }));
       } else {
         const rec = getDocumentStore().get(now.documentId);
-        if (rec) getDocumentStore().update(now.documentId, { metadata: { ...rec.metadata, ai: { ...(rec.metadata?.ai ?? set.metadata), ...version, contentFingerprint: fingerprint } } });
+        if (rec) getDocumentStore().update(now.documentId, { metadata: { ...rec.metadata, ai: { ...(rec.metadata?.ai ?? set.metadata), ...version, contentFingerprint: fingerprint, userWording: true } } });
       }
     }
   }

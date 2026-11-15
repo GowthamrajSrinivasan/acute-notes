@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-fusion-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "The fusion step is moved into the trade-offs frame: the pipeline's links from both retrievers and on to reranking now run over third frames (and through a card).",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n5",
+      "group": "g5"
+    }
+  ],
+  "expectFailing": [
+    "a.links-over-frames",
+    "a.layout",
+    "a.together-fusion"
+  ]
+}

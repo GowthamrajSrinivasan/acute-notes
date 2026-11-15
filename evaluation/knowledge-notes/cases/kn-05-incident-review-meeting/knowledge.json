@@ -11,7 +11,7 @@
       "importance": "critical",
       "sourceUnits": ["u5", "u7", "u8", "u9", "u10"],
       "provenance": "explicit",
-      "exactDetails": ["16:40", "55"],
+      "exactDetails": ["March 14", "16:40", "50", "55"],
       "paraphrase": { "allowed": true, "note": "Times and pool sizes stay exact." },
       "omission": { "allowed": false }
     },
@@ -191,7 +191,7 @@
       "importance": "critical",
       "sourceUnits": ["u63", "u64", "u65"],
       "provenance": "explicit",
-      "exactDetails": ["April 2"],
+      "exactDetails": ["Tomás", "April 2"],
       "paraphrase": { "allowed": true },
       "omission": { "allowed": false }
     },

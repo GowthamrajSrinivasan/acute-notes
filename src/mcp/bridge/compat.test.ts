@@ -182,6 +182,28 @@ describe("the SDK's Streamable HTTP client with a bearer token (local agents)", 
       await client.close();
     }
   });
+
+  it("is marked remote when a tunnel rewrote Host to localhost (forwarding headers still show it)", async () => {
+    const seen: { remote: boolean; scope: string }[] = [];
+    await serveWorkspace("ws_a", (s) => seen.push(s));
+    const bearer = services.credentials.issue("ws_a", { kind: "bearer", scope: "propose" });
+    const fetchTunnel = (async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = new URL(typeof input === "string" || input instanceof URL ? input : input.url);
+      const headers = new Headers(init?.headers);
+      headers.set("host", "localhost:3000"); // ngrok --host-header=rewrite
+      headers.set("x-forwarded-for", "203.0.113.7");
+      headers.set("x-forwarded-host", "abc.ngrok-free.app");
+      return handleClientRequest(new Request(url, { ...init, headers }), { token: bearerOf(new Request(url, { headers })), kinds: ["bearer", "oauth"] }, services);
+    }) as typeof fetch;
+    const client = new Client({ name: "tunnelled", version: "1.0.0" });
+    await client.connect(new StreamableHTTPClientTransport(new URL("http://localhost:3000/api/mcp"), { fetch: fetchTunnel, requestInit: { headers: { authorization: `Bearer ${bearer.token}` } } }));
+    try {
+      expect(seen).toEqual([{ remote: true, scope: "propose" }]);
+      expect(await toolNames(client)).not.toContain("import_content");
+    } finally {
+      await client.close();
+    }
+  });
 });
 
 describe("the SDK's OAuth client flow against our authorization server (ChatGPT 'OAuth')", () => {

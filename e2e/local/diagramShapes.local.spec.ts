@@ -113,6 +113,11 @@ function expectConsistent(c: Shape): void {
   expect(c.hostFill).toBe("transparent");
 }
 
+/** `count` shapes, each in a group of its own with all its parts drawn. */
+function settled(all: Shape[], count: number): boolean {
+  return all.length === count && new Set(all.map((s) => s.group)).size === count && all.every((s) => s.parts.length === (PARTS[s.kind] ?? ["body"]).length);
+}
+
 test("cylinder: insert, label, stretch, rotate, recolour, copy", async ({ page }) => {
   await openApp(page);
   // A clean canvas at 100 %, so the pointer targets below are the cylinder's.
@@ -186,11 +191,13 @@ test("cylinder: insert, label, stretch, rotate, recolour, copy", async ({ page }
   c = await only(page);
   await page.mouse.click(c.at.center.x, c.at.center.y);
   await page.keyboard.press("Control+d");
-  await expect.poll(async () => (await shapes(page)).length).toBe(2);
+  // A new host shows up before the canvas has given it a group and an outline of its own (a fix-up just after the
+  // change), so wait for that, not only for the host: reading it earlier is what made this step flaky under load.
+  await expect.poll(async () => settled(await shapes(page), 2)).toBe(true);
   await page.keyboard.press("Control+c");
   await page.mouse.move(900, 600);
   await page.keyboard.press("Control+v");
-  await expect.poll(async () => (await shapes(page)).length).toBe(3);
+  await expect.poll(async () => settled(await shapes(page), 3)).toBe(true);
   const copies = await shapes(page);
   expect(new Set(copies.map((x) => x.group)).size).toBe(3);
   for (const copy of copies) {
@@ -236,6 +243,59 @@ test("cylinder: a visual plan draws one, labelled and connected", async ({ page 
     return api.getSceneElements().filter((el) => el.type === "arrow" && el.endBinding?.elementId === id).length;
   }, c.id);
   expect(bound).toBe(1);
+});
+
+test("cylinder: Ungroup keeps each shape whole, labelled and connected (master plan L4)", async ({ page }) => {
+  await openApp(page);
+  await page.evaluate(() =>
+    (window as unknown as { __acuteDev: { renderPlan(plan: unknown, p: unknown): Promise<unknown> } }).__acuteDev.renderPlan(
+      {
+        version: 1,
+        template: "architecture",
+        nodes: [
+          { id: "orders", type: "shape", content: { shape: "cylinder", label: "Orders DB" } },
+          { id: "ledger", type: "shape", content: { shape: "cylinder", label: "Ledger DB" } },
+        ],
+        relationships: [{ from: "orders", to: "ledger", type: "depends_on" }],
+      },
+      { operationId: "op_ungroup", title: "Ungroup", metadata: { createdBy: "import" } },
+    ),
+  );
+  const review = page.getByRole("region", { name: "AI changes to review" });
+  await review.getByRole("button", { name: "Accept all" }).click();
+  await expect(review).toBeHidden();
+  const before = await shapes(page);
+  expect(before).toHaveLength(2);
+
+  // Select both shapes' groups (not one shape alone, which the canvas turns into its host) and Ungroup. A click on
+  // empty canvas first gives the canvas the keyboard (the review bar had it).
+  await page.mouse.click(1300, 820);
+  await page.evaluate((groups) => {
+    type El = { id: string; groupIds: string[] };
+    const api = (window as unknown as { __acuteDev: { api: { getSceneElements(): El[]; updateScene(s: unknown): void } } }).__acuteDev.api;
+    const ids = api.getSceneElements().filter((el) => groups.includes(el.groupIds[0] ?? ""));
+    api.updateScene({ appState: { selectedElementIds: Object.fromEntries(ids.map((el) => [el.id, true])), selectedGroupIds: Object.fromEntries(groups.map((g) => [g, true])), editingGroupId: null } });
+  }, before.map((s) => s.group));
+  await page.keyboard.press("Control+Shift+G");
+
+  // Still two shapes, each one group again (a new one) with its outline, its label and its connector.
+  await expect
+    .poll(async () => {
+      const now = await shapes(page);
+      return now.length === 2 && now.every((s) => !before.some((b) => b.group === s.group) && s.parts.length === 2);
+    })
+    .toBe(true);
+  const after = await shapes(page);
+  expect(after.map((s) => s.label).sort()).toEqual(["Ledger DB", "Orders DB"]);
+  expect(new Set(after.map((s) => s.group)).size).toBe(2);
+  for (const s of after) expectConsistent(s);
+  const loose = await page.evaluate(() => {
+    type El = { type: string; groupIds: string[]; customData?: { acuteShapePart?: string }; endBinding?: { elementId: string } | null; startBinding?: { elementId: string } | null };
+    const api = (window as unknown as { __acuteDev: { api: { getSceneElements(): El[] } } }).__acuteDev.api;
+    const els = api.getSceneElements();
+    return { parts: els.filter((el) => el.customData?.acuteShapePart).length, ungrouped: els.filter((el) => el.customData?.acuteShapePart && !el.groupIds.length).length, bound: els.filter((el) => el.type === "arrow" && el.startBinding && el.endBinding).length };
+  });
+  expect(loose).toEqual({ parts: 4, ungrouped: 0, bound: 1 });
 });
 
 const MENU: [string, string][] = [

@@ -5,6 +5,7 @@
  * node's kind, sublabel, tag, details, detail-frame link and sources, and an arrow's explanation. Rendered inside
  * `ObjectSection`'s panel slot.
  */
+import { setFrameLocked } from "@/components/canvas/reconcileActions";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useState } from "react";
 import { LENS_LIMITS, NODE_KIND_LABELS, NODE_KINDS, type NodeKind, type NodeLens, type NodeSource, type SourceRole } from "@/domain/canvas/diagram";
@@ -227,6 +228,10 @@ export function DiagramPanelSection({ api, selected }: { api: ExcalidrawImperati
             <ProjectFrameTools api={api} frameId={selected.elementId} profile={selected.profile} />
           </>
         )}
+        <label className="acute-diagram-switch" title="Updates from new content leave every card in this section alone, including cards moved into it later">
+          <input type="checkbox" checked={selected.locked === true} onChange={(e) => setFrameLocked(api, selected.elementId, e.target.checked)} />
+          <span>🔒 Lock section</span>
+        </label>
         <MoveToCanvasButton api={api} />
       </fieldset>
     );

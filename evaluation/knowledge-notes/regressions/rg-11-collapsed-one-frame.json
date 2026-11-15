@@ -1,0 +1,60 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-collapsed-one-frame",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "Every card is put into the event-flow frame: the stated rules and the open questions and conflicts lose their own frames, so the conflicts sit beside the design they question and the links cross.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "t1",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "t2",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "t3",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "t4",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "c1",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "c2",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "c3",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "c4",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "c5",
+      "group": "g1"
+    }
+  ],
+  "expectFailing": [
+    "a.rendered-frames",
+    "a.crossings",
+    "a.frame-count"
+  ]
+}

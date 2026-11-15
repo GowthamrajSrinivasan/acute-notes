@@ -1,0 +1,140 @@
+{
+  "caseId": "kn-06-hybrid-search-reranking",
+  "reviewer": "blind independent reviewer, 2026-11-13",
+  "records": [
+    {
+      "id": "r1",
+      "claimUnits": ["u17"], "claimSummary": "Hybrid search improves recall.",
+      "conditionUnits": ["u17", "u18"], "kind": "precondition",
+      "conditionSummary": "Only when lexical and semantic signals are complementary; if both return the same passages or one is poorly tuned, merging adds latency without much gain.",
+      "mustConvey": "complementary retrievers / otherwise only adds latency",
+      "binding": "claim", "bindingReason": "When the retrievers overlap or one is poorly tuned, 'hybrid improves recall' is false.",
+      "claimCards": ["u3_n9", "u3_ax1", "u3_ax4", "g2", "g1", "u2_a1", "u7_n2"],
+      "carriers": ["u3_n9", "u3_ax1", "u3_ax4"],
+      "perClaimCard": { "u3_n9": "carried", "u3_ax1": "carried", "u3_ax4": "carried", "g2": "separated", "g1": "separated", "u2_a1": "separated", "u7_n2": "separated" },
+      "confidence": "medium", "notes": "g2 takeaway ('merges ... to maximize recall'), g1 takeaway ('a hybrid approach is likely best'), u2_a1 ('would be beneficial') and u7_n2 ('expands the scope of results') state the benefit unconditionally. g6 takeaway / u7_n7 say each step has 'specific conditions' but not this one, so u7_n2 is not 'frame'. Including g1/u2_a1 as claim cards is a judgement call (they are generator inferences of the same claim)."
+    },
+    {
+      "id": "r2",
+      "claimUnits": ["u23"], "claimSummary": "The fused candidate list is built from each retriever's top 50.",
+      "conditionUnits": ["u23"], "kind": "bound",
+      "conditionSummary": "At most 100 candidates, usually fewer due to overlap.",
+      "mustConvey": "top 50 each; at most 100",
+      "binding": "claim", "bindingReason": "Without the bound the candidate count (and so the reranking cost) is misstated.",
+      "claimCards": ["u3_n14", "u3_ax3"], "carriers": ["u3_n14", "u3_ax3"],
+      "perClaimCard": { "u3_n14": "carried", "u3_ax3": "carried" },
+      "confidence": "medium", "notes": "Intra-sentence."
+    },
+    {
+      "id": "r3",
+      "claimUnits": ["u27", "u28", "u29"], "claimSummary": "A cross-encoder reranker rescores passages, judging relevance far more accurately.",
+      "conditionUnits": ["u29"], "kind": "scope",
+      "conditionSummary": "Because it is expensive, it runs only on the fused candidates, never on the whole collection.",
+      "mustConvey": "only on fused candidates, not the whole collection",
+      "binding": "claim", "bindingReason": "Read as scoring the whole collection, the description of the reranker would be false.",
+      "claimCards": ["u4_n2", "u4_ax2"], "carriers": ["u4_n2", "u4_ax2"],
+      "perClaimCard": { "u4_n2": "carried", "u4_ax2": "carried" },
+      "confidence": "high", "notes": "Intra-sentence 'only ... never'."
+    },
+    {
+      "id": "r4",
+      "claimUnits": ["u31"], "claimSummary": "Reranking improves the precision of the top results.",
+      "conditionUnits": ["u31", "u49"], "kind": "caveat",
+      "conditionSummary": "It does not guarantee that the final answer is correct.",
+      "mustConvey": "does not guarantee a correct answer",
+      "binding": "set", "bindingReason": "The precision claim stays true; the caveat warns against over-reading it.",
+      "claimCards": ["u4_n5", "u4_ax1", "g3", "u7_n4"], "carriers": ["u4_n5", "u7_n7", "g6"],
+      "perClaimCard": { "u4_n5": "carried", "u4_ax1": "separated", "g3": "separated", "u7_n4": "frame" },
+      "confidence": "low", "notes": "g3 and u4_ax1 speak of limits ('limited by initial retrieval', 'constrained by ... quality of initial retrieval') but not of the final answer's correctness; judged not to carry this specific caveat. u7_n4 sits in g6 whose takeaway says no step guarantees correctness."
+    },
+    {
+      "id": "r5",
+      "claimUnits": ["u31", "u28"], "claimSummary": "Reranking improves top-result precision / judges relevance more accurately.",
+      "conditionUnits": ["u32"], "kind": "bound",
+      "conditionSummary": "It can only reorder what retrieval found; if the right passage is not among the candidates, reranking cannot recover it.",
+      "mustConvey": "can only reorder retrieved candidates; cannot recover a missed passage",
+      "binding": "claim", "bindingReason": "When the right passage was not retrieved, reranking does not improve the results, so the claim is misleading in that case.",
+      "claimCards": ["u4_n5", "g3", "u4_ax1", "u4_n2", "u7_n4"], "carriers": ["u4_n5", "g3", "u4_ax1", "u4_ax3"],
+      "perClaimCard": { "u4_n5": "carried", "g3": "carried", "u4_ax1": "carried", "u4_n2": "frame", "u7_n4": "carried" },
+      "confidence": "medium", "notes": "u7_n4 'organizes the retrieved results' conveys the bound only implicitly (medium-low). u4_ax3 'cannot compensate for poor initial retrieval' also carries it."
+    },
+    {
+      "id": "r6",
+      "claimUnits": ["u28"], "claimSummary": "The cross-encoder judges relevance far more accurately than either retriever.",
+      "conditionUnits": ["u33"], "kind": "caveat",
+      "conditionSummary": "A passage can be highly relevant yet out of date, which no relevance score detects.",
+      "mustConvey": "relevant but out of date is not detected",
+      "binding": "set", "bindingReason": "Relevance accuracy stays true; staleness is a separate limitation.",
+      "claimCards": ["u4_n2"], "carriers": ["u4_n6", "u4_ax3", "g3"],
+      "perClaimCard": { "u4_n2": "frame" },
+      "confidence": "medium", "notes": "g3 takeaway: 'cannot detect outdated information'."
+    },
+    {
+      "id": "r7",
+      "claimUnits": ["u34"], "claimSummary": "The language model answers only from the top 8 passages, citing them.",
+      "conditionUnits": ["u35"], "kind": "exception",
+      "conditionSummary": "If none of the passages addresses the question, it should say so rather than answer from general knowledge.",
+      "mustConvey": "if no passage addresses the question, say so",
+      "binding": "set", "bindingReason": "The instruction to answer only from the passages stays true; the exception adds the decline path.",
+      "claimCards": ["u5_n2", "g4", "u5_a1", "u7_n6"], "carriers": ["u5_n4"],
+      "perClaimCard": { "u5_n2": "separated", "g4": "separated", "u5_a1": "separated", "u7_n6": "separated" },
+      "confidence": "medium", "notes": "u5_n4 has no arrows; the shape u5_n3 'Check Passage Relevance' is too vague to carry it. Binding could be argued 'claim' (g4 'answers questions from provided passages' is misleading when none are relevant)."
+    },
+    {
+      "id": "r8",
+      "claimUnits": ["u36"], "claimSummary": "Citations let a reader check each claim against its passage.",
+      "conditionUnits": ["u36"], "kind": "caveat",
+      "conditionSummary": "They do not show whether the passage itself is current.",
+      "mustConvey": "citations do not show currency / freshness",
+      "binding": "set", "bindingReason": "Citations still allow checking claims; the currency gap is a caveat.",
+      "claimCards": ["u5_n6", "g4", "u5_a1"], "carriers": ["u5_n6", "g4", "u5_a1"],
+      "perClaimCard": { "u5_n6": "carried", "g4": "carried", "u5_a1": "carried" },
+      "confidence": "high", "notes": "Intra-sentence."
+    },
+    {
+      "id": "r9",
+      "claimUnits": ["u41", "u42", "u43", "u44"], "claimSummary": "Measured relevance/latency/cost per configuration (e.g. hybrid + reranker 88%, 190 ms, $0.95).",
+      "conditionUnits": ["u46", "u39"], "kind": "scope",
+      "conditionSummary": "Figures come from one collection and one 400-question query set; fewer exact identifiers may mean a smaller BM25 gain, and a different reranker has different latency.",
+      "mustConvey": "one collection and one query set; may differ elsewhere",
+      "binding": "claim", "bindingReason": "Taken as general figures they are misleading for another collection or reranker.",
+      "claimCards": ["u6_n2", "u6_n3", "u6_a1", "g5"], "carriers": ["u6_n5"],
+      "perClaimCard": { "u6_n2": "separated", "u6_n3": "separated", "u6_a1": "separated", "g5": "separated" },
+      "confidence": "medium", "notes": "u6_n1 mentions the 400-question internal test set but not the single-collection limit; u6_n5 carries it but has no arrow. Binding claim vs set is debatable: the numbers are true as measurements."
+    },
+    {
+      "id": "r10",
+      "claimUnits": ["u47"], "claimSummary": "Teams with a strict latency budget can rerank fewer candidates (e.g. top 30).",
+      "conditionUnits": ["u47"], "kind": "caveat",
+      "conditionSummary": "At some cost in recall.",
+      "mustConvey": "costs recall",
+      "binding": "set", "bindingReason": "The option still exists; the recall cost is its price.",
+      "claimCards": ["u6_n6"], "carriers": ["u6_n6"],
+      "perClaimCard": { "u6_n6": "carried" },
+      "confidence": "high", "notes": "Intra-sentence."
+    },
+    {
+      "id": "r11",
+      "claimUnits": ["u14"], "claimSummary": "Vector retrieval alone missed the correct passage for 31 of 50 queries.",
+      "conditionUnits": ["u14"], "kind": "scope",
+      "conditionSummary": "Only for queries consisting mainly of an error code.",
+      "mustConvey": "error-code queries",
+      "binding": "claim", "bindingReason": "Read as 31/50 of all queries, the figure would be false.",
+      "claimCards": ["u2_n2", "u2_a1"], "carriers": ["u2_n2", "u2_a1"],
+      "perClaimCard": { "u2_n2": "carried", "u2_a1": "carried" },
+      "confidence": "high", "notes": "Intra-sentence."
+    },
+    {
+      "id": "r12",
+      "claimUnits": ["u15"], "claimSummary": "Embeddings must be recomputed, taking about 6 hours for this collection.",
+      "conditionUnits": ["u15"], "kind": "precondition",
+      "conditionSummary": "Whenever the encoder changes.",
+      "mustConvey": "when the encoder changes",
+      "binding": "claim", "bindingReason": "Without the trigger it reads as a recurring 6-hour cost, which is false.",
+      "claimCards": ["u2_n2"], "carriers": ["u2_n2"],
+      "perClaimCard": { "u2_n2": "carried" },
+      "confidence": "medium", "notes": "Intra-sentence."
+    }
+  ],
+  "notes": "Examples (u8, u9 quoted strings, u13, u37), definitions (u4-u5, u10, u20-u21) and the k-parameter elaboration (u22) are not recorded. u25 (kept 50 rather than 100) is a design rationale, not a limiting condition. The generator's analysis nodes (*_a1, *_ax*) and frame takeaways were treated as normal readable nodes; several state the hybrid benefit unconditionally. Group-to-group arrows (g0->g1 ...) were not used as links between cards."
+}

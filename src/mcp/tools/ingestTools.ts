@@ -206,6 +206,7 @@ async function runImport(deps: IngestToolDeps, args: ImportArgs, signal: AbortSi
           contentSources: deps.ingest.contentSources,
           renderContext: () => open.renderContext(),
           sourceObjects: sceneSourceObjects(() => open.elements(), (id) => open.getDocument?.(id)),
+          scene: () => ({ elements: open.elements(), getDocument: (id) => open.getDocument?.(id) }),
         },
         { ...(signal ? { signal } : {}), ...(deps.parseMarkdown ? { parseMarkdown: deps.parseMarkdown } : {}) },
       );

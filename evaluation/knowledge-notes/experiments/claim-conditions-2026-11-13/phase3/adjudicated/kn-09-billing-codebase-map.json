@@ -1,0 +1,264 @@
+{
+  "caseId": "kn-09-billing-codebase-map",
+  "adjudicator": "phase 3 adjudicator (protocol v2), 2026-11-13",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u4"],
+      "verdict": "set",
+      "claimUnits": ["u1"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u1"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u1"] }
+      ],
+      "conditionQuote": "Refunds, dunning and the customer portal are out of scope.",
+      "claimQuote": "This note maps the invoice path of the Ledgerline billing service",
+      "rationale": "Scope limit of the map; the map still covers the invoice path.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u10_n1", "u10_ax1"],
+          "carriers": ["u10_n4", "u10_ax4"],
+          "perClaimCard": { "u10_n1": "separated", "u10_ax1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u22"],
+      "verdict": "claim",
+      "claimUnits": ["u21"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u21"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u21"] }
+      ],
+      "conditionQuote": "Events flagged `is_test` are skipped.",
+      "claimQuote": "selecting the account's rows whose `occurred_at` falls inside the period, and groups them by meter into usage lines",
+      "rationale": "Without the exclusion the selection reads as including test events, which is false.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n1"],
+          "carriers": ["u4_n1"],
+          "perClaimCard": { "u4_n1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u28", "u29"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u27"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u27"] },
+        { "who": "R2", "verdict": "ambiguous", "claimUnits": ["u27"] }
+      ],
+      "conditionQuote": "I did not find a call site and have not confirmed that it ever runs",
+      "claimQuote": "`priceUsage` probably also reads the `discounts` table.",
+      "rationale": "If the hedge is dropped the discounts read is presented as fact and may be false (claim); but u27 already carries 'probably', so u28/u29 can be read as supporting evidence for a hedged claim (set). The source does not settle which.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n1", "u4_a1", "u3_n8", "u3_ax1", "u9_n2"],
+          "carriers": ["u4_n1", "u4_a1", "u3_n8", "u3_ax1", "u9_n2", "g3", "g2", "arrow:g2->g3"],
+          "perClaimCard": { "u4_n1": "carried", "u4_a1": "carried", "u3_n8": "carried", "u3_ax1": "carried", "u9_n2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u31"],
+      "verdict": "set",
+      "claimUnits": ["u30"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u30"] }
+      ],
+      "conditionQuote": "The request has a timeout of 8 seconds",
+      "claimQuote": "sends the draft invoice to an external tax provider, Taxwell, over HTTPS",
+      "rationale": "Timeout bound on the tax call; the call statement stays true.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n1"],
+          "carriers": ["u5_n2"],
+          "perClaimCard": { "u5_n1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u34", "u35"],
+      "verdict": "set",
+      "claimUnits": ["u30", "u18", "u33"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u30", "u31", "u33"] },
+        { "who": "R1", "verdict": "set", "claimUnits": ["u30", "u18"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u30"] }
+      ],
+      "conditionQuote": "`TaxClient.quote` contains no retry code, and I could not find out whether its callers retry, whether the Taxwell client library retries on its own, or what happens to the invoice when a quote times out.",
+      "claimQuote": "a `TaxClient` class whose `quote(draft)` method sends the draft invoice to an external tax provider, Taxwell, over HTTPS",
+      "rationale": "Unknown retry and timeout outcome is a reliability caveat; the call sequence stays true. The golden link gives a claim link only, no binding.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n1", "u1_n10", "u3_n5", "u5_n4"],
+          "carriers": ["u5_n5", "u5_n6", "u5_a1", "g4", "u3_n8", "u3_ax1", "g2", "arrow:g2->g4"],
+          "perClaimCard": { "u5_n1": "frame", "u1_n10": "separated", "u3_n5": "frame", "u5_n4": "frame" },
+          "changedFromV1": {
+            "u5_n4": "(not in v1)→frame: claim link includes u33 per golden; g4 takeaway conveys the missing retry/timeout handling"
+          }
+        }
+      }
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u42", "u43"],
+      "verdict": "claim",
+      "claimUnits": ["u39", "u40"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u39", "u40"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u39", "u40"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u39", "u40"] }
+      ],
+      "conditionQuote": "The code logs the error and returns, so an invoice can exist without its event",
+      "claimQuote": "After the transaction commits, `generateInvoice` calls `publishInvoiceFinalized(invoice)`",
+      "rationale": "The flow reads as every finalized invoice producing an event, which is false when publishing fails after the commit.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u6_n4", "u6_n5", "u1_n12", "u3_n7", "u1_a1"],
+          "carriers": ["u6_n7", "u6_n8", "g5"],
+          "perClaimCard": { "u6_n4": "frame", "u6_n5": "frame", "u1_n12": "separated", "u3_n7": "separated", "u1_a1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u46"],
+      "verdict": "set",
+      "claimUnits": ["u45"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u45"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u45"] }
+      ],
+      "conditionQuote": "`taxCents` stays undefined until `TaxClient.quote` returns.",
+      "claimQuote": "taxCents?: number;",
+      "rationale": "When the optional field is filled; the interface is accurate without it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u7_n2"],
+          "carriers": ["u7_n3"],
+          "perClaimCard": { "u7_n2": "linked" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u49"],
+      "verdict": "claim",
+      "claimUnits": ["u48"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u48"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u48"] }
+      ],
+      "conditionQuote": "not a rule the code enforces; nothing stops another module from querying `price_plans` directly",
+      "claimQuote": "`billing/pricing` acts, in effect, as the pricing boundary",
+      "rationale": "Without the caveat the boundary reads as enforced, and 'a pricing change should only need edits there' can become false.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u8_n1", "g7"],
+          "carriers": ["u8_n2"],
+          "perClaimCard": { "u8_n1": "linked", "g7": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "a1",
+      "conditionUnits": ["u1"],
+      "verdict": "set",
+      "claimUnits": ["u1"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R2", "verdict": "set", "claimUnits": ["u1"] },
+        { "who": "R1", "verdict": "not_a_condition", "claimUnits": [], "note": "implicit: R1 folded the commit into the claim summary of r1 and made no record for it" }
+      ],
+      "conditionQuote": "as of commit `a41c9e2`",
+      "claimQuote": "This note maps the invoice path of the Ledgerline billing service",
+      "rationale": "An explicit snapshot scope on every statement in the map: the map stays a true description of that commit but may be stale later, so it is a real scope (set), not a minor detail.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u10_n1", "u10_ax1"],
+          "carriers": ["u10_n1", "u10_ax1", "g9"],
+          "perClaimCard": { "u10_n1": "carried", "u10_ax1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "a2",
+      "conditionUnits": ["u41"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u41"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R2", "verdict": "set", "claimUnits": ["u41"] },
+        { "who": "R1", "verdict": "not_a_condition", "claimUnits": [], "note": "implicit: R1 notes list u41 among minor 'did not read' epistemic hedges" }
+      ],
+      "conditionQuote": "I did not read their code.",
+      "claimQuote": "The payment and email services subscribe to that topic",
+      "rationale": "The map's own u3 makes epistemic markers meaningful, which supports set; but the subscription claim does not depend on reading the subscribers' code and the hedge can be read as a minor attribution (not_a_condition). The source does not settle it.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u6_n6"],
+          "carriers": ["u6_n6"],
+          "perClaimCard": { "u6_n6": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "a3",
+      "conditionUnits": ["u52"],
+      "verdict": "set",
+      "claimUnits": ["u14"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R2", "verdict": "set", "claimUnits": ["u14"] },
+        { "who": "R1", "verdict": "not_a_condition", "claimUnits": [], "note": "implicit: R1 notes exclude open questions u52-u55 as 'questions, not conditions'" }
+      ],
+      "conditionQuote": "I could not find the scheduler that calls `generateInvoice` for every account.",
+      "claimQuote": "The admin console's \"Regenerate invoice\" action calls it from `billing/admin/regenerate.ts`.",
+      "rationale": "u52 itself sets the admin action against the missing scheduler, so it qualifies the caller statement: the known caller list is incomplete. u14 stays true, so set; R1's blanket exclusion of open questions is not supported where the question names the claim it limits.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n4"],
+          "carriers": ["u9_n1"],
+          "perClaimCard": { "u1_n4": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    }
+  ],
+  "notes": "v2 re-check of labelled arrows: g2->g3 'discounts unverified' and g2->g4 'tax retry unknown' are arrow-label carriers (c3, c5), but every claim card in g2/g3/g4 is already carried or frame, which rank above arrow_label. u1_n10 (c5) and u1_n12/u1_a1 (c6) sit in g0, whose outgoing arrows are labelled with call names ('TaxClient.quote', 'write invoice, publish event'): these name the next section, not a limiting relation, so cross-frame linking does not apply and they stay separated. g2->g0 'fixed sequence' conveys nothing limiting. u8_n1->u8_n2 'caveat' is card-to-card so u8_n1 stays linked; the label alone does not convey the specific limit, so not arrow_label. c4 u5_n1 stays separated: no arrow touching g4 mentions the 8 s timeout and the g4 takeaway speaks of undocumented timeout handling, not the bound. No v1 outcome changed."
+}

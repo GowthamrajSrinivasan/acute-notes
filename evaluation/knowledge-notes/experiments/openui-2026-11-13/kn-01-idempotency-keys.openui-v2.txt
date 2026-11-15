@@ -1,0 +1,42 @@
+root = IdeaCard("Idempotency Keys Prevent Duplicate Operations", "An idempotency key is a unique value attached to a client request, allowing the server to identify and prevent duplicate operations.", "medium", [c1])
+c1 = CitationChip("u1")
+
+---
+
+root = IdeaCard("Server Returns Stored Result for Duplicate Requests", "If a server receives a request with an idempotency key it has already processed, it returns the previously stored result instead of re-executing the operation.", "medium", [c2])
+c2 = CitationChip("u2")
+
+---
+
+root = IdeaCard("Example of Idempotency Key Usage", "A checkout client might send `Idempotency-Key: 7f3c-91ab` with a payment request.", "low", [c3])
+c3 = CitationChip("u3")
+
+---
+
+root = IdeaCard("Client Retries with Same Key After Connection Drop", "If a connection drops before a response, the client can safely retry the payment request using the same idempotency key.", "low", [c4])
+c4 = CitationChip("u4")
+
+---
+
+root = IdeaCard("Server Returns Original Confirmation for Retried Request", "When a client retries a request with the key `7f3c-91ab` after a connection drop, the server retrieves the stored result and returns the original confirmation, ensuring the customer is charged only once.", "medium", [c5])
+c5 = CitationChip("u5")
+
+---
+
+root = IdeaCard("Idempotency Key Protection is Time-Bound", "Idempotency keys only protect against duplicate requests as long as the server retains the stored results.", "medium", [c6])
+c6 = CitationChip("u6")
+
+---
+
+root = IdeaCard("Stored Results Expire After 24 Hours", "In this design, stored results associated with idempotency keys expire after 24 hours; a retry sent after this period is treated as a new payment.", "high", [c7])
+c7 = CitationChip("u7")
+
+---
+
+root = IdeaCard("Keys Do Not Protect Against Different Requests", "Idempotency keys do not make two different requests safe; if a client reuses a key with a different amount, the server must reject the request.", "high", [c8])
+c8 = CitationChip("u8")
+
+---
+
+root = IdeaCard("Idempotency Keys Ensure Safe Retries Within a Window", "Idempotency keys ensure that retries are safe within a defined time window, but they do not provide a general guarantee against all duplicate operations.", "medium", [c9])
+c9 = CitationChip("u9")

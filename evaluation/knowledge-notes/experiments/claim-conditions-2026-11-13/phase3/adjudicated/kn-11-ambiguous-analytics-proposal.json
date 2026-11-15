@@ -1,0 +1,334 @@
+{
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "adjudicator": "phase 3 adjudicator (protocol v2), 2026-11-13",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u6"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u5", "u6"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u6"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u5"] }
+      ],
+      "conditionQuote": "or sooner when the app goes to the background",
+      "claimQuote": "Clients batch events and send them every 10 seconds",
+      "rationale": "R1 reads the background exception as falsifying a strict 10-second cadence (claim); R2 reads the whole batching rule as a latency limit on u5 'send events to a collector' (set). The source supports both decompositions.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n2", "u2_n1"],
+          "carriers": ["u2_n2"],
+          "perClaimCard": { "u2_n2": "carried", "u2_n1": "linked" },
+          "changedFromV1": { "u2_n1": "new card (R2's u5 reading); unlabelled card-to-card arrow u2_n1->u2_n2 joins it to the carrier" }
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u7"],
+      "verdict": "claim",
+      "claimUnits": ["u7"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u7"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u7"] }
+      ],
+      "conditionQuote": "for signed-in users",
+      "claimQuote": "Each event carries an event name, a timestamp, an anonymous device id and, for signed-in users, an account id.",
+      "rationale": "Without the qualifier every event would seem to carry an account id.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n2"],
+          "carriers": ["u2_n2"],
+          "perClaimCard": { "u2_n2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u11"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u10"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u10", "u12"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u10"] },
+        { "who": "R1", "verdict": "not_recorded", "claimUnits": [] }
+      ],
+      "conditionQuote": "The enrichment step uses the user service.",
+      "claimQuote": "An enrichment step consumes the topic and adds account attributes, such as plan tier and region.",
+      "rationale": "A dependency of enrichment that matters with u15's load concern (set), or plain elaboration of how attributes are obtained (R1 recorded nothing). The golden link itself flags that the source leaves the nature of 'uses' open.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n8", "u2_a2"],
+          "carriers": ["u2_n8", "u2_a2"],
+          "perClaimCard": { "u2_n8": "carried", "u2_a2": "carried" },
+          "changedFromV1": { "u2_n8": "no v1 record (new condition)", "u2_a2": "no v1 record (new condition)" }
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u12"],
+      "verdict": "claim",
+      "claimUnits": ["u10"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u10"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u10"] }
+      ],
+      "conditionQuote": "If an account cannot be found, the event is passed on without account attributes.",
+      "claimQuote": "adds account attributes, such as plan tier and region",
+      "rationale": "u10 is false for events whose account is not found.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n8"],
+          "carriers": ["u2_n8"],
+          "perClaimCard": { "u2_n8": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u13", "u21"],
+      "verdict": "claim",
+      "claimUnits": ["u21"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u13", "u14"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u21"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u21"] }
+      ],
+      "conditionQuote": "Enriched events are then written to the warehouse in hourly batches",
+      "claimQuote": "With this pipeline, events reach the warehouse in real time, so launch dashboards stay current.",
+      "rationale": "Hourly batches contradict 'real time'; the source never resolves which is meant (golden links the reverse direction), but both blind reviewers agree the real-time claim cannot stand alone.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u6_n3", "u6_a1", "g5"],
+          "carriers": ["u2_n10"],
+          "perClaimCard": { "u6_n3": "separated", "u6_a1": "separated", "g5": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u15"],
+      "verdict": "set",
+      "claimUnits": ["u11"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u11"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u11"] }
+      ],
+      "conditionQuote": "enrichment should avoid adding much traffic to it",
+      "claimQuote": "The enrichment step uses the user service.",
+      "rationale": "Design constraint on enrichment's use of the user service; no claim becomes false.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n8", "u2_a2"],
+          "carriers": ["u2_n11", "u2_a4", "arrow:u2_n7->u2_n11"],
+          "perClaimCard": { "u2_n8": "separated", "u2_a2": "separated" },
+          "changedFromV1": { "u2_a2": "new card ('enrichment stage depends on the user service'); separated" }
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u16"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u5", "u16"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u5"] }
+      ],
+      "conditionQuote": "Every event type must be registered before clients can send it.",
+      "claimQuote": "Client SDKs in the web and mobile apps send events to a collector service over HTTPS.",
+      "rationale": "'Before clients can send it' makes unregistered sending impossible (claim), yet u8 says unregistered events are sent and rejected, so u5 stays true and registration is a prerequisite (set). The source is internally loose on this.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n1", "u2_n2", "u2_n1"],
+          "carriers": ["u5_n1", "u2_n4"],
+          "perClaimCard": { "u5_n1": "carried", "u2_n2": "separated", "u2_n1": "separated" },
+          "changedFromV1": {
+            "u2_n2": "new card (R2's u5 reading); g1->g4 label 'uses' is not a limiting relation; separated",
+            "u2_n1": "new card (R2's u5 reading); only a chain u2_n1->u2_n3->u2_n4 reaches a carrier; separated"
+          }
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u17"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u17"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u17"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u17"] }
+      ],
+      "conditionQuote": "a breaking change requires a new version rather than an edit to the existing one",
+      "claimQuote": "Schemas are versioned",
+      "rationale": "R1 treats 'breaking' as scoping a new-version rule (claim); R2 treats the rule as a limit on 'schemas are versioned' (set, possibly elaboration). Depends on which clause is the claim; the source does not settle it.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u5_n2"],
+          "carriers": ["u5_n2"],
+          "perClaimCard": { "u5_n2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "conditionUnits": ["u24"],
+      "verdict": "set",
+      "claimUnits": ["u22"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u22"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u22"] }
+      ],
+      "conditionQuote": "How long the aggregated tables are kept is TBD.",
+      "claimQuote": "only aggregated tables are kept longer",
+      "rationale": "Open retention gap; u22 stays true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u7_n1"],
+          "carriers": ["u7_n3"],
+          "perClaimCard": { "u7_n1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "conditionUnits": ["u33"],
+      "verdict": "claim",
+      "claimUnits": ["u22"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u22"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u22"] }
+      ],
+      "conditionQuote": "Warehouse raw events | Data team | 90 days",
+      "claimQuote": "Raw events will be kept for 30 days and then deleted",
+      "rationale": "The components table contradicts the 30-day retention; u22 cannot be stated alone.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u7_n1", "g6"],
+          "carriers": ["u3_n1"],
+          "perClaimCard": { "u7_n1": "separated", "g6": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c11",
+      "conditionUnits": ["u36"],
+      "verdict": "claim",
+      "claimUnits": ["u5", "u36"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u36"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u5", "u36"] }
+      ],
+      "conditionQuote": "once the mobile SDK is ready; no date has been set for it",
+      "claimQuote": "Phase 2 adds mobile events",
+      "rationale": "Mobile events depend on an unscheduled SDK, so an unconditioned 'phase 2 adds mobile events' (and u5's 'web and mobile') implies a commitment that doesn't exist.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u9_n5", "u9_n4", "u9_a1", "u2_n2"],
+          "carriers": ["u9_n5", "u9_a1", "g8"],
+          "perClaimCard": { "u9_n5": "carried", "u9_n4": "frame", "u9_a1": "carried", "u2_n2": "separated" },
+          "changedFromV1": { "u2_n2": "new card (R2's u5 reading: 'web and mobile apps send events'); no arrow from g1 reaches g8; separated" }
+        }
+      }
+    },
+    {
+      "id": "c12",
+      "conditionUnits": ["u38"],
+      "verdict": "set",
+      "claimUnits": ["u42"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u42"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u42"] }
+      ],
+      "conditionQuote": "The cost of running the pipeline has not been estimated yet.",
+      "claimQuote": "We ask for approval to start phase 1",
+      "rationale": "Unknown-cost caveat a decision-maker must see; the approval request stands as stated.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u10_n2", "u10_n1", "u10_a1", "g9"],
+          "carriers": ["u9_n6", "u9_a1", "g8"],
+          "perClaimCard": { "u10_n2": "separated", "u10_n1": "separated", "u10_a1": "separated", "g9": "separated" },
+          "changedFromV1": { "g9": "linked→separated: the only joining arrow g8->g9 is labelled 'leads to', a sequence label that v2 excludes for cross-frame links" }
+        }
+      }
+    },
+    {
+      "id": "a1",
+      "conditionUnits": ["u35"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u4"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R2", "verdict": "set", "claimUnits": ["u4"] },
+        { "who": "R1", "verdict": "not_recorded", "claimUnits": [] }
+      ],
+      "conditionQuote": "Phase 1 covers the web app's sign-up and checkout events.",
+      "claimQuote": "which features paying customers use in their first month",
+      "rationale": "R2 reads phase 1 scope as limiting whether the first questions get answered (set); but u4 states what the team wants, which no scope can falsify, and the source never says phase 1 targets u4 (not a condition). Unsettled.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n4"],
+          "carriers": ["u9_n2", "g8"],
+          "perClaimCard": { "u1_n4": "separated" },
+          "changedFromV1": { "u1_n4": "no v1 record (new condition)" }
+        }
+      }
+    },
+    {
+      "id": "a2",
+      "conditionUnits": ["u40"],
+      "verdict": "set",
+      "claimUnits": ["u8"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R2", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "R1", "verdict": "not_recorded", "claimUnits": [] }
+      ],
+      "conditionQuote": "What happens to events the collector rejects: are they dropped, or kept somewhere for debugging?",
+      "claimQuote": "rejects events that do not match a registered schema",
+      "rationale": "R1 skipped open questions as restatements, but u40 adds something u8 does not say: the fate of rejected events is undecided (possible silent data loss). A real caveat; u8 stays true, so set.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n4", "u2_a2"],
+          "carriers": ["u4_n2"],
+          "perClaimCard": { "u2_n4": "separated", "u2_a2": "separated" },
+          "changedFromV1": { "u2_n4": "no v1 record (new condition)", "u2_a2": "no v1 record (new condition)" }
+        }
+      }
+    }
+  ],
+  "notes": "Claim cards re-checked under v2. Only outcome change: c12 g9 linked→separated ('leads to' no longer counts). Cross-frame labels here (justifies, relates to, uses, addresses, details, about, leads to) are not limiting relations. New cards added where R2's alternative claim link (u5) is stated by visible nodes (c1, c7, c11), and u2_a2 added to c6. Both source contradictions (c5 hourly vs real time, c10 30 vs 90 days) remain unflagged in the notes."
+}

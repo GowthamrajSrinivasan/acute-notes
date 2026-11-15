@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-partial-shown-on-timeout",
+  "distortion": "invented_detail",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "The L4 frame's takeaway claims a partial answer is shown when the model times out, while the timeout card itself stays correct.",
+  "mutations": [
+    { "op": "replace_text", "node": "gL4", "find": "A timeout fails the request;", "replace": "A partial answer is shown when the model times out;" }
+  ],
+  "expectFailing": ["a.no-partial-on-timeout"]
+}

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-bm25-limit-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "BM25's vocabulary-mismatch limit (u9) is replaced by a restated strength that mentions 'the same words', which the old term list accepted as the limit.",
+  "mutations": [
+    { "op": "replace_text", "node": "n1", "find": "**Limit:** vocabulary mismatch. \"Why does my upload stall\" won't match a passage that only says \"transfers pause when the connection drops\".", "replace": "It matches passages that use the same words as the query." }
+  ],
+  "expectFailing": ["a.bm25-limit-with-claim"]
+}

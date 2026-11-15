@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": { "title": "Proposal: product-analytics event pipeline (draft v0.3)" },
+  "nodes": [
+    {
+      "id": "g1",
+      "type": "group",
+      "content": { "label": "Stated design: event flow", "arrangement": "chain", "diagram": "architecture", "takeaway": "As the proposal states it; disputed details are marked on the shapes, not resolved." }
+    },
+    {
+      "id": "s1",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": { "shape": "rectangle", "label": "Web & mobile SDKs", "kind": "frontend", "details": ["batch events, send every 10 seconds over HTTPS"] }
+    },
+    {
+      "id": "s2",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "high",
+      "content": { "shape": "rectangle", "label": "Collector service", "kind": "backend", "details": ["validates each event against a registered schema; rejects the rest", "truncates IP addresses before publishing", "owner: platform team"] }
+    },
+    {
+      "id": "s3",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": { "shape": "cylinder", "label": "Schema registry", "kind": "store", "details": ["owner: not decided", "every event type registered before it is sent", "versioned; a breaking change needs a new version"] }
+    },
+    {
+      "id": "s4",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": { "shape": "rectangle", "label": "analytics.events topic", "sublabel": "message bus", "kind": "messagebus", "details": ["keeps events 7 days", "owner: platform team"] }
+    },
+    {
+      "id": "s5",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "high",
+      "content": { "shape": "rectangle", "label": "Enrichment", "kind": "function", "details": ["adds plan tier and region", "account not found: passed on without attributes", "how it gets account data is unclear", "owner: data team"] }
+    },
+    {
+      "id": "s6",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "medium",
+      "content": { "shape": "rectangle", "label": "User service", "kind": "backend", "details": ["expected to stay lightly loaded"] }
+    },
+    {
+      "id": "s7",
+      "type": "shape",
+      "parent": "g1",
+      "importance": "high",
+      "content": { "shape": "cylinder", "label": "Warehouse", "kind": "database", "details": ["analytics team builds dashboards here", "write cadence disputed: hourly batches vs real time", "raw-event retention disputed: 30 vs 90 days", "owner: data team"] }
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "content": { "label": "Stated goal, rules and rollout", "arrangement": "grid", "takeaway": "What the proposal commits to in plain words." }
+    },
+    {
+      "id": "t1",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "One pipeline instead of three logging tools",
+      "content": { "markdown": "A single pipeline should collect, enrich and land product-analytics events in the warehouse, so the growth team can answer funnel questions (how many new accounts finish onboarding, which features paying customers use in their first month) without exporting CSV files by hand." }
+    },
+    {
+      "id": "t2",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Privacy: no emails or free text, IPs truncated",
+      "content": { "markdown": "Events must not contain email addresses or free-text input from users. The collector truncates IP addresses before an event is published." }
+    },
+    {
+      "id": "t3",
+      "type": "text",
+      "parent": "g2",
+      "importance": "low",
+      "title": "Not for monitoring, not a revenue record",
+      "content": { "markdown": "Not meant for operational monitoring or alerting (logs and metrics stay in the observability stack), and not a replacement for the billing system's revenue records." }
+    },
+    {
+      "id": "t4",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "Phase 1: web sign-up and checkout events",
+      "content": { "markdown": "About 6 weeks for 2 engineers. The proposal asks for approval to start phase 1 while the open questions are settled in parallel." }
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "content": { "label": "Open questions and conflicts", "arrangement": "grid", "takeaway": "Contradictions and gaps to settle before building; nothing here is decided." }
+    },
+    {
+      "id": "c1",
+      "type": "text",
+      "parent": "g3",
+      "importance": "high",
+      "title": "How fresh is the warehouse? The proposal says two things",
+      "content": { "markdown": "The design section says enriched events are written to the warehouse in **hourly batches**; the freshness section says events reach the warehouse **in real time**. The proposal doesn't say which is meant.\n\nIt matters: product managers want adoption data during launches, and launch reviews happen within 2 hours of a release." }
+    },
+    {
+      "id": "c2",
+      "type": "text",
+      "parent": "g3",
+      "importance": "high",
+      "title": "How long are raw events kept? The proposal gives two values",
+      "content": { "markdown": "The retention section says raw events are kept for **30 days**; the components table says **90 days** for warehouse raw events. The proposal doesn't say which is meant." }
+    },
+    {
+      "id": "c3",
+      "type": "text",
+      "parent": "g3",
+      "importance": "medium",
+      "title": "Who owns the schema registry?",
+      "content": { "markdown": "Not decided: neither the platform team nor the data team owns the registry yet; each has suggested the other. The components table lists the owner as TBD." }
+    },
+    {
+      "id": "c4",
+      "type": "text",
+      "parent": "g3",
+      "importance": "medium",
+      "title": "How does enrichment use the user service?",
+      "content": { "markdown": "The proposal only says enrichment \"uses\" it. A call per event, a cached lookup and a read from a replica all fit the text; which one is not stated. The user service should stay lightly loaded, which argues against a call per event but doesn't settle it." }
+    },
+    {
+      "id": "c5",
+      "type": "text",
+      "parent": "g3",
+      "importance": "medium",
+      "title": "Also open",
+      "content": { "markdown": "- Aggregate-table retention: TBD.\n- Rejected events: dropped, or kept for debugging?\n- Running cost: not estimated.\n- Phase 2 (mobile): waits for the mobile SDK; no date set.\n- Mobile events: same schemas as web?" }
+    }
+  ],
+  "relationships": [
+    { "from": "s1", "to": "s2", "type": "calls", "label": "events over HTTPS" },
+    { "from": "s2", "to": "s3", "type": "depends_on", "label": "validates against schemas" },
+    { "from": "s2", "to": "s4", "type": "publishes", "label": "accepted events" },
+    { "from": "s4", "to": "s5", "type": "flows_to", "label": "consumed by enrichment" },
+    { "from": "s5", "to": "s6", "type": "relates_to", "label": "uses (how is unclear)", "confidence": 0.4, "explanation": "The proposal says only 'uses'; whether this is a call per event, a cache or a replica read is not stated." },
+    { "from": "s5", "to": "s7", "type": "writes", "label": "enriched events" }
+  ]
+}

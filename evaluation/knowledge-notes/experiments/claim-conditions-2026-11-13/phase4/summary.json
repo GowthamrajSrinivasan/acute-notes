@@ -1,0 +1,413 @@
+{
+  "kn-01-idempotency-keys": {
+    "records": 8,
+    "verdicts": {
+      "claim": 7,
+      "set": 1
+    },
+    "status": {
+      "agreed": 7,
+      "adjudicated": 1
+    },
+    "rejected": 0,
+    "noteSets": {
+      "openui-v1": {
+        "claimPairs": {
+          "separated": 8,
+          "carried": 4
+        },
+        "ambiguousPairs": {},
+        "coverageGaps": []
+      },
+      "openui-v2": {
+        "claimPairs": {
+          "separated": 12,
+          "carried": 4
+        },
+        "ambiguousPairs": {},
+        "coverageGaps": []
+      }
+    }
+  },
+  "kn-02-edge-cache-invalidation": {
+    "records": 36,
+    "verdicts": {
+      "claim": 24,
+      "set": 12
+    },
+    "status": {
+      "agreed": 20,
+      "adjudicated": 16
+    },
+    "rejected": 0,
+    "noteSets": {
+      "openui-v1": {
+        "claimPairs": {
+          "carried": 8,
+          "separated": 10,
+          "absent": 5
+        },
+        "ambiguousPairs": {},
+        "coverageGaps": [
+          "k2 \"when it has not\"",
+          "k5 \"nothing the origin does will shorten that wait\"",
+          "k11 \"until it is purged separately or expires\"",
+          "k13 \"Purge APIs are also rate limited\"",
+          "k14 \"the slowest location took 20 seconds\"",
+          "k20 \"where a minute of staleness is acceptable\"",
+          "k21 \"but not on live election results\"",
+          "k22 \"an expired copy is served for at most 60 seconds past its TT\"",
+          "k23 \"after that the edge waits for the origin as it would on an o\"",
+          "k25 \"for up to 86,400 seconds, or one day\"",
+          "k32 \"Cannot be shortened after the fact\""
+        ]
+      },
+      "openui-v2": {
+        "claimPairs": {
+          "carried": 8,
+          "absent": 2,
+          "separated": 18
+        },
+        "ambiguousPairs": {},
+        "coverageGaps": [
+          "k5 \"nothing the origin does will shorten that wait\"",
+          "k29 \"so they still need a TTL, a purge or both\"",
+          "k32 \"Cannot be shortened after the fact\""
+        ]
+      }
+    }
+  },
+  "kn-03-blue-green-deploy": {
+    "records": 22,
+    "verdicts": {
+      "set": 3,
+      "claim": 19
+    },
+    "status": {
+      "agreed": 14,
+      "adjudicated": 8
+    },
+    "rejected": 1,
+    "noteSets": {
+      "distil": {
+        "claimPairs": {
+          "carried": 15,
+          "separated": 8
+        },
+        "ambiguousPairs": {},
+        "coverageGaps": []
+      }
+    }
+  },
+  "kn-04-queue-choice": {
+    "records": 27,
+    "verdicts": {
+      "set": 4,
+      "not_a_condition": 3,
+      "claim": 19,
+      "ambiguous": 1
+    },
+    "status": {
+      "agreed": 20,
+      "adjudicated": 6,
+      "unresolved": 1
+    },
+    "rejected": 1,
+    "noteSets": {
+      "distil": {
+        "claimPairs": {
+          "carried": 16,
+          "separated": 13,
+          "frame": 1,
+          "linked": 5
+        },
+        "ambiguousPairs": {
+          "carried": 1,
+          "separated": 1
+        },
+        "coverageGaps": []
+      }
+    }
+  },
+  "kn-05-incident-review-meeting": {
+    "records": 38,
+    "verdicts": {
+      "claim": 14,
+      "set": 11,
+      "not_a_condition": 11,
+      "ambiguous": 2
+    },
+    "status": {
+      "agreed": 24,
+      "adjudicated": 12,
+      "unresolved": 2
+    },
+    "rejected": 0,
+    "noteSets": {
+      "distil": {
+        "claimPairs": {
+          "carried": 17,
+          "linked": 3,
+          "separated": 3,
+          "frame": 2
+        },
+        "ambiguousPairs": {
+          "carried": 1,
+          "linked": 1
+        },
+        "coverageGaps": [
+          "k26 \"For config, maybe.\""
+        ]
+      }
+    }
+  },
+  "kn-06-hybrid-search-reranking": {
+    "records": 31,
+    "verdicts": {
+      "claim": 21,
+      "not_a_condition": 3,
+      "set": 7
+    },
+    "status": {
+      "agreed": 22,
+      "adjudicated": 9
+    },
+    "rejected": 0,
+    "noteSets": {
+      "distil": {
+        "claimPairs": {
+          "carried": 27,
+          "separated": 27,
+          "linked": 2,
+          "frame": 8,
+          "absent": 2
+        },
+        "ambiguousPairs": {},
+        "coverageGaps": [
+          "k26 \"a collection with fewer exact identifiers may see a smaller \""
+        ]
+      }
+    }
+  },
+  "kn-07-photo-sharing-hld": {
+    "records": 17,
+    "verdicts": {
+      "set": 8,
+      "claim": 8,
+      "not_a_condition": 1
+    },
+    "status": {
+      "agreed": 10,
+      "adjudicated": 7
+    },
+    "rejected": 0,
+    "noteSets": {
+      "distil": {
+        "claimPairs": {
+          "carried": 6,
+          "separated": 9,
+          "linked": 2
+        },
+        "ambiguousPairs": {},
+        "coverageGaps": []
+      }
+    }
+  },
+  "kn-08-helpdesk-answers-hld-lld": {
+    "records": 14,
+    "verdicts": {
+      "claim": 9,
+      "set": 5
+    },
+    "status": {
+      "agreed": 11,
+      "adjudicated": 3
+    },
+    "rejected": 0,
+    "noteSets": {
+      "distil": {
+        "claimPairs": {
+          "carried": 12,
+          "separated": 8
+        },
+        "ambiguousPairs": {},
+        "coverageGaps": []
+      }
+    }
+  },
+  "kn-09-billing-codebase-map": {
+    "records": 21,
+    "verdicts": {
+      "set": 10,
+      "claim": 10,
+      "ambiguous": 1
+    },
+    "status": {
+      "agreed": 13,
+      "adjudicated": 7,
+      "unresolved": 1
+    },
+    "rejected": 1,
+    "noteSets": {
+      "distil": {
+        "claimPairs": {
+          "carried": 8,
+          "frame": 3,
+          "linked": 2,
+          "separated": 2
+        },
+        "ambiguousPairs": {
+          "separated": 1
+        },
+        "coverageGaps": []
+      }
+    }
+  },
+  "kn-10-inventory-architecture-frames": {
+    "records": 17,
+    "verdicts": {
+      "claim": 13,
+      "set": 3,
+      "ambiguous": 1
+    },
+    "status": {
+      "agreed": 11,
+      "adjudicated": 5,
+      "unresolved": 1
+    },
+    "rejected": 0,
+    "noteSets": {
+      "distil": {
+        "claimPairs": {
+          "carried": 7,
+          "arrow_label": 1,
+          "frame": 5,
+          "separated": 7
+        },
+        "ambiguousPairs": {
+          "separated": 2
+        },
+        "coverageGaps": []
+      }
+    }
+  },
+  "kn-11-ambiguous-analytics-proposal": {
+    "records": 19,
+    "verdicts": {
+      "set": 6,
+      "claim": 9,
+      "not_a_condition": 2,
+      "ambiguous": 2
+    },
+    "status": {
+      "agreed": 9,
+      "adjudicated": 9,
+      "unresolved": 1
+    },
+    "rejected": 1,
+    "noteSets": {
+      "distil": {
+        "claimPairs": {
+          "carried": 8,
+          "linked": 3,
+          "separated": 5,
+          "frame": 1
+        },
+        "ambiguousPairs": {
+          "separated": 4
+        },
+        "coverageGaps": []
+      }
+    }
+  },
+  "kn-12-flag-rollout-update": {
+    "records": 20,
+    "verdicts": {
+      "set": 5,
+      "claim": 15
+    },
+    "status": {
+      "agreed": 16,
+      "adjudicated": 4
+    },
+    "rejected": 0,
+    "noteSets": {
+      "distil": {
+        "claimPairs": {
+          "carried": 16,
+          "linked": 1,
+          "separated": 1,
+          "arrow_label": 1,
+          "frame": 2
+        },
+        "ambiguousPairs": {},
+        "coverageGaps": []
+      }
+    }
+  },
+  "total": {
+    "records": 270,
+    "verdicts": {
+      "claim": 168,
+      "set": 75,
+      "not_a_condition": 20,
+      "ambiguous": 7
+    },
+    "status": {
+      "agreed": 177,
+      "adjudicated": 87,
+      "unresolved": 6
+    },
+    "byStatus": {
+      "agreed:claim": 118,
+      "adjudicated:set": 32,
+      "agreed:set": 43,
+      "adjudicated:claim": 50,
+      "adjudicated:not_a_condition": 5,
+      "agreed:not_a_condition": 15,
+      "unresolved:ambiguous": 6,
+      "agreed:ambiguous": 1
+    },
+    "byRule": {
+      "general:claim": 53,
+      "R5:set": 16,
+      "R3:claim": 31,
+      "R1:claim": 30,
+      "general:set": 21,
+      "R3:set": 11,
+      "R4:claim": 32,
+      "R4:set": 4,
+      "R5:claim": 6,
+      "general:not_a_condition": 20,
+      "R2:claim": 16,
+      "R3:ambiguous": 1,
+      "R2:set": 15,
+      "R4:ambiguous": 4,
+      "R1:set": 8,
+      "R2:ambiguous": 2
+    },
+    "rejected": 4,
+    "unitsWithSeveralClauses": 48,
+    "note": "integrity/coverage totals use distil (kn-03–kn-12) and OpenUI v2 (kn-01/kn-02)",
+    "claimPairs": {
+      "separated": 113,
+      "carried": 144,
+      "absent": 4,
+      "frame": 22,
+      "linked": 18,
+      "arrow_label": 2
+    },
+    "ambiguousPairs": {
+      "carried": 2,
+      "separated": 8,
+      "linked": 1
+    },
+    "coverageGaps": [
+      "kn-02 k5 \"nothing the origin does will shorten that wait\"",
+      "kn-02 k29 \"so they still need a TTL, a purge or both\"",
+      "kn-02 k32 \"Cannot be shortened after the fact\"",
+      "kn-05 k26 \"For config, maybe.\"",
+      "kn-06 k26 \"a collection with fewer exact identifiers may see a smaller \""
+    ]
+  }
+}

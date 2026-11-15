@@ -1,0 +1,13 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-publish-before-commit",
+  "distortion": "condition_dropped",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "Publishing moves inside the transaction: the publisher is 'called inside the transaction, before it commits' and the call edge no longer says 'after commit'.",
+  "mutations": [
+    { "op": "replace_text", "node": "s_pub", "find": "Called only after the transaction commits", "replace": "Called inside the transaction, before it commits" },
+    { "op": "set_label", "from": "s_gen", "to": "s_pub", "label": "5. publish" }
+  ],
+  "expectFailing": ["a.publish-after-commit"]
+}

@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-smoke-step-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "Step 4 (smoke tests, with its 'if one fails, stop' condition, u24) disappears from the flow.",
+  "mutations": [
+    {
+      "op": "remove_node",
+      "node": "n9"
+    }
+  ],
+  "expectFailing": [
+    "a.smoke",
+    "a.rel-smoke-switch",
+    "a.rel-smoke-rollback",
+    "a.rel-health-smoke"
+  ]
+}

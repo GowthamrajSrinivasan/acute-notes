@@ -1,0 +1,6933 @@
+{
+  "canvasId": "recorded",
+  "elements": [
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "MAI4vR9EAGKSMqXlR7Hp",
+      "x": -764,
+      "y": -403.5,
+      "width": 1476,
+      "height": 54,
+      "angle": 0,
+      "link": "acute://block/doc_95in1sHZhOP31hFz6xL5",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_95in1sHZhOP31hFz6xL5",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 36,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": -764,
+          "y": -403.5
+        }
+      },
+      "version": 2,
+      "versionNonce": 956762130,
+      "index": "a0",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [],
+      "updated": 1792436060537,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "S209A5GLoXnNQNudcxTc",
+      "x": -764,
+      "y": -341.5,
+      "width": 1476,
+      "height": 33,
+      "angle": 0,
+      "link": "acute://block/doc_61IZ0mt7AnIZWWBXGn7B",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_61IZ0mt7AnIZWWBXGn7B",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 22,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": -764,
+          "y": -341.5
+        }
+      },
+      "version": 3,
+      "versionNonce": 1359472526,
+      "index": "a08",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [],
+      "updated": 1792436060543,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "P9Ng5697nOjDdwAXKqCf",
+      "x": 888,
+      "y": -403.5,
+      "width": 1476,
+      "height": 54,
+      "angle": 0,
+      "link": "acute://block/doc_yTPvi3kTvHlfECtmTaFd",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_yTPvi3kTvHlfECtmTaFd",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 36,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 888,
+          "y": -403.5
+        }
+      },
+      "version": 3,
+      "versionNonce": 292986962,
+      "index": "a0G",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [],
+      "updated": 1792436060543,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "tugaCPc6HrR8a2HRHs66",
+      "x": -764,
+      "y": -280.5,
+      "width": 460,
+      "height": 91,
+      "angle": 0,
+      "link": "acute://block/doc_UTdUGFhoc3nawOpImRA9",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_UTdUGFhoc3nawOpImRA9",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -764,
+          "y": -280.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 698204114,
+      "index": "a0V",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [],
+      "updated": 1792436060705,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "RHSb35LACe4DKTV2GwF0",
+      "x": -256,
+      "y": -280.5,
+      "width": 460,
+      "height": 49,
+      "angle": 0,
+      "link": "acute://block/doc_ZVgtfa9O0kbje7yrU2EP",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_ZVgtfa9O0kbje7yrU2EP",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -256,
+          "y": -280.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 993654162,
+      "index": "a0d",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "s7ner2Ph7wZASvbf1KGt",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060706,
+      "locked": false
+    },
+    {
+      "id": "EmxGxS4ShLcBMLlTYZ9z",
+      "type": "rectangle",
+      "x": -764,
+      "y": 53.5,
+      "width": 225,
+      "height": 110,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "index": "a0l",
+      "roundness": null,
+      "seed": 84020878,
+      "version": 3,
+      "versionNonce": 383900686,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "7zEh147lzKx-sqn2K4UNs"
+        },
+        {
+          "id": "FmrUXxg1YtafoQWSxnYO",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1,
+            "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § timeline",
+            "contentFingerprint": "s1gs4xifjki9",
+            "review": {
+              "reasons": [
+                "the card cites no passage of the source"
+              ]
+            }
+          }
+        },
+        "acuteLayout": {
+          "x": -764,
+          "y": 53.5
+        }
+      }
+    },
+    {
+      "id": "7zEh147lzKx-sqn2K4UNs",
+      "type": "text",
+      "x": -729.4899520874023,
+      "y": 96,
+      "width": 155.9799041748047,
+      "height": 25,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "index": "a1",
+      "roundness": null,
+      "seed": 2132610254,
+      "version": 3,
+      "versionNonce": 1908294414,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060538,
+      "link": null,
+      "locked": false,
+      "text": "Outage Timeline",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "EmxGxS4ShLcBMLlTYZ9z",
+      "originalText": "Outage Timeline",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "RYltpUJg9z2r8vW1U8vj",
+      "x": -256,
+      "y": 53.5,
+      "width": 460,
+      "height": 112,
+      "angle": 0,
+      "link": "acute://block/doc_zbqlziZo0MUFU0VfjrsW",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_zbqlziZo0MUFU0VfjrsW",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -256,
+          "y": 53.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 404961554,
+      "index": "a2",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "FmrUXxg1YtafoQWSxnYO",
+          "type": "arrow"
+        },
+        {
+          "id": "qdr07aJ5HjSvj7Hnb2Yw",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060706,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "47QekBN2n4TbLTDL0Ngb",
+      "x": 252,
+      "y": 53.5,
+      "width": 460,
+      "height": 161,
+      "angle": 0,
+      "link": "acute://block/doc_0rMGHRfqWztsxLJUUdQy",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_0rMGHRfqWztsxLJUUdQy",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 252,
+          "y": 53.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1404320338,
+      "index": "a3",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "qdr07aJ5HjSvj7Hnb2Yw",
+          "type": "arrow"
+        },
+        {
+          "id": "8klAeyIxr5e12yzoIwhL",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060707,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "JCfE5H5PfelGOQZcvCTj",
+      "x": -764,
+      "y": 329.5,
+      "width": 460,
+      "height": 70,
+      "angle": 0,
+      "link": "acute://block/doc_6yt2JWiKwhNrxMkLR2wU",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_6yt2JWiKwhNrxMkLR2wU",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -764,
+          "y": 329.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1478406222,
+      "index": "a4",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "8klAeyIxr5e12yzoIwhL",
+          "type": "arrow"
+        },
+        {
+          "id": "PBPkTRVJ2p8DLQ4Rt5Su",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060708,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "O4Xx5zin6TVr6DXzSYxO",
+      "x": -256,
+      "y": 329.5,
+      "width": 460,
+      "height": 91,
+      "angle": 0,
+      "link": "acute://block/doc_k4DDvu33iEocZDRJXvxz",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_k4DDvu33iEocZDRJXvxz",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -256,
+          "y": 329.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 2003535634,
+      "index": "a5",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "PBPkTRVJ2p8DLQ4Rt5Su",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060708,
+      "locked": false
+    },
+    {
+      "id": "b4kKVLpW5hUhsBEkZeI9",
+      "type": "rectangle",
+      "x": 353,
+      "y": 329.5,
+      "width": 258,
+      "height": 110,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "index": "a6",
+      "roundness": null,
+      "seed": 1914056786,
+      "version": 3,
+      "versionNonce": 325248850,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "TjXQmXLQXFaLdrg5owy1W"
+        },
+        {
+          "id": "mEsSevexWIfKcDyUolJf",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1,
+            "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § alerting_threshold",
+            "contentFingerprint": "s1aj8eyao06h",
+            "review": {
+              "reasons": [
+                "the card cites no passage of the source"
+              ]
+            }
+          }
+        },
+        "acuteLayout": {
+          "x": 353,
+          "y": 329.5
+        }
+      }
+    },
+    {
+      "id": "TjXQmXLQXFaLdrg5owy1W",
+      "type": "text",
+      "x": 391.49005126953125,
+      "y": 372,
+      "width": 181.0198974609375,
+      "height": 25,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "index": "a7",
+      "roundness": null,
+      "seed": 743462418,
+      "version": 4,
+      "versionNonce": 1981771470,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "text": "Alerting Threshold",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "b4kKVLpW5hUhsBEkZeI9",
+      "originalText": "Alerting Threshold",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "kdSTLezBvo3MzS4GbVuD",
+      "x": 252,
+      "y": 487.5,
+      "width": 460,
+      "height": 70,
+      "angle": 0,
+      "link": "acute://block/doc_IqXwMDgdnjJcx9WUzx16",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_IqXwMDgdnjJcx9WUzx16",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 252,
+          "y": 487.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1109442446,
+      "index": "a8",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "mEsSevexWIfKcDyUolJf",
+          "type": "arrow"
+        },
+        {
+          "id": "UFZI5DqlnRPQ56ev1vx7",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060709,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "b7jqmZ09Hs4ybbxMnhMe",
+      "x": -764,
+      "y": 619.5,
+      "width": 460,
+      "height": 136,
+      "angle": 0,
+      "link": "acute://block/doc_N9V9CMbfvDDtMiTfMl3f",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_N9V9CMbfvDDtMiTfMl3f",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -764,
+          "y": 619.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1463475154,
+      "index": "a9",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "UFZI5DqlnRPQ56ev1vx7",
+          "type": "arrow"
+        },
+        {
+          "id": "m54ifsOnSefKPacMTwRB",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060709,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "KgrM3ISB331514XKrELg",
+      "x": -256,
+      "y": 619.5,
+      "width": 380,
+      "height": 69,
+      "angle": 0,
+      "link": "acute://block/doc_hIXIAzsu9AFdPF2talxj",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "todo",
+          "documentId": "doc_hIXIAzsu9AFdPF2talxj",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -256,
+          "y": 619.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1689339598,
+      "index": "aA",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "m54ifsOnSefKPacMTwRB",
+          "type": "arrow"
+        },
+        {
+          "id": "gWXF37lUnyHHZynvV6UE",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060710,
+      "locked": false
+    },
+    {
+      "id": "Ytrhai3H4snn8lx6RPqF",
+      "type": "rectangle",
+      "x": -668.5,
+      "y": 929.5,
+      "width": 269,
+      "height": 110,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "index": "aB",
+      "roundness": null,
+      "seed": 532313938,
+      "version": 3,
+      "versionNonce": 1588630350,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "sD6BJ4e8Oa-9RPUrDGdaN"
+        },
+        {
+          "id": "B0z6VLj5CZbwA78jmjZn",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1,
+            "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § status_page_updates",
+            "contentFingerprint": "s27kitnl3z3t",
+            "review": {
+              "reasons": [
+                "the card cites no passage of the source"
+              ]
+            }
+          }
+        },
+        "acuteLayout": {
+          "x": -668.5,
+          "y": 929.5
+        }
+      }
+    },
+    {
+      "id": "sD6BJ4e8Oa-9RPUrDGdaN",
+      "type": "text",
+      "x": -640.0199203491211,
+      "y": 972,
+      "width": 212.0398406982422,
+      "height": 25,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "index": "aC",
+      "roundness": null,
+      "seed": 1272167698,
+      "version": 4,
+      "versionNonce": 282038418,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "text": "Status Page Updates",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "Ytrhai3H4snn8lx6RPqF",
+      "originalText": "Status Page Updates",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "uVKgKSSb3eul3N7wngSe",
+      "x": -764,
+      "y": 1087.5,
+      "width": 460,
+      "height": 91,
+      "angle": 0,
+      "link": "acute://block/doc_liZFlwtrfjkPoSYCZF0O",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_liZFlwtrfjkPoSYCZF0O",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -764,
+          "y": 1087.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 991770770,
+      "index": "aD",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "B0z6VLj5CZbwA78jmjZn",
+          "type": "arrow"
+        },
+        {
+          "id": "DZuW6oJpHgpC1E7V9E7J",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060710,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "jvXx2h1q7du7nYPu7wUd",
+      "x": -256,
+      "y": 929.5,
+      "width": 460,
+      "height": 91,
+      "angle": 0,
+      "link": "acute://block/doc_sUEykGz2kuCpCP5izrWk",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_sUEykGz2kuCpCP5izrWk",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -256,
+          "y": 929.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 2072859726,
+      "index": "aE",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "DZuW6oJpHgpC1E7V9E7J",
+          "type": "arrow"
+        },
+        {
+          "id": "zzkCS4Mcf983JWFwE1ym",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060711,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "5fvaDWoKq6t0J3fVyurU",
+      "x": 252,
+      "y": 929.5,
+      "width": 460,
+      "height": 70,
+      "angle": 0,
+      "link": "acute://block/doc_JABAaM4qvT0ckW5T7HZz",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_JABAaM4qvT0ckW5T7HZz",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 252,
+          "y": 929.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 976338254,
+      "index": "aF",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "zzkCS4Mcf983JWFwE1ym",
+          "type": "arrow"
+        },
+        {
+          "id": "OjRR3Fpj1gN5v8oj4sO5",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060711,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "T4hT5SbXNHGJsByD3Ol1",
+      "x": -764,
+      "y": 1243.5,
+      "width": 460,
+      "height": 49,
+      "angle": 0,
+      "link": "acute://block/doc_Wgo9ANEJwJXA4XRLHRMd",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_Wgo9ANEJwJXA4XRLHRMd",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -764,
+          "y": 1243.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 47818318,
+      "index": "aG",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "OjRR3Fpj1gN5v8oj4sO5",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060712,
+      "locked": false
+    },
+    {
+      "id": "p6mCj6mER5e6uk5H7o4W",
+      "type": "rectangle",
+      "x": 972,
+      "y": -321.5,
+      "width": 292,
+      "height": 110,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "index": "aH",
+      "roundness": null,
+      "seed": 2048133070,
+      "version": 3,
+      "versionNonce": 1599761934,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "ctrlVZpSfO6sGArUree0b"
+        },
+        {
+          "id": "QPy2kG9aedOb6jM00F3k",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1,
+            "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § config_change_process",
+            "contentFingerprint": "s1uou9np1xet",
+            "review": {
+              "reasons": [
+                "the card cites no passage of the source"
+              ]
+            }
+          }
+        },
+        "acuteLayout": {
+          "x": 972,
+          "y": -321.5
+        }
+      }
+    },
+    {
+      "id": "ctrlVZpSfO6sGArUree0b",
+      "type": "text",
+      "x": 1007.2200927734375,
+      "y": -279,
+      "width": 221.559814453125,
+      "height": 25,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "index": "aI",
+      "roundness": null,
+      "seed": 169729550,
+      "version": 4,
+      "versionNonce": 743817682,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "text": "Config Change Process",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "p6mCj6mER5e6uk5H7o4W",
+      "originalText": "Config Change Process",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "zte7uTz0maM2kRAvyXwF",
+      "x": 888,
+      "y": -163.5,
+      "width": 460,
+      "height": 115,
+      "angle": 0,
+      "link": "acute://block/doc_2I5RWmElsjMrKAVGAFIP",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_2I5RWmElsjMrKAVGAFIP",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 888,
+          "y": -163.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 81980110,
+      "index": "aJ",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "QPy2kG9aedOb6jM00F3k",
+          "type": "arrow"
+        },
+        {
+          "id": "OpEBTLahO9B1uGEP7WGi",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060712,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "sh0liBRNeRvdZaWjihbn",
+      "x": 1396,
+      "y": -321.5,
+      "width": 460,
+      "height": 70,
+      "angle": 0,
+      "link": "acute://block/doc_mMbEszpCLC6XrwRiBLLa",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_mMbEszpCLC6XrwRiBLLa",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1396,
+          "y": -321.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1058562318,
+      "index": "aK",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "OpEBTLahO9B1uGEP7WGi",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060712,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "kBrlye6yilLE8x6IyjrD",
+      "x": 1904,
+      "y": -321.5,
+      "width": 460,
+      "height": 94,
+      "angle": 0,
+      "link": "acute://block/doc_SvHLJvY0m8oN15Xz3VN4",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_SvHLJvY0m8oN15Xz3VN4",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1904,
+          "y": -321.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 2049733202,
+      "index": "aL",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "elNg6NqJ2nLMedI4IVN1",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060713,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "unJhjWydJDAjevnz3uQS",
+      "x": 888,
+      "y": 40.5,
+      "width": 380,
+      "height": 69,
+      "angle": 0,
+      "link": "acute://block/doc_XL1IjNPTA9aDdE0549w2",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "todo",
+          "documentId": "doc_XL1IjNPTA9aDdE0549w2",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 888,
+          "y": 40.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1549859730,
+      "index": "aM",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "elNg6NqJ2nLMedI4IVN1",
+          "type": "arrow"
+        },
+        {
+          "id": "zST34o9FMrTeVy6e3cp8",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060713,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "7nrkIkQvSFyXiEzC16JL",
+      "x": 888,
+      "y": 350.5,
+      "width": 460,
+      "height": 115,
+      "angle": 0,
+      "link": "acute://block/doc_7SA2Tzf029mR344gF10q",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_7SA2Tzf029mR344gF10q",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 888,
+          "y": 350.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1332109646,
+      "index": "aN",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "wwozmKsR7NP4UswlJBsN",
+          "type": "arrow"
+        },
+        {
+          "id": "dKjL5mlguSkRbcRkQu0r",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060714,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "urrhDVvwwN2gx0QzrKWU",
+      "x": 1396,
+      "y": 350.5,
+      "width": 460,
+      "height": 112,
+      "angle": 0,
+      "link": "acute://block/doc_LoVMstiBkJB5T1dW3svY",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_LoVMstiBkJB5T1dW3svY",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1396,
+          "y": 350.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1598886866,
+      "index": "aO",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "wwozmKsR7NP4UswlJBsN",
+          "type": "arrow"
+        },
+        {
+          "id": "8dGe4GLelhuSFxOAj0Qg",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060715,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "J4pf3gxYfClXN7Ri3ghs",
+      "x": 1904,
+      "y": 350.5,
+      "width": 460,
+      "height": 91,
+      "angle": 0,
+      "link": "acute://block/doc_tDvr90xIPYb3mRBPmRoe",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_tDvr90xIPYb3mRBPmRoe",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1904,
+          "y": 350.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1487080722,
+      "index": "aP",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "8dGe4GLelhuSFxOAj0Qg",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060715,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "SFFLEmm23uOzwLCTGd6C",
+      "x": 1904,
+      "y": 40.5,
+      "width": 380,
+      "height": 90,
+      "angle": 0,
+      "link": "acute://block/doc_199bdmdk2LgiEn00iuyO",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "todo",
+          "documentId": "doc_199bdmdk2LgiEn00iuyO",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1904,
+          "y": 40.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 450137682,
+      "index": "aQ",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "dKjL5mlguSkRbcRkQu0r",
+          "type": "arrow"
+        },
+        {
+          "id": "HVHM0cfKeSKVOoF9Idyt",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060716,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "86g44BbZn8iZ8IVMZOT3",
+      "x": 1904,
+      "y": 554.5,
+      "width": 460,
+      "height": 70,
+      "angle": 0,
+      "link": "acute://block/doc_3z7K31zPnYkt6ab5lMhe",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_3z7K31zPnYkt6ab5lMhe",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1904,
+          "y": 554.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 525981010,
+      "index": "aR",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "DLKj8G4vX93Uy703JLPu",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060716,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "BYCu6yFw5CSHNwd4KnN4",
+      "x": 888,
+      "y": 710.5,
+      "width": 460,
+      "height": 112,
+      "angle": 0,
+      "link": "acute://block/doc_l2nmBNNLSuxnL7WpW0h0",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_l2nmBNNLSuxnL7WpW0h0",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 888,
+          "y": 710.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1109272786,
+      "index": "aS",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "DLKj8G4vX93Uy703JLPu",
+          "type": "arrow"
+        },
+        {
+          "id": "mDlhStj1sxChCsPrdd3V",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060717,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "jN49Iewxz1L5lPEpdDJS",
+      "x": 1396,
+      "y": 710.5,
+      "width": 460,
+      "height": 91,
+      "angle": 0,
+      "link": "acute://block/doc_kGVHU3s1OjTo9g4qvcKa",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_kGVHU3s1OjTo9g4qvcKa",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1396,
+          "y": 710.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 556810770,
+      "index": "aT",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "mDlhStj1sxChCsPrdd3V",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060717,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "k7JDxjhLA1NP0F5FBgGD",
+      "x": 1396,
+      "y": 554.5,
+      "width": 460,
+      "height": 91,
+      "angle": 0,
+      "link": "acute://block/doc_mb0FDQwZ7xSQ7bPPai48",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_mb0FDQwZ7xSQ7bPPai48",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1396,
+          "y": 554.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 2055206030,
+      "index": "aU",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "9vYBSTUz1w9mP5sjq2IC",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060718,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "tTPEs7Z8oDvKgSL6MMs0",
+      "x": 888,
+      "y": 554.5,
+      "width": 332,
+      "height": 48,
+      "angle": 0,
+      "link": "acute://block/doc_EwiJ6icr1n4Yg4dXwYQU",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "todo",
+          "documentId": "doc_EwiJ6icr1n4Yg4dXwYQU",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 888,
+          "y": 554.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 647911246,
+      "index": "aV",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "9vYBSTUz1w9mP5sjq2IC",
+          "type": "arrow"
+        },
+        {
+          "id": "HcJhD3XHLlflVq5B336Y",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060718,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "fdnHFH3brjichMrJkrvg",
+      "x": 1904,
+      "y": 710.5,
+      "width": 460,
+      "height": 94,
+      "angle": 0,
+      "link": "acute://block/doc_lhlN2wqxJBB5LfIRmnuw",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_lhlN2wqxJBB5LfIRmnuw",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1904,
+          "y": 710.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 93830610,
+      "index": "aW",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [],
+      "updated": 1792436060719,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "D1Bj07FKll7PtuXLKD9e",
+      "x": 252,
+      "y": 619.5,
+      "width": 460,
+      "height": 208,
+      "angle": 0,
+      "link": "acute://block/doc_ReA5dLx80mrosPIv6rVK",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_ReA5dLx80mrosPIv6rVK",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 252,
+          "y": 619.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1128543122,
+      "index": "aX",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "gWXF37lUnyHHZynvV6UE",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060719,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "yuunFB7Kid4n3nhwKETQ",
+      "x": 1396,
+      "y": 40.5,
+      "width": 460,
+      "height": 187,
+      "angle": 0,
+      "link": "acute://block/doc_S1mh8t5CXhURgYU7YKLW",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_S1mh8t5CXhURgYU7YKLW",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1396,
+          "y": 40.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 446053134,
+      "index": "aY",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [
+        {
+          "id": "zST34o9FMrTeVy6e3cp8",
+          "type": "arrow"
+        },
+        {
+          "id": "HVHM0cfKeSKVOoF9Idyt",
+          "type": "arrow"
+        },
+        {
+          "id": "HcJhD3XHLlflVq5B336Y",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060719,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "Qyfk1DXM7ZffJGa7aLVT",
+      "x": 252,
+      "y": -280.5,
+      "width": 460,
+      "height": 232,
+      "angle": 0,
+      "link": "acute://block/doc_4KiLtVNaIGSt0CBPveZ6",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_4KiLtVNaIGSt0CBPveZ6",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 252,
+          "y": -280.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 235536786,
+      "index": "aZ",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "G6pskkijMfcJRHc8o3hy",
+      "boundElements": [
+        {
+          "id": "s7ner2Ph7wZASvbf1KGt",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436060720,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "gMrhLzXW1JjRraYhbBUS",
+      "x": 888,
+      "y": 890.5,
+      "width": 375,
+      "height": 97,
+      "angle": 0,
+      "link": "acute://block/doc_AacrjWIjXz1meFxH692c",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_AacrjWIjXz1meFxH692c",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 888,
+          "y": 890.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 660620562,
+      "index": "aa",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "hIeZlHDBGXBQsYEsDJqH",
+      "boundElements": [],
+      "updated": 1792436060720,
+      "locked": false
+    },
+    {
+      "id": "G6pskkijMfcJRHc8o3hy",
+      "type": "frame",
+      "x": -804,
+      "y": -443.5,
+      "width": 1556,
+      "height": 1803,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ab",
+      "roundness": null,
+      "seed": 1631097682,
+      "version": 3,
+      "versionNonce": 611243150,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil"
+          }
+        },
+        "acuteOverview": {
+          "title": "Post-incident review: checkout outage, March 14",
+          "takeaway": "Outage review: Alerting, status page, and config review improved; auto-rollback and Friday freeze open."
+        },
+        "acuteLayout": {
+          "x": -804,
+          "y": -443.5
+        }
+      },
+      "name": "1 · Notes"
+    },
+    {
+      "id": "hIeZlHDBGXBQsYEsDJqH",
+      "type": "frame",
+      "x": 848,
+      "y": -443.5,
+      "width": 1556,
+      "height": 1484,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ac",
+      "roundness": null,
+      "seed": 1865308434,
+      "version": 3,
+      "versionNonce": 1040253778,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil"
+          }
+        },
+        "acuteOverview": {
+          "title": "Post-incident review: checkout outage, March 14 (2 of 2)"
+        },
+        "acuteLayout": {
+          "x": 848,
+          "y": -443.5
+        }
+      },
+      "name": "1 · Notes (2 of 2)"
+    },
+    {
+      "id": "FmrUXxg1YtafoQWSxnYO",
+      "type": "arrow",
+      "x": -531,
+      "y": 108.5,
+      "width": 267,
+      "height": 1,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ad",
+      "roundness": null,
+      "seed": 1306879698,
+      "version": 4,
+      "versionNonce": 1161709266,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060707,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "flows_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          133.5,
+          0
+        ],
+        [
+          133.5,
+          1
+        ],
+        [
+          267,
+          1
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "EmxGxS4ShLcBMLlTYZ9z",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "RYltpUJg9z2r8vW1U8vj",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "qdr07aJ5HjSvj7Hnb2Yw",
+      "type": "arrow",
+      "x": 212,
+      "y": 109.5,
+      "width": 32,
+      "height": 17.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ae",
+      "roundness": null,
+      "seed": 1710537874,
+      "version": 5,
+      "versionNonce": 27074578,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060707,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "flows_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          17.5
+        ],
+        [
+          32,
+          17.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "RYltpUJg9z2r8vW1U8vj",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "47QekBN2n4TbLTDL0Ngb",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.45652173913043476
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "8klAeyIxr5e12yzoIwhL",
+      "type": "arrow",
+      "x": 244,
+      "y": 134,
+      "width": 540,
+      "height": 320,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "af",
+      "roundness": null,
+      "seed": 1964202578,
+      "version": 7,
+      "versionNonce": 1917637842,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060708,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "flows_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -24,
+          0
+        ],
+        [
+          -24,
+          -96.5
+        ],
+        [
+          -516,
+          -96.5
+        ],
+        [
+          -516,
+          223.5
+        ],
+        [
+          -540,
+          223.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "47QekBN2n4TbLTDL0Ngb",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "JCfE5H5PfelGOQZcvCTj",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.4
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "PBPkTRVJ2p8DLQ4Rt5Su",
+      "type": "arrow",
+      "x": -296,
+      "y": 371.5,
+      "width": 32,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ag",
+      "roundness": null,
+      "seed": 1779974162,
+      "version": 5,
+      "versionNonce": 1161107790,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060708,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "flows_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          32,
+          0
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "JCfE5H5PfelGOQZcvCTj",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.6
+        ]
+      },
+      "endBinding": {
+        "elementId": "O4Xx5zin6TVr6DXzSYxO",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.46153846153846156
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "mEsSevexWIfKcDyUolJf",
+      "type": "arrow",
+      "x": 482,
+      "y": 447.5,
+      "width": 0,
+      "height": 32,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dotted",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ah",
+      "roundness": null,
+      "seed": 1090153938,
+      "version": 3,
+      "versionNonce": 813250382,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "explained_by",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          32
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "b4kKVLpW5hUhsBEkZeI9",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5001,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "kdSTLezBvo3MzS4GbVuD",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5001,
+          0
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "dot",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "UFZI5DqlnRPQ56ev1vx7",
+      "type": "arrow",
+      "x": 244,
+      "y": 522.5,
+      "width": 540,
+      "height": 158,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ai",
+      "roundness": null,
+      "seed": 1590748050,
+      "version": 5,
+      "versionNonce": 1859359122,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "9QYDxDV-vDw85uGiLgs6g"
+        }
+      ],
+      "updated": 1792436060709,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -516,
+          0
+        ],
+        [
+          -516,
+          158
+        ],
+        [
+          -540,
+          158
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "kdSTLezBvo3MzS4GbVuD",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "b7jqmZ09Hs4ybbxMnhMe",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.4485294117647059
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "9QYDxDV-vDw85uGiLgs6g",
+      "type": "text",
+      "x": -78.28794860839844,
+      "y": 512.5,
+      "width": 128.57589721679688,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "aj",
+      "roundness": null,
+      "seed": 1842520402,
+      "version": 5,
+      "versionNonce": 1800302098,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060709,
+      "link": null,
+      "locked": false,
+      "text": "proposed change",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "UFZI5DqlnRPQ56ev1vx7",
+      "originalText": "proposed change",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "m54ifsOnSefKPacMTwRB",
+      "type": "arrow",
+      "x": -296,
+      "y": 687.5,
+      "width": 32,
+      "height": 33.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ak",
+      "roundness": null,
+      "seed": 706251534,
+      "version": 6,
+      "versionNonce": 123466066,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060719,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "implements",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          -33.5
+        ],
+        [
+          32,
+          -33.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "b7jqmZ09Hs4ybbxMnhMe",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "KgrM3ISB331514XKrELg",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle_outline",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "B0z6VLj5CZbwA78jmjZn",
+      "type": "arrow",
+      "x": -541,
+      "y": 1047.5,
+      "width": 0,
+      "height": 32,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dotted",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "al",
+      "roundness": null,
+      "seed": 623901006,
+      "version": 4,
+      "versionNonce": 398039694,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060711,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "explained_by",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          32
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "Ytrhai3H4snn8lx6RPqF",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.4739776951672863,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "uVKgKSSb3eul3N7wngSe",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.48478260869565215,
+          0
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "dot",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "DZuW6oJpHgpC1E7V9E7J",
+      "type": "arrow",
+      "x": -534,
+      "y": 1079.5,
+      "width": 508,
+      "height": 51,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "am",
+      "roundness": null,
+      "seed": 532651918,
+      "version": 6,
+      "versionNonce": 938009486,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "22Bfoc0mb7XrHnTy7SYxQ"
+        }
+      ],
+      "updated": 1792436060712,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "caused_by",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -25.5
+        ],
+        [
+          508,
+          -25.5
+        ],
+        [
+          508,
+          -51
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "uVKgKSSb3eul3N7wngSe",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      },
+      "endBinding": {
+        "elementId": "jvXx2h1q7du7nYPu7wUd",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "22Bfoc0mb7XrHnTy7SYxQ",
+      "type": "text",
+      "x": -318.3839645385742,
+      "y": 1044,
+      "width": 76.76792907714844,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "an",
+      "roundness": null,
+      "seed": 1845525966,
+      "version": 7,
+      "versionNonce": 1110664274,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060712,
+      "link": null,
+      "locked": false,
+      "text": "caused by",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "DZuW6oJpHgpC1E7V9E7J",
+      "originalText": "caused by",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "zzkCS4Mcf983JWFwE1ym",
+      "type": "arrow",
+      "x": 212,
+      "y": 975,
+      "width": 32,
+      "height": 17.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ao",
+      "roundness": null,
+      "seed": 1647442898,
+      "version": 6,
+      "versionNonce": 945897934,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "xXxA_1wXCQ5E9K3Wv5cUi"
+        }
+      ],
+      "updated": 1792436060712,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          -17.5
+        ],
+        [
+          32,
+          -17.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "jvXx2h1q7du7nYPu7wUd",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "5fvaDWoKq6t0J3fVyurU",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.4
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "xXxA_1wXCQ5E9K3Wv5cUi",
+      "type": "text",
+      "x": 163.71205139160156,
+      "y": 956.25,
+      "width": 128.57589721679688,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ap",
+      "roundness": null,
+      "seed": 1306964370,
+      "version": 7,
+      "versionNonce": 1789331986,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060712,
+      "link": null,
+      "locked": false,
+      "text": "proposed change",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "zzkCS4Mcf983JWFwE1ym",
+      "originalText": "proposed change",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "OjRR3Fpj1gN5v8oj4sO5",
+      "type": "arrow",
+      "x": 244,
+      "y": 971.5,
+      "width": 540,
+      "height": 296.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "aq",
+      "roundness": null,
+      "seed": 50603726,
+      "version": 5,
+      "versionNonce": 1437314190,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060712,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "implements",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -24,
+          0
+        ],
+        [
+          -24,
+          296.5
+        ],
+        [
+          -540,
+          296.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "5fvaDWoKq6t0J3fVyurU",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.6
+        ]
+      },
+      "endBinding": {
+        "elementId": "T4hT5SbXNHGJsByD3Ol1",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle_outline",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "QPy2kG9aedOb6jM00F3k",
+      "type": "arrow",
+      "x": 1111,
+      "y": -203.5,
+      "width": 0,
+      "height": 32,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dotted",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ar",
+      "roundness": null,
+      "seed": 1571953934,
+      "version": 3,
+      "versionNonce": 1309075086,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "explained_by",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          32
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "p6mCj6mER5e6uk5H7o4W",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.476027397260274,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "zte7uTz0maM2kRAvyXwF",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.48478260869565215,
+          0
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "dot",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "OpEBTLahO9B1uGEP7WGi",
+      "type": "arrow",
+      "x": 1125,
+      "y": -171.5,
+      "width": 501,
+      "height": 72,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "as",
+      "roundness": null,
+      "seed": 331828046,
+      "version": 4,
+      "versionNonce": 2009403214,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "lGNDcvOmX16Hl3poS1OF1"
+        }
+      ],
+      "updated": 1792436060713,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -24
+        ],
+        [
+          501,
+          -24
+        ],
+        [
+          501,
+          -72
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "zte7uTz0maM2kRAvyXwF",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5152173913043478,
+          0
+        ]
+      },
+      "endBinding": {
+        "elementId": "sh0liBRNeRvdZaWjihbn",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "lGNDcvOmX16Hl3poS1OF1",
+      "type": "text",
+      "x": 1311.2120513916016,
+      "y": -205.5,
+      "width": 128.57589721679688,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "at",
+      "roundness": null,
+      "seed": 597471630,
+      "version": 5,
+      "versionNonce": 508613778,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060713,
+      "link": null,
+      "locked": false,
+      "text": "proposed change",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "OpEBTLahO9B1uGEP7WGi",
+      "originalText": "proposed change",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "elNg6NqJ2nLMedI4IVN1",
+      "type": "arrow",
+      "x": 1896,
+      "y": -274.5,
+      "width": 620,
+      "height": 518,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "au",
+      "roundness": null,
+      "seed": 848092178,
+      "version": 6,
+      "versionNonce": 444049742,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "WXPZA5S59ztGXi7rtVHhA"
+        }
+      ],
+      "updated": 1792436060720,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "implements",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -24,
+          0
+        ],
+        [
+          -24,
+          518
+        ],
+        [
+          -596,
+          518
+        ],
+        [
+          -596,
+          342.5
+        ],
+        [
+          -620,
+          342.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "kBrlye6yilLE8x6IyjrD",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "unJhjWydJDAjevnz3uQS",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.39855072463768115
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle_outline",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "WXPZA5S59ztGXi7rtVHhA",
+      "type": "text",
+      "x": 1561.9760208129883,
+      "y": 233.5,
+      "width": 48.04795837402344,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "av",
+      "roundness": null,
+      "seed": 1216055762,
+      "version": 6,
+      "versionNonce": 690805394,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060720,
+      "link": null,
+      "locked": false,
+      "text": "action",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "elNg6NqJ2nLMedI4IVN1",
+      "originalText": "action",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "wwozmKsR7NP4UswlJBsN",
+      "type": "arrow",
+      "x": 1356,
+      "y": 415,
+      "width": 32,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "aw",
+      "roundness": null,
+      "seed": 2047376014,
+      "version": 6,
+      "versionNonce": 697496594,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "gQyE8sscJJQKhRcPFzayt"
+        }
+      ],
+      "updated": 1792436060716,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "blocks",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          32,
+          0
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "7nrkIkQvSFyXiEzC16JL",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5608695652173913
+        ]
+      },
+      "endBinding": {
+        "elementId": "urrhDVvwwN2gx0QzrKWU",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5758928571428571
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "bar",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "gQyE8sscJJQKhRcPFzayt",
+      "type": "text",
+      "x": 1321.8560485839844,
+      "y": 405,
+      "width": 100.28790283203125,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ax",
+      "roundness": null,
+      "seed": 1618344142,
+      "version": 7,
+      "versionNonce": 609455630,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060716,
+      "link": null,
+      "locked": false,
+      "text": "disagreement",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "wwozmKsR7NP4UswlJBsN",
+      "originalText": "disagreement",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "8dGe4GLelhuSFxOAj0Qg",
+      "type": "arrow",
+      "x": 1864,
+      "y": 406.5,
+      "width": 32,
+      "height": 10.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ay",
+      "roundness": null,
+      "seed": 1776750802,
+      "version": 5,
+      "versionNonce": 1489793170,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "RdYZccPzsp4aW3aeOn9Et"
+        }
+      ],
+      "updated": 1792436060715,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "blocks",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          -10.5
+        ],
+        [
+          32,
+          -10.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "urrhDVvwwN2gx0QzrKWU",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "J4pf3gxYfClXN7Ri3ghs",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "bar",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "RdYZccPzsp4aW3aeOn9Et",
+      "type": "text",
+      "x": 1840.488037109375,
+      "y": 396.5,
+      "width": 63.02392578125,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "az",
+      "roundness": null,
+      "seed": 674309778,
+      "version": 5,
+      "versionNonce": 1635373198,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060715,
+      "link": null,
+      "locked": false,
+      "text": "rebuttal",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "8dGe4GLelhuSFxOAj0Qg",
+      "originalText": "rebuttal",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "dKjL5mlguSkRbcRkQu0r",
+      "type": "arrow",
+      "x": 1356,
+      "y": 408,
+      "width": 540,
+      "height": 383.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b00",
+      "roundness": null,
+      "seed": 1835278798,
+      "version": 7,
+      "versionNonce": 1888571278,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "itLrchdCsGwVeQ2sv3Wha"
+        }
+      ],
+      "updated": 1792436060720,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "supports",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          24,
+          0
+        ],
+        [
+          24,
+          -383.5
+        ],
+        [
+          516,
+          -383.5
+        ],
+        [
+          516,
+          -315.5
+        ],
+        [
+          540,
+          -315.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "7nrkIkQvSFyXiEzC16JL",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "SFFLEmm23uOzwLCTGd6C",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5777777777777777
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle_outline",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "itLrchdCsGwVeQ2sv3Wha",
+      "type": "text",
+      "x": 1576.1920471191406,
+      "y": 14.5,
+      "width": 99.61590576171875,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b01",
+      "roundness": null,
+      "seed": 274380814,
+      "version": 4,
+      "versionNonce": 1491013070,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "text": "investigation",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "dKjL5mlguSkRbcRkQu0r",
+      "originalText": "investigation",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "DLKj8G4vX93Uy703JLPu",
+      "type": "arrow",
+      "x": 1896,
+      "y": 589.5,
+      "width": 540,
+      "height": 221,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b02",
+      "roundness": null,
+      "seed": 847793554,
+      "version": 5,
+      "versionNonce": 432357010,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "66XtdnnNO7bjASz5T6xbk"
+        }
+      ],
+      "updated": 1792436060717,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "blocks",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -24,
+          0
+        ],
+        [
+          -24,
+          -51
+        ],
+        [
+          -516,
+          -51
+        ],
+        [
+          -516,
+          170
+        ],
+        [
+          -540,
+          170
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "86g44BbZn8iZ8IVMZOT3",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "BYCu6yFw5CSHNwd4KnN4",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.4375
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "bar",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "66XtdnnNO7bjASz5T6xbk",
+      "type": "text",
+      "x": 1592.7840194702148,
+      "y": 528.5,
+      "width": 66.43196105957031,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b03",
+      "roundness": null,
+      "seed": 1796000594,
+      "version": 4,
+      "versionNonce": 630727694,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060543,
+      "link": null,
+      "locked": false,
+      "text": "concerns",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "DLKj8G4vX93Uy703JLPu",
+      "originalText": "concerns",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "mDlhStj1sxChCsPrdd3V",
+      "type": "arrow",
+      "x": 1356,
+      "y": 773.5,
+      "width": 32,
+      "height": 17.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b04",
+      "roundness": null,
+      "seed": 374292750,
+      "version": 5,
+      "versionNonce": 432156626,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "vOrFc2ybsWyTjjFEAVWFC"
+        }
+      ],
+      "updated": 1792436060718,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          -17.5
+        ],
+        [
+          32,
+          -17.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "BYCu6yFw5CSHNwd4KnN4",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5625
+        ]
+      },
+      "endBinding": {
+        "elementId": "jN49Iewxz1L5lPEpdDJS",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "vOrFc2ybsWyTjjFEAVWFC",
+      "type": "text",
+      "x": 1328.4480209350586,
+      "y": 754.75,
+      "width": 87.10395812988281,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b05",
+      "roundness": null,
+      "seed": 85978958,
+      "version": 6,
+      "versionNonce": 2123820622,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060718,
+      "link": null,
+      "locked": false,
+      "text": "dependency",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "mDlhStj1sxChCsPrdd3V",
+      "originalText": "dependency",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "9vYBSTUz1w9mP5sjq2IC",
+      "type": "arrow",
+      "x": 1388,
+      "y": 600,
+      "width": 160,
+      "height": 21.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b06",
+      "roundness": null,
+      "seed": 923505234,
+      "version": 6,
+      "versionNonce": 395819090,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "SS6n0XWL-7T9qrt0v04yu"
+        }
+      ],
+      "updated": 1792436060720,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "supports",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -80,
+          0
+        ],
+        [
+          -80,
+          -21.5
+        ],
+        [
+          -160,
+          -21.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "k7JDxjhLA1NP0F5FBgGD",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "tTPEs7Z8oDvKgSL6MMs0",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle_outline",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "SS6n0XWL-7T9qrt0v04yu",
+      "type": "text",
+      "x": 1323.9760208129883,
+      "y": 590,
+      "width": 48.04795837402344,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b07",
+      "roundness": null,
+      "seed": 810121234,
+      "version": 7,
+      "versionNonce": 421277134,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060720,
+      "link": null,
+      "locked": false,
+      "text": "action",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "9vYBSTUz1w9mP5sjq2IC",
+      "originalText": "action",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "gWXF37lUnyHHZynvV6UE",
+      "type": "arrow",
+      "x": 244,
+      "y": 723.5,
+      "width": 112,
+      "height": 69.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b08",
+      "roundness": null,
+      "seed": 874436686,
+      "version": 5,
+      "versionNonce": 563348686,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060719,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -56,
+          0
+        ],
+        [
+          -56,
+          -69.5
+        ],
+        [
+          -112,
+          -69.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "D1Bj07FKll7PtuXLKD9e",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "KgrM3ISB331514XKrELg",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "zST34o9FMrTeVy6e3cp8",
+      "type": "arrow",
+      "x": 1388,
+      "y": 134,
+      "width": 112,
+      "height": 52,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b09",
+      "roundness": null,
+      "seed": 1266327182,
+      "version": 7,
+      "versionNonce": 945872402,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060720,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -56,
+          0
+        ],
+        [
+          -56,
+          -52
+        ],
+        [
+          -112,
+          -52
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "yuunFB7Kid4n3nhwKETQ",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "unJhjWydJDAjevnz3uQS",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.6014492753623188
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "HVHM0cfKeSKVOoF9Idyt",
+      "type": "arrow",
+      "x": 1864,
+      "y": 134,
+      "width": 32,
+      "height": 55.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b0A",
+      "roundness": null,
+      "seed": 134454478,
+      "version": 8,
+      "versionNonce": 556876814,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060720,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          -55.5
+        ],
+        [
+          32,
+          -55.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "yuunFB7Kid4n3nhwKETQ",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "SFFLEmm23uOzwLCTGd6C",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.4222222222222222
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "HcJhD3XHLlflVq5B336Y",
+      "type": "arrow",
+      "x": 1626,
+      "y": 235.5,
+      "width": 754,
+      "height": 311,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b0B",
+      "roundness": null,
+      "seed": 1062392590,
+      "version": 7,
+      "versionNonce": 947866578,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060720,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          24
+        ],
+        [
+          -754,
+          24
+        ],
+        [
+          -754,
+          287
+        ],
+        [
+          -572,
+          287
+        ],
+        [
+          -572,
+          311
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "yuunFB7Kid4n3nhwKETQ",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "tTPEs7Z8oDvKgSL6MMs0",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "s7ner2Ph7wZASvbf1KGt",
+      "type": "arrow",
+      "x": 244,
+      "y": -164.5,
+      "width": 32,
+      "height": 91.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b0C",
+      "roundness": null,
+      "seed": 736182606,
+      "version": 5,
+      "versionNonce": 1412955986,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436060720,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil",
+            "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -16,
+          0
+        ],
+        [
+          -16,
+          -91.5
+        ],
+        [
+          -32,
+          -91.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "Qyfk1DXM7ZffJGa7aLVT",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "RHSb35LACe4DKTV2GwF0",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    }
+  ],
+  "documents": {
+    "doc_95in1sHZhOP31hFz6xL5": {
+      "id": "doc_95in1sHZhOP31hFz6xL5",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Post-incident review: checkout outage, March 14",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436060537,
+      "updatedAt": 1792436060537,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § group#0",
+          "contentFingerprint": "c6bklrmzwt4"
+        }
+      }
+    },
+    "doc_61IZ0mt7AnIZWWBXGn7B": {
+      "id": "doc_61IZ0mt7AnIZWWBXGn7B",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Outage review: Alerting, status page, and config review improved; auto-rollback and Friday freeze open.",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436060537,
+      "updatedAt": 1792436060537,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil"
+        }
+      }
+    },
+    "doc_yTPvi3kTvHlfECtmTaFd": {
+      "id": "doc_yTPvi3kTvHlfECtmTaFd",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Post-incident review: checkout outage, March 14 (2 of 2)",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436060537,
+      "updatedAt": 1792436060537,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil"
+        }
+      }
+    },
+    "doc_UTdUGFhoc3nawOpImRA9": {
+      "id": "doc_UTdUGFhoc3nawOpImRA9",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "988f37af-14dc-4ee5-968f-9d999dd5b43d",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Attendees: Dana (facilitator), Marcus (on-call SRE), Leila (payments backend lead), Tomás (release engineering), Kenji (customer support lead)",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060537,
+      "updatedAt": 1792436060537,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § text#0",
+          "contentFingerprint": "cknntrba8e6",
+          "sourceUnits": [
+            "u1"
+          ]
+        }
+      }
+    },
+    "doc_ZVgtfa9O0kbje7yrU2EP": {
+      "id": "doc_ZVgtfa9O0kbje7yrU2EP",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "250298c6-a4fc-4cf6-9b50-e5fb8b999cae",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "This is a blameless review for the checkout outage on Friday, March 14.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060537,
+      "updatedAt": 1792436060537,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § text#1",
+          "contentFingerprint": "c2ijcpbgdrb",
+          "sourceUnits": [
+            "u9"
+          ]
+        }
+      }
+    },
+    "doc_zbqlziZo0MUFU0VfjrsW": {
+      "id": "doc_zbqlziZo0MUFU0VfjrsW",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "cfcf5661-390d-4681-b0f1-3707828949de",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "At 16:40, a configuration change was deployed to the payments service. This change incorrectly set the gateway connection pool from 50 to 5 connections, instead of the intended 55. This typo caused checkout requests to queue and time out.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060538,
+      "updatedAt": 1792436060538,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § text#2",
+          "contentFingerprint": "c87l33o2vs5",
+          "sourceUnits": [
+            "u12",
+            "u13",
+            "u14",
+            "u15"
+          ]
+        }
+      }
+    },
+    "doc_0rMGHRfqWztsxLJUUdQy": {
+      "id": "doc_0rMGHRfqWztsxLJUUdQy",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "ab05d588-ee26-4ff0-a2c8-23a0c80a8458",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The error-rate alert for checkout fired at 17:02, 22 minutes after the config change. The alert is configured to fire when the checkout error rate exceeds 10% for 15 minutes. Errors surpassed 10% around 16:47, so the alert functioned as designed.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "paragraph",
+          "id": "c169dc5f-6bf2-49d6-b87e-ed6bff1e2742",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "From the source:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " 02",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "paragraph",
+          "id": "c0d97df4-0b7f-4ce8-9900-b1b0d0e5a48e",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "From the source:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " 02",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060538,
+      "updatedAt": 1792436060538,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § cause#0",
+          "contentFingerprint": "c812ld6usr5",
+          "sourceUnits": [
+            "u16",
+            "u22",
+            "u23",
+            "u24"
+          ]
+        }
+      }
+    },
+    "doc_6yt2JWiKwhNrxMkLR2wU": {
+      "id": "doc_6yt2JWiKwhNrxMkLR2wU",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "d11da8a5-40c7-403d-95a1-badbbd316126",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The incorrect configuration was rolled back at 17:15. Checkout functionality was fully restored by 17:27.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060538,
+      "updatedAt": 1792436060538,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § text#3",
+          "contentFingerprint": "c2ahjq46ccbc",
+          "sourceUnits": [
+            "u17"
+          ]
+        }
+      }
+    },
+    "doc_k4DDvu33iEocZDRJXvxz": {
+      "id": "doc_k4DDvu33iEocZDRJXvxz",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "f5fa6633-338e-4e96-a6bf-d234eb5e1735",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Customers experienced errors for a total of 47 minutes. Approximately 2,300 checkout failures were recorded. Customer support received 140 tickets before the status page was updated.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060538,
+      "updatedAt": 1792436060538,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § text#4",
+          "contentFingerprint": "c1y6t68meltu",
+          "sourceUnits": [
+            "u18",
+            "u19",
+            "u20"
+          ]
+        }
+      }
+    },
+    "doc_IqXwMDgdnjJcx9WUzx16": {
+      "id": "doc_IqXwMDgdnjJcx9WUzx16",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "23297489-a7a1-49bf-a8b2-4960a1d14a7b",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The current alert threshold (10% error rate for 15 minutes) is considered too slow for checkout, leading to significant lost revenue.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060538,
+      "updatedAt": 1792436060538,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § problem#0",
+          "contentFingerprint": "c96yt6ssh8m",
+          "sourceUnits": [
+            "u25",
+            "u26"
+          ]
+        }
+      }
+    },
+    "doc_N9V9CMbfvDDtMiTfMl3f": {
+      "id": "doc_N9V9CMbfvDDtMiTfMl3f",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "146955bd-d319-4e76-892c-1bb275a57d0f",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "A new proposal suggests lowering the checkout error-rate alert to 5% over 5 minutes. This change would have resulted in two noisy pages in the last 30 days, both during payment provider maintenance, which is deemed acceptable.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "paragraph",
+          "id": "db89bc66-98d7-4dc5-97e3-a5321fca6211",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "From the source:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " twice",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060538,
+      "updatedAt": 1792436060538,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § solution#0",
+          "contentFingerprint": "c1mdzozunwnh",
+          "sourceUnits": [
+            "u29",
+            "u30",
+            "u31"
+          ]
+        }
+      }
+    },
+    "doc_hIXIAzsu9AFdPF2talxj": {
+      "id": "doc_hIXIAzsu9AFdPF2talxj",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "checkListItem",
+          "props": {
+            "checked": false
+          },
+          "content": "Lower the checkout error-rate alert to 5% over 5 minutes. Owner: Marcus. Due: Wednesday, March 19."
+        }
+      ],
+      "createdAt": 1792436060538,
+      "updatedAt": 1792436060538,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § action_item#0",
+          "contentFingerprint": "c1xsv48koa8j",
+          "sourceUnits": [
+            "u33",
+            "u35"
+          ]
+        }
+      }
+    },
+    "doc_liZFlwtrfjkPoSYCZF0O": {
+      "id": "doc_liZFlwtrfjkPoSYCZF0O",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "fddd8816-08da-4562-9788-0be030a74cce",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The status page was updated at 17:20, 40 minutes after errors began. Customers were already discussing the issue on social media before an official update was posted.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § problem#1",
+          "contentFingerprint": "cuy6xsfvkmu",
+          "sourceUnits": [
+            "u37",
+            "u38"
+          ]
+        }
+      }
+    },
+    "doc_sUEykGz2kuCpCP5izrWk": {
+      "id": "doc_sUEykGz2kuCpCP5izrWk",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "b4b19ba0-bd98-4fd7-b81e-3d46d8d3f9b2",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Currently, the incident commander is responsible for posting status page updates, but this can be overlooked during critical incident response, as Marcus was busy with the rollback.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § cause#1",
+          "contentFingerprint": "c1qedf5d3bm8",
+          "sourceUnits": [
+            "u40",
+            "u41",
+            "u42"
+          ]
+        }
+      }
+    },
+    "doc_JABAaM4qvT0ckW5T7HZz": {
+      "id": "doc_JABAaM4qvT0ckW5T7HZz",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "ab2ec6bf-41f0-4392-9c1f-6d0edaccba17",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Support should be allowed to post status page updates directly, without waiting for the incident commander.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § solution#1",
+          "contentFingerprint": "c1bkv3jxhrkx",
+          "sourceUnits": [
+            "u43",
+            "u44",
+            "u45"
+          ]
+        }
+      }
+    },
+    "doc_Wgo9ANEJwJXA4XRLHRMd": {
+      "id": "doc_Wgo9ANEJwJXA4XRLHRMd",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "35ed0076-4a41-43b1-8bcb-372ad386ba83",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Support will be empowered to post status-page updates directly.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § action_item#1",
+          "contentFingerprint": "c1uxqu946oh6",
+          "sourceUnits": [
+            "u46"
+          ]
+        }
+      }
+    },
+    "doc_2I5RWmElsjMrKAVGAFIP": {
+      "id": "doc_2I5RWmElsjMrKAVGAFIP",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "ce1ce859-0e4d-4c94-8b17-930d97c4462f",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Configuration changes, unlike code changes, do not undergo code review. They are edited and applied directly via the deploy dashboard, making them susceptible to errors like typos.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "paragraph",
+          "id": "d746fb04-9f19-4e75-93df-deeee4a4f0d4",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "From the source:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " two",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § problem#2",
+          "contentFingerprint": "c10evc1r48oj",
+          "sourceUnits": [
+            "u49",
+            "u50",
+            "u51",
+            "u52",
+            "u53"
+          ]
+        }
+      }
+    },
+    "doc_mMbEszpCLC6XrwRiBLLa": {
+      "id": "doc_mMbEszpCLC6XrwRiBLLa",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "faf87873-7a3e-4ec8-b3fe-30882b0f980a",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The proposal is to subject payments configuration changes to the same review process as code changes.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 1 § solution#2",
+          "contentFingerprint": "c215kkgy38o",
+          "sourceUnits": [
+            "u54"
+          ]
+        }
+      }
+    },
+    "doc_SvHLJvY0m8oN15Xz3VN4": {
+      "id": "doc_SvHLJvY0m8oN15Xz3VN4",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "2a3bdb49-efb6-4a58-afc7-caac0431f2dd",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Config changes to the payments service will require a pull-request review with one approval from the payments team.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "paragraph",
+          "id": "b3df7121-0fd5-41e7-b088-1903077896ec",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "From the source:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " payments-team",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § config_change_approval",
+          "contentFingerprint": "c7kcbdfl16y",
+          "sourceUnits": [
+            "u56",
+            "u59"
+          ]
+        }
+      }
+    },
+    "doc_XL1IjNPTA9aDdE0549w2": {
+      "id": "doc_XL1IjNPTA9aDdE0549w2",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "checkListItem",
+          "props": {
+            "checked": false
+          },
+          "content": "Move config into the repo and add approval rule by Friday, March 21."
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § action_item_leila",
+          "contentFingerprint": "ccrj8unndlo",
+          "sourceUnits": [
+            "u60",
+            "u61"
+          ]
+        }
+      }
+    },
+    "doc_7SA2Tzf029mR344gF10q": {
+      "id": "doc_7SA2Tzf029mR344gF10q",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "51d21433-9bb2-4512-be46-94807d65bc63",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Tomás proposes stopping deployments to payments after 15:00 on Fridays, citing that the incident occurred at 16:40 on a Friday when fewer team members were available, potentially slowing recovery.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "paragraph",
+          "id": "40966a5c-88f8-46bd-afe9-948207bdbce2",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "From the source:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " 00",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § proposal_friday_freeze",
+          "contentFingerprint": "cenftobkzz0",
+          "sourceUnits": [
+            "u62",
+            "u63",
+            "u64",
+            "u69"
+          ]
+        }
+      }
+    },
+    "doc_LoVMstiBkJB5T1dW3svY": {
+      "id": "doc_LoVMstiBkJB5T1dW3svY",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "1d0c3486-1354-4b7e-8087-541081d6c5f1",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Leila disagrees with a Friday deployment freeze, arguing it shifts risk to Monday morning when traffic is higher. She believes the issue was lack of review, not the day, and that recovery time for this incident (25 minutes) was not impacted by it being a Friday.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § leila_disagreement",
+          "contentFingerprint": "c1fxvk9jqbks",
+          "sourceUnits": [
+            "u65",
+            "u66",
+            "u67",
+            "u70",
+            "u71"
+          ]
+        }
+      }
+    },
+    "doc_tDvr90xIPYb3mRBPmRoe": {
+      "id": "doc_tDvr90xIPYb3mRBPmRoe",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "c497a52f-4bbb-48b9-baf9-dc482d5279d1",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Tomás suggests that while review fixes one cause, fewer people around on Fridays means slower recovery for any cause, and believes a pattern would emerge if more incidents were examined.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § tomas_rebuttal",
+          "contentFingerprint": "c28amvlbmwdu",
+          "sourceUnits": [
+            "u68",
+            "u69",
+            "u72",
+            "u73"
+          ]
+        }
+      }
+    },
+    "doc_199bdmdk2LgiEn00iuyO": {
+      "id": "doc_199bdmdk2LgiEn00iuyO",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "checkListItem",
+          "props": {
+            "checked": false
+          },
+          "content": "Tomás to pull incidents from the last six months to see if late-Friday deploys are over-represented, and bring findings to the next review on April 2."
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § action_item_tomas",
+          "contentFingerprint": "c1efq9g2of1v",
+          "sourceUnits": [
+            "u74",
+            "u75",
+            "u76",
+            "u77",
+            "u78"
+          ]
+        }
+      }
+    },
+    "doc_3z7K31zPnYkt6ab5lMhe": {
+      "id": "doc_3z7K31zPnYkt6ab5lMhe",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "cbdc210e-2d67-4675-94f5-140db7a90d6b",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Marcus proposes automatic rollback: if the checkout error rate doubles within 10 minutes of a deploy, the pipeline rolls back automatically.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § proposal_auto_rollback",
+          "contentFingerprint": "c1s0flo5ne6a",
+          "sourceUnits": [
+            "u79"
+          ]
+        }
+      }
+    },
+    "doc_l2nmBNNLSuxnL7WpW0h0": {
+      "id": "doc_l2nmBNNLSuxnL7WpW0h0",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "931fe870-7b6f-428b-a0ba-8b4eecd60631",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Leila is nervous about automatic rollback for code, especially if a release includes a database migration, as rolling back code without the migration could worsen the situation. Marcus suggests excluding releases with migrations.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § leila_concerns_rollback",
+          "contentFingerprint": "c406pw2bz1h",
+          "sourceUnits": [
+            "u80",
+            "u81",
+            "u82",
+            "u83"
+          ]
+        }
+      }
+    },
+    "doc_kGVHU3s1OjTo9g4qvcKa": {
+      "id": "doc_kGVHU3s1OjTo9g4qvcKa",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "0a1e0cb1-27dd-447a-b334-96bdbaae1de7",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Leila wants to know the frequency of database migrations before agreeing to automatic rollback. Dana notes that auto-rollback remains an open question due to unknown migration frequency.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § rollback_open_question",
+          "contentFingerprint": "c18868fwana1",
+          "sourceUnits": [
+            "u84",
+            "u85",
+            "u86",
+            "u87",
+            "u88"
+          ]
+        }
+      }
+    },
+    "doc_mb0FDQwZ7xSQ7bPPai48": {
+      "id": "doc_mb0FDQwZ7xSQ7bPPai48",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "75f81f97-e9de-449d-9129-96da003435bb",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Kenji asks if any of the 2,300 failed checkouts were successfully retried, as this would influence the customer email. Marcus states that payment logs would show this, but no one has checked yet.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § customer_retries_question",
+          "contentFingerprint": "c2emp8lmdg52",
+          "sourceUnits": [
+            "u89",
+            "u90",
+            "u91",
+            "u92",
+            "u93"
+          ]
+        }
+      }
+    },
+    "doc_EwiJ6icr1n4Yg4dXwYQU": {
+      "id": "doc_EwiJ6icr1n4Yg4dXwYQU",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "checkListItem",
+          "props": {
+            "checked": false
+          },
+          "content": "Kenji to draft the customer email."
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § action_item_kenji",
+          "contentFingerprint": "cnnszf47nid",
+          "sourceUnits": [
+            "u94",
+            "u95",
+            "u96"
+          ]
+        }
+      }
+    },
+    "doc_lhlN2wqxJBB5LfIRmnuw": {
+      "id": "doc_lhlN2wqxJBB5LfIRmnuw",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "4439175f-a4c3-479f-8507-c08ec1b6f469",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Timeline recap: change deployed at 16:40, alert at 17:02, rollback at 17:15, recovered at 17:27.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "paragraph",
+          "id": "73c55f2a-3026-445f-9d91-21bce7e0f6be",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "From the source:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " 02",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § part 2 § timeline_recap",
+          "contentFingerprint": "c24875n7rbo3",
+          "sourceUnits": [
+            "u97"
+          ]
+        }
+      }
+    },
+    "doc_ReA5dLx80mrosPIv6rVK": {
+      "id": "doc_ReA5dLx80mrosPIv6rVK",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3,
+            "backgroundColor": "orange"
+          },
+          "content": "Analysis · Decisions Made"
+        },
+        {
+          "type": "bulletListItem",
+          "id": "e05c620e-8458-49a2-a1aa-2586c764ea15",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Alerting Threshold:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " Checkout error-rate alert lowered to 5% over 5 minutes. Marcus to implement by March 19.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "b4fe5ae8-a4fc-4c0a-99c6-a8d0b28cf3a5",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Status Page Updates:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " Support can directly post status page updates. No specific owner or deadline mentioned.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "807737a7-7315-46e2-bc47-ef5d2b78958e",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Config Change Process:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " Payments service config changes require pull-request review with one payments-team approval. Leila to set up by March 21.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § text#0",
+          "contentFingerprint": "c26g7m0qqo7g"
+        }
+      }
+    },
+    "doc_S1mh8t5CXhURgYU7YKLW": {
+      "id": "doc_S1mh8t5CXhURgYU7YKLW",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3,
+            "backgroundColor": "orange"
+          },
+          "content": "Analysis · Open Questions/Actions for Next Review (April 2)"
+        },
+        {
+          "type": "bulletListItem",
+          "id": "ab467d10-a49f-4d0e-b542-169fadae7965",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Friday Deployment Freeze:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " Tomás to analyze incidents from the last six months for late-Friday deploy over-representation.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "18af0339-128d-4380-8b1e-5d2cb2070116",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Automatic Rollback:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " Open question due to concerns about database migrations. Leila wants to know migration frequency.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "b2d3c1ee-3c8a-44d6-b168-f1d0313b7085",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Failed Checkout Retries:",
+              "styles": {
+                "bold": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " Kenji to draft customer email; Marcus to investigate if failed checkouts were successfully retried.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § text#1",
+          "contentFingerprint": "c1rbssqxr65d"
+        }
+      }
+    },
+    "doc_4KiLtVNaIGSt0CBPveZ6": {
+      "id": "doc_4KiLtVNaIGSt0CBPveZ6",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3,
+            "backgroundColor": "orange"
+          },
+          "content": "Analysis · Key Findings"
+        },
+        {
+          "type": "bulletListItem",
+          "id": "a41902bd-9562-4554-8f5b-1bd3e914ba5e",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The config change reduced the gateway connection pool from 50 to 5 (intended 55), causing checkout requests to queue and time out.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "236990f4-61e5-4972-92b5-ab61e11f43c4",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The alert fired 22 minutes after the config change because the threshold was 10% errors over 15 minutes.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "56ea9c32-969c-46b6-9430-896c33c529eb",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The status page update was delayed by 40 minutes, as the incident commander (Marcus) was focused on rollback.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "e2a105b1-36ae-48ef-8e2c-58ebc0d30822",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Config changes currently bypass code review, allowing typos to go unnoticed.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § text#2",
+          "contentFingerprint": "c1vwwaikzs1u"
+        }
+      }
+    },
+    "doc_AacrjWIjXz1meFxH692c": {
+      "id": "doc_AacrjWIjXz1meFxH692c",
+      "workspaceId": "default",
+      "canvasId": "cv_n9U5El3G08x7Y1dqFHhk",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3
+          },
+          "content": "From the source"
+        },
+        {
+          "type": "bulletListItem",
+          "id": "388a3688-fe70-47e1-9082-24f9d6b82b73",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The machine on four is broken again.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "a9c0c886-cdb9-4018-a905-1875048a0bc4",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Dana: Why did the alert take 22 minutes?",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436060539,
+      "updatedAt": 1792436060539,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_R3THyQRPnvqHXWcth1Hh",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_ZHpUHTwnxqhmi6Ja1tV4",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Post-incident review: checkout outage, March 14 § text#3",
+          "contentFingerprint": "cfqzjjklzgq",
+          "sourceUnits": [
+            "u4",
+            "u21"
+          ]
+        }
+      }
+    }
+  }
+}

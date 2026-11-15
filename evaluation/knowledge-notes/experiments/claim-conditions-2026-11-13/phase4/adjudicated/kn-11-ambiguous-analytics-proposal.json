@@ -1,0 +1,460 @@
+{
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "adjudicator": "claude-opus-5.5 (phase 4 adjudicator)",
+  "records": [
+    {
+      "id": "k1",
+      "units": ["u6"],
+      "clause": "or sooner when the app goes to the background",
+      "verdict": "set",
+      "rule": "general",
+      "claimUnits": ["u6"],
+      "claimQuote": "Clients batch events and send them every 10 seconds",
+      "status": "agreed",
+      "from": { "X": "x1", "Y": "y1" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u6"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u6"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u5", "u6"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "An exception to the cadence that leaves the takeaway unchanged.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u2_n2"],
+        "carriers": ["u2_n2"],
+        "perClaimCard": { "u2_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k2",
+      "units": ["u7"],
+      "clause": "for signed-in users",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u7"],
+      "claimQuote": "Each event carries an event name, a timestamp, an anonymous device id and, for signed-in users, an account id.",
+      "status": "agreed",
+      "from": { "X": "x2", "Y": "y2" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u7"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u7"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u7"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it every event would read as carrying an account id.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u2_n2"],
+        "carriers": ["u2_n2"],
+        "perClaimCard": { "u2_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k3",
+      "units": ["u11"],
+      "clause": "The enrichment step uses the user service.",
+      "verdict": "not_a_condition",
+      "rule": "general",
+      "claimUnits": [],
+      "claimQuote": "",
+      "status": "agreed",
+      "from": { "X": "x3", "Y": "y3" },
+      "readings": [
+        { "who": "X", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u10"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A mechanism statement; it limits nothing.",
+      "confidence": "medium",
+      "notes": {}
+    },
+    {
+      "id": "k4",
+      "units": ["u12"],
+      "clause": "If an account cannot be found",
+      "verdict": "claim",
+      "rule": "R4",
+      "claimUnits": ["u12"],
+      "claimQuote": "the event is passed on without account attributes",
+      "status": "adjudicated",
+      "from": { "X": "x4", "Y": "y4" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u10"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u12"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u10"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R4: the condition's most specific claim is its own consequent. X's link to u10 is kept as k5, the sentence-level exception.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u2_n8"],
+        "carriers": ["u2_n8"],
+        "perClaimCard": { "u2_n8": "carried" }
+      } }
+    },
+    {
+      "id": "k5",
+      "units": ["u12"],
+      "clause": "If an account cannot be found, the event is passed on without account attributes.",
+      "verdict": "claim",
+      "rule": "R4",
+      "claimUnits": ["u10"],
+      "claimQuote": "An enrichment step consumes the topic and adds account attributes, such as plan tier and region.",
+      "status": "adjudicated",
+      "from": { "Y": "y5" },
+      "readings": [
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u10"] },
+        { "who": "X", "verdict": "claim", "claimUnits": ["u10"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u10"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "An exception to u10: some enriched events lack attributes, which matters for per-plan dashboards. u2_n7 joins carrier u2_n8 by a card arrow (linked); u2_a2 has no arrow to a carrier.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u2_n8", "u2_n7", "u2_a2"],
+        "carriers": ["u2_n8"],
+        "perClaimCard": { "u2_n8": "carried", "u2_n7": "linked", "u2_a2": "separated" }
+      } }
+    },
+    {
+      "id": "k6",
+      "units": ["u13"],
+      "clause": "in hourly batches",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u13"],
+      "claimQuote": "Enriched events are then written to the warehouse",
+      "status": "adjudicated",
+      "from": { "X": "x5", "Y": "y6" },
+      "readings": [
+        { "who": "X", "verdict": "ambiguous", "claimUnits": ["u21", "u13"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u21"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "On the u13 link the source settles it. Its Freshness section makes latency decision-relevant: launch reviews happen within 2 hours, and an hourly batch uses up to half of that. Without the clause, a reader relying on warehouse data for launches would act wrongly. The clash with u21's 'real time' is a source contradiction; it is not scored as a u21 limit, and u21 is judged not_a_condition (k7). Note: u6_n3, u6_a1 and g5 assert real-time freshness with no link to the hourly-batch carrier.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u2_n10", "u2_n9"],
+        "carriers": ["u2_n10"],
+        "perClaimCard": { "u2_n10": "carried", "u2_n9": "linked" }
+      } }
+    },
+    {
+      "id": "k7",
+      "units": ["u21"],
+      "clause": "in real time",
+      "verdict": "not_a_condition",
+      "rule": "general",
+      "claimUnits": [],
+      "claimQuote": "",
+      "status": "agreed",
+      "from": { "X": "x9", "Y": "y11" },
+      "readings": [
+        { "who": "X", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u21"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A (contradicted) claim, not a limit on one. X quoted the whole sentence; Y's minimal span is used.",
+      "confidence": "medium",
+      "notes": {}
+    },
+    {
+      "id": "k8",
+      "units": ["u15"],
+      "clause": "enrichment should avoid adding much traffic to it",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u11"],
+      "claimQuote": "The enrichment step uses the user service.",
+      "status": "adjudicated",
+      "from": { "X": "x6", "Y": "y8" },
+      "readings": [
+        { "who": "X", "verdict": "ambiguous", "claimUnits": ["u11"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u11"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u11"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: X's deciding question is about the first half ('stay lightly loaded': forecast or requirement). The 'should avoid' half is a design constraint stated whichever way that is read. Building enrichment on the user service without it (per-event lookups) would break a stated constraint. u2_n7's arrow to u2_n11 is labelled 'constraint', which does not convey the clause, but it joins a carrier (linked). u2_n8 and u2_a2 have no such arrow.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u2_n8", "u2_n7", "u2_a2"],
+        "carriers": ["u2_n11", "u2_a4"],
+        "perClaimCard": { "u2_n8": "separated", "u2_n7": "linked", "u2_a2": "separated" }
+      } }
+    },
+    {
+      "id": "k9",
+      "units": ["u16"],
+      "clause": "before clients can send it",
+      "verdict": "claim",
+      "rule": "R4",
+      "claimUnits": ["u16"],
+      "claimQuote": "Every event type must be registered",
+      "status": "adjudicated",
+      "from": { "X": "x7", "Y": "y9" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u5"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u5", "u16"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R4/R1: the clause sequences the registration rule it sits in. Following 'register every event type' without the ordering would let a client ship an unregistered type, and the collector would reject its events (u8). u16 is the most specific link; Y's u5 is the general flow.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u5_n1"],
+        "carriers": ["u5_n1"],
+        "perClaimCard": { "u5_n1": "carried" }
+      } }
+    },
+    {
+      "id": "k10",
+      "units": ["u17"],
+      "clause": "a breaking change requires a new version rather than an edit to the existing one",
+      "verdict": "claim",
+      "rule": "R1",
+      "claimUnits": ["u17"],
+      "claimQuote": "Schemas are versioned",
+      "status": "agreed",
+      "from": { "X": "x8", "Y": "y10" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u17"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u17"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u17"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: editing a schema in place for a breaking change violates the stated rule.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u5_n2"],
+        "carriers": ["u5_n2"],
+        "perClaimCard": { "u5_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k11",
+      "units": ["u24"],
+      "clause": "How long the aggregated tables are kept is TBD.",
+      "verdict": "set",
+      "rule": "R2",
+      "claimUnits": ["u22"],
+      "claimQuote": "only aggregated tables are kept longer",
+      "status": "agreed",
+      "from": { "X": "x10", "Y": "y12" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u22"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u22"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u22"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "An open item; the retention takeaway stands.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u7_n1"],
+        "carriers": ["u7_n3"],
+        "perClaimCard": { "u7_n1": "separated" }
+      } }
+    },
+    {
+      "id": "k12",
+      "units": ["u33"],
+      "clause": "90 days",
+      "verdict": "ambiguous",
+      "rule": "R4",
+      "claimUnits": ["u22"],
+      "claimQuote": "Raw events will be kept for 30 days and then deleted",
+      "status": "agreed",
+      "from": { "X": "x11", "Y": "y13" },
+      "readings": [
+        { "who": "X", "verdict": "ambiguous", "claimUnits": ["u22"] },
+        { "who": "Y", "verdict": "ambiguous", "claimUnits": ["u22"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u22"] }
+      ],
+      "readingA": "claim: the table sets warehouse raw-event retention at 90 days, which limits or contradicts the 30-day statement; a reader acting on 30 days would mishandle deletion and access requests.",
+      "readingB": "not_a_condition: a conflicting attribute in a component table; the draft is inconsistent rather than conditional.",
+      "decidingQuestion": "Do u22 and u33 describe the same store (a drafting contradiction) or different stores (a scope on where 30 days applies), and which figure is intended?",
+      "rationale": "Both annotators independently said ambiguous with the same readings; agreed ambiguous (cf. kn-02 c9 precedent). g6's takeaway restates the 30-day claim and counts as a claim card.",
+      "confidence": "low",
+      "notes": { "distil": {
+        "claimCards": ["u7_n1", "g6"],
+        "carriers": ["u3_n1"],
+        "perClaimCard": { "u7_n1": "separated", "g6": "separated" }
+      } }
+    },
+    {
+      "id": "k13",
+      "units": ["u35"],
+      "clause": "the web app's sign-up and checkout events",
+      "verdict": "ambiguous",
+      "rule": "R4",
+      "claimUnits": ["u14"],
+      "claimQuote": "The first dashboards will cover the onboarding funnel and weekly active accounts per plan tier.",
+      "status": "unresolved",
+      "from": { "X": "x12", "Y": "y14" },
+      "readings": [
+        { "who": "X", "verdict": "ambiguous", "claimUnits": ["u14"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u4"] }
+      ],
+      "readingA": "claim (u14): phase 1 collects only web sign-up and checkout events, so the first dashboards (onboarding funnel, weekly active accounts per plan tier) cannot be fully built from phase 1; a reader would expect them.",
+      "readingB": "set (u42): a scope on phase 1 that does not change the proposal's takeaway.",
+      "decidingQuestion": "Are the first dashboards promised as a phase 1 deliverable?",
+      "rationale": "The source never ties the first dashboards to a phase; not forced.",
+      "confidence": "low",
+      "notes": { "distil": {
+        "claimCards": ["u2_n10", "u2_a3"],
+        "carriers": ["u9_n2", "u9_n1", "g8"],
+        "perClaimCard": { "u2_n10": "separated", "u2_a3": "separated" }
+      } }
+    },
+    {
+      "id": "k14",
+      "units": ["u36"],
+      "clause": "once the mobile SDK is ready",
+      "verdict": "claim",
+      "rule": "R4",
+      "claimUnits": ["u36"],
+      "claimQuote": "Phase 2 adds mobile events",
+      "status": "adjudicated",
+      "from": { "X": "x13", "Y": "y15" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u5"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u36"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u5", "u36"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R4: both links genuinely mislead without the clause, so one record per link (this one u36; k15 u5). Without it, phase 2 reads as unblocked.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u9_n5", "u9_n4", "u9_a1"],
+        "carriers": ["u9_n5", "u9_a1", "g8"],
+        "perClaimCard": { "u9_n5": "carried", "u9_n4": "frame", "u9_a1": "carried" }
+      } }
+    },
+    {
+      "id": "k15",
+      "units": ["u36"],
+      "clause": "once the mobile SDK is ready",
+      "verdict": "claim",
+      "rule": "R4",
+      "claimUnits": ["u5"],
+      "claimQuote": "Client SDKs in the web and mobile apps send events to a collector service over HTTPS.",
+      "status": "adjudicated",
+      "from": { "X": "x13", "Y": "y15" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u5"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u36"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u5", "u36"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R4 second link: u5 presents mobile SDKs sending events as part of the design. Without the dependency, a reader expects mobile analytics from the start. No arrow joins the design frame g1 to the rollout carriers.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u2_n2", "u2_n1"],
+        "carriers": ["u9_n5", "u9_a1", "g8"],
+        "perClaimCard": { "u2_n2": "separated", "u2_n1": "separated" }
+      } }
+    },
+    {
+      "id": "k16",
+      "units": ["u36"],
+      "clause": "no date has been set for it",
+      "verdict": "set",
+      "rule": "R2",
+      "claimUnits": ["u36"],
+      "claimQuote": "Phase 2 adds mobile events",
+      "status": "agreed",
+      "from": { "X": "x14", "Y": "y16" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u36"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u36"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u5", "u36"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A scheduling caveat; the takeaway stands.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u9_n5", "u9_n4", "u9_a1"],
+        "carriers": ["u9_n5", "u9_a1"],
+        "perClaimCard": { "u9_n5": "carried", "u9_n4": "linked", "u9_a1": "carried" }
+      } }
+    },
+    {
+      "id": "k17",
+      "units": ["u37"],
+      "clause": "is expected to take about",
+      "verdict": "set",
+      "rule": "R2",
+      "claimUnits": ["u37"],
+      "claimQuote": "6 weeks for 2 engineers",
+      "status": "adjudicated",
+      "from": { "X": "x17" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u37"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: a hedged estimate; the source neither warns about it nor makes a decision turn on its precision. The takeaway is the same verified or not.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u9_n2"],
+        "carriers": ["u9_n2"],
+        "perClaimCard": { "u9_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k18",
+      "units": ["u38"],
+      "clause": "The cost of running the pipeline has not been estimated yet.",
+      "verdict": "set",
+      "rule": "R3",
+      "claimUnits": ["u42"],
+      "claimQuote": "We ask for approval to start phase 1",
+      "status": "adjudicated",
+      "from": { "X": "x15", "Y": "y17" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u42"] },
+        { "who": "Y", "verdict": "ambiguous", "claimUnits": ["u42"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u42"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: the source never weighs cost against the benefit or the approval. It is listed under Rollout and is not even an open question. That answers Y's question (secondary open item): set. The cross-frame arrow g8->g9 'leads to' is not limiting.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u10_n2", "u10_n1", "u10_a1"],
+        "carriers": ["u9_n6", "u9_a1", "g8"],
+        "perClaimCard": { "u10_n2": "separated", "u10_n1": "separated", "u10_a1": "separated" }
+      } }
+    },
+    {
+      "id": "k19",
+      "units": ["u40"],
+      "clause": "What happens to events the collector rejects: are they dropped, or kept somewhere for debugging?",
+      "verdict": "set",
+      "rule": "R2",
+      "claimUnits": ["u8"],
+      "claimQuote": "rejects events that do not match a registered schema",
+      "status": "agreed",
+      "from": { "X": "x16", "Y": "y18" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u8"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "An open question about rejected events; the rejection claim stands.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u2_n4", "u2_n3"],
+        "carriers": ["u4_n2"],
+        "perClaimCard": { "u2_n4": "separated", "u2_n3": "separated" }
+      } }
+    }
+  ],
+  "rejected": [
+    { "from": "y7", "clause": "We expect the user service to stay lightly loaded", "reason": "The rationale for the constraint in k8 (§2: rationale is not_a_condition). Read either as a forecast or as a requirement, its limiting force is the 'should avoid adding much traffic' clause, already recorded as k8." }
+  ],
+  "notes": "19 records (9 claim, 6 set, 2 ambiguous, 2 not_a_condition). u12 yields k4 (intra-sentence) and k5 (exception to u10). u36 'once the mobile SDK is ready' yields one record per link (k14 u36, k15 u5) under R4."
+}

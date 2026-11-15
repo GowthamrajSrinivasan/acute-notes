@@ -15,6 +15,7 @@
 import type { MetaRepository } from "@/persistence/repositories/types";
 import type { ChangeSet } from "./changeSet";
 import { APP_SESSION, getPendingChanges, type PendingChanges } from "./pendingChanges";
+import { markLegacyBaselines } from "./staleTarget";
 
 export const PENDING_KEY = "mcp.pending";
 export const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
@@ -33,7 +34,17 @@ const attached = new WeakSet<PendingChanges>();
  * Puts the persisted MCP proposals back under review (once per `pending` instance) and starts mirroring further
  * changes. Returns how many were restored.
  */
-export async function restorePendingProposals(meta: MetaRepository, pending: PendingChanges = getPendingChanges(), now: () => number = Date.now): Promise<number> {
+export async function restorePendingProposals(
+  meta: MetaRepository,
+  pending: PendingChanges = getPendingChanges(),
+  now: () => number = Date.now,
+  /**
+   * Stage 4a: whether a set was already committed (the commit journal). A reload between writing an accepted set and
+   * saving its removal here must not put it back under review, where accepting it again would duplicate it. A merged set
+   * is restored even when some of its parts were written: the journal keeps those parts from being written twice.
+   */
+  committed: (operationId: string) => boolean = () => false,
+): Promise<number> {
   if (attached.has(pending)) return 0;
   attached.add(pending);
 
@@ -43,8 +54,11 @@ export async function restorePendingProposals(meta: MetaRepository, pending: Pen
   const stored = (await meta.get<StoredProposal[]>(PENDING_KEY)) ?? [];
   for (const item of stored) {
     if (!item || typeof item.canvasId !== "string" || now() - item.savedAt > MAX_AGE_MS) continue;
+    if (!item.set?.parts && item.set?.operationId && committed(item.set.operationId)) continue;
     try {
-      pending.propose(item.canvasId, item.set);
+      // A proposal stored before baselines existed can't get one now (the target may have been edited before the reload):
+      // its updates ask Keep mine / Use proposed at Accept instead (`markLegacyBaselines`).
+      pending.propose(item.canvasId, markLegacyBaselines(item.set));
       firstSeen.set(item.set.operationId, item.savedAt);
       restored++;
     } catch {

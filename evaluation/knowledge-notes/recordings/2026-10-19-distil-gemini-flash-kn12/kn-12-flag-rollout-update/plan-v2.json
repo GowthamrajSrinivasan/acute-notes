@@ -1,0 +1,701 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "v2_subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "Feature flag rollout: stages, canary, kill switch, monitoring, rollback."
+      }
+    },
+    {
+      "id": "v2_g0",
+      "stableKey": "Feature flag rollout guide § group#0",
+      "type": "group",
+      "role": "notes",
+      "content": {
+        "label": "Feature flag rollout guide",
+        "arrangement": "grid",
+        "takeaway": "This guide outlines the step-by-step process for Orbit feature flag rollouts."
+      }
+    },
+    {
+      "id": "v2_u0_n1",
+      "title": "Purpose of the Guide",
+      "stableKey": "Feature flag rollout guide § text#0",
+      "type": "text",
+      "content": {
+        "markdown": "This guide is intended for engineers who manage feature flags within the Orbit platform. It outlines the process of rolling out a feature flag from an 'off' state to a 'fully on' state, detailing the prerequisites for each step."
+      },
+      "parent": "v2_g0"
+    },
+    {
+      "id": "v2_u0_n2",
+      "title": "Scope",
+      "stableKey": "Feature flag rollout guide § text#1",
+      "type": "text",
+      "content": {
+        "markdown": "This guide specifically addresses feature flag rollouts and does not cover experiments, which have a separate process."
+      },
+      "parent": "v2_g0"
+    },
+    {
+      "id": "v2_u0_n3",
+      "title": "Prerequisites for Each Step",
+      "stableKey": "Feature flag rollout guide § text#2",
+      "type": "text",
+      "content": {
+        "markdown": "Each section of this guide will specify the conditions that must be met before a feature flag can advance to the next stage of its rollout."
+      },
+      "parent": "v2_g0"
+    },
+    {
+      "id": "v2_u0_n4",
+      "title": "Support",
+      "stableKey": "Feature flag rollout guide § text#3",
+      "type": "text",
+      "content": {
+        "markdown": "For any questions regarding this guide, engineers should contact the platform team."
+      },
+      "parent": "v2_g0"
+    },
+    {
+      "id": "v2_u0_a1",
+      "title": "Summary",
+      "stableKey": "Feature flag rollout guide § text#4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This guide provides a step-by-step process for feature flag rollouts on the Orbit platform, outlining conditions. It excludes experiments and directs questions to the platform team."
+      },
+      "parent": "v2_g0"
+    },
+    {
+      "id": "v2_g1",
+      "stableKey": "Feature flag rollout guide › Rollout stages § group#0",
+      "type": "group",
+      "role": "flow",
+      "content": {
+        "label": "Rollout stages",
+        "arrangement": "chain"
+      }
+    },
+    {
+      "id": "v2_u1_n1",
+      "stableKey": "Feature flag rollout guide › Rollout stages § shape#0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Internal Stage"
+      },
+      "parent": "v2_g1"
+    },
+    {
+      "id": "v2_u1_n2",
+      "stableKey": "Feature flag rollout guide › Rollout stages § text#0",
+      "type": "text",
+      "content": {
+        "markdown": "The flag is enabled exclusively for staff accounts, ensuring that any issues are identified by colleagues before impacting customers. This stage typically lasts one working day, though there's no minimum duration specified.\n\n**From the source**\n\nthree"
+      },
+      "parent": "v2_g1"
+    },
+    {
+      "id": "v2_u1_n3",
+      "stableKey": "Feature flag rollout guide › Rollout stages § shape#1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Canary Stage"
+      },
+      "parent": "v2_g1"
+    },
+    {
+      "id": "v2_u1_n4",
+      "stableKey": "Feature flag rollout guide › Rollout stages § text#1",
+      "type": "text",
+      "content": {
+        "markdown": "A small portion of live traffic is exposed to the change."
+      },
+      "parent": "v2_g1"
+    },
+    {
+      "id": "v2_u1_n5",
+      "stableKey": "Feature flag rollout guide › Rollout stages § shape#2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · General Availability"
+      },
+      "parent": "v2_g1"
+    },
+    {
+      "id": "v2_u1_n6",
+      "stableKey": "Feature flag rollout guide › Rollout stages § text#2",
+      "type": "text",
+      "content": {
+        "markdown": "The flag is progressively enabled for all users in increments of 25%, 50%, and 100%."
+      },
+      "parent": "v2_g1"
+    },
+    {
+      "id": "v2_u1_n7",
+      "stableKey": "Feature flag rollout guide › Rollout stages § text#3",
+      "type": "text",
+      "content": {
+        "markdown": "Each stage of the rollout is documented within the rollout tool, which maintains a historical record of who activated the flag and at what time."
+      },
+      "parent": "v2_g1"
+    },
+    {
+      "id": "v2_u1_a1",
+      "title": "Rollout Process Overview",
+      "stableKey": "Feature flag rollout guide › Rollout stages § text#4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The rollout process is structured into three distinct stages: Internal, Canary, and General Availability. This sequential approach aims to mitigate risks by gradually exposing the change to a wider audience, starting with internal staff and progressing to all users. The rollout tool ensures traceability and accountability by logging all stage transitions."
+      },
+      "parent": "v2_g1"
+    },
+    {
+      "id": "v2_u1_a2",
+      "title": "Key Characteristics",
+      "stableKey": "Feature flag rollout guide › Rollout stages § text#5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The internal stage acts as an initial validation, while the canary stage tests the change with real user traffic. General availability is a phased release to the entire user base. The process is designed to catch issues early."
+      },
+      "parent": "v2_g1"
+    },
+    {
+      "id": "v2_g2",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § group#0",
+      "type": "group",
+      "role": "flow",
+      "content": {
+        "label": "Advancing from canary",
+        "arrangement": "chain"
+      }
+    },
+    {
+      "id": "v2_u2_n1",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § shape#0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Automated Metrics Check"
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_u2_n2",
+      "title": "Metrics Check Details",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § text#0",
+      "type": "text",
+      "content": {
+        "markdown": "The automated metrics check compares the error rate and p95 latency of flagged requests against the same requests from the previous 7 days. This check runs automatically at the end of the canary window."
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_u2_n3",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § shape#1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · On-call Engineer Approval"
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_u2_n4",
+      "title": "Engineer's Role",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § text#1",
+      "type": "text",
+      "content": {
+        "markdown": "The on-call engineer must approve the move in the rollout tool. They can decline the move if an incident is open, even if the metrics check passes."
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_u2_n5",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § shape#2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · Flag Advances to GA"
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_u2_n6",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § shape#3",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Flag Stays in Canary"
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_u2_n7",
+      "title": "Failure Condition",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § text#2",
+      "type": "text",
+      "content": {
+        "markdown": "If the metrics check fails, the flag remains in canary, and the owner must investigate before attempting another rollout."
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_u2_ax1",
+      "title": "Sequence Overview",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § text#3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This sequence describes the two-stage gate for a flag to advance from canary to general availability (GA). It involves an automated metrics check and a human approval step. The sequence achieves the promotion of a flag to GA, or its retention in canary for further investigation."
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_u2_ax2",
+      "title": "Automated Check Details",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § text#4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The automated metrics check compares the error rate and p95 latency of flagged requests against the previous 7 days. This check is run automatically by the rollout tool at the end of the canary window. This is the first branching point: pass or fail."
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_u2_ax3",
+      "title": "Engineer's Decision Point",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § text#5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The on-call engineer provides the final approval. This is a critical waiting and potential failure point, as the engineer can decline the move even if the metrics pass, specifically if an incident is open. This introduces a human override to the automated process."
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_u2_ax4",
+      "title": "Failure and Re-evaluation",
+      "stableKey": "Feature flag rollout guide › Advancing from canary § text#6",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "If the automated check fails, or the engineer declines, the flag stays in canary. This is a failure condition, requiring the owner to investigate and re-attempt the process. The sequence loops back to a potential re-run after investigation."
+      },
+      "parent": "v2_g2"
+    },
+    {
+      "id": "v2_g3",
+      "stableKey": "Feature flag rollout guide › Canary § group#0",
+      "type": "group",
+      "role": "supporting",
+      "content": {
+        "label": "Canary",
+        "arrangement": "stack"
+      }
+    },
+    {
+      "id": "v2_u3_n1",
+      "title": "Canary Stage Request Distribution",
+      "stableKey": "Feature flag rollout guide › Canary § text#0",
+      "type": "text",
+      "content": {
+        "markdown": "During the canary stage, 5% of requests are randomly selected to see the flag. This selection is done per request, not per user."
+      },
+      "parent": "v2_g3"
+    },
+    {
+      "id": "v2_u3_n2",
+      "title": "Canary Duration and Stability",
+      "stableKey": "Feature flag rollout guide › Canary § text#1",
+      "type": "text",
+      "content": {
+        "markdown": "The flag must remain at 5% for a minimum of 60 minutes. This duration ensures that metrics cover a complete traffic cycle, especially for the slowest endpoint. Manual changes to the percentage during this window will restart the measurement period."
+      },
+      "parent": "v2_g3"
+    },
+    {
+      "id": "v2_u3_n3",
+      "title": "Impact of Short Canary Periods",
+      "stableKey": "Feature flag rollout guide › Canary § text#2",
+      "type": "text",
+      "content": {
+        "markdown": "Many problematic flags that reach general availability do so because their canary stage was too short."
+      },
+      "parent": "v2_g3"
+    },
+    {
+      "id": "v2_u3_a1",
+      "title": "Canary Stage Purpose",
+      "stableKey": "Feature flag rollout guide › Canary § text#3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The canary stage is a critical phase for validating new flags. It uses a small, controlled rollout to gather metrics over a sufficient period (60 minutes) to detect potential issues before wider deployment. The stability of the 5% traffic allocation is paramount to ensure accurate measurement and prevent premature promotion of faulty flags."
+      },
+      "parent": "v2_g3"
+    },
+    {
+      "id": "v2_g4",
+      "stableKey": "Feature flag rollout guide › Kill switch § group#0",
+      "type": "group",
+      "role": "supporting",
+      "content": {
+        "label": "Kill switch",
+        "arrangement": "stack",
+        "takeaway": "Every flag needs a tested, quickly-acting kill switch for safe rollouts."
+      }
+    },
+    {
+      "id": "v2_u4_n1",
+      "title": "Kill Switch Requirement",
+      "stableKey": "Feature flag rollout guide › Kill switch § text#0",
+      "type": "text",
+      "content": {
+        "markdown": "Every feature flag must include a kill switch capable of disabling the flag within 1 minute."
+      },
+      "parent": "v2_g4"
+    },
+    {
+      "id": "v2_u4_n2",
+      "title": "Testing and Documentation",
+      "stableKey": "Feature flag rollout guide › Kill switch § text#1",
+      "type": "text",
+      "content": {
+        "markdown": "The kill switch must be tested in the staging environment before the flag proceeds to canary. This test must be recorded in the rollout tool."
+      },
+      "parent": "v2_g4"
+    },
+    {
+      "id": "v2_u4_n3",
+      "title": "Prerequisite for Canary",
+      "stableKey": "Feature flag rollout guide › Kill switch § text#2",
+      "type": "text",
+      "content": {
+        "markdown": "A feature flag cannot enter the canary stage without a tested kill switch."
+      },
+      "parent": "v2_g4"
+    },
+    {
+      "id": "v2_u4_n4",
+      "title": "Kill Switch Usage",
+      "stableKey": "Feature flag rollout guide › Kill switch § text#3",
+      "type": "text",
+      "content": {
+        "markdown": "Any member of the owning team is authorized to use the kill switch without requiring prior approval."
+      },
+      "parent": "v2_g4"
+    },
+    {
+      "id": "v2_u4_n5",
+      "title": "Safety and Rollback",
+      "stableKey": "Feature flag rollout guide › Kill switch § text#4",
+      "type": "text",
+      "content": {
+        "markdown": "Disabling a flag via the kill switch is always a safe operation. Re-enabling the flag will restart its rollout from the internal stage."
+      },
+      "parent": "v2_g4"
+    },
+    {
+      "id": "v2_u4_a1",
+      "title": "Purpose of Kill Switch",
+      "stableKey": "Feature flag rollout guide › Kill switch § text#5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The kill switch ensures rapid and safe rollback of feature flags, preventing issues from impacting production. It empowers teams to quickly mitigate problems without bureaucratic delays."
+      },
+      "parent": "v2_g4"
+    },
+    {
+      "id": "v2_g5",
+      "stableKey": "Feature flag rollout guide › Rollback rehearsal § group#0",
+      "type": "group",
+      "role": "supporting",
+      "content": {
+        "label": "Rollback rehearsal",
+        "arrangement": "stack"
+      }
+    },
+    {
+      "id": "v2_u5_n1",
+      "title": "Rollback Rehearsal Process",
+      "stableKey": "Feature flag rollout guide › Rollback rehearsal § text#0",
+      "type": "text",
+      "content": {
+        "markdown": "Before general availability, the owner must rehearse a rollback in the staging environment. This involves:\n* Switching the feature flag off.\n* Confirming that the old behavior is restored.\n* Switching the feature flag back on."
+      },
+      "parent": "v2_g5"
+    },
+    {
+      "id": "v2_u5_n2",
+      "title": "Documentation",
+      "stableKey": "Feature flag rollout guide › Rollback rehearsal § text#1",
+      "type": "text",
+      "content": {
+        "markdown": "The rollback rehearsal must be recorded in the rollout tool, alongside the staging test."
+      },
+      "parent": "v2_g5"
+    },
+    {
+      "id": "v2_u5_n3",
+      "title": "Time and Approval",
+      "stableKey": "Feature flag rollout guide › Rollback rehearsal § text#2",
+      "type": "text",
+      "content": {
+        "markdown": "The rehearsal typically takes about 10 minutes and does not require any approval."
+      },
+      "parent": "v2_g5"
+    },
+    {
+      "id": "v2_u5_a1",
+      "title": "Purpose of Rehearsal",
+      "stableKey": "Feature flag rollout guide › Rollback rehearsal § text#3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This rehearsal ensures that the rollback mechanism functions as expected, providing confidence in the ability to revert to previous behavior if issues arise after general availability. It's a critical step."
+      },
+      "parent": "v2_g5"
+    },
+    {
+      "id": "v2_g6",
+      "stableKey": "Feature flag rollout guide › Monitoring during general availability § group#0",
+      "type": "group",
+      "role": "supporting",
+      "content": {
+        "label": "Monitoring during general availability",
+        "arrangement": "stack"
+      }
+    },
+    {
+      "id": "v2_u6_n1",
+      "stableKey": "Feature flag rollout guide › Monitoring during general availability § text#0",
+      "type": "text",
+      "content": {
+        "markdown": "The flag owner monitors an error dashboard during the ramp-up phase. This dashboard displays errors for both flagged and unflagged requests, allowing for direct comparison to identify issues specific to the flag."
+      },
+      "parent": "v2_g6"
+    },
+    {
+      "id": "v2_u6_n2",
+      "stableKey": "Feature flag rollout guide › Monitoring during general availability § text#1",
+      "type": "text",
+      "content": {
+        "markdown": "If an increase in errors is observed, the flag owner pages the on-call engineer."
+      },
+      "parent": "v2_g6"
+    },
+    {
+      "id": "v2_u6_n3",
+      "stableKey": "Feature flag rollout guide › Monitoring during general availability § text#2",
+      "type": "text",
+      "content": {
+        "markdown": "Monitoring continues until the flag has been at 100% for a full hour."
+      },
+      "parent": "v2_g6"
+    },
+    {
+      "id": "v2_u6_a1",
+      "title": "Monitoring Process",
+      "stableKey": "Feature flag rollout guide › Monitoring during general availability § text#3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This section outlines the critical monitoring steps during a feature flag's general availability ramp-up. The process focuses on error detection and quick response."
+      },
+      "parent": "v2_g6"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "v2_u1_n1",
+      "to": "v2_u1_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "v2_u1_n3",
+      "to": "v2_u1_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "v2_u1_n1",
+      "to": "v2_u1_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "v2_u1_n3",
+      "to": "v2_u1_n4",
+      "type": "explained_by"
+    },
+    {
+      "from": "v2_u1_n5",
+      "to": "v2_u1_n6",
+      "type": "explained_by"
+    },
+    {
+      "from": "v2_u1_n1",
+      "to": "v2_u1_n7",
+      "type": "relates_to"
+    },
+    {
+      "from": "v2_u1_n3",
+      "to": "v2_u1_n7",
+      "type": "relates_to"
+    },
+    {
+      "from": "v2_u1_n5",
+      "to": "v2_u1_n7",
+      "type": "relates_to"
+    },
+    {
+      "from": "v2_u2_n1",
+      "to": "v2_u2_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "v2_u2_n1",
+      "to": "v2_u2_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "v2_u2_n3",
+      "to": "v2_u2_n4",
+      "type": "explained_by"
+    },
+    {
+      "from": "v2_u2_n3",
+      "to": "v2_u2_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "v2_u2_n1",
+      "to": "v2_u2_n6",
+      "type": "flows_to",
+      "label": "if check fails"
+    },
+    {
+      "from": "v2_u2_n3",
+      "to": "v2_u2_n6",
+      "type": "flows_to",
+      "label": "if engineer declines"
+    },
+    {
+      "from": "v2_u2_n6",
+      "to": "v2_u2_n7",
+      "type": "explained_by"
+    },
+    {
+      "from": "v2_u2_ax1",
+      "to": "v2_u2_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "v2_u2_ax2",
+      "to": "v2_u2_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "v2_u2_ax3",
+      "to": "v2_u2_n4",
+      "type": "relates_to"
+    },
+    {
+      "from": "v2_u2_ax4",
+      "to": "v2_u2_n7",
+      "type": "relates_to"
+    },
+    {
+      "from": "v2_u3_n1",
+      "to": "v2_u3_n2",
+      "type": "relates_to",
+      "label": "governed by"
+    },
+    {
+      "from": "v2_u3_n2",
+      "to": "v2_u3_n3",
+      "type": "caused_by",
+      "label": "violation leads to"
+    },
+    {
+      "from": "v2_u3_a1",
+      "to": "v2_u3_n1",
+      "type": "supports"
+    },
+    {
+      "from": "v2_u3_a1",
+      "to": "v2_u3_n2",
+      "type": "supports"
+    },
+    {
+      "from": "v2_u3_a1",
+      "to": "v2_u3_n3",
+      "type": "supports"
+    },
+    {
+      "from": "v2_u4_n2",
+      "to": "v2_u4_n3",
+      "type": "depends_on",
+      "label": "prerequisite"
+    },
+    {
+      "from": "v2_u4_n1",
+      "to": "v2_u4_a1",
+      "type": "supports"
+    },
+    {
+      "from": "v2_u4_n4",
+      "to": "v2_u4_a1",
+      "type": "supports"
+    },
+    {
+      "from": "v2_u4_n5",
+      "to": "v2_u4_a1",
+      "type": "supports"
+    },
+    {
+      "from": "v2_u5_n1",
+      "to": "v2_u5_n2",
+      "type": "flows_to",
+      "label": "documented in"
+    },
+    {
+      "from": "v2_u5_n1",
+      "to": "v2_u5_n3",
+      "type": "relates_to",
+      "label": "logistics"
+    },
+    {
+      "from": "v2_u5_a1",
+      "to": "v2_u5_n1",
+      "type": "explained_by",
+      "label": "supports"
+    },
+    {
+      "from": "v2_u6_n1",
+      "to": "v2_u6_n2",
+      "type": "flows_to",
+      "label": "if errors rise"
+    },
+    {
+      "from": "v2_u6_n1",
+      "to": "v2_u6_n3",
+      "type": "flows_to",
+      "label": "continues until"
+    }
+  ],
+  "metadata": {
+    "title": "Feature flag rollout guide"
+  }
+}

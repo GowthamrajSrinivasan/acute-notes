@@ -106,6 +106,20 @@ describe("updateFromNewContent — local tier", () => {
     expect(() => parseChangeSet(r.changeSet)).not.toThrow();
   });
 
+  it("a section split into parts (F6): a new paragraph joins the part holding its anchor, not part 1", async () => {
+    const { runtime } = runtimeWith(() => response("never"));
+    const a = accepted(await firstRun(LOCAL, runtime));
+    const risksFrame = a.existing.find((o) => o.stableNodeKey.includes("Risks"))!.frameId!;
+    // As a split section's writer leaves it: the title in part 1 (the section's frame), the paragraph in part 2.
+    const part2 = `${risksFrame}::part2`;
+    const existing = a.existing.map((o) => (o.stableNodeKey === "Launch › Risks#text0" ? { ...o, frameId: part2 } : o));
+    const r = await update({ ...a, existing }, LOCAL.replace("The gateway may time out.", "The gateway may time out.\n\nRetries back off exponentially."), runtime);
+    const joins = r.changeSet!.changes.filter((c) => c.kind === "update_frame");
+    expect(joins).toHaveLength(1);
+    expect(joins[0]).toMatchObject({ kind: "update_frame", target: part2, section: "Risks" });
+    expect(() => parseChangeSet(r.changeSet)).not.toThrow();
+  });
+
   it("a block the user edited is a conflict, never a clean update, and never in `changes`", async () => {
     const { runtime } = runtimeWith(() => response("never"));
     const set = await firstRun(LOCAL, runtime);
@@ -134,6 +148,8 @@ describe("updateFromNewContent — AI tier re-analyses only what changed", () =>
     expect(r.reusedUnits).toHaveLength(10);
     // Exactly one proposed change: the one node from that section.
     expect(r.changeSet!.changes.map((c) => c.kind)).toEqual(["update_shape"]);
+    // Stale-target protection: the relabel carries the label it was planned against (the shape's fingerprint).
+    expect(r.changeSet!.changes[0]).toMatchObject({ expectedFingerprint: expect.stringMatching(/^s/) });
   });
 
   it("new objects a model links as explanations of each other (a cycle) are still placed — the update never hangs", async () => {

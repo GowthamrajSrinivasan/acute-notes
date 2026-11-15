@@ -1,0 +1,18 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-ui-call-reversed",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The admin UI -> HTTP handlers arrow is reversed, so the API appears to call the front end.",
+  "mutations": [
+    {
+      "op": "reverse_relationship",
+      "from": "n-ui",
+      "to": "n-http"
+    }
+  ],
+  "expectFailing": [
+    "a.rel-ui-http"
+  ]
+}

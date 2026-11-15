@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-cost-question-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The missing cost estimate (u37) silently disappears from the open-questions list.",
+  "mutations": [
+    { "op": "replace_text", "node": "c5", "find": "\n- Running cost: not estimated.", "replace": "" }
+  ],
+  "expectFailing": ["a.cost-open"]
+}

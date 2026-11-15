@@ -1,0 +1,1724 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "Helpdesk Answers lets support agents ask a question about a customer's problem and get a short answer drawn from the company's help articles, with a citation for every claim.",
+        "hash": "15m74grv7re",
+        "topic": "Helpdesk Answers: design from system to code › 1. The system",
+        "span": {
+          "start": 66,
+          "end": 240
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "It depends on two external systems: the Help Center CMS, where the articles are written, and an external language model provider, which generates the answer text.",
+        "hash": "1e7ohsrjeri",
+        "topic": "Helpdesk Answers: design from system to code › 1. The system",
+        "span": {
+          "start": 241,
+          "end": 403
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "Agents use the Agent Console, a web client, which sends each question to the Answers API over HTTPS.",
+        "hash": "9v1hd4jc4s",
+        "topic": "Helpdesk Answers: design from system to code › 2. Architecture",
+        "span": {
+          "start": 425,
+          "end": 525
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "The Answers API checks the agent's session and forwards the question to the Orchestrator, the service that owns the answering logic.",
+        "hash": "o7sh13tmut",
+        "topic": "Helpdesk Answers: design from system to code › 2. Architecture",
+        "span": {
+          "start": 526,
+          "end": 658
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "The Orchestrator calls the Retrieval service to find candidate passages, sends those candidates to the Reranker service, and calls the Model Gateway, which is the only component allowed to talk to the external model provider.",
+        "hash": "gmo41g7m94",
+        "topic": "Helpdesk Answers: design from system to code › 2. Architecture",
+        "span": {
+          "start": 659,
+          "end": 884
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "The Retrieval service reads from the Vector store, a Postgres database with the pgvector extension.",
+        "hash": "9qn8bt7m80",
+        "topic": "Helpdesk Answers: design from system to code › 2. Architecture",
+        "span": {
+          "start": 885,
+          "end": 984
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "The Orchestrator writes every answer, with its citations, to the Answer log table.",
+        "hash": "12q9szy2o3p",
+        "topic": "Helpdesk Answers: design from system to code › 2. Architecture",
+        "span": {
+          "start": 985,
+          "end": 1067
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "sentence",
+        "text": "Articles reach the Vector store through the Ingestion worker, which reads published articles from the Help Center CMS every 15 minutes, splits them into passages and writes their embeddings to the Vector store.",
+        "hash": "ub31yz3ox0",
+        "topic": "Helpdesk Answers: design from system to code › 2. Architecture",
+        "span": {
+          "start": 1069,
+          "end": 1279
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "sentence",
+        "text": "This document does not describe the Ingestion worker's internals, and how the Vector store is partitioned has not been decided.",
+        "hash": "dettqcole",
+        "topic": "Helpdesk Answers: design from system to code › 2. Architecture",
+        "span": {
+          "start": 1280,
+          "end": 1407
+        },
+        "prev": "u8",
+        "next": "u10"
+      },
+      {
+        "id": "u10",
+        "kind": "sentence",
+        "text": "The Orchestrator has four parts.",
+        "hash": "k7nlcsg3ht",
+        "topic": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator",
+        "span": {
+          "start": 1440,
+          "end": 1472
+        },
+        "prev": "u9",
+        "next": "u11"
+      },
+      {
+        "id": "u11",
+        "kind": "sentence",
+        "text": "The Rerank client sends candidates to the Reranker and applies its fallback rule.",
+        "hash": "khnrau0qbl",
+        "topic": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator",
+        "span": {
+          "start": 1473,
+          "end": 1554
+        },
+        "prev": "u10",
+        "next": "u12"
+      },
+      {
+        "id": "u12",
+        "kind": "sentence",
+        "text": "The Context builder turns the chosen passages into a prompt.",
+        "hash": "1tajm614o0g",
+        "topic": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator",
+        "span": {
+          "start": 1555,
+          "end": 1615
+        },
+        "prev": "u11",
+        "next": "u13"
+      },
+      {
+        "id": "u13",
+        "kind": "sentence",
+        "text": "The Answer composer runs the request from start to finish.",
+        "hash": "1iv4p7jih9g",
+        "topic": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator",
+        "span": {
+          "start": 1616,
+          "end": 1674
+        },
+        "prev": "u12",
+        "next": "u14"
+      },
+      {
+        "id": "u14",
+        "kind": "sentence",
+        "text": "The Citation checker verifies that each citation in a draft answer points to one of the passages that were supplied.",
+        "hash": "ikqug6ezts",
+        "topic": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator",
+        "span": {
+          "start": 1675,
+          "end": 1791
+        },
+        "prev": "u13",
+        "next": "u15"
+      },
+      {
+        "id": "u15",
+        "kind": "sentence",
+        "text": "The Retrieval service has two parts.",
+        "hash": "7ykqk4cjoy",
+        "topic": "Helpdesk Answers: design from system to code › 4. Inside the Retrieval service",
+        "span": {
+          "start": 1829,
+          "end": 1865
+        },
+        "prev": "u14",
+        "next": "u16"
+      },
+      {
+        "id": "u16",
+        "kind": "sentence",
+        "text": "The Query embedder turns the question into a vector using the same embedding model as the Ingestion worker.",
+        "hash": "24wchcvnian",
+        "topic": "Helpdesk Answers: design from system to code › 4. Inside the Retrieval service",
+        "span": {
+          "start": 1866,
+          "end": 1973
+        },
+        "prev": "u15",
+        "next": "u17"
+      },
+      {
+        "id": "u17",
+        "kind": "sentence",
+        "text": "Vector search then asks the Vector store for the 50 passages closest to that vector.",
+        "hash": "cj405r5tum",
+        "topic": "Helpdesk Answers: design from system to code › 4. Inside the Retrieval service",
+        "span": {
+          "start": 1974,
+          "end": 2058
+        },
+        "prev": "u16",
+        "next": "u18"
+      },
+      {
+        "id": "u18",
+        "kind": "list_item",
+        "text": "The Agent Console posts the question to `POST /v1/answers` with the ticket id.",
+        "hash": "1xhcyuo6bfb",
+        "topic": "Helpdesk Answers: design from system to code › 5. Flow: answering a question",
+        "span": {
+          "start": 2097,
+          "end": 2175
+        },
+        "prev": "u17",
+        "next": "u19"
+      },
+      {
+        "id": "u19",
+        "kind": "list_item",
+        "text": "The Answers API checks the session and forwards the question to the Answer composer.",
+        "hash": "18i2x9bevpg",
+        "topic": "Helpdesk Answers: design from system to code › 5. Flow: answering a question",
+        "span": {
+          "start": 2179,
+          "end": 2263
+        },
+        "prev": "u18",
+        "next": "u20"
+      },
+      {
+        "id": "u20",
+        "kind": "list_item",
+        "text": "The Answer composer asks the Retrieval service for 50 candidate passages.",
+        "hash": "1krbp4wpqar",
+        "topic": "Helpdesk Answers: design from system to code › 5. Flow: answering a question",
+        "span": {
+          "start": 2267,
+          "end": 2340
+        },
+        "prev": "u19",
+        "next": "u21"
+      },
+      {
+        "id": "u21",
+        "kind": "list_item",
+        "text": "The Rerank client sends the 50 candidates to the Reranker and keeps the top 8.",
+        "hash": "i2lepz9t0b",
+        "topic": "Helpdesk Answers: design from system to code › 5. Flow: answering a question",
+        "span": {
+          "start": 2344,
+          "end": 2422
+        },
+        "prev": "u20",
+        "next": "u22"
+      },
+      {
+        "id": "u22",
+        "kind": "list_item",
+        "text": "The Answer composer calls `composeAnswer` with the question and the 8 passages.",
+        "hash": "16ggpidz3l",
+        "topic": "Helpdesk Answers: design from system to code › 5. Flow: answering a question",
+        "span": {
+          "start": 2426,
+          "end": 2505
+        },
+        "prev": "u21",
+        "next": "u23"
+      },
+      {
+        "id": "u23",
+        "kind": "list_item",
+        "text": "The Orchestrator writes the answer and its citations to the Answer log.",
+        "hash": "2ahzj7ajmjv",
+        "topic": "Helpdesk Answers: design from system to code › 5. Flow: answering a question",
+        "span": {
+          "start": 2509,
+          "end": 2580
+        },
+        "prev": "u22",
+        "next": "u24"
+      },
+      {
+        "id": "u24",
+        "kind": "list_item",
+        "text": "The Answers API returns the answer to the Agent Console.",
+        "hash": "1tydpz69vrj",
+        "topic": "Helpdesk Answers: design from system to code › 5. Flow: answering a question",
+        "span": {
+          "start": 2584,
+          "end": 2640
+        },
+        "prev": "u23",
+        "next": "u25"
+      },
+      {
+        "id": "u25",
+        "kind": "sentence",
+        "text": "If the Reranker does not respond within 800 ms, the Rerank client skips reranking, keeps the first 8 candidates in vector-similarity order and records `rerank_skipped = true` in the Answer log.",
+        "hash": "1a7wxn24qyv",
+        "topic": "Helpdesk Answers: design from system to code › 5. Flow: answering a question",
+        "span": {
+          "start": 2642,
+          "end": 2835
+        },
+        "prev": "u24",
+        "next": "u26"
+      },
+      {
+        "id": "u26",
+        "kind": "sentence",
+        "text": "Skipping reranking keeps the request fast, but the 8 passages may then be less relevant.",
+        "hash": "w4bp1sqoew",
+        "topic": "Helpdesk Answers: design from system to code › 5. Flow: answering a question",
+        "span": {
+          "start": 2836,
+          "end": 2924
+        },
+        "prev": "u25",
+        "next": "u27"
+      },
+      {
+        "id": "u27",
+        "kind": "sentence",
+        "text": "`composeAnswer(question, passages)` builds the prompt with the Context builder, limited to 6,000 tokens, calls the Model Gateway, and passes the draft to the Citation checker.",
+        "hash": "1s6yep609u",
+        "topic": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer",
+        "span": {
+          "start": 2958,
+          "end": 3133
+        },
+        "prev": "u26",
+        "next": "u28"
+      },
+      {
+        "id": "u28",
+        "kind": "sentence",
+        "text": "The model call has a 20-second timeout.",
+        "hash": "5nodvakkae",
+        "topic": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer",
+        "span": {
+          "start": 3134,
+          "end": 3173
+        },
+        "prev": "u27",
+        "next": "u29"
+      },
+      {
+        "id": "u29",
+        "kind": "sentence",
+        "text": "If it times out, `composeAnswer` returns an error and the API responds with HTTP 504; no partial answer is shown.",
+        "hash": "mlt4nr5t81",
+        "topic": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer",
+        "span": {
+          "start": 3174,
+          "end": 3287
+        },
+        "prev": "u28",
+        "next": "u30"
+      },
+      {
+        "id": "u30",
+        "kind": "sentence",
+        "text": "If the Citation checker finds a citation that does not match any supplied passage, `composeAnswer` removes the sentence that carries it and marks the answer as partial, rather than rejecting the whole answer.",
+        "hash": "2696o5gu37y",
+        "topic": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer",
+        "span": {
+          "start": 3288,
+          "end": 3496
+        },
+        "prev": "u29",
+        "next": "u31"
+      },
+      {
+        "id": "u31",
+        "kind": "sentence",
+        "text": "`composeAnswer` is in `services/orchestrator/src/compose.ts`, lines 40–118.",
+        "hash": "743qlubo5g",
+        "topic": "Helpdesk Answers: design from system to code › 7. Where the code is",
+        "span": {
+          "start": 3523,
+          "end": 3598
+        },
+        "prev": "u30",
+        "next": "u32"
+      },
+      {
+        "id": "u32",
+        "kind": "sentence",
+        "text": "The citation check is `checkCitations` in `services/orchestrator/src/citations.ts`.",
+        "hash": "4lybd3hc5u",
+        "topic": "Helpdesk Answers: design from system to code › 7. Where the code is",
+        "span": {
+          "start": 3599,
+          "end": 3682
+        },
+        "prev": "u31",
+        "next": "u33"
+      },
+      {
+        "id": "u33",
+        "kind": "sentence",
+        "text": "Vector search is `search` in `services/retrieval/src/search.ts`.",
+        "hash": "bk06tgf23h",
+        "topic": "Helpdesk Answers: design from system to code › 7. Where the code is",
+        "span": {
+          "start": 3683,
+          "end": 3747
+        },
+        "prev": "u32",
+        "next": "u34"
+      },
+      {
+        "id": "u34",
+        "kind": "sentence",
+        "text": "The design does not give code locations for the Ingestion worker or the Reranker.",
+        "hash": "1ytxsdvpn8h",
+        "topic": "Helpdesk Answers: design from system to code › 7. Where the code is",
+        "span": {
+          "start": 3748,
+          "end": 3829
+        },
+        "prev": "u33"
+      }
+    ],
+    "nextId": 35
+  },
+  "cites": {
+    "u1_n1": [
+      "u1",
+      "u2"
+    ],
+    "u1_n2": [
+      "u1",
+      "u2"
+    ],
+    "u2_n1": [
+      "u3"
+    ],
+    "u2_n2": [
+      "u3",
+      "u4"
+    ],
+    "u2_n3": [
+      "u4",
+      "u5",
+      "u7"
+    ],
+    "u2_n4": [
+      "u5",
+      "u6"
+    ],
+    "u2_n5": [
+      "u5"
+    ],
+    "u2_n6": [
+      "u5"
+    ],
+    "u2_n7": [
+      "u5"
+    ],
+    "u2_n8": [
+      "u6",
+      "u8",
+      "u9"
+    ],
+    "u2_n9": [
+      "u7"
+    ],
+    "u2_n10": [
+      "u8",
+      "u9"
+    ],
+    "u2_n11": [
+      "u8"
+    ],
+    "u2_n12": [
+      "u3"
+    ],
+    "u2_n13": [
+      "u3",
+      "u4"
+    ],
+    "u2_n14": [
+      "u4",
+      "u5"
+    ],
+    "u2_n15": [
+      "u5"
+    ],
+    "u2_n16": [
+      "u5"
+    ],
+    "u2_n17": [
+      "u6",
+      "u9"
+    ],
+    "u2_n18": [
+      "u8",
+      "u9"
+    ],
+    "u4_n1": [
+      "u10"
+    ],
+    "u4_n2": [
+      "u11"
+    ],
+    "u4_n3": [
+      "u12"
+    ],
+    "u4_n4": [
+      "u13"
+    ],
+    "u4_n5": [
+      "u14"
+    ],
+    "u4_n6": [
+      "u10"
+    ],
+    "u4_n7": [
+      "u11"
+    ],
+    "u4_n8": [
+      "u12"
+    ],
+    "u4_n9": [
+      "u13"
+    ],
+    "u4_n10": [
+      "u14"
+    ],
+    "u5_n4": [
+      "u15"
+    ],
+    "u5_n5": [
+      "u16"
+    ],
+    "u5_n6": [
+      "u17"
+    ],
+    "u6_n1": [
+      "u27"
+    ],
+    "u6_n2": [
+      "u27"
+    ],
+    "u6_n3": [
+      "u27"
+    ],
+    "u6_n4": [
+      "u28"
+    ],
+    "u6_n5": [
+      "u27"
+    ],
+    "u6_n6": [
+      "u29"
+    ],
+    "u6_n7": [
+      "u30"
+    ],
+    "u7_n1": [
+      "u31",
+      "u32",
+      "u33",
+      "u34"
+    ]
+  },
+  "omitted": [],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "cited",
+      "u3": "cited",
+      "u4": "cited",
+      "u5": "cited",
+      "u6": "cited",
+      "u7": "cited",
+      "u8": "cited",
+      "u9": "cited",
+      "u10": "cited",
+      "u11": "review",
+      "u12": "review",
+      "u13": "review",
+      "u14": "review",
+      "u15": "cited",
+      "u16": "cited",
+      "u17": "cited",
+      "u18": "review",
+      "u19": "review",
+      "u20": "review",
+      "u21": "review",
+      "u22": "review",
+      "u23": "review",
+      "u24": "review",
+      "u25": "review",
+      "u26": "review",
+      "u27": "cited",
+      "u28": "cited",
+      "u29": "cited",
+      "u30": "cited",
+      "u31": "cited",
+      "u32": "cited",
+      "u33": "cited",
+      "u34": "cited"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "represented",
+      "u3": "represented",
+      "u4": "represented",
+      "u5": "represented",
+      "u6": "represented",
+      "u7": "represented",
+      "u8": "represented",
+      "u9": "represented",
+      "u10": "represented",
+      "u11": "needs_review",
+      "u12": "needs_review",
+      "u13": "needs_review",
+      "u14": "needs_review",
+      "u15": "represented",
+      "u16": "represented",
+      "u17": "represented",
+      "u18": "needs_review",
+      "u19": "needs_review",
+      "u20": "needs_review",
+      "u21": "needs_review",
+      "u22": "needs_review",
+      "u23": "needs_review",
+      "u24": "needs_review",
+      "u25": "needs_review",
+      "u26": "needs_review",
+      "u27": "represented",
+      "u28": "represented",
+      "u29": "represented",
+      "u30": "represented",
+      "u31": "represented",
+      "u32": "represented",
+      "u33": "represented",
+      "u34": "represented"
+    },
+    "critical": {
+      "u2": [
+        "protected"
+      ],
+      "u5": [
+        "requirement"
+      ],
+      "u8": [
+        "protected"
+      ],
+      "u9": [
+        "limitation",
+        "decision"
+      ],
+      "u10": [
+        "protected"
+      ],
+      "u15": [
+        "protected"
+      ],
+      "u17": [
+        "protected"
+      ],
+      "u18": [
+        "protected"
+      ],
+      "u20": [
+        "protected"
+      ],
+      "u21": [
+        "protected"
+      ],
+      "u22": [
+        "protected"
+      ],
+      "u25": [
+        "limitation",
+        "condition",
+        "protected"
+      ],
+      "u26": [
+        "limitation",
+        "protected"
+      ],
+      "u27": [
+        "protected"
+      ],
+      "u28": [
+        "protected"
+      ],
+      "u29": [
+        "condition",
+        "protected"
+      ],
+      "u30": [
+        "limitation",
+        "condition"
+      ],
+      "u31": [
+        "protected"
+      ],
+      "u32": [
+        "protected"
+      ],
+      "u33": [
+        "protected"
+      ],
+      "u34": [
+        "limitation"
+      ]
+    },
+    "flags": [
+      {
+        "code": "unaccounted",
+        "unit": "u18",
+        "detail": "neither on a card nor omitted: \"The Agent Console posts the question to `POST /v1/answers` with the ticket id.\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u19",
+        "detail": "neither on a card nor omitted: \"The Answers API checks the session and forwards the question to the Answer comp…\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u20",
+        "detail": "neither on a card nor omitted: \"The Answer composer asks the Retrieval service for 50 candidate passages.\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u21",
+        "detail": "neither on a card nor omitted: \"The Rerank client sends the 50 candidates to the Reranker and keeps the top 8.\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u22",
+        "detail": "neither on a card nor omitted: \"The Answer composer calls `composeAnswer` with the question and the 8 passages.\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u23",
+        "detail": "neither on a card nor omitted: \"The Orchestrator writes the answer and its citations to the Answer log.\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u24",
+        "detail": "neither on a card nor omitted: \"The Answers API returns the answer to the Agent Console.\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u25",
+        "detail": "neither on a card nor omitted: \"If the Reranker does not respond within 800 ms, the Rerank client skips reranki…\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u26",
+        "detail": "neither on a card nor omitted: \"Skipping reranking keeps the request fast, but the 8 passages may then be less …\""
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n1",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n2",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n3",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n4",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n5",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n6",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n7",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n8",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n9",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n10",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n11",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n12",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n13",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n14",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n15",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n16",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u3_n17",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "ai_check",
+        "card": "u4_n1",
+        "detail": "checked by AI: not supported: The card omits that the Orchestrator has four parts, which is a key detail in the source."
+      },
+      {
+        "code": "ai_check",
+        "card": "u4_n2",
+        "detail": "checked by AI: not supported: The card omits that it is the 'Rerank client' that performs the actions, which is the subject of the source sentence."
+      },
+      {
+        "code": "ai_check",
+        "card": "u4_n3",
+        "detail": "checked by AI: not supported: The card omits that it is the 'Context builder' that performs the action, which is the subject of the source sentence."
+      },
+      {
+        "code": "ai_check",
+        "card": "u4_n4",
+        "detail": "checked by AI: not supported: The card omits that it is the 'Answer composer' that performs the action, which is the subject of the source sentence."
+      },
+      {
+        "code": "ai_check",
+        "card": "u4_n5",
+        "detail": "checked by AI: not supported: The card omits that it is the 'Citation checker' that performs the action, which is the subject of the source sentence."
+      },
+      {
+        "code": "ai_check",
+        "card": "u4_n7",
+        "detail": "checked by AI: not supported: The card omits that it is the 'Rerank client' that performs the actions, which is the subject of the source sentence."
+      },
+      {
+        "code": "ai_check",
+        "card": "u4_n8",
+        "detail": "checked by AI: not supported: The card omits that it is the 'Context builder' that performs the action, which is the subject of the source sentence."
+      },
+      {
+        "code": "ai_check",
+        "card": "u4_n9",
+        "detail": "checked by AI: not supported: The card omits that it is the 'Answer composer' that performs the action, which is the subject of the source sentence."
+      },
+      {
+        "code": "ai_check",
+        "card": "u4_n10",
+        "detail": "checked by AI: not supported: The card omits that it is the 'Citation checker' that performs the action, which is the subject of the source sentence."
+      },
+      {
+        "code": "uncited_card",
+        "card": "u5_n1",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u5_n2",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u5_n3",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "ai_check",
+        "card": "u6_n1",
+        "detail": "checked by AI: not supported: The card omits crucial details about what `composeAnswer` does, making it an incomplete representation of the source."
+      },
+      {
+        "code": "ai_check",
+        "card": "u6_n3",
+        "detail": "checked by AI: not supported: The card only mentions 'Call Model Gateway' which is a part of the source, but it omits the context of what calls it and what happens before and after."
+      },
+      {
+        "code": "ai_check",
+        "card": "u6_n5",
+        "detail": "checked by AI: not supported: The card only mentions 'Pass draft to Citation checker' which is a part of the source, but it omits the context of what passes it and what happens before."
+      }
+    ],
+    "sections": [
+      {
+        "topic": "Helpdesk Answers: design from system to code › 1. The system",
+        "represented": 2,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Helpdesk Answers: design from system to code › 2. Architecture",
+        "represented": 7,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator",
+        "represented": 1,
+        "omitted": 0,
+        "needsReview": 4,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Helpdesk Answers: design from system to code › 4. Inside the Retrieval service",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Helpdesk Answers: design from system to code › 5. Flow: answering a question",
+        "represented": 0,
+        "omitted": 0,
+        "needsReview": 9,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Helpdesk Answers: design from system to code › 7. Where the code is",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      }
+    ]
+  },
+  "flags": [
+    {
+      "code": "unaccounted",
+      "unit": "u18",
+      "detail": "neither on a card nor omitted: \"The Agent Console posts the question to `POST /v1/answers` with the ticket id.\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u19",
+      "detail": "neither on a card nor omitted: \"The Answers API checks the session and forwards the question to the Answer comp…\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u20",
+      "detail": "neither on a card nor omitted: \"The Answer composer asks the Retrieval service for 50 candidate passages.\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u21",
+      "detail": "neither on a card nor omitted: \"The Rerank client sends the 50 candidates to the Reranker and keeps the top 8.\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u22",
+      "detail": "neither on a card nor omitted: \"The Answer composer calls `composeAnswer` with the question and the 8 passages.\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u23",
+      "detail": "neither on a card nor omitted: \"The Orchestrator writes the answer and its citations to the Answer log.\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u24",
+      "detail": "neither on a card nor omitted: \"The Answers API returns the answer to the Agent Console.\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u25",
+      "detail": "neither on a card nor omitted: \"If the Reranker does not respond within 800 ms, the Rerank client skips reranki…\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u26",
+      "detail": "neither on a card nor omitted: \"Skipping reranking keeps the request fast, but the 8 passages may then be less …\""
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n1",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n2",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n3",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n4",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n5",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n6",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n7",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n8",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n9",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n10",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n11",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n12",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n13",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n14",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n15",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n16",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u3_n17",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "ai_check",
+      "card": "u4_n1",
+      "detail": "checked by AI: not supported: The card omits that the Orchestrator has four parts, which is a key detail in the source."
+    },
+    {
+      "code": "ai_check",
+      "card": "u4_n2",
+      "detail": "checked by AI: not supported: The card omits that it is the 'Rerank client' that performs the actions, which is the subject of the source sentence."
+    },
+    {
+      "code": "ai_check",
+      "card": "u4_n3",
+      "detail": "checked by AI: not supported: The card omits that it is the 'Context builder' that performs the action, which is the subject of the source sentence."
+    },
+    {
+      "code": "ai_check",
+      "card": "u4_n4",
+      "detail": "checked by AI: not supported: The card omits that it is the 'Answer composer' that performs the action, which is the subject of the source sentence."
+    },
+    {
+      "code": "ai_check",
+      "card": "u4_n5",
+      "detail": "checked by AI: not supported: The card omits that it is the 'Citation checker' that performs the action, which is the subject of the source sentence."
+    },
+    {
+      "code": "ai_check",
+      "card": "u4_n7",
+      "detail": "checked by AI: not supported: The card omits that it is the 'Rerank client' that performs the actions, which is the subject of the source sentence."
+    },
+    {
+      "code": "ai_check",
+      "card": "u4_n8",
+      "detail": "checked by AI: not supported: The card omits that it is the 'Context builder' that performs the action, which is the subject of the source sentence."
+    },
+    {
+      "code": "ai_check",
+      "card": "u4_n9",
+      "detail": "checked by AI: not supported: The card omits that it is the 'Answer composer' that performs the action, which is the subject of the source sentence."
+    },
+    {
+      "code": "ai_check",
+      "card": "u4_n10",
+      "detail": "checked by AI: not supported: The card omits that it is the 'Citation checker' that performs the action, which is the subject of the source sentence."
+    },
+    {
+      "code": "uncited_card",
+      "card": "u5_n1",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u5_n2",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u5_n3",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "ai_check",
+      "card": "u6_n1",
+      "detail": "checked by AI: not supported: The card omits crucial details about what `composeAnswer` does, making it an incomplete representation of the source."
+    },
+    {
+      "code": "ai_check",
+      "card": "u6_n3",
+      "detail": "checked by AI: not supported: The card only mentions 'Call Model Gateway' which is a part of the source, but it omits the context of what calls it and what happens before and after."
+    },
+    {
+      "code": "ai_check",
+      "card": "u6_n5",
+      "detail": "checked by AI: not supported: The card only mentions 'Pass draft to Citation checker' which is a part of the source, but it omits the context of what passes it and what happens before."
+    }
+  ],
+  "hints": [
+    {
+      "code": "named_term_changed",
+      "unit": "u2",
+      "card": "u1_n1",
+      "detail": "source says \"Help Center CMS\"; the card says \"Helpdesk Answers\"",
+      "evidence": {
+        "source": "Help Center CMS",
+        "card": "Helpdesk Answers"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u2",
+      "card": "u1_n2",
+      "detail": "source names \"Help Center CMS\"; no card citing it does",
+      "evidence": {
+        "source": "Help Center CMS"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u9",
+      "card": "u2_n10",
+      "detail": "source says \"This document does not describe the Ingestion worker's internals, and how the Vector store is partitioned has not been decided.\"; the card drops the negation",
+      "evidence": {
+        "source": "This document does not describe the Ingestion worker's internals, and how the Vector store is partitioned has not been decided.",
+        "card": "Ingestion worker"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u27",
+      "card": "u6_n1",
+      "detail": "source limits it: \"limited to 6\"",
+      "evidence": {
+        "source": "limited to 6"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u27",
+      "card": "u6_n3",
+      "detail": "source says \"limited to 6,000 tokens, calls th\"",
+      "evidence": {
+        "source": "limited to 6,000 tokens, calls th"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u27",
+      "card": "u6_n3",
+      "detail": "source limits it: \"limited to 6\"",
+      "evidence": {
+        "source": "limited to 6"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u27",
+      "card": "u6_n5",
+      "detail": "source limits it: \"limited to 6\"",
+      "evidence": {
+        "source": "limited to 6"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u34",
+      "card": "u7_n1",
+      "detail": "source says \"The design does not give code locations for the Ingestion worker or the Reranker.\"; the card drops the negation",
+      "evidence": {
+        "source": "The design does not give code locations for the Ingestion worker or the Reranker.",
+        "card": "Code Locations"
+      }
+    }
+  ],
+  "reviews": {
+    "u1_n1": {
+      "reasons": [],
+      "hints": [
+        "source says \"Help Center CMS\"; the card says \"Helpdesk Answers\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u1_n2": {
+      "reasons": [],
+      "hints": [
+        "source names \"Help Center CMS\"; no card citing it does"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n1": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n3": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n4": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n5": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n6": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n7": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n8": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n9": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n10": {
+      "reasons": [],
+      "hints": [
+        "source says \"This document does not describe the Ingestion worker's internals, and how the Vector store is partitioned has not been decided.\"; the card drops the negation"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n11": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n12": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n13": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n14": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n15": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n16": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n17": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n18": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u3_n1": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n2": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n3": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n4": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n5": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n6": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n7": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n8": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n9": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n10": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n11": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n12": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n13": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n14": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n15": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n16": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u3_n17": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u4_n1": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that the Orchestrator has four parts, which is a key detail in the source."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that the Orchestrator has four parts, which is a key detail in the source."
+      }
+    },
+    "u4_n2": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that it is the 'Rerank client' that performs the actions, which is the subject of the source sentence."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that it is the 'Rerank client' that performs the actions, which is the subject of the source sentence."
+      }
+    },
+    "u4_n3": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that it is the 'Context builder' that performs the action, which is the subject of the source sentence."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that it is the 'Context builder' that performs the action, which is the subject of the source sentence."
+      }
+    },
+    "u4_n4": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that it is the 'Answer composer' that performs the action, which is the subject of the source sentence."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that it is the 'Answer composer' that performs the action, which is the subject of the source sentence."
+      }
+    },
+    "u4_n5": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that it is the 'Citation checker' that performs the action, which is the subject of the source sentence."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that it is the 'Citation checker' that performs the action, which is the subject of the source sentence."
+      }
+    },
+    "u4_n6": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u4_n7": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that it is the 'Rerank client' that performs the actions, which is the subject of the source sentence."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that it is the 'Rerank client' that performs the actions, which is the subject of the source sentence."
+      }
+    },
+    "u4_n8": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that it is the 'Context builder' that performs the action, which is the subject of the source sentence."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that it is the 'Context builder' that performs the action, which is the subject of the source sentence."
+      }
+    },
+    "u4_n9": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that it is the 'Answer composer' that performs the action, which is the subject of the source sentence."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that it is the 'Answer composer' that performs the action, which is the subject of the source sentence."
+      }
+    },
+    "u4_n10": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that it is the 'Citation checker' that performs the action, which is the subject of the source sentence."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that it is the 'Citation checker' that performs the action, which is the subject of the source sentence."
+      }
+    },
+    "u5_n1": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u5_n2": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u5_n3": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u5_n4": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u5_n5": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u5_n6": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u6_n1": {
+      "reasons": [
+        "checked by AI: not supported: The card omits crucial details about what `composeAnswer` does, making it an incomplete representation of the source."
+      ],
+      "hints": [
+        "source limits it: \"limited to 6\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits crucial details about what `composeAnswer` does, making it an incomplete representation of the source."
+      }
+    },
+    "u6_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u6_n3": {
+      "reasons": [
+        "checked by AI: not supported: The card only mentions 'Call Model Gateway' which is a part of the source, but it omits the context of what calls it and what happens before and after."
+      ],
+      "hints": [
+        "source says \"limited to 6,000 tokens, calls th\"",
+        "source limits it: \"limited to 6\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card only mentions 'Call Model Gateway' which is a part of the source, but it omits the context of what calls it and what happens before and after."
+      }
+    },
+    "u6_n4": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u6_n5": {
+      "reasons": [
+        "checked by AI: not supported: The card only mentions 'Pass draft to Citation checker' which is a part of the source, but it omits the context of what passes it and what happens before."
+      ],
+      "hints": [
+        "source limits it: \"limited to 6\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card only mentions 'Pass draft to Citation checker' which is a part of the source, but it omits the context of what passes it and what happens before."
+      }
+    },
+    "u6_n6": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u6_n7": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u7_n1": {
+      "reasons": [],
+      "hints": [
+        "source says \"The design does not give code locations for the Ingestion worker or the Reranker.\"; the card drops the negation"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    }
+  }
+}

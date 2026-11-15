@@ -57,11 +57,11 @@
     {
       "id": "a.prereq-lb",
       "dimension": "coverage",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "On the canvas: Access to the load balancer's listener rules.",
+      "description": "On the canvas: Access to the load balancer's listener rules (u11, critical requirement).",
       "check": {
         "check": "element_present",
         "element": "e.prereq-lb"
@@ -70,11 +70,11 @@
     {
       "id": "a.prereq-dashboard",
       "dimension": "coverage",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "On the canvas: A per-environment 5xx error-rate dashboard.",
+      "description": "On the canvas: A per-environment 5xx error-rate dashboard (u12, critical requirement).",
       "check": {
         "check": "element_present",
         "element": "e.prereq-dashboard"
@@ -122,11 +122,11 @@
     {
       "id": "a.smoke",
       "dimension": "coverage",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "On the canvas: 4. Smoke tests pass on green?.",
+      "description": "On the canvas: 4. Smoke tests pass on green? (u24, critical condition).",
       "check": {
         "check": "element_present",
         "element": "e.smoke"
@@ -387,11 +387,11 @@
     {
       "id": "a.switch-back-command",
       "dimension": "source_fidelity",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "The switch-back names $BLUE_TG_ARN.",
+      "description": "The switch-back names $BLUE_TG_ARN (u29, critical; $BLUE_TG_ARN is protected).",
       "check": {
         "check": "text_present",
         "element": "e.switch-back",
@@ -406,11 +406,11 @@
     {
       "id": "a.inflight",
       "dimension": "source_fidelity",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "The switch-back keeps its in-flight caveat.",
+      "description": "The switch-back keeps its in-flight caveat (u36, critical limitation on the switch-back).",
       "check": {
         "check": "text_present",
         "element": "e.switch-back",
@@ -461,14 +461,24 @@
         "element": "e.standby",
         "all": [
           [
-            "migration"
+            "migrat"
           ],
           [
             "don't run",
             "do not run",
             "no next",
             "not run",
-            "never run"
+            "never run",
+            "don't migrate",
+            "do not migrate",
+            "not migrate",
+            "no migrations",
+            "no new migrations",
+            "hold off",
+            "don't apply",
+            "do not apply",
+            "not apply",
+            "never apply"
           ]
         ],
         "why": "condition on the standby (u39, u40)"
@@ -568,8 +578,8 @@
       "description": "Nothing says a rollback reverts the database.",
       "check": {
         "check": "text_absent",
-        "pattern": "(?<!not )(?<!n't )(?<!never )\\b(reverts?|undoes|undo|restores?|rolls? back) (the |a |its )?(database|schema|migrations?)\\b",
-        "why": "a rollback does not undo a migration (u10, u37)"
+        "pattern": "(?<!(?:\\bnot|n't|\\bnever|\\bno|\\bnor|\\bneither|\\bcannot)(?: [\\w'-]+){0,3} )\\b(reverts?|undoes|undo|restores?|rolls? back) (the |a |its |any )?(database|schema|migrations?)\\b|\\b(database|schema|migrations?) (is |are |gets |get |will be |is also |are also )?(reverted|undone|rolled back|restored)\\b",
+        "why": "a rollback does not undo a migration (u10, u37); negated mentions ('does not undo', 'neither kind of rollback reverts the database', u37's own wording) are faithful"
       }
     },
     {
@@ -1020,11 +1030,11 @@
     {
       "id": "a.rel-smoke-rollback",
       "dimension": "relationships",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "Link: A failing smoke test stops the release like a failed health check.",
+      "description": "Link: A failing smoke test stops the release like a failed health check (u24, critical condition).",
       "check": {
         "check": "relationship_present",
         "relationship": "r.smoke-rollback"
@@ -1073,11 +1083,11 @@
     {
       "id": "a.rel-watch-standby",
       "dimension": "relationships",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "Link: The pass branch after the switch.",
+      "description": "Link: The pass branch after the switch (u30, critical condition).",
       "check": {
         "check": "relationship_present",
         "relationship": "r.watch-standby"
@@ -1200,6 +1210,71 @@
       "description": "Frames don't overlap.",
       "check": {
         "check": "frames_no_overlap"
+      }
+    },
+    {
+      "id": "a.crossings",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No link crossings (today's reference as the gate renders it, organisation v1; organisation-layout plan Q11).",
+      "check": {
+        "check": "layout_crossings_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.reading-order",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames read in the plan's order (top to bottom, each row left to right): no pair out of order as the gate renders today (v1).",
+      "check": {
+        "check": "reading_order_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.fit-screen",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Every frame can be read whole at the readable zoom on the fit screen.",
+      "check": {
+        "check": "frames_fit_screen"
+      }
+    },
+    {
+      "id": "a.links-over-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No card-to-card link passes over a third frame (today's reference rendered by the gate, v1).",
+      "check": {
+        "check": "links_over_frames_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.rendered-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "The frames are drawn as planned: 3–5 frames on the canvas (the layout view of a.frame-count).",
+      "check": {
+        "check": "rendered_frame_count",
+        "min": 3,
+        "max": 5
       }
     },
     {

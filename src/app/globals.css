@@ -5892,3 +5892,202 @@ main:has(.acute-review[aria-label="Dense blocks"]) .acute-review[aria-label="AI 
   font-size: 12px;
   line-height: 1.45;
 }
+
+/* Lock (intelligent-update-engine-plan Stage 1e): a small lock at the top-left corner of locked cards and sections. */
+.acute-overview[data-active] ~ .acute-lock-markers {
+  visibility: hidden;
+}
+.acute-lock-markers {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+.acute-lock-marker {
+  position: absolute;
+  font-size: 12px;
+  line-height: 1;
+  padding: 2px;
+  border-radius: 4px;
+  background: var(--acute-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  /* Kept at its on-screen size at every zoom, sitting just above the object's corner. */
+  transform: translate(-30%, -110%) scale(calc(1 / var(--acute-marker-zoom, 1)));
+  transform-origin: 0 100%;
+}
+
+/* "Where should this go?" (intelligent-update-engine-plan Stage 2d). */
+.acute-place-dialog {
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100vh - 64px);
+  overflow: auto;
+}
+.acute-place-dialog__banner {
+  margin: 10px 0 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--acute-surface-muted, color-mix(in srgb, var(--acute-text) 6%, transparent));
+  font-size: 13px;
+}
+.acute-place-dialog__banner[data-decision="NEEDS_CLARIFICATION"] {
+  background: color-mix(in srgb, #f59f00 16%, transparent);
+}
+.acute-place-dialog__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.acute-place-dialog__item {
+  padding: 8px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+}
+.acute-place-dialog__choice {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-weight: 600;
+}
+.acute-place-dialog__section {
+  font-weight: 400;
+  color: var(--acute-text-muted, inherit);
+}
+.acute-place-dialog__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 0 0 22px;
+  font-size: 12px;
+}
+.acute-place-dialog__scores {
+  display: flex;
+  gap: 10px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.acute-place-dialog__alt {
+  display: block;
+  margin: 4px 0 0 22px;
+  font-size: 12px;
+}
+.acute-place-dialog__evidence {
+  margin: 4px 0 0 22px;
+  padding-left: 14px;
+  font-size: 12px;
+  color: var(--acute-text-muted, inherit);
+}
+
+/* Stage 4b: the search index's health, shown only when it isn't fresh. */
+.acute-index-status {
+  position: absolute;
+  top: 64px;
+  right: 16px;
+  z-index: 24;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  max-width: min(420px, calc(100% - 32px));
+  padding: 6px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  box-shadow: var(--acute-shadow);
+  font-size: 12px;
+}
+.acute-index-status[data-state="failed"] {
+  border-color: var(--acute-danger, #c0392b);
+}
+
+/* Stage 4e: cross-card consistency (chip, panel, markers). */
+.acute-consistency-chip {
+  position: absolute;
+  top: 104px;
+  right: 16px;
+  z-index: 24;
+  padding: 5px 10px;
+  border: 1px solid var(--acute-border);
+  border-radius: 999px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  box-shadow: var(--acute-shadow);
+  font-size: 12px;
+  cursor: pointer;
+}
+.acute-consistency {
+  position: absolute;
+  top: 140px;
+  right: 16px;
+  z-index: 26;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(520px, calc(100% - 32px));
+  max-height: calc(100% - 220px);
+  overflow: auto;
+  padding: 10px 12px;
+  border: 1px solid var(--acute-border);
+  border-radius: 10px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  box-shadow: var(--acute-shadow);
+  font-size: 13px;
+}
+.acute-consistency__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: baseline;
+}
+.acute-consistency__head > button {
+  margin-left: auto;
+}
+.acute-consistency__title {
+  margin: 4px 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+.acute-consistency__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-consistency__item {
+  padding: 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 8px;
+}
+.acute-consistency__item[data-status="confirmed"] {
+  border-color: var(--acute-danger, #c0392b);
+}
+.acute-consistency__item[data-status="possible"][data-strength="possible"] {
+  border-style: dashed;
+}
+.acute-consistency__label {
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.acute-consistency__jobs {
+  margin: 0;
+  font-size: 12px;
+}
+.acute-consistency-marker {
+  position: absolute;
+  transform: translate(-50%, -50%) scale(calc(1 / var(--acute-marker-zoom, 1)));
+  font-size: 14px;
+  line-height: 1;
+  pointer-events: auto;
+}
+.acute-consistency-marker[data-status="possible"] {
+  opacity: 0.75;
+}
+

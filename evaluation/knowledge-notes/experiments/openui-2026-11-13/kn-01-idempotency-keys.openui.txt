@@ -1,0 +1,18 @@
+root = IdeaCard("Idempotency Keys Prevent Duplicate Operations", "An idempotency key is a unique value sent with a request, allowing the server to identify and prevent duplicate operations if the request is retried.", "high", [c1, c2])
+c1 = CitationChip("u1")
+c2 = CitationChip("u2")
+---
+root = IdeaCard("Example of Idempotency Key Usage", "If a client retries a payment request with the same idempotency key after a connection drop, the server returns the original confirmation, ensuring the customer is charged only once.", "medium", [c3, c4, c5])
+c3 = CitationChip("u3")
+c4 = CitationChip("u4")
+c5 = CitationChip("u5")
+---
+root = IdeaCard("Idempotency Key Expiration", "Idempotency keys only protect against duplicates for a limited time, as stored results expire after a set period (e.g., 24 hours), after which a retry is treated as a new operation.", "medium", [c6, c7])
+c6 = CitationChip("u6")
+c7 = CitationChip("u7")
+---
+root = IdeaCard("Idempotency Keys and Different Requests", "Idempotency keys do not make different requests safe; if a client reuses a key with a different request (e.g., a different amount), the server must reject it.", "high", [c8])
+c8 = CitationChip("u8")
+---
+root = IdeaCard("Scope of Idempotency Key Protection", "Idempotency keys ensure safe retries within a specific timeframe but do not provide a general guarantee against all duplicate operations.", "high", [c9])
+c9 = CitationChip("u9")

@@ -10,6 +10,7 @@
  *   `wl5_inj`) — the details a condensed summary drops first. Each must appear verbatim.
  * - Score: 50% unit coverage, 30% key-term coverage, 20% word coverage.
  */
+import type { KnowledgeRunOutput } from "../src/ai/fidelity/contracts";
 import { COVERAGE_THRESHOLD, keyTerms, significant, words } from "../src/ai/fidelity/information";
 
 export const UNIT_THRESHOLD = COVERAGE_THRESHOLD;
@@ -149,6 +150,196 @@ export function reportMarkdown(title: string, s: FidelityScore, visibleOnly: Fid
     `## Missing key terms (${s.missingKeyTerms.length})`,
     "",
     s.missingKeyTerms.length ? s.missingKeyTerms.map((t) => `\`${t}\``).join(", ") : "None.",
+    "",
+  ].join("\n");
+}
+
+// ---------------------------------------------------------------- report v2: distil runs (knowledge-notes-plan §7.3, §9, WP1.12)
+
+/** What report v2 reads of a run: its `KnowledgeRunOutput` (`__acuteDev.knowledgeRun`), with or without the plan. */
+export type KnowledgeRunLike = Pick<KnowledgeRunOutput, "noteModel" | "units" | "cites" | "omitted" | "accounting" | "flags" | "hints" | "reviews"> &
+  Partial<Pick<KnowledgeRunOutput, "cardGroups">>;
+
+/** One distil run, measured for the release gates (§9). Nothing here calls a model. */
+export interface KnowledgeScore {
+  units: number;
+  represented: number;
+  omitted: number;
+  needsReview: number;
+  /** Units of failed or cut-off sections (each must carry the Wave A notice, G3). */
+  pending: number;
+  /** Cards as the reader sees them (see `knowledgeScore`: a card of several nodes counts once). */
+  cards: number;
+  cardsNeedsReview: number;
+  /** G1: the share of cards in Needs review (median ≤ 15% across runs). Cards, not nodes (plan §9 G1). */
+  cardsNeedsReviewPct: number;
+  /** Cards the model check answered "supported" ("checked by AI"). */
+  checkedByAI: number;
+  /**
+   * The model check's verdicts (OD5b: every citing card in distil mode): cards it was asked about, and how many it
+   * answered "partly", "not supported", or not at all (all three stay in Needs review). The live stand-in for G2's
+   * "distortions flagged": the labelled set's kinds can't be told apart on real output.
+   */
+  aiChecked: number;
+  aiPartly: number;
+  aiNotSupported: number;
+  aiUnanswered: number;
+  /** Cards the meaning rules hint about (hints only, never Needs review on their own). */
+  hinted: number;
+  /** Cards longer than the source passages they cite (`longer_than_source`, a hint only; words are observed, not gated). */
+  longerThanSource?: number;
+  /** G3 (every run): critical units omitted for a reason other than duplicate or superseded, outside Needs review. */
+  criticalSilentlyOmitted: number;
+  /** G4 (every run): exact details still missing at the end of the run. */
+  exactMissing: number;
+  /** Observed, not gated (§9): canvas words as a share of source words, when both texts are given. */
+  wordsSharePct?: number;
+  /** Needs review reasons by code (the run's flags). Not a measure: left out of the median and worst. */
+  reasonsByCode?: Record<string, number>;
+}
+
+/**
+ * One run's report v2 measures.
+ *
+ * **G1 counts cards, not nodes** (knowledge-notes-plan §9 G1: "the median share of cards in Needs review ≤ 15%"). A card
+ * is what the reader sees as one idea: a plan node, or several nodes the run grouped as one (`run.cardGroups`: a diagram
+ * shape with the text that explains it via `explained_by`, a label-only shape with the full card citing its units;
+ * `cardViews` in `src/ai/fidelity/representation.ts`). A grouped card is in Needs review when any of its nodes is, and
+ * counts once. Without `cardGroups` (runs recorded before 2026-10-20) every node is a card, as before. `checkedByAI` and
+ * the model check's counts are per card too (the check answers once per card).
+ */
+export function knowledgeScore(run: KnowledgeRunLike, texts?: { source: string; canvas: readonly string[] }): KnowledgeScore {
+  const outcome = run.accounting?.outcome ?? {};
+  const count = (o: string) => Object.values(outcome).filter((x) => x === o).length;
+  const omittedBy = new Map((run.omitted ?? []).map((o) => [o.unit, o.reason] as const));
+  const critical = run.accounting?.critical ?? {};
+  const criticalSilentlyOmitted = Object.keys(critical).filter((u) => outcome[u] === "omitted" && !["duplicate", "superseded"].includes(omittedBy.get(u) ?? "")).length;
+  const headOf = new Map((run.cardGroups ?? []).flatMap((members) => members.map((m) => [m, members[0]!] as const)));
+  const head = (id: string) => headOf.get(id) ?? id;
+  const cards = new Set([...Object.keys(run.cites ?? {}), ...Object.keys(run.reviews ?? {})].map(head));
+  // Each card's reviews (one per node of it that has one); a card is in Needs review when any of them is open.
+  const byCard = new Map<string, NonNullable<KnowledgeRunLike["reviews"]>[string][]>();
+  for (const [id, r] of Object.entries(run.reviews ?? {})) byCard.set(head(id), [...(byCard.get(head(id)) ?? []), r]);
+  const reviews = [...byCard.values()].map((rs) => ({
+    reasons: rs.flatMap((r) => (r.resolved ? [] : r.reasons)),
+    checked: rs.find((r) => r.checked)?.checked,
+  }));
+  const cardsNeedsReview = reviews.filter((r) => r.reasons.length > 0).length;
+  const wordCount = (t: string) => t.split(/\s+/).filter(Boolean).length;
+  const sourceWords = texts ? wordCount(texts.source) : 0;
+  return {
+    units: run.units?.units.length ?? Object.keys(outcome).length,
+    represented: count("represented"),
+    omitted: count("omitted"),
+    needsReview: count("needs_review"),
+    pending: Object.values(run.accounting?.state ?? {}).filter((s) => s === "pending").length,
+    cards: cards.size,
+    cardsNeedsReview,
+    cardsNeedsReviewPct: cards.size ? Math.round((cardsNeedsReview / cards.size) * 1000) / 10 : 0,
+    checkedByAI: reviews.filter((r) => r.checked?.verdict === "supported").length,
+    aiChecked: reviews.filter((r) => r.checked || r.reasons.some((x) => x.startsWith(NO_ANSWER))).length,
+    aiPartly: reviews.filter((r) => r.checked?.verdict === "partly").length,
+    aiNotSupported: reviews.filter((r) => r.checked?.verdict === "not_supported").length,
+    aiUnanswered: reviews.filter((r) => !r.checked && r.reasons.some((x) => x.startsWith(NO_ANSWER))).length,
+    hinted: new Set((run.hints ?? []).flatMap((h) => (h.card && h.code !== "longer_than_source" ? [head(h.card)] : []))).size,
+    longerThanSource: new Set((run.hints ?? []).flatMap((h) => (h.card && h.code === "longer_than_source" ? [head(h.card)] : []))).size,
+    criticalSilentlyOmitted,
+    exactMissing: (run.flags ?? []).filter((f) => f.code === "exact_missing").length,
+    ...(texts && sourceWords ? { wordsSharePct: Math.round((texts.canvas.reduce((n, t) => n + wordCount(t), 0) / sourceWords) * 1000) / 10 } : {}),
+    reasonsByCode: Object.fromEntries(
+      [...(run.flags ?? []).reduce((m, f) => m.set(f.code, (m.get(f.code) ?? 0) + 1), new Map<string, number>())].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])),
+    ),
+  };
+}
+
+/** The model check's "no answer" reason, as `verdictFlags` words it. */
+const NO_ANSWER = "checked by AI: no answer";
+
+/** Measures where more is worse; the rest (represented) are worse when fewer. */
+const WORSE_WHEN_MORE: readonly (keyof KnowledgeScore)[] = ["omitted", "needsReview", "pending", "cardsNeedsReview", "cardsNeedsReviewPct", "aiPartly", "aiNotSupported", "aiUnanswered", "longerThanSource", "criticalSilentlyOmitted", "exactMissing", "wordsSharePct"];
+
+/** The same fixture run several times (§7.3: 3 per approved live check): the median and the worst run, measure by measure. */
+export function knowledgeSummary(runs: readonly KnowledgeScore[]): { runs: number; median: KnowledgeScore; worst: KnowledgeScore } {
+  // Numeric measures only (`reasonsByCode` is a breakdown, summed by `reasonsAcross` instead).
+  const keys = (Object.keys(runs[0] ?? {}) as (keyof KnowledgeScore)[]).filter((k) => typeof runs[0]![k] === "number");
+  const pick = (f: (ns: number[], key: keyof KnowledgeScore) => number) =>
+    Object.fromEntries(keys.map((k) => [k, f(runs.map((r) => Number(r[k] ?? 0)), k)])) as unknown as KnowledgeScore;
+  return {
+    runs: runs.length,
+    median: pick((ns) => median(ns)),
+    worst: pick((ns, k) => (WORSE_WHEN_MORE.includes(k) ? Math.max(...ns) : Math.min(...ns))),
+  };
+}
+
+/** Needs review reasons by code over several runs, summed, most frequent first. */
+export function reasonsAcross(runs: readonly KnowledgeScore[]): [string, number][] {
+  const sum = new Map<string, number>();
+  for (const r of runs) for (const [code, n] of Object.entries(r.reasonsByCode ?? {})) sum.set(code, (sum.get(code) ?? 0) + n);
+  return [...sum].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+
+/** The model check's verdicts over a set of runs (OD5b): the G2-type numbers a live run can give (per kind it can't). */
+export interface ModelCheckCounts {
+  /** Whether the check answered on every run that had cards. */
+  ranEveryRun: boolean;
+  cards: number;
+  supported: number;
+  partly: number;
+  notSupported: number;
+  unanswered: number;
+}
+
+/**
+ * Which gates a set of runs meets (§9): G1's card share on the median; G3 and G4 on every run. `modelCheck` counts the
+ * model check's verdicts (reported, not a gate: G2's planted-distortion recall needs the labelled set or mock fixtures).
+ */
+export function knowledgeGates(runs: readonly KnowledgeScore[]): { g1CardsInReview: boolean; g3NoSilentCriticalOmission: boolean; g4NoExactMissing: boolean; modelCheck: ModelCheckCounts } {
+  const { median: m } = knowledgeSummary(runs);
+  const total = (k: "aiChecked" | "checkedByAI" | "aiPartly" | "aiNotSupported" | "aiUnanswered") => runs.reduce((n, r) => n + (r[k] ?? 0), 0);
+  return {
+    g1CardsInReview: m.cardsNeedsReviewPct <= 15,
+    g3NoSilentCriticalOmission: runs.every((r) => r.criticalSilentlyOmitted === 0),
+    g4NoExactMissing: runs.every((r) => r.exactMissing === 0),
+    modelCheck: {
+      ranEveryRun: runs.every((r) => r.cards === 0 || (r.aiChecked ?? 0) > 0),
+      cards: total("aiChecked"),
+      supported: total("checkedByAI"),
+      partly: total("aiPartly"),
+      notSupported: total("aiNotSupported"),
+      unanswered: total("aiUnanswered"),
+    },
+  };
+}
+
+/** Just the three release gates (G1, G3, G4) of `knowledgeGates`, for an assertion. */
+export function gatesMet(runs: readonly KnowledgeScore[]): { g1CardsInReview: boolean; g3NoSilentCriticalOmission: boolean; g4NoExactMissing: boolean } {
+  const { g1CardsInReview, g3NoSilentCriticalOmission, g4NoExactMissing } = knowledgeGates(runs);
+  return { g1CardsInReview, g3NoSilentCriticalOmission, g4NoExactMissing };
+}
+
+/** Report v2 of one fixture's runs, as Markdown: median and worst, then each run. */
+export function knowledgeSummaryMarkdown(title: string, runs: readonly KnowledgeScore[]): string {
+  const { median: m, worst: w } = knowledgeSummary(runs);
+  const gates = knowledgeGates(runs);
+  const yes = (b: boolean) => (b ? "met" : "**not met**");
+  const row = (label: string, s: KnowledgeScore) =>
+    `| ${label} | ${s.represented} | ${s.omitted} | ${s.needsReview} | ${s.pending} | ${s.cardsNeedsReview}/${s.cards} (${s.cardsNeedsReviewPct}%) | ${s.aiChecked ?? 0}: ${s.checkedByAI} / ${s.aiPartly ?? 0} / ${s.aiNotSupported ?? 0} / ${s.aiUnanswered ?? 0} | ${s.hinted} | ${s.criticalSilentlyOmitted} | ${s.exactMissing} | ${s.wordsSharePct ?? "–"} |`;
+  const mc = gates.modelCheck;
+  const reasons = reasonsAcross(runs);
+  return [
+    `# ${title} — distil, ${runs.length} runs (report v2)`,
+    "",
+    `G1 cards in Needs review, median ≤ 15%: ${yes(gates.g1CardsInReview)} · G3 no critical unit silently omitted, every run: ${yes(gates.g3NoSilentCriticalOmission)} · G4 no exact detail missing, every run: ${yes(gates.g4NoExactMissing)}`,
+    "",
+    `Model check ("checked by AI", OD5b), all runs: ${mc.cards} cards checked: ${mc.supported} supported, ${mc.partly} partly, ${mc.notSupported} not supported, ${mc.unanswered} unanswered${mc.ranEveryRun ? "" : " (**did not run on every run**)"}`,
+    "",
+    "| Run | Represented | Omitted | Needs review | Pending | Cards in review | Checked by AI: cards: supported / partly / not / no answer | Hinted | Critical silently omitted | Exact missing | Canvas words % |",
+    "|---|---|---|---|---|---|---|---|---|---|---|",
+    row("median", m),
+    row("worst", w),
+    ...runs.map((r, i) => row(String(i + 1), r)),
+    "",
+    `Needs review reasons by code, all runs: ${reasons.length ? reasons.map(([c, n]) => `${c} ${n}`).join(", ") : "none"}`,
     "",
   ].join("\n");
 }

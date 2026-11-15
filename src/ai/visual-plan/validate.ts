@@ -20,8 +20,10 @@
  */
 import { parseChart } from "@/domain/content/chartData";
 import type { z } from "zod";
-import { planEnvelopeSchema, visualNodeSchema, visualPlanSchema, visualRelationshipSchema } from "./schema";
+import type { DistilReply, Omission, UnitId, UnitLabels } from "@/ai/fidelity/contracts";
+import { citesSchema, DISTIL_LIMITS, omissionSchema, planEnvelopeSchema, visualNodeSchema, visualPlanSchema, visualRelationshipSchema } from "./schema";
 import { clip, convertNode, foldOverflow, repairEntry, salvage, type OverflowDetail, type RepairLink } from "./repair";
+import { normalizeSubGroups, type Organisation } from "./grouping";
 import { TEXT_LIMITS } from "./schema";
 import { templateFor, type VisualTemplateDefinition } from "./templates";
 import type { VisualNode, VisualPlan, VisualRelationship } from "./types";
@@ -68,8 +70,10 @@ const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? o
  * section" page, and counted first against the node limits. `options.stored`: the plan is one an earlier version stored, whose nodes are
  * all already there: its overflow is not folded again and its frames are not dropped past `MAX_GROUPS` (the limits applied when it was
  * made; a merge can add sections to it, each its own frame, and dropping their titles on the next update proposed removing them).
+ * `options.organisation` (organisation-layout plan §3.0, §3.2): "v2" keeps one level of sub-groups inside a section (`normalizeSubGroups`);
+ * "v1" (default) makes every nested group top-level, exactly as before.
  */
-export function validateVisualPlan(input: unknown, options: { existing?: ReadonlySet<string>; stored?: boolean } = {}): ValidatedVisualPlan {
+export function validateVisualPlan(input: unknown, options: { existing?: ReadonlySet<string>; stored?: boolean; organisation?: Organisation } = {}): ValidatedVisualPlan {
   const envelope = planEnvelopeSchema.safeParse(input);
   if (!envelope.success) throw new InvalidVisualPlanError(issuesOf(envelope.error));
   const template = templateFor(envelope.data.template);
@@ -77,7 +81,7 @@ export function validateVisualPlan(input: unknown, options: { existing?: Readonl
   const losses: string[] = [];
 
   const repaired = sanitizeNodes(envelope.data.nodes, template, warnings, losses);
-  let nodes = dropUnreadableCharts(sanitizeGroups(repaired.nodes, warnings, options.stored ? Infinity : MAX_GROUPS), warnings);
+  let nodes = dropUnreadableCharts(sanitizeGroups(repaired.nodes, warnings, options.stored ? Infinity : MAX_GROUPS, options.organisation ?? "v1"), warnings);
   const overflow = options.stored ? { nodes, folded: 0, details: [] as OverflowDetail[], existingCounted: 0 } : foldOverflow(nodes, template, NODE_CAPS, options.existing);
   if (overflow.folded) {
     const kind = template.allowedNodeTypes.includes("page") ? "pages" : "blocks";
@@ -219,13 +223,20 @@ function sanitizeNodes(raw: readonly unknown[], template: VisualTemplateDefiniti
  * live group is dropped (the node becomes top-level), groups past `MAX_GROUPS` are dropped (their members become
  * top-level), and a group left with no members is dropped — an empty frame shows nothing.
  */
-function sanitizeGroups(nodes: readonly VisualNode[], warnings: string[], maxGroups: number): VisualNode[] {
+function sanitizeGroups(nodes: readonly VisualNode[], warnings: string[], maxGroups: number, organisation: Organisation = "v1"): VisualNode[] {
   const without = (n: VisualNode): VisualNode => {
     const { parent: _parent, ...rest } = n;
     return rest as VisualNode;
   };
+  const v2 = organisation === "v2";
   let groups = 0;
   const liveGroups = new Set<string>();
+  // v2: a group may sit in a top-level group (a sub-group, plan §3.2); its parent must be a live group with no parent of its own.
+  const topLevel = new Set<string>();
+  if (v2) {
+    let counted = 0;
+    for (const n of nodes) if (n.type === "group" && ++counted <= maxGroups && n.parent === undefined) topLevel.add(n.id);
+  }
   let out = nodes.flatMap((n): VisualNode[] => {
     if (n.type !== "group") return [n];
     if (++groups > maxGroups) {
@@ -234,6 +245,7 @@ function sanitizeGroups(nodes: readonly VisualNode[], warnings: string[], maxGro
     }
     liveGroups.add(n.id);
     if (n.parent === undefined) return [n];
+    if (v2 && n.parent !== n.id && topLevel.has(n.parent)) return [n];
     warnings.push(`group "${n.id}": groups can't be nested, so it was made top-level`);
     return [without(n)];
   });
@@ -242,6 +254,12 @@ function sanitizeGroups(nodes: readonly VisualNode[], warnings: string[], maxGro
     warnings.push(`node "${n.id}": its group "${n.parent}" isn't in the plan, so it was made top-level`);
     return without(n);
   });
+  if (v2) {
+    // Sub-groups too small or past the cap join their section; every card is kept (`normalizeSubGroups`).
+    const normalized = normalizeSubGroups(out, Number.isFinite(maxGroups) ? { maxGroups } : {});
+    out = normalized.nodes;
+    warnings.push(...normalized.warnings);
+  }
   const occupied = new Set(out.flatMap((n) => (n.parent ? [n.parent] : [])));
   return out.filter((n) => {
     if (n.type !== "group" || occupied.has(n.id)) return true;
@@ -304,6 +322,101 @@ function checkTemplateFit(template: VisualTemplateDefinition, nodes: readonly Vi
   }
   const missing = (template.recommendedRoles ?? []).filter((r) => !nodes.some((n) => n.role === r));
   if (missing.length) warnings.push(`no node has role ${missing.map((r) => `"${r}"`).join(" / ")}, which "${template.name}" is usually built around`);
+}
+
+// ---------------------------------------------------------------- distil replies (knowledge-notes-plan §4.4, WP1.5)
+
+/** Node types that hold no idea of their own, so they cite nothing: a section's frame and a structural heading. */
+const UNCITED_TYPES: ReadonlySet<string> = new Set(["group", "heading"]);
+
+/** A label as the model may write it ("[p2.3]", "T1.R4", " L1.2 ") in the form `labelSource` gives it ("P2.3", "T1.r4"). */
+function normalizeLabel(label: string): string {
+  return label
+    .replace(/[[\]\s]/g, "")
+    .replace(/^[a-z]/, (c) => c.toUpperCase())
+    .replace(/\.R(?=\d)/, ".r");
+}
+
+const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+
+/**
+ * What one section's distil reply cites and omits (`DistilReply`), read from the raw reply **before** references are
+ * expanded and before `validateVisualPlan` (which keeps neither field). Labels are mapped to unit ids through
+ * `source.labels`; a whole block's number ("P2", or a node placed by reference) stands for all of its units
+ * (`source.blockUnits`).
+ *
+ * Lenient, never throwing: a missing or malformed part is listed in `problems` and sets `needsReview` — the section
+ * then degrades to Needs review, it never fails generation. That is:
+ * - a content node (not a frame, heading, analysis node or block placed by reference) with no `cites`;
+ * - `cites` that isn't a list of labels, or names a label this section doesn't have (the other labels still count);
+ * - `metadata.omitted` that isn't a list, an entry without a known unit or a listed reason, or a `duplicate` of an
+ *   unknown unit (kept without `of`, so accounting sends it to review);
+ * - no `metadata.omitted` at all while some unit is left uncited (nothing omitted needs no list).
+ */
+export function readDistilReply(raw: unknown, source: { labels: UnitLabels; blockUnits?: Readonly<Record<string, readonly UnitId[]>> }): DistilReply {
+  const problems: string[] = [];
+  const flag = (problem: string) => problems.push(problem);
+  const cites: Record<string, UnitId[]> = {};
+  const omitted: Omission[] = [];
+  /** The units a label stands for: its unit, or every unit of a block named by its number; null when unknown. */
+  const unitsOf = (label: string): UnitId[] | null => {
+    const key = normalizeLabel(label);
+    const id = source.labels[key];
+    if (id) return [id];
+    const block = source.blockUnits?.[key];
+    return block?.length ? [...block] : null;
+  };
+
+  if (!isRecord(raw) || !Array.isArray(raw.nodes)) {
+    flag("the reply has no nodes to read citations from");
+    return { cites, omitted, problems, needsReview: true };
+  }
+  raw.nodes.forEach((n, i) => {
+    if (!isRecord(n)) return;
+    const id = typeof n.id === "string" && n.id.trim() ? n.id : `node ${i}`;
+    const ref = [n.ref, n.sourceRef, n.source_ref, isRecord(n.content) ? n.content.ref : undefined].find((v): v is string => typeof v === "string" && !!v.trim());
+    const ids: UnitId[] = [];
+    if (n.cites !== undefined) {
+      if (!citesSchema.safeParse(n.cites).success) flag(`node "${id}": "cites" isn't a list of unit labels`);
+      for (const label of Array.isArray(n.cites) ? n.cites.slice(0, DISTIL_LIMITS.citesPerNode) : []) {
+        if (typeof label !== "string" || !label.trim()) continue;
+        const units = unitsOf(label);
+        if (units) ids.push(...units);
+        else flag(`node "${id}": cites "${label}", which isn't a unit of this section`);
+      }
+    }
+    // A block placed by reference cites its own units.
+    if (ref) ids.push(...(source.blockUnits?.[normalizeLabel(ref)] ?? []));
+    const unique = [...new Set(ids)];
+    if (unique.length) cites[id] = unique;
+    else if (n.cites === undefined && !ref && n.origin !== "analysis" && !UNCITED_TYPES.has(String(n.type))) flag(`node "${id}" cites no source unit`);
+  });
+
+  const list = isRecord(raw.metadata) ? raw.metadata.omitted : undefined;
+  if (list === undefined) {
+    const cited = new Set(Object.values(cites).flat());
+    if (Object.values(source.labels).some((u) => !cited.has(u))) flag(`no "metadata.omitted" list, and some units are neither cited nor omitted`);
+  } else if (!Array.isArray(list)) {
+    flag(`"metadata.omitted" isn't a list`);
+  } else {
+    if (list.length > DISTIL_LIMITS.omitted) flag(`"metadata.omitted" lists over ${DISTIL_LIMITS.omitted} units; the rest were not read`);
+    list.slice(0, DISTIL_LIMITS.omitted).forEach((entry, i) => {
+      const parsed = omissionSchema.safeParse(entry);
+      if (!parsed.success) {
+        flag(`omission ${i}: not a {"unit", "reason"} with one of the listed reasons`);
+        return;
+      }
+      const units = unitsOf(parsed.data.unit);
+      if (!units) {
+        flag(`omission ${i}: "${parsed.data.unit}" isn't a unit of this section`);
+        return;
+      }
+      const of = parsed.data.of === undefined ? undefined : unitsOf(parsed.data.of);
+      if (parsed.data.of !== undefined && of?.length !== 1) flag(`omission ${i}: a duplicate of "${parsed.data.of}", which isn't one unit of this section`);
+      for (const unit of units) omitted.push({ unit, reason: parsed.data.reason, ...(of?.length === 1 ? { of: of[0]! } : {}) });
+    });
+  }
+  return { cites, omitted, problems, needsReview: problems.length > 0 };
 }
 
 /** Shortens an over-long title/summary; drops (never fails the plan for) metadata otherwise shaped wrong — a plan's title/summary are a nicety, not load-bearing. */

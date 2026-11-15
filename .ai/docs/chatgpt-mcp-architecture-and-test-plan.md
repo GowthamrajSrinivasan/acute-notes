@@ -232,3 +232,180 @@ No ChatGPT account/connector was available to this session and no tunnel was sta
 
 ## 7.7 Go / no-go for production architecture
 **Not decided here.** Prerequisites: (1) real-ChatGPT S1–S9 evidence, (2) security review of §3 and 7.6, (3) your approval before any Firebase resource is created. Recommended next step: run 7.5.
+
+## 7.8 Rehearsal over the secret URL (2026-11-13, local, no AI, no tunnel)
+
+`e2e/local/chatgptRehearsal.local.spec.ts`: the official MCP SDK client stands in for ChatGPT over the **same route
+ChatGPT's "No authentication" mode uses** (`/api/mcp/s/<token>`). It runs against a canvas made from golden case kn-01 by
+the local tier. It passes in about 12 s. Acceptance (user, 2026-11-13): the client reads the right Acute context and
+produces an intended, reviewable result without corrupting existing notes.
+
+| Scenario | Observed |
+|---|---|
+| Tools offered to a remote client | 42; repo-map tools withheld |
+| Read: `search_workspace` → `get_block` | Finds and reads the kn-01 note on the 24-hour window |
+| Grounded proposal (`create_block`, a study question) | `status: "proposed"`; no document changes until Accept |
+| A second write while one is under review | Refused: "The user is still reviewing this session's previous proposal on this canvas; ask them to accept or reject it first." |
+| Proposal survives a tab reload; the user accepts | One new block; every existing note byte-identical |
+| Failed write (unknown id) | `isError`: "No block or page preview with id … on the open canvas…"; nothing proposed or changed |
+| Old session after a tab reload | **HTTP 404** `-32003 "Session not found; initialize a new one."`, as the spec requires; a new session works after 249 ms |
+| Tab closed | `-32001 "Acute-Notes isn't connected. Open it in a browser and turn on MCP access for the workspace (⋮ → MCP access)."` |
+| New tab, same device | Serves the same secret URL after 483 ms |
+| Revoke | 401 |
+| **Stale target** | **Fails the acceptance condition.** `update_block` is proposed; the user edits that block while it waits; **Accept applies the remote text and drops the user's edit**. The review shows only "~1 updated", with no conflict warning; undo restores it. |
+
+**The stale-target defect, proposed fix (not built; it's in `ai/changes/**`, the integrator's and update engine's
+contract):**
+- When a proposal is made, record the target's content fingerprint on `update_block`.
+- On Accept, compare it with the live content, the way `resolveChangeSet` already does for `patch_block`.
+- If the target changed, show the existing conflict item ("changed since this was proposed: keep mine / use theirs")
+  instead of overwriting.
+- This also covers Visualize's own `update_block` after a user edit in the same window.
+
+### Stale-target fix (2026-11-15, built; integrator / `ai/changes` owner)
+
+Built offline, no AI calls. Code: `src/ai/changes/staleTarget.ts` (module doc is the contract).
+- **Baseline at proposal time.** `update_block` has `expectedFingerprint` (the target's `fingerprintOf` when proposed).
+  The MCP `update_block` tool sets it from the content it checked the call against. `PendingChanges.propose` and `merge`
+  stamp any that are missing from the open canvas (`registerBaselineReader`, registered by `ExcalidrawCanvas`), so
+  Update from new content, repo maps and every other producer get it too. Conflicts' `apply` updates are stamped as well.
+- **Comparison at Accept.** `resolveChangeSet` compares the baseline with the live fingerprint in the same synchronous task
+  as the write. A mismatch is not written. It becomes a `ConflictItem` with `changedSinceProposal`, and its `apply` is
+  re-baselined to what the user now sees, so "Use proposed" is checked again at its own Accept. The block already saying
+  exactly what was proposed is not a conflict.
+- **Conflict UI.** The review card reads "Edited since this update was proposed: using the proposal would replace your
+  edit", with **Keep mine** (writes nothing) and **Use proposed**.
+- **Atomicity.** One Accept is one transaction and one undo step, over the latest state. Every target that still matches
+  is written together. Every changed target is held back from that step and stays under review (`followUpSet`): it is
+  never dropped and never written without a decision. It keeps the operation id if nothing was written, otherwise it
+  gets `<op>.r1` (the written part's id is in the commit journal). The decision's Accept is its own undo step. A merged
+  set (repo-map parts) can't hold decisions, so a changed target there is skipped and reported (`target_changed`), and
+  its card's previous node is kept for "Update again".
+- **Legacy proposals** (persisted without a baseline): the content at proposal time can't be recovered, and a document's
+  `updatedAt` also moves on metadata-only writes, so a timestamp check can't prove "unchanged". On restore they get
+  `UNKNOWN_BASELINE`, so Accept asks Keep mine / Use proposed for each, unless the block already says what was proposed.
+- **Tests.** `staleTarget.test.ts` covers edits during review, immediately before Accept, after a reload, legacy restore,
+  both decisions, re-check after a second edit, multi-target and undo. Small additions are in the `pendingChanges`,
+  `unapplied` and `tools` tests. `e2e/local/staleTarget.local.spec.ts` no longer has its fail marks. The new
+  `e2e/local/mcpConflict.local.spec.ts` has 4 tests: 2 on the in-app path and 2 through the real MCP tool. The rehearsal's
+  step 7 is now an assertion that also resolves with Keep mine.
+- **Not run here (they turn MCP access on), left for the isolated `-Verify` run:** the staleTarget reload test,
+  mcpConflict's two "MCP tool" tests, and the rehearsal.
+- **update_shape (2026-11-15, built offline).** A shape's relabel gets the same protection. `update_shape` has an
+  optional `expectedFingerprint` (`fingerprintShape`: kind + label). Reconciliation stamps it from the shape it planned
+  against (`shapeBaseline` in `reconcile/update.ts` and `mapSection.ts`, so repo maps via MCP `upsert_map_section` too),
+  and the `propose`/`merge` fill-in stamps the rest (`liveFingerprints` now reads shapes). At Accept,
+  `ChangeSetCanvas.shapeOf` is compared in the same step as the write. A mismatch gives the same Keep mine / Use proposed
+  card (a merged repo-map set reports `target_changed`). A label that already reads as proposed is not a conflict.
+  Legacy stored relabels get `UNKNOWN_BASELINE`. Tests: 7 in `staleTarget.test.ts`, plus one each in `update.test.ts`
+  and `repoMap.test.ts` (MCP protocol, in memory), plus the in-app e2e `staleTarget.local.spec.ts` "update_shape" (no MCP
+  access).
+- **Still without a baseline** (they overwrite or delete what the user may have changed since the proposal):
+  `update_connection` (MCP `update_connection`, `upsert_map_section` re-type), `remove` (`delete_object`,
+  `delete_connection`, `upsert_map_section`/`remove_map_nodes`), `update_node` (`record_decision`, `update_knowledge`,
+  `annotate`, `sync_session`), `set_lens` (`link_lens_detail`), `update_frame` with `name` (`upsert_map_section`), and
+  `move` (`move_object`, `tidy_map_section`). `restore` (`revert_agent_changes`) has its own conflict check.
+
+## 7.9 Handover: the real ChatGPT run (gated; needs the user interactively)
+
+**Gate (user, 2026-11-13):** don't expose the endpoint until the stale-target fix is verified. That means
+`e2e/local/staleTarget.local.spec.ts` passes with its `test.fail()` marks removed (P0 request in
+knowledge-notes-lanes.md). `scripts/chatgpt-mcp-session.ps1` enforces this: `-Start` refuses while any test there is
+still marked. The rehearsal (7.8) validates the protocol path only, not ChatGPT's own connection and tool behaviour.
+
+**The run must establish three things:**
+1. ChatGPT discovers and calls the intended tools (S1–S3, S7).
+2. It gets the right canvas and source context back, citations included.
+3. A proposal survives review, **and an intervening user edit isn't overwritten**: it must show the conflict.
+
+**Steps:**
+1. `powershell -File scripts/chatgpt-mcp-session.ps1 -Check`: ngrok, dev server, gate.
+2. Make the test workspace in the app (a throwaway workspace): Visualize the text of
+   `evaluation/knowledge-notes/cases/kn-01-idempotency-keys/source.md` and Accept.
+3. `… -Start` (add `-OAuth` for S4–S6). It opens the tunnel and writes a marked `.env.local` block. Restart `npm run dev`.
+4. In the app: ⋮ → MCP access → **On**, paste the tunnel address, **Create secret URL** → Copy.
+5. In ChatGPT: Settings → Apps → Advanced → Developer mode → add a custom MCP server, "No authentication", using the secret
+   URL. In a chat:
+   - "Search my Acute workspace for idempotency keys and tell me the expiry rule, with its source." Check that the 24-hour
+     rule comes back from the right note.
+   - "Add a study question about retrying a payment after 25 hours." A proposal appears. **Before accepting, edit that
+     block in the app**; for the update case, ask ChatGPT to update an existing note instead. Accept: expect the conflict,
+     Keep mine / Use proposed, never a silent overwrite.
+   - Ask for a second change before accepting: expect the refusal.
+   - Reload the app tab, then ask again (S9). Close the tab and ask (S8).
+6. Record what ChatGPT showed for each step in 7.4 (secrets redacted).
+7. **Teardown, same sitting:** in the app, ⋮ → MCP access → **Revoke**. Then `… -Stop`, which stops ngrok and removes the
+   `.env.local` block. Restart `npm run dev`.
+
+## 7.10 AI-host fallback gate (2026-11-15)
+
+**User decision:** the unauthenticated Copilot identity fallback is a hard gate for public MCP exposure.
+**Policy (built):** in `AI_HOST_MODE` "local" (the default), a request with no token and no BYOK may run as this
+machine's logged-in Copilot user only when it is demonstrably local (`src/app/api/ai/localTrust.ts`, used by
+`aiHost.ts` `resolveHostInput` and `models/route.ts`): `Host` is `localhost`/`127.0.0.1`/`[::1]` (any port);
+`Origin`/`Referer`, if present, are loopback (`Origin: null` refused); no `forwarded`, `x-real-ip`, `x-original-host`,
+`x-forwarded-server`, `via` or `ngrok-*` header; `x-forwarded-for`/`x-forwarded-host`, if present, loopback only.
+Otherwise 403 `{ kind: "auth" }` before any runtime or model call. Why loopback values are allowed in
+`x-forwarded-*`: Next.js 16 fills them on every request (`??=`, from the socket address and `Host`;
+`next/dist/server/base-server.js`), so a blanket ban would refuse the app itself, while a proxy's own values survive
+and a LAN client is caught by its socket address. Token and BYOK requests and server mode are unchanged; `/api/ai/decide`
+has no ambient key at all. Not detectable: a raw TCP forwarder that adds no headers (e.g. `ssh -R`) — hence the gate
+still requires a loopback-only listener and `-Start` still writes `AI_HOST_MODE=server`.
+
+**Tests:** `src/app/api/ai/localTrust.test.ts` (81; runtime and `hostDecide` mocked to throw on any unexpected call):
+13 tunnel/proxy/LAN shapes refused on run, stream and models (403) and decide (401), runtime never called; loopback
+(incl. Next's own forwarding headers) allowed; tunnel requests with a token or BYOK allowed; server mode 401 as before.
+**Gate:** `scripts/chatgpt-mcp-session.ps1` fingerprints `src/app/api/ai` too; `-Verify` runs these tests (vitest JSON,
+`test-results/mcp-gate/vitest.json`) and fails on any failure or fewer than 81 passed; `-Check` prints the result; a
+record without `aiHostGate` is stale.
+
+**MCP → AI runtime:** no MCP route (`/api/mcp`, `/api/mcp/s/<token>`, `bridge`, `access`) imports the AI host. The one
+indirect path is the `import_content` tool (`src/mcp/tools/ingestTools.ts`): it runs in the app tab with the tab's AI
+runtime, which calls `/api/ai/*` from localhost and so passes this check. It is served only to non-remote sessions
+(`src/mcp/server.ts`; `remote` = not a bearer credential or `Host` not loopback, `src/mcp/bridge/http.ts`), needs the
+per-workspace "Allow AI imports" (default off) and `confirm: true`. Secret-URL (ChatGPT) and OAuth sessions are always
+remote. Residual for the `src/mcp` owner: `isLoopbackHost` ignores `x-forwarded-*`, so a bearer session through a tunnel
+that rewrites `Host` to localhost (ngrok `--host-header=rewrite`; the script doesn't use it) would count as local —
+reuse `nonLocalReason` there. Also reachable but not AI: `/api/embed/check` fetches any http(s) URL server-side.
+
+
+**MCP local-session check closed (integrator, 2026-11-15):**
+- **The gap:** `src/mcp/bridge/http.ts` marked a bearer session local on a loopback `Host` alone. A tunnel that rewrites `Host` (ngrok `--host-header=rewrite`) could therefore get the local tool set, including `import_content`, which runs the tab's AI.
+- **The fix:** `remote` now also holds when `nonLocalReason(req.headers)` finds forwarding headers.
+- **Test:** "is marked remote when a tunnel rewrote Host to localhost" in `bridge/compat.test.ts`.
+- **Still open for the security review:** `/api/embed/check` fetches any http(s) URL server-side and can be reached through a tunnel. That is a server-side request forgery (SSRF) risk during exposure.
+
+## 7.11 HTTP exposure filter (2026-11-15)
+
+**User decision:** for the restricted ChatGPT MCP test the tunnel exposes only the MCP endpoint, not the app.
+**Built:** `src/proxy.ts` (Next 16 Proxy, formerly middleware; no matcher, so it runs for pages, `_next` assets and API
+routes) calls `exposureRefusal` in `src/config/httpExposure.ts`. A request that is not demonstrably local
+(`nonLocalReason`, §7.10) gets a bare `404 Not Found` before any route code runs, unless it is on `EXTERNALLY_REACHABLE`:
+- `/api/mcp/s/<token>` (token `[A-Za-z0-9_-]{1,200}`), methods POST, GET, DELETE. GET is let through so the handler
+  can answer its Streamable-HTTP 405; a 404 would read to a client as "session gone".
+- Only while `isMcpOAuthEnabled()` (off for this test): `/api/mcp` (POST/GET/DELETE; bearer clients are local, so
+  from outside it only serves OAuth tokens), `/.well-known/oauth-protected-resource[/…]` and
+  `/.well-known/oauth-authorization-server[/…]` (GET), `/oauth/authorize` (GET/POST), `/oauth/token` and
+  `/oauth/register` (POST).
+
+Everything else from outside is 404: pages, `/_next/*`, `public/` files, `/api/ai/*`, `/api/embed/check`,
+`/api/import/chat-share`, and the tab's own `/api/mcp/bridge` and `/api/mcp/access`. The tab talks to the server on
+loopback, so it is unaffected. Local requests pass unchanged. Opt-out: `ACUTE_HTTP_EXPOSURE=public`, for a
+deliberately public deployment only. `apphosting.yaml` sets it so the hosted app keeps serving. Any other value,
+including unset, means local-only (fail closed).
+**Defence in depth:** `/api/embed/check` also returns 404 to non-local requests, before it fetches anything. Full SSRF
+hardening (private and link-local ranges, redirects into them, DNS rebinding) is **still a tracked defect**. This only
+removes outside reachability.
+**Tests:** `src/config/httpExposure.test.ts` (pure allowlist, look-alike paths, OAuth on/off, public opt-out),
+`src/proxy.test.ts` (handler with ngrok Host, `x-forwarded-for: 203.0.113.7`, `x-forwarded-host`, `forwarded`, LAN Host),
+`src/app/api/embed/check/route.test.ts` (no fetch on non-local), and `e2e/local/exposure.local.spec.ts`. The e2e sends
+tunnel-like headers to the loopback dev server: every blocked path gets the filter's 404, the bogus secret URL reaches
+the MCP handler (401/403/429), and local routes still serve.
+**Residual risks:**
+- In `next dev`, Next's own dev endpoints run before the Proxy and cannot be filtered in-app. Probed through
+  tunnel-like headers: `/__nextjs_original-stack-frames` gives 400, `/__nextjs_source-map` gives 204 and
+  `/__nextjs_launch-editor` gives 400 (not 404). Mitigate at the tunnel with an ngrok traffic policy that allows only
+  `/api/mcp/s/` paths, or run the test against `next start`.
+- A raw TCP forwarder that adds no headers and lets the client choose `Host` (`ssh -R`) looks local. The gate's
+  loopback-only listener requirement still applies.
+- A client that sends `Host: localhost` directly is caught only by the `x-forwarded-for` Next fills from the socket.

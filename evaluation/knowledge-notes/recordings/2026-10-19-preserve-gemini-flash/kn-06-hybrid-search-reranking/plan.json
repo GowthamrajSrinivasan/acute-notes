@@ -1,0 +1,544 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "u0_h1",
+      "role": "title",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant § heading#0",
+      "type": "heading",
+      "content": {
+        "text": "Hybrid search and reranking in the Harbor assistant"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "Hybrid search and reranking in Harbor assistant for RAG system."
+      }
+    },
+    {
+      "id": "g0",
+      "role": "notes",
+      "importance": "high",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Why retrieval decides the answer § group#0",
+      "type": "group",
+      "content": {
+        "label": "Why retrieval decides the answer",
+        "arrangement": "grid",
+        "takeaway": "Retrieval quality is paramount for RAG system accuracy, as the LLM only uses provided passages."
+      }
+    },
+    {
+      "id": "u1_n1",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Why retrieval decides the answer § P1",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "A retrieval-augmented generation (RAG) system answers a question in two stages: it first retrieves passages from a document collection, then asks a language model to write an answer from those passages. The model never sees the rest of the collection, so the answer can only be as good as the passages that retrieval hands it. This note describes the retrieval design of the Harbor support assistant, an internal tool that answers questions over about 40,000 help-centre articles and release notes."
+      }
+    },
+    {
+      "id": "u1_ax1",
+      "title": "Main Point",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Why retrieval decides the answer § text#0",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The core idea is that the quality of a RAG system's answer is directly limited by the quality of the retrieved passages, as the language model only processes the provided context. This section introduces the retrieval design of the Harbor support assistant, an internal tool, as a case study."
+      }
+    },
+    {
+      "id": "g1",
+      "role": "flow",
+      "importance": "high",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~6af39cbd~ing ⨁ Hybrid search and reranking in the Harbor assistant › Generation § group#0",
+      "type": "group",
+      "content": {
+        "label": "Hybrid search and reranking stages",
+        "arrangement": "chain",
+        "takeaway": "Hybrid search combines keyword and vector retrieval, reranking, and LLM generation for answers."
+      }
+    },
+    {
+      "id": "u2_n1",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~d64d6d61~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § step#1",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Keyword retrieval with BM25"
+      }
+    },
+    {
+      "id": "u2_n2",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~1189f313~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § text#0",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Keyword retrieval scores a passage by the query terms it contains, weighted so that rare terms count for more than common ones. BM25 is the usual scoring function for this; it also dampens the effect of a term repeated many times and corrects for passage length. BM25 needs no training and is cheap to run, which is why it remains the baseline. Its strength is exact matching. A query for the error code `E-4012` or the setting `sync.retry_window` finds the passages that contain those strings, even when they appear only once in the whole collection. Its weakness is vocabulary mismatch: a user who asks \"why does my upload stall\" will not match a passage that only says \"transfers pause when the connection drops\"."
+      }
+    },
+    {
+      "id": "u2_n3",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~d34d68a8~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § step#2",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Vector retrieval with embeddings"
+      }
+    },
+    {
+      "id": "u2_n4",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~1089f180~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § text#1",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Vector retrieval turns the query and every passage into embeddings, lists of numbers produced by an encoder model, and returns the passages whose embeddings lie closest to the query's. Passages that mean the same thing end up close together even when they share no words, so the stalled-upload question can find the passage about paused transfers. Embeddings are weaker on exact codes and identifiers. To the encoder, `E-4012` and `E-4021` look almost the same, and a rare product name may be split into fragments that carry little meaning. In our tests, vector retrieval alone missed the correct passage for 31 of 50 queries that consisted mainly of an error code. Embeddings must also be recomputed whenever the encoder changes, which for this collection takes about 6 hours."
+      }
+    },
+    {
+      "id": "u2_n5",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~d44d6a3b~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § step#3",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · Candidate generation (Hybrid Search)"
+      }
+    },
+    {
+      "id": "u2_n6",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~1389f639~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § text#2",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Hybrid search runs both retrievers on the same query and merges their result lists. Hybrid search can improve recall when lexical and semantic signals are complementary, that is, when each retriever finds relevant passages that the other misses. If both retrievers tend to return the same passages, or if one of them is poorly tuned for the collection, merging adds latency without adding much. BM25 scores and vector similarities sit on different scales, so they cannot simply be added together. We use Reciprocal Rank Fusion (RRF), which ignores the raw scores and uses only the rank of each passage in each list. A passage receives `1/(k + rank)` from every list it appears in, and the contributions are summed. We set `k = 60`, a common default; a larger k flattens the difference between the top ranks and the lower ones."
+      }
+    },
+    {
+      "id": "u2_n7",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~1289f4a6~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § text#3",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Each retriever returns its top 50 passages, so the fused list holds at most 100 candidates, and usually fewer because some passages appear in both lists. This stage is tuned for recall rather than precision: the goal is to make sure the right passage is somewhere in the list, not that it comes first. Raising the limit to 100 per retriever put the right passage in the list slightly more often, but it roughly doubled the time spent reranking, so we kept 50."
+      }
+    },
+    {
+      "id": "u2_n8",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~d94d721a~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § step#4",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Reranking"
+      }
+    },
+    {
+      "id": "u2_n9",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~1589f95f~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § text#4",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "A reranker then rescores the fused candidates. We use a cross-encoder, a model that reads the query and one passage together and outputs a single relevance score. Because it sees both texts at once, it judges relevance far more accurately than either retriever. That accuracy is expensive, so the cross-encoder runs only on the fused candidates, never on the whole collection. After reranking we keep the top 8 passages."
+      }
+    },
+    {
+      "id": "u2_n10",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~1489f7cc~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § text#5",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Reranking improves the precision of the top results, but it does not guarantee that the final answer is correct. The reranker can only reorder what retrieval found: if the right passage is not among the candidates, reranking cannot recover it. A passage can also be highly relevant and still out of date, which no relevance score will detect."
+      }
+    },
+    {
+      "id": "u2_n11",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~da4d73ad~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § step#5",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "5 · Generation"
+      }
+    },
+    {
+      "id": "u2_n12",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~1789fc85~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § text#6",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "The language model receives the question and the top 8 passages, and is instructed to answer only from them and to cite the passages it used. If none of the passages addresses the question, it should say so rather than answer from its general knowledge. Citations let a reader check each claim against its passage, but they do not show whether the passage itself is current. For example, asked \"What does E-4012 mean?\", the assistant retrieves the error-code table through BM25 and the article on resumable uploads through vector search, and the reranker keeps both in the top 8, so the answer can define the code and explain the fix."
+      }
+    },
+    {
+      "id": "u2_a1",
+      "title": "Overall Process",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~1689faf2~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § text#7",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This flow describes a hybrid search system that combines keyword and vector retrieval, reranking, and a language model for answer generation. The goal is to leverage the strengths of both retrieval methods to improve recall and then refine precision with a reranker before generating a final answer."
+      }
+    },
+    {
+      "id": "u2_a2",
+      "title": "Key Decisions/Trade-offs",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~1989ffab~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § text#8",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "- **Candidate Limit:** Keeping 50 passages per retriever (total 100 candidates) balances recall with reranking time.\n- **RRF k-value:** `k=60` is used for Reciprocal Rank Fusion, a common default that influences how top ranks are weighted.\n- **Reranker Scope:** The expensive cross-encoder is only run on the fused candidates, not the entire collection, to manage cost."
+      }
+    },
+    {
+      "id": "u2_a3",
+      "title": "Potential Limitations",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25 ⨁ Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings ⨁ Hybrid search and reranking in the H~1889fe18~king ⨁ Hybrid search and reranking in the Harbor assistant › Generation § text#9",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "- **Reranker Dependency:** If the correct passage isn't in the initial candidate list, the reranker cannot recover it.\n- **Passage Freshness:** Relevance scores do not detect outdated information, which could lead to incorrect answers from the language model.\n- **Embedding Recomputation:** Recomputing embeddings takes 6 hours, indicating a potential bottleneck for frequent encoder updates."
+      }
+    },
+    {
+      "id": "g2",
+      "role": "metrics",
+      "importance": "low",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost § group#0",
+      "type": "group",
+      "content": {
+        "label": "Relevance, latency and cost",
+        "arrangement": "compare",
+        "takeaway": "Hybrid + reranker offers highest relevance but at significantly higher latency and cost."
+      }
+    },
+    {
+      "id": "u3_n1",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost § text#0",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Every stage buys relevance with time or money. On an internal test set of 400 questions, we measured:"
+      }
+    },
+    {
+      "id": "u3_n2",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost § table#0",
+      "parent": "g2",
+      "type": "table",
+      "content": {
+        "columns": [
+          "Configuration",
+          "Correct passage in top 8",
+          "Median latency",
+          "Cost per 1,000 queries"
+        ],
+        "rows": [
+          [
+            "BM25 only",
+            "61%",
+            "35 ms",
+            "$0.02"
+          ],
+          [
+            "Vector only",
+            "68%",
+            "60 ms",
+            "$0.10"
+          ],
+          [
+            "Hybrid (RRF)",
+            "79%",
+            "70 ms",
+            "$0.12"
+          ],
+          [
+            "Hybrid + reranker",
+            "88%",
+            "190 ms",
+            "$0.95"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "u3_a1",
+      "title": "Performance Analysis",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost § text#1",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The 'Hybrid + reranker' configuration offers the highest relevance (88%) but also incurs the highest latency (190 ms) and cost ($0.95 per 1,000 queries). The reranking step significantly increases both latency and cost."
+      }
+    },
+    {
+      "id": "u3_n3",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost § code#0",
+      "parent": "g2",
+      "type": "code",
+      "content": {
+        "language": "acute-chart",
+        "source": "{\"chartType\":\"bar\",\"categories\":[\"BM25 only\",\"Vector only\",\"Hybrid (RRF)\",\"Hybrid + reranker\"],\"series\":[{\"name\":\"Correct passage in top 8\",\"values\":[61,68,79,88]},{\"name\":\"Median latency\",\"values\":[35,60,70,190]},{\"name\":\"Cost per 1,000 queries\",\"values\":[0.02,0.10,0.12,0.95]}]}"
+      }
+    },
+    {
+      "id": "u3_n4",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost § text#2",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Reranking adds about 120 ms per query, most of it spent running the cross-encoder over up to 100 candidates, and it accounts for most of the cost increase. These figures come from one collection and one query set; a collection with fewer exact identifiers may see a smaller gain from BM25, and a different reranker will have a different latency. Teams with a strict latency budget can rerank fewer candidates, for example the top 30 of the fused list instead of all of them, at some cost in recall."
+      }
+    },
+    {
+      "id": "g3",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Summary § group#0",
+      "type": "group",
+      "content": {
+        "label": "Summary",
+        "arrangement": "grid",
+        "takeaway": "Each step in hybrid search, reranking, and generation has conditions and doesn't guarantee correctness."
+      }
+    },
+    {
+      "id": "u4_n1",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Summary § text#0",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Hybrid search widens the net, reranking sorts the catch, and generation can only work with the passages it is given. Each step helps only under its own conditions, and none of them makes the final answer certain to be right."
+      }
+    },
+    {
+      "id": "u4_n2",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Summary § shape#0",
+      "parent": "g3",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Hybrid Search"
+      }
+    },
+    {
+      "id": "u4_n3",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Summary § shape#1",
+      "parent": "g3",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Reranking"
+      }
+    },
+    {
+      "id": "u4_n4",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Summary § shape#2",
+      "parent": "g3",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Generation"
+      }
+    },
+    {
+      "id": "u4_n5",
+      "title": "Hybrid Search Condition",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Summary § text#1",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Widening the net helps only under its own conditions."
+      }
+    },
+    {
+      "id": "u4_n6",
+      "title": "Reranking Condition",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Summary § text#2",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Sorting the catch helps only under its own conditions."
+      }
+    },
+    {
+      "id": "u4_n7",
+      "title": "Generation Condition",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Summary § text#3",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Generation can only work with the passages it is given, and helps only under its own conditions."
+      }
+    },
+    {
+      "id": "u4_n8",
+      "title": "Overall Outcome",
+      "stableKey": "Hybrid search and reranking in the Harbor assistant › Summary § text#4",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "None of the steps makes the final answer certain to be right."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u1_ax1",
+      "to": "u1_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_n1",
+      "to": "u2_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n3",
+      "to": "u2_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n5",
+      "to": "u2_n8",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n8",
+      "to": "u2_n11",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n3",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n5",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n8",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n11",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a2",
+      "to": "u2_n5",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a2",
+      "to": "u2_n8",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a3",
+      "to": "u2_n8",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a3",
+      "to": "u2_n11",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a3",
+      "to": "u2_n3",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_n2",
+      "to": "u3_a1",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n2",
+      "to": "u3_n3",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n2",
+      "to": "u4_n3",
+      "type": "flows_to",
+      "label": "then"
+    },
+    {
+      "from": "u4_n3",
+      "to": "u4_n4",
+      "type": "flows_to",
+      "label": "then"
+    },
+    {
+      "from": "u4_n2",
+      "to": "u4_n5",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n3",
+      "to": "u4_n6",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n4",
+      "to": "u4_n7",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n4",
+      "to": "u4_n8",
+      "type": "relates_to"
+    },
+    {
+      "from": "g0",
+      "to": "g1",
+      "type": "references",
+      "label": "describes"
+    },
+    {
+      "from": "g1",
+      "to": "g2",
+      "type": "supports",
+      "label": "measured by"
+    },
+    {
+      "from": "g1",
+      "to": "g3",
+      "type": "references",
+      "label": "summarized by"
+    },
+    {
+      "from": "g2",
+      "to": "g3",
+      "type": "supports",
+      "label": "contributes to"
+    }
+  ],
+  "metadata": {}
+}

@@ -1,0 +1,863 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "This tutorial walks through a blue-green release of `orders-api`, a fictional web service, from a fresh build to a cleaned-up environment.",
+        "hash": "8c8a0luh61",
+        "topic": "Blue-green deployment for the orders service",
+        "span": {
+          "start": 48,
+          "end": 186
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "It assumes you already run the service behind a load balancer.",
+        "hash": "2eyf36jg0f4",
+        "topic": "Blue-green deployment for the orders service",
+        "span": {
+          "start": 187,
+          "end": 249
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "You keep two identical production environments, called blue and green.",
+        "hash": "1i1p87o4vzb",
+        "topic": "Blue-green deployment for the orders service › How blue-green works",
+        "span": {
+          "start": 276,
+          "end": 346
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "One of them serves all live traffic while the other sits idle; you deploy the new version to the idle one, test it there, and then move traffic over in one step.",
+        "hash": "1ov03uspcuv",
+        "topic": "Blue-green deployment for the orders service › How blue-green works",
+        "span": {
+          "start": 347,
+          "end": 508
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "Because the old environment is still running, going back is the same one-step switch.",
+        "hash": "ln7b0psmbn",
+        "topic": "Blue-green deployment for the orders service › How blue-green works",
+        "span": {
+          "start": 509,
+          "end": 594
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "The cost is running twice the infrastructure during a release, which is why the idle environment is scaled down between releases.",
+        "hash": "1jm2fka55",
+        "topic": "Blue-green deployment for the orders service › How blue-green works",
+        "span": {
+          "start": 595,
+          "end": 724
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "You need the following in place before the first release:",
+        "hash": "1k4k6tk8xv",
+        "topic": "Blue-green deployment for the orders service › Before you start",
+        "span": {
+          "start": 747,
+          "end": 804
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "list_item",
+        "text": "Two identical environments, `orders-blue` and `orders-green`, with the same instance count, instance size and configuration.",
+        "hash": "1l91akrueh1",
+        "topic": "Blue-green deployment for the orders service › Before you start",
+        "span": {
+          "start": 808,
+          "end": 932
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "list_item",
+        "text": "A health endpoint, `GET /healthz`, that returns `200` only when the service can reach its database and its queue.",
+        "hash": "1bb67gi3cbh",
+        "topic": "Blue-green deployment for the orders service › Before you start",
+        "span": {
+          "start": 935,
+          "end": 1048
+        },
+        "prev": "u8",
+        "next": "u10"
+      },
+      {
+        "id": "u10",
+        "kind": "list_item",
+        "text": "Database migrations that are backward compatible, so the old version keeps working against the new schema. This is a hard requirement: both versions share one database, and a rollback does not undo a migration.",
+        "hash": "1sqh08d0iiw",
+        "topic": "Blue-green deployment for the orders service › Before you start",
+        "span": {
+          "start": 1051,
+          "end": 1261
+        },
+        "prev": "u9",
+        "next": "u11"
+      },
+      {
+        "id": "u11",
+        "kind": "list_item",
+        "text": "Access to the load balancer's listener rules, because the switch is a change to which target group the listener forwards to.",
+        "hash": "vq84pzggmm",
+        "topic": "Blue-green deployment for the orders service › Before you start",
+        "span": {
+          "start": 1264,
+          "end": 1388
+        },
+        "prev": "u10",
+        "next": "u12"
+      },
+      {
+        "id": "u12",
+        "kind": "list_item",
+        "text": "A dashboard or query that shows the 5xx error rate per environment, so you can tell green's errors from blue's.",
+        "hash": "1pi3uwgabf2",
+        "topic": "Blue-green deployment for the orders service › Before you start",
+        "span": {
+          "start": 1391,
+          "end": 1502
+        },
+        "prev": "u11",
+        "next": "u13"
+      },
+      {
+        "id": "u13",
+        "kind": "sentence",
+        "text": "If any migration is not backward compatible, do not use this procedure; split the migration into an additive release first and a cleanup release later.",
+        "hash": "1zdv6g96ncc",
+        "topic": "Blue-green deployment for the orders service › Before you start",
+        "span": {
+          "start": 1504,
+          "end": 1655
+        },
+        "prev": "u12",
+        "next": "u14"
+      },
+      {
+        "id": "u14",
+        "kind": "sentence",
+        "text": "In this walkthrough blue is live and green is idle.",
+        "hash": "1t5dj4e32l2",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 1667,
+          "end": 1718
+        },
+        "prev": "u13",
+        "next": "u15"
+      },
+      {
+        "id": "u15",
+        "kind": "list_item",
+        "text": "**Deploy to the idle environment.** Deploy version `2.8.0` to `orders-green`, using the same build artifact that passed staging rather than a fresh build. Expected result: all green instances report the new version, and blue still serves 100% of traffic.",
+        "hash": "v3fq5z0ngv",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 1723,
+          "end": 1977
+        },
+        "prev": "u14",
+        "next": "u16"
+      },
+      {
+        "id": "u16",
+        "kind": "list_item",
+        "text": "**Run the migrations.** Apply the database migrations from the new release, once, from a single job rather than from every green instance at startup. Expected result: the migration job exits with code 0, and blue keeps serving requests without new errors, which confirms the change is backward compatible.",
+        "hash": "2f4oyt2jprl",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 1982,
+          "end": 2287
+        },
+        "prev": "u15",
+        "next": "u17"
+      },
+      {
+        "id": "u17",
+        "kind": "list_item",
+        "text": "**Check health on green.** Poll the health endpoint on every green instance until all of them return `200`. If any instance is still failing health checks after 10 minutes, stop here and roll back: tear down green and leave blue serving traffic. Nothing has been switched yet, so customers are unaffected.",
+        "hash": "29jd4ppmor7",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 2292,
+          "end": 2597
+        },
+        "prev": "u16",
+        "next": "u18"
+      },
+      {
+        "id": "u18",
+        "kind": "list_item",
+        "text": "**Smoke-test green.** Send the smoke-test suite to green's internal address. Expected result: all smoke tests pass. If one fails, treat it like a failed health check and stop.",
+        "hash": "233wpanxin7",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 2602,
+          "end": 2777
+        },
+        "prev": "u17",
+        "next": "u19"
+      },
+      {
+        "id": "u19",
+        "kind": "list_item",
+        "text": "**Switch traffic.** Point the listener at the green target group:",
+        "hash": "1ug9a0v3xoh",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 2782,
+          "end": 2847
+        },
+        "prev": "u18",
+        "next": "u20"
+      },
+      {
+        "id": "u20",
+        "kind": "code",
+        "text": "aws elbv2 modify-listener \\\n  --listener-arn \"$ORDERS_LISTENER_ARN\" \\\n  --default-actions Type=forward,TargetGroupArn=\"$GREEN_TG_ARN\"",
+        "hash": "15zw7s7grwh",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 2852,
+          "end": 3009
+        },
+        "prev": "u19",
+        "next": "u21"
+      },
+      {
+        "id": "u21",
+        "kind": "list_item",
+        "text": "Expected result: within about 30 seconds, new requests are served by green, and blue receives no new connections.",
+        "hash": "3tnw1ga2mz",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 3014,
+          "end": 3127
+        },
+        "prev": "u20",
+        "next": "u22"
+      },
+      {
+        "id": "u22",
+        "kind": "list_item",
+        "text": "**Watch the error rate.** Observe the 5xx error rate on green for 15 minutes after the switch. If the error rate rises above 2% at any point in that window, switch back: run the same command with `$BLUE_TG_ARN`, which returns all traffic to blue within about 30 seconds. If it stays at or below 2%, continue.",
+        "hash": "1lxdmcfdd2c",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 3132,
+          "end": 3440
+        },
+        "prev": "u21",
+        "next": "u23"
+      },
+      {
+        "id": "u23",
+        "kind": "list_item",
+        "text": "**Keep blue as a standby.** Leave blue running, unchanged, for 24 hours. It is your rollback target until then.",
+        "hash": "1r27k9tq5fd",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 3445,
+          "end": 3556
+        },
+        "prev": "u22",
+        "next": "u24"
+      },
+      {
+        "id": "u24",
+        "kind": "list_item",
+        "text": "**Retire blue.** After 24 hours without a switch-back, scale blue down. Blue becomes the idle environment for the next release, with the roles reversed.",
+        "hash": "x4hyc2mv04",
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "span": {
+          "start": 3561,
+          "end": 3713
+        },
+        "prev": "u23",
+        "next": "u25"
+      },
+      {
+        "id": "u25",
+        "kind": "sentence",
+        "text": "A rollback before step 5 is cheap, because customers never saw green.",
+        "hash": "wey7lu13bn",
+        "topic": "Blue-green deployment for the orders service › When things go wrong",
+        "span": {
+          "start": 3740,
+          "end": 3809
+        },
+        "prev": "u24",
+        "next": "u26"
+      },
+      {
+        "id": "u26",
+        "kind": "sentence",
+        "text": "A switch-back after step 5 is also fast, but requests that were in flight on green during the switch may fail and need a client retry.",
+        "hash": "1wlxcu7snly",
+        "topic": "Blue-green deployment for the orders service › When things go wrong",
+        "span": {
+          "start": 3810,
+          "end": 3944
+        },
+        "prev": "u25",
+        "next": "u27"
+      },
+      {
+        "id": "u27",
+        "kind": "sentence",
+        "text": "Neither kind of rollback reverts the database, which is why the backward-compatible migration requirement matters.",
+        "hash": "24gggzufvfv",
+        "topic": "Blue-green deployment for the orders service › When things go wrong",
+        "span": {
+          "start": 3945,
+          "end": 4059
+        },
+        "prev": "u26",
+        "next": "u28"
+      },
+      {
+        "id": "u28",
+        "kind": "sentence",
+        "text": "Whichever way you roll back, record what failed before trying again, because a second attempt with the same build tends to fail the same way.",
+        "hash": "njxdqib1pu",
+        "topic": "Blue-green deployment for the orders service › When things go wrong",
+        "span": {
+          "start": 4060,
+          "end": 4201
+        },
+        "prev": "u27",
+        "next": "u29"
+      },
+      {
+        "id": "u29",
+        "kind": "sentence",
+        "text": "Do not run the next release's migrations while blue is still on standby.",
+        "hash": "rrpaw04ppq",
+        "topic": "Blue-green deployment for the orders service › When things go wrong",
+        "span": {
+          "start": 4203,
+          "end": 4275
+        },
+        "prev": "u28",
+        "next": "u30"
+      },
+      {
+        "id": "u30",
+        "kind": "sentence",
+        "text": "If you do, the standby may no longer work against the schema, and the switch-back stops being a safe option.",
+        "hash": "1cctuqp44w5",
+        "topic": "Blue-green deployment for the orders service › When things go wrong",
+        "span": {
+          "start": 4276,
+          "end": 4384
+        },
+        "prev": "u29",
+        "next": "u31"
+      },
+      {
+        "id": "u31",
+        "kind": "sentence",
+        "text": "That's all there is to it. Happy deploying!",
+        "hash": "vl11adk463",
+        "topic": "Blue-green deployment for the orders service › When things go wrong",
+        "span": {
+          "start": 4386,
+          "end": 4429
+        },
+        "prev": "u30"
+      }
+    ],
+    "nextId": 32
+  },
+  "cites": {
+    "u0_n1": [
+      "u3",
+      "u4",
+      "u5",
+      "u6"
+    ],
+    "u1_n1": [
+      "u8"
+    ],
+    "u1_n2": [
+      "u9"
+    ],
+    "u1_n3": [
+      "u10",
+      "u13"
+    ],
+    "u1_n4": [
+      "u11"
+    ],
+    "u1_n5": [
+      "u12"
+    ],
+    "u2_n1": [
+      "u15"
+    ],
+    "u2_n2": [
+      "u15"
+    ],
+    "u2_n3": [
+      "u16"
+    ],
+    "u2_n4": [
+      "u16"
+    ],
+    "u2_n5": [
+      "u17"
+    ],
+    "u2_n6": [
+      "u17"
+    ],
+    "u2_n7": [
+      "u18"
+    ],
+    "u2_n8": [
+      "u18"
+    ],
+    "u2_n9": [
+      "u19"
+    ],
+    "u2_n10": [
+      "u20"
+    ],
+    "u2_n11": [
+      "u21"
+    ],
+    "u2_n12": [
+      "u22"
+    ],
+    "u2_n13": [
+      "u22"
+    ],
+    "u2_n14": [
+      "u23"
+    ],
+    "u2_n15": [
+      "u23"
+    ],
+    "u2_n16": [
+      "u24"
+    ],
+    "u2_n17": [
+      "u24"
+    ],
+    "u2_a1": [
+      "u14"
+    ],
+    "u3_n1": [
+      "u25"
+    ],
+    "u3_n2": [
+      "u26"
+    ],
+    "u3_n3": [
+      "u27"
+    ],
+    "u3_n4": [
+      "u28"
+    ],
+    "u3_n5": [
+      "u29"
+    ],
+    "u3_n6": [
+      "u30"
+    ],
+    "u4_n1": [
+      "u1"
+    ],
+    "u4_n2": [
+      "u2"
+    ]
+  },
+  "omitted": [
+    {
+      "unit": "u7",
+      "reason": "filler"
+    },
+    {
+      "unit": "u31",
+      "reason": "filler"
+    }
+  ],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "cited",
+      "u3": "cited",
+      "u4": "cited",
+      "u5": "cited",
+      "u6": "cited",
+      "u7": "omitted",
+      "u8": "cited",
+      "u9": "cited",
+      "u10": "cited",
+      "u11": "cited",
+      "u12": "cited",
+      "u13": "cited",
+      "u14": "cited",
+      "u15": "cited",
+      "u16": "cited",
+      "u17": "cited",
+      "u18": "cited",
+      "u19": "cited",
+      "u20": "cited",
+      "u21": "cited",
+      "u22": "cited",
+      "u23": "cited",
+      "u24": "cited",
+      "u25": "cited",
+      "u26": "cited",
+      "u27": "cited",
+      "u28": "cited",
+      "u29": "cited",
+      "u30": "cited",
+      "u31": "omitted"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "represented",
+      "u3": "represented",
+      "u4": "represented",
+      "u5": "represented",
+      "u6": "represented",
+      "u7": "omitted",
+      "u8": "represented",
+      "u9": "represented",
+      "u10": "represented",
+      "u11": "represented",
+      "u12": "represented",
+      "u13": "represented",
+      "u14": "represented",
+      "u15": "represented",
+      "u16": "represented",
+      "u17": "represented",
+      "u18": "represented",
+      "u19": "represented",
+      "u20": "represented",
+      "u21": "represented",
+      "u22": "represented",
+      "u23": "represented",
+      "u24": "represented",
+      "u25": "represented",
+      "u26": "represented",
+      "u27": "represented",
+      "u28": "represented",
+      "u29": "represented",
+      "u30": "represented",
+      "u31": "omitted"
+    },
+    "critical": {
+      "u1": [
+        "protected"
+      ],
+      "u3": [
+        "protected"
+      ],
+      "u5": [
+        "protected"
+      ],
+      "u6": [
+        "protected"
+      ],
+      "u8": [
+        "protected"
+      ],
+      "u9": [
+        "requirement",
+        "condition",
+        "protected"
+      ],
+      "u10": [
+        "limitation"
+      ],
+      "u11": [
+        "protected"
+      ],
+      "u12": [
+        "protected"
+      ],
+      "u13": [
+        "limitation",
+        "requirement",
+        "condition"
+      ],
+      "u15": [
+        "protected"
+      ],
+      "u16": [
+        "protected"
+      ],
+      "u17": [
+        "condition",
+        "protected"
+      ],
+      "u18": [
+        "condition",
+        "protected"
+      ],
+      "u20": [
+        "protected"
+      ],
+      "u21": [
+        "protected"
+      ],
+      "u22": [
+        "condition",
+        "protected"
+      ],
+      "u23": [
+        "protected"
+      ],
+      "u24": [
+        "protected"
+      ],
+      "u25": [
+        "requirement",
+        "protected"
+      ],
+      "u26": [
+        "limitation",
+        "protected"
+      ],
+      "u27": [
+        "protected"
+      ],
+      "u29": [
+        "limitation",
+        "requirement"
+      ],
+      "u30": [
+        "condition",
+        "protected"
+      ]
+    },
+    "flags": [
+      {
+        "code": "uncited_card",
+        "card": "u0_n2",
+        "detail": "the card cites no passage of the source"
+      }
+    ],
+    "sections": [
+      {
+        "topic": "Blue-green deployment for the orders service",
+        "represented": 2,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Blue-green deployment for the orders service › How blue-green works",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Blue-green deployment for the orders service › Before you start",
+        "represented": 6,
+        "omitted": 1,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Blue-green deployment for the orders service › Steps",
+        "represented": 11,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Blue-green deployment for the orders service › When things go wrong",
+        "represented": 6,
+        "omitted": 1,
+        "needsReview": 0,
+        "highOmittedShare": false
+      }
+    ]
+  },
+  "flags": [
+    {
+      "code": "uncited_card",
+      "card": "u0_n2",
+      "detail": "the card cites no passage of the source"
+    }
+  ],
+  "hints": [
+    {
+      "code": "cause_changed",
+      "unit": "u3",
+      "card": "u0_n1",
+      "detail": "the card says \"because\"; the source states no cause",
+      "evidence": {
+        "card": "because"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u4",
+      "card": "u0_n1",
+      "detail": "the card says \"because\"; the source states no cause",
+      "evidence": {
+        "card": "because"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u6",
+      "card": "u0_n1",
+      "detail": "the card says \"because\"; the source states no cause",
+      "evidence": {
+        "card": "because"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u0_n1",
+      "detail": "the card names \"green.¹\"; the source doesn't",
+      "evidence": {
+        "card": "green.¹"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u10",
+      "card": "u1_n3",
+      "detail": "source says \"both versions share one database, and a rollback does not undo a migration.\"; the card drops the negation",
+      "evidence": {
+        "source": "both versions share one database, and a rollback does not undo a migration.",
+        "card": "Database migrations must be backward compatible"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u13",
+      "card": "u1_n3",
+      "detail": "source says \"If any migration is not backward compatible, do not use this procedure\"; the card drops the negation",
+      "evidence": {
+        "source": "If any migration is not backward compatible, do not use this procedure",
+        "card": "Database migrations must be backward compatible"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u19",
+      "card": "u2_n9",
+      "detail": "source names \"Point\"; no card citing it does",
+      "evidence": {
+        "source": "Point"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u16",
+      "card": "u2_n4",
+      "detail": "source says \"the migration job exits with code 0, and blue keeps serving requests without new errors, which confirms the change is backward compatible.\"; the card drops the negation",
+      "evidence": {
+        "source": "the migration job exits with code 0, and blue keeps serving requests without new errors, which confirms the change is backward compatible.",
+        "card": "Apply database migrations from the new release once, from a single job."
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u17",
+      "card": "u2_n5",
+      "detail": "source says \"if any instance is still failing health checks after 10 minutes\"",
+      "evidence": {
+        "source": "if any instance is still failing health checks after 10 minutes"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u18",
+      "card": "u2_n7",
+      "detail": "source says \"if one fails\"",
+      "evidence": {
+        "source": "if one fails"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u22",
+      "card": "u2_n12",
+      "detail": "source says \"if the error rate rises above 2% at any point in that window\"",
+      "evidence": {
+        "source": "if the error rate rises above 2% at any point in that window"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u24",
+      "card": "u2_n16",
+      "detail": "source says \"**Retire blue.** After 24 hours without a switch-back, scale blue down.\"; the card drops the negation",
+      "evidence": {
+        "source": "**Retire blue.** After 24 hours without a switch-back, scale blue down.",
+        "card": "Retire blue"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u28",
+      "card": "u3_n4",
+      "detail": "cause and effect are swapped (source: \"because\")",
+      "evidence": {
+        "source": "Whichever way you roll back, record what failed before trying again, because a second attempt with the same build tends to fail the same way.",
+        "card": "Record failures\nAlways record what caused a failure before retrying, as the same build often fails for the same reason."
+      }
+    },
+    {
+      "code": "absolute_added",
+      "card": "u3_n4",
+      "detail": "the card says \"Always\"; the source doesn't",
+      "evidence": {
+        "card": "Always"
+      }
+    }
+  ],
+  "reviews": {
+    "u0_n2": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-url-purge-clears-listings",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The URL purge's scope limit is inverted: the card says the home page, section page and feed are cleared too (a mustNotClaim). The listing pages are still named, so only the 'only the exact URL' half is missing.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n3",
+      "find": "Only the exact URL is removed: the home page, section page and RSS feed showing the same headline stay stale",
+      "replace": "The home page, section page and RSS feed showing the same headline are cleared too"
+    }
+  ],
+  "expectFailing": [
+    "a.purge-scope"
+  ]
+}

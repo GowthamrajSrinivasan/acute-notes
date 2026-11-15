@@ -1,0 +1,18 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-01-frame-dropped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-01-idempotency-keys",
+  "target": "plan",
+  "description": "The concept's frame is dropped: the three cards are drawn loose on the canvas, with no frame to read them as one mechanism.",
+  "mutations": [
+    {
+      "op": "remove_node",
+      "node": "g1"
+    }
+  ],
+  "expectFailing": [
+    "a.rendered-frames",
+    "a.frame"
+  ]
+}

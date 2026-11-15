@@ -1,0 +1,25 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-precompute-resolved",
+  "distortion": "fabricated_agreement",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The deferred precompute question (u40) is stated as decided: 'The feed service precomputes feeds for accounts with very many followers.' The old e.open-precompute match (precompute + follower) still found it.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-open-precompute",
+      "find": "Open: precomputed feeds for big accounts",
+      "replace": "Precomputed feeds for big accounts"
+    },
+    {
+      "op": "replace_text",
+      "node": "n-open-precompute",
+      "find": "Whether the feed service should precompute feeds for accounts with very many followers is left to the feed service's own low-level design.",
+      "replace": "The feed service precomputes feeds for accounts with very many followers."
+    }
+  ],
+  "expectFailing": [
+    "a.present-open-precompute"
+  ]
+}

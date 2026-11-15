@@ -9,13 +9,23 @@
  *
  * Nothing here logs a token or a secret URL; errors never echo one.
  */
+import { nonLocalReason } from "@/app/api/ai/localTrust";
 import { isMcpOAuthEnabled, mcpFeatureDisabledResponse } from "@/config/features";
 import type { CredentialKind } from "./credentials";
 import { publicBaseUrl } from "./oauth";
 import { isAllowedHost, isAllowedOrigin, isLoopbackHost, NOT_CONNECTED_MESSAGE, RELAY_ERRORS } from "./relay";
 import { getMcpServices, type McpServices } from "./store";
+import { resolveRemoteProfile } from "../tools/remoteProfile";
 
 const SAFE_HEADERS = { "cache-control": "no-store", "referrer-policy": "no-referrer" } as const;
+
+/**
+ * The 401 body for a missing, wrong, expired or revoked credential. Turning MCP access off revokes the workspace's
+ * credentials (and turning it on again issues new ones), so a client holding the old token is told where to get a
+ * current one. The same text for every refusal: it says nothing about whether the token ever existed.
+ */
+export const UNAUTHORIZED_MESSAGE =
+  "Unauthorized. Get the current token in Acute-Notes (⋮ → MCP access) and make sure access is on; turning access off or rotating the token revokes the old one.";
 
 /** A JSON-RPC error body, as the relay produces. */
 const rpc = (code: number, message: string) => ({ jsonrpc: "2.0", id: null, error: { code, message } });
@@ -57,14 +67,20 @@ export async function handleClientRequest(req: Request, auth: ClientAuth, servic
     const oauth = auth.kinds.includes("oauth") && isMcpOAuthEnabled();
     const base = publicBaseUrl();
     const challenge = oauth && base ? `Bearer resource_metadata="${base}/.well-known/oauth-protected-resource"` : "Bearer";
-    return json(rpc(-32001, "Unauthorized."), 401, { "www-authenticate": challenge });
+    return json(rpc(-32001, UNAUTHORIZED_MESSAGE), 401, { "www-authenticate": challenge });
   }
   if (!services.limits.requests.hit(principal.credentialId)) return json(rpc(-32000, "Rate limit exceeded."), 429, { "retry-after": "30" });
 
   // The workspace comes from the credential, never from the request.
   const relay = services.relays.existing(principal.workspaceId);
   if (!relay?.connected) return json(rpc(RELAY_ERRORS.notConnected, NOT_CONNECTED_MESSAGE), 503, { "retry-after": "5" });
-  const caller = { credentialId: principal.credentialId, remote: principal.kind !== "bearer" || !isLoopbackHost(host), scope: principal.scope };
+  // Local only when the bearer request is demonstrably from this machine: a loopback Host is not enough, since a tunnel
+  // can rewrite Host to localhost (ngrok --host-header=rewrite); its forwarding headers still mark it (AI-host gate,
+  // 2026-11-15). Remote sessions never get the tools that run the tab's AI (import_content).
+  const remote = principal.kind !== "bearer" || !isLoopbackHost(host) || nonLocalReason(req.headers) !== null;
+  // Remote sessions get the `restricted` tool profile unless the server is explicitly set to `full` (any other value,
+  // or none, is restricted). Local sessions are not filtered.
+  const caller = { credentialId: principal.credentialId, remote, scope: principal.scope, ...(remote ? { profile: resolveRemoteProfile(process.env.MCP_REMOTE_PROFILE) } : {}) };
 
   switch (req.method) {
     case "POST": {

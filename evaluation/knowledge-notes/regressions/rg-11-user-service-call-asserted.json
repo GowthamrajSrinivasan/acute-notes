@@ -1,0 +1,13 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-user-service-call-asserted",
+  "distortion": "mislabeled_architecture_edge",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The vague 'uses' edge becomes a confident synchronous call: type calls, label 'calls synchronously per event'.",
+  "mutations": [
+    { "op": "set_relation_type", "from": "s5", "to": "s6", "type": "calls" },
+    { "op": "set_label", "from": "s5", "to": "s6", "label": "calls synchronously per event" }
+  ],
+  "expectFailing": ["a.rel-enrichment-user-service", "a.no-confident-user-service-edge", "a.no-invented-mechanism"]
+}

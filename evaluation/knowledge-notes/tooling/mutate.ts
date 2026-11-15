@@ -1,5 +1,6 @@
 /** Applies a regression's mutations to a copy of a reference output, to plant one known distortion. */
-import type { VisualPlan } from "@/ai/visual-plan/types";
+import type { VisualNode, VisualPlan } from "@/ai/visual-plan/types";
+import { shuffledGroupOrders } from "./frameOrder";
 import type { LensProjection, Mutation, ReconcileOutcome } from "./schemas";
 
 function clone<T>(value: T): T {
@@ -43,9 +44,11 @@ export function mutatePlan(plan: VisualPlan, mutations: readonly Mutation[]): Vi
       case "replace_text": {
         const i = out.nodes.findIndex((n) => n.id === m.node);
         if (i < 0) throw new Error(`mutation replace_text: no node ${m.node}`);
-        const r = replaceIn(out.nodes[i]!.content, m.find, m.replace);
+        // The card's title and its content: a distortion can sit in either.
+        const r = replaceIn({ title: out.nodes[i]!.title, content: out.nodes[i]!.content }, m.find, m.replace);
         if (!r.hits) throw new Error(`mutation replace_text: "${m.find}" not in ${m.node}`);
-        out.nodes[i] = { ...out.nodes[i]!, content: r.value } as typeof out.nodes[number];
+        const v = r.value as { title?: string; content: unknown };
+        out.nodes[i] = { ...out.nodes[i]!, ...(v.title !== undefined ? { title: v.title } : {}), content: v.content } as typeof out.nodes[number];
         break;
       }
       case "remove_node":
@@ -67,6 +70,33 @@ export function mutatePlan(plan: VisualPlan, mutations: readonly Mutation[]): Vi
       case "set_relation_type":
         rel().type = m.type;
         break;
+      case "shuffle_groups": {
+        if ((m.order === undefined) === (m.seed === undefined)) throw new Error("mutation shuffle_groups: give exactly one of order, seed");
+        if (m.seed !== undefined) {
+          // The robustness report's own shuffle (every group slot), so a regression can pin an order it counted.
+          out.nodes = shuffledGroupOrders(out, 1, m.seed)[0]!.nodes;
+          break;
+        }
+        const ids = new Set(out.nodes.map((n) => n.id));
+        const isTop = (n: VisualNode) => n.type === "group" && !(n.parent && ids.has(n.parent));
+        const slots = out.nodes.flatMap((n, i) => (isTop(n) ? [i] : []));
+        const tops = new Map(slots.map((i) => [out.nodes[i]!.id, out.nodes[i]!] as const));
+        const order = m.order!;
+        if (order.length !== tops.size || new Set(order).size !== order.length || order.some((id) => !tops.has(id))) {
+          throw new Error(`mutation shuffle_groups: order must list each top-level group once (${[...tops.keys()].join(", ")})`);
+        }
+        slots.forEach((slot, i) => (out.nodes[slot] = tops.get(order[i]!)!));
+        break;
+      }
+      case "move_to_group": {
+        const i = out.nodes.findIndex((n) => n.id === m.node);
+        if (i < 0) throw new Error(`mutation move_to_group: no node ${m.node}`);
+        if (out.nodes[i]!.type === "group") throw new Error(`mutation move_to_group: ${m.node} is a group`);
+        if (out.nodes.find((n) => n.id === m.group)?.type !== "group") throw new Error(`mutation move_to_group: no group ${m.group}`);
+        if (out.nodes[i]!.parent === m.group) throw new Error(`mutation move_to_group: ${m.node} is already in ${m.group}`);
+        out.nodes[i] = { ...out.nodes[i]!, parent: m.group } as VisualNode;
+        break;
+      }
       default:
         throw new Error(`mutation ${m.op} doesn't apply to a plan`);
     }

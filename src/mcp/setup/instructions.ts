@@ -75,7 +75,7 @@ const GROUPS: { name: string; items: [string, string?][] }[] = [
   { name: "Knowledge", items: [["get_decisions"], ["record_decision"], ["get_open_questions"], ["log_finding"], ["update_knowledge"], ["annotate"]] },
   { name: "History", items: [["get_recent_changes"], ["get_session_history"], ["get_session_review"], ["revert_agent_changes"]] },
   { name: "Impact", items: [["get_lens_impact", "what a change to keys or paths affects, and the warnings that protect it"], ["get_lens"], ["trace_lens_path"], ["focus_lens"], ["link_lens_detail"]] },
-  { name: "Workspace", items: [["search_workspace"], ["get_canvas"], ["get_page"], ["get_selected_content"], ["get_related_objects"], ["list_blocks"], ["get_block"]] },
+  { name: "Workspace", items: [["search_workspace"], ["get_canvas"], ["get_page"], ["get_selected_content"], ["get_related_objects"], ["suggest_placement"], ["get_consistency"], ["list_blocks"], ["get_block"]] },
   {
     name: "Canvas",
     items: [["create_block"], ["create_page"], ["create_table"], ["create_todo"], ["create_connection"], ["update_connection"], ["delete_connection"], ["move_object"], ["update_block"], ["render_visual_plan"], ["delete_object"], ["group_blocks"]],

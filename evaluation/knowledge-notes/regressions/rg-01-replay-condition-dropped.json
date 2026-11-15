@@ -1,0 +1,13 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-01-replay-condition-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-01-idempotency-keys",
+  "target": "plan",
+  "description": "The replay loses its condition (u2): any request with a known key gets the stored result, not only one whose request already completed.",
+  "mutations": [
+    { "op": "replace_text", "node": "n2", "find": "A completed key gets its stored result back", "replace": "A known key gets its stored result back" },
+    { "op": "replace_text", "node": "n2", "find": "If a request with the key already completed, the server returns", "replace": "Whenever a request carries a known key, the server returns" }
+  ],
+  "expectFailing": ["a.completed-condition"]
+}

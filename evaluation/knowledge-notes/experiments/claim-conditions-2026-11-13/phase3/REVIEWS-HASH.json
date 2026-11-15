@@ -1,0 +1,21 @@
+{
+  "at": "2026-11-13T15:42:44.272Z",
+  "note": "Second blind reviews as received, before agreement was computed or adjudication began.",
+  "sha256": {
+    "review2/kn-01-idempotency-keys.A.json": "01f6129207946d9a7ab42b0b98eaeaa8cec601c473b64bce22647a6ecdeefe9a",
+    "review2/kn-01-idempotency-keys.B.json": "d5fdaa5049cc16f4e3865d6eda5cb2504640ea2f45d49a5ec7b5b1f7f3341af7",
+    "review2/kn-02-edge-cache-invalidation.A.json": "27011aab9474df6531f2f2667d3239187818c2eebe0711d6bc6b6aead97d6116",
+    "review2/kn-02-edge-cache-invalidation.B.json": "521af05ee487e5a9c1586471bb5574197b9e884d5e271b52b881799afcacb0bb",
+    "review2/kn-03-blue-green-deploy.R2.json": "9ddc52f1921a9f05111c2142e892986287ec94bf49ba12b4399c72c12f27d00d",
+    "review2/kn-04-queue-choice.R2.json": "c0c5154aa8ca6b0acb20f1c9982179550726d0e335f04432138689b723388cb1",
+    "review2/kn-05-incident-review-meeting.R2.json": "ec0773ac91f1248a965fe6f4eb5bcec8259887c3a2a685cec8991b34e0b0c83e",
+    "review2/kn-06-hybrid-search-reranking.R2.json": "8bd58989088f1cc562d7e55ff8d3076d26638a6982b076259e45ba5740ea20bb",
+    "review2/kn-07-photo-sharing-hld.R2.json": "3b3948ceb88542ee231129b33e56ed5620a8516c4ddc7eb47c1fecc518f164ba",
+    "review2/kn-08-helpdesk-answers-hld-lld.R2.json": "eaa19b820a5d8f1c3a5be6d9fb14a2a3bb32e0e79089798e8dfe76b534d839e6",
+    "review2/kn-09-billing-codebase-map.R2.json": "ea0f0e6c740c8962a57d515be38a450e44f22df676fd5ad047f7df37af42085a",
+    "review2/kn-10-inventory-architecture-frames.R2.json": "405eece108c480ce5622d0b04a4ab1657daa2040a3ca70c00499871344762d29",
+    "review2/kn-11-ambiguous-analytics-proposal.R2.json": "6ae4365f7a6240844f4854a3519edb4059d9b1e4aa37725afc105d38056cce9e",
+    "review2/kn-12-flag-rollout-update.R2.json": "7d1eaf3cee7e79a24e97198c900021a583bc574a4146fb39e4b598d526f4f633",
+    "candidates.json": "6221c6269a9f0a389da44433fde0a07f82236221db869ee4d335739b1a4e1ded"
+  }
+}

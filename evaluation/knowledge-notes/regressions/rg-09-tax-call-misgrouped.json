@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-tax-call-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The TaxClient call is moved into the interpretation frame: the generation path is split and its links now cross (one through a card).",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "s_tax",
+      "group": "g3"
+    }
+  ],
+  "expectFailing": [
+    "a.crossings",
+    "a.layout"
+  ]
+}

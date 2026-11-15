@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-enrichment-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The enrichment step is moved into the open-questions frame: the event-flow links into and out of it now run over a third frame (and through a card).",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "s4",
+      "group": "g3"
+    }
+  ],
+  "expectFailing": [
+    "a.links-over-frames",
+    "a.layout"
+  ]
+}

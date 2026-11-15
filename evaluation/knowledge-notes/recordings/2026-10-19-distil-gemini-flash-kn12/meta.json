@@ -1,0 +1,25 @@
+{
+  "datasetVersion": "1.0.0",
+  "runId": "2026-10-19-distil-gemini-flash-kn12",
+  "recordedAt": "2026-10-19T19:03:31.657Z",
+  "approvedBy": "Gowthamraj Srinivasan (chat, 2026-10-19)",
+  "provider": "OpenRouter",
+  "model": "google/gemini-2.5-flash",
+  "pipeline": {
+    "noteModel": "distil",
+    "promptVersion": "git-66f7e3b-dirty",
+    "appVersion": "0.1.0"
+  },
+  "gate": false,
+  "cases": [
+    {
+      "caseId": "kn-12-flag-rollout-update",
+      "replies": "kn-12-flag-rollout-update/replies.json",
+      "plan": "kn-12-flag-rollout-update/plan.json",
+      "run": "kn-12-flag-rollout-update/run.json",
+      "sceneBefore": "kn-12-flag-rollout-update/scene-before.json",
+      "scene": "kn-12-flag-rollout-update/scene.json",
+      "note": "user edit applied to the card sharing the most words (no card holds the source's wording): Every flag needs a kill switch that turn"
+    }
+  ]
+}

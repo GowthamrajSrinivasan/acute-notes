@@ -17,6 +17,7 @@
  * bounded sizes, so malformed or oversized input, and any field that could
  * carry a secret, never travel with an object.
  */
+import { REVIEW_RESOLUTIONS, type CardReview, type NoteModel } from "@/ai/fidelity/contracts";
 import type { AIMetadata, DocumentRecord, ObjectId, ObjectMetadata, SourceRef } from "./types";
 
 /** The structural slice of a canvas element read here (no renderer or adapter import). */
@@ -102,8 +103,47 @@ export function normalizeAIMetadata(raw: unknown, options: { reconciliation?: bo
       out.splitOf = splitOf;
       out.splitFingerprint = splitFingerprint;
     }
+    // Knowledge Notes (WP1.3): the units a card cites, its review state, and the rules it was made under.
+    if (Array.isArray(raw.sourceUnits)) {
+      const units = [...new Set(raw.sourceUnits.filter((u): u is string => typeof u === "string" && UNIT_ID.test(u)))].slice(0, MAX_SOURCE_UNITS);
+      if (units.length) out.sourceUnits = units;
+    }
+    const review = cardReview(raw.review);
+    if (review) out.review = review;
+    const noteModel = oneOf(raw.noteModel, NOTE_MODELS);
+    if (noteModel) out.noteModel = noteModel;
+    if (raw.userWording === true) out.userWording = true;
   }
   return out;
+}
+
+const NOTE_MODELS = ["preserve", "distil"] as const satisfies readonly NoteModel[];
+/** A unit id as `sourceUnits.ts` makes them (`u17`). */
+const UNIT_ID = /^u\d{1,9}$/;
+const MAX_SOURCE_UNITS = 500;
+const MAX_REVIEW_REASONS = 20;
+
+const VERDICTS = ["supported", "partly", "not_supported"] as const;
+
+/**
+ * A card's review state: bounded reasons, hints (WP1.10: the meaning rules' findings, never reasons of their own), the
+ * model check's verdict ("checked by AI") and a known resolution; undefined when there is none of them.
+ */
+function cardReview(raw: unknown): CardReview | undefined {
+  if (!isObj(raw)) return undefined;
+  const list = (v: unknown) => (Array.isArray(v) ? v.map((r) => text(r, 300)).filter((r): r is string => !!r).slice(0, MAX_REVIEW_REASONS) : []);
+  const reasons = list(raw.reasons);
+  const hints = list(raw.hints);
+  const resolved = oneOf(raw.resolved, REVIEW_RESOLUTIONS);
+  const verdict = isObj(raw.checked) && raw.checked.by === "ai" ? oneOf(raw.checked.verdict, VERDICTS) : undefined;
+  const reason = verdict && isObj(raw.checked) ? text(raw.checked.reason, 300) : undefined;
+  if (!reasons.length && !hints.length && !verdict && !resolved) return undefined;
+  return {
+    reasons,
+    ...(hints.length ? { hints } : {}),
+    ...(verdict ? { checked: { by: "ai" as const, verdict, ...(reason ? { reason } : {}) } } : {}),
+    ...(resolved ? { resolved } : {}),
+  };
 }
 
 /** The reconciliation link of an object's metadata (F37) — present only for Visualize-derived objects. */
@@ -115,6 +155,12 @@ export interface ReconciliationLink {
   excludeFromReconciliation: boolean;
   /** A piece of a split block (F42 Phase 4): the node it shows part of, and that node's fingerprint when split. */
   splitOf?: { stableNodeKey: string; fingerprint: string };
+  /** Knowledge Notes (WP1.3): the units the card cites, its review state, and the rules it was made under. */
+  sourceUnits?: string[];
+  review?: CardReview;
+  noteModel?: NoteModel;
+  /** The content is the user's wording with AI's facts merged in, or kept by "Keep mine" (Stage 1e). */
+  userWording?: boolean;
 }
 
 /**
@@ -133,6 +179,10 @@ export function reconciliationOf(el: Pick<ProvenanceElement, "customData">, getD
     contentFingerprint: ai.contentFingerprint,
     excludeFromReconciliation: ai.excludeFromReconciliation === true,
     ...(ai.splitOf && ai.splitFingerprint ? { splitOf: { stableNodeKey: ai.splitOf, fingerprint: ai.splitFingerprint } } : {}),
+    ...(ai.sourceUnits ? { sourceUnits: [...ai.sourceUnits] } : {}),
+    ...(ai.review ? { review: ai.review } : {}),
+    ...(ai.noteModel ? { noteModel: ai.noteModel } : {}),
+    ...(ai.userWording ? { userWording: true } : {}),
   };
 }
 

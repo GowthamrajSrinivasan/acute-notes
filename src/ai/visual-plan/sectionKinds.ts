@@ -33,6 +33,11 @@ export interface SectionKindDefinition {
    * adds on top of the content's own details, in "text" nodes marked `"origin":"analysis"`.
    */
   analysis: string;
+  /**
+   * Distil mode only (knowledge-notes-plan §4.4): `rules` for a kind whose rules ask for the content's own words. The
+   * detail channel stays; it holds distilled cards instead of source text. Absent: `rules` serve both modes.
+   */
+  distilRules?: string;
 }
 
 export const SECTION_KIND_REGISTRY: Readonly<Record<SectionKind, SectionKindDefinition>> = {
@@ -93,6 +98,9 @@ export const SECTION_KIND_REGISTRY: Readonly<Record<SectionKind, SectionKindDefi
       `Represent each concept as its own "text" node with the concept's name as its "title" and, as its body, everything the content says about it — as bullets, in the content's own words. ` +
       `When a concept's body is long, keep its first points on the card and put the rest in a "page" linked from it with "explained_by".`,
     analysis: `What the concepts have in common, how they differ, and which one matters most.`,
+    distilRules:
+      `Represent each concept as its own "text" node whose "title" states its point and whose body is what the content says about it, distilled into bullets in your own words. ` +
+      `When a concept's body is long, keep its main points on the card and put the rest in a "page" linked from it with "explained_by".`,
   },
   decision: {
     id: "decision",
@@ -142,6 +150,9 @@ export const SECTION_KIND_REGISTRY: Readonly<Record<SectionKind, SectionKindDefi
       `Keep it visually secondary, not shorter: one "text" node with all of its points as bullets in the content's own words, or a "page" when it is long. ` +
       `It supports the main sections, so it must not compete with them for attention.`,
     analysis: `Which main point it supports, and how.`,
+    distilRules:
+      `Keep it visually secondary, not shorter: one "text" node with each of its ideas as a bullet in your own words, or a "page" when it is long. ` +
+      `It supports the main sections, so it must not compete with them for attention.`,
   },
   notes: {
     id: "notes",
@@ -180,4 +191,9 @@ export function frameName(kind: string | undefined, position: number): string {
 
 export function sectionKind(id: SectionKind): SectionKindDefinition {
   return SECTION_KIND_REGISTRY[id];
+}
+
+/** A kind's generation rules: its distil variant in distil mode when it has one, else its rules (knowledge-notes-plan §4.4). */
+export function kindRules(kind: SectionKindDefinition, distil: boolean): string {
+  return distil && kind.distilRules ? kind.distilRules : kind.rules;
 }

@@ -81,7 +81,7 @@ export function createCompositeShapeElements(kind: CompositeShapeKind, options: 
  * `scope` limits the work to some shapes: pass every element of each shape to check (host, parts and label).
  */
 export function withNormalizedComposites<E extends ExcalidrawElement>(elements: readonly E[], scope?: (el: E) => boolean): readonly E[] {
-  const checked = scope ? elements.filter(scope) : elements;
+  const checked = scope ? scoped(elements, scope) : elements;
   const { patches, created } = normalizeComposites(checked as unknown as readonly SceneElement[], randomId);
   if (!patches.length && !created.length) return elements;
   const byId = new Map(patches.map((p) => [p.id, p.fields] as const));
@@ -90,6 +90,22 @@ export function withNormalizedComposites<E extends ExcalidrawElement>(elements: 
   created.forEach((spec, i) => newParts.set(spec.hostId, [...(newParts.get(spec.hostId) ?? []), made[i]!]));
   // New parts go just below their host.
   return elements.flatMap((el) => [...((newParts.get(el.id) as E[] | undefined) ?? []), byId.has(el.id) ? (newElementWith(el, byId.get(el.id) as never) as E) : el]);
+}
+
+/**
+ * The elements `scope` picks, plus what an ungrouped host in it needs to be put back together (`normalizeComposites`):
+ * its label and the scene's loose parts. Ungrouped, they no longer share the host's key, so the scope alone would miss
+ * them and the host would get a second outline over its old one.
+ */
+function scoped<E extends ExcalidrawElement>(elements: readonly E[], scope: (el: E) => boolean): E[] {
+  const checked = elements.filter(scope);
+  const looseHosts = new Set(checked.filter((el) => isHost(el) && !el.groupIds.length && !el.isDeleted).map((el) => el.id));
+  if (!looseHosts.size) return checked;
+  const have = new Set(checked.map((el) => el.id));
+  const extra = elements.filter(
+    (el) => !have.has(el.id) && !el.isDeleted && ((el.type === "text" && !!el.containerId && looseHosts.has(el.containerId)) || (!el.groupIds.length && !!compositePartOf(el as unknown as SceneElement))),
+  );
+  return [...checked, ...extra];
 }
 
 const isHost = (el: ExcalidrawElement) => !!compositeKindOf(el as unknown as SceneElement);

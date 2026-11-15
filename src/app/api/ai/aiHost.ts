@@ -11,6 +11,7 @@ import type { NextRequest } from "next/server";
 import { createCopilotHostRuntime } from "@/ai/host/copilot/CopilotHostRuntime";
 import type { HostAuth, HostByokProvider, HostGenerateInput, HostRuntime } from "@/ai/host/hostRuntime";
 import { AIError } from "@/ai/errors";
+import { NON_LOCAL_MESSAGE, nonLocalReason } from "./localTrust";
 
 let hostRuntime: HostRuntime | null = null;
 
@@ -34,6 +35,7 @@ interface AIHostRequestBody {
     model?: string;
     temperature?: number;
     maxTokens?: number;
+    reasoningEffort?: string;
     timeoutMs?: number;
   };
   provider?: HostByokProvider;
@@ -113,6 +115,10 @@ export async function resolveHostInput(req: NextRequest, signal?: AbortSignal): 
   if (!auth) {
     return { response: errorResponse(401, "auth", "No per-user credentials were provided.") };
   }
+  if (auth === LOCAL_FALLBACK) {
+    const refused = refuseNonLocal(req);
+    if (refused) return { response: refused };
+  }
 
   return {
     input: {
@@ -123,6 +129,7 @@ export async function resolveHostInput(req: NextRequest, signal?: AbortSignal): 
         model: body.request.model,
         temperature: body.request.temperature,
         maxTokens: body.request.maxTokens,
+        ...(body.request.reasoningEffort === "low" || body.request.reasoningEffort === "medium" || body.request.reasoningEffort === "high" ? { reasoningEffort: body.request.reasoningEffort } : {}),
         timeoutMs: body.request.timeoutMs,
         signal,
       },
@@ -147,6 +154,20 @@ function extractBearerToken(req: NextRequest): string | undefined {
 function resolveAuth(gitHubToken: string | undefined, provider: HostByokProvider | undefined, mode: AIHostMode): HostAuth | null {
   if (gitHubToken) return { kind: "token", gitHubToken };
   if (provider) return { kind: "logged_in_user" }; // ignored by CopilotHostRuntime when a BYOK provider is set
-  if (mode === "local") return { kind: "logged_in_user" };
+  if (mode === "local") return LOCAL_FALLBACK;
   return null;
+}
+
+/** The one auth value that means "this machine's own Copilot login"; compared by identity so only the real fallback is gated. */
+const LOCAL_FALLBACK: HostAuth = Object.freeze({ kind: "logged_in_user" });
+
+/**
+ * The AI-host fallback gate: before a request may run as this machine's logged-in user, it must be demonstrably local
+ * (`localTrust.ts`). Called before any runtime or model call; `null` means allowed.
+ */
+export function refuseNonLocal(req: NextRequest): NextResponse | null {
+  const reason = nonLocalReason(req.headers);
+  if (!reason) return null;
+  console.warn(`[acute-notes] AI host: refused the logged-in-user fallback for a non-local request (${reason}).`);
+  return errorResponse(403, "auth", NON_LOCAL_MESSAGE);
 }

@@ -1,0 +1,152 @@
+{
+  "caseId": "kn-02-edge-cache-invalidation",
+  "reviewer": "A",
+  "verdicts": [
+    {
+      "candidate": "c1",
+      "verdict": "set",
+      "claimUnits": ["u6"],
+      "conditionQuote": "readers can keep seeing the old headline for up to the remaining 240 seconds of a 300-second TTL, and nothing the origin does will shorten that wait",
+      "claimQuote": "every cached object carries a time to live (TTL), and the edge discards or rechecks its copy once the TTL has passed",
+      "confidence": "medium",
+      "note": "A real weakness of TTL expiry, but the description of how TTL expiry works stays true without it."
+    },
+    {
+      "candidate": "c2",
+      "verdict": "claim",
+      "claimUnits": ["u14"],
+      "conditionQuote": "it is not applied everywhere at the same moment",
+      "claimQuote": "The purge removes the cached copy, so the next request for that URL is fetched fresh from the origin.",
+      "confidence": "high",
+      "note": "At locations that have not yet applied the purge, the next request still gets the old copy, so u14 is false for a short window."
+    },
+    {
+      "candidate": "c3",
+      "verdict": "ambiguous",
+      "claimUnits": ["u13", "u14"],
+      "conditionQuote": "it removes only the exact URL you name",
+      "claimQuote": "When content must change now, the origin can ask the CDN to purge a specific URL.",
+      "confidence": "medium",
+      "note": "Reading 1 (set): u13/u14 already say 'a specific URL' and stay true; reading 2 (claim): presenting URL purge as the way to fix a correction now (u13, u15, u62 'purges handle urgent corrections') is misleading because other pages and query-string variants keep the old content."
+    },
+    {
+      "candidate": "c4",
+      "verdict": "set",
+      "claimUnits": ["u13"],
+      "conditionQuote": "Purge APIs are also rate limited; Larkspur's plan allows 1,000 purge calls per minute, which a bulk correction across the archive can exhaust.",
+      "claimQuote": "the origin can ask the CDN to purge a specific URL",
+      "confidence": "medium",
+      "note": "An operational limit; the purge claim stays true for normal volumes."
+    },
+    {
+      "candidate": "c5",
+      "verdict": "set",
+      "claimUnits": ["u18"],
+      "conditionQuote": "half of the locations had applied a purge within 2 seconds, and the slowest location took 20 seconds",
+      "claimQuote": "Purging is eventually consistent, not instant.",
+      "confidence": "low",
+      "note": "Quantifies the propagation window (the 20 s worst case the table repeats); could also be read as mere supporting evidence for u18."
+    },
+    {
+      "candidate": "c6",
+      "verdict": "claim",
+      "claimUnits": ["u30"],
+      "conditionQuote": "A page is only purged by a key if the origin tagged it with that key, and a missing tag produces a stale page with no error anywhere.",
+      "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+      "confidence": "high",
+      "note": "An untagged page that includes the story is not removed, so 'every cached page' is false in that case."
+    },
+    {
+      "candidate": "c7",
+      "verdict": "set",
+      "claimUnits": ["u30"],
+      "conditionQuote": "Purging `section-politics` at Larkspur removes about 12,000 cached objects at once, and the origin has to absorb the burst of cache misses that follows.",
+      "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+      "confidence": "medium",
+      "note": "A cost of tag purges; the claim about what a tag purge removes stays true."
+    },
+    {
+      "candidate": "c8",
+      "verdict": "claim",
+      "claimUnits": ["u38"],
+      "conditionQuote": "an expired copy is served for at most 60 seconds past its TTL, and after that the edge waits for the origin as it would on an ordinary miss",
+      "claimQuote": "an edge location that receives a request after the 300 seconds have passed returns the expired copy immediately and fetches a fresh one from the origin in the background",
+      "confidence": "medium",
+      "note": "u38 reads as unbounded; a request more than 60 s past the TTL does not get the expired copy immediately."
+    },
+    {
+      "candidate": "c9",
+      "verdict": "ambiguous",
+      "claimUnits": ["u41"],
+      "conditionQuote": "lets the edge keep serving the expired copy for up to 86,400 seconds, or one day, while the origin is returning errors",
+      "claimQuote": "an expired copy is served for at most 60 seconds past its TTL",
+      "confidence": "low",
+      "note": "Reading 1 (claim): an exception to u41's 'at most 60 seconds' bound when the origin errors; reading 2 (not_a_condition): a separate related directive described with its own scope, not limiting any earlier claim."
+    },
+    {
+      "candidate": "c10",
+      "verdict": "set",
+      "claimUnits": ["u39"],
+      "conditionQuote": "some readers see a copy that is older than the TTL alone would suggest",
+      "claimQuote": "The reader gets a fast response, and the next reader gets the refreshed copy.",
+      "confidence": "medium",
+      "note": "A trade-off of serving stale; the speed claim stays true."
+    },
+    {
+      "candidate": "c11",
+      "verdict": "claim",
+      "claimUnits": ["u45", "u46"],
+      "conditionQuote": "Versioning does not help for HTML entry pages.",
+      "claimQuote": "a changed file gets a new URL and the old cached copy is simply never requested again",
+      "confidence": "medium",
+      "note": "u45 scopes to static assets, but u46/u62 ('take static assets out of the problem entirely') mislead unless the HTML pages that reference the new names are themselves refreshed by TTL or purge."
+    },
+    {
+      "candidate": "c12",
+      "verdict": "claim",
+      "claimUnits": ["u46"],
+      "conditionQuote": "If an HTML page stays cached longer than the origin keeps the old asset files, it can send readers to files that no longer exist.",
+      "claimQuote": "the old cached copy is simply never requested again",
+      "confidence": "medium",
+      "note": "Cached HTML still requests old asset names, so 'never requested again' is false while old HTML is cached; u52 is the resulting requirement."
+    },
+    {
+      "candidate": "c13",
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "conditionQuote": "Short TTLs are the safety net, purges handle urgent corrections, stale serving keeps the site fast when the origin struggles, and versioned names take static assets out of the problem entirely.",
+      "claimQuote": "",
+      "confidence": "medium",
+      "note": "A concluding summary of each technique's role; it is a set of claims, not a limit on one."
+    }
+  ],
+  "additional": [
+    {
+      "conditionUnits": ["u40"],
+      "verdict": "set",
+      "claimUnits": ["u38"],
+      "conditionQuote": "where a minute of staleness is acceptable, but not on live election results",
+      "claimQuote": "returns the expired copy immediately and fetches a fresh one from the origin in the background",
+      "confidence": "medium",
+      "note": "Scope of when stale-while-revalidate is appropriate."
+    },
+    {
+      "conditionUnits": ["u12"],
+      "verdict": "set",
+      "claimUnits": ["u62"],
+      "conditionQuote": "Shortening the TTL narrows the window but sends more requests back to the origin: when Larkspur dropped its article TTL from 300 to 30 seconds, origin traffic rose roughly eightfold.",
+      "claimQuote": "Short TTLs are the safety net",
+      "confidence": "medium",
+      "note": "Cost of short TTLs; only u55's 'More origin traffic' column touches it in the candidate list."
+    },
+    {
+      "conditionUnits": ["u9"],
+      "verdict": "claim",
+      "claimUnits": ["u9"],
+      "conditionQuote": "if the origin sent an `ETag`",
+      "claimQuote": "the edge can ask whether the copy changed and receive a short `304 Not Modified` answer when it has not",
+      "confidence": "low",
+      "note": "Intra-sentence condition: conditional revalidation needs an ETag from the origin."
+    }
+  ]
+}

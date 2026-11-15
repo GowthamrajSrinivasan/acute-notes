@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-freshness-resolved-to-real-time",
+  "distortion": "invented_detail",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The freshness conflict is resolved in favour of 'real time'; the hourly-batch statement disappears from the conflict card.",
+  "mutations": [
+    { "op": "replace_text", "node": "c1", "find": "The design section says enriched events are written to the warehouse in **hourly batches**; the freshness section says events reach the warehouse **in real time**. The proposal doesn't say which is meant.", "replace": "Events reach the warehouse in real time." }
+  ],
+  "expectFailing": ["a.freshness-both-values"]
+}

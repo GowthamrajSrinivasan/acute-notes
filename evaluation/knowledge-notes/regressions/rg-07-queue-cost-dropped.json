@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-queue-cost-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The queue decision (u34) loses its cost (a new photo takes a few seconds to appear) and says 'never delays an upload' instead, which the old 'delay' term accepted.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-dec-queue",
+      "find": "**Cost:** a new photo takes a few seconds to appear in feeds.",
+      "replace": "Thumbnail work never delays an upload."
+    }
+  ],
+  "expectFailing": [
+    "a.queue-cost"
+  ]
+}

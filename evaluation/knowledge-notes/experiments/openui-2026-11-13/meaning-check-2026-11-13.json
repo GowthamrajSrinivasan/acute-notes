@@ -1,0 +1,556 @@
+{
+  "approvedBy": "Stage 3 diagnostic approval",
+  "at": "2026-11-13T13:33:30.227Z",
+  "model": "google/gemini-2.5-flash",
+  "cap": 0.02,
+  "labels": "provisional, hand-labelled 2026-11-13",
+  "A": {
+    "estimateUsd": 0.0052,
+    "latencyMs": 5128,
+    "promptChars": 10653,
+    "usage": {
+      "provider": "copilot",
+      "model": "google/gemini-2.5-flash",
+      "promptTokens": 4082,
+      "completionTokens": 479,
+      "reasoningTokens": 0
+    },
+    "usd": 0.00242,
+    "missing": [],
+    "score": {
+      "tp": 0,
+      "fn": 7,
+      "fp": 0,
+      "tn": 17,
+      "unanswered": 0,
+      "byCategory": {
+        "unsupported_wording": {
+          "caught": 0,
+          "of": 2
+        },
+        "condition_separated": {
+          "caught": 0,
+          "of": 3
+        },
+        "caveat_missing": {
+          "caught": 0,
+          "of": 3
+        },
+        "fact_missing": {
+          "caught": 0,
+          "of": 1
+        }
+      }
+    },
+    "rules": {
+      "tp": 2,
+      "fn": 5,
+      "fp": 4,
+      "tn": 13,
+      "unanswered": 18,
+      "byCategory": {
+        "unsupported_wording": {
+          "caught": 0,
+          "of": 2
+        },
+        "condition_separated": {
+          "caught": 1,
+          "of": 3
+        },
+        "caveat_missing": {
+          "caught": 1,
+          "of": 3
+        },
+        "fact_missing": {
+          "caught": 1,
+          "of": 1
+        }
+      }
+    },
+    "items": [
+      {
+        "case": "kn-01",
+        "key": "g1",
+        "truth": [
+          "unsupported_wording"
+        ],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g2",
+        "truth": [
+          "condition_separated"
+        ],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g3",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g4",
+        "truth": [
+          "unsupported_wording",
+          "condition_separated"
+        ],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g5",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g6",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g7",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g8",
+        "truth": [],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g9",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g7",
+        "truth": [],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g9",
+        "truth": [
+          "caveat_missing"
+        ],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g10",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g14",
+        "truth": [],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g23",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g26",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g27",
+        "truth": [],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g31",
+        "truth": [
+          "condition_separated",
+          "fact_missing"
+        ],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g33",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g34",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g35",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g37",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g41",
+        "truth": [
+          "caveat_missing"
+        ],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g47",
+        "truth": [
+          "caveat_missing"
+        ],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g48",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      }
+    ]
+  },
+  "B": {
+    "estimateUsd": 0.00639,
+    "latencyMs": 36298,
+    "promptChars": 18625,
+    "usage": {
+      "provider": "copilot",
+      "model": "google/gemini-2.5-flash",
+      "promptTokens": 5788,
+      "completionTokens": 479,
+      "reasoningTokens": 0
+    },
+    "usd": 0.00293,
+    "missing": [],
+    "score": {
+      "tp": 0,
+      "fn": 7,
+      "fp": 0,
+      "tn": 17,
+      "unanswered": 0,
+      "byCategory": {
+        "unsupported_wording": {
+          "caught": 0,
+          "of": 2
+        },
+        "condition_separated": {
+          "caught": 0,
+          "of": 3
+        },
+        "caveat_missing": {
+          "caught": 0,
+          "of": 3
+        },
+        "fact_missing": {
+          "caught": 0,
+          "of": 1
+        }
+      }
+    },
+    "rules": {
+      "tp": 2,
+      "fn": 5,
+      "fp": 4,
+      "tn": 13,
+      "unanswered": 18,
+      "byCategory": {
+        "unsupported_wording": {
+          "caught": 0,
+          "of": 2
+        },
+        "condition_separated": {
+          "caught": 1,
+          "of": 3
+        },
+        "caveat_missing": {
+          "caught": 1,
+          "of": 3
+        },
+        "fact_missing": {
+          "caught": 1,
+          "of": 1
+        }
+      }
+    },
+    "items": [
+      {
+        "case": "kn-01",
+        "key": "g1",
+        "truth": [
+          "unsupported_wording"
+        ],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g2",
+        "truth": [
+          "condition_separated"
+        ],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g3",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g4",
+        "truth": [
+          "unsupported_wording",
+          "condition_separated"
+        ],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g5",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g6",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g7",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g8",
+        "truth": [],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-01",
+        "key": "g9",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g7",
+        "truth": [],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g9",
+        "truth": [
+          "caveat_missing"
+        ],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g10",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g14",
+        "truth": [],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g23",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g26",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g27",
+        "truth": [],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g31",
+        "truth": [
+          "condition_separated",
+          "fact_missing"
+        ],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g33",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g34",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g35",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g37",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g41",
+        "truth": [
+          "caveat_missing"
+        ],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g47",
+        "truth": [
+          "caveat_missing"
+        ],
+        "rule": true,
+        "verdict": "supported",
+        "reason": ""
+      },
+      {
+        "case": "kn-02",
+        "key": "g48",
+        "truth": [],
+        "rule": false,
+        "verdict": "supported",
+        "reason": ""
+      }
+    ]
+  },
+  "spentUsd": 0.00536
+}

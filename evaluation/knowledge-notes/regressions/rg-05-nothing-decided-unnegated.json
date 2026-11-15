@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-nothing-decided-unnegated",
+  "distortion": "fabricated_agreement",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "The negation is dropped: 'On the freeze, nothing was decided' becomes 'On the freeze, it was decided' (u62: 'Let's not decide the freeze now'). The old pattern also failed the faithful wording.",
+  "mutations": [
+    { "op": "replace_text", "node": "g3", "find": "On the freeze, nothing was decided", "replace": "On the freeze, it was decided" }
+  ],
+  "expectFailing": ["a.no-fabricated-agreement"]
+}

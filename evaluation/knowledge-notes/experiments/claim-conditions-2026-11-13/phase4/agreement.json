@@ -1,0 +1,269 @@
+{
+  "clauseIdentification": {
+    "conditionRecordsX": 242,
+    "conditionRecordsY": 242,
+    "matched": 230,
+    "onlyX": 12,
+    "onlyY": 12,
+    "f1": 0.95
+  },
+  "unitLevel": {
+    "units": 206,
+    "agreement": 0.97,
+    "kappa": 0.82
+  },
+  "verdictOnMatched": {
+    "pairs": 230,
+    "agreement4way": 0.85,
+    "kappa4way": 0.66,
+    "confusionXtoY": {
+      "claim→claim": 145,
+      "set→set": 48,
+      "set→claim": 9,
+      "claim→ambiguous": 3,
+      "claim→set": 13,
+      "ambiguous→claim": 6,
+      "ambiguous→ambiguous": 2,
+      "ambiguous→set": 3,
+      "set→ambiguous": 1
+    },
+    "claimSetOnly": {
+      "pairs": 215,
+      "agreement": 0.9,
+      "kappa": 0.74
+    }
+  },
+  "ambiguousRate": {
+    "X": 0.05,
+    "Y": 0.03
+  },
+  "claimLinkOnMatched": {
+    "exact": 191,
+    "disjoint": 37,
+    "overlap": 2
+  },
+  "byRule": {
+    "general": {
+      "pairs": 109,
+      "verdictAgreement": 0.82,
+      "ambiguousEither": 6
+    },
+    "R1": {
+      "pairs": 41,
+      "verdictAgreement": 0.88,
+      "ambiguousEither": 2
+    },
+    "R2": {
+      "pairs": 33,
+      "verdictAgreement": 0.79,
+      "ambiguousEither": 5
+    },
+    "R3": {
+      "pairs": 45,
+      "verdictAgreement": 0.87,
+      "ambiguousEither": 3
+    },
+    "R4": {
+      "pairs": 35,
+      "verdictAgreement": 0.74,
+      "ambiguousEither": 6
+    },
+    "R5": {
+      "pairs": 22,
+      "verdictAgreement": 0.91,
+      "ambiguousEither": 2
+    }
+  },
+  "perCase": {
+    "kn-01-idempotency-keys": {
+      "X": {
+        "claim": 7,
+        "set": 1
+      },
+      "Y": {
+        "claim": 7
+      },
+      "matched": 7,
+      "onlyX": 1,
+      "onlyY": 0,
+      "verdictSame": 7
+    },
+    "kn-02-edge-cache-invalidation": {
+      "X": {
+        "claim": 24,
+        "set": 11
+      },
+      "Y": {
+        "claim": 24,
+        "set": 10,
+        "ambiguous": 1
+      },
+      "matched": 34,
+      "onlyX": 1,
+      "onlyY": 1,
+      "verdictSame": 30
+    },
+    "kn-03-blue-green-deploy": {
+      "X": {
+        "set": 2,
+        "claim": 18,
+        "ambiguous": 1
+      },
+      "Y": {
+        "set": 4,
+        "claim": 18,
+        "not_a_condition": 1
+      },
+      "matched": 20,
+      "onlyX": 1,
+      "onlyY": 2,
+      "verdictSame": 18
+    },
+    "kn-04-queue-choice": {
+      "X": {
+        "set": 5,
+        "not_a_condition": 3,
+        "claim": 18,
+        "ambiguous": 1
+      },
+      "Y": {
+        "set": 4,
+        "claim": 20,
+        "not_a_condition": 2
+      },
+      "matched": 23,
+      "onlyX": 1,
+      "onlyY": 1,
+      "verdictSame": 20
+    },
+    "kn-05-incident-review-meeting": {
+      "X": {
+        "claim": 19,
+        "set": 6,
+        "not_a_condition": 10,
+        "ambiguous": 2
+      },
+      "Y": {
+        "claim": 12,
+        "set": 13,
+        "not_a_condition": 10,
+        "ambiguous": 1
+      },
+      "matched": 24,
+      "onlyX": 3,
+      "onlyY": 2,
+      "verdictSame": 18
+    },
+    "kn-06-hybrid-search-reranking": {
+      "X": {
+        "claim": 20,
+        "not_a_condition": 3,
+        "set": 7
+      },
+      "Y": {
+        "claim": 19,
+        "not_a_condition": 3,
+        "set": 7,
+        "ambiguous": 1
+      },
+      "matched": 27,
+      "onlyX": 0,
+      "onlyY": 0,
+      "verdictSame": 24
+    },
+    "kn-07-photo-sharing-hld": {
+      "X": {
+        "set": 6,
+        "claim": 10,
+        "not_a_condition": 1
+      },
+      "Y": {
+        "set": 6,
+        "claim": 9,
+        "ambiguous": 1
+      },
+      "matched": 15,
+      "onlyX": 1,
+      "onlyY": 1,
+      "verdictSame": 12
+    },
+    "kn-08-helpdesk-answers-hld-lld": {
+      "X": {
+        "claim": 8,
+        "set": 5
+      },
+      "Y": {
+        "claim": 7,
+        "set": 6
+      },
+      "matched": 13,
+      "onlyX": 0,
+      "onlyY": 0,
+      "verdictSame": 12
+    },
+    "kn-09-billing-codebase-map": {
+      "X": {
+        "set": 8,
+        "claim": 12,
+        "ambiguous": 1
+      },
+      "Y": {
+        "set": 7,
+        "claim": 12,
+        "ambiguous": 1
+      },
+      "matched": 19,
+      "onlyX": 2,
+      "onlyY": 1,
+      "verdictSame": 13
+    },
+    "kn-10-inventory-architecture-frames": {
+      "X": {
+        "claim": 12,
+        "set": 3,
+        "ambiguous": 1
+      },
+      "Y": {
+        "claim": 13,
+        "set": 4
+      },
+      "matched": 16,
+      "onlyX": 0,
+      "onlyY": 1,
+      "verdictSame": 15
+    },
+    "kn-11-ambiguous-analytics-proposal": {
+      "X": {
+        "set": 6,
+        "claim": 5,
+        "not_a_condition": 2,
+        "ambiguous": 4
+      },
+      "Y": {
+        "set": 4,
+        "claim": 9,
+        "not_a_condition": 2,
+        "ambiguous": 3
+      },
+      "matched": 14,
+      "onlyX": 1,
+      "onlyY": 2,
+      "verdictSame": 10
+    },
+    "kn-12-flag-rollout-update": {
+      "X": {
+        "set": 4,
+        "claim": 14,
+        "ambiguous": 1
+      },
+      "Y": {
+        "set": 5,
+        "claim": 14
+      },
+      "matched": 18,
+      "onlyX": 1,
+      "onlyY": 1,
+      "verdictSame": 16
+    }
+  }
+}

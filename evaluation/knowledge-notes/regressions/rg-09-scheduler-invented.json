@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-scheduler-invented",
+  "distortion": "invented_detail",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The unknown monthly trigger is answered with a cron job; the other open questions stay marked unknown, so a.open-questions still passes and only a.no-invented-scheduler can catch it.",
+  "mutations": [
+    { "op": "replace_text", "node": "t_q", "find": "**Monthly run:** unknown. The admin action is clear, but the scheduler that calls `generateInvoice` for every account could not be found.", "replace": "**Monthly run:** a monthly cron job calls `generateInvoice` for every account." }
+  ],
+  "expectFailing": ["a.no-invented-scheduler"]
+}

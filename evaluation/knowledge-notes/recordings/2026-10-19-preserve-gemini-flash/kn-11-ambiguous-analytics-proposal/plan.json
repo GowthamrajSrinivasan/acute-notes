@@ -1,0 +1,620 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "u0_h1",
+      "role": "title",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) § heading#0",
+      "type": "heading",
+      "content": {
+        "text": "Proposal: product-analytics event pipeline (draft v0.3)"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "Product analytics event pipeline: design, components, rollout, and open questions."
+      }
+    },
+    {
+      "id": "g0",
+      "role": "flow",
+      "importance": "high",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § group#0",
+      "type": "group",
+      "content": {
+        "label": "Proposed design",
+        "arrangement": "chain",
+        "takeaway": "Event analytics pipeline collects, validates, enriches, and stores events for dashboards."
+      }
+    },
+    {
+      "id": "u1_n1",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § step#1",
+      "parent": "g0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Client SDKs send events"
+      }
+    },
+    {
+      "id": "u1_n2",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Client SDKs in the web and mobile apps send events to a collector service over HTTPS. Clients batch events and send them every 10 seconds, or sooner when the app goes to the background. Each event carries an event name, a timestamp, an anonymous device id and, for signed-in users, an account id."
+      }
+    },
+    {
+      "id": "u1_n3",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § step#2",
+      "parent": "g0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Collector validates events"
+      }
+    },
+    {
+      "id": "u1_n4",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § text#1",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "The collector validates each event against the schema registry and rejects events that do not match a registered schema. Accepted events are published to the `analytics.events` topic on the message bus."
+      }
+    },
+    {
+      "id": "u1_n5",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § step#3",
+      "parent": "g0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · Enrichment step consumes topic"
+      }
+    },
+    {
+      "id": "u1_n6",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § text#2",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "An enrichment step consumes the topic and adds account attributes, such as plan tier and region. The enrichment step uses the user service. If an account cannot be found, the event is passed on without account attributes."
+      }
+    },
+    {
+      "id": "u1_n7",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § step#4",
+      "parent": "g0",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Enriched events written to warehouse"
+      }
+    },
+    {
+      "id": "u1_n8",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § text#3",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Enriched events are then written to the warehouse in hourly batches, where the analytics team builds dashboards on them. The first dashboards will cover the onboarding funnel and weekly active accounts per plan tier."
+      }
+    },
+    {
+      "id": "u1_n9",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § text#4",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "We expect the user service to stay lightly loaded, so enrichment should avoid adding much traffic to it."
+      }
+    },
+    {
+      "id": "u1_a1",
+      "title": "Flow Summary",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design § text#5",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This design outlines an event analytics pipeline from client SDKs to a data warehouse, including event collection, validation, enrichment, and storage for dashboarding."
+      }
+    },
+    {
+      "id": "g1",
+      "role": "comparison",
+      "importance": "high",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Components § group#0",
+      "type": "group",
+      "content": {
+        "label": "Components",
+        "arrangement": "compare",
+        "takeaway": "Key components, owners, and data retention policies are detailed, with one owner TBD."
+      }
+    },
+    {
+      "id": "u2_n1",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Components § table#0",
+      "parent": "g1",
+      "type": "table",
+      "content": {
+        "columns": [
+          "Component",
+          "Owner",
+          "Retention"
+        ],
+        "rows": [
+          [
+            "Collector",
+            "Platform team",
+            "none"
+          ],
+          [
+            "analytics.events topic",
+            "Platform team",
+            "7 days"
+          ],
+          [
+            "Enrichment",
+            "Data team",
+            "none"
+          ],
+          [
+            "Warehouse raw events",
+            "Data team",
+            "90 days"
+          ],
+          [
+            "Schema registry",
+            "TBD",
+            "indefinite"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "u2_a1",
+      "title": "Analysis",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Components § text#0",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This table outlines the key components, their respective owners, and data retention policies. The 'Schema registry' component currently has an undefined owner ('TBD'), indicating a pending decision or assignment. Data retention varies significantly across components, from 'none' for Collector and Enrichment to 'indefinite' for Schema registry."
+      }
+    },
+    {
+      "id": "g2",
+      "role": "flow",
+      "importance": "high",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout § group#0",
+      "type": "group",
+      "content": {
+        "label": "Rollout",
+        "arrangement": "chain",
+        "takeaway": "Rollout has two phases; mobile events await SDK, pipeline cost is unknown."
+      }
+    },
+    {
+      "id": "u3_n1",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout § phase#1",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Phase 1: Web App Events"
+      }
+    },
+    {
+      "id": "u3_n2",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout § text#0",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Covers the web app's sign-up and checkout events. Expected to take about 6 weeks for 2 engineers."
+      }
+    },
+    {
+      "id": "u3_n3",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout § phase#2",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Phase 2: Mobile Events"
+      }
+    },
+    {
+      "id": "u3_n4",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout § text#1",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Adds mobile events once the mobile SDK is ready; no date has been set for it."
+      }
+    },
+    {
+      "id": "u3_a1",
+      "title": "Rollout Overview",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout § text#2",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The rollout is divided into two phases. Phase 1 is active, focusing on web app events, while Phase 2 for mobile events is dependent on the mobile SDK's readiness, with no set timeline. The cost of running the pipeline is an unaddressed item."
+      }
+    },
+    {
+      "id": "u3_a2",
+      "title": "Unestimated Cost",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout § text#3",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The cost of running the pipeline has not been estimated yet."
+      }
+    },
+    {
+      "id": "g3",
+      "role": "notes",
+      "importance": "high",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Open questions § group#0",
+      "type": "group",
+      "content": {
+        "label": "Open questions",
+        "arrangement": "grid",
+        "takeaway": "Three open questions regarding schema registry ownership, rejected events, and mobile/web schema consistency."
+      }
+    },
+    {
+      "id": "u4_n1",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Open questions § todo#0",
+      "parent": "g3",
+      "type": "todo",
+      "content": {
+        "items": [
+          {
+            "text": "Who owns the schema registry?",
+            "checked": false
+          },
+          {
+            "text": "What happens to events the collector rejects: are they dropped, or kept somewhere for debugging?",
+            "checked": false
+          },
+          {
+            "text": "Should mobile events use the same schemas as web events?",
+            "checked": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "u4_ax1",
+      "title": "Open Questions Summary",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Open questions § text#0",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "These are three open questions that require clarification or decisions before proceeding. Each question addresses a distinct aspect of the event collection and schema management process."
+      }
+    },
+    {
+      "id": "g4",
+      "role": "decision",
+      "importance": "high",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Next step § group#0",
+      "type": "group",
+      "content": {
+        "label": "Next step",
+        "arrangement": "grid",
+        "takeaway": "Seek approval to start Phase 1, resolving open questions in parallel."
+      }
+    },
+    {
+      "id": "u5_n1",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Next step § shape#0",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Start Phase 1"
+      }
+    },
+    {
+      "id": "u5_n2",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Next step § text#0",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "We ask for approval to start phase 1 while the open questions are settled in parallel."
+      }
+    },
+    {
+      "id": "u5_a1",
+      "title": "Status",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Next step § text#1",
+      "parent": "g4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Start Phase 1 - proposed: awaiting approval to proceed while open questions are resolved concurrently."
+      }
+    },
+    {
+      "id": "g5",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Context § group#0",
+      "type": "group",
+      "content": {
+        "label": "Context",
+        "arrangement": "stack",
+        "takeaway": "A single pipeline is proposed to consolidate scattered product event data."
+      }
+    },
+    {
+      "id": "u6_n1",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Context § P1",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "The growth team wants to understand how customers use the Lumen web and mobile apps. Today, product events are scattered across three logging tools, and nobody can answer a simple funnel question without exporting CSV files by hand. This proposal describes a single pipeline that collects product-analytics events, enriches them and makes them available in the warehouse. The first questions the team wants answered are how many new accounts finish onboarding, and which features paying customers use in their first month."
+      }
+    },
+    {
+      "id": "g6",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Schema registry § group#0",
+      "type": "group",
+      "content": {
+        "label": "Schema registry",
+        "arrangement": "stack",
+        "takeaway": "Schema registry requires event type registration and versioning, but ownership is undecided."
+      }
+    },
+    {
+      "id": "u7_n1",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Schema registry § text#0",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "- Every event type must be registered before clients can send it.\n- Schemas are versioned, and a breaking change requires a new version rather than an edit to the existing one.\n- Ownership of the schema registry has not been decided; the platform team and the data team have each suggested the other."
+      }
+    },
+    {
+      "id": "u7_a1",
+      "title": "Key Considerations",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Schema registry § text#1",
+      "parent": "g6",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The schema registry is crucial for event type management, but its ownership remains an open decision between the platform and data teams."
+      }
+    },
+    {
+      "id": "g7",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Freshness § group#0",
+      "type": "group",
+      "content": {
+        "label": "Freshness",
+        "arrangement": "stack",
+        "takeaway": "Real-time event pipeline keeps launch dashboards current for product managers."
+      }
+    },
+    {
+      "id": "u8_n1",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Freshness § text#0",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "- Product managers want to see feature adoption in real-time, especially during launches.\n- Launch reviews typically occur within 2 hours of a release.\n- The current pipeline delivers events to the warehouse in real-time.\n- This ensures launch dashboards remain current."
+      }
+    },
+    {
+      "id": "u8_src~text",
+      "title": "Also in the source",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Freshness § text#1",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "With this pipeline, events reach the warehouse in real time, so launch dashboards stay current."
+      }
+    },
+    {
+      "id": "g8",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Retention and privacy § group#0",
+      "type": "group",
+      "content": {
+        "label": "Retention and privacy",
+        "arrangement": "stack",
+        "takeaway": "Raw event retention is 30 days; aggregated table retention is TBD."
+      }
+    },
+    {
+      "id": "u9_n1",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Retention and privacy § text#0",
+      "parent": "g8",
+      "type": "text",
+      "content": {
+        "markdown": "* Raw events are kept for 30 days, then deleted.\n* Only aggregated tables are kept longer.\n* Deleting raw events after a fixed period limits access request search scope.\n* Events must not contain email addresses or free-text input from users.\n* IP addresses are truncated by the collector before event publication."
+      }
+    },
+    {
+      "id": "u9_n2",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Retention and privacy § todo#0",
+      "parent": "g8",
+      "type": "todo",
+      "content": {
+        "items": [
+          {
+            "text": "Determine how long aggregated tables are kept.",
+            "checked": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "g9",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Non-goals § group#0",
+      "type": "group",
+      "content": {
+        "label": "Non-goals",
+        "arrangement": "stack",
+        "takeaway": "The pipeline focuses on specific data processing, not operational monitoring or billing records."
+      }
+    },
+    {
+      "id": "u10_n1",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Non-goals § text#0",
+      "parent": "g9",
+      "type": "text",
+      "content": {
+        "markdown": "- Operational monitoring or alerting\n- Replacing the billing system's revenue records"
+      }
+    },
+    {
+      "id": "u10_src~text",
+      "title": "Also in the source",
+      "stableKey": "Proposal: product-analytics event pipeline (draft v0.3) › Non-goals § text#1",
+      "parent": "g9",
+      "type": "text",
+      "content": {
+        "markdown": "This pipeline is not meant for operational monitoring or alerting; error logs and service metrics stay in the existing observability stack."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u1_n1",
+      "to": "u1_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "u1_n3",
+      "to": "u1_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u1_n5",
+      "to": "u1_n7",
+      "type": "flows_to"
+    },
+    {
+      "from": "u1_n5",
+      "to": "u1_n9",
+      "type": "relates_to",
+      "label": "constraint"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n3",
+      "type": "flows_to",
+      "label": "after completion"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n3",
+      "to": "u3_n4",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n3",
+      "to": "u3_a1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_a1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_a1",
+      "to": "u3_a2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u4_ax1",
+      "to": "u4_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u5_n1",
+      "to": "u5_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u7_n1",
+      "to": "u7_a1",
+      "type": "explained_by"
+    },
+    {
+      "from": "u9_n1",
+      "to": "u9_n2",
+      "type": "relates_to",
+      "label": "TBD"
+    },
+    {
+      "from": "g5",
+      "to": "g0",
+      "type": "supports"
+    },
+    {
+      "from": "g0",
+      "to": "g6",
+      "type": "references"
+    },
+    {
+      "from": "g0",
+      "to": "g8",
+      "type": "references"
+    },
+    {
+      "from": "g0",
+      "to": "g1",
+      "type": "contains"
+    },
+    {
+      "from": "g6",
+      "to": "g3",
+      "type": "references"
+    },
+    {
+      "from": "g2",
+      "to": "g3",
+      "type": "blocks"
+    },
+    {
+      "from": "g4",
+      "to": "g2",
+      "type": "supports"
+    },
+    {
+      "from": "g4",
+      "to": "g3",
+      "type": "references"
+    }
+  ],
+  "metadata": {}
+}

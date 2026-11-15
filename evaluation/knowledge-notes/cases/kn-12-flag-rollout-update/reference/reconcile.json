@@ -1,0 +1,11 @@
+{
+  "items": [
+    { "key": "rollout-stages § stages", "text": "Three stages: internal (staff accounts only, usually one working day), canary (a small share of real traffic), general availability for everyone in steps of 25%, 50% and 100%.", "state": "unchanged" },
+    { "key": "canary § window", "text": "Canary: 5% of requests, picked at random per request, for no less than 60 minutes; any manual change restarts the measurement.", "state": "update_clean" },
+    { "key": "advancing-from-canary § gate", "text": "A flag leaves canary only when the metrics check passes and the on-call engineer approves the move in the rollout tool; on-call may decline while an incident is open.", "state": "update_clean" },
+    { "key": "kill-switch § requirement", "text": "Every flag needs a kill switch that turns it off within 1 minute. Tested in staging before canary and recorded in the rollout tool: a flag without a tested kill switch cannot enter canary. Anyone on the owning team may use it without approval. Turning the flag back on restarts the rollout from the internal stage. My note: Runbook RB-12 — during an incident use the Orbit console toggle, not the API.", "state": "unchanged" },
+    { "key": "monitoring § dashboard", "text": "During the ramp-up, watch the error dashboard. If errors rise, page the on-call engineer.", "state": "review" },
+    { "key": "flag-cleanup § removal", "text": "Remove a flag from the code 30 days after it is fully on.", "state": "remove" },
+    { "key": "rollback-rehearsal § rehearsal", "text": "Before general availability, rehearse a rollback once in staging: switch off, confirm the old behaviour, switch on. About 10 minutes, no approval needed.", "state": "add" }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-continue-label-takes-switchback-threshold",
+  "distortion": "condition_dropped",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The continue branch (u30) is labelled with the switch-back condition: 'above 2% within 15 minutes: switch back' on the edge to the standby step. Its 'within' used to satisfy the 'at or below' check.",
+  "mutations": [
+    {
+      "op": "set_label",
+      "from": "n12",
+      "to": "n13",
+      "label": "above 2% within 15 minutes: switch back"
+    }
+  ],
+  "expectFailing": [
+    "a.rel-watch-standby"
+  ]
+}

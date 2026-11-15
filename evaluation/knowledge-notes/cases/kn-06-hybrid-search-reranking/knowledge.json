@@ -172,7 +172,7 @@
     {
       "id": "ku.cross-encoder",
       "title": "A cross-encoder rescores the fused candidates and keeps the top 8",
-      "claim": "A cross-encoder reads the query and one passage together and outputs one relevance score, judging relevance far more accurately than either retriever; it is too expensive for the whole collection, so it runs only on the fused candidates, and the top 8 passages are kept.",
+      "claim": "A cross-encoder reads the query and one passage together and outputs one relevance score, judging relevance far more accurately than either retriever; that accuracy is expensive, so it runs only on the fused candidates, never on the whole collection, and the top 8 passages are kept.",
       "explanation": "The reranking step: what it is, why it runs only on candidates, and what it hands on.",
       "type": "component",
       "importance": "important",
@@ -210,14 +210,14 @@
     },
     {
       "id": "ku.generation",
-      "title": "The model answers only from the top 8 passages and cites them",
-      "claim": "The language model gets the question and the top 8 passages, answers only from them, cites the passages it used, and says so when none addresses the question instead of answering from general knowledge.",
+      "title": "The model is told to answer only from the top 8 passages and cite them",
+      "claim": "The language model gets the question and the top 8 passages and is instructed to answer only from them and cite the passages it used; when none addresses the question it should say so instead of answering from general knowledge.",
       "explanation": "The end of the pipeline and its fallback rule.",
       "type": "process",
       "importance": "critical",
       "sourceUnits": ["u34", "u35"],
       "provenance": "explicit",
-      "mustPreserve": ["say so when none addresses the question"],
+      "mustPreserve": ["instructed to answer only from them", "say so when none addresses the question"],
       "paraphrase": { "allowed": true },
       "omission": { "allowed": false }
     },
@@ -290,7 +290,7 @@
     {
       "id": "ku.latency-option",
       "title": "A tight latency budget can rerank fewer candidates",
-      "claim": "With a strict latency budget, rerank fewer candidates, for example the top 30 of the fused list, at some cost in recall.",
+      "claim": "Teams with a strict latency budget can rerank fewer candidates, for example the top 30 of the fused list, at some cost in recall.",
       "explanation": "An option, conditional on a latency budget, with its own cost.",
       "type": "trade_off",
       "importance": "supplementary",

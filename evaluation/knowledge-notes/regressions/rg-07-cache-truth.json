@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-cache-truth",
+  "distortion": "invented_detail",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The disposable-cache decision is inverted: 'The cache is a source of truth for feeds'. The old pattern only caught 'cache is the source of truth'.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-dec-cache",
+      "find": "Feed pages are cached for speed only. The cache is not the source of truth; the metadata database stays it, so the cache can be flushed at any time.",
+      "replace": "Feed pages are cached for speed. The cache is a source of truth for feeds, so it is never flushed."
+    }
+  ],
+  "expectFailing": [
+    "a.no-cache-truth"
+  ]
+}

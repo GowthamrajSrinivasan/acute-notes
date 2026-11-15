@@ -1,0 +1,1626 @@
+{
+  "dataset": "v3.1-pre",
+  "note": "Queued for two independent humans; nothing here is decided. Item order is a fixed hash, so reasons are not guessable from position.",
+  "byReason": {
+    "finding1_pattern": 49,
+    "second_link_evidence": 13,
+    "reference_ambiguous_unsettled": 3,
+    "link_needs_human_readjudication": 2
+  },
+  "items": [
+    {
+      "record": "kn-09-billing-codebase-map/k20",
+      "case": "kn-09-billing-codebase-map",
+      "id": "k20",
+      "units": [
+        "u49"
+      ],
+      "clause": "nothing stops another module from querying `price_plans` directly",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k20",
+            "rule": "R3",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R01"
+    },
+    {
+      "record": "kn-05-incident-review-meeting/k3",
+      "case": "kn-05-incident-review-meeting",
+      "id": "k3",
+      "units": [
+        "u30"
+      ],
+      "clause": "that would have paged twice on noise",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k3",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R02"
+    },
+    {
+      "record": "kn-03-blue-green-deploy/k21",
+      "case": "kn-03-blue-green-deploy",
+      "id": "k21",
+      "units": [
+        "u29"
+      ],
+      "clause": "Do not run the next release's migrations while blue is still on standby.",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k21",
+            "rule": "R4",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R03"
+    },
+    {
+      "record": "kn-06-hybrid-search-reranking/k7",
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k7",
+      "units": [
+        "u15"
+      ],
+      "clause": "whenever the encoder changes",
+      "reasons": [
+        "second_link_evidence"
+      ],
+      "details": {
+        "second_link_evidence": [
+          {
+            "v3id": "k7",
+            "candidateLink": [
+              "u10"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": false,
+            "proposedBy": "X"
+          }
+        ]
+      },
+      "item": "R04"
+    },
+    {
+      "record": "kn-08-helpdesk-answers-hld-lld/k11",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k11",
+      "units": [
+        "u28"
+      ],
+      "clause": "a 20-second timeout",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k11",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R05"
+    },
+    {
+      "record": "kn-12-flag-rollout-update/k16",
+      "case": "kn-12-flag-rollout-update",
+      "id": "k16",
+      "units": [
+        "u24"
+      ],
+      "clause": "turning it back on starts the rollout again from the internal stage",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k16",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R06"
+    },
+    {
+      "record": "kn-10-inventory-architecture-frames/k4",
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k4",
+      "units": [
+        "u15"
+      ],
+      "clause": "not confirmed within 15 minutes",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k4",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R07"
+    },
+    {
+      "record": "kn-11-ambiguous-analytics-proposal/k4",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "id": "k4",
+      "units": [
+        "u12"
+      ],
+      "clause": "If an account cannot be found",
+      "reasons": [
+        "second_link_evidence"
+      ],
+      "details": {
+        "second_link_evidence": [
+          {
+            "v3id": "k4",
+            "candidateLink": [
+              "u10"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": false,
+            "proposedBy": "X"
+          }
+        ]
+      },
+      "item": "R08"
+    },
+    {
+      "record": "kn-10-inventory-architecture-frames/k3",
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k3",
+      "units": [
+        "u14"
+      ],
+      "clause": "it never makes a partial reservation",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k3",
+            "rule": "R4",
+            "phase3Set": true,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R09"
+    },
+    {
+      "record": "kn-04-queue-choice/k11",
+      "case": "kn-04-queue-choice",
+      "id": "k11",
+      "units": [
+        "u27"
+      ],
+      "clause": "today only the email handler is",
+      "reasons": [
+        "reference_ambiguous_unsettled"
+      ],
+      "details": {
+        "reference_ambiguous_unsettled": [
+          {
+            "v3id": "k11",
+            "sampledItem": "H26",
+            "humans": "claim / set"
+          }
+        ]
+      },
+      "item": "R10"
+    },
+    {
+      "record": "kn-08-helpdesk-answers-hld-lld/k10",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k10",
+      "units": [
+        "u27"
+      ],
+      "clause": "limited to 6,000 tokens",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k10",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R11"
+    },
+    {
+      "record": "kn-08-helpdesk-answers-hld-lld/k6",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k6",
+      "units": [
+        "u16"
+      ],
+      "clause": "using the same embedding model as the Ingestion worker",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k6",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R12"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k10",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k10",
+      "units": [
+        "u19"
+      ],
+      "clause": "it removes only the exact URL you name",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k10",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R13"
+    },
+    {
+      "record": "kn-11-ambiguous-analytics-proposal/k13",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "id": "k13",
+      "units": [
+        "u35"
+      ],
+      "clause": "the web app's sign-up and checkout events",
+      "reasons": [
+        "reference_ambiguous_unsettled"
+      ],
+      "details": {
+        "reference_ambiguous_unsettled": [
+          {
+            "v3id": "k13",
+            "sampledItem": "H27",
+            "humans": "set / ambiguous"
+          }
+        ]
+      },
+      "item": "R14"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k7",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k7",
+      "units": [
+        "u16"
+      ],
+      "clause": "but it is not applied everywhere at the same moment",
+      "reasons": [
+        "finding1_pattern",
+        "second_link_evidence"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k7",
+            "rule": "R4",
+            "phase3Set": false,
+            "cues": [
+              "contrast",
+              "exclusion"
+            ]
+          }
+        ],
+        "second_link_evidence": [
+          {
+            "v3id": "k7",
+            "candidateLink": [
+              "u14"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": false,
+            "proposedBy": "X"
+          }
+        ]
+      },
+      "item": "R15"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k21",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k21",
+      "units": [
+        "u40"
+      ],
+      "clause": "but not on live election results",
+      "reasons": [
+        "second_link_evidence"
+      ],
+      "details": {
+        "second_link_evidence": [
+          {
+            "v3id": "k21",
+            "candidateLink": [
+              "u37"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": false,
+            "proposedBy": "X"
+          }
+        ]
+      },
+      "item": "R16"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k20",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k20",
+      "units": [
+        "u40"
+      ],
+      "clause": "where a minute of staleness is acceptable",
+      "reasons": [
+        "second_link_evidence"
+      ],
+      "details": {
+        "second_link_evidence": [
+          {
+            "v3id": "k20",
+            "candidateLink": [
+              "u40"
+            ],
+            "candidateLevel": "local",
+            "alreadyALink": false,
+            "proposedBy": "X"
+          }
+        ]
+      },
+      "item": "R17"
+    },
+    {
+      "record": "kn-10-inventory-architecture-frames/k16",
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k16",
+      "units": [
+        "u50"
+      ],
+      "clause": "only found when someone opens the admin UI",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k16",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R18"
+    },
+    {
+      "record": "kn-08-helpdesk-answers-hld-lld/k1",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k1",
+      "units": [
+        "u5"
+      ],
+      "clause": "which is the only component allowed to talk to the external model provider",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k1",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R19"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k12",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k12",
+      "units": [
+        "u21"
+      ],
+      "clause": "`/story/417?ref=social` is a different cache entry from `/story/417` and is not removed by purging it",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k12",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R20"
+    },
+    {
+      "record": "kn-05-incident-review-meeting/k36",
+      "case": "kn-05-incident-review-meeting",
+      "id": "k36",
+      "units": [
+        "u94"
+      ],
+      "clause": "That's an open question too",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k36",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R21"
+    },
+    {
+      "record": "kn-12-flag-rollout-update/k5",
+      "case": "kn-12-flag-rollout-update",
+      "id": "k5",
+      "units": [
+        "u12"
+      ],
+      "clause": "chosen at random per request rather than per user",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k5",
+            "rule": "general",
+            "phase3Set": false,
+            "cues": [
+              "contrast"
+            ]
+          }
+        ]
+      },
+      "item": "R22"
+    },
+    {
+      "record": "kn-07-photo-sharing-hld/k12",
+      "case": "kn-07-photo-sharing-hld",
+      "id": "k12",
+      "units": [
+        "u34"
+      ],
+      "clause": "The cost is that a new photo takes a few seconds to appear in feeds.",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k12",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R23"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k11",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k11",
+      "units": [
+        "u20"
+      ],
+      "clause": "until it is purged separately or expires",
+      "reasons": [
+        "second_link_evidence"
+      ],
+      "details": {
+        "second_link_evidence": [
+          {
+            "v3id": "k11",
+            "candidateLink": [
+              "u15"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": false,
+            "proposedBy": "Y"
+          }
+        ]
+      },
+      "item": "R24"
+    },
+    {
+      "record": "kn-03-blue-green-deploy/k10",
+      "case": "kn-03-blue-green-deploy",
+      "id": "k10",
+      "units": [
+        "u17"
+      ],
+      "clause": "until all of them return `200`",
+      "reasons": [
+        "second_link_evidence"
+      ],
+      "details": {
+        "second_link_evidence": [
+          {
+            "v3id": "k10",
+            "candidateLink": [
+              "u19"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": false,
+            "proposedBy": "Y"
+          }
+        ]
+      },
+      "item": "R25"
+    },
+    {
+      "record": "kn-04-queue-choice/k3",
+      "case": "kn-04-queue-choice",
+      "id": "k3",
+      "units": [
+        "u15"
+      ],
+      "clause": "Uses spare capacity on the existing primary",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k3",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R26"
+    },
+    {
+      "record": "kn-07-photo-sharing-hld/k5",
+      "case": "kn-07-photo-sharing-hld",
+      "id": "k5",
+      "units": [
+        "u11"
+      ],
+      "clause": "never by the gateway",
+      "reasons": [
+        "finding1_pattern",
+        "second_link_evidence"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k5",
+            "rule": "R4",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ],
+        "second_link_evidence": [
+          {
+            "v3id": "k5",
+            "candidateLink": [
+              "u11"
+            ],
+            "candidateLevel": "local",
+            "alreadyALink": false,
+            "proposedBy": "X"
+          }
+        ]
+      },
+      "item": "R27"
+    },
+    {
+      "record": "kn-09-billing-codebase-map/k16",
+      "case": "kn-09-billing-codebase-map",
+      "id": "k16",
+      "units": [
+        "u43"
+      ],
+      "clause": "I found no job that re-sends missed events",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k16",
+            "rule": "general",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R28"
+    },
+    {
+      "record": "kn-08-helpdesk-answers-hld-lld/k9",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k9",
+      "units": [
+        "u26"
+      ],
+      "clause": "but the 8 passages may then be less relevant",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k9",
+            "rule": "R3",
+            "phase3Set": false,
+            "cues": [
+              "contrast"
+            ]
+          }
+        ]
+      },
+      "item": "R29"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k13",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k13",
+      "units": [
+        "u22"
+      ],
+      "clause": "Purge APIs are also rate limited",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k13",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R30"
+    },
+    {
+      "record": "kn-06-hybrid-search-reranking/k16",
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k16",
+      "units": [
+        "u31"
+      ],
+      "clause": "but it does not guarantee that the final answer is correct",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k16",
+            "rule": "R3",
+            "phase3Set": false,
+            "cues": [
+              "contrast",
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R31"
+    },
+    {
+      "record": "kn-03-blue-green-deploy/k19",
+      "case": "kn-03-blue-green-deploy",
+      "id": "k19",
+      "units": [
+        "u26"
+      ],
+      "clause": "but requests that were in flight on green during the switch may fail and need a client retry",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k19",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": [
+              "contrast"
+            ]
+          }
+        ]
+      },
+      "item": "R32"
+    },
+    {
+      "record": "kn-05-incident-review-meeting/k28",
+      "case": "kn-05-incident-review-meeting",
+      "id": "k28",
+      "units": [
+        "u82"
+      ],
+      "clause": "If a release includes a database migration",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k28",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R33"
+    },
+    {
+      "record": "kn-05-incident-review-meeting/k35",
+      "case": "kn-05-incident-review-meeting",
+      "id": "k35",
+      "units": [
+        "u93"
+      ],
+      "clause": "nobody has looked yet",
+      "reasons": [
+        "second_link_evidence"
+      ],
+      "details": {
+        "second_link_evidence": [
+          {
+            "v3id": "k35",
+            "candidateLink": [
+              "u90"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": false,
+            "proposedBy": "X"
+          }
+        ]
+      },
+      "item": "R34"
+    },
+    {
+      "record": "kn-03-blue-green-deploy/k6",
+      "case": "kn-03-blue-green-deploy",
+      "id": "k6",
+      "units": [
+        "u10"
+      ],
+      "clause": "a rollback does not undo a migration",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k6",
+            "rule": "R3",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R35"
+    },
+    {
+      "record": "kn-10-inventory-architecture-frames/k8",
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k8",
+      "units": [
+        "u26"
+      ],
+      "clause": "it is not retried",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k8",
+            "rule": "R4",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R36"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k17",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k17",
+      "units": [
+        "u33"
+      ],
+      "clause": "a missing tag produces a stale page with no error anywhere",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k17",
+            "rule": "general",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R37"
+    },
+    {
+      "record": "kn-05-incident-review-meeting/k20",
+      "case": "kn-05-incident-review-meeting",
+      "id": "k20",
+      "units": [
+        "u73"
+      ],
+      "clause": "I think we'd see a pattern if we looked",
+      "reasons": [
+        "second_link_evidence"
+      ],
+      "details": {
+        "second_link_evidence": [
+          {
+            "v3id": "k20",
+            "candidateLink": [
+              "u69"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": false,
+            "proposedBy": "X"
+          }
+        ]
+      },
+      "item": "R38"
+    },
+    {
+      "record": "kn-06-hybrid-search-reranking/k31",
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k31",
+      "units": [
+        "u49"
+      ],
+      "clause": "none of them makes the final answer certain to be right",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k31",
+            "rule": "R3",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R39"
+    },
+    {
+      "record": "kn-07-photo-sharing-hld/k11",
+      "case": "kn-07-photo-sharing-hld",
+      "id": "k11",
+      "units": [
+        "u27"
+      ],
+      "clause": "does not control when an alert arrives",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k11",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R40"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k9",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k9",
+      "units": [
+        "u18"
+      ],
+      "clause": "eventually consistent, not instant",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k9",
+            "rule": "general",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R41"
+    },
+    {
+      "record": "kn-04-queue-choice/k18",
+      "case": "kn-04-queue-choice",
+      "id": "k18",
+      "units": [
+        "u34"
+      ],
+      "clause": "Polling also adds read load to the primary database, which is the main risk at month-end",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k18",
+            "rule": "R4",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R42"
+    },
+    {
+      "record": "kn-01-idempotency-keys/k5",
+      "case": "kn-01-idempotency-keys",
+      "id": "k5",
+      "units": [
+        "u8"
+      ],
+      "clause": "Keys also do not make two different requests safe",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k5",
+            "rule": "R3",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R43"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k28",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k28",
+      "units": [
+        "u49"
+      ],
+      "clause": "Versioning does not help for HTML entry pages.",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k28",
+            "rule": "R4",
+            "phase3Set": true,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R44"
+    },
+    {
+      "record": "kn-06-hybrid-search-reranking/k13",
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k13",
+      "units": [
+        "u25"
+      ],
+      "clause": "but it roughly doubled the time spent reranking",
+      "reasons": [
+        "finding1_pattern",
+        "second_link_evidence"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k13",
+            "rule": "R3",
+            "phase3Set": false,
+            "cues": [
+              "contrast"
+            ]
+          }
+        ],
+        "second_link_evidence": [
+          {
+            "v3id": "k13",
+            "candidateLink": [
+              "u23"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": false,
+            "proposedBy": "X"
+          }
+        ]
+      },
+      "item": "R45"
+    },
+    {
+      "record": "kn-10-inventory-architecture-frames/k13",
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k13",
+      "units": [
+        "u40"
+      ],
+      "clause": "Reservations are never retried automatically",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k13",
+            "rule": "R4",
+            "phase3Set": true,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R46"
+    },
+    {
+      "record": "kn-01-idempotency-keys/k8",
+      "case": "kn-01-idempotency-keys",
+      "id": "k8",
+      "units": [
+        "u9"
+      ],
+      "clause": "they are not a general guarantee against duplicate operations",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k8",
+            "rule": "R3",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R47"
+    },
+    {
+      "record": "kn-06-hybrid-search-reranking/k18",
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k18",
+      "units": [
+        "u33"
+      ],
+      "clause": "and still out of date, which no relevance score will detect",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k18",
+            "rule": "R3",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R48"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k6",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k6",
+      "units": [
+        "u12"
+      ],
+      "clause": "but sends more requests back to the origin",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k6",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": [
+              "contrast"
+            ]
+          }
+        ]
+      },
+      "item": "R49"
+    },
+    {
+      "record": "kn-10-inventory-architecture-frames/k12",
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k12",
+      "units": [
+        "u39"
+      ],
+      "clause": "Retries apply only to supplier calls.",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k12",
+            "rule": "R4",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R50"
+    },
+    {
+      "record": "kn-07-photo-sharing-hld/k14",
+      "case": "kn-07-photo-sharing-hld",
+      "id": "k14",
+      "units": [
+        "u38"
+      ],
+      "clause": "we accept that their outages are outside our control",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k14",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R51"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k5",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k5",
+      "units": [
+        "u11"
+      ],
+      "clause": "nothing the origin does will shorten that wait",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k5",
+            "rule": "R4",
+            "phase3Set": true,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R52"
+    },
+    {
+      "record": "kn-10-inventory-architecture-frames/k11",
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k11",
+      "units": [
+        "u38"
+      ],
+      "clause": "after the 5th failed attempt",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k11",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R53"
+    },
+    {
+      "record": "kn-05-incident-review-meeting/k8",
+      "case": "kn-05-incident-review-meeting",
+      "id": "k8",
+      "units": [
+        "u56"
+      ],
+      "clause": "it needs one approval from the payments team",
+      "reasons": [
+        "link_needs_human_readjudication"
+      ],
+      "details": {
+        "link_needs_human_readjudication": [
+          {
+            "item": "H12",
+            "linksA": [
+              "u54"
+            ],
+            "linksB": [
+              "u59"
+            ]
+          }
+        ]
+      },
+      "item": "R54"
+    },
+    {
+      "record": "kn-06-hybrid-search-reranking/k14",
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k14",
+      "units": [
+        "u29"
+      ],
+      "clause": "only on the fused candidates, never on the whole collection",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k14",
+            "rule": "general",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R55"
+    },
+    {
+      "record": "kn-09-billing-codebase-map/k12",
+      "case": "kn-09-billing-codebase-map",
+      "id": "k12",
+      "units": [
+        "u35"
+      ],
+      "clause": "what happens to the invoice when a quote times out",
+      "reasons": [
+        "link_needs_human_readjudication"
+      ],
+      "details": {
+        "link_needs_human_readjudication": [
+          {
+            "item": "H06",
+            "linksA": [
+              "u31"
+            ],
+            "linksB": [
+              "u35"
+            ]
+          }
+        ]
+      },
+      "item": "R56"
+    },
+    {
+      "record": "kn-02-edge-cache-invalidation/k27",
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k27",
+      "units": [
+        "u44"
+      ],
+      "clause": "but it also means some readers see a copy that is older than the TTL alone would suggest",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k27",
+            "rule": "R3",
+            "phase3Set": true,
+            "cues": [
+              "contrast"
+            ]
+          }
+        ]
+      },
+      "item": "R57"
+    },
+    {
+      "record": "kn-10-inventory-architecture-frames/k2",
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k2",
+      "units": [
+        "u14"
+      ],
+      "clause": "If the ledger cannot reserve the full quantity",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k2",
+            "rule": "R4",
+            "phase3Set": true,
+            "cues": []
+          }
+        ]
+      },
+      "item": "R58"
+    },
+    {
+      "record": "kn-10-inventory-architecture-frames/k17",
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k17",
+      "units": [
+        "u50"
+      ],
+      "clause": "nothing alerts the team when `inventory.dlq` starts to fill up",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k17",
+            "rule": "general",
+            "phase3Set": true,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R59"
+    },
+    {
+      "record": "kn-08-helpdesk-answers-hld-lld/k7+k8",
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k7+k8",
+      "units": [
+        "u25"
+      ],
+      "clause": "If the Reranker does not respond within 800 ms",
+      "reasons": [
+        "second_link_evidence"
+      ],
+      "details": {
+        "second_link_evidence": [
+          {
+            "v3id": "k7",
+            "candidateLink": [
+              "u21"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": true,
+            "proposedBy": "X"
+          },
+          {
+            "v3id": "k8",
+            "candidateLink": [
+              "u21"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": true,
+            "proposedBy": "Y"
+          }
+        ]
+      },
+      "item": "R60"
+    },
+    {
+      "record": "kn-05-incident-review-meeting/k19",
+      "case": "kn-05-incident-review-meeting",
+      "id": "k19",
+      "units": [
+        "u72"
+      ],
+      "clause": "That's one incident.",
+      "reasons": [
+        "reference_ambiguous_unsettled"
+      ],
+      "details": {
+        "reference_ambiguous_unsettled": [
+          {
+            "v3id": "k19",
+            "sampledItem": "H35",
+            "humans": "set / not_a_condition"
+          }
+        ]
+      },
+      "item": "R61"
+    },
+    {
+      "record": "kn-06-hybrid-search-reranking/k8",
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k8",
+      "units": [
+        "u15"
+      ],
+      "clause": "for this collection takes about 6 hours",
+      "reasons": [
+        "second_link_evidence"
+      ],
+      "details": {
+        "second_link_evidence": [
+          {
+            "v3id": "k8",
+            "candidateLink": [
+              "u10"
+            ],
+            "candidateLevel": "section",
+            "alreadyALink": false,
+            "proposedBy": "Y"
+          }
+        ]
+      },
+      "item": "R62"
+    },
+    {
+      "record": "kn-04-queue-choice/k13",
+      "case": "kn-04-queue-choice",
+      "id": "k13",
+      "units": [
+        "u28"
+      ],
+      "clause": "local development needs an emulator that does not support dead-lettering",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k13",
+            "rule": "R4",
+            "phase3Set": true,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R63"
+    },
+    {
+      "record": "kn-04-queue-choice/k17",
+      "case": "kn-04-queue-choice",
+      "id": "k17",
+      "units": [
+        "u33"
+      ],
+      "clause": "jobs enqueued by the reporting service, which has its own database, would not get it",
+      "reasons": [
+        "finding1_pattern"
+      ],
+      "details": {
+        "finding1_pattern": [
+          {
+            "v3id": "k17",
+            "rule": "general",
+            "phase3Set": false,
+            "cues": [
+              "exclusion"
+            ]
+          }
+        ]
+      },
+      "item": "R64"
+    }
+  ]
+}

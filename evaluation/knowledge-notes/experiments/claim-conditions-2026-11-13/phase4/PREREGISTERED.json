@@ -1,0 +1,11 @@
+{
+  "at": "2026-11-13T16:23:30.473Z",
+  "note": "Fixed before any phase 4 annotation was read: the specification, adjudication instructions, packets, and the clause-matching/agreement code.",
+  "annotationFilesPresentAtThisMoment": [],
+  "sha256": {
+    "EVAL-SPEC-v3.md": "73589b06a31f583cc09a6e3fe86aaf56503f4b6183148bf16c0a305a8df50857",
+    "ADJUDICATION-v3.md": "7248f32fbfe459382683a7dbf358b9ba06498ca8d36b073da8e0a063faf77c61",
+    "phase4.test.ts": "de0b07be4733f9e664e292fa2517143439c729cde7d62c2991fa838d0edb5d55",
+    "units-to-examine.json": "1ed4fabf3d87fb52dee33cc138d96bf02442b12f00d99c18918be19c35cc1511"
+  }
+}

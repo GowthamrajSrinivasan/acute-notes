@@ -36,6 +36,10 @@
       "why": "The write edge and its one-transaction condition."
     },
     {
+      "quote": "If either insert fails, the transaction rolls back and neither row is kept.",
+      "why": "All-or-nothing write: neither row is kept if either insert fails."
+    },
+    {
       "quote": "After the transaction commits, `generateInvoice` calls `publishInvoiceFinalized(invoice)` in `billing/events/publish.ts`.",
       "why": "Publishing happens only after the commit."
     },
@@ -71,13 +75,14 @@
     "billing/invoices/generate.ts",
     "12–58",
     "billing/admin/regenerate.ts",
-    "billing/usage/collect.ts",
     "collectUsage(accountId, period)",
+    "priceUsage(lines, plan)",
+    "TaxClient.quote(draft)",
+    "billing/usage/collect.ts",
     "usage_events",
     "occurred_at",
     "is_test",
     "billing/pricing/priceUsage.ts",
-    "priceUsage(lines, plan)",
     "price_plans",
     "loadPlan(planId)",
     "discounts",

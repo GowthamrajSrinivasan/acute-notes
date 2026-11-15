@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-resend-job-invented",
+  "distortion": "invented_detail",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The unknown recovery after a failed publish is filled in with a nightly re-send job the source never mentions.",
+  "mutations": [
+    { "op": "replace_text", "node": "s_pub", "find": "Re-sending missed events: unknown — found no job that re-sends missed events", "replace": "Missed events are re-sent by a nightly recovery job" }
+  ],
+  "expectFailing": ["a.no-resend-job", "a.publish-failure-unknown"]
+}

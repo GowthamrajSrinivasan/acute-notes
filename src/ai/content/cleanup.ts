@@ -58,12 +58,27 @@ function outsideCode(text: string, fn: (prose: string) => string): string {
     .join("");
 }
 
+/** Stands in for a removed marker until the space around it is tidied (a private-use character). */
+const REMOVED = "";
+/** A removed marker with the spaces and other removed markers around it. */
+const AROUND_REMOVED = /[ \t]*[ \t]*/g;
+
 function strip(text: string, patterns: readonly RegExp[]): string {
   return outsideCode(text, (prose) => {
+    // Text that already holds the stand-in can't be tidied safely: remove plainly, tidy nothing.
+    if (prose.includes(REMOVED)) return patterns.reduce((out, p) => out.replace(p, ""), prose);
     let out = prose;
-    for (const p of patterns) out = out.replace(p, "");
-    // Removal leaves " ." or "  " behind: tidy only what removal can have caused.
-    return out.replace(/(?<=\S)[ \t]+(?=[.,;:!?])/g, "").replace(/(?<=\S)[ \t]{2,}(?=\S)/g, " ");
+    for (const p of patterns) out = out.replace(p, REMOVED);
+    // Removal leaves " ." or "  " behind: tidy only where something was removed, so "FastAPI :8000" or "Note : x" elsewhere stay as written.
+    return out.replace(AROUND_REMOVED, (gap: string, at: number, all: string) => {
+      const before = all[at - 1];
+      const after = all[at + gap.length];
+      // "capacity [02:33]." → "capacity."
+      if (before !== undefined && /\S/.test(before) && after !== undefined && /[.,;:!?]/.test(after)) return "";
+      // Spaces on either side of what was removed become one; none at the start of a line.
+      const startOfLine = before === undefined || before === "\n";
+      return /[ \t]/.test(gap) && !startOfLine ? " " : "";
+    });
   });
 }
 

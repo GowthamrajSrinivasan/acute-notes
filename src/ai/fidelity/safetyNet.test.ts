@@ -80,4 +80,15 @@ describe("attachUncovered — the content safety net", () => {
   it("returns a reply that isn't plan-shaped as is", async () => {
     expect(await attachUncovered("not a plan", "Some text here.")).toMatchObject({ raw: "not a plan", coverage: { total: 0, covered: 0, attached: 0 } });
   });
+
+  it("distil mode (attach: false): attaches nothing, never a card or page, but still measures coverage as a diagnostic (WP1.11)", async () => {
+    const source = "Caching reduces latency by storing data in memory. It can serve stale data unless entries are invalidated.\n\n- TTL expires entries after 30 s\n";
+    const reply = plan(text("n1", "Caching reduces latency: data stored in memory"));
+    const { raw, coverage } = await attachUncovered(reply, source, { attach: false });
+    expect(raw).toBe(reply);
+    expect(JSON.stringify(raw)).not.toMatch(/Also in the source|Source details|src~/);
+    expect(coverage).toMatchObject({ total: 3, covered: 1, attached: 0, added: [] });
+    // The same reply with the net on attaches what this one only measures.
+    expect((await attachUncovered(reply, source)).coverage).toMatchObject({ total: 3, covered: 1, attached: 2 });
+  });
 });

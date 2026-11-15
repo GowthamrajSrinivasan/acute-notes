@@ -2,9 +2,10 @@
  * F38/F39 in the real app, local tier only (no AI connection): "Update from
  * new content" on a Visualize result. Identical content changes nothing; an
  * untouched block updates cleanly in one undo step; a block the user edited
- * becomes a conflict card (Keep mine / Apply update / View diff) and is never
- * overwritten without a decision; Reject leaves everything as it was; a
- * removed section is proposed for removal; the opt-out holds; and "Update
+ * gets the new fact merged into its own wording (Stage 1e), and when the merge
+ * can't be placed it becomes a conflict card (Keep mine / Apply update / View
+ * diff), never overwritten without a decision; Reject leaves everything as it
+ * was; a removed section is proposed for removal; a Lock holds; and "Update
  * source from this edit" writes an edit back into the content source.
  */
 import { expect, test, type Page } from "@playwright/test";
@@ -60,6 +61,7 @@ function editBlock(p: Page, id: string, from: string, to: string): Promise<void>
 
 const v1 = "# Launch plan\n\n- [ ] Ship the flag\n- [ ] Notify support\n\n## Risks\n\nThe gateway may time out under load.\n\n## Rollback\n\nFlip the flag off and drain the queue.\n";
 const v2 = v1.replace("time out under load", "time out under heavy load");
+const v3 = v2.replace("heavy load", "peak load");
 
 /** Select an object of the source, then Ask AI → Update from new content; fills the new text and runs it. */
 async function updateFrom(p: Page, objectId: string, text: string) {
@@ -137,16 +139,39 @@ test("an untouched block updates cleanly as one undo step; after Undo, re-runnin
   expect((await oneBlock(page, "gateway")).text).toContain("heavy load");
 });
 
-test("a block the user edited becomes a conflict; Keep mine leaves it and it doesn't come back", async () => {
+test("a block the user edited gets the new fact merged into its wording; re-running proposes nothing (Stage 1e)", async () => {
   const risks = await oneBlock(page, "gateway");
-  await editBlock(page, risks.id, "heavy load", "heavy load (my note: add retries)");
-  const v3 = v2.replace("heavy load", "peak load");
+  await editBlock(page, risks.id, "The gateway may", "Our gateway may");
   await updateFrom(page, risks.id, v3);
+
+  await expect(reviewBar(page)).toContainText("~1 updated");
+  await expect(conflicts(page)).toHaveCount(0);
+  await reviewBar(page).getByRole("button", { name: "Review", exact: true }).click();
+  await expect(reviewBar(page)).toContainText("Updates your edited card");
+  await expect(reviewBar(page)).toContainText("“heavy” → “peak”");
+  await reviewBar(page).getByRole("button", { name: "Accept all" }).click();
+  await expect(acceptedBar(page)).toContainText("Applied 1 update");
+  const merged = await oneBlock(page, "gateway");
+  expect(merged.id).toBe(risks.id);
+  expect(merged.text).toContain("Our gateway may time out under peak load.");
+
+  // R5: the merged content is the new baseline at the new version — the same text proposes nothing again.
+  await updateFrom(page, risks.id, v3);
+  await expect(nothingChanged(page)).toBeVisible();
+});
+
+test("an edit the merge can't place becomes a conflict; Keep mine leaves it and it doesn't come back", async () => {
+  const risks = await oneBlock(page, "gateway");
+  await expect(nothingChanged(page)).toBeHidden({ timeout: 10_000 });
+  // The user rewrote the very words the source now changes: there is nowhere exact to put the new fact.
+  await editBlock(page, risks.id, "peak load", "bursts (my note: add retries)");
+  const v3b = v3.replace("peak load", "night load");
+  await updateFrom(page, risks.id, v3b);
 
   await expect(reviewBar(page)).toContainText("⚠ 1 needs your input");
   const card = conflicts(page).getByRole("listitem");
   await expect(card.getByLabel("Your version")).toContainText("my note: add retries");
-  await expect(card.getByLabel("Proposed version")).toContainText("peak load");
+  await expect(card.getByLabel("Proposed version")).toContainText("night load");
   const accept = reviewBar(page).getByRole("button", { name: "Accept all clean changes" });
   await expect(accept).toBeDisabled(); // nothing clean, nothing decided
 
@@ -158,7 +183,7 @@ test("a block the user edited becomes a conflict; Keep mine leaves it and it doe
   await expect(acceptedBar(page)).toContainText("Kept your edit.");
   expect((await oneBlock(page, "gateway")).text).toContain("my note: add retries");
 
-  await updateFrom(page, risks.id, v3);
+  await updateFrom(page, risks.id, v3b);
   await expect(nothingChanged(page)).toBeVisible();
 });
 
@@ -192,21 +217,24 @@ test("a section gone from the content is proposed for removal; Reject leaves the
   await expect.poll(async () => (await blocksMentioning(page, "drain the queue")).length).toBe(0);
 });
 
-test("“Don't update this from AI” keeps an object out of updates until allowed again", async () => {
+test("Lock keeps a card out of updates, with a lock icon, until unlocked (Stage 1e)", async () => {
   const risks = await oneBlock(page, "gateway");
   await select(page, risks.id);
-  await origin(page).getByRole("button", { name: "Don't update this from AI" }).click();
-  await expect(origin(page).getByRole("button", { name: "Allow AI updates" })).toBeVisible();
+  await origin(page).getByRole("button", { name: "🔒 Lock" }).click();
+  await expect(origin(page).getByRole("button", { name: "🔓 Unlock" })).toBeVisible();
   expect((await link(page, risks.id))!.excludeFromReconciliation).toBe(true);
+  await expect(page.locator(`.acute-lock-marker[data-element-id="${risks.id}"]`)).toBeVisible();
 
   const latest = (await sourceText(page, sourceId))!;
   const changed = latest.replace("time out at peak", "time out at night");
   await updateFrom(page, risks.id, changed);
-  await expect(nothingChanged(page)).toBeVisible();
+  await expect(page.getByText("1 locked card not updated")).toBeVisible();
+  await expect(reviewBar(page)).toBeHidden();
   expect((await oneBlock(page, "gateway")).text).toContain("at peak");
 
   await select(page, risks.id);
-  await origin(page).getByRole("button", { name: "Allow AI updates" }).click();
+  await origin(page).getByRole("button", { name: "🔓 Unlock" }).click();
+  await expect(page.locator(`.acute-lock-marker[data-element-id="${risks.id}"]`)).toHaveCount(0);
   await updateFrom(page, risks.id, changed);
   await expect(reviewBar(page)).toContainText("~1 updated");
   await reviewBar(page).getByRole("button", { name: "Reject" }).click();

@@ -1,0 +1,95 @@
+{
+  "caseId": "kn-09-billing-codebase-map",
+  "reviewer": "blind independent reviewer, 2026-11-13",
+  "records": [
+    {
+      "id": "r1",
+      "claimUnits": ["u1"], "claimSummary": "The note maps the invoice path of the Ledgerline billing service (commit a41c9e2).",
+      "conditionUnits": ["u4"], "kind": "scope",
+      "conditionSummary": "Refunds, dunning and the customer portal are out of scope.",
+      "mustConvey": "refunds, dunning and the customer portal are not covered",
+      "binding": "set", "bindingReason": "The map still covers the invoice path without the exclusion; the exclusion is a scope note that must appear somewhere.",
+      "claimCards": ["u10_n1", "u10_ax1"], "carriers": ["u10_n4", "u10_ax4"],
+      "perClaimCard": { "u10_n1": "separated", "u10_ax1": "separated" },
+      "confidence": "medium", "notes": "Frame g9 takeaway mentions invoice path, commit and manual review but not the exclusions. Arrows only join ax-n pairs (ax1->n1, ax4->n4)."
+    },
+    {
+      "id": "r2",
+      "claimUnits": ["u21"], "claimSummary": "collectUsage selects the account's usage_events rows inside the period and groups them by meter into usage lines.",
+      "conditionUnits": ["u22"], "kind": "exception",
+      "conditionSummary": "Events flagged is_test are skipped.",
+      "mustConvey": "is_test events are skipped/excluded",
+      "binding": "claim", "bindingReason": "Read alone, the selection sentence implies every in-period event is counted, which is false for is_test events.",
+      "claimCards": ["u4_n1"], "carriers": ["u4_n1"],
+      "perClaimCard": { "u4_n1": "carried" },
+      "confidence": "medium", "notes": "u2_n2/u1_n6 describe collecting usage at module/step level without claiming all events; not counted as claim cards."
+    },
+    {
+      "id": "r3",
+      "claimUnits": ["u27"], "claimSummary": "priceUsage (probably) also reads the discounts table.",
+      "conditionUnits": ["u28", "u29"], "kind": "caveat",
+      "conditionSummary": "No call site for discountFor found; the link is unconfirmed until traced.",
+      "mustConvey": "the discounts read is unconfirmed / only probable (no call site found)",
+      "binding": "claim", "bindingReason": "Stating that priceUsage reads discounts without the hedge presents an unverified link as fact, which may be false.",
+      "claimCards": ["u4_n1", "u4_a1", "u3_n8", "u3_ax1", "u9_n2"], "carriers": ["u4_n1", "u4_a1", "u3_n8", "u3_ax1", "u9_n2", "g3", "g2"],
+      "perClaimCard": { "u4_n1": "carried", "u4_a1": "carried", "u3_n8": "carried", "u3_ax1": "carried", "u9_n2": "carried" },
+      "confidence": "high", "notes": ""
+    },
+    {
+      "id": "r4",
+      "claimUnits": ["u30"], "claimSummary": "TaxClient.quote sends the draft invoice to Taxwell over HTTPS.",
+      "conditionUnits": ["u31"], "kind": "bound",
+      "conditionSummary": "The request times out after 8 seconds.",
+      "mustConvey": "8-second timeout",
+      "binding": "set", "bindingReason": "The quote call still sends the draft to Taxwell; the timeout bounds it but does not falsify the sentence.",
+      "claimCards": ["u5_n1"], "carriers": ["u5_n2"],
+      "perClaimCard": { "u5_n1": "separated" },
+      "confidence": "medium", "notes": "Frame g4 takeaway says the integration 'lacks documented ... timeout handling', which does not convey the 8 s value (and arguably blurs it with the unknown timeout outcome)."
+    },
+    {
+      "id": "r5",
+      "claimUnits": ["u30", "u18"], "claimSummary": "generateInvoice calls TaxClient.quote to get tax from Taxwell for the draft.",
+      "conditionUnits": ["u34", "u35"], "kind": "caveat",
+      "conditionSummary": "Retry behaviour is undocumented: quote has no retry code, and caller/library retries and the invoice's fate on timeout are unknown.",
+      "mustConvey": "tax provider retry behaviour / timeout outcome is unknown; quote has no retry code",
+      "binding": "set", "bindingReason": "The call sequence remains true; the unknown retry behaviour is a reliability caveat that must be somewhere in the notes.",
+      "claimCards": ["u5_n1", "u1_n10", "u3_n5"], "carriers": ["u5_n5", "u5_n6", "u5_a1", "g4", "u3_n8", "u3_ax1", "g2"],
+      "perClaimCard": { "u5_n1": "frame", "u1_n10": "separated", "u3_n5": "frame" },
+      "confidence": "medium", "notes": "u1_n10 sits in g0, whose takeaway is silent; the g0->g4 arrow joins frames, not the card."
+    },
+    {
+      "id": "r6",
+      "claimUnits": ["u39", "u40"], "claimSummary": "After the commit, generateInvoice publishes invoice.finalized to billing-events.",
+      "conditionUnits": ["u42", "u43"], "kind": "exception",
+      "conditionSummary": "If publishing fails after commit, the code logs and returns, so an invoice can exist without its event; no re-send job found.",
+      "mustConvey": "publish failure after commit leaves an invoice without its event (logged only, no re-send)",
+      "binding": "claim", "bindingReason": "The claim implies every finalized invoice gets an invoice.finalized event, which is false when publishing fails after commit.",
+      "claimCards": ["u6_n4", "u6_n5", "u1_n12", "u3_n7", "u1_a1"], "carriers": ["u6_n7", "u6_n8", "g5"],
+      "perClaimCard": { "u6_n4": "frame", "u6_n5": "frame", "u1_n12": "separated", "u3_n7": "separated", "u1_a1": "separated" },
+      "confidence": "medium", "notes": "g5 takeaway 'event publishing failures after commit are not handled' judged recognisable. Binding could be argued as set since the code does call publish; chose claim because the summary/flow cards imply guaranteed delivery."
+    },
+    {
+      "id": "r7",
+      "claimUnits": ["u45"], "claimSummary": "InvoiceDraft has fields accountId, period, lines, subtotalCents and optional taxCents.",
+      "conditionUnits": ["u46"], "kind": "precondition",
+      "conditionSummary": "taxCents stays undefined until TaxClient.quote returns.",
+      "mustConvey": "taxCents is undefined until the tax quote returns",
+      "binding": "set", "bindingReason": "The interface (with taxCents optional) is accurate without the note; the timing is an added detail.",
+      "claimCards": ["u7_n2"], "carriers": ["u7_n3"],
+      "perClaimCard": { "u7_n2": "linked" },
+      "confidence": "medium", "notes": "g6 takeaway says 'taxCents conditionally populated' but not the condition (until quote returns), so not counted as carrier."
+    },
+    {
+      "id": "r8",
+      "claimUnits": ["u48"], "claimSummary": "billing/pricing acts as the pricing boundary; a pricing change should only need edits there.",
+      "conditionUnits": ["u49"], "kind": "caveat",
+      "conditionSummary": "This is an interpretation, not a rule the code enforces; nothing stops another module querying price_plans.",
+      "mustConvey": "interpretation only / not enforced; other modules could query price_plans directly",
+      "binding": "claim", "bindingReason": "Stated as fact, the boundary claim becomes misleading as soon as any module queries price_plans directly, which nothing prevents.",
+      "claimCards": ["u8_n1", "g7"], "carriers": ["u8_n2"],
+      "perClaimCard": { "u8_n1": "linked", "g7": "separated" },
+      "confidence": "medium", "notes": "u8_n1 hedges ('appears', 'seems') which partially conveys interpretation, but the not-enforced part sits in u8_n2 via a 'caveat' arrow. Frame g7 states the boundary flatly; it contains u8_n2 but containment is not an arrow, so labelled separated (low-medium certainty on how frames-as-claim-cards should be treated)."
+    }
+  ],
+  "notes": "No records for: module list and fixed call order (u5-u19, plain facts), u26 integer cents (a claim, not a limit), u37 rollback (carried by 'single transaction' wording in u6_n1/u6_n2 and judged an elaboration), u38/u41/u47 'I found no / did not read' epistemic hedges (minor; the cards keep them), open questions u52-u55 (questions, not conditions), and u57 (duplicates r3 and r5). The summary caveat u57 is covered through r3/r5 carriers."
+}

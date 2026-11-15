@@ -11,6 +11,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
 import { BRIDGE_OWNER_HEADER, BRIDGE_WORKSPACE_HEADER, type BridgeFrame, type BridgeReply, type McpScope } from "./protocol";
+import type { RemoteProfile } from "../tools/remoteProfile";
 
 export type BridgeStatus = "connecting" | "connected" | "replaced" | "offline";
 
@@ -20,6 +21,8 @@ export interface SessionInfo {
   /** Not a trusted local client: its session can never auto-accept. */
   remote: boolean;
   scope: McpScope;
+  /** Remote sessions: the tool profile the server chose (missing → `restricted`). */
+  profile?: RemoteProfile;
 }
 
 export interface TabBridgeOptions {
@@ -100,7 +103,7 @@ export function startTabBridge(options: TabBridgeOptions): () => void {
         let session = sessions.get(frame.sessionId);
         if (!session) {
           const transport = new RelayedTransport(frame.sessionId, post);
-          const server = options.createServer({ sessionId: frame.sessionId, remote: frame.remote, scope: frame.scope });
+          const server = options.createServer({ sessionId: frame.sessionId, remote: frame.remote, scope: frame.scope, ...(frame.profile ? { profile: frame.profile } : {}) });
           await server.connect(transport);
           session = { server, transport };
           sessions.set(frame.sessionId, session);

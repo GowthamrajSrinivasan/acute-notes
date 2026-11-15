@@ -1,0 +1,847 @@
+{
+  "caseId": "kn-12-flag-rollout-update",
+  "schema": "ClauseRecordV31 (review-v3/attachmentSchema.ts)",
+  "dataset": "v3.1-pre",
+  "records": [
+    {
+      "id": "k1",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u3"
+      ],
+      "clause": "It does not cover experiments, which follow their own process.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u2"
+          ],
+          "claimQuote": "It explains how a flag goes from off to fully on, and what has to be true before each step.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R5 document-level scope note. Claim cards' arrows (u0_ax1->u0_n2) do not reach the carriers u0_n3/u0_ax2.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k1 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k1",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u2"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k2",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u7"
+      ],
+      "clause": "only for staff accounts",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u7"
+          ],
+          "claimQuote": "In the internal stage the flag is on",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it, the internal stage reads as on for everyone.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k2 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k2",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u7"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k3",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u8"
+      ],
+      "clause": "usually",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u8"
+          ],
+          "claimQuote": "The internal stage usually lasts one working day",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: a hedge that colours a typical duration; the takeaway is the same.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k3 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k3",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u8"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k4",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u8"
+      ],
+      "clause": "the guide sets no minimum for it",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u8"
+          ],
+          "claimQuote": "The internal stage usually lasts one working day",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it, a reader might treat one day as a minimum. Over-waiting is only inefficient (R1): set.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k4 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k4",
+            "verdict": "set",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u8"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k5",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u12"
+      ],
+      "clause": "chosen at random per request rather than per user",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u12"
+          ],
+          "claimQuote": "During canary the flag is on for 5% of requests",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it, a reader assumes sticky per-user exposure and would misjudge user-visible behaviour during canary.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k5 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k5",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u12"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k6",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u13"
+      ],
+      "clause": "for at least 30 minutes",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u13"
+          ],
+          "claimQuote": "It must stay at that level",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: a short canary breaks the procedure (u15).",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k6 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k6",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u13"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k7",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u14"
+      ],
+      "clause": "does not raise the percentage by hand during this time",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u13"
+          ],
+          "claimQuote": "It must stay at that level for at least 30 minutes",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: a manual change restarts the window, so ignoring this breaks the measurement. u1_n4 conveys it as the restart consequence.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k7 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k7",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u13"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k8",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u16"
+      ],
+      "clause": "only when the automated metrics check passes",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u16"
+          ],
+          "claimQuote": "A flag advances from canary to general availability",
+          "evidence": "migrated: needs evidence",
+          "justification": "The gate condition for advancing.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k8 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k8",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u16"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k9",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u18"
+      ],
+      "clause": "If the check fails",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u18"
+          ],
+          "claimQuote": "the flag stays in canary and the owner investigates before trying again",
+          "evidence": "migrated: needs evidence",
+          "justification": "Intra-sentence trigger; without it the flag would always stay in canary.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k9 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k9",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u18"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k10",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u18"
+      ],
+      "clause": "the owner investigates before trying again",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u18"
+          ],
+          "claimQuote": "the flag stays in canary",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: retrying without investigating would break the procedure. X's span contains Y's ('before trying again'); same limit, same unit, so one record. u1_n6 'remains in canary for investigation' conveys it, though 'before trying again' is only implicit.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k10 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k10",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u18"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k11",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u20"
+      ],
+      "clause": "within 1 minute",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u20"
+          ],
+          "claimQuote": "Every flag must have a kill switch that turns it off",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: a slow kill switch fails the stated requirement. g2's takeaway restates the requirement with only 'rapid' (not the 1-minute limit) and its one arrow label is about testing: separated. u2_a1 says 'rapid' but joins carrier u2_n1 by a card arrow: linked.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k11 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k11",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u20"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k12",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u21"
+      ],
+      "clause": "before the flag enters canary",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u21"
+          ],
+          "claimQuote": "The kill switch is tested in staging",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: testing after canary exposes real traffic without a verified kill switch. u2_a2's frame g2 is touched by g1->g2 'kill switch tested before canary': arrow_label.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k12 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k12",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u21"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k13",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u21"
+      ],
+      "clause": "and the test is recorded in the rollout tool",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u21"
+          ],
+          "claimQuote": "The kill switch is tested in staging before the flag enters canary",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: part of what must hold before canary (u4). Skipping the record leaves the procedure incomplete but does not clearly do the wrong thing: set.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k13 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "low",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k13",
+            "verdict": "set",
+            "rule": "R1",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u21"
+            ],
+            "confidence": "low"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k14",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u21"
+      ],
+      "clause": "in staging",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u21"
+          ],
+          "claimQuote": "The kill switch is tested in staging before the flag enters canary",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: scopes where the test happens. The 'before canary' clause (k12) already keeps the test away from real traffic, so this is secondary: set.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k14 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "low",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k14",
+            "verdict": "set",
+            "rule": "R1",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u21"
+            ],
+            "confidence": "low"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k15",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u22"
+      ],
+      "clause": "without a tested kill switch",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u22"
+          ],
+          "claimQuote": "A flag without a tested kill switch cannot enter canary.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it, no flag could enter canary.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k15 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k15",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u22"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k16",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u24"
+      ],
+      "clause": "turning it back on starts the rollout again from the internal stage",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u24"
+          ],
+          "claimQuote": "Turning a flag off is always safe",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: the cost of the 'always safe' action is presented as weighed against it; without it, turning off reads as free.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k16 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k16",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u24"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k17",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u27"
+      ],
+      "clause": "until the flag has been at 100% for one hour",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u25"
+          ],
+          "claimQuote": "While the flag ramps up, the owner watches the error dashboard",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: 'while the flag ramps up' alone would end watching on reaching 100%, an hour too early.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k17 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k17",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u25"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k18",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u28"
+      ],
+      "clause": "that has been fully on for 30 days",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u28"
+          ],
+          "claimQuote": "A flag that has been fully on for 30 days is removed from the code.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it, flags would be removed at any time.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k18 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k18",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u28"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k19",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u30"
+      ],
+      "clause": "that miss the deadline",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u30"
+          ],
+          "claimQuote": "Flags that miss the deadline are listed in the weekly stale-flag report.",
+          "evidence": "migrated: needs evidence",
+          "justification": "General test: a restrictive relative clause with limiting force (R5 does not apply; it is not a descriptive adjective). Without it every flag appears in the report, which is false. The reader also loses the fact that missing the 30-day deadline is what gets a flag reported. Answers X's question: yes, a reader would act differently.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k19 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k19",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u30"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k20",
+      "case": "kn-12-flag-rollout-update",
+      "units": [
+        "u25"
+      ],
+      "clause": "if errors rise",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u25"
+          ],
+          "claimQuote": "pages the on-call engineer",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: the trigger for escalation. Without it the instruction is to page on-call during every ramp, which is the wrong procedure (paging with no signal), not merely untidy. Parallel to 'If the check fails' (k9).",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k20 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k20",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u25"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    }
+  ]
+}

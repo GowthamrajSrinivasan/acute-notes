@@ -1,0 +1,1807 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "A retrieval-augmented generation (RAG) system answers a question in two stages: it first retrieves passages from a document collection, then asks a language model to write an answer from those passages.",
+        "hash": "1t9o0tj2ifw",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Why retrieval decides the answer",
+        "span": {
+          "start": 92,
+          "end": 294
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "The model never sees the rest of the collection, so the answer can only be as good as the passages that retrieval hands it.",
+        "hash": "1gnfuj0hobb",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Why retrieval decides the answer",
+        "span": {
+          "start": 295,
+          "end": 418
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "This note describes the retrieval design of the Harbor support assistant, an internal tool that answers questions over about 40,000 help-centre articles and release notes.",
+        "hash": "15csseu6dpm",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Why retrieval decides the answer",
+        "span": {
+          "start": 419,
+          "end": 590
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "Keyword retrieval scores a passage by the query terms it contains, weighted so that rare terms count for more than common ones.",
+        "hash": "1de87wjpou9",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25",
+        "span": {
+          "start": 624,
+          "end": 751
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "BM25 is the usual scoring function for this; it also dampens the effect of a term repeated many times and corrects for passage length.",
+        "hash": "41gpdtr8fi",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25",
+        "span": {
+          "start": 752,
+          "end": 886
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "BM25 needs no training and is cheap to run, which is why it remains the baseline.",
+        "hash": "1dljovcz77c",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25",
+        "span": {
+          "start": 887,
+          "end": 968
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "Its strength is exact matching.",
+        "hash": "22rj7fj46kr",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25",
+        "span": {
+          "start": 969,
+          "end": 1000
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "sentence",
+        "text": "A query for the error code `E-4012` or the setting `sync.retry_window` finds the passages that contain those strings, even when they appear only once in the whole collection.",
+        "hash": "19r5x741796",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25",
+        "span": {
+          "start": 1001,
+          "end": 1175
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "sentence",
+        "text": "Its weakness is vocabulary mismatch: a user who asks \"why does my upload stall\" will not match a passage that only says \"transfers pause when the connection drops\".",
+        "hash": "2aiim75vrrs",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25",
+        "span": {
+          "start": 1176,
+          "end": 1340
+        },
+        "prev": "u8",
+        "next": "u10"
+      },
+      {
+        "id": "u10",
+        "kind": "sentence",
+        "text": "Vector retrieval turns the query and every passage into embeddings, lists of numbers produced by an encoder model, and returns the passages whose embeddings lie closest to the query's.",
+        "hash": "ukt0vff42i",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings",
+        "span": {
+          "start": 1379,
+          "end": 1563
+        },
+        "prev": "u9",
+        "next": "u11"
+      },
+      {
+        "id": "u11",
+        "kind": "sentence",
+        "text": "Passages that mean the same thing end up close together even when they share no words, so the stalled-upload question can find the passage about paused transfers.",
+        "hash": "1dtxyss7urv",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings",
+        "span": {
+          "start": 1564,
+          "end": 1726
+        },
+        "prev": "u10",
+        "next": "u12"
+      },
+      {
+        "id": "u12",
+        "kind": "sentence",
+        "text": "Embeddings are weaker on exact codes and identifiers.",
+        "hash": "28szo3drfns",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings",
+        "span": {
+          "start": 1727,
+          "end": 1780
+        },
+        "prev": "u11",
+        "next": "u13"
+      },
+      {
+        "id": "u13",
+        "kind": "sentence",
+        "text": "To the encoder, `E-4012` and `E-4021` look almost the same, and a rare product name may be split into fragments that carry little meaning.",
+        "hash": "dpxnyk3of5",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings",
+        "span": {
+          "start": 1781,
+          "end": 1919
+        },
+        "prev": "u12",
+        "next": "u14"
+      },
+      {
+        "id": "u14",
+        "kind": "sentence",
+        "text": "In our tests, vector retrieval alone missed the correct passage for 31 of 50 queries that consisted mainly of an error code.",
+        "hash": "2ag0umm5ayr",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings",
+        "span": {
+          "start": 1920,
+          "end": 2044
+        },
+        "prev": "u13",
+        "next": "u15"
+      },
+      {
+        "id": "u15",
+        "kind": "sentence",
+        "text": "Embeddings must also be recomputed whenever the encoder changes, which for this collection takes about 6 hours.",
+        "hash": "22lfs8cduz0",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings",
+        "span": {
+          "start": 2045,
+          "end": 2156
+        },
+        "prev": "u14",
+        "next": "u16"
+      },
+      {
+        "id": "u16",
+        "kind": "sentence",
+        "text": "Hybrid search runs both retrievers on the same query and merges their result lists.",
+        "hash": "bw3r7nxz17",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Combining the two signals",
+        "span": {
+          "start": 2188,
+          "end": 2271
+        },
+        "prev": "u15",
+        "next": "u17"
+      },
+      {
+        "id": "u17",
+        "kind": "sentence",
+        "text": "Hybrid search can improve recall when lexical and semantic signals are complementary, that is, when each retriever finds relevant passages that the other misses.",
+        "hash": "swwhd9k593",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Combining the two signals",
+        "span": {
+          "start": 2272,
+          "end": 2433
+        },
+        "prev": "u16",
+        "next": "u18"
+      },
+      {
+        "id": "u18",
+        "kind": "sentence",
+        "text": "If both retrievers tend to return the same passages, or if one of them is poorly tuned for the collection, merging adds latency without adding much.",
+        "hash": "1mbq10a71ta",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Combining the two signals",
+        "span": {
+          "start": 2434,
+          "end": 2582
+        },
+        "prev": "u17",
+        "next": "u19"
+      },
+      {
+        "id": "u19",
+        "kind": "sentence",
+        "text": "BM25 scores and vector similarities sit on different scales, so they cannot simply be added together.",
+        "hash": "1c35b1gd8xi",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Combining the two signals",
+        "span": {
+          "start": 2583,
+          "end": 2684
+        },
+        "prev": "u18",
+        "next": "u20"
+      },
+      {
+        "id": "u20",
+        "kind": "sentence",
+        "text": "We use Reciprocal Rank Fusion (RRF), which ignores the raw scores and uses only the rank of each passage in each list.",
+        "hash": "15lm9cpmajm",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Combining the two signals",
+        "span": {
+          "start": 2685,
+          "end": 2803
+        },
+        "prev": "u19",
+        "next": "u21"
+      },
+      {
+        "id": "u21",
+        "kind": "sentence",
+        "text": "A passage receives `1/(k + rank)` from every list it appears in, and the contributions are summed.",
+        "hash": "139kfvhs2u",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Combining the two signals",
+        "span": {
+          "start": 2804,
+          "end": 2902
+        },
+        "prev": "u20",
+        "next": "u22"
+      },
+      {
+        "id": "u22",
+        "kind": "sentence",
+        "text": "We set `k = 60`, a common default; a larger k flattens the difference between the top ranks and the lower ones.",
+        "hash": "1lxsw2292nl",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Combining the two signals",
+        "span": {
+          "start": 2903,
+          "end": 3014
+        },
+        "prev": "u21",
+        "next": "u23"
+      },
+      {
+        "id": "u23",
+        "kind": "sentence",
+        "text": "Each retriever returns its top 50 passages, so the fused list holds at most 100 candidates, and usually fewer because some passages appear in both lists.",
+        "hash": "1psz02tybvk",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Candidate generation",
+        "span": {
+          "start": 3041,
+          "end": 3194
+        },
+        "prev": "u22",
+        "next": "u24"
+      },
+      {
+        "id": "u24",
+        "kind": "sentence",
+        "text": "This stage is tuned for recall rather than precision: the goal is to make sure the right passage is somewhere in the list, not that it comes first.",
+        "hash": "1bze7rbrdhp",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Candidate generation",
+        "span": {
+          "start": 3195,
+          "end": 3342
+        },
+        "prev": "u23",
+        "next": "u25"
+      },
+      {
+        "id": "u25",
+        "kind": "sentence",
+        "text": "Raising the limit to 100 per retriever put the right passage in the list slightly more often, but it roughly doubled the time spent reranking, so we kept 50.",
+        "hash": "1bl50dl3yvc",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Candidate generation",
+        "span": {
+          "start": 3343,
+          "end": 3500
+        },
+        "prev": "u24",
+        "next": "u26"
+      },
+      {
+        "id": "u26",
+        "kind": "sentence",
+        "text": "A reranker then rescores the fused candidates.",
+        "hash": "jp8jy2o8t0",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Reranking",
+        "span": {
+          "start": 3516,
+          "end": 3562
+        },
+        "prev": "u25",
+        "next": "u27"
+      },
+      {
+        "id": "u27",
+        "kind": "sentence",
+        "text": "We use a cross-encoder, a model that reads the query and one passage together and outputs a single relevance score.",
+        "hash": "s7izlw8spt",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Reranking",
+        "span": {
+          "start": 3563,
+          "end": 3678
+        },
+        "prev": "u26",
+        "next": "u28"
+      },
+      {
+        "id": "u28",
+        "kind": "sentence",
+        "text": "Because it sees both texts at once, it judges relevance far more accurately than either retriever.",
+        "hash": "9tns415yov",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Reranking",
+        "span": {
+          "start": 3679,
+          "end": 3777
+        },
+        "prev": "u27",
+        "next": "u29"
+      },
+      {
+        "id": "u29",
+        "kind": "sentence",
+        "text": "That accuracy is expensive, so the cross-encoder runs only on the fused candidates, never on the whole collection.",
+        "hash": "3nvlr8dgke",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Reranking",
+        "span": {
+          "start": 3778,
+          "end": 3892
+        },
+        "prev": "u28",
+        "next": "u30"
+      },
+      {
+        "id": "u30",
+        "kind": "sentence",
+        "text": "After reranking we keep the top 8 passages.",
+        "hash": "2c3fz9os89x",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Reranking",
+        "span": {
+          "start": 3893,
+          "end": 3936
+        },
+        "prev": "u29",
+        "next": "u31"
+      },
+      {
+        "id": "u31",
+        "kind": "sentence",
+        "text": "Reranking improves the precision of the top results, but it does not guarantee that the final answer is correct.",
+        "hash": "yn4z2m1pab",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Reranking",
+        "span": {
+          "start": 3938,
+          "end": 4050
+        },
+        "prev": "u30",
+        "next": "u32"
+      },
+      {
+        "id": "u32",
+        "kind": "sentence",
+        "text": "The reranker can only reorder what retrieval found: if the right passage is not among the candidates, reranking cannot recover it.",
+        "hash": "12zbj992jj0",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Reranking",
+        "span": {
+          "start": 4051,
+          "end": 4181
+        },
+        "prev": "u31",
+        "next": "u33"
+      },
+      {
+        "id": "u33",
+        "kind": "sentence",
+        "text": "A passage can also be highly relevant and still out of date, which no relevance score will detect.",
+        "hash": "210t3neecoh",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Reranking",
+        "span": {
+          "start": 4182,
+          "end": 4280
+        },
+        "prev": "u32",
+        "next": "u34"
+      },
+      {
+        "id": "u34",
+        "kind": "sentence",
+        "text": "The language model receives the question and the top 8 passages, and is instructed to answer only from them and to cite the passages it used.",
+        "hash": "241a4ljacmf",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Generation",
+        "span": {
+          "start": 4297,
+          "end": 4438
+        },
+        "prev": "u33",
+        "next": "u35"
+      },
+      {
+        "id": "u35",
+        "kind": "sentence",
+        "text": "If none of the passages addresses the question, it should say so rather than answer from its general knowledge.",
+        "hash": "1co44qiqt6z",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Generation",
+        "span": {
+          "start": 4439,
+          "end": 4550
+        },
+        "prev": "u34",
+        "next": "u36"
+      },
+      {
+        "id": "u36",
+        "kind": "sentence",
+        "text": "Citations let a reader check each claim against its passage, but they do not show whether the passage itself is current.",
+        "hash": "15zf7zfq1gq",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Generation",
+        "span": {
+          "start": 4551,
+          "end": 4671
+        },
+        "prev": "u35",
+        "next": "u37"
+      },
+      {
+        "id": "u37",
+        "kind": "sentence",
+        "text": "For example, asked \"What does E-4012 mean?\", the assistant retrieves the error-code table through BM25 and the article on resumable uploads through vector search, and the reranker keeps both in the top 8, so the answer can define the code and explain the fix.",
+        "hash": "2396aolrloi",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Generation",
+        "span": {
+          "start": 4672,
+          "end": 4931
+        },
+        "prev": "u36",
+        "next": "u38"
+      },
+      {
+        "id": "u38",
+        "kind": "sentence",
+        "text": "Every stage buys relevance with time or money.",
+        "hash": "390oh24h0n",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "span": {
+          "start": 4965,
+          "end": 5011
+        },
+        "prev": "u37",
+        "next": "u39"
+      },
+      {
+        "id": "u39",
+        "kind": "sentence",
+        "text": "On an internal test set of 400 questions, we measured:",
+        "hash": "c7iulnjfsp",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "span": {
+          "start": 5012,
+          "end": 5066
+        },
+        "prev": "u38",
+        "next": "u40"
+      },
+      {
+        "id": "u40",
+        "kind": "table_row",
+        "text": "Configuration | Correct passage in top 8 | Median latency | Cost per 1,000 queries",
+        "hash": "frjdkqny8o",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "span": {
+          "start": 5068,
+          "end": 5154
+        },
+        "prev": "u39",
+        "next": "u41"
+      },
+      {
+        "id": "u41",
+        "kind": "table_row",
+        "text": "BM25 only | 61% | 35 ms | $0.02",
+        "hash": "1fbgz6olg89",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "span": {
+          "start": 5173,
+          "end": 5208
+        },
+        "prev": "u40",
+        "next": "u42"
+      },
+      {
+        "id": "u42",
+        "kind": "table_row",
+        "text": "Vector only | 68% | 60 ms | $0.10",
+        "hash": "w1sugv3ys8",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "span": {
+          "start": 5209,
+          "end": 5246
+        },
+        "prev": "u41",
+        "next": "u43"
+      },
+      {
+        "id": "u43",
+        "kind": "table_row",
+        "text": "Hybrid (RRF) | 79% | 70 ms | $0.12",
+        "hash": "1gb0hexi6o6",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "span": {
+          "start": 5247,
+          "end": 5285
+        },
+        "prev": "u42",
+        "next": "u44"
+      },
+      {
+        "id": "u44",
+        "kind": "table_row",
+        "text": "Hybrid + reranker | 88% | 190 ms | $0.95",
+        "hash": "gz1ojcjx9y",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "span": {
+          "start": 5286,
+          "end": 5330
+        },
+        "prev": "u43",
+        "next": "u45"
+      },
+      {
+        "id": "u45",
+        "kind": "sentence",
+        "text": "Reranking adds about 120 ms per query, most of it spent running the cross-encoder over up to 100 candidates, and it accounts for most of the cost increase.",
+        "hash": "28tplnlflf4",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "span": {
+          "start": 5332,
+          "end": 5487
+        },
+        "prev": "u44",
+        "next": "u46"
+      },
+      {
+        "id": "u46",
+        "kind": "sentence",
+        "text": "These figures come from one collection and one query set; a collection with fewer exact identifiers may see a smaller gain from BM25, and a different reranker will have a different latency.",
+        "hash": "10li1w73rrh",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "span": {
+          "start": 5488,
+          "end": 5677
+        },
+        "prev": "u45",
+        "next": "u47"
+      },
+      {
+        "id": "u47",
+        "kind": "sentence",
+        "text": "Teams with a strict latency budget can rerank fewer candidates, for example the top 30 of the fused list instead of all of them, at some cost in recall.",
+        "hash": "iglkylvo3p",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "span": {
+          "start": 5678,
+          "end": 5830
+        },
+        "prev": "u46",
+        "next": "u48"
+      },
+      {
+        "id": "u48",
+        "kind": "sentence",
+        "text": "Hybrid search widens the net, reranking sorts the catch, and generation can only work with the passages it is given.",
+        "hash": "8b86ieq6uq",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Summary",
+        "span": {
+          "start": 5844,
+          "end": 5960
+        },
+        "prev": "u47",
+        "next": "u49"
+      },
+      {
+        "id": "u49",
+        "kind": "sentence",
+        "text": "Each step helps only under its own conditions, and none of them makes the final answer certain to be right.",
+        "hash": "v2dvoaci1t",
+        "topic": "Hybrid search and reranking in the Harbor assistant › Summary",
+        "span": {
+          "start": 5961,
+          "end": 6068
+        },
+        "prev": "u48"
+      }
+    ],
+    "nextId": 50
+  },
+  "cites": {
+    "u1_n1": [
+      "u1"
+    ],
+    "u1_n2": [
+      "u2"
+    ],
+    "u1_n3": [
+      "u3"
+    ],
+    "u2_n1": [
+      "u4",
+      "u5",
+      "u6",
+      "u7",
+      "u8",
+      "u9"
+    ],
+    "u2_n2": [
+      "u10",
+      "u11",
+      "u12",
+      "u13",
+      "u14",
+      "u15"
+    ],
+    "u2_n3": [
+      "u4",
+      "u5",
+      "u6",
+      "u7",
+      "u8",
+      "u9",
+      "u10",
+      "u11",
+      "u12",
+      "u13",
+      "u14",
+      "u15"
+    ],
+    "u3_n1": [
+      "u16"
+    ],
+    "u3_n2": [
+      "u16"
+    ],
+    "u3_n3": [
+      "u17"
+    ],
+    "u3_n4": [
+      "u18",
+      "u19"
+    ],
+    "u3_n6": [
+      "u20"
+    ],
+    "u3_n7": [
+      "u20",
+      "u21",
+      "u22"
+    ],
+    "u3_n10": [
+      "u23"
+    ],
+    "u3_n11": [
+      "u23",
+      "u24",
+      "u25"
+    ],
+    "u4_n1": [
+      "u26"
+    ],
+    "u4_n2": [
+      "u27",
+      "u28",
+      "u29"
+    ],
+    "u4_n5": [
+      "u30"
+    ],
+    "u4_n6": [
+      "u31",
+      "u32",
+      "u33"
+    ],
+    "u5_n1": [
+      "u34"
+    ],
+    "u5_n2": [
+      "u34"
+    ],
+    "u5_n3": [
+      "u34"
+    ],
+    "u5_n4": [
+      "u34",
+      "u35"
+    ],
+    "u5_n5": [
+      "u34"
+    ],
+    "u5_n6": [
+      "u34",
+      "u36"
+    ],
+    "u5_n7": [
+      "u37"
+    ],
+    "u5_n8": [
+      "u37"
+    ],
+    "u6_n1": [
+      "u38"
+    ],
+    "u6_n2": [
+      "u39"
+    ],
+    "u6_n3": [
+      "u40",
+      "u41",
+      "u42",
+      "u43",
+      "u44"
+    ],
+    "u6_n5": [
+      "u45"
+    ],
+    "u6_n6": [
+      "u46"
+    ],
+    "u6_n7": [
+      "u47"
+    ],
+    "u7_n1": [
+      "u48"
+    ],
+    "u7_n2": [
+      "u48"
+    ],
+    "u7_n3": [
+      "u48"
+    ],
+    "u7_n4": [
+      "u49"
+    ],
+    "u7_n5": [
+      "u49"
+    ]
+  },
+  "omitted": [],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "cited",
+      "u3": "cited",
+      "u4": "cited",
+      "u5": "cited",
+      "u6": "cited",
+      "u7": "cited",
+      "u8": "cited",
+      "u9": "cited",
+      "u10": "cited",
+      "u11": "cited",
+      "u12": "cited",
+      "u13": "cited",
+      "u14": "cited",
+      "u15": "cited",
+      "u16": "review",
+      "u17": "cited",
+      "u18": "cited",
+      "u19": "cited",
+      "u20": "cited",
+      "u21": "cited",
+      "u22": "cited",
+      "u23": "cited",
+      "u24": "cited",
+      "u25": "cited",
+      "u26": "cited",
+      "u27": "cited",
+      "u28": "cited",
+      "u29": "cited",
+      "u30": "cited",
+      "u31": "cited",
+      "u32": "cited",
+      "u33": "cited",
+      "u34": "cited",
+      "u35": "cited",
+      "u36": "cited",
+      "u37": "cited",
+      "u38": "review",
+      "u39": "cited",
+      "u40": "cited",
+      "u41": "cited",
+      "u42": "cited",
+      "u43": "cited",
+      "u44": "cited",
+      "u45": "cited",
+      "u46": "cited",
+      "u47": "cited",
+      "u48": "cited",
+      "u49": "cited"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "represented",
+      "u3": "represented",
+      "u4": "represented",
+      "u5": "represented",
+      "u6": "represented",
+      "u7": "represented",
+      "u8": "represented",
+      "u9": "represented",
+      "u10": "represented",
+      "u11": "represented",
+      "u12": "represented",
+      "u13": "represented",
+      "u14": "represented",
+      "u15": "represented",
+      "u16": "needs_review",
+      "u17": "represented",
+      "u18": "represented",
+      "u19": "represented",
+      "u20": "represented",
+      "u21": "represented",
+      "u22": "represented",
+      "u23": "represented",
+      "u24": "represented",
+      "u25": "represented",
+      "u26": "represented",
+      "u27": "represented",
+      "u28": "represented",
+      "u29": "represented",
+      "u30": "represented",
+      "u31": "represented",
+      "u32": "represented",
+      "u33": "represented",
+      "u34": "represented",
+      "u35": "represented",
+      "u36": "represented",
+      "u37": "represented",
+      "u38": "needs_review",
+      "u39": "represented",
+      "u40": "represented",
+      "u41": "represented",
+      "u42": "represented",
+      "u43": "represented",
+      "u44": "represented",
+      "u45": "represented",
+      "u46": "represented",
+      "u47": "represented",
+      "u48": "represented",
+      "u49": "represented"
+    },
+    "critical": {
+      "u1": [
+        "protected"
+      ],
+      "u2": [
+        "requirement"
+      ],
+      "u3": [
+        "protected"
+      ],
+      "u5": [
+        "protected"
+      ],
+      "u6": [
+        "protected"
+      ],
+      "u8": [
+        "requirement",
+        "condition",
+        "protected"
+      ],
+      "u9": [
+        "requirement",
+        "condition",
+        "protected"
+      ],
+      "u11": [
+        "condition",
+        "protected"
+      ],
+      "u13": [
+        "protected"
+      ],
+      "u14": [
+        "protected"
+      ],
+      "u15": [
+        "requirement",
+        "protected"
+      ],
+      "u17": [
+        "condition"
+      ],
+      "u18": [
+        "condition"
+      ],
+      "u19": [
+        "limitation",
+        "protected"
+      ],
+      "u20": [
+        "requirement"
+      ],
+      "u21": [
+        "protected"
+      ],
+      "u22": [
+        "protected"
+      ],
+      "u23": [
+        "requirement",
+        "protected"
+      ],
+      "u25": [
+        "limitation",
+        "protected"
+      ],
+      "u27": [
+        "protected"
+      ],
+      "u29": [
+        "requirement",
+        "protected"
+      ],
+      "u30": [
+        "protected"
+      ],
+      "u31": [
+        "limitation"
+      ],
+      "u32": [
+        "limitation",
+        "requirement",
+        "condition"
+      ],
+      "u34": [
+        "requirement",
+        "protected"
+      ],
+      "u35": [
+        "condition"
+      ],
+      "u36": [
+        "limitation",
+        "requirement"
+      ],
+      "u37": [
+        "protected"
+      ],
+      "u39": [
+        "protected"
+      ],
+      "u40": [
+        "protected"
+      ],
+      "u41": [
+        "requirement",
+        "protected"
+      ],
+      "u42": [
+        "requirement",
+        "protected"
+      ],
+      "u43": [
+        "protected"
+      ],
+      "u44": [
+        "protected"
+      ],
+      "u45": [
+        "protected"
+      ],
+      "u46": [
+        "protected"
+      ],
+      "u47": [
+        "protected"
+      ],
+      "u48": [
+        "requirement"
+      ],
+      "u49": [
+        "requirement"
+      ]
+    },
+    "flags": [
+      {
+        "code": "ai_check",
+        "card": "u3_n1",
+        "detail": "checked by AI: not supported: The card omits that both retrievers run on the *same query* and that their results are *merged*."
+      },
+      {
+        "code": "ai_check",
+        "card": "u3_n2",
+        "detail": "checked by AI: not supported: The card omits that both retrievers run on the *same query* and that their results are *merged*."
+      },
+      {
+        "code": "ai_check",
+        "card": "u3_n6",
+        "detail": "checked by AI: not supported: The card omits that RRF ignores raw scores and uses only the rank of each passage in each list."
+      },
+      {
+        "code": "ai_check",
+        "card": "u3_n10",
+        "detail": "checked by AI: not supported: The card omits the details about how the candidate list is generated (each retriever returns its top 50 passages, resulting in at most 100 candidates, usually fewer due to overlaps)."
+      },
+      {
+        "code": "ai_check",
+        "card": "u4_n6",
+        "detail": "checked by AI: partly supported: The card omits the caveat that reranking does not guarantee the final answer is correct."
+      },
+      {
+        "code": "ai_check",
+        "card": "u5_n1",
+        "detail": "checked by AI: not supported: The card omits crucial information about the instruction to answer only from the passages and to cite them."
+      },
+      {
+        "code": "ai_check",
+        "card": "u5_n3",
+        "detail": "checked by AI: not supported: The card omits that the language model receives the question and passages, and is instructed to answer only from them and to cite them."
+      },
+      {
+        "code": "ai_check",
+        "card": "u5_n5",
+        "detail": "checked by AI: not supported: The card omits that the language model receives the question and passages, and is instructed to answer only from them and to cite them."
+      },
+      {
+        "code": "ai_check",
+        "card": "u5_n7",
+        "detail": "checked by AI: not supported: The card omits the details of how the information is retrieved and reranked, and how it enables a comprehensive answer."
+      },
+      {
+        "code": "uncited_card",
+        "card": "u6_n4",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "ai_check",
+        "card": "u6_n1",
+        "detail": "checked by AI: not supported: The source states 'relevance with time or money', implying a choice between the two, while the card states 'trade-off between relevance, time (latency), and monetary cost', implying all three are always in play."
+      }
+    ],
+    "sections": [
+      {
+        "topic": "Hybrid search and reranking in the Harbor assistant › Why retrieval decides the answer",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Hybrid search and reranking in the Harbor assistant › Keyword retrieval with BM25",
+        "represented": 6,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Hybrid search and reranking in the Harbor assistant › Vector retrieval with embeddings",
+        "represented": 6,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Hybrid search and reranking in the Harbor assistant › Combining the two signals",
+        "represented": 6,
+        "omitted": 0,
+        "needsReview": 1,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Hybrid search and reranking in the Harbor assistant › Candidate generation",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Hybrid search and reranking in the Harbor assistant › Reranking",
+        "represented": 8,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Hybrid search and reranking in the Harbor assistant › Generation",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Hybrid search and reranking in the Harbor assistant › Relevance, latency and cost",
+        "represented": 9,
+        "omitted": 0,
+        "needsReview": 1,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Hybrid search and reranking in the Harbor assistant › Summary",
+        "represented": 2,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      }
+    ]
+  },
+  "flags": [
+    {
+      "code": "ai_check",
+      "card": "u3_n1",
+      "detail": "checked by AI: not supported: The card omits that both retrievers run on the *same query* and that their results are *merged*."
+    },
+    {
+      "code": "ai_check",
+      "card": "u3_n2",
+      "detail": "checked by AI: not supported: The card omits that both retrievers run on the *same query* and that their results are *merged*."
+    },
+    {
+      "code": "ai_check",
+      "card": "u3_n6",
+      "detail": "checked by AI: not supported: The card omits that RRF ignores raw scores and uses only the rank of each passage in each list."
+    },
+    {
+      "code": "ai_check",
+      "card": "u3_n10",
+      "detail": "checked by AI: not supported: The card omits the details about how the candidate list is generated (each retriever returns its top 50 passages, resulting in at most 100 candidates, usually fewer due to overlaps)."
+    },
+    {
+      "code": "ai_check",
+      "card": "u4_n6",
+      "detail": "checked by AI: partly supported: The card omits the caveat that reranking does not guarantee the final answer is correct."
+    },
+    {
+      "code": "ai_check",
+      "card": "u5_n1",
+      "detail": "checked by AI: not supported: The card omits crucial information about the instruction to answer only from the passages and to cite them."
+    },
+    {
+      "code": "ai_check",
+      "card": "u5_n3",
+      "detail": "checked by AI: not supported: The card omits that the language model receives the question and passages, and is instructed to answer only from them and to cite them."
+    },
+    {
+      "code": "ai_check",
+      "card": "u5_n5",
+      "detail": "checked by AI: not supported: The card omits that the language model receives the question and passages, and is instructed to answer only from them and to cite them."
+    },
+    {
+      "code": "ai_check",
+      "card": "u5_n7",
+      "detail": "checked by AI: not supported: The card omits the details of how the information is retrieved and reranked, and how it enables a comprehensive answer."
+    },
+    {
+      "code": "uncited_card",
+      "card": "u6_n4",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "ai_check",
+      "card": "u6_n1",
+      "detail": "checked by AI: not supported: The source states 'relevance with time or money', implying a choice between the two, while the card states 'trade-off between relevance, time (latency), and monetary cost', implying all three are always in play."
+    }
+  ],
+  "hints": [
+    {
+      "code": "qualifier_dropped",
+      "unit": "u5",
+      "card": "u2_n1",
+      "detail": "source says \"many times and corrects for passage length\"",
+      "evidence": {
+        "source": "many times and corrects for passage length"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u9",
+      "card": "u2_n1",
+      "detail": "source says \"a user who asks \"why does my upload stall\" will not match a passage that only says \"transfers pause when the connection drops\".\"; the card drops the negation",
+      "evidence": {
+        "source": "a user who asks \"why does my upload stall\" will not match a passage that only says \"transfers pause when the connection drops\".",
+        "card": "Its strength lies in exact matching, effectively finding passages containing specific strings like `E-4012` or `sync.retry_window`, even if they appear only once in the collection."
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u10",
+      "card": "u2_n2",
+      "detail": "the card says \"whenever\"; the source doesn't",
+      "evidence": {
+        "card": "whenever"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u11",
+      "card": "u2_n2",
+      "detail": "source says \"when they share no words\"; the card says \"whenever\"",
+      "evidence": {
+        "source": "when they share no words",
+        "card": "whenever"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u12",
+      "card": "u2_n2",
+      "detail": "the card says \"whenever\"; the source doesn't",
+      "evidence": {
+        "card": "whenever"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u13",
+      "card": "u2_n2",
+      "detail": "the card says \"whenever\"; the source doesn't",
+      "evidence": {
+        "card": "whenever"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u14",
+      "card": "u2_n2",
+      "detail": "the card says \"whenever\"; the source doesn't",
+      "evidence": {
+        "card": "whenever"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u6",
+      "card": "u2_n3",
+      "detail": "source says \"BM25 needs no training and is cheap to run, which is why it remains the baseline.\"; the card drops the negation",
+      "evidence": {
+        "source": "BM25 needs no training and is cheap to run, which is why it remains the baseline.",
+        "card": "Cost to Run | Cheap to run."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u11",
+      "card": "u2_n3",
+      "detail": "source says \"so the stalled-upload question can find the passage about paused transfers.\"; the card negates it",
+      "evidence": {
+        "source": "so the stalled-upload question can find the passage about paused transfers.",
+        "card": "Weakness | Vocabulary mismatch (e.g., \"why does my upload stall\" won't match \"transfers pause when the connection drops\")."
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u12",
+      "card": "u2_n3",
+      "detail": "the card says \"produce*\"; the source states no cause",
+      "evidence": {
+        "card": "produce*"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u13",
+      "card": "u2_n3",
+      "detail": "the card says \"produce*\"; the source states no cause",
+      "evidence": {
+        "card": "produce*"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u2_n3",
+      "detail": "the card names \"e.g\"; the source doesn't",
+      "evidence": {
+        "card": "e.g"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u22",
+      "card": "u3_n9",
+      "detail": "source names \"k = 60\"; no card citing it does",
+      "evidence": {
+        "source": "k = 60"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u17",
+      "card": "u3_n3",
+      "detail": "source says \"can improve recall when lexical and semantic\"",
+      "evidence": {
+        "source": "can improve recall when lexical and semantic"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u18",
+      "card": "u3_n4",
+      "detail": "source says \"tend to return the same passages, or i\"",
+      "evidence": {
+        "source": "tend to return the same passages, or i"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u20",
+      "card": "u3_n6",
+      "detail": "source restricts it: \"and uses only the rank of\"; the card doesn't",
+      "evidence": {
+        "source": "and uses only the rank of"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u23",
+      "card": "u3_n10",
+      "detail": "source says \"at most 100 candidates, and usually fewer becaus\"",
+      "evidence": {
+        "source": "at most 100 candidates, and usually fewer becaus"
+      }
+    },
+    {
+      "code": "caveat_dropped",
+      "unit": "u31",
+      "card": "u4_n6",
+      "detail": "the card drops the source's caveat \"but it does not guarantee that the final answer is correct\"",
+      "evidence": {
+        "source": "but it does not guarantee that the final answer is correct"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u32",
+      "card": "u4_n8",
+      "detail": "source says \"if the right passage is not among the candidates, reranking cannot recover it.\"; the card drops the negation",
+      "evidence": {
+        "source": "if the right passage is not among the candidates, reranking cannot recover it.",
+        "card": "The reranker can only reorder passages found by retrieval"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u34",
+      "card": "u5_n4",
+      "detail": "source says \"The language model receives the question and the top 8 passages, and is instructed to answer only from them and to cite the passages it used.\"; the card negates it",
+      "evidence": {
+        "source": "The language model receives the question and the top 8 passages, and is instructed to answer only from them and to cite the passages it used.",
+        "card": "If no passage addresses the question, it should state this rather than using its general knowledge."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u35",
+      "card": "u5_n4",
+      "detail": "source says \"If none of the passages addresses the question, it should say so rather than answer from its general knowledge.\"; the card drops the negation",
+      "evidence": {
+        "source": "If none of the passages addresses the question, it should say so rather than answer from its general knowledge.",
+        "card": "The language model must answer only from the provided passages."
+      }
+    },
+    {
+      "code": "absolute_added",
+      "card": "u5_n6",
+      "detail": "the card says \"guarantee\"; the source doesn't",
+      "evidence": {
+        "card": "guarantee"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u37",
+      "card": "u5_n8",
+      "detail": "source says \"can define the code and explain the\"",
+      "evidence": {
+        "source": "can define the code and explain the"
+      }
+    },
+    {
+      "code": "absolute_added",
+      "card": "u5_n8",
+      "detail": "the card says \"ensures\"; the source doesn't",
+      "evidence": {
+        "card": "ensures"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u6_n6",
+      "detail": "the card names \"e.g\"; the source doesn't",
+      "evidence": {
+        "card": "e.g"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u6_n7",
+      "detail": "the card names \"e.g\"; the source doesn't",
+      "evidence": {
+        "card": "e.g"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u49",
+      "card": "u7_n5",
+      "detail": "source restricts it: \"step helps only under its own\"; the card doesn't",
+      "evidence": {
+        "source": "step helps only under its own"
+      }
+    }
+  ],
+  "reviews": {
+    "u1_n1": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u1_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u1_n3": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n1": {
+      "reasons": [],
+      "hints": [
+        "source says \"many times and corrects for passage length\"",
+        "source says \"a user who asks \"why does my upload stall\" will not match a passage that only says \"transfers pause when the connection drops\".\"; the card drops the negation"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n2": {
+      "reasons": [],
+      "hints": [
+        "the card says \"whenever\"; the source doesn't",
+        "source says \"when they share no words\"; the card says \"whenever\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u2_n3": {
+      "reasons": [],
+      "hints": [
+        "source says \"BM25 needs no training and is cheap to run, which is why it remains the baseline.\"; the card drops the negation",
+        "source says \"so the stalled-upload question can find the passage about paused transfers.\"; the card negates it",
+        "the card says \"produce*\"; the source states no cause",
+        "the card names \"e.g\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u3_n1": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that both retrievers run on the *same query* and that their results are *merged*."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that both retrievers run on the *same query* and that their results are *merged*."
+      }
+    },
+    "u3_n2": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that both retrievers run on the *same query* and that their results are *merged*."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that both retrievers run on the *same query* and that their results are *merged*."
+      }
+    },
+    "u3_n3": {
+      "reasons": [],
+      "hints": [
+        "source says \"can improve recall when lexical and semantic\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u3_n4": {
+      "reasons": [],
+      "hints": [
+        "source says \"tend to return the same passages, or i\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u3_n6": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that RRF ignores raw scores and uses only the rank of each passage in each list."
+      ],
+      "hints": [
+        "source restricts it: \"and uses only the rank of\"; the card doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that RRF ignores raw scores and uses only the rank of each passage in each list."
+      }
+    },
+    "u3_n7": {
+      "reasons": [],
+      "hints": [
+        "source names \"k = 60\"; no card citing it does"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u3_n10": {
+      "reasons": [
+        "checked by AI: not supported: The card omits the details about how the candidate list is generated (each retriever returns its top 50 passages, resulting in at most 100 candidates, usually fewer due to overlaps)."
+      ],
+      "hints": [
+        "source says \"at most 100 candidates, and usually fewer becaus\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits the details about how the candidate list is generated (each retriever returns its top 50 passages, resulting in at most 100 candidates, usually fewer due to overlaps)."
+      }
+    },
+    "u3_n11": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u4_n1": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u4_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u4_n5": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u4_n6": {
+      "reasons": [
+        "checked by AI: partly supported: The card omits the caveat that reranking does not guarantee the final answer is correct."
+      ],
+      "hints": [
+        "the card drops the source's caveat \"but it does not guarantee that the final answer is correct\"",
+        "source says \"if the right passage is not among the candidates, reranking cannot recover it.\"; the card drops the negation"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "partly",
+        "reason": "The card omits the caveat that reranking does not guarantee the final answer is correct."
+      }
+    },
+    "u5_n1": {
+      "reasons": [
+        "checked by AI: not supported: The card omits crucial information about the instruction to answer only from the passages and to cite them."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits crucial information about the instruction to answer only from the passages and to cite them."
+      }
+    },
+    "u5_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u5_n3": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that the language model receives the question and passages, and is instructed to answer only from them and to cite them."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that the language model receives the question and passages, and is instructed to answer only from them and to cite them."
+      }
+    },
+    "u5_n4": {
+      "reasons": [],
+      "hints": [
+        "source says \"The language model receives the question and the top 8 passages, and is instructed to answer only from them and to cite the passages it used.\"; the card negates it",
+        "source says \"If none of the passages addresses the question, it should say so rather than answer from its general knowledge.\"; the card drops the negation"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u5_n5": {
+      "reasons": [
+        "checked by AI: not supported: The card omits that the language model receives the question and passages, and is instructed to answer only from them and to cite them."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits that the language model receives the question and passages, and is instructed to answer only from them and to cite them."
+      }
+    },
+    "u5_n6": {
+      "reasons": [],
+      "hints": [
+        "the card says \"guarantee\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u5_n7": {
+      "reasons": [
+        "checked by AI: not supported: The card omits the details of how the information is retrieved and reranked, and how it enables a comprehensive answer."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card omits the details of how the information is retrieved and reranked, and how it enables a comprehensive answer."
+      }
+    },
+    "u5_n8": {
+      "reasons": [],
+      "hints": [
+        "source says \"can define the code and explain the\"",
+        "the card says \"ensures\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u6_n1": {
+      "reasons": [
+        "checked by AI: not supported: The source states 'relevance with time or money', implying a choice between the two, while the card states 'trade-off between relevance, time (latency), and monetary cost', implying all three are always in play."
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The source states 'relevance with time or money', implying a choice between the two, while the card states 'trade-off between relevance, time (latency), and monetary cost', implying all three are always in play."
+      }
+    },
+    "u6_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u6_n3": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u6_n4": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u6_n5": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u6_n6": {
+      "reasons": [],
+      "hints": [
+        "the card names \"e.g\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u6_n7": {
+      "reasons": [],
+      "hints": [
+        "the card names \"e.g\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u7_n1": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u7_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u7_n3": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u7_n4": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u7_n5": {
+      "reasons": [],
+      "hints": [
+        "source restricts it: \"step helps only under its own\"; the card doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    }
+  }
+}

@@ -1,0 +1,1008 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "CDN cache invalidation techniques: TTL, purge, stale-while-revalidate, versioned URLs."
+      }
+    },
+    {
+      "id": "g0",
+      "role": "comparison",
+      "importance": "high",
+      "stableKey": "Invalidating cached content at the edge › Comparing the techniques § group#0",
+      "type": "group",
+      "content": {
+        "label": "Comparing the techniques",
+        "arrangement": "compare",
+        "takeaway": "Different caching techniques offer trade-offs between freshness, cost, and caveats."
+      }
+    },
+    {
+      "id": "u0_n1",
+      "stableKey": "Invalidating cached content at the edge › Comparing the techniques § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "The table below summarizes how the techniques compare."
+      }
+    },
+    {
+      "id": "u0_n2",
+      "stableKey": "Invalidating cached content at the edge › Comparing the techniques § table#0",
+      "parent": "g0",
+      "type": "table",
+      "content": {
+        "columns": [
+          "Technique",
+          "Freshness after a change",
+          "Main cost",
+          "Main caveat"
+        ],
+        "rows": [
+          [
+            "TTL expiry",
+            "Up to the full TTL (300 seconds at Larkspur)",
+            "More origin traffic as the TTL shrinks",
+            "Cannot be shortened after the fact"
+          ],
+          [
+            "Purge by URL",
+            "Seconds (20 seconds worst case measured)",
+            "One purge call per URL",
+            "Misses other pages that show the same content"
+          ],
+          [
+            "Surrogate-key purge",
+            "Seconds, for every tagged page",
+            "Tagging discipline at the origin",
+            "Untagged pages stay stale"
+          ],
+          [
+            "Stale-while-revalidate",
+            "Up to the TTL plus 60 seconds",
+            "Nothing at request time",
+            "Readers knowingly get expired copies"
+          ],
+          [
+            "Versioned URLs",
+            "Immediate for pages that reference the new name",
+            "A build step",
+            "Does not cover HTML entry pages"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "u0_a1",
+      "title": "Key Differences and Use Cases",
+      "stableKey": "Invalidating cached content at the edge › Comparing the techniques § text#1",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "For immediate freshness, 'Versioned URLs', 'Purge by URL', and 'Surrogate-key purge' are most effective, but each has specific operational costs or limitations. 'TTL expiry' offers simplicity but sacrifices immediate freshness, while 'Stale-while-revalidate' prioritizes availability over strict freshness, with readers potentially seeing outdated content."
+      }
+    },
+    {
+      "id": "g1",
+      "role": "decision",
+      "importance": "high",
+      "stableKey": "Invalidating cached content at the edge › Conclusion § group#0",
+      "type": "group",
+      "content": {
+        "label": "Conclusion",
+        "arrangement": "grid",
+        "takeaway": "Edge invalidation requires a multi-faceted approach with trade-offs."
+      }
+    },
+    {
+      "id": "u1_n1",
+      "stableKey": "Invalidating cached content at the edge › Conclusion § shape#0",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Invalidation at the edge"
+      }
+    },
+    {
+      "id": "u1_n2",
+      "stableKey": "Invalidating cached content at the edge › Conclusion § text#0",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Invalidation at the edge involves a set of trade-offs, not a single solution."
+      }
+    },
+    {
+      "id": "u1_n3",
+      "stableKey": "Invalidating cached content at the edge › Conclusion § shape#1",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Reliable Invalidation Setup"
+      }
+    },
+    {
+      "id": "u1_n4",
+      "stableKey": "Invalidating cached content at the edge › Conclusion § text#1",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "A reliable setup combines expiry times, explicit purges, deliberate stale serving, and versioned file names. Each component addresses the shortcomings of the others."
+      }
+    },
+    {
+      "id": "u1_n5",
+      "stableKey": "Invalidating cached content at the edge › Conclusion § text#2",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Short TTLs act as a safety net. Purges handle urgent corrections. Stale serving maintains site speed when the origin is under strain. Versioned names eliminate static assets from the invalidation problem."
+      }
+    },
+    {
+      "id": "u1_n6",
+      "stableKey": "Invalidating cached content at the edge › Conclusion § text#3",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Regardless of the chosen mix, be aware that purges reach different edge locations at varying times. Plan for a window of several seconds during which some users may still see the old version."
+      }
+    },
+    {
+      "id": "u1_a1",
+      "title": "Status",
+      "stableKey": "Invalidating cached content at the edge › Conclusion § text#4",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "No explicit decisions are made in this section; it provides a summary of considerations for edge invalidation."
+      }
+    },
+    {
+      "id": "g2",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Invalidating cached content at the edge § group#0",
+      "type": "group",
+      "content": {
+        "label": "Invalidating cached content at the edge",
+        "arrangement": "grid",
+        "takeaway": "Effective edge cache invalidation requires layering multiple techniques for content-heavy sites."
+      }
+    },
+    {
+      "id": "u2_n1",
+      "title": "Context: Content-Heavy Site",
+      "stableKey": "Invalidating cached content at the edge § text#0",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "This article is the third in a series focusing on operating a content-heavy website with a CDN."
+      }
+    },
+    {
+      "id": "u2_n2",
+      "title": "Edge Caching Benefits and Challenges",
+      "stableKey": "Invalidating cached content at the edge § text#1",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Caching content at the edge improves page load times. However, cached copies can become outdated."
+      }
+    },
+    {
+      "id": "u2_n3",
+      "title": "Core Problem: Cache Invalidation",
+      "stableKey": "Invalidating cached content at the edge § text#2",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The primary challenge in edge caching is not storage, but rather determining when and how quickly outdated cached content is replaced."
+      }
+    },
+    {
+      "id": "u2_n4",
+      "title": "Multi-Technique Approach for Reliability",
+      "stableKey": "Invalidating cached content at the edge § text#3",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "A single caching technique is insufficient for reliable content invalidation. A robust setup requires layering multiple techniques."
+      }
+    },
+    {
+      "id": "u2_n5",
+      "title": "Example: Larkspur Media",
+      "stableKey": "Invalidating cached content at the edge § text#4",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The fictional news site, Larkspur Media, serves as the ongoing example for this discussion."
+      }
+    },
+    {
+      "id": "u2_a1",
+      "title": "Section Overview",
+      "stableKey": "Invalidating cached content at the edge § text#5",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This section introduces the critical problem of invalidating cached content at the edge for content-heavy sites. It highlights that while edge caching speeds up delivery, managing outdated content is complex and requires a layered approach of multiple techniques. The fictional site Larkspur Media is used as a practical example."
+      }
+    },
+    {
+      "id": "g3",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Invalidating cached content at the edge › Letting copies expire § group#0",
+      "type": "group",
+      "content": {
+        "label": "Letting copies expire",
+        "arrangement": "grid",
+        "takeaway": "TTL-based caching is simple but can lead to stale content."
+      }
+    },
+    {
+      "id": "u3_n1",
+      "title": "TTL-based Invalidation",
+      "stableKey": "Invalidating cached content at the edge › Letting copies expire § text#0",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Every cached object has a Time To Live (TTL). Once the TTL expires, the edge either discards the copy or rechecks it with the origin."
+      }
+    },
+    {
+      "id": "u3_n2",
+      "title": "Setting TTL",
+      "stableKey": "Invalidating cached content at the edge › Letting copies expire § text#1",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "The origin sets the TTL using the `Cache-Control` header, e.g., `Cache-Control: max-age=300` for a 300-second cache duration."
+      }
+    },
+    {
+      "id": "u3_n3",
+      "title": "Coordination-free Invalidation",
+      "stableKey": "Invalidating cached content at the edge › Letting copies expire § text#2",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "TTL expiry requires no coordination between the origin and the edge, making it the default for CDNs."
+      }
+    },
+    {
+      "id": "u3_n4",
+      "title": "Revalidation with ETag",
+      "stableKey": "Invalidating cached content at the edge › Letting copies expire § text#3",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Upon TTL expiry, if the origin provided an `ETag`, the edge can revalidate the copy. If unchanged, the origin sends a `304 Not Modified` response, avoiding a full download."
+      }
+    },
+    {
+      "id": "u3_n5",
+      "title": "Weakness: TTL is a Guess",
+      "stableKey": "Invalidating cached content at the edge › Letting copies expire § text#4",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "The main drawback of TTL is that it's a pre-determined guess. Changes at the origin before TTL expiry won't be reflected at the edge immediately."
+      }
+    },
+    {
+      "id": "u3_n6",
+      "title": "Impact of Shortening TTL",
+      "stableKey": "Invalidating cached content at the edge › Letting copies expire § text#5",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Shortening the TTL reduces the window for stale content but significantly increases traffic to the origin. For example, reducing an article's TTL from 300 to 30 seconds increased origin traffic by approximately eightfold."
+      }
+    },
+    {
+      "id": "u3_a1",
+      "title": "Takeaway",
+      "stableKey": "Invalidating cached content at the edge › Letting copies expire § text#6",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "TTL-based caching is simple but can lead to stale content."
+      }
+    },
+    {
+      "id": "g4",
+      "role": "flow",
+      "importance": "low",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § group#0",
+      "type": "group",
+      "content": {
+        "label": "Purging by URL",
+        "arrangement": "chain",
+        "takeaway": "Purging by URL removes cached content but is eventually consistent and has limitations."
+      }
+    },
+    {
+      "id": "u4_n1",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § shape#0",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Origin requests purge"
+      }
+    },
+    {
+      "id": "u4_n2",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#0",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "When content needs immediate change, the origin can ask the CDN to purge a specific URL. Larkspur's publishing system sends a purge for an article URL whenever an editor saves a correction."
+      }
+    },
+    {
+      "id": "u4_n3",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § shape#1",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "5 · CDN removes cached copy"
+      }
+    },
+    {
+      "id": "u4_n4",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#1",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "The purge removes the cached copy of the URL. The next request for that URL will then fetch fresh content from the origin."
+      }
+    },
+    {
+      "id": "u4_n5",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § shape#2",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Purge API called"
+      }
+    },
+    {
+      "id": "u4_n6",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#2",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "The origin calls the purge API with the URL. The API responds within about 150 milliseconds, but this only signifies that the request has been queued."
+      }
+    },
+    {
+      "id": "u4_n7",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § shape#3",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · CDN fans out purge"
+      }
+    },
+    {
+      "id": "u4_n8",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#3",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "The CDN's control plane distributes the purge request to all 90 edge locations."
+      }
+    },
+    {
+      "id": "u4_n9",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § shape#4",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Edge locations invalidate cache"
+      }
+    },
+    {
+      "id": "u4_n10",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#4",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "Each edge location marks its cached copy of the URL as invalid. Consequently, the next request to that location will result in a cache miss and will be directed to the origin."
+      }
+    },
+    {
+      "id": "u4_n11",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#5",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "A purge request is accepted quickly, but it is not applied everywhere at the same moment. The CDN must deliver the purge to every edge location, and each location removes its copy on its own schedule. This means for a short period, some locations will serve the new version while others still serve the old one. Purging is eventually consistent, not instant."
+      }
+    },
+    {
+      "id": "u4_n12",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#6",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "In Larkspur's measurements, half of the locations had applied a purge within 2 seconds, and the slowest location took 20 seconds. Until the last location has applied the purge, a reader routed to that location still gets the old copy.\n\n**From the source:** half"
+      }
+    },
+    {
+      "id": "u4_n13",
+      "title": "Limitations of Purging by URL",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#7",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "Purging by URL only removes the exact URL specified. For example, a corrected headline on an article page will not update on the home page, section page, or RSS feed unless those pages are also purged separately or their caches expire. Query strings further complicate this, as `/story/417?ref=social` is a distinct cache entry from `/story/417` and is not removed by purging the latter. Additionally, purge APIs are rate-limited; Larkspur's plan allows 1,000 purge calls per minute, which can be exhausted by bulk corrections."
+      }
+    },
+    {
+      "id": "u4_a1",
+      "title": "Overall Process",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#8",
+      "parent": "g4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The purging process is initiated by the origin, queued by the API, fanned out to CDN edge locations, and eventually invalidates cached content. The goal is to ensure users receive the most up-to-date content."
+      }
+    },
+    {
+      "id": "u4_a2",
+      "title": "Consistency and Latency",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#9",
+      "parent": "g4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The process is eventually consistent, not instant. There's a delay between the purge request and its application across all CDN edge locations, leading to a temporary state where different users might see different versions of content. Latency can be up to 20 seconds for the slowest locations."
+      }
+    },
+    {
+      "id": "u4_a3",
+      "title": "Failure Points and Branches",
+      "stableKey": "Invalidating cached content at the edge › Purging by URL § text#10",
+      "parent": "g4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The process doesn't explicitly branch or fail in the described flow, but its effectiveness is limited by its URL-specific nature and API rate limits. Content on related pages or with different query strings will not be purged automatically, requiring additional purge requests. Exceeding the rate limit (1,000 calls/minute for Larkspur) can prevent purges from being processed."
+      }
+    },
+    {
+      "id": "g5",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Invalidating cached content at the edge › Purging by tag with surrogate keys § group#0",
+      "type": "group",
+      "content": {
+        "label": "Purging by tag with surrogate keys",
+        "arrangement": "grid",
+        "takeaway": "Surrogate keys enable efficient content purging but require careful origin tagging and manage cache misses."
+      }
+    },
+    {
+      "id": "u5_n1",
+      "title": "Surrogate Keys for Listing Problem",
+      "stableKey": "Invalidating cached content at the edge › Purging by tag with surrogate keys § text#0",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "Surrogate keys allow the origin to label each response with tags, resolving the listing problem."
+      }
+    },
+    {
+      "id": "u5_n2",
+      "title": "Tagging Responses",
+      "stableKey": "Invalidating cached content at the edge › Purging by tag with surrogate keys § text#1",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "The origin sends a `Surrogate-Key` header (e.g., `Surrogate-Key: story-417 section-politics`), and the CDN records which cached objects are associated with these keys."
+      }
+    },
+    {
+      "id": "u5_n3",
+      "title": "Targeted Purging",
+      "stableKey": "Invalidating cached content at the edge › Purging by tag with surrogate keys § text#2",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "A single purge of a key (e.g., `story-417`) removes all cached pages containing that story, including the article, home page, section page, and feed."
+      }
+    },
+    {
+      "id": "u5_n4",
+      "title": "Key Granularity and Limits",
+      "stableKey": "Invalidating cached content at the edge › Purging by tag with surrogate keys § text#3",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "Keys can be granular, but each key adds to the header length. Larkspur limits responses to under 50 keys per response."
+      }
+    },
+    {
+      "id": "u5_n5",
+      "title": "Origin's Responsibility",
+      "stableKey": "Invalidating cached content at the edge › Purging by tag with surrogate keys § text#4",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "The origin is responsible for tagging. A missing tag will result in a stale page without any error indication."
+      }
+    },
+    {
+      "id": "u5_n6",
+      "title": "Eventual Consistency",
+      "stableKey": "Invalidating cached content at the edge › Purging by tag with surrogate keys § text#5",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "Similar to URL purging, tag purges are delivered to each edge location independently, leading to a brief period where some locations serve updated pages while others serve old ones."
+      }
+    },
+    {
+      "id": "u5_n7",
+      "title": "Large-Scale Purges",
+      "stableKey": "Invalidating cached content at the edge › Purging by tag with surrogate keys § text#6",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "Tag purges can be extensive; for example, purging `section-politics` at Larkspur removes approximately 12,000 cached objects, causing a burst of cache misses at the origin."
+      }
+    },
+    {
+      "id": "u5_a1",
+      "title": "Summary",
+      "stableKey": "Invalidating cached content at the edge › Purging by tag with surrogate keys § text#7",
+      "parent": "g5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Surrogate keys enable efficient content purging by allowing the origin to tag cached objects. This shifts the responsibility of cache invalidation to the origin, but introduces challenges like potential stale content due to missing tags and temporary inconsistencies across edge locations during purge propagation. Large purges can also lead to significant cache miss bursts at the origin."
+      }
+    },
+    {
+      "id": "g6",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Invalidating cached content at the edge › Serving stale on purpose § group#0",
+      "type": "group",
+      "content": {
+        "label": "Serving stale on purpose",
+        "arrangement": "grid",
+        "takeaway": "Serving stale content improves user experience by hiding slow origins, with acceptable trade-offs."
+      }
+    },
+    {
+      "id": "u6_n1",
+      "title": "Stale-while-revalidate",
+      "stableKey": "Invalidating cached content at the edge › Serving stale on purpose § text#0",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "The `stale-while-revalidate` directive allows an edge location to immediately return an expired copy of content while fetching a fresh one from the origin in the background. This turns expiry from a waiting period into a background task."
+      }
+    },
+    {
+      "id": "u6_n2",
+      "title": "Example: `max-age=300, stale-while-revalidate=60`",
+      "stableKey": "Invalidating cached content at the edge › Serving stale on purpose § text#1",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "With `Cache-Control: max-age=300, stale-while-revalidate=60`, if a request arrives after 300 seconds, the expired copy is returned immediately, and a fresh copy is fetched from the origin in the background."
+      }
+    },
+    {
+      "id": "u6_n3",
+      "title": "Benefits of `stale-while-revalidate`",
+      "stableKey": "Invalidating cached content at the edge › Serving stale on purpose § text#2",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "This approach provides a fast response to the current reader, and the subsequent reader receives the refreshed copy."
+      }
+    },
+    {
+      "id": "u6_n4",
+      "title": "Use Case for Larkspur",
+      "stableKey": "Invalidating cached content at the edge › Serving stale on purpose § text#3",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "Larkspur uses `stale-while-revalidate` on article pages where a minute of staleness is acceptable, but not for live election results."
+      }
+    },
+    {
+      "id": "u6_n5",
+      "title": "Staleness Bound for `stale-while-revalidate`",
+      "stableKey": "Invalidating cached content at the edge › Serving stale on purpose § text#4",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "An expired copy is served for a maximum of 60 seconds past its Time-To-Live (TTL). After this period, the edge waits for the origin as it would for a regular cache miss."
+      }
+    },
+    {
+      "id": "u6_n6",
+      "title": "`stale-if-error` Directive",
+      "stableKey": "Invalidating cached content at the edge › Serving stale on purpose § text#5",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "The `stale-if-error=86400` directive allows the edge to continue serving an expired copy for up to 86,400 seconds (one day) if the origin is returning errors."
+      }
+    },
+    {
+      "id": "u6_n7",
+      "title": "Purpose of Serving Stale",
+      "stableKey": "Invalidating cached content at the edge › Serving stale on purpose § text#6",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "Serving stale content is a choice about tolerance for older data, not a method to make content fresher. It can hide a slow origin from readers."
+      }
+    },
+    {
+      "id": "u6_n8",
+      "title": "Trade-off of Serving Stale",
+      "stableKey": "Invalidating cached content at the edge › Serving stale on purpose § text#7",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "While it hides slow origins, serving stale content means some readers may see a copy older than what the TTL alone would suggest."
+      }
+    },
+    {
+      "id": "g7",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Invalidating cached content at the edge › Versioned asset URLs § group#0",
+      "type": "group",
+      "content": {
+        "label": "Versioned asset URLs",
+        "arrangement": "grid",
+        "takeaway": "Versioned asset URLs enable long caching, but HTML pages require separate cache management to prevent broken links."
+      }
+    },
+    {
+      "id": "u7_n1",
+      "title": "Clean Invalidation for Static Assets",
+      "stableKey": "Invalidating cached content at the edge › Versioned asset URLs § text#0",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "The most effective way to invalidate static assets is by assigning them a new name."
+      }
+    },
+    {
+      "id": "u7_n2",
+      "title": "Hashed Filenames for Versioning",
+      "stableKey": "Invalidating cached content at the edge › Versioned asset URLs § text#1",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "The build process incorporates a hash of each file's content into its name (e.g., `app.3f9c2e.js`). This ensures that any change to a file results in a new URL, preventing requests for old cached versions."
+      }
+    },
+    {
+      "id": "u7_n3",
+      "title": "Long Cache Duration for Versioned Assets",
+      "stableKey": "Invalidating cached content at the edge › Versioned asset URLs § text#2",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "Versioned URLs, due to their unchanging content, can be cached for extended periods. Larkspur sets `max-age=31536000` (one year) for its versioned assets."
+      }
+    },
+    {
+      "id": "u7_n4",
+      "title": "Automated Hashing",
+      "stableKey": "Invalidating cached content at the edge › Versioned asset URLs § text#3",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "Most build tools can automate the addition of content hashes, making this a one-time configuration change."
+      }
+    },
+    {
+      "id": "u7_n5",
+      "title": "Versioning Limitations for HTML Entry Pages",
+      "stableKey": "Invalidating cached content at the edge › Versioned asset URLs § text#4",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "Versioning is not applicable to HTML entry pages (e.g., `/`, `/story/417`). These pages, which reference the new asset names, still require a Time-To-Live (TTL), purging, or both."
+      }
+    },
+    {
+      "id": "u7_n6",
+      "title": "Risk of Stale HTML Caches",
+      "stableKey": "Invalidating cached content at the edge › Versioned asset URLs § text#5",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "If an HTML page remains cached longer than the origin server retains the old asset files, users may be directed to non-existent files."
+      }
+    },
+    {
+      "id": "u7_n7",
+      "title": "Retention of Old Asset Versions",
+      "stableKey": "Invalidating cached content at the edge › Versioned asset URLs § text#6",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "To prevent broken links, old asset versions must remain available for at least the duration of the longest HTML TTL."
+      }
+    },
+    {
+      "id": "u7_a1",
+      "title": "Takeaway",
+      "stableKey": "Invalidating cached content at the edge › Versioned asset URLs § text#7",
+      "parent": "g7",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Versioned asset URLs enable long caching, but HTML pages require separate cache management to prevent broken links."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u1_n1",
+      "to": "u1_n3",
+      "type": "relates_to",
+      "label": "achieved by"
+    },
+    {
+      "from": "u1_n3",
+      "to": "u1_n5",
+      "type": "supports",
+      "label": "details"
+    },
+    {
+      "from": "u1_n3",
+      "to": "u1_n6",
+      "type": "relates_to",
+      "label": "consideration"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n3",
+      "type": "supports"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n4",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n5",
+      "type": "blocks"
+    },
+    {
+      "from": "u3_n5",
+      "to": "u3_n6",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n1",
+      "to": "u4_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u4_n5",
+      "to": "u4_n7",
+      "type": "flows_to"
+    },
+    {
+      "from": "u4_n7",
+      "to": "u4_n9",
+      "type": "flows_to"
+    },
+    {
+      "from": "u4_n1",
+      "to": "u4_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n3",
+      "to": "u4_n4",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n5",
+      "to": "u4_n6",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n7",
+      "to": "u4_n8",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n9",
+      "to": "u4_n10",
+      "type": "explained_by"
+    },
+    {
+      "from": "u4_n9",
+      "to": "u4_n11",
+      "type": "relates_to",
+      "label": "consequence"
+    },
+    {
+      "from": "u4_n9",
+      "to": "u4_n12",
+      "type": "relates_to",
+      "label": "timing"
+    },
+    {
+      "from": "u4_n1",
+      "to": "u4_n13",
+      "type": "relates_to",
+      "label": "limitations"
+    },
+    {
+      "from": "u4_n9",
+      "to": "u4_n3",
+      "type": "flows_to",
+      "label": "next request"
+    },
+    {
+      "from": "u5_n1",
+      "to": "u5_n2",
+      "type": "supports",
+      "label": "how"
+    },
+    {
+      "from": "u5_n2",
+      "to": "u5_n3",
+      "type": "supports",
+      "label": "enables"
+    },
+    {
+      "from": "u5_n3",
+      "to": "u5_n4",
+      "type": "relates_to",
+      "label": "considerations"
+    },
+    {
+      "from": "u5_n5",
+      "to": "u5_n3",
+      "type": "blocks",
+      "label": "if not tagged"
+    },
+    {
+      "from": "u5_n6",
+      "to": "u5_n3",
+      "type": "relates_to",
+      "label": "consequence"
+    },
+    {
+      "from": "u5_n7",
+      "to": "u5_n3",
+      "type": "relates_to",
+      "label": "scale of impact"
+    },
+    {
+      "from": "u6_n1",
+      "to": "u6_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u6_n1",
+      "to": "u6_n3",
+      "type": "supports"
+    },
+    {
+      "from": "u6_n1",
+      "to": "u6_n4",
+      "type": "relates_to"
+    },
+    {
+      "from": "u6_n1",
+      "to": "u6_n5",
+      "type": "relates_to"
+    },
+    {
+      "from": "u6_n7",
+      "to": "u6_n8",
+      "type": "relates_to"
+    },
+    {
+      "from": "u7_n1",
+      "to": "u7_n2",
+      "type": "supports"
+    },
+    {
+      "from": "u7_n2",
+      "to": "u7_n3",
+      "type": "supports"
+    },
+    {
+      "from": "u7_n2",
+      "to": "u7_n4",
+      "type": "supports"
+    },
+    {
+      "from": "u7_n5",
+      "to": "u7_n6",
+      "type": "caused_by"
+    },
+    {
+      "from": "u7_n6",
+      "to": "u7_n7",
+      "type": "depends_on"
+    },
+    {
+      "from": "g0",
+      "to": "g3",
+      "type": "references",
+      "label": "details"
+    },
+    {
+      "from": "g0",
+      "to": "g4",
+      "type": "references",
+      "label": "details"
+    },
+    {
+      "from": "g0",
+      "to": "g5",
+      "type": "references",
+      "label": "details"
+    },
+    {
+      "from": "g0",
+      "to": "g6",
+      "type": "references",
+      "label": "details"
+    },
+    {
+      "from": "g0",
+      "to": "g7",
+      "type": "references",
+      "label": "details"
+    },
+    {
+      "from": "g1",
+      "to": "g0",
+      "type": "references",
+      "label": "summarizes"
+    }
+  ],
+  "metadata": {
+    "title": "Comparing the techniques"
+  }
+}

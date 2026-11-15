@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-propagation-bound-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The walkthrough loses the measured worst case: 'the slowest took 20 seconds' becomes 'the slowest took longer', so 'eventually' has no bound.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n4",
+      "find": "the slowest took 20 seconds",
+      "replace": "the slowest took longer"
+    }
+  ],
+  "expectFailing": [
+    "a.propagation-bound",
+    "a.walkthrough-numbers"
+  ]
+}

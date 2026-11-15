@@ -1,0 +1,670 @@
+{
+  "canvasId": "recorded",
+  "elements": [
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "NhoZU0vLtbe6599KL1Af",
+      "x": 570,
+      "y": -342.5,
+      "width": 460,
+      "height": 54,
+      "angle": 0,
+      "link": "acute://block/doc_ZtnTZH33d0Apx2cBVKBl",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_ZtnTZH33d0Apx2cBVKBl",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 36,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 570,
+          "y": -342.5
+        }
+      },
+      "version": 2,
+      "versionNonce": 489287482,
+      "index": "a0",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "9dcswaUrFzZLDQUJJmLz",
+      "boundElements": [],
+      "updated": 1792462876327,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "JXVQ2AhmqRTwHiWXBYOS",
+      "x": 570,
+      "y": -280.5,
+      "width": 460,
+      "height": 99,
+      "angle": 0,
+      "link": "acute://block/doc_nFiIFQB3RJjJ8x8mjfB0",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_nFiIFQB3RJjJ8x8mjfB0",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 22,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 570,
+          "y": -280.5
+        }
+      },
+      "version": 3,
+      "versionNonce": 1570996794,
+      "index": "a1",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "9dcswaUrFzZLDQUJJmLz",
+      "boundElements": [],
+      "updated": 1792462876329,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "iKJanOjJpXfVUjQuJTPi",
+      "x": 570,
+      "y": -153.5,
+      "width": 460,
+      "height": 364,
+      "angle": 0,
+      "link": "acute://block/doc_6Ifc5RlALpJh7s1zR7lI",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_6Ifc5RlALpJh7s1zR7lI",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 570,
+          "y": -153.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1195087162,
+      "index": "a2",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "9dcswaUrFzZLDQUJJmLz",
+      "boundElements": [],
+      "updated": 1792462876456,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "22Liw8iOudTGm0cAc7gO",
+      "x": 570,
+      "y": 402.5,
+      "width": 460,
+      "height": 238,
+      "angle": 0,
+      "link": "acute://block/doc_560OBtgbpAimeEZwbGx3",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_560OBtgbpAimeEZwbGx3",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 570,
+          "y": 402.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1548279290,
+      "index": "a3",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "9dcswaUrFzZLDQUJJmLz",
+      "boundElements": [],
+      "updated": 1792462876456,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "3uLFvJwTbnsRzOgp0wnS",
+      "x": 570,
+      "y": 886.5,
+      "width": 460,
+      "height": 98,
+      "angle": 0,
+      "link": "acute://block/doc_VE4TueO7xzgeJtO3D9sp",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_VE4TueO7xzgeJtO3D9sp",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 570,
+          "y": 886.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 439291578,
+      "index": "a4",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "9dcswaUrFzZLDQUJJmLz",
+      "boundElements": [],
+      "updated": 1792462876456,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "QvHzXsK3GBXez5zezbNl",
+      "x": 570,
+      "y": 1044.5,
+      "width": 460,
+      "height": 182,
+      "angle": 0,
+      "link": "acute://block/doc_BCNQJq5HFRL2VEp4L1bX",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_BCNQJq5HFRL2VEp4L1bX",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 570,
+          "y": 1044.5
+        }
+      },
+      "version": 4,
+      "versionNonce": 1167140730,
+      "index": "a5",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "9dcswaUrFzZLDQUJJmLz",
+      "boundElements": [],
+      "updated": 1792462876456,
+      "locked": false
+    },
+    {
+      "id": "9dcswaUrFzZLDQUJJmLz",
+      "type": "frame",
+      "x": 530,
+      "y": -382.5,
+      "width": 540,
+      "height": 1721,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a6",
+      "roundness": null,
+      "seed": 371573114,
+      "version": 3,
+      "versionNonce": 1651930342,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792462876329,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_vbrvQFD3PVMHqLcVOljG",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "noteModel": "distil"
+          }
+        },
+        "acuteOverview": {
+          "title": "Idempotency keys",
+          "takeaway": "Idempotency keys prevent duplicate operations within a 24-hour window, but have limitations."
+        },
+        "acuteLayout": {
+          "x": 530,
+          "y": -382.5
+        }
+      },
+      "name": "1 · Annotated"
+    }
+  ],
+  "documents": {
+    "doc_ZtnTZH33d0Apx2cBVKBl": {
+      "id": "doc_ZtnTZH33d0Apx2cBVKBl",
+      "workspaceId": "default",
+      "canvasId": "cv_mJ9uoQ5fu3HNLDmzYUCw",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Idempotency keys",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792462876325,
+      "updatedAt": 1792462876325,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_vbrvQFD3PVMHqLcVOljG",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_SJueeLvkKSC8KYsc4yPm",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Idempotency keys § group#0",
+          "contentFingerprint": "c2c74falzapy"
+        }
+      }
+    },
+    "doc_nFiIFQB3RJjJ8x8mjfB0": {
+      "id": "doc_nFiIFQB3RJjJ8x8mjfB0",
+      "workspaceId": "default",
+      "canvasId": "cv_mJ9uoQ5fu3HNLDmzYUCw",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Idempotency keys prevent duplicate operations within a 24-hour window, but have limitations.",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792462876327,
+      "updatedAt": 1792462876327,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_vbrvQFD3PVMHqLcVOljG",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil"
+        }
+      }
+    },
+    "doc_6Ifc5RlALpJh7s1zR7lI": {
+      "id": "doc_6Ifc5RlALpJh7s1zR7lI",
+      "workspaceId": "default",
+      "canvasId": "cv_mJ9uoQ5fu3HNLDmzYUCw",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "f245c2ec-6083-4f9b-8679-6b8c9edb075c",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "An idempotency key is a unique value that a client attaches to a request so that the server can recognise a retry of the same operation.¹ If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.² For example, a checkout client sends ",
+              "styles": {}
+            },
+            {
+              "type": "text",
+              "text": "Idempotency-Key: 7f3c-91ab",
+              "styles": {
+                "code": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " with a payment request.³ The connection drops before the response arrives, so the client retries with the same key.⁴ The server finds the stored result for ",
+              "styles": {}
+            },
+            {
+              "type": "text",
+              "text": "7f3c-91ab",
+              "styles": {
+                "code": true
+              }
+            },
+            {
+              "type": "text",
+              "text": " and returns the original confirmation, and the customer is charged once.⁵ Keys only protect against duplicates while the server still remembers them.⁶ In this design, stored results expire after 24 hours, so a retry sent after that window is treated as a new payment.⁷ Keys also do not make two different requests safe: if a client reuses a key with a different amount, the server must reject the request rather than return the old result.⁸ In short, idempotency keys make retries safe within a bounded window; they are not a general guarantee against duplicate operations.⁹",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792462876327,
+      "updatedAt": 1792462876327,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_vbrvQFD3PVMHqLcVOljG",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_SJueeLvkKSC8KYsc4yPm",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Idempotency keys § text#0",
+          "contentFingerprint": "c284elwkiqg8",
+          "sourceUnits": [
+            "u1",
+            "u2",
+            "u3",
+            "u4",
+            "u5",
+            "u6",
+            "u7",
+            "u8",
+            "u9"
+          ],
+          "review": {
+            "reasons": [],
+            "hints": [
+              "the card says \"so\"; the source states no cause",
+              "source says \"Keys only protect against duplicates while the server still remembers them.\"; the card negates it",
+              "source says \"if a client reuses a key with a different amount, the server must reject the request rather than return the old result.\"; the card negates it",
+              "source says \"In short, idempotency keys make retries safe within a bounded window\"; the card negates it",
+              "the card names \"operation.¹\"; the source doesn't"
+            ],
+            "checked": {
+              "by": "ai",
+              "verdict": "supported"
+            }
+          }
+        }
+      }
+    },
+    "doc_560OBtgbpAimeEZwbGx3": {
+      "id": "doc_560OBtgbpAimeEZwbGx3",
+      "workspaceId": "default",
+      "canvasId": "cv_mJ9uoQ5fu3HNLDmzYUCw",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "7c0a432d-9a8e-4bb8-8ce7-6d1ac29ff42b",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "¹ A unique identifier for a request.\n ² Prevents re-execution of the same operation.\n ³ Example of an idempotency key in a payment request.\n ⁴ Client retries with the same key after a connection drop.\n ⁵ Server uses the key to return the original result, preventing duplicate charges.\n ⁶ Protection is limited to the server's memory of the key.\n ⁷ Stored results have a 24-hour expiration; retries after this period are new operations.\n ⁸ Reusing a key with different request parameters (e.g., amount) requires rejection, not returning the old result.\n ⁹ Idempotency keys ensure safe retries within a time limit, but not a universal guarantee against all duplicate operations.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792462876327,
+      "updatedAt": 1792462876327,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_vbrvQFD3PVMHqLcVOljG",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_SJueeLvkKSC8KYsc4yPm",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Idempotency keys § text#1",
+          "contentFingerprint": "c1bth6rjlmu7",
+          "sourceUnits": [
+            "u1",
+            "u2",
+            "u3",
+            "u4",
+            "u5",
+            "u6",
+            "u7",
+            "u8",
+            "u9"
+          ],
+          "review": {
+            "reasons": [],
+            "hints": [
+              "source says \"If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.\"; the card negates it",
+              "source says \"The server finds the stored result for `7f3c-91ab` and returns the original confirmation, and the customer is charged once.\"; the card negates it",
+              "source says \"Keys only protect against duplicates while the server still remembers them.\"; the card negates it",
+              "source says \"if a client reuses a key with a different amount, the server must reject the request rather than return the old result.\"; the card negates it",
+              "the card says \"all\"; the source doesn't",
+              "the card names \"e.g\"; the source doesn't"
+            ],
+            "checked": {
+              "by": "ai",
+              "verdict": "supported"
+            }
+          }
+        }
+      }
+    },
+    "doc_VE4TueO7xzgeJtO3D9sp": {
+      "id": "doc_VE4TueO7xzgeJtO3D9sp",
+      "workspaceId": "default",
+      "canvasId": "cv_mJ9uoQ5fu3HNLDmzYUCw",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3,
+            "backgroundColor": "orange"
+          },
+          "content": "Analysis · Key Takeaway"
+        },
+        {
+          "type": "paragraph",
+          "id": "20a11e51-b577-4e44-8147-cacb3fe1a65e",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Idempotency keys prevent duplicate operations within a 24-hour window, but have limitations.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792462876327,
+      "updatedAt": 1792462876327,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_vbrvQFD3PVMHqLcVOljG",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_SJueeLvkKSC8KYsc4yPm",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Idempotency keys § text#2",
+          "contentFingerprint": "c16ps0wyq2ve"
+        }
+      }
+    },
+    "doc_BCNQJq5HFRL2VEp4L1bX": {
+      "id": "doc_BCNQJq5HFRL2VEp4L1bX",
+      "workspaceId": "default",
+      "canvasId": "cv_mJ9uoQ5fu3HNLDmzYUCw",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3,
+            "backgroundColor": "orange"
+          },
+          "content": "Analysis · Analysis of Annotations"
+        },
+        {
+          "type": "paragraph",
+          "id": "09596020-fd16-4ea5-a903-cf2614382634",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The annotations clarify specific conditions and limitations of idempotency keys that might be missed in the prose. They highlight the time-bound nature of the protection (24 hours) and the critical distinction that keys do not make different requests safe, even if the key is reused. This emphasizes that idempotency is not a universal solution for all duplicate operation scenarios.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792462876327,
+      "updatedAt": 1792462876327,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_vbrvQFD3PVMHqLcVOljG",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "noteModel": "distil",
+          "contentSourceId": "src_SJueeLvkKSC8KYsc4yPm",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Idempotency keys § text#3",
+          "contentFingerprint": "c1ltelm05t0b"
+        }
+      }
+    }
+  }
+}

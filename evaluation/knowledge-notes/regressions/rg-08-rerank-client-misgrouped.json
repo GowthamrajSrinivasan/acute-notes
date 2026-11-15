@@ -1,0 +1,21 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-rerank-client-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "The Orchestrator's rerank client is moved into the L4 composeAnswer frame: its link from the answer composer now crosses another link and runs over a third frame (and through a card).",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "o-rc",
+      "group": "gL4"
+    }
+  ],
+  "expectFailing": [
+    "a.crossings",
+    "a.links-over-frames",
+    "a.layout",
+    "a.in-rerank-client"
+  ]
+}

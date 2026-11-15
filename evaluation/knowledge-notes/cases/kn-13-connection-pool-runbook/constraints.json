@@ -1,0 +1,142 @@
+{
+  "id": "kn-13-connection-pool-runbook",
+  "kind": "technical_documentation",
+  "source": "# Running a shared connection pool\n\n## Why pool connections\n\nOpening a new database connection costs the Ledger service about 30 ms, because each one needs a TLS handshake and an authentication round trip. A pool keeps a set of connections open and lends them to requests, so most requests skip that cost entirely. The pool also caps how many connections the service can hold, which protects the database from a traffic spike.\n\n## Operating the pool\n\n### Sizing the pool\n\nEach Ledger instance runs a pool of at most 20 connections. The database accepts 400 connections in total, and 40 of those are reserved for migrations and administrators. That leaves room for 18 instances at full size, so the autoscaler is capped at 18 instances. Raising the pool size only helps while requests are waiting for a connection; once the database CPU is saturated, more connections make every query slower. A pool sized for peak traffic also holds idle connections at night, which costs memory on the database but nothing else.\n\n### Timeouts\n\nA request waits at most 2 seconds to borrow a connection before it fails with `POOL_EXHAUSTED`. The wait limit is deliberately shorter than the 5-second request deadline, so the caller still has time to return a clear error. Each query also has a statement timeout of 3 seconds, set with `SET statement_timeout = '3s'` when the connection is opened. The statement timeout does not apply to migrations, which run on their own reserved connections without a limit. A long transaction holds its connection for its whole duration, so the team keeps transactions under 500 ms.\n\n### Health checks and failover\n\nBefore lending a connection that has been idle for more than 60 seconds, the pool runs `SELECT 1` to check that it still works. A connection that fails the check is closed and replaced, and the request gets a fresh one. During a database failover, every open connection breaks at once, so the pool is drained and refilled from the new primary. Refilling is limited to 5 new connections per second per instance, so that 18 instances reconnecting together don't overload the new primary. Until the pool is refilled, requests may see `POOL_EXHAUSTED` errors for up to about 4 seconds.\n\n### Connection leaks\n\nA connection that stays borrowed for more than 10 seconds is logged as a possible leak, together with the stack trace of the code that borrowed it. The pool does not take a leaked connection back by force, because the code holding it may still be using it. Most leaks the team has found came from error paths that returned early without releasing the connection. Leak warnings are reviewed every week, and a leak that comes back gets a ticket for the team that owns the code.\n\n### Watching the pool\n\nThe pool exports three gauges: connections in use, idle connections, and requests waiting to borrow. An alert pages the on-call engineer when requests have been waiting for more than 30 seconds in a row. A sustained queue usually means slow queries rather than a pool that is too small, so the runbook starts with the slowest statements, not with the pool size. The idle gauge drops to zero during a failover and recovers as the pool refills, which makes it a quick way to confirm that a failover has finished.\n\n## Takeaway\n\nA pool makes connections cheap and bounded, but its size, its timeouts and its failover behaviour have to be set together with the database's own limits.\n",
+  "critical": [
+    {
+      "quote": "Each Ledger instance runs a pool of at most 20 connections.",
+      "why": "The per-instance cap the rest of the sizing follows from."
+    },
+    {
+      "quote": "That leaves room for 18 instances at full size, so the autoscaler is capped at 18 instances.",
+      "why": "The autoscaler cap that keeps the database within its connection limit."
+    },
+    {
+      "quote": "Raising the pool size only helps while requests are waiting for a connection; once the database CPU is saturated, more connections make every query slower.",
+      "why": "A bigger pool is not a general fix: past CPU saturation it makes things worse."
+    },
+    {
+      "quote": "A request waits at most 2 seconds to borrow a connection before it fails with `POOL_EXHAUSTED`.",
+      "why": "The wait limit and the error a caller sees."
+    },
+    {
+      "quote": "The statement timeout does not apply to migrations, which run on their own reserved connections without a limit.",
+      "why": "The exception to the statement timeout."
+    },
+    {
+      "quote": "Until the pool is refilled, requests may see `POOL_EXHAUSTED` errors for up to about 4 seconds.",
+      "why": "What callers see during a failover; the failover isn't invisible."
+    },
+    {
+      "quote": "The pool does not take a leaked connection back by force, because the code holding it may still be using it.",
+      "why": "Detection only: a leak is logged, never reclaimed."
+    },
+    {
+      "quote": "A sustained queue usually means slow queries rather than a pool that is too small, so the runbook starts with the slowest statements, not with the pool size.",
+      "why": "'Usually' is a qualifier: slow queries are the likely cause, not the only one."
+    },
+    {
+      "quote": "A pool makes connections cheap and bounded, but its size, its timeouts and its failover behaviour have to be set together with the database's own limits.",
+      "why": "The document's takeaway, with its own condition."
+    }
+  ],
+  "exact": [
+    "30 ms",
+    "20 connections",
+    "400 connections",
+    "40",
+    "18 instances",
+    "2 seconds",
+    "POOL_EXHAUSTED",
+    "5-second",
+    "3 seconds",
+    "SET statement_timeout = '3s'",
+    "500 ms",
+    "60 seconds",
+    "SELECT 1",
+    "5 new connections per second",
+    "4 seconds",
+    "10 seconds",
+    "30 seconds",
+    "20",
+    "18",
+    "400",
+    "5"
+  ],
+  "groups": {
+    "together": [
+      [
+        "20 connections per instance; autoscaler capped at 18 instances",
+        "400 connections, 40 reserved for migrations and administrators: room for 18 instances",
+        "A bigger pool helps only while requests wait; past CPU saturation more connections slow every query",
+        "Borrowing waits at most 2 seconds, then fails with POOL_EXHAUSTED",
+        "The wait is shorter than the 5-second request deadline on purpose",
+        "Every query times out after 3 seconds, except migrations",
+        "Transactions stay under 500 ms",
+        "Connections idle over 60 seconds are checked with SELECT 1 before lending",
+        "A failover drains and refills the pool; POOL_EXHAUSTED for up to about 4 seconds",
+        "Refilling is limited to 5 new connections per second per instance",
+        "So 18 instances reconnecting together don't overload the new primary",
+        "Borrowed over 10 seconds: logged as a possible leak, never taken back by force",
+        "Most leaks come from early returns on error paths",
+        "On-call is paged after 30 seconds of waiting in a row",
+        "A sustained queue usually means slow queries, not a small pool",
+        "The idle gauge shows when a failover is over"
+      ]
+    ],
+    "apart": []
+  },
+  "hierarchy": [
+    {
+      "main": "20 connections per instance; autoscaler capped at 18 instances",
+      "supporting": [
+        "400 connections, 40 reserved for migrations and administrators: room for 18 instances"
+      ]
+    },
+    {
+      "main": "Borrowing waits at most 2 seconds, then fails with POOL_EXHAUSTED",
+      "supporting": [
+        "The wait is shorter than the 5-second request deadline on purpose"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "20 connections per instance; autoscaler capped at 18 instances",
+      "to": "400 connections, 40 reserved for migrations and administrators: room for 18 instances",
+      "type": "explained_by"
+    },
+    {
+      "from": "Borrowing waits at most 2 seconds, then fails with POOL_EXHAUSTED",
+      "to": "The wait is shorter than the 5-second request deadline on purpose",
+      "type": "explained_by"
+    },
+    {
+      "from": "Refilling is limited to 5 new connections per second per instance",
+      "to": "So 18 instances reconnecting together don't overload the new primary",
+      "type": "explained_by"
+    }
+  ],
+  "mustNotSay": [
+    {
+      "text": "A bigger pool always makes queries faster.",
+      "why": "The source says more connections slow every query once the database CPU is saturated."
+    },
+    {
+      "text": "The statement timeout applies to every query, migrations included.",
+      "why": "Migrations are explicitly exempt."
+    },
+    {
+      "text": "The pool reclaims leaked connections automatically.",
+      "why": "The source says it never takes a leaked connection back by force."
+    },
+    {
+      "text": "A sustained queue always means slow queries.",
+      "why": "The source says 'usually'."
+    },
+    {
+      "text": "A failover is invisible to callers.",
+      "why": "Requests may see POOL_EXHAUSTED for up to about 4 seconds."
+    }
+  ]
+}

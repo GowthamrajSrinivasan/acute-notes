@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-takeaway-certain",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The takeaway drops its own uncertainty: the probable discounts read and the unknown tax retries are presented as part of the verified path.",
+  "mutations": [
+    { "op": "replace_text", "node": "g1", "find": "Not verified: the discounts read is only probable, and tax retries are unknown.", "replace": "The discounts read and tax retries complete the path." }
+  ],
+  "expectFailing": ["a.takeaway"]
+}

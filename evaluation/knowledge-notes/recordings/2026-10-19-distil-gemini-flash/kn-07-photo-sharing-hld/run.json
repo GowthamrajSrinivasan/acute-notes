@@ -1,0 +1,1308 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "Pinhole lets people post photos and see the photos of the accounts they follow in a feed.",
+        "hash": "48gugabb46",
+        "topic": "Pinhole: high-level design for photo sharing › Purpose and scope",
+        "span": {
+          "start": 70,
+          "end": 159
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "The design is sized for about 2 million daily active users at launch.",
+        "hash": "104ugdz9le4",
+        "topic": "Pinhole: high-level design for photo sharing › Purpose and scope",
+        "span": {
+          "start": 160,
+          "end": 229
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "This document is the high-level design only: it names the parts of the system, what each part is responsible for, how the parts talk to each other and why we chose this shape.",
+        "hash": "1c2r0jofi1u",
+        "topic": "Pinhole: high-level design for photo sharing › Purpose and scope",
+        "span": {
+          "start": 230,
+          "end": 405
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "It does not describe code, internal modules or individual operations; those belong in the low-level designs that each service team will write later.",
+        "hash": "226p7r3u44p",
+        "topic": "Pinhole: high-level design for photo sharing › Purpose and scope",
+        "span": {
+          "start": 406,
+          "end": 554
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "People use Pinhole through two clients: a mobile app for iOS and Android, and a web app that runs in the browser.",
+        "hash": "260yzyafvfz",
+        "topic": "Pinhole: high-level design for photo sharing › Clients",
+        "span": {
+          "start": 568,
+          "end": 681
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "Both clients speak the same public HTTPS API and hold no business rules of their own beyond simple input checks.",
+        "hash": "1mtvxziu3jb",
+        "topic": "Pinhole: high-level design for photo sharing › Clients",
+        "span": {
+          "start": 682,
+          "end": 794
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "Clients upload a photo directly to object storage with a short-lived signed URL, so large files never pass through our own services.",
+        "hash": "uwqjdeajn8",
+        "topic": "Pinhole: high-level design for photo sharing › Clients",
+        "span": {
+          "start": 795,
+          "end": 927
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "sentence",
+        "text": "Every client request enters through the API gateway.",
+        "hash": "2690cfa3xrk",
+        "topic": "Pinhole: high-level design for photo sharing › Edge and API",
+        "span": {
+          "start": 946,
+          "end": 998
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "sentence",
+        "text": "The gateway terminates TLS, checks the caller's access token with the auth service, applies a rate limit of 120 requests per minute per account, and routes the request to the right service.",
+        "hash": "27qnbibdxeq",
+        "topic": "Pinhole: high-level design for photo sharing › Edge and API",
+        "span": {
+          "start": 999,
+          "end": 1188
+        },
+        "prev": "u8",
+        "next": "u10"
+      },
+      {
+        "id": "u10",
+        "kind": "sentence",
+        "text": "If the auth service cannot be reached, the gateway rejects the request instead of letting it through unchecked.",
+        "hash": "2ges571rbbo",
+        "topic": "Pinhole: high-level design for photo sharing › Edge and API",
+        "span": {
+          "start": 1189,
+          "end": 1300
+        },
+        "prev": "u9",
+        "next": "u11"
+      },
+      {
+        "id": "u11",
+        "kind": "sentence",
+        "text": "Photo bytes are served to clients by the CDN, never by the gateway.",
+        "hash": "2erh3o8bu5g",
+        "topic": "Pinhole: high-level design for photo sharing › Edge and API",
+        "span": {
+          "start": 1301,
+          "end": 1368
+        },
+        "prev": "u10",
+        "next": "u12"
+      },
+      {
+        "id": "u12",
+        "kind": "sentence",
+        "text": "The auth service issues and verifies access tokens and owns accounts and sessions.",
+        "hash": "1revus3pflx",
+        "topic": "Pinhole: high-level design for photo sharing › Core services",
+        "span": {
+          "start": 1388,
+          "end": 1470
+        },
+        "prev": "u11",
+        "next": "u13"
+      },
+      {
+        "id": "u13",
+        "kind": "sentence",
+        "text": "The upload service hands the client a signed upload URL, records the new photo in the metadata database with the status \"processing\" once the upload completes, and publishes a PhotoUploaded event to the message queue.",
+        "hash": "fomclj6ir",
+        "topic": "Pinhole: high-level design for photo sharing › Core services",
+        "span": {
+          "start": 1471,
+          "end": 1688
+        },
+        "prev": "u12",
+        "next": "u14"
+      },
+      {
+        "id": "u14",
+        "kind": "sentence",
+        "text": "The feed service builds each person's feed from the photos of the accounts they follow: it reads photo metadata from the metadata database and keeps ready-made feed pages in the cache.",
+        "hash": "8nzxixkazc",
+        "topic": "Pinhole: high-level design for photo sharing › Core services",
+        "span": {
+          "start": 1689,
+          "end": 1873
+        },
+        "prev": "u13",
+        "next": "u15"
+      },
+      {
+        "id": "u15",
+        "kind": "sentence",
+        "text": "Media processing workers subscribe to PhotoUploaded events on the message queue.",
+        "hash": "ppx5lbjy5j",
+        "topic": "Pinhole: high-level design for photo sharing › Asynchronous processing",
+        "span": {
+          "start": 1903,
+          "end": 1983
+        },
+        "prev": "u14",
+        "next": "u16"
+      },
+      {
+        "id": "u16",
+        "kind": "sentence",
+        "text": "For each event, a worker reads the original from object storage, creates thumbnails in three sizes (150, 640 and 1080 pixels wide), writes them back to object storage and marks the photo \"ready\" in the metadata database.",
+        "hash": "1xwj1ewbn11",
+        "topic": "Pinhole: high-level design for photo sharing › Asynchronous processing",
+        "span": {
+          "start": 1984,
+          "end": 2204
+        },
+        "prev": "u15",
+        "next": "u17"
+      },
+      {
+        "id": "u17",
+        "kind": "sentence",
+        "text": "The worker then publishes a PhotoReady event.",
+        "hash": "xjv1utxftj",
+        "topic": "Pinhole: high-level design for photo sharing › Asynchronous processing",
+        "span": {
+          "start": 2205,
+          "end": 2250
+        },
+        "prev": "u16",
+        "next": "u18"
+      },
+      {
+        "id": "u18",
+        "kind": "sentence",
+        "text": "The feed service subscribes to PhotoReady events to add the photo to the followers' feeds, and asks the push-notification provider to alert followers who have notifications turned on.",
+        "hash": "1yabb1bayd5",
+        "topic": "Pinhole: high-level design for photo sharing › Asynchronous processing",
+        "span": {
+          "start": 2251,
+          "end": 2434
+        },
+        "prev": "u17",
+        "next": "u19"
+      },
+      {
+        "id": "u19",
+        "kind": "sentence",
+        "text": "The queue keeps an event for up to 7 days, so a worker outage delays thumbnails but does not lose uploads.",
+        "hash": "10nxqmfkyeb",
+        "topic": "Pinhole: high-level design for photo sharing › Asynchronous processing",
+        "span": {
+          "start": 2436,
+          "end": 2542
+        },
+        "prev": "u18",
+        "next": "u20"
+      },
+      {
+        "id": "u20",
+        "kind": "sentence",
+        "text": "A photo whose processing keeps failing stays in the \"processing\" state and is not shown in any feed.",
+        "hash": "htem0yrqdj",
+        "topic": "Pinhole: high-level design for photo sharing › Asynchronous processing",
+        "span": {
+          "start": 2543,
+          "end": 2643
+        },
+        "prev": "u19",
+        "next": "u21"
+      },
+      {
+        "id": "u21",
+        "kind": "sentence",
+        "text": "Object storage holds the original photos and their thumbnails; originals are kept unchanged and are never overwritten.",
+        "hash": "lzni8rfnw5",
+        "topic": "Pinhole: high-level design for photo sharing › Storage",
+        "span": {
+          "start": 2657,
+          "end": 2775
+        },
+        "prev": "u20",
+        "next": "u22"
+      },
+      {
+        "id": "u22",
+        "kind": "sentence",
+        "text": "The metadata database holds follow relationships and photo records with their processing status, and it is the source of truth for whether a photo exists.",
+        "hash": "d1uzwymg1g",
+        "topic": "Pinhole: high-level design for photo sharing › Storage",
+        "span": {
+          "start": 2776,
+          "end": 2930
+        },
+        "prev": "u21",
+        "next": "u23"
+      },
+      {
+        "id": "u23",
+        "kind": "sentence",
+        "text": "The cache holds ready-made feed pages for 60 seconds.",
+        "hash": "19tff7g712",
+        "topic": "Pinhole: high-level design for photo sharing › Storage",
+        "span": {
+          "start": 2931,
+          "end": 2984
+        },
+        "prev": "u22",
+        "next": "u24"
+      },
+      {
+        "id": "u24",
+        "kind": "sentence",
+        "text": "It is only a copy kept for speed: losing it makes feeds slower, never wrong.",
+        "hash": "23ds9wd196k",
+        "topic": "Pinhole: high-level design for photo sharing › Storage",
+        "span": {
+          "start": 2985,
+          "end": 3061
+        },
+        "prev": "u23",
+        "next": "u25"
+      },
+      {
+        "id": "u25",
+        "kind": "sentence",
+        "text": "The CDN and the push-notification provider are run by third parties and sit outside the Pinhole system boundary.",
+        "hash": "2com6mm2q8e",
+        "topic": "Pinhole: high-level design for photo sharing › External dependencies and system boundary",
+        "span": {
+          "start": 3109,
+          "end": 3221
+        },
+        "prev": "u24",
+        "next": "u26"
+      },
+      {
+        "id": "u26",
+        "kind": "sentence",
+        "text": "The CDN reads photos and thumbnails from object storage and serves them to clients from locations close to the user.",
+        "hash": "1h0nfg452cu",
+        "topic": "Pinhole: high-level design for photo sharing › External dependencies and system boundary",
+        "span": {
+          "start": 3222,
+          "end": 3338
+        },
+        "prev": "u25",
+        "next": "u27"
+      },
+      {
+        "id": "u27",
+        "kind": "sentence",
+        "text": "The push-notification provider delivers alerts to phones; Pinhole only sends it requests and does not control when an alert arrives.",
+        "hash": "2edqls75n7q",
+        "topic": "Pinhole: high-level design for photo sharing › External dependencies and system boundary",
+        "span": {
+          "start": 3339,
+          "end": 3471
+        },
+        "prev": "u26",
+        "next": "u28"
+      },
+      {
+        "id": "u28",
+        "kind": "sentence",
+        "text": "Everything else in this document (the gateway, the three services, the workers, the queue and the three stores) is inside the boundary and is operated by the Pinhole team.",
+        "hash": "1hs986kr7dg",
+        "topic": "Pinhole: high-level design for photo sharing › External dependencies and system boundary",
+        "span": {
+          "start": 3472,
+          "end": 3643
+        },
+        "prev": "u27",
+        "next": "u29"
+      },
+      {
+        "id": "u29",
+        "kind": "list_item",
+        "text": "The client asks the upload service for a signed URL and uploads the original straight to object storage.",
+        "hash": "27klltz5y4q",
+        "topic": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo",
+        "span": {
+          "start": 3684,
+          "end": 3788
+        },
+        "prev": "u28",
+        "next": "u30"
+      },
+      {
+        "id": "u30",
+        "kind": "list_item",
+        "text": "The upload service records the photo as \"processing\" and publishes PhotoUploaded.",
+        "hash": "qh1614ekpm",
+        "topic": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo",
+        "span": {
+          "start": 3792,
+          "end": 3873
+        },
+        "prev": "u29",
+        "next": "u31"
+      },
+      {
+        "id": "u31",
+        "kind": "list_item",
+        "text": "A media processing worker picks up the event, creates the thumbnails and marks the photo \"ready\".",
+        "hash": "2d7sstwphuc",
+        "topic": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo",
+        "span": {
+          "start": 3877,
+          "end": 3974
+        },
+        "prev": "u30",
+        "next": "u32"
+      },
+      {
+        "id": "u32",
+        "kind": "list_item",
+        "text": "The worker publishes PhotoReady; the feed service adds the photo to the followers' feeds and asks the push-notification provider to alert them.",
+        "hash": "27ly5hdwolv",
+        "topic": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo",
+        "span": {
+          "start": 3978,
+          "end": 4121
+        },
+        "prev": "u31",
+        "next": "u33"
+      },
+      {
+        "id": "u33",
+        "kind": "list_item",
+        "text": "Followers' clients fetch the updated feed through the gateway and load the thumbnails from the CDN.",
+        "hash": "9kfje6gvv5",
+        "topic": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo",
+        "span": {
+          "start": 4125,
+          "end": 4224
+        },
+        "prev": "u32",
+        "next": "u34"
+      },
+      {
+        "id": "u34",
+        "kind": "list_item",
+        "text": "**A queue between upload and processing.** A slow or failed thumbnail job must never block or fail an upload, so the upload service and the workers only meet through the message queue. The cost is that a new photo takes a few seconds to appear in feeds.",
+        "hash": "fqrgdgj4dv",
+        "topic": "Pinhole: high-level design for photo sharing › Design decisions",
+        "span": {
+          "start": 4249,
+          "end": 4502
+        },
+        "prev": "u33",
+        "next": "u35"
+      },
+      {
+        "id": "u35",
+        "kind": "list_item",
+        "text": "**Direct upload with signed URLs.** Originals can be up to 25 MB, and routing them through the gateway would make it the bottleneck, so clients send bytes straight to object storage and the upload service only signs the URL and records the result.",
+        "hash": "1yc9u0a4rwn",
+        "topic": "Pinhole: high-level design for photo sharing › Design decisions",
+        "span": {
+          "start": 4505,
+          "end": 4752
+        },
+        "prev": "u34",
+        "next": "u36"
+      },
+      {
+        "id": "u36",
+        "kind": "list_item",
+        "text": "**Metadata apart from bytes.** Photo bytes live in object storage and everything we query lives in the metadata database, because the two grow at very different rates and need different backups.",
+        "hash": "1rlzw664ts9",
+        "topic": "Pinhole: high-level design for photo sharing › Design decisions",
+        "span": {
+          "start": 4755,
+          "end": 4949
+        },
+        "prev": "u35",
+        "next": "u37"
+      },
+      {
+        "id": "u37",
+        "kind": "list_item",
+        "text": "**The cache is disposable.** Feed pages are cached for speed only; the metadata database stays the source of truth, so the cache can be flushed at any time.",
+        "hash": "jac4lceeg7",
+        "topic": "Pinhole: high-level design for photo sharing › Design decisions",
+        "span": {
+          "start": 4952,
+          "end": 5108
+        },
+        "prev": "u36",
+        "next": "u38"
+      },
+      {
+        "id": "u38",
+        "kind": "list_item",
+        "text": "**Buy delivery, don't build it.** We use a third-party CDN and push-notification provider instead of running our own, and we accept that their outages are outside our control.",
+        "hash": "1uuc7g9jh3m",
+        "topic": "Pinhole: high-level design for photo sharing › Design decisions",
+        "span": {
+          "start": 5111,
+          "end": 5286
+        },
+        "prev": "u37",
+        "next": "u39"
+      },
+      {
+        "id": "u39",
+        "kind": "list_item",
+        "text": "How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet.",
+        "hash": "1klvvjr6x0x",
+        "topic": "Pinhole: high-level design for photo sharing › Open questions",
+        "span": {
+          "start": 5309,
+          "end": 5400
+        },
+        "prev": "u38",
+        "next": "u40"
+      },
+      {
+        "id": "u40",
+        "kind": "list_item",
+        "text": "Whether the feed service should precompute feeds for accounts with very many followers is left to the feed service's own low-level design.",
+        "hash": "1joob6wp0gz",
+        "topic": "Pinhole: high-level design for photo sharing › Open questions",
+        "span": {
+          "start": 5403,
+          "end": 5541
+        },
+        "prev": "u39"
+      }
+    ],
+    "nextId": 41
+  },
+  "cites": {
+    "u1_n1": [
+      "u1"
+    ],
+    "u1_n2": [
+      "u2"
+    ],
+    "u1_n3": [
+      "u3"
+    ],
+    "u1_n4": [
+      "u4"
+    ],
+    "u2_n2": [
+      "u5"
+    ],
+    "u2_n3": [
+      "u5"
+    ],
+    "u2_n5": [
+      "u8"
+    ],
+    "u2_n6": [
+      "u9",
+      "u10",
+      "u12"
+    ],
+    "u2_n7": [
+      "u11"
+    ],
+    "u2_n9": [
+      "u13"
+    ],
+    "u2_n10": [
+      "u14",
+      "u18"
+    ],
+    "u2_n12": [
+      "u15",
+      "u16"
+    ],
+    "u2_n13": [
+      "u13",
+      "u15",
+      "u17",
+      "u19"
+    ],
+    "u2_n15": [
+      "u7",
+      "u16",
+      "u21"
+    ],
+    "u2_n16": [
+      "u13",
+      "u14",
+      "u16",
+      "u20",
+      "u22"
+    ],
+    "u2_n17": [
+      "u14",
+      "u23",
+      "u24"
+    ],
+    "u2_n18": [
+      "u18"
+    ],
+    "u2_n19": [
+      "u6",
+      "u7"
+    ],
+    "u2_n20": [
+      "u8",
+      "u9",
+      "u10",
+      "u11"
+    ],
+    "u2_n21": [
+      "u12"
+    ],
+    "u2_n22": [
+      "u13"
+    ],
+    "u2_n23": [
+      "u14",
+      "u18"
+    ],
+    "u2_n24": [
+      "u15",
+      "u16",
+      "u17"
+    ],
+    "u2_n26": [
+      "u19",
+      "u20"
+    ],
+    "u2_n27": [
+      "u21"
+    ],
+    "u2_n28": [
+      "u22"
+    ],
+    "u2_n29": [
+      "u23",
+      "u24"
+    ],
+    "u2_fs1": [
+      "u5"
+    ],
+    "u3_n1": [
+      "u29"
+    ],
+    "u3_n2": [
+      "u29"
+    ],
+    "u3_n3": [
+      "u30"
+    ],
+    "u3_n4": [
+      "u30"
+    ],
+    "u3_n5": [
+      "u31"
+    ],
+    "u3_n6": [
+      "u31"
+    ],
+    "u3_n7": [
+      "u32"
+    ],
+    "u3_n8": [
+      "u32"
+    ],
+    "u3_n9": [
+      "u33"
+    ],
+    "u3_n10": [
+      "u33"
+    ],
+    "u4_n1": [
+      "u34"
+    ],
+    "u4_n2": [
+      "u34"
+    ],
+    "u4_n3": [
+      "u35"
+    ],
+    "u4_n4": [
+      "u35"
+    ],
+    "u4_n5": [
+      "u36"
+    ],
+    "u4_n6": [
+      "u36"
+    ],
+    "u4_n7": [
+      "u37"
+    ],
+    "u4_n8": [
+      "u37"
+    ],
+    "u4_n9": [
+      "u38"
+    ],
+    "u4_n10": [
+      "u38"
+    ],
+    "u5_n1": [
+      "u25"
+    ],
+    "u5_n2": [
+      "u26"
+    ],
+    "u5_n3": [
+      "u27"
+    ],
+    "u5_n4": [
+      "u28"
+    ],
+    "u6_n1": [
+      "u39"
+    ],
+    "u6_n2": [
+      "u40"
+    ]
+  },
+  "omitted": [],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "cited",
+      "u3": "cited",
+      "u4": "cited",
+      "u5": "cited",
+      "u6": "cited",
+      "u7": "cited",
+      "u8": "cited",
+      "u9": "cited",
+      "u10": "cited",
+      "u11": "cited",
+      "u12": "cited",
+      "u13": "cited",
+      "u14": "cited",
+      "u15": "cited",
+      "u16": "cited",
+      "u17": "cited",
+      "u18": "cited",
+      "u19": "cited",
+      "u20": "cited",
+      "u21": "cited",
+      "u22": "cited",
+      "u23": "cited",
+      "u24": "cited",
+      "u25": "cited",
+      "u26": "cited",
+      "u27": "cited",
+      "u28": "cited",
+      "u29": "cited",
+      "u30": "cited",
+      "u31": "cited",
+      "u32": "cited",
+      "u33": "cited",
+      "u34": "cited",
+      "u35": "cited",
+      "u36": "cited",
+      "u37": "cited",
+      "u38": "cited",
+      "u39": "cited",
+      "u40": "cited"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "represented",
+      "u3": "represented",
+      "u4": "represented",
+      "u5": "represented",
+      "u6": "represented",
+      "u7": "represented",
+      "u8": "represented",
+      "u9": "represented",
+      "u10": "represented",
+      "u11": "represented",
+      "u12": "represented",
+      "u13": "represented",
+      "u14": "represented",
+      "u15": "represented",
+      "u16": "represented",
+      "u17": "represented",
+      "u18": "represented",
+      "u19": "represented",
+      "u20": "represented",
+      "u21": "represented",
+      "u22": "represented",
+      "u23": "represented",
+      "u24": "represented",
+      "u25": "represented",
+      "u26": "represented",
+      "u27": "represented",
+      "u28": "represented",
+      "u29": "represented",
+      "u30": "represented",
+      "u31": "represented",
+      "u32": "represented",
+      "u33": "represented",
+      "u34": "represented",
+      "u35": "represented",
+      "u36": "represented",
+      "u37": "represented",
+      "u38": "represented",
+      "u39": "represented",
+      "u40": "represented"
+    },
+    "critical": {
+      "u2": [
+        "protected"
+      ],
+      "u3": [
+        "requirement",
+        "protected"
+      ],
+      "u4": [
+        "limitation",
+        "protected"
+      ],
+      "u5": [
+        "protected"
+      ],
+      "u7": [
+        "requirement",
+        "protected"
+      ],
+      "u9": [
+        "protected"
+      ],
+      "u10": [
+        "limitation",
+        "condition"
+      ],
+      "u11": [
+        "requirement"
+      ],
+      "u14": [
+        "protected"
+      ],
+      "u16": [
+        "protected"
+      ],
+      "u18": [
+        "protected"
+      ],
+      "u19": [
+        "limitation",
+        "protected"
+      ],
+      "u21": [
+        "requirement"
+      ],
+      "u23": [
+        "protected"
+      ],
+      "u24": [
+        "requirement"
+      ],
+      "u25": [
+        "protected"
+      ],
+      "u27": [
+        "limitation",
+        "requirement",
+        "condition",
+        "protected"
+      ],
+      "u28": [
+        "protected"
+      ],
+      "u32": [
+        "protected"
+      ],
+      "u34": [
+        "requirement"
+      ],
+      "u35": [
+        "requirement",
+        "protected"
+      ],
+      "u36": [
+        "protected"
+      ],
+      "u37": [
+        "requirement"
+      ],
+      "u38": [
+        "limitation",
+        "requirement",
+        "protected"
+      ],
+      "u39": [
+        "condition"
+      ],
+      "u40": [
+        "protected"
+      ]
+    },
+    "flags": [],
+    "sections": [
+      {
+        "topic": "Pinhole: high-level design for photo sharing › Purpose and scope",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Pinhole: high-level design for photo sharing › Clients",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Pinhole: high-level design for photo sharing › Edge and API",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Pinhole: high-level design for photo sharing › Core services",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Pinhole: high-level design for photo sharing › Asynchronous processing",
+        "represented": 6,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Pinhole: high-level design for photo sharing › Storage",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Pinhole: high-level design for photo sharing › External dependencies and system boundary",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Pinhole: high-level design for photo sharing › Design decisions",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Pinhole: high-level design for photo sharing › Open questions",
+        "represented": 2,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      }
+    ]
+  },
+  "flags": [],
+  "hints": [
+    {
+      "code": "condition_changed",
+      "unit": "u3",
+      "card": "u1_n3",
+      "detail": "source restricts it: \"high-level design only it names the\"; the card doesn't",
+      "evidence": {
+        "source": "high-level design only it names the"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u5",
+      "card": "u2_n2",
+      "detail": "source names \"Pinhole\"; no card citing it does",
+      "evidence": {
+        "source": "Pinhole"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u5",
+      "card": "u2_n3",
+      "detail": "source names \"Pinhole\"; no card citing it does",
+      "evidence": {
+        "source": "Pinhole"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u5",
+      "card": "u2_fs1",
+      "detail": "source names \"Pinhole\"; no card citing it does",
+      "evidence": {
+        "source": "Pinhole"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u5",
+      "card": "u2_n2",
+      "detail": "source names \"OS\"; no card citing it does",
+      "evidence": {
+        "source": "OS"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u5",
+      "card": "u2_n3",
+      "detail": "source names \"OS\"; no card citing it does",
+      "evidence": {
+        "source": "OS"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u5",
+      "card": "u2_fs1",
+      "detail": "source names \"OS\"; no card citing it does",
+      "evidence": {
+        "source": "OS"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u5",
+      "card": "u2_n2",
+      "detail": "source names \"Android\"; no card citing it does",
+      "evidence": {
+        "source": "Android"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u5",
+      "card": "u2_n3",
+      "detail": "source names \"Android\"; no card citing it does",
+      "evidence": {
+        "source": "Android"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u5",
+      "card": "u2_fs1",
+      "detail": "source names \"Android\"; no card citing it does",
+      "evidence": {
+        "source": "Android"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u7",
+      "card": "u2_n15",
+      "detail": "source names \"URL\"; no card citing it does",
+      "evidence": {
+        "source": "URL"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u7",
+      "card": "u2_n19",
+      "detail": "source says \"URL\"; the card says \"URLs\"",
+      "evidence": {
+        "source": "URL",
+        "card": "URLs"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u13",
+      "card": "u2_n9",
+      "detail": "source names \"URL\"; no card citing it does",
+      "evidence": {
+        "source": "URL"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u13",
+      "card": "u2_n13",
+      "detail": "source names \"URL\"; no card citing it does",
+      "evidence": {
+        "source": "URL"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u13",
+      "card": "u2_n16",
+      "detail": "source names \"URL\"; no card citing it does",
+      "evidence": {
+        "source": "URL"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u13",
+      "card": "u2_n22",
+      "detail": "source says \"URL\"; the card says \"URLs\"",
+      "evidence": {
+        "source": "URL",
+        "card": "URLs"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u13",
+      "card": "u2_n13",
+      "detail": "source says \"once the upload completes\"",
+      "evidence": {
+        "source": "once the upload completes"
+      }
+    },
+    {
+      "code": "citation_unrelated",
+      "unit": "u17",
+      "card": "u2_n13",
+      "detail": "the card shares no words with the passage it cites: \"The worker then publishes a PhotoReady event.\"",
+      "evidence": {
+        "source": "The worker then publishes a PhotoReady event."
+      }
+    },
+    {
+      "code": "caveat_dropped",
+      "unit": "u19",
+      "card": "u2_n13",
+      "detail": "the card drops the source's caveat \"but does not lose uploads\"",
+      "evidence": {
+        "source": "but does not lose uploads"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u13",
+      "card": "u2_n16",
+      "detail": "source says \"once the upload completes\"",
+      "evidence": {
+        "source": "once the upload completes"
+      }
+    },
+    {
+      "code": "citation_unrelated",
+      "unit": "u20",
+      "card": "u2_n16",
+      "detail": "the card shares no words with the passage it cites: \"A photo whose processing keeps failing stays in the \"processing\" state and is no\"",
+      "evidence": {
+        "source": "A photo whose processing keeps failing stays in the \"processing\" state and is not shown in any feed."
+      }
+    },
+    {
+      "code": "citation_unrelated",
+      "unit": "u24",
+      "card": "u2_n17",
+      "detail": "the card shares no words with the passage it cites: \"It is only a copy kept for speed: losing it makes feeds slower, never wrong.\"",
+      "evidence": {
+        "source": "It is only a copy kept for speed: losing it makes feeds slower, never wrong."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u10",
+      "card": "u2_n20",
+      "detail": "source says \"If the auth service cannot be reached, the gateway rejects the request instead of letting it through unchecked.\"; the card drops the negation",
+      "evidence": {
+        "source": "If the auth service cannot be reached, the gateway rejects the request instead of letting it through unchecked.",
+        "card": "The API Gateway handles all client requests, performing TLS termination, access token validation with the auth service, and rate limiting (120 requests/min/account)."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u11",
+      "card": "u2_n20",
+      "detail": "source says \"Photo bytes are served to clients by the CDN, never by the gateway.\"; the card drops the negation",
+      "evidence": {
+        "source": "Photo bytes are served to clients by the CDN, never by the gateway.",
+        "card": "The API Gateway handles all client requests, performing TLS termination, access token validation with the auth service, and rate limiting (120 requests/min/account)."
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u2_n20",
+      "detail": "the card names \"requests/min/account\"; the source doesn't",
+      "evidence": {
+        "card": "requests/min/account"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u35",
+      "card": "u4_n3",
+      "detail": "source names \"MB\"; no card citing it does",
+      "evidence": {
+        "source": "MB"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u35",
+      "card": "u4_n4",
+      "detail": "source names \"MB\"; no card citing it does",
+      "evidence": {
+        "source": "MB"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u38",
+      "card": "u4_n9",
+      "detail": "source names \"We\"; no card citing it does",
+      "evidence": {
+        "source": "We"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u38",
+      "card": "u4_n10",
+      "detail": "source names \"We\"; no card citing it does",
+      "evidence": {
+        "source": "We"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u34",
+      "card": "u4_n2",
+      "detail": "source restricts it: \"the workers only meet through the\"; the card doesn't",
+      "evidence": {
+        "source": "the workers only meet through the"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u35",
+      "card": "u4_n3",
+      "detail": "source restricts it: \"upload service only signs the url\"; the card doesn't",
+      "evidence": {
+        "source": "upload service only signs the url"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u35",
+      "card": "u4_n4",
+      "detail": "source says \"can be up to 25 MB, an\"",
+      "evidence": {
+        "source": "can be up to 25 MB, an"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u35",
+      "card": "u4_n4",
+      "detail": "source restricts it: \"upload service only signs the url\"; the card doesn't",
+      "evidence": {
+        "source": "upload service only signs the url"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u36",
+      "card": "u4_n5",
+      "detail": "source says \"**Metadata apart from bytes.** Photo bytes live in object storage and everything we query lives in the metadata database, because the two grow at very different rates and need different backups.\"; the card drops the negation",
+      "evidence": {
+        "source": "**Metadata apart from bytes.** Photo bytes live in object storage and everything we query lives in the metadata database, because the two grow at very different rates and need different backups.",
+        "card": "Metadata separate from bytes"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u36",
+      "card": "u4_n6",
+      "detail": "source says \"**Metadata apart from bytes.** Photo bytes live in object storage and everything we query lives in the metadata database, because the two grow at very different rates and need different backups.\"; the card drops the negation",
+      "evidence": {
+        "source": "**Metadata apart from bytes.** Photo bytes live in object storage and everything we query lives in the metadata database, because the two grow at very different rates and need different backups.",
+        "card": "Photo bytes are stored in object storage"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u27",
+      "card": "u5_n3",
+      "detail": "source says \"Pinhole only sends it requests and does not control when an alert arrives.\"; the card drops the negation",
+      "evidence": {
+        "source": "Pinhole only sends it requests and does not control when an alert arrives.",
+        "card": "The push-notification provider sends alerts to phones."
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u40",
+      "card": "u6_n2",
+      "detail": "source says \"many followers is left to the feed\"",
+      "evidence": {
+        "source": "many followers is left to the feed"
+      }
+    }
+  ],
+  "reviews": {}
+}

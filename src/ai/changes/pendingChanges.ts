@@ -19,6 +19,7 @@
 import { parseChangeSet, type ChangeSet } from "./changeSet";
 import { mergeSets, withoutParts } from "./parts";
 import { currentResponseStyle, withResponseStyle, type ResponseStyle } from "./responseStyle";
+import { needsBaseline, withBaselines } from "./staleTarget";
 
 /** In-app AI's session (D40). */
 export const APP_SESSION = "app";
@@ -36,6 +37,12 @@ export interface PendingChangesOptions {
   style?: () => ResponseStyle;
   /** A set left without a decision: replaced in its slot by a newer proposal (D46's "expired"). */
   onExpired?: (canvasId: string, set: ChangeSet) => void;
+  /**
+   * Stale-target protection (`staleTarget.ts`): a reader of `canvasId`'s live targets (target id → its `fingerprintOf`,
+   * null when unknown), so each proposal's `update_block`s and `update_shape`s carry the baseline they were proposed against. None (or no
+   * reader for that canvas): sets are kept as proposed.
+   */
+  baselineOf?: (canvasId: string) => ((target: string) => string | null) | undefined;
 }
 
 /** Which slot a set waits in (D40). */
@@ -63,6 +70,13 @@ export class PendingChanges {
 
   private styled(set: ChangeSet): ChangeSet {
     return this.options.style ? withResponseStyle(set, this.options.style()) : set;
+  }
+
+  /** `set` with the baseline of every `update_block` / `update_shape` that has none, read from the live canvas now (proposal time). */
+  private baselined(canvasId: string, set: ChangeSet): ChangeSet {
+    if (!set.changes.some(needsBaseline) && !set.conflicts?.some((c) => needsBaseline(c.apply))) return set;
+    const read = this.options.baselineOf?.(canvasId);
+    return read ? withBaselines(set, read) : set;
   }
 
   private slots(canvasId: string): Map<string, ChangeSet> {
@@ -98,7 +112,7 @@ export class PendingChanges {
    * `PendingReviewError` when a set in another slot touches the same objects.
    */
   propose(canvasId: string, input: unknown): ChangeSet {
-    const set = this.styled(parseChangeSet(input));
+    const set = this.baselined(canvasId, this.styled(parseChangeSet(input)));
     const slot = slotOf(set);
     this.checkOverlap(canvasId, slot, set);
     this.place(canvasId, slot, set, true);
@@ -116,7 +130,7 @@ export class PendingChanges {
     const slot = peek && typeof peek === "object" && typeof peek.mergeKey === "string" ? slotOf({ mergeKey: peek.mergeKey }) : null;
     const current = slot ? this.byCanvas.get(canvasId)?.get(slot) : undefined;
     // Its links may point at objects the staged parts create; the merged whole is validated again below.
-    const set = this.styled(parseChangeSet(input, current?.parts ? { externalKeys: createdKeysOf(current) } : {}));
+    const set = this.baselined(canvasId, this.styled(parseChangeSet(input, current?.parts ? { externalKeys: createdKeysOf(current) } : {})));
     if (!set.mergeKey || !set.parts) throw new Error("merge: a set to merge needs a merge key and parts");
     const merged = current ? parseChangeSet(mergeSets(current, set) ?? set) : set;
     this.checkOverlap(canvasId, slotOf(merged), merged);
@@ -136,12 +150,17 @@ export class PendingChanges {
     this.emit();
   }
 
-  /** After some parts of `operationId` were accepted: what is left of it stays under review (null ends it). */
+  /**
+   * After some of `operationId` was accepted: what is left of it stays under review (null ends it) — its other parts, or
+   * the decisions a stale-target accept withheld (`followUpSet`, which may carry a follow-up operation id; it stays selected).
+   */
   replace(canvasId: string, operationId: string, rest: ChangeSet | null): void {
     const found = this.find(canvasId, operationId);
     if (!found) return;
-    if (rest) this.slots(canvasId).set(found.slot, parseChangeSet(rest));
-    else this.remove(canvasId, found.slot, operationId);
+    if (rest) {
+      this.slots(canvasId).set(found.slot, parseChangeSet(rest));
+      if (rest.operationId !== operationId && this.selected.get(canvasId) === operationId) this.selected.set(canvasId, rest.operationId);
+    } else this.remove(canvasId, found.slot, operationId);
     this.emit();
   }
 
@@ -216,10 +235,27 @@ function createdKeysOf(set: ChangeSet): Set<string> {
 
 let instance: PendingChanges | null = null;
 let expiredSink: PendingChangesOptions["onExpired"];
+/** Live-target readers by canvas (stale-target protection), registered by each open canvas. */
+const baselineReaders = new Map<string, () => (target: string) => string | null>();
 
 export function getPendingChanges(): PendingChanges {
-  instance ??= new PendingChanges({ style: currentResponseStyle, onExpired: (canvasId, set) => expiredSink?.(canvasId, set) });
+  instance ??= new PendingChanges({
+    style: currentResponseStyle,
+    onExpired: (canvasId, set) => expiredSink?.(canvasId, set),
+    baselineOf: (canvasId) => baselineReaders.get(canvasId)?.(),
+  });
   return instance;
+}
+
+/**
+ * The open canvas registers how to read its live targets' fingerprints (`reader()` builds one reader per proposal), so the
+ * app's pending store stamps every proposal's baseline (`PendingChanges.baselineOf`). Returns the unregister function.
+ */
+export function registerBaselineReader(canvasId: string, reader: () => (target: string) => string | null): () => void {
+  baselineReaders.set(canvasId, reader);
+  return () => {
+    if (baselineReaders.get(canvasId) === reader) baselineReaders.delete(canvasId);
+  };
 }
 
 /** Where the app's pending store reports expired sets (the change log, `state/agentLog.ts`). */

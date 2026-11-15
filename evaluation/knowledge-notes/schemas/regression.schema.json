@@ -24,7 +24,11 @@
         "user_edit_overwritten",
         "invented_detail",
         "fabricated_agreement",
-        "unsupported_recommendation"
+        "unsupported_recommendation",
+        "removed_content_kept",
+        "unnecessary_regeneration",
+        "misgrouped_element",
+        "frame_order_breaks_layout"
       ]
     },
     "caseId": {
@@ -345,6 +349,53 @@
               "op",
               "item",
               "state"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "shuffle_groups"
+              },
+              "order": {
+                "minItems": 2,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "seed": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string",
+                "const": "move_to_group"
+              },
+              "node": {
+                "type": "string",
+                "minLength": 1
+              },
+              "group": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "op",
+              "node",
+              "group"
             ]
           }
         ]

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-publish-path-dropped",
+  "distortion": "invented_detail",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The publisher's file is changed to a plausible but unstated billing/events/index.ts.",
+  "mutations": [
+    { "op": "replace_text", "node": "s_pub", "find": "billing/events/publish.ts", "replace": "billing/events/index.ts" }
+  ],
+  "expectFailing": ["a.path-publish"]
+}

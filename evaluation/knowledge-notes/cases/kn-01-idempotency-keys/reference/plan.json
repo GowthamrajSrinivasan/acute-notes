@@ -6,7 +6,7 @@
     {
       "id": "g1",
       "type": "group",
-      "content": { "label": "Idempotency keys", "arrangement": "grid", "takeaway": "Retries are safe within a bounded window; keys are not a general guarantee against duplicates." }
+      "content": { "label": "Idempotency keys", "arrangement": "grid", "takeaway": "Retries are safe within a bounded window, not always: keys are not a general guarantee against duplicates and don't guarantee exactly-once processing." }
     },
     {
       "id": "n1",

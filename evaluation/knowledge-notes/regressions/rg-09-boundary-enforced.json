@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-boundary-enforced",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The author's reading is promoted in the card title to 'an enforced pricing boundary' while the body still says 'not enforced'; the now-critical a.no-enforced-boundary must catch it.",
+  "mutations": [
+    { "op": "replace_text", "node": "t_boundary", "find": "Author's reading: billing/pricing is the pricing boundary", "replace": "Author's reading: billing/pricing is an enforced pricing boundary" }
+  ],
+  "expectFailing": ["a.no-enforced-boundary"]
+}

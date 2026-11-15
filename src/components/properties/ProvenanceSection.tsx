@@ -31,7 +31,7 @@ import type { SceneElement } from "@/domain/canvas/adapter";
 import { describeProvenance, objectsFromOperation, provenanceOf } from "@/domain/provenance";
 import type { DocumentHome } from "@/domain/types";
 import type { CanvasHistory } from "@/history/canvasHistory";
-import { choiceOptionOf, reconcileStatus, setExcludedFromReconciliation, sourceEditTarget, textWithOptionChosen, updateSourceFromEdit } from "@/components/canvas/reconcileActions";
+import { choiceOptionOf, reconcileStatus, setCardLocked, setExcludedFromReconciliation, sourceEditTarget, textWithOptionChosen, updateSourceFromEdit } from "@/components/canvas/reconcileActions";
 import { visualizeDialog } from "@/components/ai/visualizeStore";
 import { getDocumentStore } from "@/state/documents";
 import { usePanelSlot } from "./panelSlot";
@@ -116,9 +116,12 @@ export function ProvenanceSection({ api, home, history }: { api: ExcalidrawImper
     );
   };
 
+  // Lock (Stage 1e). An object opted out some other way (before locks, or a passage the user added) keeps F39's "Allow AI updates".
   const toggleExcluded = () => {
     if (!info.single || !info.reconcile) return;
-    setExcludedFromReconciliation(api, info.single, !info.reconcile.excluded);
+    if (info.reconcile.locked) setCardLocked(api, info.single, false);
+    else if (info.reconcile.excluded) setExcludedFromReconciliation(api, info.single, false);
+    else setCardLocked(api, info.single, true);
     setRevision((r) => r + 1);
   };
 
@@ -185,10 +188,12 @@ export function ProvenanceSection({ api, home, history }: { api: ExcalidrawImper
           <button
             type="button"
             onClick={toggleExcluded}
-            aria-pressed={info.reconcile.excluded}
-            title={info.reconcile.excluded ? "Let “Update from new content” change this object again" : "“Update from new content” will leave this object alone"}
+            aria-pressed={info.reconcile.locked || info.reconcile.excluded}
+            title={
+              info.reconcile.locked || info.reconcile.excluded ? "Let “Update from new content” change this card again" : "Lock: “Update from new content” will leave this card alone"
+            }
           >
-            {info.reconcile.excluded ? "Allow AI updates" : "Don't update this from AI"}
+            {info.reconcile.locked ? "🔓 Unlock" : info.reconcile.excluded ? "Allow AI updates" : "🔒 Lock"}
           </button>
           {canEditSource && (
             <button type="button" onClick={() => void updateSource()} title="Write this object's content back into the content it was made from">

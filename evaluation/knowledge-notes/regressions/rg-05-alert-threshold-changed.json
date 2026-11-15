@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-alert-threshold-changed",
+  "distortion": "invented_detail",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "The agreed threshold changes: '5% over 5 minutes' becomes '5% over 15 minutes' in the decision's title and body. The decision card still matches e.decision-alert ('15 minutes' contains '5 minutes').",
+  "mutations": [
+    { "op": "replace_text", "node": "n5", "find": "5% over 5 minutes", "replace": "5% over 15 minutes" }
+  ],
+  "expectFailing": ["a.decision-alert-value"]
+}

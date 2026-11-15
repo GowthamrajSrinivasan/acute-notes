@@ -3,6 +3,7 @@ import {
   describeChanges,
   describeDropped,
   InvalidChangeSetError,
+  knowledgeOf,
   MAX_CHANGES,
   parseChangeSet,
   proposedBounds,
@@ -90,6 +91,38 @@ describe("parseChangeSet", () => {
       { kind: "connect", key: "c", from: { existing: "el_1" }, to: { created: "p" } },
     ]);
     expect(problems(input([{ ...page("p"), title: "" }])).join()).toMatch(/title/);
+  });
+});
+
+describe("parseChangeSet — Knowledge Notes (WP1.3)", () => {
+  const units = { units: [{ id: "u1", kind: "sentence", text: "One.", hash: "h1", topic: "", span: { start: 0, end: 4 } }], nextId: 2 };
+  const lineage = { fromVersion: 1, toVersion: 2, entries: [{ state: "unchanged", from: "u1", to: "u1" }] };
+  const source = { sourceId: "src_1", version: 2, origin: "paste", tier: "ai", template: "sectioned", text: "One.", plan: { version: 1 } };
+
+  it("keeps the set's noteModel (the rules its objects were made under); absent stays absent, unknown is dropped", () => {
+    expect(parseChangeSet(input([block("a")], { metadata: { createdBy: "ai", noteModel: "distil" } })).metadata).toEqual({ createdBy: "ai", operationId: "op_1", noteModel: "distil" });
+    expect(parseChangeSet(input([block("a")])).metadata).not.toHaveProperty("noteModel");
+    expect(parseChangeSet(input([block("a")], { metadata: { createdBy: "ai", noteModel: "brief" } })).metadata).not.toHaveProperty("noteModel");
+    // The other reconciliation fields still never ride on a set's metadata.
+    expect(parseChangeSet(input([block("a")], { metadata: { createdBy: "ai", sourceUnits: ["u1"], review: { reasons: ["x"] } } })).metadata).toEqual({ createdBy: "ai", operationId: "op_1" });
+  });
+
+  it("carries a distil set's knowledge (each card's units and review by stable key); malformed, it is dropped, never the set (WP1.10)", () => {
+    const knowledge = { cards: { "s § text#1": { sourceUnits: ["u1"], review: { reasons: ["the card cites no passage of the source"], checked: { by: "ai" as const, verdict: "partly" as const } } } } };
+    const set = parseChangeSet(input([block("a")], { knowledge }));
+    expect(set.knowledge).toEqual(knowledge);
+    expect(knowledgeOf(set, "s § text#1")).toEqual({ sourceUnits: ["u1"], review: knowledge.cards["s § text#1"].review });
+    expect(knowledgeOf(set, "other")).toEqual({});
+    expect(knowledgeOf(parseChangeSet(input([block("a")])), "s § text#1")).toEqual({});
+    const bad = parseChangeSet(input([block("a")], { knowledge: { cards: { k: { sourceUnits: "u1" } } } }));
+    expect(bad).not.toHaveProperty("knowledge.cards");
+    expect(bad.changes).toHaveLength(1);
+  });
+
+  it("carries a content version's units and lineage; malformed ones are dropped, never the set", () => {
+    expect(parseChangeSet(input([block("a")], { contentSource: { ...source, units, lineage } })).contentSource).toEqual({ ...source, units, lineage });
+    const bad = parseChangeSet(input([block("a")], { contentSource: { ...source, units: { units: "no" }, lineage: { entries: [{ state: "teleported" }] } } }));
+    expect(bad.contentSource).toEqual(source);
   });
 });
 
@@ -318,5 +351,48 @@ describe("parseChangeSet — the content source keeps everything a version needs
     });
     expect(set.contentSource?.pathIds).toEqual({ "Launch › Team": "Launch › Owners" });
     expect(set.contentSource?.revisions).toEqual([{ unit: "Launch › Team", earlier: "Two engineers.", later: "Actually, three engineers." }]);
+  });
+});
+
+describe("patch_block (intelligent-update-engine-plan Stage 1b)", () => {
+  const patch = (extra: Record<string, unknown> = {}) => ({
+    kind: "patch_block",
+    target: "el_1",
+    expectedFingerprint: "c123",
+    edits: [{ blockIndex: 0, match: { exactText: "five" }, replacement: "three", intent: "SUPERSEDES" }],
+    ...extra,
+  });
+
+  it("parses, and counts as an update", () => {
+    const set = parseChangeSet(input([patch()]));
+    expect(set.changes[0]).toMatchObject({ kind: "patch_block", edits: [{ match: { exactText: "five" } }] });
+    expect(describeChanges(set.changes)).toBe("1 update");
+  });
+
+  it("refuses a patch with no edits, an empty match, an unknown intent, or a range whose text doesn't fit", () => {
+    expect(problems(input([patch({ edits: [] })])).length).toBeGreaterThan(0);
+    expect(problems(input([patch({ edits: [{ blockIndex: 0, match: { exactText: "" }, replacement: "x" }] })])).length).toBeGreaterThan(0);
+    expect(problems(input([patch({ edits: [{ blockIndex: 0, match: { exactText: "a" }, replacement: "x", intent: "MAYBE" }] })])).length).toBeGreaterThan(0);
+    expect(problems(input([patch({ edits: [{ blockIndex: 0, match: { range: { start: 0, end: 3 }, text: "five" }, replacement: "x" }] })])).length).toBeGreaterThan(0);
+  });
+
+  it("a patch and a whole-block update of the same object is changing it twice", () => {
+    expect(problems(input([patch(), { kind: "update_block", target: "el_1", content: [{ type: "paragraph", content: "x" }] }]))).toEqual(['changes.1: "el_1" is changed twice']);
+  });
+
+  it("resolves to the patched update_block against live content, or is dropped and reported", () => {
+    const set = parseChangeSet(input([patch({ stableNodeKey: "k" })]));
+    const live = { content: [{ id: "b", type: "paragraph" as const, content: "Retries happen five times." }], fingerprint: "c123" };
+    expect(resolveChangeSet(set, () => true, () => live).changes).toEqual([{ kind: "update_block", target: "el_1", stableNodeKey: "k", content: [{ id: "b", type: "paragraph", content: "Retries happen three times." }] }]);
+    const stale = resolveChangeSet(set, () => true, () => ({ ...live, fingerprint: "c999" }));
+    expect(stale.changes).toEqual([]);
+    expect(describeDropped(stale.dropped)).toBe("1 precise edit was skipped: its card changed since the update was planned. Update again to redo it.");
+    // Without live content (the review's preview), the patch is kept as it is.
+    expect(resolveChangeSet(set, () => true).changes[0]!.kind).toBe("patch_block");
+  });
+
+  it("an escalated conflict keeps its escalation through parsing", () => {
+    const conflict = { target: "el_1", stableNodeKey: "k", apply: { kind: "update_block", target: "el_1", content: [{ type: "paragraph", content: "x" }] }, escalation: { intent: "CONTRADICTS", detail: "one version says it isn't so" } };
+    expect(parseChangeSet(input([], { conflicts: [conflict] })).conflicts![0]!.escalation).toEqual({ intent: "CONTRADICTS", detail: "one version says it isn't so" });
   });
 });

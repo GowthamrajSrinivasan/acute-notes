@@ -1,0 +1,13 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-warehouse-dispute-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The warehouse shape drops both dispute notes, so the stated design looks settled; no single value is stated, so only the caveat-with-claim check can catch it.",
+  "mutations": [
+    { "op": "replace_text", "node": "s7", "find": "write cadence disputed: hourly batches vs real time", "replace": "" },
+    { "op": "replace_text", "node": "s7", "find": "raw-event retention disputed: 30 vs 90 days", "replace": "" }
+  ],
+  "expectFailing": ["a.warehouse-disputed"]
+}

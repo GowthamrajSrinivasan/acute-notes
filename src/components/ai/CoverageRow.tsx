@@ -21,6 +21,8 @@ import { ChevronDownIcon } from "@/components/common/icons";
 import { FIDELITY_CONFIG } from "@/config/fidelity";
 import type { SceneElement } from "@/domain/canvas/adapter";
 import { newId } from "@/domain/ids";
+import { OutcomeSummary } from "@/components/review/OutcomeChips";
+import { outcomeTotalsOfSet } from "@/components/review/setOutcomes";
 
 const sections = (n: number) => `${n} ${n === 1 ? "section" : "sections"}`;
 
@@ -50,6 +52,8 @@ export function CoverageRow({
   const retry = canRegenerate(set.operationId) ? sectionsToRegenerate(report).filter((s) => !done.has(s.key)) : [];
   const { enabled: modelGuidanceEnabled, litePattern, message: modelGuidanceMessage } = FIDELITY_CONFIG.modelGuidance;
   const isLiteModel = modelGuidanceEnabled && !!set.metadata.model && litePattern.test(set.metadata.model);
+  // Distil (knowledge-notes-plan §5.3, WP2.5): the totals in outcome words, and the model-tier warning in those words. Preserve: unchanged.
+  const totals = outcomeTotalsOfSet(set, { weakModel: isLiteModel });
 
   const regenerate = async () => {
     setRunning(true);
@@ -69,6 +73,20 @@ export function CoverageRow({
       setRunning(false);
     }
   };
+
+  if (totals) {
+    return (
+      <div className="acute-coverage" aria-label="Content coverage">
+        <OutcomeSummary totals={totals} />
+        {retry.length > 0 && (
+          <button type="button" className="acute-ask-ai__secondary acute-coverage__regenerate" disabled={running} onClick={() => void regenerate()}>
+            {running ? `Regenerating ${sections(retry.length)}…` : `Regenerate ${sections(retry.length)}`}
+          </button>
+        )}
+        {error && <span className="acute-coverage__error" role="alert">{error}</span>}
+      </div>
+    );
+  }
 
   return (
     <div className="acute-coverage" aria-label="Content coverage">

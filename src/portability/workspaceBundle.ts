@@ -8,16 +8,18 @@ import * as Y from "yjs";
 import { canvasDocId } from "@/sync/docIds";
 import { deriveRelations, getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
 import { collectAssetIds } from "@/domain/content/assetUrl";
-import type { CanvasDocument, DocumentRecord, RichContent, Workspace } from "@/domain/types";
+import type { CanvasDocument, ContentSourceVersion, DocumentRecord, RichContent, Workspace } from "@/domain/types";
 import type { PersistenceServices } from "@/persistence";
 import { richDocKey } from "@/state/documentClone";
 import { newId } from "@/domain/ids";
 import { normalizeObjectMetadata } from "@/domain/provenance";
+import { newContentSourceId } from "@/ai/content/sources";
 import { BlockIdMap, reassignContentBlockIds } from "@/sync/blockIds";
 import { SceneBinding } from "@/sync/sceneBinding";
 import { markIntegrityUnchecked, refId, retarget } from "@/workspaces/integrity";
-import { BUNDLE_FORMAT, BUNDLE_VERSION, BundleError, parseBundle, type AcuteBundle, type BundleElement } from "./bundle";
-import { sanitizeContent, sanitizeElement, withSanitizedMetadata } from "./sanitize";
+import { BUNDLE_FORMAT, BUNDLE_SCHEMA_VERSION, BUNDLE_VERSION, BundleError, parseBundle, type AcuteBundle, type BundleElement, type BundleSource } from "./bundle";
+import { withoutSources } from "./exportOptions";
+import { elementMetadataOf, linkedSourceOf, metadataLinkedTo, sanitizeContent, sanitizeElement, withSanitizedMetadata, type MetadataNormalizer } from "./sanitize";
 
 const ELEMENTS = "elements";
 const META = "meta";
@@ -52,9 +54,19 @@ function dataURLToBlob(dataURL: string, mimeType: string): Blob {
   return new Blob([bytes], { type: mimeType });
 }
 
+/** What an export carries beyond the content. */
+export interface BundleExportOptions {
+  /**
+   * The canvases' content sources with every version, and the links that tie objects to them (§6.4). Default on: a
+   * backup or canvas export is the user's own file. Off: no `sources` section and no links, as before.
+   */
+  sources?: boolean;
+}
+
 /** Builds the `.acute.json` bundle of one workspace from persisted state. */
-export function exportWorkspace(services: PersistenceServices, workspaceId: string): Promise<AcuteBundle> {
-  return buildBundle(services, workspaceId);
+export async function exportWorkspace(services: PersistenceServices, workspaceId: string, options: BundleExportOptions = {}): Promise<AcuteBundle> {
+  const bundle = await buildBundle(services, workspaceId);
+  return options.sources === false ? withoutSources(bundle) : bundle;
 }
 
 /**
@@ -62,11 +74,18 @@ export function exportWorkspace(services: PersistenceServices, workspaceId: stri
  * blocks it uses, and its pages (those it owns or previews). It imports as a
  * copy added to an existing workspace (`importCanvas`), never as a workspace.
  */
-export function exportCanvas(services: PersistenceServices, workspaceId: string, canvasId: string): Promise<AcuteBundle> {
-  return buildBundle(services, workspaceId, canvasId);
+export async function exportCanvas(services: PersistenceServices, workspaceId: string, canvasId: string, options: BundleExportOptions = {}): Promise<AcuteBundle> {
+  const bundle = await buildBundle(services, workspaceId, canvasId);
+  return options.sources === false ? withoutSources(bundle) : bundle;
 }
 
-async function buildBundle(services: PersistenceServices, workspaceId: string, onlyCanvas?: string): Promise<AcuteBundle> {
+/** How much the canvas's sources add to its export (for the export dialog): their count and UTF-8 size in bytes. */
+export async function canvasSourcesSize(services: PersistenceServices, workspaceId: string, canvasId: string): Promise<{ count: number; bytes: number }> {
+  const { sources = [] } = await buildBundle(services, workspaceId, canvasId, { images: false });
+  return { count: sources.length, bytes: sources.length ? new TextEncoder().encode(JSON.stringify(sources)).length : 0 };
+}
+
+async function buildBundle(services: PersistenceServices, workspaceId: string, onlyCanvas?: string, { images = true } = {}): Promise<AcuteBundle> {
   const workspace = await services.workspaces.get(workspaceId);
   if (!workspace) throw new Error(`Workspace ${workspaceId} not found`);
   if (onlyCanvas && !workspace.canvasIds.includes(onlyCanvas)) throw new Error(`Canvas ${onlyCanvas} not found in workspace ${workspaceId}`);
@@ -98,7 +117,7 @@ async function buildBundle(services: PersistenceServices, workspaceId: string, o
       updatedAt: canvas.updatedAt,
       ...(canvas.viewport ? { viewport: canvas.viewport } : {}),
       ...(typeof background === "string" ? { viewBackgroundColor: background } : {}),
-      elements: elements.map(withSanitizedMetadata),
+      elements,
     });
   }
 
@@ -108,7 +127,22 @@ async function buildBundle(services: PersistenceServices, workspaceId: string, o
     services.documents.listByWorkspace(workspaceId, "block"),
   ]);
   const pages = onlyCanvas ? allPages.filter((p) => p.canvasId === onlyCanvas || previewedPages.has(p.id)) : allPages;
-  const documents = [...pages, ...blocks.filter((b) => referencedBlocks.has(b.id))].map((d) => ({
+  const exportedDocs = [...pages, ...blocks.filter((b) => referencedBlocks.has(b.id))];
+
+  // The content sources: the canvases' own, and any other one an object cites (e.g. an object moved from another canvas).
+  const cited = new Set<string>();
+  for (const canvas of canvases) for (const source of await services.contentSources.listByCanvas(canvas.id)) cited.add(source.id);
+  for (const raw of [...allElements.map(elementMetadataOf), ...exportedDocs.map((d) => d.metadata)]) {
+    const id = linkedSourceOf(raw);
+    if (id) cited.add(id);
+  }
+  const sources = await bundledSources(services, cited);
+  const carried = new Set(sources.map((s) => s.id));
+  // Objects keep their link only to a source the file carries.
+  const normalize = metadataLinkedTo((id) => (carried.has(id) ? id : undefined));
+  for (const canvas of canvases) canvas.elements = canvas.elements.map((el) => withSanitizedMetadata(el, normalize));
+
+  const documents = exportedDocs.map((d) => ({
     id: d.id,
     kind: d.kind,
     ...(d.canvasId ? { canvasId: d.canvasId } : {}),
@@ -116,14 +150,14 @@ async function buildBundle(services: PersistenceServices, workspaceId: string, o
     snapshot: d.snapshot as AcuteBundle["documents"][number]["snapshot"],
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
-    ...metadataOf(d.metadata),
+    ...metadataOf(d.metadata, normalize),
   }));
 
   // …and the images pages and blocks show (stored in the same asset store).
   for (const d of documents) collectAssetIds(d.snapshot as RichContent, fileIds);
 
   const assets: AcuteBundle["assets"] = [];
-  for (const id of fileIds) {
+  for (const id of images ? fileIds : []) {
     const asset = await services.assets.get(id);
     if (asset) {
       assets.push({ id, mimeType: asset.mimeType, createdAt: asset.createdAt, dataURL: await blobToDataURL(asset.blob, asset.mimeType) });
@@ -133,6 +167,7 @@ async function buildBundle(services: PersistenceServices, workspaceId: string, o
   return {
     format: BUNDLE_FORMAT,
     version: BUNDLE_VERSION,
+    schemaVersion: BUNDLE_SCHEMA_VERSION,
     ...(onlyCanvas ? { scope: "canvas" as const } : {}),
     exportedAt: Date.now(),
     workspace: { id: workspace.id, name: workspace.name, createdAt: workspace.createdAt, updatedAt: workspace.updatedAt },
@@ -140,6 +175,52 @@ async function buildBundle(services: PersistenceServices, workspaceId: string, o
     documents,
     relations: deriveRelations(allElements as unknown as SceneElement[]),
     assets,
+    ...(sources.length ? { sources } : {}),
+  };
+}
+
+/** The given content sources with every stored version, oldest first; a source this device doesn't have is skipped. */
+async function bundledSources(services: PersistenceServices, ids: Iterable<string>): Promise<BundleSource[]> {
+  const out: BundleSource[] = [];
+  for (const id of ids) {
+    const source = await services.contentSources.get(id);
+    if (!source) continue;
+    const versions: BundleSource["versions"] = [];
+    for (let n = 1; n <= source.latestVersion; n++) {
+      const v = await services.contentSources.getVersion(id, n);
+      if (v) versions.push(bundledVersion(v));
+    }
+    if (!versions.length) continue;
+    out.push({
+      id: source.id,
+      canvasId: source.canvasId,
+      origin: source.origin,
+      tier: source.tier,
+      template: source.template,
+      latestVersion: source.latestVersion,
+      createdAt: source.createdAt,
+      updatedAt: source.updatedAt,
+      versions,
+    });
+  }
+  return out;
+}
+
+/** A stored version; `units` and `lineage` (WP1.3) are read defensively until the domain type has them. */
+type StoredVersion = ContentSourceVersion & { units?: unknown; lineage?: unknown };
+
+/** `units` and `lineage` pass through untouched when present. */
+function bundledVersion(stored: ContentSourceVersion): BundleSource["versions"][number] {
+  const v = stored as StoredVersion;
+  return {
+    version: v.version,
+    text: v.text,
+    plan: v.plan,
+    ...(v.pathIds ? { pathIds: v.pathIds } : {}),
+    ...(v.revisions?.length ? { revisions: v.revisions } : {}),
+    ...(v.units !== undefined ? { units: v.units } : {}),
+    ...(v.lineage !== undefined ? { lineage: v.lineage } : {}),
+    createdAt: v.createdAt,
   };
 }
 
@@ -158,6 +239,8 @@ export interface ImportSummary {
   pages: number;
   blocks: number;
   assets: number;
+  /** Content sources the file carries (§6.4); 0 for a file without them. */
+  sources: number;
 }
 
 /** Validates without writing (for a confirmation step). Throws `BundleError`. */
@@ -176,8 +259,51 @@ export function inspectBundle(input: unknown): { bundle: AcuteBundle; summary: I
       pages: bundle.documents.filter((d) => d.kind === "page").length,
       blocks: bundle.documents.filter((d) => d.kind === "block").length,
       assets: bundle.assets.length,
+      sources: bundle.sources?.length ?? 0,
     },
   };
+}
+
+/**
+ * New ids for the bundle's content sources. An import never reuses a source id, so it can't overwrite or append to a
+ * source already on this device, and importing the same file twice gives two independent sets.
+ */
+function newSourceIds(bundle: AcuteBundle): Map<string, string> {
+  return new Map((bundle.sources ?? []).map((s) => [s.id, newContentSourceId()]));
+}
+
+/**
+ * Writes the bundle's sources to the device store under their new ids (`ids`), every version oldest first, owned by
+ * `canvasFor(source.canvasId)`. Objects' links are rewritten to the same ids (`metadataLinkedTo`), so citations resolve.
+ */
+async function restoreSources(
+  services: PersistenceServices,
+  bundle: AcuteBundle,
+  ids: Map<string, string>,
+  workspaceId: string,
+  canvasFor: (canvasId: string) => string,
+): Promise<void> {
+  for (const s of bundle.sources ?? []) {
+    const id = ids.get(s.id)!;
+    const versions = [...s.versions].sort((a, b) => a.version - b.version);
+    const latestVersion = Math.max(s.latestVersion, ...versions.map((v) => v.version));
+    const header = { id, workspaceId, canvasId: canvasFor(s.canvasId), origin: s.origin, tier: s.tier, template: s.template, latestVersion, createdAt: s.createdAt, updatedAt: s.updatedAt };
+    for (const v of versions) {
+      const version: StoredVersion = {
+        sourceId: id,
+        version: v.version,
+        text: v.text,
+        plan: v.plan,
+        ...(v.pathIds ? { pathIds: v.pathIds } : {}),
+        ...(v.revisions?.length ? { revisions: v.revisions } : {}),
+        // Passed through as the export wrote them (WP1.3 types); a later recording ignores units it can't read (`recordAcceptedSource`).
+        ...(v.units !== undefined ? { units: v.units as ContentSourceVersion["units"] } : {}),
+        ...(v.lineage !== undefined ? { lineage: v.lineage as ContentSourceVersion["lineage"] } : {}),
+        createdAt: v.createdAt,
+      };
+      await services.contentSources.append(header, version);
+    }
+  }
 }
 
 /**
@@ -218,6 +344,7 @@ async function withoutForeignIds(services: PersistenceServices, bundle: AcuteBun
         return ref && remap.has(refId(ref)) ? retarget(el, ref, to(refId(ref))) : el;
       }),
     })),
+    ...(bundle.sources ? { sources: bundle.sources.map((s) => ({ ...s, canvasId: to(s.canvasId) })) } : {}),
   };
 }
 
@@ -235,6 +362,9 @@ export async function importWorkspace(services: PersistenceServices, input: unkn
   const workspaceId = bundle.workspace.id;
   const incomingDocs = new Set(bundle.documents.map((d) => d.id));
   const incomingCanvases = new Set(bundle.canvases.map((c) => c.id));
+  // Sources get new ids; objects' links follow them, and a link to a source the file doesn't carry is dropped.
+  const sourceIds = newSourceIds(bundle);
+  const normalize = metadataLinkedTo((id) => sourceIds.get(id));
 
   // Content that the replaced workspace had but the bundle doesn't.
   const previous = await services.workspaces.get(workspaceId);
@@ -265,7 +395,7 @@ export async function importWorkspace(services: PersistenceServices, input: unkn
       snapshot: sanitizeContent(d.snapshot as unknown as RichContent),
       createdAt: d.createdAt,
       updatedAt: d.updatedAt,
-      ...(metadataOf(d.metadata) as Pick<DocumentRecord, "metadata">),
+      ...(metadataOf(d.metadata, normalize) as Pick<DocumentRecord, "metadata">),
     };
     await services.yupdates.clear(richDocKey(d.id));
     await services.documents.put(record);
@@ -275,11 +405,15 @@ export async function importWorkspace(services: PersistenceServices, input: unkn
     await services.assets.put({ id: a.id, mimeType: a.mimeType, createdAt: a.createdAt, blob: dataURLToBlob(a.dataURL, a.mimeType) });
   }
 
+  // A source of a canvas the file doesn't carry goes with the first canvas (any canvas may cite it).
+  const firstCanvas = bundle.canvases[0]?.id;
+  if (firstCanvas) await restoreSources(services, bundle, sourceIds, workspaceId, (id) => (incomingCanvases.has(id) ? id : firstCanvas));
+
   for (const c of bundle.canvases) {
     const doc = new Y.Doc();
     doc.transact(() => {
       const elements = doc.getMap(ELEMENTS);
-      for (const el of c.elements) if (!el.isDeleted) elements.set(el.id, sanitizeElement(el));
+      for (const el of c.elements) if (!el.isDeleted) elements.set(el.id, sanitizeElement(el, normalize));
       if (c.viewBackgroundColor) doc.getMap(META).set("viewBackgroundColor", c.viewBackgroundColor);
     });
     await services.yupdates.clear(canvasDocId(c.id));
@@ -333,6 +467,8 @@ export async function importCanvas(services: PersistenceServices, input: unknown
   const titles = new Set((await services.canvases.listByWorkspace(workspaceId)).map((c) => c.title));
   const title = titles.has(source.title) ? `${source.title} (imported)` : source.title;
   const now = Date.now();
+  const sourceIds = newSourceIds(bundle);
+  const normalize = metadataLinkedTo((id) => sourceIds.get(id));
 
   for (const d of bundle.documents) {
     const record: DocumentRecord = {
@@ -345,7 +481,7 @@ export async function importCanvas(services: PersistenceServices, input: unknown
       snapshot: sanitizeContent(reassignContentBlockIds(d.snapshot as unknown as RichContent, new BlockIdMap())),
       createdAt: d.createdAt,
       updatedAt: now,
-      ...(metadataOf(d.metadata) as Pick<DocumentRecord, "metadata">),
+      ...(metadataOf(d.metadata, normalize) as Pick<DocumentRecord, "metadata">),
     };
     await services.documents.put(record);
   }
@@ -355,6 +491,9 @@ export async function importCanvas(services: PersistenceServices, input: unknown
     await services.assets.put({ id: a.id, mimeType: a.mimeType, createdAt: a.createdAt, blob: dataURLToBlob(a.dataURL, a.mimeType) });
   }
 
+  // Every source the file carries belongs to the imported canvas.
+  await restoreSources(services, bundle, sourceIds, workspaceId, () => canvasId);
+
   const doc = new Y.Doc();
   doc.transact(() => {
     const elements = doc.getMap(ELEMENTS);
@@ -362,7 +501,7 @@ export async function importCanvas(services: PersistenceServices, input: unknown
       if (el.isDeleted) continue;
       const ref = el.type === "embeddable" ? getEmbedRef(el as unknown as SceneElement) : null;
       const copy = ref && remap.has(refId(ref)) ? retarget(el, ref, to(refId(ref))) : el;
-      elements.set(copy.id, sanitizeElement(copy));
+      elements.set(copy.id, sanitizeElement(copy, normalize));
     }
     if (source.viewBackgroundColor) doc.getMap(META).set("viewBackgroundColor", source.viewBackgroundColor);
   });
@@ -384,8 +523,8 @@ export function bundleFileName(bundle: AcuteBundle, extension = ".acute.json"): 
   return `${slug}-${date}${extension}`;
 }
 
-/** Document metadata for the bundle: known, bounded fields only (F25). */
-function metadataOf(raw: unknown): { metadata?: Record<string, unknown> } {
-  const metadata = normalizeObjectMetadata(raw);
+/** Document metadata for the bundle: known, bounded fields only (F25); `normalize` may keep the reconciliation link. */
+function metadataOf(raw: unknown, normalize: MetadataNormalizer = normalizeObjectMetadata): { metadata?: Record<string, unknown> } {
+  const metadata = normalize(raw);
   return metadata ? { metadata: metadata as Record<string, unknown> } : {};
 }

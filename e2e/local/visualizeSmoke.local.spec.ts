@@ -3,6 +3,10 @@
  * host are answered here (a canned outline and section plan) and a fake key is typed into Connect, so this catches
  * what unit tests can't — the browser build losing the Visualize tasks, or a pasted table never reaching AI — and
  * checks the review says so when a section falls back to its own structure, with a working Retry.
+ *
+ * Visualize also asks `find_revisions` (G3.3, `ai/history/revisions.ts`: does the text change its mind?) before it
+ * outlines; that call is intended. It's answered here with no revisions. A section Retry asks it no more: it keeps the
+ * first run's answer for the same text.
  */
 import { expect, test, type Page, type Route } from "@playwright/test";
 import { createDemoCanvas, openAISettings, openApp } from "../helpers";
@@ -36,7 +40,10 @@ const PLAN = {
   metadata: { takeaway: "Merge v3 now; D2 waits on the engineer" },
 };
 
-type Task = "outline_document" | "generate_visual_plan";
+type Task = "outline_document" | "generate_visual_plan" | "find_revisions";
+
+/** The analysis calls: everything but G3.3's `find_revisions`. */
+const analysed = (tasks: readonly Task[]) => tasks.filter((t) => t !== "find_revisions");
 
 /** Answers the AI host locally; `sectionReply` decides each section's reply text. Returns the tasks seen. */
 async function answerLocally(page: Page, sectionReply: () => string, delay: () => number = () => 0): Promise<Task[]> {
@@ -54,7 +61,9 @@ async function answerLocally(page: Page, sectionReply: () => string, delay: () =
     const text =
       task === "outline_document"
         ? JSON.stringify({ sections: [{ id: "s1", label: "Decisions", kind: "decision", parts: parts.length ? parts : ["u1"] }] })
-        : sectionReply();
+        : task === "find_revisions"
+          ? JSON.stringify({ revisions: [] })
+          : sectionReply();
     return route.fulfill({ status: 200, json: { text, model: "test-model", finishReason: "stop", usage: { provider: "openai", model: "test-model" } } });
   });
   return tasks;
@@ -87,7 +96,10 @@ test("a pasted reply with a decision table is analysed by AI: outline and sectio
   await createDemoCanvas(page);
   await connectFakeKey(page);
   await visualize(page, REPLY);
-  expect(tasks).toEqual(["outline_document", "generate_visual_plan"]);
+  expect(analysed(tasks)).toEqual(["outline_document", "generate_visual_plan"]);
+  // G3.3: the text is asked whether it revises itself, before the outline.
+  expect(tasks).toContain("find_revisions");
+  expect(tasks.indexOf("find_revisions")).toBeLessThan(tasks.indexOf("outline_document"));
   await expect(analysisRow(page)).toHaveCount(0);
   // Wave C: the section's review reason sits at the section, not only in the bar.
   const chip = page.getByRole("note", { name: /^Section Decisions:/ });
@@ -139,6 +151,9 @@ test("a section AI can't produce says so in the review, and Retry replaces it on
   const before = tasks.length;
   await analysisRow(page).getByRole("button", { name: "Retry 1 section" }).click();
   await expect(analysisRow(page)).toHaveCount(0, { timeout: 30_000 });
+  // Only the failed section is analysed again, and nothing else is asked: the retry keeps the first run's revisions
+  // (same text) instead of asking `find_revisions` again, also in its layout probes.
+  expect(tasks.slice(0, before)).toContain("find_revisions");
   expect(tasks.slice(before)).toEqual(["generate_visual_plan"]);
 });
 

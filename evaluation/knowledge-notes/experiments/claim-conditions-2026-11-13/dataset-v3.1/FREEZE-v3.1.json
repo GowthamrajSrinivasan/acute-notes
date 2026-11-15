@@ -1,0 +1,32 @@
+{
+  "version": "v3.1-pre",
+  "status": "provisional freeze: the re-adjudication queue (READJUDICATION-QUEUE.json) is open; not yet the reference dataset",
+  "frozenOn": "2026-11-15",
+  "base": {
+    "file": "phase4/FREEZE-v3.json",
+    "filesVerified": 41
+  },
+  "sha256": {
+    "DATASET-v3.1.md": "722460b8f1cfc8ed24667cd3c50b53b4ddf3fae5a08a3afc51aed04aac2b02f7",
+    "MIGRATION-LOG.json": "f705e8aed71c772a50173a0080d9970ef7be66b27e10d87e4085e3d13e5fdfb9",
+    "READJUDICATION-ANSWERS.template.json": "26c99f9f7c548034891d2833d867b672afd06d6d18cc0986b3586025872ce7f4",
+    "READJUDICATION-PACKET.md": "3a42d0b3af02baa63b0aa95bd6ea90d883639f167ab00d6cbebeef78bd063e59",
+    "READJUDICATION-QUEUE.json": "1fcce8c21e35748f484181fe75e0152fbe22bf746ba6c8ea49ef78b6dc3e1441",
+    "datasetV31.test.ts": "5c3d50b2e68aeb49582e74fb6cad80d70480a4cf928d549a97698c8c3828dcfe",
+    "freeze.mjs": "bc7c82088dedd178943f4e1629c7f32fb4df3afcc14f541249a365eaa39be8f8",
+    "migrate.mjs": "fa5993deca4d7a556bbccd913b301fd2cc89c51a73d3f6f139db6a67fb83ca42",
+    "records/kn-01-idempotency-keys.json": "81fe4285bc45a701dc81b4f52f610c72a7f09df9ff4f708c05bd2fb26f9b2854",
+    "records/kn-02-edge-cache-invalidation.json": "973306083fb67f9b729c799ac6a950f0fb9deb35442e0e89cfea2216f923a732",
+    "records/kn-03-blue-green-deploy.json": "34eca8eb4d217b686cb59316e6cf282d1da5c1f9f943a8b60df0e8cf271d9e07",
+    "records/kn-04-queue-choice.json": "f170306234975ee57f02b753cd87cd9aefa60c2680cb14fea265f3e11e2b4db9",
+    "records/kn-05-incident-review-meeting.json": "4de8635a087d9a9c787a1119853adc8f77f5a1d2c361a25cdb32fd5840c715f0",
+    "records/kn-06-hybrid-search-reranking.json": "5da3d8b68302607ad79ff731503ebe8e76a9ae98b1ff702ccd14db5328f5d808",
+    "records/kn-07-photo-sharing-hld.json": "3bd5b9350fad36a0daa9bc2863c896f255efcce32eda9148e51849c1ef9a2871",
+    "records/kn-08-helpdesk-answers-hld-lld.json": "7c63984a12bffb0699b2d71806cce9fd77ba1c43c1dd33032e141e77fd2bf0a1",
+    "records/kn-09-billing-codebase-map.json": "5c60fb7dab04914c048c4122bab80072b6ad3213013d39c70ff020b7a428ba6a",
+    "records/kn-10-inventory-architecture-frames.json": "d5282e37f09dad80790dc4f333980eedb9ce98a8ca54a345a5e50946f678da5e",
+    "records/kn-11-ambiguous-analytics-proposal.json": "eb442705a1270833b1f46964f0eb47f7f4e172280fe0640a41d98326e4a0686b",
+    "records/kn-12-flag-rollout-update.json": "ea3fd79b92bf709f3e78781769a992164f5f153e44bd333ab73aba440325f3d3"
+  },
+  "note": "Re-frozen 2026-11-15: datasetV31.test.ts got a type-only fix (strict index access); no record changed."
+}

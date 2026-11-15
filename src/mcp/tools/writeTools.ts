@@ -20,7 +20,10 @@
  * - `update_block` → one `update_block` (new Markdown content for an existing
  *   rich block or page preview), with no `stableNodeKey`: the writer then
  *   keeps the target document's own provenance and reconciliation link, so an
- *   accepted MCP edit counts as the user's own edit.
+ *   accepted MCP edit counts as the user's own edit. It carries the target's
+ *   fingerprint as the call saw it (`expectedFingerprint`): if the user edits
+ *   the block before Accept, Accept asks Keep mine / Use proposed instead of
+ *   overwriting (`ai/changes/staleTarget.ts`).
  *
  * The review bar's title names the connected client ("Claude Code: Add
  * to-do list"), and the client's name is recorded as the set's `provider`.
@@ -46,11 +49,12 @@ import { templateFor } from "@/ai/visual-plan/templates";
 import { VISUAL_TEMPLATES } from "@/ai/visual-plan/types";
 import { InvalidVisualPlanError, MAX_PLAN_NODES, validateVisualPlan } from "@/ai/visual-plan/validate";
 import { getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
+import { fingerprintOf, labelsByContainer, objectContent } from "@/ai/reconcile/objects";
 import { COMPOSITE_SHAPES_DESCRIBED } from "@/domain/canvas/compositeShapes";
 import { newId } from "@/domain/ids";
 import { RELATION_TYPES } from "@/domain/types";
 import { cut, isStandalone } from "../context/currentContext";
-import { DELETE_ANNOTATIONS, guarded, plural, ToolFailure, toolResult, WRITE_ANNOTATIONS, type ToolPolicy } from "./common";
+import { DESTRUCTIVE_ANNOTATIONS, guarded, plural, ToolFailure, toolResult, WRITE_ANNOTATIONS, type ToolPolicy } from "./common";
 import type { LiveCanvasActions } from "./liveCanvas";
 
 export const WRITE_TOOL_NAMES = ["create_block", "create_page", "create_table", "create_todo", "create_connection", "move_object", "update_block", "render_visual_plan", "delete_object"] as const;
@@ -259,7 +263,7 @@ export function registerWriteTools(server: McpServer, deps: WriteToolDeps): void
         description: `${meta.description} Proposes a change for the user's review; nothing changes until they accept it. Fails while other changes are under review.`,
         inputSchema,
         outputSchema: proposedShape,
-        annotations: meta.destructive ? DELETE_ANNOTATIONS : WRITE_ANNOTATIONS,
+        annotations: meta.destructive ? DESTRUCTIVE_ANNOTATIONS : WRITE_ANNOTATIONS,
       },
       // The SDK validates `args` against `inputSchema` first; its generic callback type can't follow `Shape` through this helper, hence the cast.
       ((args: z.infer<z.ZodObject<Shape>>) => guarded(() => run(args))) as never,
@@ -374,6 +378,8 @@ export function registerWriteTools(server: McpServer, deps: WriteToolDeps): void
     "update_block",
     {
       title: "Update block",
+      // Replaces content (audit 2026-11-15 §4.8); Accept still checks the baseline and asks Keep mine / Use proposed.
+      destructive: true,
       description:
         "Replaces the content of an existing rich block (text, to-do, table or code) or page preview on the open canvas with Markdown; " +
         "`title` renames a page. The object keeps its id, place and origin; the user can undo the accepted edit.",
@@ -391,8 +397,18 @@ export function registerWriteTools(server: McpServer, deps: WriteToolDeps): void
         if (!el || !ref) throw new ToolFailure(`No block or page preview with id ${args.objectId} on the open canvas; update_block changes only those (not shapes, text or arrows).`);
         if (args.title && ref.kind !== "page-preview") throw new ToolFailure("`title` applies only to page previews; a block's title is part of its Markdown.");
         const parse = deps.parseMarkdown ?? (await loadDefaultParser());
+        // Stale-target protection: the baseline is the content this call was checked against, so an edit the user makes
+        // before Accept is never overwritten (Accept asks Keep mine / Use proposed). Unread here, the pending store stamps it.
+        const current = live.getDocument ? objectContent(el, labelsByContainer(live.elements()), live.getDocument) : null;
+        const baseline = current && current.kind !== "shape" ? fingerprintOf(current) : undefined;
         // No stableNodeKey: the writer keeps the target document's own provenance and reconciliation link.
-        const change: ProposedChange = { kind: "update_block", target: el.id, content: parse(args.markdown), ...(args.title ? { title: args.title } : {}) };
+        const change: ProposedChange = {
+          kind: "update_block",
+          target: el.id,
+          content: parse(args.markdown),
+          ...(args.title ? { title: args.title } : {}),
+          ...(baseline ? { expectedFingerprint: baseline } : {}),
+        };
         const what = ref.kind === "page-preview" ? "Update page" : "Update block";
         return { set: { operationId, title: title(what), metadata: meta("update_block"), changes: [change] }, warnings: [] };
       }),

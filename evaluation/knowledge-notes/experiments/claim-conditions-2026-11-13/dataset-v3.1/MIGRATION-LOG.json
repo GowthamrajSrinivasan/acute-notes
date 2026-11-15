@@ -1,0 +1,513 @@
+{
+  "dataset": "claim-conditions v3.1-pre",
+  "date": "2026-11-15",
+  "status": "provisional: pending two-human re-adjudication of READJUDICATION-QUEUE.json; not yet the reference",
+  "spec": "review-v3/EVAL-SPEC-v3.1-AMENDMENT.md (approved as the evaluation protocol by the user, 2026-11-15)",
+  "freezeV3": {
+    "file": "phase4/FREEZE-v3.json",
+    "filesVerified": 41,
+    "mismatches": []
+  },
+  "inputs": {
+    "phase4/FREEZE-v3.json": "81887139dba0ae50420e604e497251027ef4303624316b40b7541af82d27a215",
+    "phase4/annotation-packets/kn-01-idempotency-keys.md": "45e67dc7e9bec38321179406ffa5b954b82fe250ce058bc6435394abe7046126",
+    "phase4/annotation-packets/kn-02-edge-cache-invalidation.md": "c3d4150bd189909fdadf0e1eca8536972b70926728b27155bf23169f30ecf800",
+    "phase4/annotation-packets/kn-03-blue-green-deploy.md": "90002d6f6fdc660a071d1077ee7c9d8e1ddcf565738c71d46e18718e120c8166",
+    "phase4/annotation-packets/kn-04-queue-choice.md": "683b425575c61879268c64e7e4b12e2979e4c2b75cc3013b8b03557ccdb1423a",
+    "phase4/annotation-packets/kn-05-incident-review-meeting.md": "98a57acca176ca1b55bfe48e7ef1ce3beeca50aafa2402981d2d3d56b7bba382",
+    "phase4/annotation-packets/kn-06-hybrid-search-reranking.md": "ce196b3b239791ac125526cba53a4eece9eef80831e10eac94abaeed616fa962",
+    "phase4/annotation-packets/kn-07-photo-sharing-hld.md": "e78413f61784bff597dd150e65b9e534d0bd6d90e3cc1e67ca9a3a385c30e84c",
+    "phase4/annotation-packets/kn-08-helpdesk-answers-hld-lld.md": "e0dd62f58211918c91f5024dbc0bd847e5d7948500923d24a5c3bb8843b17e22",
+    "phase4/annotation-packets/kn-09-billing-codebase-map.md": "6f9c136b69c19b4f3e5db6eae00628b679d5ab127e07e4f6ab9895c145cf650b",
+    "phase4/annotation-packets/kn-10-inventory-architecture-frames.md": "f82f860d4abb9ccdcfcf7c40f659c5a5d60b8ad9d715692c6161d6e37ee86a2a",
+    "phase4/annotation-packets/kn-11-ambiguous-analytics-proposal.md": "67905855c87f4ada8cec5e995121db6f351f840fa889d7806853f789b26ff874",
+    "phase4/annotation-packets/kn-12-flag-rollout-update.md": "1a4ce1856871031b31ee3b2a74516bba873b457e6567cb9d29d34b45f3f3d217",
+    "review-v3/EVAL-SPEC-v3.1-AMENDMENT.md": "528c302097402523af134acca25c4ab788603ee929547535b3f41aed1e398af8",
+    "review-v3/attachmentSchema.ts": "b60ff1bf5fde44a258f4528dda47243cf7ddef44ff7459e19f0915c0a7d67eac",
+    "review-v3/attachment-impact.json": "087584246e994a7be58d74fa3752256caf30154cad198065cb875b6620ba1f70",
+    "review-v3/human-review/SAMPLE-KEY.json": "e7426e794225dec07c5ee21c1af226e01c3ffa600e0cfdb38cfc4290877b9a31",
+    "review-v3/human-review/discrepancies-2.json": "a15b73eb542239af6b192da97cae4e8cfec2a46778c62d3afbaa09d58994091e",
+    "review-v3/human-review/answers-A.json": "7ab024f0895b1ed83a93d384370da120bc50076570e9bc949a31866d97d3a39a",
+    "review-v3/human-review/answers-B.json": "0aec354c468b59d74ee6d490f4f9419bd34cfea1055f05072f5ecf6c8df5c4e0",
+    "review-v3/human-review/DISCREPANCY-REPORT-2.md": "b4d7157bdbc494ec9de56fe165ff81d33226f52d934c729f8e59b44702cdc379"
+  },
+  "summary": {
+    "records": 269,
+    "v3Records": 270,
+    "reconciliation": "270 v3 records - 2 merged + 1 merged records = 269",
+    "byVerdict": {
+      "claim": 166,
+      "set": 78,
+      "not_a_condition": 22,
+      "ambiguous": 3
+    },
+    "byStatus": {
+      "migrated": 262,
+      "human_adjudicated": 6,
+      "migrated_merged": 1
+    },
+    "byVerdictV3": {
+      "claim": 168,
+      "set": 75,
+      "not_a_condition": 20,
+      "ambiguous": 7
+    },
+    "links": 248,
+    "linksByLevel": {
+      "local": 152,
+      "section": 96
+    },
+    "linksByDerivedLevel": {
+      "local": 152,
+      "section": 68,
+      "elsewhere": 28
+    },
+    "recordsWithTwoLinks": 1,
+    "evidenceMarkers": 248,
+    "justificationMarkers": 0,
+    "linksNeedingReadjudication": 2,
+    "validation": {
+      "validated": 269,
+      "invalid": 0,
+      "errors": []
+    },
+    "queue": {
+      "items": 64,
+      "byReason": {
+        "finding1_pattern": 49,
+        "second_link_evidence": 13,
+        "reference_ambiguous_unsettled": 3,
+        "link_needs_human_readjudication": 2
+      },
+      "secondLinkCandidateEntries": 14,
+      "finding1Criteria": {
+        "base": 103,
+        "phase3Set": 30,
+        "cue": {
+          "exclusion": 25,
+          "contrast": 8
+        },
+        "cueAny": 31,
+        "both": 12,
+        "selected": 49,
+        "r1Phase3SetExcluded": 3
+      }
+    }
+  },
+  "merges": [
+    {
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "ids": [
+        "k7",
+        "k8"
+      ],
+      "clause": "If the Reranker does not respond within 800 ms",
+      "links": [
+        {
+          "id": "k7",
+          "claimUnits": [
+            "u25"
+          ],
+          "level": "local"
+        },
+        {
+          "id": "k8",
+          "claimUnits": [
+            "u21"
+          ],
+          "level": "section"
+        }
+      ],
+      "mergedId": "k7+k8"
+    }
+  ],
+  "splitsKept": [
+    {
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "ids": [
+        "k14",
+        "k15"
+      ],
+      "clause": "once the mobile SDK is ready",
+      "links": [
+        {
+          "id": "k14",
+          "claimUnits": [
+            "u36"
+          ],
+          "level": "local"
+        },
+        {
+          "id": "k15",
+          "claimUnits": [
+            "u5"
+          ],
+          "level": "elsewhere"
+        }
+      ],
+      "reason": "levels local+elsewhere: not one local and one section-level link, so kept as separate records"
+    }
+  ],
+  "humanCorrections": [
+    {
+      "ref": "kn-11-ambiguous-analytics-proposal/k12",
+      "item": "H05",
+      "from": "ambiguous",
+      "to": "not_a_condition",
+      "linksAgree": true,
+      "linksA": [],
+      "linksB": [],
+      "referenceLinks": [
+        "u22"
+      ]
+    },
+    {
+      "ref": "kn-09-billing-codebase-map/k12",
+      "item": "H06",
+      "from": "ambiguous",
+      "to": "set",
+      "linksAgree": false,
+      "linksA": [
+        "u31"
+      ],
+      "linksB": [
+        "u35"
+      ],
+      "referenceLinks": [
+        "u18"
+      ]
+    },
+    {
+      "ref": "kn-06-hybrid-search-reranking/k1",
+      "item": "H08",
+      "from": "claim",
+      "to": "set",
+      "linksAgree": true,
+      "linksA": [
+        "u7"
+      ],
+      "linksB": [
+        "u7"
+      ],
+      "referenceLinks": [
+        "u7"
+      ]
+    },
+    {
+      "ref": "kn-05-incident-review-meeting/k8",
+      "item": "H12",
+      "from": "ambiguous",
+      "to": "claim",
+      "linksAgree": false,
+      "linksA": [
+        "u54"
+      ],
+      "linksB": [
+        "u59"
+      ],
+      "referenceLinks": [
+        "u56",
+        "u59"
+      ]
+    },
+    {
+      "ref": "kn-02-edge-cache-invalidation/k21",
+      "item": "H17",
+      "from": "claim",
+      "to": "set",
+      "linksAgree": true,
+      "linksA": [
+        "u40"
+      ],
+      "linksB": [
+        "u40"
+      ],
+      "referenceLinks": [
+        "u37"
+      ]
+    },
+    {
+      "ref": "kn-10-inventory-architecture-frames/k14",
+      "item": "H22",
+      "from": "ambiguous",
+      "to": "not_a_condition",
+      "linksAgree": true,
+      "linksA": [],
+      "linksB": [],
+      "referenceLinks": [
+        "u43"
+      ]
+    }
+  ],
+  "humanSplitsUnchanged": [
+    {
+      "item": "H10",
+      "ref": "kn-02-edge-cache-invalidation/k29",
+      "pattern": "three_way_split",
+      "reference": "claim",
+      "A": "set",
+      "B": "not_a_condition",
+      "change": "none"
+    },
+    {
+      "item": "H16",
+      "ref": "kn-02-edge-cache-invalidation/k26",
+      "pattern": "three_way_split",
+      "reference": "claim",
+      "A": "set",
+      "B": "not_a_condition",
+      "change": "none"
+    },
+    {
+      "item": "H18",
+      "ref": "kn-10-inventory-architecture-frames/k6",
+      "pattern": "humans_split_one_with_model",
+      "reference": "set",
+      "A": "not_a_condition",
+      "B": "set",
+      "change": "none"
+    },
+    {
+      "item": "H21",
+      "ref": "kn-10-inventory-architecture-frames/k9",
+      "pattern": "humans_split_one_with_model",
+      "reference": "claim",
+      "A": "set",
+      "B": "claim",
+      "change": "none"
+    },
+    {
+      "item": "H24",
+      "ref": "kn-01-idempotency-keys/k3",
+      "pattern": "humans_split_one_with_model",
+      "reference": "claim",
+      "A": "claim",
+      "B": "set",
+      "change": "none"
+    },
+    {
+      "item": "H26",
+      "ref": "kn-04-queue-choice/k11",
+      "pattern": "three_way_split",
+      "reference": "ambiguous",
+      "A": "claim",
+      "B": "set",
+      "change": "none"
+    },
+    {
+      "item": "H27",
+      "ref": "kn-11-ambiguous-analytics-proposal/k13",
+      "pattern": "humans_split_one_with_model",
+      "reference": "ambiguous",
+      "A": "set",
+      "B": "ambiguous",
+      "change": "none"
+    },
+    {
+      "item": "H28",
+      "ref": "kn-02-edge-cache-invalidation/k20",
+      "pattern": "humans_split_one_with_model",
+      "reference": "claim",
+      "A": "set",
+      "B": "claim",
+      "change": "none"
+    },
+    {
+      "item": "H35",
+      "ref": "kn-05-incident-review-meeting/k19",
+      "pattern": "three_way_split",
+      "reference": "ambiguous",
+      "A": "set",
+      "B": "not_a_condition",
+      "change": "none"
+    }
+  ],
+  "referenceAmbiguousStillOpen": [
+    {
+      "ref": "kn-04-queue-choice/k11",
+      "sampledItem": "H26"
+    },
+    {
+      "ref": "kn-05-incident-review-meeting/k19",
+      "sampledItem": "H35"
+    },
+    {
+      "ref": "kn-11-ambiguous-analytics-proposal/k13",
+      "sampledItem": "H27"
+    }
+  ],
+  "finding1Rules": {
+    "rules": [
+      "R3",
+      "R4",
+      "general"
+    ],
+    "verdict": "claim",
+    "unsampledOnly": true,
+    "phase3Set": "phase 3 reading verdict was set",
+    "cues": {
+      "contrast": "\\bbut\\b|\\brather than\\b|\\binstead\\b|\\bwhereas\\b|\\bhowever\\b",
+      "consequence": "^so\\b|[,;:] so\\b|\\bso (that )?(they|it|the|a|an|we|you|these|this)\\b|\\bwhich means\\b|\\bmeans that\\b",
+      "weakness": "\\b(weakness|drawback|downside|limitation)\\b",
+      "exclusion": "\\bnot\\b|n't\\b|\\bnever\\b|\\bnothing\\b|\\bnone\\b|\\bno\\b"
+    },
+    "conditionalOpenerExcludedFromExclusionCue": "^(if|when|whenever|unless|until|once|after|before|while)\\b",
+    "selection": "phase3Set OR any cue"
+  },
+  "secondLinkCandidates": [
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k7",
+      "adjudicatedLink": [
+        "u16"
+      ],
+      "secondLink": [
+        "u14"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k11",
+      "adjudicatedLink": [
+        "u20"
+      ],
+      "secondLink": [
+        "u15"
+      ],
+      "proposedBy": "Y"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k20",
+      "adjudicatedLink": [
+        "u37"
+      ],
+      "secondLink": [
+        "u40"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k21",
+      "adjudicatedLink": [
+        "u37"
+      ],
+      "secondLink": [
+        "u40"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-03-blue-green-deploy",
+      "id": "k10",
+      "adjudicatedLink": [
+        "u17"
+      ],
+      "secondLink": [
+        "u19"
+      ],
+      "proposedBy": "Y"
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k20",
+      "adjudicatedLink": [
+        "u73"
+      ],
+      "secondLink": [
+        "u69"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k35",
+      "adjudicatedLink": [
+        "u94"
+      ],
+      "secondLink": [
+        "u90"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k7",
+      "adjudicatedLink": [
+        "u15"
+      ],
+      "secondLink": [
+        "u10"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k8",
+      "adjudicatedLink": [
+        "u15"
+      ],
+      "secondLink": [
+        "u10"
+      ],
+      "proposedBy": "Y"
+    },
+    {
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k13",
+      "adjudicatedLink": [
+        "u25"
+      ],
+      "secondLink": [
+        "u23"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-07-photo-sharing-hld",
+      "id": "k5",
+      "adjudicatedLink": [
+        "u8"
+      ],
+      "secondLink": [
+        "u11"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k7",
+      "adjudicatedLink": [
+        "u25"
+      ],
+      "secondLink": [
+        "u21"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k8",
+      "adjudicatedLink": [
+        "u21"
+      ],
+      "secondLink": [
+        "u25"
+      ],
+      "proposedBy": "Y"
+    },
+    {
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "id": "k4",
+      "adjudicatedLink": [
+        "u12"
+      ],
+      "secondLink": [
+        "u10"
+      ],
+      "proposedBy": "X"
+    }
+  ]
+}

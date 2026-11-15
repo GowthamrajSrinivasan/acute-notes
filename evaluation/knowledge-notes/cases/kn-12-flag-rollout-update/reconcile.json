@@ -1,0 +1,96 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-12-flag-rollout-update",
+  "fromVersion": 1,
+  "toVersion": 2,
+  "userEdits": [
+    {
+      "element": "e.kill-switch",
+      "before": "Every flag needs a kill switch that turns it off within 1 minute. Tested in staging before canary and recorded in the rollout tool: a flag without a tested kill switch cannot enter canary. Anyone on the owning team may use it without approval. Turning the flag back on restarts the rollout from the internal stage.",
+      "after": "Every flag needs a kill switch that turns it off within 1 minute. Tested in staging before canary and recorded in the rollout tool: a flag without a tested kill switch cannot enter canary. Anyone on the owning team may use it without approval. Turning the flag back on restarts the rollout from the internal stage. My note: Runbook RB-12 — during an incident use the Orbit console toggle, not the API.",
+      "note": "The user added a runbook pointer to the kill-switch card on the v1 canvas before the update. The kill-switch section is identical in v2, but the card must keep the user's text whatever the reconciler decides: unchanged (the source said nothing new) or a conflict ('Keep mine'), never update_clean."
+    }
+  ],
+  "items": [
+    {
+      "id": "i.stages",
+      "element": "e.stages",
+      "match": { "all": [["staff"], ["internal"]] },
+      "change": "unchanged",
+      "states": ["unchanged"],
+      "unitsBefore": ["u6", "u7", "u8", "u9", "u10", "u11"],
+      "unitsAfter": ["u37", "u38", "u39", "u40", "u41", "u42"],
+      "explanation": "The Rollout stages section is identical in v2. Section-level reconcile keeps an unchanged section without a model call, so its card stays unchanged; update_clean would be needless regeneration.",
+      "support": "implemented"
+    },
+    {
+      "id": "i.canary",
+      "element": "e.canary",
+      "match": { "all": [["5%", "5 percent", "five percent"], ["minute"]] },
+      "change": "edited",
+      "states": ["update_clean"],
+      "mustKeep": ["60 minutes"],
+      "unitsBefore": ["u12", "u13", "u14", "u15"],
+      "unitsAfter": ["u43", "u44", "u45", "u46"],
+      "explanation": "Same idea, reworded, with the minimum raised from 30 to 60 minutes. The card was not edited by the user, so the update applies cleanly and the card must show the new number (mustKeep is used here to require the v2 value).",
+      "support": "implemented"
+    },
+    {
+      "id": "i.advance-gate",
+      "element": "e.advance-gate",
+      "match": { "all": [["metrics check", "metric check"]] },
+      "change": "dependency_changed",
+      "states": ["update_clean"],
+      "mustKeep": ["on-call", "approv"],
+      "unitsBefore": ["u16", "u17", "u18", "u19"],
+      "unitsAfter": ["u47", "u48", "u49", "u50", "u51"],
+      "explanation": "The gate gains a second condition: the metrics check AND on-call approval. The updated card must carry both; keeping only the metrics check drops a condition.",
+      "support": "implemented"
+    },
+    {
+      "id": "i.kill-switch",
+      "element": "e.kill-switch",
+      "match": { "all": [["kill switch", "kill-switch"], ["1 minute", "one minute", "60 seconds"]] },
+      "change": "user_edited",
+      "states": ["unchanged", "update_conflict"],
+      "mustKeep": ["Runbook RB-12", "during an incident use the Orbit console toggle, not the API"],
+      "unitsBefore": ["u20", "u21", "u22", "u23", "u24"],
+      "unitsAfter": ["u52", "u53", "u54", "u55", "u56"],
+      "explanation": "Source unchanged, card edited by the user. classify.ts keeps it unchanged when the regenerated node equals the previous one (source silent), or raises a conflict if the node came back different; it is never update_clean, and the user's runbook note survives either way, whole (the runbook id and its instruction).",
+      "support": "implemented"
+    },
+    {
+      "id": "i.ga-monitoring",
+      "element": "e.ga-monitoring",
+      "match": { "all": [["dashboard"]] },
+      "change": "ambiguous",
+      "states": ["review"],
+      "unitsBefore": ["u25", "u26", "u27"],
+      "unitsAfter": ["u57", "u58", "u59", "u60"],
+      "explanation": "u25 is split into u57 and u58: same meaning, no hash match, two partial candidates. Card-level reconcile (knowledge-notes-plan §3.1 step 5, §6.1) marks the card 'source changed' and sends it to Needs review instead of rewriting it. Today's section-level reconcile has no review state for this.",
+      "support": "future"
+    },
+    {
+      "id": "i.cleanup",
+      "element": "e.cleanup",
+      "match": { "all": [["30 days"], ["remov", "delet", "clean"]] },
+      "change": "removed",
+      "states": ["remove"],
+      "unitsBefore": ["u28", "u29", "u30", "u31"],
+      "unitsAfter": [],
+      "explanation": "The Flag cleanup section is gone in v2. Its card's removal is proposed (never silent); keeping it as unchanged would keep asserting a rule the source no longer has.",
+      "support": "implemented"
+    },
+    {
+      "id": "i.rehearsal",
+      "element": "e.rehearsal",
+      "match": { "all": [["rehears"]] },
+      "change": "added",
+      "states": ["add"],
+      "unitsBefore": [],
+      "unitsAfter": ["u61", "u62", "u63"],
+      "explanation": "Rollback rehearsal is new in v2 and is proposed as a new card.",
+      "support": "implemented"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-timeout-no-partial-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "The timeout card drops 'never a partial answer', so nothing separates it from the citation path, which does produce a partial answer.",
+  "mutations": [
+    { "op": "replace_text", "node": "c-timeout", "find": "; never a partial answer", "replace": "" }
+  ],
+  "expectFailing": ["a.timeout-path"]
+}

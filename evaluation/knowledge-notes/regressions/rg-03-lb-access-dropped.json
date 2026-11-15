@@ -1,0 +1,17 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-lb-access-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The listener-rules prerequisite (u11, critical) is dropped.",
+  "mutations": [
+    {
+      "op": "remove_node",
+      "node": "n5"
+    }
+  ],
+  "expectFailing": [
+    "a.prereq-lb"
+  ]
+}

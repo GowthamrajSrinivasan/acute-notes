@@ -7,7 +7,9 @@ import type { AIRequest, AIResponse } from "@/ai/types";
 import { registerVisualizeTasks } from "@/ai/visualize/tasks";
 import { visualizeContent } from "@/ai/visualize/visualize";
 import { canRegenerate, regenerateSections } from "./regenerate";
-import { buildReport, sectionsToRegenerate, type FidelitySection } from "./report";
+import type { AccountingResult, Lineage } from "./contracts";
+import type { SectionKnowledge } from "./knowledgeCheck";
+import { buildKnowledgeReport, buildReport, knowledgeReportSchema, lineageCounts, sectionsToRegenerate, type FidelitySection } from "./report";
 
 const section = (key: string, units: number, placedByAI: number, missing: string[] = []): FidelitySection => ({
   key,
@@ -94,5 +96,86 @@ describe("Visualize → fidelity report → Regenerate (only the sections that f
   it("refuses a run it no longer keeps", async () => {
     const { runtime } = setup();
     await expect(regenerateSections("unknown", ["x"], runtime, { operationId: "op_x", context })).rejects.toThrow(/can no longer be regenerated/);
+  });
+});
+
+describe("report v2: distil runs (WP1.11)", () => {
+  const knowledge = (over: Partial<SectionKnowledge> & { key: string; label: string; units: string[] }): SectionKnowledge & { key: string; label: string } => ({
+    ideas: [],
+    omitted: [],
+    problems: [],
+    flags: [],
+    hints: [],
+    reviews: {},
+    restored: { items: [], units: [] },
+    needsReview: 0,
+    exactMissing: [],
+    ...over,
+  });
+  const accounting: AccountingResult = {
+    state: { u1: "cited", u2: "omitted", u3: "review", u4: "pending", u5: "restored" },
+    outcome: { u1: "represented", u2: "omitted", u3: "needs_review", u4: "needs_review", u5: "represented" },
+    critical: {},
+    flags: [
+      { code: "unaccounted", unit: "u3", detail: "x" },
+      { code: "pending", unit: "u4", detail: "y" },
+      { code: "uncited_card", card: "u1_n2", detail: "z" },
+      { code: "unaccounted", unit: "u9", detail: "w" },
+    ],
+    sections: [],
+  };
+  const sections = [
+    knowledge({
+      key: "s1",
+      label: "One",
+      units: ["u1", "u2", "u3", "u5"],
+      ideas: [
+        { id: "u1_n1", title: "", body: "a", cites: ["u1"] },
+        { id: "u1_n2", title: "", body: "b", cites: [] },
+      ],
+      hints: [{ code: "absolute_added", card: "u1_n1", detail: "always" }],
+      reviews: { u1_n2: { reasons: ["z"] }, u1_n1: { reasons: [], hints: ["always"], checked: { by: "ai", verdict: "supported" } } },
+      restored: { items: ["500"], units: ["u5"] },
+      retry: { kind: "full", kept: true },
+      problems: ["node \"n2\" cites no source unit"],
+    }),
+    knowledge({ key: "s2", label: "Two", units: ["u4"], pending: true }),
+  ];
+
+  it("counts outcomes, flags by code, cards in Needs review or checked by AI, and per section", () => {
+    const r = buildKnowledgeReport({ sections, accounting });
+    expect(r.units).toBe(5);
+    expect(r.outcomes).toEqual({ represented: 2, omitted: 1, needsReview: 2 });
+    expect(r.cards).toEqual({ total: 2, needsReview: 1, checkedByAI: 1, hinted: 1 });
+    expect(r.flags).toEqual([
+      { code: "unaccounted", count: 2 },
+      { code: "pending", count: 1 },
+      { code: "uncited_card", count: 1 },
+    ]);
+    expect(r.sections).toEqual([
+      { key: "s1", label: "One", represented: 2, omitted: 1, needsReview: 1, highOmittedShare: false, retry: { kind: "full", kept: true }, problems: 1 },
+      { key: "s2", label: "Two", represented: 0, omitted: 0, needsReview: 1, highOmittedShare: false, pending: true, problems: 0 },
+    ]);
+    expect(r.restored).toEqual({ items: 1, units: 1 });
+    expect(r).not.toHaveProperty("lineage");
+    // Carried on a change set: valid against its schema.
+    expect(knowledgeReportSchema.parse(r)).toEqual(r);
+  });
+
+  it("an update's lineage, as counts (moves counted among unchanged and changed too)", () => {
+    const lineage: Lineage = {
+      fromVersion: 1,
+      toVersion: 2,
+      entries: [
+        { state: "unchanged", from: "u1", to: "u1" },
+        { state: "unchanged", from: "u2", to: "u2", moved: true },
+        { state: "changed", from: "u3", to: "u3" },
+        { state: "ambiguous", to: "u9", candidates: ["u4", "u5"] },
+        { state: "removed", from: "u6" },
+        { state: "added", to: "u10" },
+      ],
+    };
+    expect(lineageCounts(lineage)).toEqual({ fromVersion: 1, toVersion: 2, unchanged: 2, changed: 1, moved: 1, ambiguous: 1, removed: 1, added: 1 });
+    expect(buildKnowledgeReport({ sections, accounting, lineage }).lineage).toEqual(lineageCounts(lineage));
   });
 });

@@ -21,7 +21,8 @@ import {
 } from "@/components/properties/selectedBlockStore";
 import { TextSection } from "@/components/properties/TextSection";
 import { AskAISection } from "@/components/ai/AskAISection";
-import { getPendingChanges, sessionSlot, slotOf } from "@/ai/changes/pendingChanges";
+import { getPendingChanges, registerBaselineReader, sessionSlot, slotOf } from "@/ai/changes/pendingChanges";
+import { liveFingerprints } from "./changeSetWriter";
 import { isAIFeatureEnabled } from "@/config/features";
 import { getCurrentContext, registerCurrentContextSource } from "@/mcp/context/currentContextSource";
 import { registerLiveCanvasActions } from "@/mcp/tools/liveCanvas";
@@ -30,6 +31,12 @@ import { getConversationStore } from "@/ai/conversations/conversationStore";
 import { AIPanel } from "@/components/ai/AIPanel";
 import { SectionOverview } from "@/components/ai/SectionOverview";
 import { AIChangeMarkers } from "@/components/ai/AIChangeMarkers";
+import { LockMarkers } from "@/components/ai/LockMarkers";
+import { IndexStatusBadge } from "@/components/ai/IndexStatusBadge";
+import { ConsistencyPanel } from "@/components/consistency/ConsistencyPanel";
+import { getConsistencyStore } from "@/components/consistency/consistencyRunner";
+import { getLiveIndexState, indexFaults, liveIndexTexts, verifyLiveIndex } from "@/search/liveIndex";
+import { getCommitJournal } from "@/ai/changes/commit";
 import { DenseBlocks } from "@/components/ai/DenseBlocks";
 import { ChangeSetReview } from "@/components/ai/ChangeSetReview";
 import { acceptPendingParts, acceptPendingSet } from "@/components/ai/acceptPending";
@@ -39,14 +46,20 @@ import { recordSettled } from "@/state/agentLog";
 import { agentSync } from "@/state/agentSync";
 import { staleMarkers } from "@/components/ai/staleMarkersStore";
 import { VisualizeDialog } from "@/components/ai/VisualizeDialog";
+import { PlaceContentDialog } from "@/components/ai/PlaceContentDialog";
 import { VisualizeHint } from "@/components/ai/VisualizeHint";
 import { ProvenanceSection } from "@/components/properties/ProvenanceSection";
+import { SourceTab } from "@/components/source/SourceTab";
+import { KnowledgeOverlay } from "@/components/review/KnowledgeOverlay";
+import { KnowledgeReviewBar } from "@/components/review/KnowledgeReviewBar";
 import { DeletedConversationsPrompt } from "@/components/ai/DeletedConversationsPrompt";
 import { getArrowRelation, getEmbedRef, isAcuteLink, type SceneElement } from "@/domain/canvas/adapter";
 import { isCompositeShape } from "@/domain/canvas/compositeShapes";
 import { diagramArrowInfo, diagramSelectionTarget, selectedDiagramObject } from "@/components/diagram/diagramSelection";
 import { DiagramOverlay } from "@/components/diagram/DiagramOverlay";
 import { LensPanelHost } from "@/components/lens/LensPanelHost";
+import { NotesViewHost } from "@/components/openui/notes/NotesView";
+import { isOpenUiNotesEnabled } from "@/config/openui";
 import { FlashOverlay } from "./FlashOverlay";
 import { getImportedHtml, isWebLink, withImportedHtml } from "@/domain/canvas/webEmbed";
 import type { CanvasDocument, DocumentHome } from "@/domain/types";
@@ -490,6 +503,13 @@ function SessionCanvas({ session, workspaceId, canvasId }: { session: CanvasSess
         watchWork: m.watchWork,
         recordKeyLatency: m.recordKeyLatency,
         store: getDocumentStore(),
+        // Stage 4b: the next `n` search-index work units fail, as a real failure would (stale state, rebuild, recovery).
+        failIndex: (n?: number) => indexFaults.failNext(n ?? 1),
+        indexState: () => getLiveIndexState(home.workspaceId, home.canvasId),
+        indexTexts: () => liveIndexTexts(home.workspaceId, home.canvasId),
+        verifyIndex: () => verifyLiveIndex(home.workspaceId, home.canvasId),
+        commits: () => getCommitJournal().list(home.canvasId),
+        conflicts: () => getConsistencyStore().list(home.canvasId),
         memory: m.memory,
         domCounts: m.domCounts,
         timings: m.timings,
@@ -526,6 +546,25 @@ function SessionCanvas({ session, workspaceId, canvasId }: { session: CanvasSess
           }),
         /** A content source (F37) and its latest accepted version, for tests. */
         contentSource: (sourceId: string) => import("@/ai/content/sources").then((m) => m.loadLatest(getPersistence().contentSources, sourceId)),
+        /** Removes a content source and its versions from this device, as a canvas imported without its sources has none (U6). */
+        deleteContentSource: (sourceId: string) => import("@/ai/study/cleanup").then((m) => m.deleteContentSource(getPersistence(), sourceId)),
+        /**
+         * The latest distil Visualize run of a content source on this page (knowledge-notes-plan WP1.12): its
+         * `KnowledgeRunOutput` without the plan (units, cites, omitted, accounting, flags, hints, reviews), for the golden
+         * recorder (`e2e/ai/recordGolden.spec.ts` saves it as `run.json`). Null for a `preserve` run or another page's.
+         */
+        knowledgeRun: (sourceId: string) => import("@/ai/fidelity/knowledgeRun").then((m) => m.knowledgeRunOf(sourceId)),
+        /** The latest distil run on this page, whatever its source (the fidelity e2e's report v2 reads it after Accept). */
+        lastKnowledgeRun: () => import("@/ai/fidelity/knowledgeRun").then((m) => m.latestKnowledgeRun()),
+        /**
+         * Switches Visualize's note model for this page (knowledge-notes-plan §6.3: `distil` is a developer setting until R1,
+         * never offered in the UI). For the fidelity e2e and the golden recorder; returns the model now in force.
+         */
+        setNoteModel: (model: "preserve" | "distil") =>
+          import("@/config/fidelity").then(({ FIDELITY_CONFIG }) => {
+            if (model === "preserve" || model === "distil") FIDELITY_CONFIG.noteModel = model;
+            return FIDELITY_CONFIG.noteModel;
+          }),
         /** Content parser + local plan (F28), run in its Web Worker. */
         analyzeContent: (input: string, format?: "markdown" | "plain") =>
           import("@/ai/content/analyze").then((c) => c.analyzeContent(input, format ? { format } : {})),
@@ -626,6 +665,10 @@ function SessionCanvas({ session, workspaceId, canvasId }: { session: CanvasSess
     if (!isAIFeatureEnabled()) return;
     void staleMarkers.restore(home.canvasId, getPersistence().meta).catch((err: unknown) => console.error("[acute-notes] Failed to load stale markers", err));
   }, [home.canvasId]);
+
+  // Stale-target protection: every proposal on this canvas records the content its updates were proposed against, so
+  // Accept never writes over an edit made since (`ai/changes/staleTarget.ts`). Not gated on AI: any producer may propose.
+  useEffect(() => (api ? registerBaselineReader(home.canvasId, () => liveFingerprints(api)) : undefined), [api, home.canvasId]);
 
   // What MCP tools (F21) may do here: read the live scene and put change sets up for review — never apply them.
   useEffect(() => {
@@ -911,6 +954,8 @@ function SessionCanvas({ session, workspaceId, canvasId }: { session: CanvasSess
       {api && <ShapeSection api={api} />}
       {api && <DiagramOverlay api={api} />}
       {api && <LensPanelHost api={api} home={home} />}
+      {/* OpenUI Notes view (openui-integration-plan Phases 2–3): reads the canvas; writes only when a note is pinned. */}
+      {api && isOpenUiNotesEnabled() && <NotesViewHost api={api} home={home} history={history} />}
       {api && <FlashOverlay api={api} />}
       {/* Everything AI (built-in and MCP review), absent from a build with the AI feature off. */}
       {api && isAIFeatureEnabled() && (
@@ -918,13 +963,22 @@ function SessionCanvas({ session, workspaceId, canvasId }: { session: CanvasSess
           <VisualizeToolButton />
           <AskAISection api={api} />
           <ProvenanceSection api={api} home={home} history={history} />
+          {/* Knowledge Notes (distil objects only; a preserve canvas shows none of these): the Source tab beside Properties,
+              source chips and passage outlines on the canvas, and "Review N". */}
+          <SourceTab api={api} home={home} history={history} />
+          <KnowledgeOverlay api={api} home={home} history={history} />
+          <KnowledgeReviewBar api={api} home={home} history={history} />
           <AIPanel api={api} home={home} />
           <ChangeSetReview api={api} home={home} history={history} />
           <SectionOverview api={api} />
           <AIChangeMarkers api={api} canvasId={home.canvasId} />
+          <LockMarkers api={api} />
+          <IndexStatusBadge home={home} />
+          <ConsistencyPanel api={api} home={home} />
           <DenseBlocks api={api} canvasId={home.canvasId} />
           <StaleMarkers api={api} canvasId={home.canvasId} />
           <VisualizeDialog api={api} home={home} />
+          <PlaceContentDialog api={api} home={home} />
           <VisualizeHint api={api} />
           <DeletedConversationsPrompt api={api} home={home} />
         </>

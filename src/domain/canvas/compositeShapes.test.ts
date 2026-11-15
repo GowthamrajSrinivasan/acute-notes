@@ -155,12 +155,46 @@ describe("normalizeComposites", () => {
     expect(patchOf(patches, "b")).toBeUndefined();
   });
 
-  it("breaks an ungrouped cylinder apart into a plain rectangle and plain lines", () => {
+  it("keeps an ungrouped cylinder one shape: host, label and both parts share a new group; nothing is redrawn", () => {
     const scene = cylinder().map((e) => ({ ...e, groupIds: [] }));
-    const patches = normalizeComposites(scene);
-    expect(patchOf(patches, "h")).toEqual({ strokeColor: "#1e1e1e", backgroundColor: "#e7f5ff", customData: {} });
-    expect(patchOf(patches, "b")).toEqual({ customData: {} });
-    expect(patchOf(patches, "r")).toEqual({ customData: {} });
+    const { patches, created } = normalize(scene);
+    const group = patchOf(patches, "h")?.groupIds;
+    expect(group).toHaveLength(1);
+    for (const id of ["h", "t", "b", "r"]) expect(patchOf(patches, id)).toEqual({ groupIds: group });
+    expect(patches).toHaveLength(4);
+    expect(created).toEqual([]);
+    // The next pass sees one consistent, grouped cylinder: nothing left to fix.
+    const regrouped = scene.map((e) => ({ ...e, groupIds: group! }));
+    expect(normalize(regrouped)).toEqual({ patches: [], created: [] });
+  });
+
+  it("an ungrouped host whose parts are gone, or moved off its outline, gets them drawn again; a stray part becomes a plain line", () => {
+    const [body, rim, host, label] = cylinder().map((e) => ({ ...e, groupIds: [] as string[] }));
+    const alone = normalize([host!, label!]);
+    expect(alone.created.map((c) => c.part)).toEqual(["body", "rim"]);
+    expect(alone.created.every((c) => c.hostId === "h" && c.groupIds[0] === patchOf(alone.patches, "h")!.groupIds![0])).toBe(true);
+
+    const strayRim = { ...rim!, x: rim!.x + 300 };
+    const r = normalize([body!, strayRim, host!, label!]);
+    const group = patchOf(r.patches, "h")!.groupIds;
+    expect(patchOf(r.patches, "b")).toEqual({ groupIds: group });
+    expect(patchOf(r.patches, "r")).toEqual({ customData: {} });
+    expect(r.created.map((c) => c.part)).toEqual(["rim"]);
+  });
+
+  it("two ungrouped cylinders each take back their own parts", () => {
+    const a = cylinder().map((e) => ({ ...e, groupIds: [] as string[] }));
+    const b = cylinder({ id: "h2", x: 600 }).map((e) => ({ ...e, id: e.id === "h2" ? "h2" : `${e.id}2`, containerId: e.containerId ? "h2" : e.containerId, groupIds: [] as string[] }));
+    // Re-derive the second shape's parts at its own position.
+    const host2 = b.find((e) => e.id === "h2")!;
+    const b2 = b.map((e) => (e.customData?.acuteShapePart ? { ...e, ...partGeometry("cylinder", e.customData.acuteShapePart as "body" | "rim", host2) } : e));
+    const { patches, created } = normalize([...a, ...b2]);
+    expect(created).toEqual([]);
+    const g1 = patchOf(patches, "h")!.groupIds;
+    const g2 = patchOf(patches, "h2")!.groupIds;
+    expect(g1).not.toEqual(g2);
+    expect([patchOf(patches, "b"), patchOf(patches, "r")]).toEqual([{ groupIds: g1 }, { groupIds: g1 }]);
+    expect([patchOf(patches, "b2"), patchOf(patches, "r2"), patchOf(patches, "t2")]).toEqual([{ groupIds: g2 }, { groupIds: g2 }, { groupIds: g2 }]);
   });
 
   it("re-derives the parts after the host is rotated, however slightly", () => {

@@ -5,7 +5,7 @@
     {
       "id": "a.present-scope",
       "dimension": "coverage",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
@@ -135,7 +135,7 @@
     {
       "id": "a.present-open-precompute",
       "dimension": "coverage",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
@@ -456,19 +456,6 @@
       }
     },
     {
-      "id": "a.frame-decisions",
-      "dimension": "grouping",
-      "severity": "major",
-      "method": "deterministic",
-      "target": "plan",
-      "support": "implemented",
-      "description": "A frame for decisions is present.",
-      "check": {
-        "check": "frame_present",
-        "frame": "f.decisions"
-      }
-    },
-    {
       "id": "a.frame-open-questions",
       "dimension": "grouping",
       "severity": "major",
@@ -492,7 +479,7 @@
       "check": {
         "check": "frame_count",
         "min": 6,
-        "max": 10
+        "max": 9
       }
     },
     {
@@ -670,11 +657,39 @@
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "e.dec-queue sits in f.decisions.",
+      "description": "e.dec-queue sits in f.async.",
       "check": {
         "check": "element_in_frame",
         "element": "e.dec-queue",
-        "frame": "f.decisions"
+        "frame": "f.async"
+      }
+    },
+    {
+      "id": "a.in-dec-signed-url",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.dec-signed-url sits in f.core.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.dec-signed-url",
+        "frame": "f.core"
+      }
+    },
+    {
+      "id": "a.in-dec-buy",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.dec-buy sits in f.external.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.dec-buy",
+        "frame": "f.external"
       }
     },
     {
@@ -1212,7 +1227,7 @@
       "target": "plan",
       "support": "implemented",
       "regression": "condition_dropped",
-      "description": "The fail-closed condition sits on the gateway itself.",
+      "description": "The fail-closed condition (auth unreachable → the request is rejected) sits on the gateway itself, not just any 'reject'.",
       "check": {
         "check": "text_present",
         "element": "e.api-gateway",
@@ -1221,12 +1236,41 @@
             "reject",
             "fail closed",
             "fails closed",
+            "fail-closed",
+            "fails-closed",
             "deny",
             "denies",
-            "refuse"
+            "refuse",
+            "block"
+          ],
+          [
+            "reach",
+            "unavailable",
+            "is down",
+            "goes down",
+            "outage",
+            "fail closed",
+            "fails closed",
+            "fail-closed",
+            "fails-closed"
           ]
         ],
         "why": "the condition limits the gateway's token check (u10) and stays with it"
+      }
+    },
+    {
+      "id": "a.no-fail-open",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The gateway is never said to fail open (let requests through when auth is unreachable); faithful negations ('instead of letting it through', 'does not let requests through') pass.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(?<!not |never |n't |instead of |rather than |without )\\b(fails? open|fail-open|let(s|ting)? (the |a |all |unchecked )?(requests?|it|them|traffic|calls?|callers?) (through|in)|allow(s|ing)? (the |all |unchecked )?(requests?|traffic|callers?) (through|in)|skips? the (token|auth) check)",
+        "why": "if the auth service cannot be reached the gateway rejects the request (u10, critical)"
       }
     },
     {
@@ -1285,7 +1329,7 @@
       "target": "plan",
       "support": "implemented",
       "regression": "critical_exception_omitted",
-      "description": "The stuck-photo caveat sits on the workers.",
+      "description": "The stuck-photo caveat sits on the workers: a photo that keeps failing stays 'processing' and is not shown.",
       "check": {
         "check": "text_present",
         "element": "e.workers",
@@ -1294,7 +1338,21 @@
             "fail"
           ],
           [
-            "processing"
+            "not shown",
+            "never shown",
+            "isn't shown",
+            "is not shown",
+            "hidden",
+            "invisible",
+            "not visible",
+            "not in any feed",
+            "never appears",
+            "never appear",
+            "doesn't appear",
+            "does not appear",
+            "stays",
+            "stay in",
+            "stuck"
           ]
         ],
         "why": "a photo that keeps failing stays processing and hidden (u20)"
@@ -1330,7 +1388,7 @@
     {
       "id": "a.upload-size",
       "dimension": "source_fidelity",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
@@ -1349,19 +1407,29 @@
     {
       "id": "a.queue-cost",
       "dimension": "source_fidelity",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "The queue decision keeps its cost.",
+      "description": "The queue decision keeps its cost (a new photo takes a few seconds to appear in feeds); 'never delays an upload' is not the cost.",
       "check": {
         "check": "text_present",
         "element": "e.dec-queue",
         "all": [
           [
             "few seconds",
-            "delay",
-            "seconds"
+            "seconds",
+            "appear later",
+            "appears later",
+            "show up later",
+            "shows up later",
+            "not immediately",
+            "not instantly",
+            "delay before",
+            "delay in feeds",
+            "delay in the feed",
+            "later in feeds",
+            "later in the feed"
           ]
         ],
         "why": "a decision without its trade-off reads as free (u34)"
@@ -1392,9 +1460,10 @@
       "description": "The cache is never called the source of truth.",
       "check": {
         "check": "text_absent",
-        "pattern": "cache (is|as|stays|remains) the source of truth",
+        "pattern": "\\bcache (is|as|stays|remains|becomes|serves as|acts as|is used as)( the| a| our)?( single| only)? (source of truth|system of record|authoritative)",
         "why": "the metadata database is the source of truth (u22, u37)"
-      }
+      },
+      "regression": "invented_detail"
     },
     {
       "id": "a.no-retry-policy",
@@ -1404,25 +1473,25 @@
       "target": "plan",
       "support": "implemented",
       "regression": "invented_detail",
-      "description": "No retry policy is invented for failed processing.",
+      "description": "No retry policy or clean-up schedule is invented for failed processing (counts in digits or words, backoff, dead-letter, 'retried until', 'cleaned up after N').",
       "check": {
         "check": "text_absent",
-        "pattern": "\\b(retried|retries|retry) (up to )?\\d+|\\b\\d+ (retries|attempts)\\b|exponential backoff|dead[- ]letter",
+        "pattern": "\\b(retried|retries|retry|retrying)( up to| at most| at least)? (\\d+|once|twice|one|two|three|four|five|ten)\\b|\\b(\\d+|two|three|four|five|ten) (retries|retry attempts|attempts)\\b|(?<!no |not |without |or )\\b(exponential )?backoff\\b|dead[- ]letter|\\bdlq\\b|\\bretr(y|ies|ied) until\\b|\\bclean(ed)?[- ]?up (after|within|every) (\\d+|a|an|one)\\b",
         "why": "retry and clean-up are undecided (u39)"
       }
     },
     {
       "id": "a.no-never-lost",
       "dimension": "source_fidelity",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
       "regression": "possibility_to_guarantee",
-      "description": "No unconditional 'never lost' claim.",
+      "description": "No unconditional 'never lost' claim: 'never lost / never loses' only with the 7-day bound in the same sentence; negated 'not exactly-once' passes.",
       "check": {
         "check": "text_absent",
-        "pattern": "\\b(never (be )?lost|guaranteed delivery|exactly[- ]once)\\b",
+        "pattern": "(?<!\\b(7|seven)[- ]days?\\b[^.;]*)(\\bnever (be |gets? |is )?lost\\b|\\bnever loses?\\b|\\bno uploads? (is |are )?ever lost\\b|\\bguaranteed delivery\\b|(?<!not |n't |no |never )\\bexactly[- ]once\\b)(?![^.;]*\\b(7|seven)[- ]days?\\b)",
         "why": "uploads survive only within the 7-day retention (u19)"
       }
     },
@@ -1472,6 +1541,116 @@
       "description": "Frames don't overlap.",
       "check": {
         "check": "frames_no_overlap"
+      }
+    },
+    {
+      "id": "a.crossings",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v1",
+      "description": "At most 28 link crossings (today's reference as the gate renders it, organisation v1; organisation-layout plan Q11). Decided on today's organisation rules (v1); a.crossings-v2 holds the v2 count.",
+      "check": {
+        "check": "layout_crossings_max",
+        "max": 28
+      }
+    },
+    {
+      "id": "a.crossings-v2",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "At most 16 link crossings with organisation v2 (frame order by links, sub-groups, frame splitting): today's reference rendered in v2.",
+      "check": {
+        "check": "layout_crossings_max",
+        "max": 16
+      }
+    },
+    {
+      "id": "a.reading-order",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v1",
+      "description": "Frames read in the plan's order (top to bottom, each row left to right): no pair out of order as the gate renders today (v1). Decided on today's organisation rules (v1); a.reading-order-v2 holds the v2 count.",
+      "check": {
+        "check": "reading_order_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.reading-order-v2",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "At most 1 pair of frames read out of plan order with organisation v2 (frame order by links, sub-groups, frame splitting): today's reference rendered in v2.",
+      "check": {
+        "check": "reading_order_max",
+        "max": 1
+      }
+    },
+    {
+      "id": "a.fit-screen",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Every frame can be read whole at the readable zoom on the fit screen.",
+      "check": {
+        "check": "frames_fit_screen"
+      }
+    },
+    {
+      "id": "a.links-over-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v1",
+      "description": "At most 4 card-to-card links over a third frame (today's reference rendered by the gate, v1). Decided on today's organisation rules (v1); a.links-over-frames-v2 holds the v2 count.",
+      "check": {
+        "check": "links_over_frames_max",
+        "max": 4
+      }
+    },
+    {
+      "id": "a.links-over-frames-v2",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "At most 3 card-to-card links over a third frame with organisation v2 (frame order by links, sub-groups, frame splitting): today's reference rendered in v2.",
+      "check": {
+        "check": "links_over_frames_max",
+        "max": 3
+      }
+    },
+    {
+      "id": "a.rendered-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "The frames are drawn as planned: 6–9 frames on the canvas (the layout view of a.frame-count).",
+      "check": {
+        "check": "rendered_frame_count",
+        "min": 6,
+        "max": 9
       }
     },
     {
@@ -1699,7 +1878,7 @@
     {
       "id": "a.lens-edge-l1-upload-metadata",
       "dimension": "architecture_lens",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "lens",
       "support": "implemented",

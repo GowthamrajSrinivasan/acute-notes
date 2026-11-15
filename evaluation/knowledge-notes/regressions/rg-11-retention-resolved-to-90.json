@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-retention-resolved-to-90",
+  "distortion": "invented_detail",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The retention conflict is silently resolved: the conflict card now just says raw events are kept for 90 days, and the 30-day value is gone.",
+  "mutations": [
+    { "op": "replace_text", "node": "c2", "find": "The retention section says raw events are kept for **30 days**; the components table says **90 days** for warehouse raw events. The proposal doesn't say which is meant.", "replace": "Raw events are kept for 90 days." }
+  ],
+  "expectFailing": ["a.retention-both-values"]
+}

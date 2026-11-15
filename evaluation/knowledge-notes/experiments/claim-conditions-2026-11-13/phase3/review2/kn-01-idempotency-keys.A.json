@@ -1,0 +1,43 @@
+{
+  "caseId": "kn-01-idempotency-keys",
+  "reviewer": "A",
+  "verdicts": [
+    {
+      "candidate": "c1",
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "conditionQuote": "If the server has already completed a request with that key",
+      "claimQuote": "it returns the stored result instead of performing the operation again",
+      "confidence": "medium",
+      "note": "This is the core mechanism claim itself (its 'if' is the trigger of the behaviour), not a limit on some other claim."
+    },
+    {
+      "candidate": "c2",
+      "verdict": "claim",
+      "claimUnits": ["u2"],
+      "conditionQuote": "Keys only protect against duplicates while the server still remembers them. In this design, stored results expire after 24 hours, so a retry sent after that window is treated as a new payment.",
+      "claimQuote": "If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.",
+      "confidence": "high",
+      "note": "After 24 hours a retry with the same key is performed again, so u2's claim is false in that case."
+    },
+    {
+      "candidate": "c3",
+      "verdict": "claim",
+      "claimUnits": ["u2"],
+      "conditionQuote": "if a client reuses a key with a different amount, the server must reject the request rather than return the old result",
+      "claimQuote": "it returns the stored result instead of performing the operation again",
+      "confidence": "medium",
+      "note": "A same-key request with different parameters is rejected, not answered with the stored result, so u2 read alone is misleading."
+    },
+    {
+      "candidate": "c4",
+      "verdict": "claim",
+      "claimUnits": ["u9"],
+      "conditionQuote": "within a bounded window; they are not a general guarantee against duplicate operations",
+      "claimQuote": "idempotency keys make retries safe",
+      "confidence": "medium",
+      "note": "Intra-sentence summary condition restating c2/c3; dropping 'within a bounded window' makes the summary claim false."
+    }
+  ],
+  "additional": []
+}

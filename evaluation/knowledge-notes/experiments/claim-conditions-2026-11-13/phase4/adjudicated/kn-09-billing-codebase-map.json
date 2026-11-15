@@ -1,0 +1,553 @@
+{
+  "caseId": "kn-09-billing-codebase-map",
+  "adjudicator": "claude-opus-5.5 (phase 4 adjudicator)",
+  "records": [
+    {
+      "id": "k1",
+      "units": ["u1"],
+      "clause": "as of commit `a41c9e2`",
+      "verdict": "set",
+      "rule": "R5",
+      "claimUnits": ["u1"],
+      "claimQuote": "This note maps the invoice path of the Ledgerline billing service",
+      "status": "agreed",
+      "from": { "X": "x1", "Y": "y1" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u1"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u1"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u1"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "A document-level scope (snapshot in time) on the map's summary claim; the takeaway stands without it but the notes must carry it.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u10_n1", "u10_ax1"],
+        "carriers": ["u10_n1", "u10_ax1", "g9"],
+        "perClaimCard": { "u10_n1": "carried", "u10_ax1": "carried" }
+      } }
+    },
+    {
+      "id": "k2",
+      "units": ["u4"],
+      "clause": "Refunds, dunning and the customer portal are out of scope.",
+      "verdict": "set",
+      "rule": "R5",
+      "claimUnits": ["u1"],
+      "claimQuote": "This note maps the invoice path of the Ledgerline billing service",
+      "status": "agreed",
+      "from": { "X": "x2", "Y": "y2" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u1"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u1"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u1"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "Document-level scope note linked to the summary claim it scopes (R5). Claim cards do not convey the exclusion; g9's takeaway omits it; the only arrow (u10_ax4->u10_n4) joins two carriers.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u10_n1", "u10_ax1"],
+        "carriers": ["u10_n4", "u10_ax4"],
+        "perClaimCard": { "u10_n1": "separated", "u10_ax1": "separated" }
+      } }
+    },
+    {
+      "id": "k3",
+      "units": ["u22"],
+      "clause": "Events flagged `is_test` are skipped.",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u21"],
+      "claimQuote": "It reads the `usage_events` table, selecting the account's rows whose `occurred_at` falls inside the period, and groups them by meter into usage lines.",
+      "status": "agreed",
+      "from": { "X": "x3", "Y": "y3" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u21"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u21"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u21"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "Without the exclusion, a reader believes every in-period row becomes a usage line, false for test events.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u4_n1"],
+        "carriers": ["u4_n1"],
+        "perClaimCard": { "u4_n1": "carried" }
+      } }
+    },
+    {
+      "id": "k4",
+      "units": ["u27"],
+      "clause": "probably",
+      "verdict": "claim",
+      "rule": "R2",
+      "claimUnits": ["u27"],
+      "claimQuote": "`priceUsage` probably also reads the `discounts` table.",
+      "status": "agreed",
+      "from": { "X": "x21", "Y": "y4" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u27"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u27"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R2: the source defines 'probably' as unconfirmed (u3) and explicitly warns about this link (u29, u57); taken as verified, a reader would rely on discounts being applied.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u4_n1", "u4_a1"],
+        "carriers": ["u4_n1", "u4_a1", "g3", "u3_n8", "u3_ax1", "arrow:g2->g3", "u9_n2"],
+        "perClaimCard": { "u4_n1": "carried", "u4_a1": "carried" }
+      } }
+    },
+    {
+      "id": "k5",
+      "units": ["u28"],
+      "clause": "I did not find a call site and have not confirmed that it ever runs",
+      "verdict": "claim",
+      "rule": "R2",
+      "claimUnits": ["u27"],
+      "claimQuote": "`priceUsage` probably also reads the `discounts` table.",
+      "status": "agreed",
+      "from": { "X": "x4", "Y": "y5" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u27"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u27"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u27"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R2: explicit reliability warning on the discounts claim; the import alone would otherwise read as evidence the lookup runs.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u4_n1", "u4_a1"],
+        "carriers": ["u4_n1", "u4_a1", "g3"],
+        "perClaimCard": { "u4_n1": "carried", "u4_a1": "carried" }
+      } }
+    },
+    {
+      "id": "k6",
+      "units": ["u29"],
+      "clause": "Treat this link as unconfirmed",
+      "verdict": "claim",
+      "rule": "R2",
+      "claimUnits": ["u27"],
+      "claimQuote": "`priceUsage` probably also reads the `discounts` table.",
+      "status": "agreed",
+      "from": { "X": "x5", "Y": "y6" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u27"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u27"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u27"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R2: an explicit warning not to rely on the discounts read. X's span also included 'until someone traces it'; that is a separate clause (k7), split per §1.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u4_n1", "u4_a1"],
+        "carriers": ["u4_n1", "u4_a1", "g3", "u3_n8", "u3_ax1", "arrow:g2->g3"],
+        "perClaimCard": { "u4_n1": "carried", "u4_a1": "carried" }
+      } }
+    },
+    {
+      "id": "k7",
+      "units": ["u29"],
+      "clause": "until someone traces it",
+      "verdict": "set",
+      "rule": "R1",
+      "claimUnits": ["u29"],
+      "claimQuote": "Treat this link as unconfirmed",
+      "status": "adjudicated",
+      "from": { "Y": "y7" },
+      "readings": [
+        { "who": "Y", "verdict": "set", "claimUnits": ["u29"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u27"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R1: the release condition of the instruction. Following 'treat as unconfirmed' without it is over-cautious, not wrong, so set. X's x5 span contained these words but did not treat them as a separate limit.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u4_n1"],
+        "carriers": ["u4_n1", "u3_ax1"],
+        "perClaimCard": { "u4_n1": "carried" }
+      } }
+    },
+    {
+      "id": "k8",
+      "units": ["u31"],
+      "clause": "a timeout of 8 seconds",
+      "verdict": "set",
+      "rule": "general",
+      "claimUnits": ["u30"],
+      "claimQuote": "whose `quote(draft)` method sends the draft invoice to an external tax provider, Taxwell, over HTTPS",
+      "status": "agreed",
+      "from": { "X": "x6", "Y": "y8" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u30"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "A real bound on the call; the description of what quote does stands without it.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u5_n1"],
+        "carriers": ["u5_n2"],
+        "perClaimCard": { "u5_n1": "separated" }
+      } }
+    },
+    {
+      "id": "k9",
+      "units": ["u34"],
+      "clause": "How retries work for the tax provider is not documented.",
+      "verdict": "set",
+      "rule": "R2",
+      "claimUnits": ["u30"],
+      "claimQuote": "whose `quote(draft)` method sends the draft invoice to an external tax provider, Taxwell, over HTTPS",
+      "status": "adjudicated",
+      "from": { "X": "x7", "Y": "y9" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u30"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u30", "u18", "u33"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R2: the source itself places retry behaviour beside the verified path as an unverified part (u56 vs u57), not as a hedge on what quote does; u30 stays true and its takeaway is unchanged. A real gap the notes must carry: set.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u5_n1"],
+        "carriers": ["u5_n5", "u5_n6", "u5_a1", "g4", "u3_n8", "u3_ax1", "arrow:g2->g4"],
+        "perClaimCard": { "u5_n1": "frame" }
+      } }
+    },
+    {
+      "id": "k10",
+      "units": ["u35"],
+      "clause": "`TaxClient.quote` contains no retry code",
+      "verdict": "set",
+      "rule": "general",
+      "claimUnits": ["u30"],
+      "claimQuote": "whose `quote(draft)` method sends the draft invoice to an external tax provider, Taxwell, over HTTPS",
+      "status": "adjudicated",
+      "from": { "X": "x8", "Y": "y10" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u30"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u30", "u18", "u33"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "General test: the source never states or implies that quote retries, so restating u30 without this verified fact creates no false belief. A real limit the notes must contain: set.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u5_n1"],
+        "carriers": ["u5_n6"],
+        "perClaimCard": { "u5_n1": "separated" }
+      } }
+    },
+    {
+      "id": "k11",
+      "units": ["u35"],
+      "clause": "I could not find out whether its callers retry, whether the Taxwell client library retries on its own",
+      "verdict": "set",
+      "rule": "R2",
+      "claimUnits": ["u30"],
+      "claimQuote": "whose `quote(draft)` method sends the draft invoice to an external tax provider, Taxwell, over HTTPS",
+      "status": "adjudicated",
+      "from": { "X": "x9", "Y": "y11" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u30"] },
+        { "who": "Y", "verdict": "ambiguous", "claimUnits": ["u18"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u30", "u18", "u33"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "Y combined two clauses; the timeout-fate clause is split off as k12. Y's deciding question (does the source present the unknown as undermining the tax step or as an open item beside it?) is answered by u56/u57: the verified path includes the quote call and the retry behaviour is listed separately as unverified. R2: the hedge does not change what the step does: set. Link kept on u30 (the Tax section's claim); Y's u18 noted.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u5_n1"],
+        "carriers": ["u5_n6", "u5_a1", "g4", "u3_n8", "u3_ax1", "arrow:g2->g4"],
+        "perClaimCard": { "u5_n1": "frame" }
+      } }
+    },
+    {
+      "id": "k12",
+      "units": ["u35"],
+      "clause": "what happens to the invoice when a quote times out",
+      "verdict": "ambiguous",
+      "rule": "R2",
+      "claimUnits": ["u18"],
+      "claimQuote": "Third, it calls `TaxClient.quote(draft)` to get the tax for the draft invoice.",
+      "status": "unresolved",
+      "from": { "X": "x10", "Y": "y11" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u18"] },
+        { "who": "Y", "verdict": "ambiguous", "claimUnits": ["u18"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u30", "u18", "u33"] }
+      ],
+      "readingA": "claim: an 8-second timeout is real (u31), so the tax step can fail; without this clause a reader takes 'gets the tax for the draft invoice' as always true and would not plan for invoices whose quote timed out.",
+      "readingB": "set: the verified sequence stands; the timeout outcome is an open unknown listed beside it, like the retry gap, not a limit on what the step does.",
+      "decidingQuestion": "Does u18 ('to get the tax for the draft invoice') assert that every generated invoice receives its tax from Taxwell, so that an unknown timeout outcome undermines it, or only describe the call order?",
+      "rationale": "Unlike retries (k11), the source's summary (u57) does not mention timeout outcome, so the u56/u57 structure does not settle it. Not forced.",
+      "confidence": "low",
+      "notes": { "distil": {
+        "claimCards": ["u1_n10"],
+        "carriers": ["u5_n6", "u5_a1", "g4"],
+        "perClaimCard": { "u1_n10": "separated" }
+      } }
+    },
+    {
+      "id": "k13",
+      "units": ["u41"],
+      "clause": "I did not read their code.",
+      "verdict": "set",
+      "rule": "R2",
+      "claimUnits": ["u41"],
+      "claimQuote": "The payment and email services subscribe to that topic",
+      "status": "agreed",
+      "from": { "X": "x11", "Y": "y12" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u41"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u41"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u41"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R2: an epistemic caveat that colours the subscription statement without changing its takeaway.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u6_n6"],
+        "carriers": ["u6_n6"],
+        "perClaimCard": { "u6_n6": "carried" }
+      } }
+    },
+    {
+      "id": "k14",
+      "units": ["u42"],
+      "clause": "What happens when publishing fails after the commit is unknown.",
+      "verdict": "claim",
+      "rule": "R2",
+      "claimUnits": ["u39"],
+      "claimQuote": "After the transaction commits, `generateInvoice` calls `publishInvoiceFinalized(invoice)` in `billing/events/publish.ts`.",
+      "status": "agreed",
+      "from": { "X": "x12", "Y": "y13" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u39"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u39"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u39", "u40"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "Without it a reader assumes every committed invoice reliably produces its event.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u6_n4"],
+        "carriers": ["u6_n7", "g5"],
+        "perClaimCard": { "u6_n4": "frame" }
+      } }
+    },
+    {
+      "id": "k15",
+      "units": ["u43"],
+      "clause": "an invoice can exist without its event",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u39"],
+      "claimQuote": "After the transaction commits, `generateInvoice` calls `publishInvoiceFinalized(invoice)` in `billing/events/publish.ts`.",
+      "status": "agreed",
+      "from": { "X": "x13", "Y": "y14" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u39"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u39"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u39", "u40"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "Directly falsifies the assumption that every invoice has its finalized event; downstream payment/email consumers would miss it.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u6_n4"],
+        "carriers": ["u6_n7", "g5"],
+        "perClaimCard": { "u6_n4": "frame" }
+      } }
+    },
+    {
+      "id": "k16",
+      "units": ["u43"],
+      "clause": "I found no job that re-sends missed events",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u39"],
+      "claimQuote": "After the transaction commits, `generateInvoice` calls `publishInvoiceFinalized(invoice)` in `billing/events/publish.ts`.",
+      "status": "agreed",
+      "from": { "X": "x14", "Y": "y15" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u39"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u39"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u39", "u40"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "Without it a reader could assume missed events are recovered. Y's span also included 'and no note saying whether one is planned' (X's x15), which is rejected as a separate record.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u6_n4"],
+        "carriers": ["u6_n8", "g5"],
+        "perClaimCard": { "u6_n4": "frame" }
+      } }
+    },
+    {
+      "id": "k17",
+      "units": ["u46"],
+      "clause": "until `TaxClient.quote` returns",
+      "verdict": "set",
+      "rule": "general",
+      "claimUnits": ["u45"],
+      "claimQuote": "taxCents?: number;",
+      "status": "adjudicated",
+      "from": { "X": "x16", "Y": "y16" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u45"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u45"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u45"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "General test: the type already marks taxCents optional, so the shape claim is not falsified without the clause; the clause adds lifecycle detail the notes should contain: set.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u7_n2"],
+        "carriers": ["u7_n3"],
+        "perClaimCard": { "u7_n2": "linked" }
+      } }
+    },
+    {
+      "id": "k18",
+      "units": ["u48"],
+      "clause": "as far as I could see",
+      "verdict": "claim",
+      "rule": "R2",
+      "claimUnits": ["u48"],
+      "claimQuote": "no code outside it reads `price_plans`, so a pricing change should only need edits there",
+      "status": "agreed",
+      "from": { "X": "x20", "Y": "y17" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u48"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u48"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R2: the statement is used for a decision (where pricing changes need edits); taken as verified, a reader would skip checking other modules.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u8_n1"],
+        "carriers": ["u8_n1"],
+        "perClaimCard": { "u8_n1": "carried" }
+      } }
+    },
+    {
+      "id": "k19",
+      "units": ["u49"],
+      "clause": "This is an interpretation of the current structure, not a rule the code enforces",
+      "verdict": "claim",
+      "rule": "R2",
+      "claimUnits": ["u48"],
+      "claimQuote": "`billing/pricing` acts, in effect, as the pricing boundary",
+      "status": "agreed",
+      "from": { "X": "x17", "Y": "y18" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u48"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u48"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u48"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "Explicit warning that the boundary is not enforced. u8_n1's 'appears' conveys interpretation but not 'not enforced'; it is joined to carrier u8_n2 by a card-to-card arrow (label 'caveat'), so linked. g7's takeaway states the boundary flatly with no carrier arrow: separated.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u8_n1", "g7"],
+        "carriers": ["u8_n2"],
+        "perClaimCard": { "u8_n1": "linked", "g7": "separated" }
+      } }
+    },
+    {
+      "id": "k20",
+      "units": ["u49"],
+      "clause": "nothing stops another module from querying `price_plans` directly",
+      "verdict": "claim",
+      "rule": "R3",
+      "claimUnits": ["u48"],
+      "claimQuote": "so a pricing change should only need edits there",
+      "status": "adjudicated",
+      "from": { "X": "x18", "Y": "y19" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u48"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u48"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u48"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R3: the source says explicitly that the benefit (pricing changes stay local) is not guaranteed; without it a reader would treat the boundary as safe to rely on when changing pricing.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u8_n1", "g7"],
+        "carriers": ["u8_n2"],
+        "perClaimCard": { "u8_n1": "linked", "g7": "separated" }
+      } }
+    },
+    {
+      "id": "k21",
+      "units": ["u52"],
+      "clause": "I could not find the scheduler that calls `generateInvoice` for every account",
+      "verdict": "set",
+      "rule": "R5",
+      "claimUnits": ["u14"],
+      "claimQuote": "The admin console's \"Regenerate invoice\" action calls it from `billing/admin/regenerate.ts`.",
+      "status": "adjudicated",
+      "from": { "X": "x19", "Y": "y20" },
+      "readings": [
+        { "who": "X", "verdict": "ambiguous", "claimUnits": ["u14"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u14"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u14"] }
+      ],
+      "readingA": "",
+      "readingB": "",
+      "decidingQuestion": "",
+      "rationale": "R5: u52 itself contrasts it with the admin action ('The admin action is clear, but...'), so it scopes the map's account of callers of generateInvoice to the verified admin path. The map never claims the admin action is the only caller, so it falsifies nothing: set, not claim; not not_a_condition because it scopes a stated claim.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u1_n4"],
+        "carriers": ["u9_n1"],
+        "perClaimCard": { "u1_n4": "separated" }
+      } }
+    }
+  ],
+  "rejected": [
+    { "from": "x15", "clause": "no note saying whether one is planned", "reason": "Extends the absence in k16 (no re-send job, and no plan for one); it bounds no claim on its own. Y kept it inside y15's span; recorded under k16." }
+  ],
+  "notes": "21 records (10 claim, 10 set, 1 ambiguous). Split per §1: X's x5 (u29) into k6 + k7; Y's y11 (u35) into k11 + k12. Claim cards are cards (or frame takeaways) whose visible text states the claim at claimUnits; citations ignored."
+}

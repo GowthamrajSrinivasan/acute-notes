@@ -1,0 +1,312 @@
+{
+  "caseId": "kn-06-hybrid-search-reranking",
+  "adjudicator": "claude-opus-5.5 (phase 4 adjudicator)",
+  "records": [
+    {
+      "id": "k1", "units": ["u9"], "clause": "Its weakness is vocabulary mismatch",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u7"], "claimQuote": "Its strength is exact matching.",
+      "status": "agreed", "from": { "X": "x1", "Y": "y1" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u7"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u7"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u7"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The strength/weakness pair is the reason hybrid search exists; without it BM25 reads as sufficient.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1", "g1"], "carriers": ["u2_n1", "u2_a1"], "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried", "g1": "separated" } } }
+    },
+    {
+      "id": "k2", "units": ["u12"], "clause": "Embeddings are weaker on exact codes and identifiers.",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u11"], "claimQuote": "Passages that mean the same thing end up close together even when they share no words",
+      "status": "agreed", "from": { "X": "x2", "Y": "y2" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u11"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u11"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u11", "u14"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it vector retrieval reads as a full replacement for BM25, which u14 shows is false for code queries.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n2", "u2_a1", "g1"], "carriers": ["u2_n2", "u2_a1"], "perClaimCard": { "u2_n2": "carried", "u2_a1": "carried", "g1": "separated" } } }
+    },
+    {
+      "id": "k3", "units": ["u13"], "clause": "To the encoder, `E-4012` and `E-4021` look almost the same",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x3", "Y": "y3" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u11", "u14"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Mechanism/example for k2.", "confidence": "medium", "notes": {}
+    },
+    {
+      "id": "k4", "units": ["u14"], "clause": "that consisted mainly of an error code",
+      "verdict": "claim", "rule": "general", "claimUnits": ["u14"], "claimQuote": "vector retrieval alone missed the correct passage for 31 of 50 queries",
+      "status": "agreed", "from": { "X": "x4", "Y": "y4" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u14"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u14"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u11", "u14"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without the query scope the 62% miss rate reads as general, which is false.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n2", "u2_a1"], "carriers": ["u2_n2", "u2_a1"], "perClaimCard": { "u2_n2": "carried", "u2_a1": "carried" } } }
+    },
+    {
+      "id": "k5", "units": ["u14"], "clause": "In our tests",
+      "verdict": "set", "rule": "R2", "claimUnits": ["u14"], "claimQuote": "vector retrieval alone missed the correct passage for 31 of 50 queries",
+      "status": "agreed", "from": { "X": "x5", "Y": "y5" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u14"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u14"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u11", "u14"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Provenance of the figure; the takeaway (weak on codes) holds either way.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n2"], "carriers": ["u2_n2"], "perClaimCard": { "u2_n2": "carried" } } }
+    },
+    {
+      "id": "k6", "units": ["u15"], "clause": "Embeddings must also be recomputed",
+      "verdict": "set", "rule": "R3", "claimUnits": ["u10"], "claimQuote": "Vector retrieval turns the query and every passage into embeddings",
+      "status": "adjudicated", "from": { "X": "x6" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u10"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u15", "u10"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Split from x6, which combined the maintenance cost with its trigger (k7). The cost is real but secondary to how vector retrieval works (R3 set).",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n2"], "carriers": ["u2_n2"], "perClaimCard": { "u2_n2": "carried" } } }
+    },
+    {
+      "id": "k7", "units": ["u15"], "clause": "whenever the encoder changes",
+      "verdict": "claim", "rule": "general", "claimUnits": ["u15"], "claimQuote": "Embeddings must also be recomputed",
+      "status": "adjudicated", "from": { "X": "x6", "Y": "y6" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u10"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u15"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u15", "u10"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The trigger bounds when the 6-hour recompute is needed; without it a reader would think it recurs constantly or with every content change and plan wrongly.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n2"], "carriers": ["u2_n2"], "perClaimCard": { "u2_n2": "carried" } } }
+    },
+    {
+      "id": "k8", "units": ["u15"], "clause": "for this collection takes about 6 hours",
+      "verdict": "set", "rule": "R4", "claimUnits": ["u15"], "claimQuote": "Embeddings must also be recomputed whenever the encoder changes",
+      "status": "adjudicated", "from": { "X": "x7", "Y": "y7" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u15"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u10"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u15", "u10"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both say set; links differed. R4: the most specific claim is the recompute sentence it sizes.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n2"], "carriers": ["u2_n2"], "perClaimCard": { "u2_n2": "carried" } } }
+    },
+    {
+      "id": "k9", "units": ["u17"], "clause": "when lexical and semantic signals are complementary",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u17"], "claimQuote": "Hybrid search can improve recall",
+      "status": "agreed", "from": { "X": "x8", "Y": "y8" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u17"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u17"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u17"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The benefit is explicitly conditional; without it hybrid reads as always improving recall.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u3_n9", "u3_ax1", "u3_ax4", "g2", "g1", "u2_a1", "u7_n2"], "carriers": ["u3_n9", "u3_ax1", "u3_ax4"], "perClaimCard": { "u3_n9": "carried", "u3_ax1": "carried", "u3_ax4": "carried", "g2": "separated", "g1": "separated", "u2_a1": "separated", "u7_n2": "separated" } } }
+    },
+    {
+      "id": "k10", "units": ["u18"], "clause": "If both retrievers tend to return the same passages",
+      "verdict": "claim", "rule": "R4", "claimUnits": ["u17"], "claimQuote": "Hybrid search can improve recall",
+      "status": "agreed", "from": { "X": "x9", "Y": "y9" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u17"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u17"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u17"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A case where merging only adds latency; omitting it presents the benefit as free.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u3_n9", "u3_ax1", "u3_ax4", "g2", "g1", "u2_a1", "u7_n2"], "carriers": ["u3_n9", "u3_ax4"], "perClaimCard": { "u3_n9": "carried", "u3_ax1": "linked", "u3_ax4": "carried", "g2": "separated", "g1": "separated", "u2_a1": "separated", "u7_n2": "separated" } } }
+    },
+    {
+      "id": "k11", "units": ["u18"], "clause": "if one of them is poorly tuned for the collection",
+      "verdict": "claim", "rule": "R4", "claimUnits": ["u17"], "claimQuote": "Hybrid search can improve recall",
+      "status": "agreed", "from": { "X": "x10", "Y": "y10" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u17"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u17"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u17"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A second, separate failure case for the recall benefit.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u3_n9", "u3_ax1", "u3_ax4", "g2", "g1", "u2_a1", "u7_n2"], "carriers": ["u3_n9", "u3_ax4"], "perClaimCard": { "u3_n9": "carried", "u3_ax1": "linked", "u3_ax4": "carried", "g2": "separated", "g1": "separated", "u2_a1": "separated", "u7_n2": "separated" } } }
+    },
+    {
+      "id": "k12", "units": ["u23"], "clause": "and usually fewer because some passages appear in both lists",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x11", "Y": "y11" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Elaboration of 'at most 100'.", "confidence": "medium", "notes": {}
+    },
+    {
+      "id": "k13", "units": ["u25"], "clause": "but it roughly doubled the time spent reranking",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u25"], "claimQuote": "Raising the limit to 100 per retriever put the right passage in the list slightly more often ... so we kept 50",
+      "status": "adjudicated", "from": { "X": "x12", "Y": "y12" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u23"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u25"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u23"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: the cost decides the choice; X's span also included the decision ('so we kept 50'), which is the claim, not the clause. R4: linked to u25, where the benefit is weighed against it.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u3_n14", "u3_ax3"], "carriers": ["u3_n14", "u3_ax3"], "perClaimCard": { "u3_n14": "carried", "u3_ax3": "carried" } } }
+    },
+    {
+      "id": "k14", "units": ["u29"], "clause": "only on the fused candidates, never on the whole collection",
+      "verdict": "claim", "rule": "general", "claimUnits": ["u29"], "claimQuote": "the cross-encoder runs",
+      "status": "agreed", "from": { "X": "x13", "Y": "y13" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u29"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u29"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u27", "u28", "u29"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Running the cross-encoder over the collection would be the wrong design.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u4_n2", "u4_ax2"], "carriers": ["u4_n2", "u4_ax2"], "perClaimCard": { "u4_n2": "carried", "u4_ax2": "carried" } } }
+    },
+    {
+      "id": "k15", "units": ["u29"], "clause": "That accuracy is expensive",
+      "verdict": "set", "rule": "R3", "claimUnits": ["u28"], "claimQuote": "it judges relevance far more accurately than either retriever",
+      "status": "agreed", "from": { "X": "x14", "Y": "y14" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u28"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u28"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u27", "u28", "u29"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The accuracy claim stands without it; its operative consequence is k14.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u4_n2"], "carriers": ["u4_n2", "u4_ax2"], "perClaimCard": { "u4_n2": "carried" } } }
+    },
+    {
+      "id": "k16", "units": ["u31"], "clause": "but it does not guarantee that the final answer is correct",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u31"], "claimQuote": "Reranking improves the precision of the top results",
+      "status": "agreed", "from": { "X": "x15", "Y": "y15" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u31"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u31"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u31", "u28"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: the source says explicitly the benefit is not guaranteed.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u4_n5", "u4_ax1", "g3", "u7_n4"], "carriers": ["u4_n5", "u7_n7", "g6"], "perClaimCard": { "u4_n5": "carried", "u4_ax1": "separated", "g3": "separated", "u7_n4": "frame" } } }
+    },
+    {
+      "id": "k17", "units": ["u32"], "clause": "if the right passage is not among the candidates, reranking cannot recover it",
+      "verdict": "claim", "rule": "R4", "claimUnits": ["u31"], "claimQuote": "Reranking improves the precision of the top results",
+      "status": "agreed", "from": { "X": "x16", "Y": "y16" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u31"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u31"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u31", "u28"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it reranking could be thought to compensate for weak retrieval.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u4_n5", "u4_ax1", "g3", "u7_n4"], "carriers": ["u4_n5", "u4_ax1", "g3", "u4_ax3"], "perClaimCard": { "u4_n5": "carried", "u4_ax1": "carried", "g3": "carried", "u7_n4": "separated" } } }
+    },
+    {
+      "id": "k18", "units": ["u33"], "clause": "and still out of date, which no relevance score will detect",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u28"], "claimQuote": "it judges relevance far more accurately than either retriever",
+      "status": "adjudicated", "from": { "X": "x17", "Y": "y17" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u28"] }, { "who": "Y", "verdict": "ambiguous", "claimUnits": ["u28"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u31", "u28"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The source returns to staleness twice more (u36, u49), so it is a deliberate limit on trusting relevance, not an aside; a reader would act on stale top passages without it. Y's narrower span adopted.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u4_n2"], "carriers": ["u4_n6", "g3", "u4_ax3"], "perClaimCard": { "u4_n2": "frame" } } }
+    },
+    {
+      "id": "k19", "units": ["u35"], "clause": "If none of the passages addresses the question",
+      "verdict": "claim", "rule": "R1", "claimUnits": ["u35"], "claimQuote": "it should say so rather than answer from its general knowledge",
+      "status": "agreed", "from": { "X": "x18", "Y": "y18" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u35"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u35"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u34"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: without the trigger the model would decline to answer in every case.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u5_n4"], "carriers": ["u5_n4"], "perClaimCard": { "u5_n4": "carried" } } }
+    },
+    {
+      "id": "k20", "units": ["u36"], "clause": "but they do not show whether the passage itself is current",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u36"], "claimQuote": "Citations let a reader check each claim against its passage",
+      "status": "agreed", "from": { "X": "x19", "Y": "y19" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u36"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u36"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u36"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it citations read as full verification.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u5_n6", "u5_a1", "g4"], "carriers": ["u5_n6", "u5_a1", "g4"], "perClaimCard": { "u5_n6": "carried", "u5_a1": "carried", "g4": "carried" } } }
+    },
+    {
+      "id": "k21", "units": ["u39"], "clause": "On an internal test set of 400 questions",
+      "verdict": "set", "rule": "R2", "claimUnits": ["u44"], "claimQuote": "Hybrid + reranker | 88% | 190 ms | $0.95",
+      "status": "agreed", "from": { "X": "x20", "Y": "y20" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u44"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u44"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u41", "u42", "u43", "u44"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Provenance; the operative generalisation warning is k24.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u6_n2", "u6_a1"], "carriers": ["u6_n1"], "perClaimCard": { "u6_n2": "separated", "u6_a1": "separated" } } }
+    },
+    {
+      "id": "k22", "units": ["u42"], "clause": "Vector only | 68% | 60 ms | $0.10",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x21", "Y": "y21" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A data row, limits nothing.", "confidence": "medium", "notes": {}
+    },
+    {
+      "id": "k23", "units": ["u45"], "clause": "Reranking adds about 120 ms per query",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u31"], "claimQuote": "Reranking improves the precision of the top results",
+      "status": "adjudicated", "from": { "X": "x22", "Y": "y22" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u44"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u31"] }, { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: the section's point is that relevance is bought with time (u38, u47 acts on it). R4: the u44 row already shows 190 ms so it isn't misled; the reranking benefit claim (u31) is.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u4_n5", "u4_ax1", "g3"], "carriers": ["u6_n4", "u6_a1"], "perClaimCard": { "u4_n5": "separated", "u4_ax1": "separated", "g3": "separated" } } }
+    },
+    {
+      "id": "k24", "units": ["u45"], "clause": "it accounts for most of the cost increase",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u31"], "claimQuote": "Reranking improves the precision of the top results",
+      "status": "adjudicated", "from": { "X": "x23", "Y": "y23" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u44"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u31"] }, { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Same reasoning as k23 for the money side of the trade-off.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u4_n5", "u4_ax1", "g3"], "carriers": ["u6_n4", "u6_a1"], "perClaimCard": { "u4_n5": "separated", "u4_ax1": "separated", "g3": "separated" } } }
+    },
+    {
+      "id": "k25", "units": ["u46"], "clause": "These figures come from one collection and one query set",
+      "verdict": "claim", "rule": "R2", "claimUnits": ["u41", "u42", "u43", "u44"], "claimQuote": "Hybrid + reranker | 88% | 190 ms | $0.95",
+      "status": "adjudicated", "from": { "X": "x24", "Y": "y24" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u39"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u41", "u42", "u43", "u44"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u41", "u42", "u43", "u44"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: an explicit reliability warning on figures used to compare configurations. R4: linked to the measured rows, not the u39 lead-in.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u6_n2", "u6_n3", "u6_a1", "g5"], "carriers": ["u6_n5"], "perClaimCard": { "u6_n2": "separated", "u6_n3": "separated", "u6_a1": "separated", "g5": "separated" } } }
+    },
+    {
+      "id": "k26", "units": ["u46"], "clause": "a collection with fewer exact identifiers may see a smaller gain from BM25",
+      "verdict": "claim", "rule": "R2", "claimUnits": ["u43"], "claimQuote": "Hybrid (RRF) | 79% | 70 ms | $0.12",
+      "status": "adjudicated", "from": { "X": "x25", "Y": "y25" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u43"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u43"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u41", "u42", "u43", "u44"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: the source explicitly warns the hybrid gain depends on identifier density, so a team with prose-heavy content would overestimate it.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u6_n2", "u6_n3"], "carriers": [], "perClaimCard": { "u6_n2": "absent", "u6_n3": "absent" } } }
+    },
+    {
+      "id": "k27", "units": ["u46"], "clause": "a different reranker will have a different latency",
+      "verdict": "set", "rule": "R2", "claimUnits": ["u45"], "claimQuote": "Reranking adds about 120 ms per query",
+      "status": "agreed", "from": { "X": "x26", "Y": "y26" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u45"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u45"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u41", "u42", "u43", "u44"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Colours the latency figure; the takeaway that reranking is the costly step stands.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u6_n4"], "carriers": ["u6_n5"], "perClaimCard": { "u6_n4": "separated" } } }
+    },
+    {
+      "id": "k28", "units": ["u47"], "clause": "at some cost in recall",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u47"], "claimQuote": "can rerank fewer candidates",
+      "status": "agreed", "from": { "X": "x27", "Y": "y28" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u47"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u47"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u47"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The option is presented as a trade; without the cost it reads as free latency savings.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u6_n6"], "carriers": ["u6_n6"], "perClaimCard": { "u6_n6": "carried" } } }
+    },
+    {
+      "id": "k29", "units": ["u47"], "clause": "Teams with a strict latency budget",
+      "verdict": "set", "rule": "R5", "claimUnits": ["u47"], "claimQuote": "can rerank fewer candidates",
+      "status": "agreed", "from": { "X": "x28", "Y": "y27" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u47"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u47"] }, { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u47"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Scopes who would use the option; the option's takeaway holds without it.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u6_n6"], "carriers": ["u6_n6"], "perClaimCard": { "u6_n6": "carried" } } }
+    },
+    {
+      "id": "k30", "units": ["u49"], "clause": "Each step helps only under its own conditions",
+      "verdict": "claim", "rule": "general", "claimUnits": ["u48"], "claimQuote": "Hybrid search widens the net, reranking sorts the catch",
+      "status": "agreed", "from": { "X": "x29", "Y": "y29" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u48"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u48"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u31", "u28"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The summary's own qualifier; without it each step reads as unconditionally helpful.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u7_n2", "u7_n4", "u7_n6"], "carriers": ["u7_n7", "g6"], "perClaimCard": { "u7_n2": "frame", "u7_n4": "frame", "u7_n6": "frame" } } }
+    },
+    {
+      "id": "k31", "units": ["u49"], "clause": "none of them makes the final answer certain to be right",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u48"], "claimQuote": "Hybrid search widens the net, reranking sorts the catch",
+      "status": "agreed", "from": { "X": "x30", "Y": "y30" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u48"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u48"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u31", "u28"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: explicit 'not guaranteed' on the pipeline's benefit.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u7_n2", "u7_n4", "u7_n6"], "carriers": ["u7_n7", "g6"], "perClaimCard": { "u7_n2": "frame", "u7_n4": "frame", "u7_n6": "frame" } } }
+    }
+  ],
+  "rejected": [],
+  "notes": "Frames whose takeaway states a claim (g1, g2, g3, g5) are treated as claim cards, as in phase 3; frame-to-frame arrows are unlabelled so never link. x6 split into k6 (recompute cost) and k7 (trigger). k26: u6_n5 ('may vary with different collections') does not make the identifier-density limit recognisable, so no carrier. k16: u4_ax1/g3 convey the retrieval-bound limit (k17), not the no-guarantee clause. k23/k24: u4_ax1's 'constrained by computational cost' judged too generic to carry the 120 ms / cost-share clauses."
+}

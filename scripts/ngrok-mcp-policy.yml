@@ -1,0 +1,13 @@
+# ngrok traffic policy for the restricted ChatGPT MCP session (user decision 2026-11-15), used by
+# scripts/chatgpt-mcp-session.ps1 -Start -Profile restricted. Only the MCP secret-URL path reaches the dev server.
+# Everything else, including Next's own /__nextjs_* dev endpoints (which run before the app's proxy), is answered
+# 404 by ngrok itself. The app's HTTP exposure filter (src/proxy.ts) enforces the same rule as a second layer.
+# The script probes the live tunnel after start and closes it if any unrelated path is not 404.
+on_http_request:
+  - expressions:
+      - "!(req.url.path.startsWith('/api/mcp/s/'))"
+    actions:
+      - type: custom-response
+        config:
+          status_code: 404
+          body: Not Found

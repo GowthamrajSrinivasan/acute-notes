@@ -1,0 +1,21 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-ttl-tradeoff-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The TTL trade-off card is moved into the versioned-URLs frame: its link from the TTL card now crosses another link and runs over a third frame (and through a card).",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n2",
+      "group": "g4"
+    }
+  ],
+  "expectFailing": [
+    "a.links-over-frames",
+    "a.crossings",
+    "a.layout",
+    "a.in-ttl-tradeoff"
+  ]
+}

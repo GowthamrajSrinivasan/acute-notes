@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-fail-closed-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The gateway's fail-closed condition (u10) is dropped; the card still says 'rejects', but only about the rate limit. The old check passed on any 'reject'; the tightened a.fail-closed needs the auth-unreachable condition too.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-gateway",
+      "find": "Fails closed: rejects the request instead of letting it through unchecked when auth can't be reached",
+      "replace": "Rejects requests over the rate limit"
+    }
+  ],
+  "expectFailing": [
+    "a.fail-closed"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-calls-reversed",
+  "distortion": "dependency_reversed",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The four verified call edges of the entry point are drawn backwards, as if collectUsage, priceUsage, TaxClient.quote and the publisher called generateInvoice.",
+  "mutations": [
+    { "op": "reverse_relationship", "from": "s_gen", "to": "s_col" },
+    { "op": "reverse_relationship", "from": "s_gen", "to": "s_price" },
+    { "op": "reverse_relationship", "from": "s_gen", "to": "s_tax" },
+    { "op": "reverse_relationship", "from": "s_gen", "to": "s_pub" }
+  ],
+  "expectFailing": ["a.rel-generate-collect", "a.rel-generate-price", "a.rel-generate-tax", "a.rel-generate-publish"]
+}

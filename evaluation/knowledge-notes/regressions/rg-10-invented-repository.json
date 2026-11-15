@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-invented-repository",
+  "distortion": "invented_detail",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The ledger box invents a StockRepository class and a db/schema.sql file the source never names.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-ledger",
+      "find": "Owns stock levels: append-only entries (reserve, release, restock)",
+      "replace": "Owns stock levels through the StockRepository class; schema in db/schema.sql"
+    }
+  ],
+  "expectFailing": [
+    "a.no-invented-paths"
+  ]
+}

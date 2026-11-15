@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-user-service-question-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The question about how enrichment uses the user service (u11) is moved into the stated-design frame, where it reads as a stated fact.",
+  "mutations": [
+    { "op": "move_to_group", "node": "c4", "group": "g1" }
+  ],
+  "expectFailing": ["a.apart-user-service"]
+}

@@ -1,0 +1,753 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "This guide is for engineers who own a feature flag in the Orbit platform.",
+        "hash": "woq34borlm",
+        "topic": "Feature flag rollout guide",
+        "span": {
+          "start": 30,
+          "end": 103
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "It explains how a flag goes from off to fully on, and what has to be true before each step.",
+        "hash": "24904ogzad",
+        "topic": "Feature flag rollout guide",
+        "span": {
+          "start": 104,
+          "end": 195
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "It does not cover experiments, which follow their own process.",
+        "hash": "12mqwgio8ak",
+        "topic": "Feature flag rollout guide",
+        "span": {
+          "start": 196,
+          "end": 258
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "Each section below names the condition that must hold before the flag moves on.",
+        "hash": "owsvbv3rfg",
+        "topic": "Feature flag rollout guide",
+        "span": {
+          "start": 259,
+          "end": 338
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "Questions about the guide go to the platform team.",
+        "hash": "jlrgj775r5",
+        "topic": "Feature flag rollout guide",
+        "span": {
+          "start": 339,
+          "end": 389
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "A rollout moves through three stages: internal, canary and general availability.",
+        "hash": "a31vb9zo16",
+        "topic": "Feature flag rollout guide › Rollout stages",
+        "span": {
+          "start": 410,
+          "end": 490
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "In the internal stage the flag is on only for staff accounts, so problems reach colleagues before they reach customers.",
+        "hash": "10oahpubvtp",
+        "topic": "Feature flag rollout guide › Rollout stages",
+        "span": {
+          "start": 491,
+          "end": 610
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "sentence",
+        "text": "The internal stage usually lasts one working day, but the guide sets no minimum for it.",
+        "hash": "27dm38ul6s",
+        "topic": "Feature flag rollout guide › Rollout stages",
+        "span": {
+          "start": 611,
+          "end": 698
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "sentence",
+        "text": "Canary then exposes a small share of real traffic to the change.",
+        "hash": "1g2etz3k14g",
+        "topic": "Feature flag rollout guide › Rollout stages",
+        "span": {
+          "start": 699,
+          "end": 763
+        },
+        "prev": "u8",
+        "next": "u10"
+      },
+      {
+        "id": "u10",
+        "kind": "sentence",
+        "text": "General availability turns the flag on for everyone, in steps of 25%, 50% and 100%.",
+        "hash": "1yl6mfus527",
+        "topic": "Feature flag rollout guide › Rollout stages",
+        "span": {
+          "start": 764,
+          "end": 847
+        },
+        "prev": "u9",
+        "next": "u11"
+      },
+      {
+        "id": "u11",
+        "kind": "sentence",
+        "text": "Each stage is recorded in the rollout tool, which keeps the history of who moved the flag and when.",
+        "hash": "1yab7efcijk",
+        "topic": "Feature flag rollout guide › Rollout stages",
+        "span": {
+          "start": 848,
+          "end": 947
+        },
+        "prev": "u10",
+        "next": "u12"
+      },
+      {
+        "id": "u12",
+        "kind": "sentence",
+        "text": "During canary the flag is on for 5% of requests, chosen at random per request rather than per user.",
+        "hash": "15qg7wtjqe9",
+        "topic": "Feature flag rollout guide › Canary",
+        "span": {
+          "start": 960,
+          "end": 1059
+        },
+        "prev": "u11",
+        "next": "u13"
+      },
+      {
+        "id": "u13",
+        "kind": "sentence",
+        "text": "It must stay at that level for at least 30 minutes, so that the metrics cover a full traffic cycle of the slowest endpoint.",
+        "hash": "10fck8l57lr",
+        "topic": "Feature flag rollout guide › Canary",
+        "span": {
+          "start": 1060,
+          "end": 1183
+        },
+        "prev": "u12",
+        "next": "u14"
+      },
+      {
+        "id": "u14",
+        "kind": "sentence",
+        "text": "The owner does not raise the percentage by hand during this time, because a manual change restarts the measurement window.",
+        "hash": "tef4cae41g",
+        "topic": "Feature flag rollout guide › Canary",
+        "span": {
+          "start": 1184,
+          "end": 1306
+        },
+        "prev": "u13",
+        "next": "u15"
+      },
+      {
+        "id": "u15",
+        "kind": "sentence",
+        "text": "Short canaries are the most common reason a bad flag reaches general availability.",
+        "hash": "1xjc8kvx96g",
+        "topic": "Feature flag rollout guide › Canary",
+        "span": {
+          "start": 1307,
+          "end": 1389
+        },
+        "prev": "u14",
+        "next": "u16"
+      },
+      {
+        "id": "u16",
+        "kind": "sentence",
+        "text": "A flag advances from canary to general availability only when the automated metrics check passes.",
+        "hash": "qqhokc70xt",
+        "topic": "Feature flag rollout guide › Advancing from canary",
+        "span": {
+          "start": 1417,
+          "end": 1514
+        },
+        "prev": "u15",
+        "next": "u17"
+      },
+      {
+        "id": "u17",
+        "kind": "sentence",
+        "text": "The metrics check compares the error rate and p95 latency of flagged requests with the same requests over the previous 7 days.",
+        "hash": "1zln143hra4",
+        "topic": "Feature flag rollout guide › Advancing from canary",
+        "span": {
+          "start": 1515,
+          "end": 1641
+        },
+        "prev": "u16",
+        "next": "u18"
+      },
+      {
+        "id": "u18",
+        "kind": "sentence",
+        "text": "If the check fails, the flag stays in canary and the owner investigates before trying again.",
+        "hash": "ylhe7adk7",
+        "topic": "Feature flag rollout guide › Advancing from canary",
+        "span": {
+          "start": 1642,
+          "end": 1734
+        },
+        "prev": "u17",
+        "next": "u19"
+      },
+      {
+        "id": "u19",
+        "kind": "sentence",
+        "text": "The rollout tool runs the check automatically at the end of the canary window.",
+        "hash": "1l178796vb2",
+        "topic": "Feature flag rollout guide › Advancing from canary",
+        "span": {
+          "start": 1735,
+          "end": 1813
+        },
+        "prev": "u18",
+        "next": "u20"
+      },
+      {
+        "id": "u20",
+        "kind": "sentence",
+        "text": "Every flag must have a kill switch that turns it off within 1 minute.",
+        "hash": "4xu5admd83",
+        "topic": "Feature flag rollout guide › Kill switch",
+        "span": {
+          "start": 1831,
+          "end": 1900
+        },
+        "prev": "u19",
+        "next": "u21"
+      },
+      {
+        "id": "u21",
+        "kind": "sentence",
+        "text": "The kill switch is tested in staging before the flag enters canary, and the test is recorded in the rollout tool.",
+        "hash": "3we9paz38x",
+        "topic": "Feature flag rollout guide › Kill switch",
+        "span": {
+          "start": 1901,
+          "end": 2014
+        },
+        "prev": "u20",
+        "next": "u22"
+      },
+      {
+        "id": "u22",
+        "kind": "sentence",
+        "text": "A flag without a tested kill switch cannot enter canary.",
+        "hash": "27twdg056go",
+        "topic": "Feature flag rollout guide › Kill switch",
+        "span": {
+          "start": 2015,
+          "end": 2071
+        },
+        "prev": "u21",
+        "next": "u23"
+      },
+      {
+        "id": "u23",
+        "kind": "sentence",
+        "text": "Anyone on the owning team may use the kill switch without asking for approval.",
+        "hash": "c30qu04msn",
+        "topic": "Feature flag rollout guide › Kill switch",
+        "span": {
+          "start": 2072,
+          "end": 2150
+        },
+        "prev": "u22",
+        "next": "u24"
+      },
+      {
+        "id": "u24",
+        "kind": "sentence",
+        "text": "Turning a flag off is always safe; turning it back on starts the rollout again from the internal stage.",
+        "hash": "pwflljnddx",
+        "topic": "Feature flag rollout guide › Kill switch",
+        "span": {
+          "start": 2151,
+          "end": 2254
+        },
+        "prev": "u23",
+        "next": "u25"
+      },
+      {
+        "id": "u25",
+        "kind": "sentence",
+        "text": "While the flag ramps up, the owner watches the error dashboard and pages the on-call engineer if errors rise.",
+        "hash": "1ezho3lguj1",
+        "topic": "Feature flag rollout guide › Monitoring during general availability",
+        "span": {
+          "start": 2299,
+          "end": 2408
+        },
+        "prev": "u24",
+        "next": "u26"
+      },
+      {
+        "id": "u26",
+        "kind": "sentence",
+        "text": "The dashboard shows flagged and unflagged requests side by side, so a difference between them points at the flag rather than at the platform.",
+        "hash": "1w5pt8crhz1",
+        "topic": "Feature flag rollout guide › Monitoring during general availability",
+        "span": {
+          "start": 2409,
+          "end": 2550
+        },
+        "prev": "u25",
+        "next": "u27"
+      },
+      {
+        "id": "u27",
+        "kind": "sentence",
+        "text": "The owner keeps watching until the flag has been at 100% for one hour.",
+        "hash": "1fyyg53jdga",
+        "topic": "Feature flag rollout guide › Monitoring during general availability",
+        "span": {
+          "start": 2551,
+          "end": 2621
+        },
+        "prev": "u26",
+        "next": "u28"
+      },
+      {
+        "id": "u28",
+        "kind": "sentence",
+        "text": "A flag that has been fully on for 30 days is removed from the code.",
+        "hash": "g9std6hxgw",
+        "topic": "Feature flag rollout guide › Flag cleanup",
+        "span": {
+          "start": 2640,
+          "end": 2707
+        },
+        "prev": "u27",
+        "next": "u29"
+      },
+      {
+        "id": "u29",
+        "kind": "sentence",
+        "text": "The owner opens a cleanup ticket when the flag reaches 100%, and the ticket links to the rollout record.",
+        "hash": "a7t6epxtsb",
+        "topic": "Feature flag rollout guide › Flag cleanup",
+        "span": {
+          "start": 2708,
+          "end": 2812
+        },
+        "prev": "u28",
+        "next": "u30"
+      },
+      {
+        "id": "u30",
+        "kind": "sentence",
+        "text": "Flags that miss the deadline are listed in the weekly stale-flag report.",
+        "hash": "19niykntqrr",
+        "topic": "Feature flag rollout guide › Flag cleanup",
+        "span": {
+          "start": 2813,
+          "end": 2885
+        },
+        "prev": "u29",
+        "next": "u31"
+      },
+      {
+        "id": "u31",
+        "kind": "sentence",
+        "text": "Old flags make the code harder to read and slow down every later rollout.",
+        "hash": "3ghdb8vd37",
+        "topic": "Feature flag rollout guide › Flag cleanup",
+        "span": {
+          "start": 2886,
+          "end": 2959
+        },
+        "prev": "u30"
+      }
+    ],
+    "nextId": 32
+  },
+  "cites": {
+    "u0_n1": [
+      "u1",
+      "u2"
+    ],
+    "u0_n2": [
+      "u3"
+    ],
+    "u0_n3": [
+      "u4"
+    ],
+    "u0_n4": [
+      "u5"
+    ],
+    "u1_n1": [
+      "u6"
+    ],
+    "u1_n2": [
+      "u7",
+      "u8"
+    ],
+    "u1_n3": [
+      "u6"
+    ],
+    "u1_n4": [
+      "u9",
+      "u12",
+      "u13",
+      "u14",
+      "u15"
+    ],
+    "u1_n5": [
+      "u16"
+    ],
+    "u1_n6": [
+      "u17",
+      "u18",
+      "u19"
+    ],
+    "u1_n7": [
+      "u6"
+    ],
+    "u1_n8": [
+      "u10",
+      "u25",
+      "u26",
+      "u27"
+    ],
+    "u1_n9": [
+      "u11"
+    ],
+    "u1_fs1": [
+      "u6"
+    ],
+    "u2_n1": [
+      "u20"
+    ],
+    "u2_n2": [
+      "u21",
+      "u22",
+      "u23"
+    ],
+    "u2_n3": [
+      "u24"
+    ],
+    "u3_n1": [
+      "u29"
+    ],
+    "u3_n2": [
+      "u29"
+    ],
+    "u3_n3": [
+      "u28"
+    ],
+    "u3_n4": [
+      "u28"
+    ],
+    "u3_n5": [
+      "u30"
+    ],
+    "u3_n6": [
+      "u30"
+    ],
+    "u3_n7": [
+      "u31"
+    ]
+  },
+  "omitted": [],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "cited",
+      "u3": "cited",
+      "u4": "cited",
+      "u5": "cited",
+      "u6": "cited",
+      "u7": "cited",
+      "u8": "cited",
+      "u9": "cited",
+      "u10": "cited",
+      "u11": "cited",
+      "u12": "cited",
+      "u13": "cited",
+      "u14": "cited",
+      "u15": "cited",
+      "u16": "cited",
+      "u17": "cited",
+      "u18": "cited",
+      "u19": "cited",
+      "u20": "cited",
+      "u21": "cited",
+      "u22": "cited",
+      "u23": "cited",
+      "u24": "cited",
+      "u25": "cited",
+      "u26": "cited",
+      "u27": "cited",
+      "u28": "cited",
+      "u29": "cited",
+      "u30": "cited",
+      "u31": "cited"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "represented",
+      "u3": "represented",
+      "u4": "represented",
+      "u5": "represented",
+      "u6": "represented",
+      "u7": "represented",
+      "u8": "represented",
+      "u9": "represented",
+      "u10": "represented",
+      "u11": "represented",
+      "u12": "represented",
+      "u13": "represented",
+      "u14": "represented",
+      "u15": "represented",
+      "u16": "represented",
+      "u17": "represented",
+      "u18": "represented",
+      "u19": "represented",
+      "u20": "represented",
+      "u21": "represented",
+      "u22": "represented",
+      "u23": "represented",
+      "u24": "represented",
+      "u25": "represented",
+      "u26": "represented",
+      "u27": "represented",
+      "u28": "represented",
+      "u29": "represented",
+      "u30": "represented",
+      "u31": "represented"
+    },
+    "critical": {
+      "u3": [
+        "limitation"
+      ],
+      "u4": [
+        "requirement"
+      ],
+      "u6": [
+        "protected"
+      ],
+      "u7": [
+        "requirement"
+      ],
+      "u8": [
+        "limitation"
+      ],
+      "u10": [
+        "protected"
+      ],
+      "u11": [
+        "condition"
+      ],
+      "u12": [
+        "protected"
+      ],
+      "u13": [
+        "requirement",
+        "protected"
+      ],
+      "u14": [
+        "limitation"
+      ],
+      "u16": [
+        "requirement",
+        "condition"
+      ],
+      "u17": [
+        "protected"
+      ],
+      "u18": [
+        "condition"
+      ],
+      "u20": [
+        "requirement",
+        "protected"
+      ],
+      "u22": [
+        "limitation"
+      ],
+      "u25": [
+        "condition",
+        "protected"
+      ],
+      "u27": [
+        "protected"
+      ],
+      "u28": [
+        "protected"
+      ],
+      "u29": [
+        "condition",
+        "protected"
+      ],
+      "u30": [
+        "protected"
+      ]
+    },
+    "flags": [],
+    "sections": [
+      {
+        "topic": "Feature flag rollout guide",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Feature flag rollout guide › Rollout stages",
+        "represented": 6,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Feature flag rollout guide › Canary",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Feature flag rollout guide › Advancing from canary",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Feature flag rollout guide › Kill switch",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Feature flag rollout guide › Monitoring during general availability",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Feature flag rollout guide › Flag cleanup",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      }
+    ]
+  },
+  "flags": [],
+  "hints": [
+    {
+      "code": "cause_changed",
+      "unit": "u9",
+      "card": "u1_n4",
+      "detail": "the card says \"cause*\"; the source states no cause",
+      "evidence": {
+        "card": "cause*"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u12",
+      "card": "u1_n4",
+      "detail": "the card says \"cause*\"; the source states no cause",
+      "evidence": {
+        "card": "cause*"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u14",
+      "card": "u1_n4",
+      "detail": "source says \"The owner does not raise the percentage by hand during this time, because a manual change restarts the measurement window.\"; the card drops the negation",
+      "evidence": {
+        "source": "The owner does not raise the percentage by hand during this time, because a manual change restarts the measurement window.",
+        "card": "A small percentage (5%) of real traffic is exposed to the change, selected randomly per request."
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u15",
+      "card": "u1_n4",
+      "detail": "the card says \"cause*\"; the source states no cause",
+      "evidence": {
+        "card": "cause*"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u17",
+      "card": "u1_n6",
+      "detail": "source says \"over the previous 7 days\"",
+      "evidence": {
+        "source": "over the previous 7 days"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u21",
+      "card": "u2_n2",
+      "detail": "source says \"The kill switch is tested in staging before the flag enters canary, and the test is recorded in the rollout tool.\"; the card negates it",
+      "evidence": {
+        "source": "The kill switch is tested in staging before the flag enters canary, and the test is recorded in the rollout tool.",
+        "card": "- A flag without a tested kill switch cannot enter canary."
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u29",
+      "card": "u3_n2",
+      "detail": "source says \"when the flag reaches 100%\"",
+      "evidence": {
+        "source": "when the flag reaches 100%"
+      }
+    }
+  ],
+  "reviews": {}
+}

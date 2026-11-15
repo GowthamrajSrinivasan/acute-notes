@@ -63,6 +63,11 @@
             "type": "string",
             "pattern": "^kn-\\d{2}-[a-z0-9-]+$"
           },
+          "attempt": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
           "plan": {
             "type": "string",
             "minLength": 1
@@ -78,6 +83,21 @@
           "replies": {
             "type": "string",
             "minLength": 1
+          },
+          "run": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scene": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sceneBefore": {
+            "type": "string",
+            "minLength": 1
+          },
+          "note": {
+            "type": "string"
           }
         },
         "required": [

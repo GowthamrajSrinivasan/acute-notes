@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-stale-tolerance-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The stale card loses 'a choice about tolerance, not a way to make content fresher' (u43), so serving stale reads as a freshness mechanism.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n6",
+      "find": "\n- A choice about tolerance, not a way to make content fresher: some readers see a copy older than the TTL alone suggests.",
+      "replace": ""
+    }
+  ],
+  "expectFailing": [
+    "a.stale-tolerance"
+  ]
+}

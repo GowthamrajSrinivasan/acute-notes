@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "metadata": { "title": "Feature flag rollout guide (v1)" },
+  "nodes": [
+    {
+      "id": "g1",
+      "type": "group",
+      "content": { "label": "Rollout stages and the canary gate", "arrangement": "chain", "takeaway": "Internal → canary → general availability; a flag leaves canary only through the gate." }
+    },
+    {
+      "id": "n1",
+      "type": "text",
+      "parent": "g1",
+      "importance": "high",
+      "title": "Three stages: internal, canary, general availability",
+      "content": { "markdown": "- **Internal:** staff accounts only, so colleagues hit problems before customers (usually one working day; no minimum).\n- **Canary:** a small share of real traffic.\n- **General availability:** everyone, in steps of 25%, 50% and 100%.\n\nEvery move is recorded in the rollout tool." }
+    },
+    {
+      "id": "n2",
+      "type": "text",
+      "parent": "g1",
+      "importance": "high",
+      "title": "Canary: 5% of requests for at least 30 minutes",
+      "content": { "markdown": "Requests are picked at random per request, not per user. The window covers a full traffic cycle of the slowest endpoint, and a manual change to the percentage restarts it. Short canaries are the most common way a bad flag reaches general availability." }
+    },
+    {
+      "id": "n3",
+      "type": "text",
+      "parent": "g1",
+      "importance": "high",
+      "title": "A flag leaves canary only when the metrics check passes",
+      "content": { "markdown": "The rollout tool runs the check at the end of the canary window: error rate and p95 latency of flagged requests against the same requests over the previous 7 days. If it fails, the flag stays in canary and the owner investigates before trying again." }
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "content": { "label": "Safety nets: kill switch and monitoring", "arrangement": "grid", "takeaway": "Turning a flag off is always safe; watch the dashboard while it ramps up." }
+    },
+    {
+      "id": "n4",
+      "type": "text",
+      "parent": "g2",
+      "importance": "high",
+      "title": "Every flag needs a kill switch that turns it off within 1 minute",
+      "content": { "markdown": "Tested in staging before canary and recorded in the rollout tool: a flag without a tested kill switch cannot enter canary. Anyone on the owning team may use it without approval. Turning the flag back on restarts the rollout from the internal stage." }
+    },
+    {
+      "id": "n5",
+      "type": "text",
+      "parent": "g2",
+      "importance": "medium",
+      "title": "During the ramp-up, watch the error dashboard",
+      "content": { "markdown": "Page the on-call engineer if errors rise. Flagged and unflagged requests sit side by side, so a gap points at the flag, not the platform. Keep watching until the flag has been at 100% for one hour." }
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "content": { "label": "After rollout: flag cleanup", "arrangement": "grid", "takeaway": "Flags that are fully on don't stay in the code." }
+    },
+    {
+      "id": "n6",
+      "type": "text",
+      "parent": "g3",
+      "importance": "medium",
+      "title": "Remove a flag from the code 30 days after it is fully on",
+      "content": { "markdown": "The owner opens a cleanup ticket at 100%, linked to the rollout record. Flags past the deadline appear in the weekly stale-flag report: old flags make the code harder to read and slow every later rollout." }
+    }
+  ],
+  "relationships": [
+    { "from": "n2", "to": "n3", "type": "flows_to", "label": "advances when" },
+    { "from": "n2", "to": "n4", "type": "depends_on", "label": "needs a tested kill switch" }
+  ]
+}

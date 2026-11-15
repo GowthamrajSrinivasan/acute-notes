@@ -1,0 +1,427 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "Queue options for background jobs, their costs, benefits, and decision status."
+      }
+    },
+    {
+      "id": "g0",
+      "role": "notes",
+      "importance": "high",
+      "stableKey": "Choosing a queue for background jobs § group#0",
+      "type": "group",
+      "content": {
+        "label": "Choosing a queue for background jobs",
+        "arrangement": "grid",
+        "takeaway": "This note replaces an earlier draft for the billing team's architecture review."
+      }
+    },
+    {
+      "id": "u0_n1",
+      "stableKey": "Choosing a queue for background jobs § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "This note was written for the billing team's architecture review and replaces the earlier draft shared in chat."
+      }
+    },
+    {
+      "id": "u0_ax1",
+      "title": "Purpose of the Note",
+      "stableKey": "Choosing a queue for background jobs § text#1",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This document serves as an updated architecture review for the billing team, specifically addressing the selection of a queue for background jobs. It supersedes a previous draft shared via chat, indicating a formalization of the discussion."
+      }
+    },
+    {
+      "id": "g1",
+      "role": "cards",
+      "importance": "high",
+      "stableKey": "Choosing a queue for background jobs › Selection criteria § group#0",
+      "type": "group",
+      "content": {
+        "label": "Selection criteria",
+        "arrangement": "grid",
+        "takeaway": "Options must meet two critical criteria and are then scored by four weighted factors."
+      }
+    },
+    {
+      "id": "u1_n1",
+      "title": "Overview",
+      "stableKey": "Choosing a queue for background jobs › Selection criteria § text#0",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This section outlines the criteria for selecting an option, categorizing them into must-haves and weighted criteria for scoring."
+      }
+    },
+    {
+      "id": "u1_n2",
+      "title": "Must-Have Criteria",
+      "stableKey": "Choosing a queue for background jobs › Selection criteria § text#1",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "- No job is lost when a worker crashes or the service is deployed.\n- The queue absorbs 1,800 jobs per minute (three times today's peak) without manual intervention."
+      }
+    },
+    {
+      "id": "u1_n3",
+      "title": "Weighted Criteria",
+      "stableKey": "Choosing a queue for background jobs › Selection criteria § text#2",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "- Operational effort: 40%\n- Monthly cost: 30%\n- Developer experience, including local testing: 20%\n- Portability away from our cloud provider: 10%"
+      }
+    },
+    {
+      "id": "g2",
+      "role": "comparison",
+      "importance": "high",
+      "stableKey": "Choosing a queue for background jobs › Options ⨁ Choosing a queue for background jobs › Benefits and trade-offs § group#0",
+      "type": "group",
+      "content": {
+        "label": "Options",
+        "arrangement": "compare",
+        "takeaway": "Choose based on operational cost, idempotency needs, and transactional guarantees."
+      }
+    },
+    {
+      "id": "u2_n1",
+      "stableKey": "Choosing a queue for background jobs › Options ⨁ Choosing a queue for background jobs › Benefits and trade-offs § table#0",
+      "parent": "g2",
+      "type": "table",
+      "content": {
+        "columns": [
+          "",
+          "Option A: managed cloud queue",
+          "Option B: self-hosted broker",
+          "Option C: database job table"
+        ],
+        "rows": [
+          [
+            "Description",
+            "A queue service run by our cloud provider. We send messages to it and workers poll for them; the provider handles storage, scaling and redelivery.",
+            "A message broker cluster of three virtual machines that we install, patch and monitor ourselves.",
+            "A `jobs` table in the existing billing Postgres database. Workers claim rows with `SELECT ... FOR UPDATE SKIP LOCKED` and mark them done."
+          ],
+          [
+            "Operational work",
+            "Almost no operational work",
+            "12 hours a month (estimate)",
+            "Adds read load to the primary database (main risk at month-end)"
+          ],
+          [
+            "Failed messages",
+            "Move to a dead-letter queue automatically",
+            "",
+            ""
+          ],
+          [
+            "Delivery guarantee",
+            "At least once (requires idempotent job handlers; today only email handler is)",
+            "",
+            "Job can never be lost between commit and enqueue (only covers jobs created inside billing database transaction; not jobs enqueued by reporting service)"
+          ],
+          [
+            "API dependency",
+            "Ties us to one provider's API",
+            "",
+            ""
+          ],
+          [
+            "Local development",
+            "Needs an emulator that does not support dead-lettering",
+            "",
+            ""
+          ],
+          [
+            "Features",
+            "",
+            "Priority queues, delayed delivery (month-end invoices can jump ahead of webhook retries)",
+            ""
+          ],
+          [
+            "Team experience",
+            "",
+            "No one on the team has run this broker in production",
+            ""
+          ],
+          [
+            "Upgrades",
+            "",
+            "Need a maintenance window",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "id": "u2_a1",
+      "title": "Key Differences and Considerations",
+      "stableKey": "Choosing a queue for background jobs › Options ⨁ Choosing a queue for background jobs › Benefits and trade-offs § text#0",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Option A offers the lowest operational overhead but requires all job handlers to be idempotent, which is a significant development effort. Option B provides advanced queuing features but comes with a substantial operational burden and a lack of team experience. Option C offers strong transactional guarantees for jobs within the billing database but introduces read load on the primary database and doesn't extend to other services."
+      }
+    },
+    {
+      "id": "u2_src~text",
+      "title": "Also in the source",
+      "stableKey": "Choosing a queue for background jobs › Options ⨁ Choosing a queue for background jobs › Benefits and trade-offs § text#1",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The catch is that the service delivers each message at least once, so every job handler must be made idempotent before we switch; today only the email handler is."
+      }
+    },
+    {
+      "id": "g3",
+      "role": "metrics",
+      "importance": "high",
+      "stableKey": "Choosing a queue for background jobs › Costs § group#0",
+      "type": "group",
+      "content": {
+        "label": "Costs",
+        "arrangement": "compare",
+        "takeaway": "Database job table is cheapest, but managed queue scales significantly with volume."
+      }
+    },
+    {
+      "id": "u3_n1",
+      "stableKey": "Choosing a queue for background jobs › Costs § table#0",
+      "parent": "g3",
+      "type": "table",
+      "content": {
+        "columns": [
+          "Option",
+          "Monthly infrastructure",
+          "Monthly team effort",
+          "Notes"
+        ],
+        "rows": [
+          [
+            "Managed cloud queue",
+            "$310",
+            "about 2 hours",
+            "Priced per million requests; grows with volume"
+          ],
+          [
+            "Self-hosted broker",
+            "$540",
+            "about 12 hours",
+            "Three VMs plus upgrades and on-call"
+          ],
+          [
+            "Database job table",
+            "$0 extra",
+            "about 4 hours",
+            "Uses spare capacity on the existing primary"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "u3_n2",
+      "stableKey": "Choosing a queue for background jobs › Costs § text#0",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "The managed queue's figure assumes current volume. At three times today's volume it would be roughly $900 a month, while the broker's cost would stay flat until the cluster needs a fourth machine."
+      }
+    },
+    {
+      "id": "u3_n3",
+      "stableKey": "Choosing a queue for background jobs › Costs § code#0",
+      "parent": "g3",
+      "type": "code",
+      "content": {
+        "language": "acute-chart",
+        "source": "{\"chartType\":\"bar\",\"categories\":[\"Managed cloud queue\",\"Self-hosted broker\",\"Database job table\"],\"series\":[{\"name\":\"Monthly infrastructure\",\"values\":[310,540,0]},{\"name\":\"Monthly team effort (hours)\",\"values\":[2,12,4]}]}"
+      }
+    },
+    {
+      "id": "u3_a1",
+      "title": "Cost Analysis",
+      "stableKey": "Choosing a queue for background jobs › Costs § text#1",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The Database job table is the cheapest option for infrastructure, but the Self-hosted broker requires the most team effort. The Managed cloud queue's cost scales with volume, becoming the most expensive at three times current volume."
+      }
+    },
+    {
+      "id": "g4",
+      "role": "decision",
+      "importance": "high",
+      "stableKey": "Choosing a queue for background jobs › Decision status § group#0",
+      "type": "group",
+      "content": {
+        "label": "Decision status",
+        "arrangement": "grid",
+        "takeaway": "Decision deferred until Option C load test results are available."
+      }
+    },
+    {
+      "id": "u4_n1",
+      "stableKey": "Choosing a queue for background jobs › Decision status § text#0",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "This note does not recommend an option. The decision is deferred until Option C has been measured at 1,800 jobs per minute on a production-sized database. Until then, each option carries an open requirement:"
+      }
+    },
+    {
+      "id": "u4_n2",
+      "stableKey": "Choosing a queue for background jobs › Decision status § text#1",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "- Option A: every job handler made idempotent.\n- Option B: a named owner for broker on-call and upgrades.\n- Option C: a passing load test at 1,800 jobs per minute."
+      }
+    },
+    {
+      "id": "u4_n3",
+      "stableKey": "Choosing a queue for background jobs › Decision status § text#2",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "Priya will bring the load-test result to the next architecture review. Thanks to everyone who commented on the first draft."
+      }
+    },
+    {
+      "id": "u4_a1",
+      "title": "Status",
+      "stableKey": "Choosing a queue for background jobs › Decision status § text#3",
+      "parent": "g4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Decision deferred until Option C load test results are available.\n- Option A: open requirement - job handlers made idempotent.\n- Option B: open requirement - named owner for broker on-call and upgrades.\n- Option C: open requirement - passing load test at 1,800 jobs/min; Priya to provide results."
+      }
+    },
+    {
+      "id": "g5",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Choosing a queue for background jobs › Context § group#0",
+      "type": "group",
+      "content": {
+        "label": "Context",
+        "arrangement": "stack",
+        "takeaway": "Current in-process worker pool loses jobs on deploy/crash, causing customer impact during peak loads."
+      }
+    },
+    {
+      "id": "u5_n1",
+      "stableKey": "Choosing a queue for background jobs › Context § text#0",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "- The billing service processes approximately 40,000 background jobs daily.\n- These jobs include rendering invoice PDFs, sending receipt emails, and retrying failed webhooks.\n- Currently, jobs run in an in-process worker pool.\n- A deploy or crash results in the loss of queued but unstarted jobs.\n- Last quarter, 37 invoice emails were lost due to this issue, requiring customers to re-request them.\n- Peak load reaches 600 jobs per minute during the month-end billing run."
+      }
+    },
+    {
+      "id": "u5_src~text",
+      "title": "Also in the source",
+      "stableKey": "Choosing a queue for background jobs › Context § text#1",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "Today they run in an in-process worker pool, so a deploy or a crash loses any job that was queued but not yet started."
+      }
+    },
+    {
+      "id": "g6",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Choosing a queue for background jobs › Evidence § group#0",
+      "type": "group",
+      "content": {
+        "label": "Evidence",
+        "arrangement": "stack",
+        "takeaway": "Option C load test shows limits; A and B lack internal validation."
+      }
+    },
+    {
+      "id": "u6_n1",
+      "stableKey": "Choosing a queue for background jobs › Evidence § text#0",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "- **Option C Load Test Results:**\n - Sustained 1,200 jobs per minute with a p95 claim latency of 18 ms on a staging database copy with synthetic jobs.\n - At 2,000 jobs per minute, primary CPU reached 85% and p95 latency rose to 240 ms.\n - 1,800 jobs per minute was not tested.\n - Staging copy is approximately a quarter of production size, so results may not be directly transferable."
+      }
+    },
+    {
+      "id": "u6_n2",
+      "stableKey": "Choosing a queue for background jobs › Evidence § text#1",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "- **Options A and B Load Test Status:**\n - Not load-tested.\n - Provider documentation for Option A indicates throughput far above our peak, but this is a third-party figure."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u0_ax1",
+      "to": "u0_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n3",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_a1",
+      "type": "explained_by"
+    },
+    {
+      "from": "g2",
+      "to": "g3",
+      "type": "references",
+      "label": "cost details"
+    },
+    {
+      "from": "g2",
+      "to": "g1",
+      "type": "depends_on",
+      "label": "evaluated by"
+    },
+    {
+      "from": "g6",
+      "to": "g2",
+      "type": "supports",
+      "label": "load test results"
+    },
+    {
+      "from": "g4",
+      "to": "g2",
+      "type": "references",
+      "label": "open requirements for options"
+    }
+  ],
+  "metadata": {}
+}

@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-gateway-fails-open",
+  "distortion": "condition_dropped",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The gateway's condition is flipped: it lets requests through when auth can't be reached. The card still says 'rejects' and 'can't be reached', so only a.no-fail-open catches the flip.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-gateway",
+      "find": "Fails closed: rejects the request instead of letting it through unchecked when auth can't be reached",
+      "replace": "Fails open: lets requests through when auth can't be reached; rejects requests over the rate limit"
+    }
+  ],
+  "expectFailing": [
+    "a.no-fail-open"
+  ]
+}

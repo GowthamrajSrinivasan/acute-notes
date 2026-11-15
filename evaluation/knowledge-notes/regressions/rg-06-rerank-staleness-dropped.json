@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-rerank-staleness-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "The reranking card loses its second limit (u33): a highly relevant passage can still be out of date.",
+  "mutations": [
+    { "op": "replace_text", "node": "n7", "find": "\n- A passage can be highly relevant and still out of date; no relevance score detects that.", "replace": "" }
+  ],
+  "expectFailing": ["a.rerank-staleness"]
+}

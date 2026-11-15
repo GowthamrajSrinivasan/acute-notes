@@ -6,7 +6,7 @@
     {
       "id": "g1",
       "type": "group",
-      "content": { "label": "Why the billing queue is changing", "arrangement": "grid", "takeaway": "In-process workers lose queued jobs on every deploy or crash." }
+      "content": { "label": "Why the billing queue is changing", "arrangement": "grid", "takeaway": "With in-process workers, a deploy or crash loses any job queued but not yet started." }
     },
     {
       "id": "n1",
@@ -46,7 +46,7 @@
       "type": "text",
       "parent": "g3",
       "importance": "high",
-      "title": "Managed queue: least operational work, at-least-once delivery",
+      "title": "Managed queue: least operational work, at-least-once (not exactly-once) delivery",
       "content": { "markdown": "Almost no operational work; failed messages move to a dead-letter queue automatically.\n\n**Conditions**\n- Delivers each message at least once, so every job handler must be made idempotent before switching; today only the email handler is.\n- Ties us to one provider's API; the local emulator doesn't support dead-lettering." }
     },
     {
@@ -54,7 +54,7 @@
       "type": "text",
       "parent": "g3",
       "importance": "high",
-      "title": "Self-hosted broker: priorities and delays, unproven to run",
+      "title": "Self-hosted broker: priorities and delays, untried by the team",
       "content": { "markdown": "Priority queues and delayed delivery would let month-end invoices jump ahead of webhook retries.\n\n**Conditions**\n- No one on the team has run this broker in production.\n- Upgrades need a maintenance window." }
     },
     {
@@ -89,7 +89,7 @@
     {
       "id": "g5",
       "type": "group",
-      "content": { "label": "Evidence so far", "arrangement": "grid", "takeaway": "Only the job table has been load-tested, and not at the required rate." }
+      "content": { "label": "Evidence so far", "arrangement": "grid", "takeaway": "Only the job table has been load-tested, and it has not been shown to handle 1,800 a minute." }
     },
     {
       "id": "n8",
@@ -118,7 +118,7 @@
       "parent": "g6",
       "importance": "high",
       "title": "Decision deferred until the 1,800 a minute measurement",
-      "content": { "markdown": "This note does not recommend an option. The decision waits until the job table is measured at 1,800 jobs per minute on a production-sized database.\n\n**Open requirement per option**\n- Managed queue: every job handler made idempotent.\n- Self-hosted broker: a named owner for broker on-call and upgrades.\n- Job table: a passing load test at 1,800 jobs per minute." }
+      "content": { "markdown": "This note does not recommend an option. There is no preferred choice and no winner yet. The decision waits until the job table is measured at 1,800 jobs per minute on a production-sized database.\n\n**Open requirement per option**\n- Managed queue: every job handler made idempotent.\n- Self-hosted broker: a named owner for broker on-call and upgrades.\n- Job table: a passing load test at 1,800 jobs per minute." }
     },
     {
       "id": "n11",

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-retry-answered",
+  "distortion": "invented_detail",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "The open question gets an answer nobody has: 'the payment logs show most people retried' (u75, u77: nobody has looked).",
+  "mutations": [
+    { "op": "replace_text", "node": "n11", "find": "Nobody knows yet: the payment logs would show it, but no one has looked. If most people retried, the email to customers is different.", "replace": "The payment logs show most people retried, so the email to customers is different." }
+  ],
+  "expectFailing": ["a.retry-unknown", "a.no-retry-answer"]
+}

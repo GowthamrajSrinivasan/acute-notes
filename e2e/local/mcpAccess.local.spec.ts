@@ -30,7 +30,7 @@ test("MCP access: a client connects with the shown token and reads the open work
   await expect(dialog.getByRole("status")).toContainText("Ready");
   await dialog.getByRole("button", { name: "Show" }).click();
   const token = (await dialog.getByLabel("Token", { exact: true }).textContent())!.trim();
-  expect(token).toMatch(/^[0-9a-f]{64}$/);
+  expect(token).toMatch(/^acm_[A-Za-z0-9_-]{43}$/); // `acm_` + 32 random bytes, base64url (mcp/bridge/credentials.ts)
 
   // Wrong token: refused.
   const bad = await fetch(ENDPOINT, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer nope" }, body: "{}" });
@@ -87,10 +87,13 @@ test("MCP access: a client connects with the shown token and reads the open work
   expect((await client.callTool({ name: "get_canvas", arguments: {} })).isError).toBeFalsy();
   await client.close();
 
-  // Access off: the tab stops serving, and clients are told how to fix it.
+  // Access off: the workspace's credentials are revoked on the server (turning it on again issues new ones), so the
+  // old token is refused with 401, and the client is told where to get a current one (mcp/bridge/accessOff.test.ts).
   await dialog.getByRole("radio", { name: "Off" }).click();
   await expect(dialog.getByRole("status")).toHaveCount(0);
-  await expect.poll(async () => (await fetch(ENDPOINT, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${token}` }, body: "{}" })).status).toBe(503);
+  const afterOff = () => fetch(ENDPOINT, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${token}` }, body: "{}" });
+  await expect.poll(async () => (await afterOff()).status).toBe(401);
+  expect(JSON.stringify(await (await afterOff()).json())).toContain("MCP access");
 });
 
 test("an MCP edit of a Visualize block keeps its reconciliation link, so it counts as the user's edit", async ({ page }) => {

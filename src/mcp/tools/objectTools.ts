@@ -13,7 +13,7 @@ import { contentToMarkdown } from "@/domain/content/markdown";
 import { RELATION_TYPES } from "@/domain/types";
 import { cut, isStandalone } from "../context/currentContext";
 import type { WorkspaceScan } from "../resources/workspaceScan";
-import { DELETE_ANNOTATIONS, guarded, READ_ANNOTATIONS, ToolFailure, toolResult, WRITE_ANNOTATIONS, type ToolPolicy } from "./common";
+import { DESTRUCTIVE_ANNOTATIONS, guarded, READ_ANNOTATIONS, ToolFailure, toolResult, WRITE_ANNOTATIONS, type ToolPolicy } from "./common";
 import type { LiveCanvasActions } from "./liveCanvas";
 import { PROPOSED_SHAPE, proposeChangeSet, sanitizeClientName, type WriteToolDeps } from "./writeTools";
 
@@ -74,7 +74,7 @@ export function registerObjectTools(server: McpServer, deps: ObjectToolDeps): vo
         description: `${description} Proposes a change for the user's review; nothing changes until they accept it. Logged and revertible (revert_agent_changes). Never auto-accepted.`,
         inputSchema,
         outputSchema: PROPOSED_SHAPE,
-        annotations: destructive ? DELETE_ANNOTATIONS : WRITE_ANNOTATIONS,
+        annotations: destructive ? DESTRUCTIVE_ANNOTATIONS : WRITE_ANNOTATIONS,
       },
       ((args: z.infer<z.ZodObject<S>>) => guarded(() => run(args))) as never,
     );
@@ -99,7 +99,7 @@ export function registerObjectTools(server: McpServer, deps: ObjectToolDeps): vo
       explanation: z.string().trim().max(300).nullable().optional(),
       canvasId: canvasArg,
     },
-    false,
+    true, // replaces or clears (null) the label and explanation the user may have written
     (args) =>
       proposeChangeSet(writeDeps, args, (live, operationId) => {
         liveArrow(live, args.connectionId);

@@ -1,0 +1,45 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-collapsed-one-frame",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "Every card is put into the verified-code frame: the module map and the interpretation and open questions lose their own frames, so the reading sits beside the verified facts in one frame too large to read whole.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "t_mod",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "c_draft",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "t_txn",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "t_boundary",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "t_orch",
+      "group": "g1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "t_q",
+      "group": "g1"
+    }
+  ],
+  "expectFailing": [
+    "a.fit-screen",
+    "a.rendered-frames",
+    "a.frame-count"
+  ]
+}

@@ -11,6 +11,7 @@
  * workspace id is never taken from a client message.
  */
 import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
+import type { RemoteProfile } from "../tools/remoteProfile";
 
 /** What a credential allows: reading, or reading and proposing changes (for the owner's review). */
 export type McpScope = "read" | "propose";
@@ -22,8 +23,10 @@ export type BridgeFrame =
   /**
    * A client message for one MCP session. `remote` is true for every session that did not come from this machine's
    * loopback with a local bearer token (secret URL, OAuth, any other host): such sessions can never auto-accept.
+   * `profile` (remote sessions only, set by the server) names the tools the session may see and call; a remote frame
+   * without one is treated as `restricted` (`tools/remoteProfile.ts`).
    */
-  | { type: "message"; sessionId: string; message: JSONRPCMessage; remote: boolean; scope: McpScope }
+  | { type: "message"; sessionId: string; message: JSONRPCMessage; remote: boolean; scope: McpScope; profile?: RemoteProfile }
   /** The client ended the session (HTTP DELETE, or its credential was revoked). */
   | { type: "close"; sessionId: string }
   /** Keeps the stream open through idle proxies/timeouts. */

@@ -1,0 +1,152 @@
+{
+  "caseId": "kn-04-queue-choice",
+  "reviewer": "R2",
+  "verdicts": [
+    {
+      "candidate": "c1",
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "conditionQuote": "Today they run in an in-process worker pool, so a deploy or a crash loses any job that was queued but not yet started.",
+      "claimQuote": "",
+      "confidence": "medium",
+      "note": "Context and motivation (the current problem), not a limit on any claim."
+    },
+    {
+      "candidate": "c2",
+      "verdict": "set",
+      "claimUnits": ["u15"],
+      "conditionQuote": "Uses spare capacity on the existing primary",
+      "claimQuote": "Database job table | $0 extra",
+      "confidence": "low",
+      "note": "The u15 note qualifies '$0 extra' as relying on spare primary capacity (tied to u34's month-end risk); the u14 row is plain cost data."
+    },
+    {
+      "candidate": "c3",
+      "verdict": "claim",
+      "claimUnits": ["u13"],
+      "conditionQuote": "The managed queue's figure assumes current volume. At three times today's volume it would be roughly $900 a month",
+      "claimQuote": "Managed cloud queue | $310",
+      "confidence": "high",
+      "note": "The $310 figure is misleading at the 3x volume the must-have criteria plan for."
+    },
+    {
+      "candidate": "c4",
+      "verdict": "ambiguous",
+      "claimUnits": ["u21"],
+      "conditionQuote": "an option that fails either is out regardless of its score",
+      "claimQuote": "The remaining criteria are weighted for scoring",
+      "confidence": "medium",
+      "note": "Reading 1 (claim): weighted scores/rankings mislead without the gate that disqualifies regardless of score; reading 2 (set): the weighting statement stays true and the gate is a separate decision rule."
+    },
+    {
+      "candidate": "c5",
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "conditionQuote": "Portability away from our cloud provider: 10%",
+      "claimQuote": "",
+      "confidence": "high",
+      "note": "A criterion weight, not a limit on a claim."
+    },
+    {
+      "candidate": "c6",
+      "verdict": "claim",
+      "claimUnits": ["u26"],
+      "conditionQuote": "every job handler must be made idempotent before we switch; today only the email handler is",
+      "claimQuote": "Option A needs almost no operational work",
+      "confidence": "medium",
+      "note": "At-least-once delivery makes Option A unsafe until handlers are idempotent; 'almost no work' read alone misleads about adopting it."
+    },
+    {
+      "candidate": "c7",
+      "verdict": "set",
+      "claimUnits": ["u26"],
+      "conditionQuote": "It also ties us to one provider's API, and local development needs an emulator that does not support dead-lettering.",
+      "claimQuote": "failed messages move to a dead-letter queue automatically",
+      "confidence": "medium",
+      "note": "Lock-in and a local-dev gap in dead-lettering; the production claim stays true."
+    },
+    {
+      "candidate": "c8",
+      "verdict": "set",
+      "claimUnits": ["u14"],
+      "conditionQuote": "the 12 hours a month is an estimate, not a measurement",
+      "claimQuote": "Self-hosted broker | $540 | about 12 hours",
+      "confidence": "medium",
+      "note": "Epistemic caveat on the effort figure, which is already hedged with 'about'."
+    },
+    {
+      "candidate": "c9",
+      "verdict": "set",
+      "claimUnits": ["u8"],
+      "conditionQuote": "Upgrades need a maintenance window.",
+      "claimQuote": "A message broker cluster of three virtual machines that we install, patch and monitor ourselves.",
+      "confidence": "low",
+      "note": "An operational cost of Option B; could be judged too minor."
+    },
+    {
+      "candidate": "c10",
+      "verdict": "claim",
+      "claimUnits": ["u32"],
+      "conditionQuote": "That guarantee only covers jobs created inside the billing database transaction; jobs enqueued by the reporting service, which has its own database, would not get it.",
+      "claimQuote": "a job can never be lost between the commit and the enqueue",
+      "confidence": "high",
+      "note": "'Never be lost' is false for reporting-service jobs."
+    },
+    {
+      "candidate": "c11",
+      "verdict": "set",
+      "claimUnits": ["u15"],
+      "conditionQuote": "Polling also adds read load to the primary database, which is the main risk at month-end.",
+      "claimQuote": "Database job table | $0 extra | about 4 hours | Uses spare capacity on the existing primary",
+      "confidence": "medium",
+      "note": "Main risk of Option C; the cost row stays true."
+    },
+    {
+      "candidate": "c12",
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "conditionQuote": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+      "claimQuote": "",
+      "confidence": "medium",
+      "note": "A measured result (a claim), which u38 limits, not itself a condition."
+    },
+    {
+      "candidate": "c13",
+      "verdict": "claim",
+      "claimUnits": ["u36"],
+      "conditionQuote": "We did not test 1,800 jobs per minute, and the staging copy is about a quarter of production size, so these results may not carry over.",
+      "claimQuote": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+      "confidence": "high",
+      "note": "Without this, the load-test result reads as evidence Option C meets production needs."
+    },
+    {
+      "candidate": "c14",
+      "verdict": "set",
+      "claimUnits": ["u40"],
+      "conditionQuote": "We have not load-tested Options A or B. ... but that is the provider's figure, not ours.",
+      "claimQuote": "The provider documents throughput far above our peak for Option A",
+      "confidence": "medium",
+      "note": "Evidence gap for A and B; the documented-throughput claim stays true as attributed."
+    },
+    {
+      "candidate": "c15",
+      "verdict": "ambiguous",
+      "claimUnits": ["u36", "u41"],
+      "conditionQuote": "The decision is deferred until Option C has been measured at 1,800 jobs per minute on a production-sized database.",
+      "claimQuote": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+      "confidence": "medium",
+      "note": "Reading 1 (claim): any presentation of Option C as meeting the throughput must-have is misleading until the test passes; reading 2 (set): the decision-status claim u41 ('does not recommend an option') stays true and this is the gating next step."
+    }
+  ],
+  "additional": [
+    {
+      "conditionUnits": ["u45"],
+      "verdict": "set",
+      "claimUnits": ["u29"],
+      "conditionQuote": "Option B: a named owner for broker on-call and upgrades.",
+      "claimQuote": "Option B gives us priority queues and delayed delivery",
+      "confidence": "medium",
+      "note": "Open prerequisite for Option B, parallel to c6/c15; the benefit claim stays true."
+    }
+  ]
+}

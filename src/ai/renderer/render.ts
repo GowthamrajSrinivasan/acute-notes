@@ -16,17 +16,19 @@
  * imports Excalidraw or reads any live state itself.
  */
 import type { ChangeSet, ContentSourceRecord, ProposedChange } from "@/ai/changes/changeSet";
-import type { VisualPlan } from "@/ai/visual-plan/types";
+import type { VisualNode, VisualPlan } from "@/ai/visual-plan/types";
 import { isDiagramGroup, wrapArchitecturePlan } from "@/ai/visual-plan/architectureFrame";
-import { groupTakeawayKey, groupTitleKey, isClusterKey } from "@/ai/visual-plan/groups";
+import { groupTakeawayKey, groupTitleKey, isBackdropKey, subGroupKey, subGroupTitleKey } from "@/ai/visual-plan/groups";
+import type { Organisation } from "@/ai/visual-plan/grouping";
 import { frameName } from "@/ai/visual-plan/sectionKinds";
 import { boundsOf, findPlacement } from "./place";
-import { layoutPlan, sectionOfNodes } from "./layout";
+import type { FramePart } from "./frameSplit";
+import { layoutPlanWithParts, sectionOfNodes, subGroupLayout } from "./layout";
 import { mapNode, withAnalysisTag, type ParseMarkdown } from "./mapNode";
 import { placeWithReflow } from "./reflow";
 import type { Box, RenderContext, SceneObject } from "./types";
 
-export type { Box, RenderContext, SceneObject };
+export type { Box, Organisation, RenderContext, SceneObject };
 
 export interface RenderVisualPlanOptions {
   operationId: string;
@@ -43,6 +45,11 @@ export interface RenderVisualPlanOptions {
    * Tests inject a trivial stub to stay pure and DOM-free.
    */
   parseMarkdown?: ParseMarkdown;
+  /**
+   * The organisation rules (organisation-layout plan §3.0): "v1" (default) is today's layout byte for byte; "v2" orders
+   * frames by their links and draws sub-groups. The integrator sets it from the note model (distil → v2).
+   */
+  organisation?: Organisation;
 }
 
 let defaultParser: Promise<ParseMarkdown> | null = null;
@@ -58,17 +65,24 @@ export async function renderVisualPlan(validated: VisualPlan, options: RenderVis
   const needsMarkdown = plan.nodes.some((n) => n.type === "text" || n.type === "page");
   const parseMarkdown = options.parseMarkdown ?? (needsMarkdown ? await loadDefaultParser() : neverCalled);
 
-  const local = layoutPlan(plan);
+  const { boxes: local, parts } = layoutPlanWithParts(plan, options.organisation ? { organisation: options.organisation } : {});
   const { boxes, moves } = placeOnCanvas(local, options.context);
 
   // Sections (F42) first, so their frames sit under their members in review; each also gets a centred XL title.
-  const sections = sectionOfNodes(plan);
-  const groups = plan.nodes.filter((n) => n.type === "group");
+  // Organisation v2: a section's sub-groups are drawn inside its frame (a backdrop and a small title), never as frames.
+  const v2 = options.organisation === "v2";
+  const sections = sectionOfNodes(plan, { organisation: options.organisation });
+  const { subsOf } = v2 ? subGroupLayout(plan) : { subsOf: new Map<string, VisualNode[]>() };
+  /** Each sub-group's backdrop and title keys, by the sub-group's id. */
+  const subKeys = new Map([...subsOf].flatMap(([g, subs]) => subs.map((s, i) => [s.id, { node: s, backdrop: subGroupKey(g, i), title: subGroupTitleKey(g, i) }] as const)));
+  const groups = plan.nodes.filter((n) => n.type === "group" && !subKeys.has(n.id));
   const changes: ProposedChange[] = groups.flatMap((g, i) => {
+    if (g.type !== "group") return [];
     const title = groupTitleKey(g.id);
     const takeaway = g.content.takeaway ? groupTakeawayKey(g.id) : null;
-    const backdrops = [...boxes.keys()].filter((k) => isClusterKey(k) && k.startsWith(`${g.id}::`));
-    const children = [title, ...(takeaway ? [takeaway] : []), ...backdrops, ...plan.nodes.filter((n) => sections.get(n.id) === g.id).map((n) => n.id)];
+    const backdrops = [...boxes.keys()].filter((k) => isBackdropKey(k) && k.startsWith(`${g.id}::`));
+    const subTitles = (subsOf.get(g.id) ?? []).flatMap((s) => (boxes.has(subKeys.get(s.id)!.title) ? [subKeys.get(s.id)!.title] : []));
+    const children = [title, ...(takeaway ? [takeaway] : []), ...backdrops, ...subTitles, ...plan.nodes.filter((n) => sections.get(n.id) === g.id).map((n) => n.id)];
     const frame = mapNode(g, boxes.get(g.id)!, parseMarkdown);
     const heading = mapNode(
       { id: title, type: "heading", role: "section", content: { text: g.content.label }, ...(g.stableKey ? { stableKey: g.stableKey } : {}) },
@@ -85,17 +99,42 @@ export async function renderVisualPlan(validated: VisualPlan, options: RenderVis
     const overview = { title: g.content.label, ...(g.content.takeaway ? { takeaway: g.content.takeaway } : {}) };
     // An architecture section's frame is interactive (kinds, relationship cards, legend) and carries its info cards.
     const diagram = isDiagramGroup(plan, g) ? { diagram: g.content.cards?.length ? { cards: g.content.cards } : {}, ...(g.content.level !== undefined ? { level: g.content.level } : {}) } : {};
-    return [{ ...frame, title: frameName(g.role, i + 1), children, overview, ...diagram } as ProposedChange, heading as ProposedChange, ...line];
+    const split = parts.get(g.id);
+    if (!split) return [{ ...frame, title: frameName(g.role, i + 1), children, overview, ...diagram } as ProposedChange, heading as ProposedChange, ...line];
+    // Organisation v2, a section too large to read whole (frameSplit.ts): one frame per part, each listing only what it
+    // holds, in the order an unsplit frame lists it. Part 1 is the section's own frame, title and takeaway; a later
+    // part gets a frame and a continuation title ("Section — sub-topic"), layout objects with no stable key.
+    const own = (p: FramePart) => {
+      const keys = new Set(p.children);
+      return children.filter((k) => keys.has(k));
+    };
+    const [first, ...later] = split;
+    return [
+      { ...frame, title: frameName(g.role, i + 1), children: own(first!), overview } as ProposedChange,
+      heading as ProposedChange,
+      ...line,
+      ...later.flatMap((p) => [
+        { ...mapNode({ ...g, id: p.key }, boxes.get(p.key)!, parseMarkdown), title: `${frameName(g.role, i + 1)} (${p.index} of ${p.count})`, children: [p.titleKey, ...own(p)], overview: { title: p.title } } as ProposedChange,
+        mapNode({ id: p.titleKey, type: "heading", role: "section", content: { text: p.title } }, boxes.get(p.titleKey)!, parseMarkdown) as ProposedChange,
+      ]),
+    ];
   });
-  // A section's sub-topics, each on a backdrop drawn before (so behind) what it groups.
-  for (const [key, box] of boxes) if (isClusterKey(key)) changes.push({ kind: "create_shape", key, shape: "rectangle", box, backdrop: true });
+  // A section's sub-topics and sub-groups, each on a backdrop drawn before (so behind) what it groups.
+  for (const [key, box] of boxes) if (isBackdropKey(key)) changes.push({ kind: "create_shape", key, shape: "rectangle", box, backdrop: true });
+  // A sub-group's title: a plain heading carrying the sub-group's stable key, the object it reconciles by (`ungroup`).
+  for (const { node, title } of subKeys.values()) {
+    const box = boxes.get(title);
+    if (box && node.type === "group") changes.push(mapNode({ id: title, type: "heading", content: { text: node.content.label }, ...(node.stableKey ? { stableKey: node.stableKey } : {}) }, box, parseMarkdown) as ProposedChange);
+  }
+  /** A link to a whole sub-group ends at its backdrop. */
+  const endOf = (id: string) => subKeys.get(id)?.backdrop ?? id;
   for (const n of plan.nodes) if (n.type !== "group") changes.push(mapNode(withAnalysisTag(n), boxes.get(n.id)!, parseMarkdown) as ProposedChange);
   plan.relationships.forEach((r, i) => {
     changes.push({
       kind: "connect",
       key: `__rel${i}`,
-      from: { created: r.from },
-      to: { created: r.to },
+      from: { created: endOf(r.from) },
+      to: { created: endOf(r.to) },
       relation: r.type,
       ...(r.label ? { label: r.label } : {}),
       ...(r.explanation ? { explanation: r.explanation } : {}),

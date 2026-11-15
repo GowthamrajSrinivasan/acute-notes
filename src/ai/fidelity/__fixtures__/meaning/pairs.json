@@ -1,0 +1,3159 @@
+{
+  "version": 2,
+  "rubric": ".ai/docs/meaning-labelling-rubric.md",
+  "pairs": [
+    {
+      "id": "ql-01",
+      "kind": "qualifier",
+      "source": "Adding a reranker can improve answer quality on long documents.",
+      "card": "A reranker may improve answer quality on long documents.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-02",
+      "kind": "qualifier",
+      "source": "Nightly compaction usually finishes before the morning peak.",
+      "card": "Compaction typically completes ahead of the morning peak.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-03",
+      "kind": "qualifier",
+      "source": "Users may see stale prices for a few seconds after an update.",
+      "card": "Prices can appear stale briefly after an update.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-04",
+      "kind": "qualifier",
+      "source": "The linter often catches unused imports that reviewers miss.",
+      "card": "Reviewers miss unused imports that the linter frequently flags.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-05",
+      "kind": "qualifier",
+      "source": "Some customers prefer exporting reports as CSV rather than PDF.",
+      "card": "Some customers would rather export reports to CSV than PDF.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-06",
+      "kind": "qualifier",
+      "source": "Cold starts might add noticeable delay to the first request.",
+      "card": "The first request may be noticeably slower due to cold starts.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-07",
+      "kind": "qualifier",
+      "source": "Smaller batch sizes generally reduce memory pressure during training.",
+      "card": "In general, smaller batches lower memory pressure in training.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-08",
+      "kind": "qualifier",
+      "source": "Retrying a timed-out upload sometimes produces a duplicate file.",
+      "card": "A retried upload that timed out can occasionally create a duplicate file.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-09",
+      "kind": "qualifier",
+      "source": "The new parser is likely to handle malformed headers better.",
+      "card": "The new parser should probably cope better with malformed headers.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-10",
+      "kind": "qualifier",
+      "source": "Most incidents last year were caused by configuration changes.",
+      "card": "Configuration changes were behind most of last year's incidents.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-11",
+      "kind": "qualifier",
+      "source": "Static pages can typically be served straight from the CDN.",
+      "card": "Static pages can usually be served directly from the CDN.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-12",
+      "kind": "qualifier",
+      "source": "Large imports may take several minutes to appear in search.",
+      "card": "Search might take several minutes to show large imports.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-13",
+      "kind": "qualifier",
+      "source": "Enabling verbose logging can slow the service down noticeably.",
+      "card": "Verbose logging may noticeably slow the service.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-14",
+      "kind": "qualifier",
+      "source": "Adding a reranker can improve answer quality on long documents.",
+      "card": "A reranker improves answer quality on long documents.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-15",
+      "kind": "qualifier",
+      "source": "Nightly compaction usually finishes before the morning peak.",
+      "card": "Nightly compaction finishes before the morning peak.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-16",
+      "kind": "qualifier",
+      "source": "Users may see stale prices for a few seconds after an update.",
+      "card": "Users see stale prices for a few seconds after an update.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-17",
+      "kind": "qualifier",
+      "source": "The linter often catches unused imports that reviewers miss.",
+      "card": "The linter catches the unused imports reviewers miss.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-18",
+      "kind": "qualifier",
+      "source": "Some customers prefer exporting reports as CSV rather than PDF.",
+      "card": "Customers prefer CSV exports to PDF.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-19",
+      "kind": "qualifier",
+      "source": "Cold starts might add noticeable delay to the first request.",
+      "card": "Cold starts add noticeable delay to the first request.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-20",
+      "kind": "qualifier",
+      "source": "Smaller batch sizes generally reduce memory pressure during training.",
+      "card": "Smaller batch sizes reduce memory pressure during training.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-21",
+      "kind": "qualifier",
+      "source": "Switching to HTTP/2 may lower page load times for image-heavy pages.",
+      "card": "HTTP/2 lowers page load times for image-heavy pages.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-22",
+      "kind": "qualifier",
+      "source": "The new parser is likely to handle malformed headers better.",
+      "card": "The new parser handles malformed headers better.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-23",
+      "kind": "qualifier",
+      "source": "Feature flags can reduce the risk of a bad release.",
+      "card": "Feature flags remove the risk of a bad release.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-24",
+      "kind": "qualifier",
+      "source": "Static pages can typically be served straight from the CDN.",
+      "card": "Static pages are served straight from the CDN.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-25",
+      "kind": "qualifier",
+      "source": "Large imports may take several minutes to appear in search.",
+      "card": "Large imports take several minutes to appear in search.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "'several' on the card is not a hedge on the claim",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ql-26",
+      "kind": "qualifier",
+      "source": "Pair programming tends to shorten onboarding for new hires.",
+      "card": "Pair programming shortens onboarding for new hires.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-01",
+      "kind": "condition",
+      "source": "The cache returns the stored answer when the request hash matches a previous query.",
+      "card": "If a request's hash matches an earlier query, the cache serves the stored answer.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-02",
+      "kind": "condition",
+      "source": "Deploys pause automatically if the error rate exceeds 2% for five minutes.",
+      "card": "An error rate above 2% for five minutes automatically pauses deploys.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-03",
+      "kind": "condition",
+      "source": "Refunds are issued automatically unless the order has already shipped.",
+      "card": "Orders that have not shipped yet get refunded automatically.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-04",
+      "kind": "condition",
+      "source": "Students can resubmit an assignment provided the deadline has not passed.",
+      "card": "Assignments may be resubmitted as long as the deadline is still open.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-05",
+      "kind": "condition",
+      "source": "When a pull request touches the schema, a database reviewer must approve it.",
+      "card": "Pull requests that change the schema need a database reviewer's approval.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-06",
+      "kind": "condition",
+      "source": "The job retries only when the failure is a network timeout.",
+      "card": "Only network timeouts trigger a retry of the job.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-07",
+      "kind": "condition",
+      "source": "If the token expires mid-session, the client refreshes it silently.",
+      "card": "The client silently refreshes a token that expires during a session.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-08",
+      "kind": "condition",
+      "source": "Backups are copied to the second region once the nightly snapshot completes.",
+      "card": "After the nightly snapshot finishes, backups are copied to the second region.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-09",
+      "kind": "condition",
+      "source": "Alerts page the on-call engineer only if the outage lasts longer than ten minutes.",
+      "card": "The on-call engineer is paged only for outages longer than ten minutes.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-10",
+      "kind": "condition",
+      "source": "The form saves a draft whenever the user leaves a field.",
+      "card": "Each time the user leaves a field, the form saves a draft.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-11",
+      "kind": "condition",
+      "source": "Discounts apply if the basket total is above fifty dollars.",
+      "card": "Baskets over fifty dollars qualify for the discount.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-12",
+      "kind": "condition",
+      "source": "Unless a reviewer objects within two days, the proposal is accepted.",
+      "card": "The proposal is accepted if no reviewer objects within two days.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-13",
+      "kind": "condition",
+      "source": "The dashboard switches to dark mode when the system theme is dark.",
+      "card": "With a dark system theme, the dashboard uses dark mode.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-14",
+      "kind": "condition",
+      "source": "The cache returns the stored answer when the request hash matches a previous query.",
+      "card": "The cache returns the stored answer for every request.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-15",
+      "kind": "condition",
+      "source": "Deploys pause automatically if the error rate exceeds 2% for five minutes.",
+      "card": "Deploys pause automatically whenever errors occur.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-16",
+      "kind": "condition",
+      "source": "Refunds are issued automatically unless the order has already shipped.",
+      "card": "Refunds are issued automatically if the order has already shipped.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-17",
+      "kind": "condition",
+      "source": "Students can resubmit an assignment provided the deadline has not passed.",
+      "card": "Students can resubmit an assignment at any time.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-18",
+      "kind": "condition",
+      "source": "When a pull request touches the schema, a database reviewer must approve it.",
+      "card": "A database reviewer must approve every pull request.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-19",
+      "kind": "condition",
+      "source": "The job retries only when the failure is a network timeout.",
+      "card": "The job retries whenever it fails.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-20",
+      "kind": "condition",
+      "source": "If the token expires mid-session, the client refreshes it silently.",
+      "card": "The client refreshes the token silently on every request.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-21",
+      "kind": "condition",
+      "source": "Backups are copied to the second region once the nightly snapshot completes.",
+      "card": "Backups are copied to the second region continuously.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-22",
+      "kind": "condition",
+      "source": "Alerts page the on-call engineer only if the outage lasts longer than ten minutes.",
+      "card": "Alerts page the on-call engineer as soon as an outage starts.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-23",
+      "kind": "condition",
+      "source": "Discounts apply if the basket total is above fifty dollars.",
+      "card": "Discounts apply to every basket.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-24",
+      "kind": "condition",
+      "source": "Unless a reviewer objects within two days, the proposal is accepted.",
+      "card": "The proposal is accepted once a reviewer approves it.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-25",
+      "kind": "condition",
+      "source": "The dashboard switches to dark mode when the system theme is dark.",
+      "card": "The dashboard always uses dark mode.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cd-26",
+      "kind": "condition",
+      "source": "Read receipts are sent only if both users have enabled them.",
+      "card": "Read receipts are always sent.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-01",
+      "kind": "negation",
+      "source": "The importer does not retry failed rows.",
+      "card": "Failed rows are never retried by the importer.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-02",
+      "kind": "negation",
+      "source": "Guest accounts cannot create shared folders.",
+      "card": "Shared folders can't be created by guest accounts.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-03",
+      "kind": "negation",
+      "source": "The SDK no longer supports Python 3.7.",
+      "card": "Python 3.7 support has been dropped from the SDK.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-04",
+      "kind": "negation",
+      "source": "Archived projects are not included in search results.",
+      "card": "Search results leave out archived projects.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-05",
+      "kind": "negation",
+      "source": "The mobile app does not store passwords on the device.",
+      "card": "Passwords are never kept on the device by the mobile app.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-06",
+      "kind": "negation",
+      "source": "Without a valid licence key, the plugin will not start.",
+      "card": "The plugin won't start unless a valid licence key is present.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-07",
+      "kind": "negation",
+      "source": "Webhooks are not signed in the free plan.",
+      "card": "On the free plan, webhooks come unsigned.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-08",
+      "kind": "negation",
+      "source": "The scheduler doesn't run jobs on public holidays.",
+      "card": "The scheduler runs no jobs on public holidays.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "card rewritten 2026-10-19 (was: \"No jobs run on public holidays.\"), see resolutions.json"
+    },
+    {
+      "id": "ng-09",
+      "kind": "negation",
+      "source": "Exported files contain no personal data.",
+      "card": "Personal data is not included in exported files.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-10",
+      "kind": "negation",
+      "source": "The free tier does not include priority support.",
+      "card": "Priority support isn't part of the free tier.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-11",
+      "kind": "negation",
+      "source": "Changing the theme does not reload the page.",
+      "card": "The page stays loaded when the theme changes.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-12",
+      "kind": "negation",
+      "source": "Draft posts are not visible to subscribers.",
+      "card": "Subscribers cannot see draft posts.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-13",
+      "kind": "negation",
+      "source": "The service never deletes data without a confirmation step.",
+      "card": "Data is deleted only after a confirmation step.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-14",
+      "kind": "negation",
+      "source": "The importer does not retry failed rows.",
+      "card": "The importer retries failed rows.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-15",
+      "kind": "negation",
+      "source": "Guest accounts cannot create shared folders.",
+      "card": "Guest accounts can create shared folders.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-16",
+      "kind": "negation",
+      "source": "The SDK no longer supports Python 3.7.",
+      "card": "The SDK supports Python 3.7.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-17",
+      "kind": "negation",
+      "source": "Archived projects are not included in search results.",
+      "card": "Search results include archived projects.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-18",
+      "kind": "negation",
+      "source": "The mobile app does not store passwords on the device.",
+      "card": "The mobile app stores passwords on the device.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-19",
+      "kind": "negation",
+      "source": "Without a valid licence key, the plugin will not start.",
+      "card": "The plugin starts without a licence key.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-20",
+      "kind": "negation",
+      "source": "Webhooks are not signed in the free plan.",
+      "card": "Webhooks are signed in the free plan.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-21",
+      "kind": "negation",
+      "source": "The scheduler doesn't run jobs on public holidays.",
+      "card": "The scheduler runs jobs on public holidays as well.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-22",
+      "kind": "negation",
+      "source": "Exported files contain no personal data.",
+      "card": "Exported files contain personal data.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-23",
+      "kind": "negation",
+      "source": "Read replicas are not used for writes.",
+      "card": "Writes go to the read replicas.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-24",
+      "kind": "negation",
+      "source": "Changing the theme does not reload the page.",
+      "card": "Changing the theme reloads the page.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-25",
+      "kind": "negation",
+      "source": "Draft posts are not visible to subscribers.",
+      "card": "Subscribers can see draft posts.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "ng-26",
+      "kind": "negation",
+      "source": "The API does not return deleted records by default.",
+      "card": "The API returns deleted records by default.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-01",
+      "kind": "cause",
+      "source": "Slow disk writes cause the queue to back up.",
+      "card": "The queue backs up because disk writes are slow.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-02",
+      "kind": "cause",
+      "source": "Caching the product list reduces database load.",
+      "card": "Database load drops when the product list is cached.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-03",
+      "kind": "cause",
+      "source": "The outage was triggered by an expired TLS certificate.",
+      "card": "An expired TLS certificate caused the outage.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-04",
+      "kind": "cause",
+      "source": "Higher traffic leads to longer checkout times.",
+      "card": "Checkout times grow as traffic rises.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-05",
+      "kind": "cause",
+      "source": "Because the index was rebuilt, queries are faster this week.",
+      "card": "Queries are faster this week thanks to the rebuilt index.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-06",
+      "kind": "cause",
+      "source": "Weak passwords lead to more account takeovers.",
+      "card": "Account takeovers increase with weak passwords.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-07",
+      "kind": "cause",
+      "source": "The build failed because a dependency was removed from the registry.",
+      "card": "A dependency removed from the registry broke the build.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-08",
+      "kind": "cause",
+      "source": "Compressing images shrinks page weight.",
+      "card": "Page weight goes down when images are compressed.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-09",
+      "kind": "cause",
+      "source": "Memory leaks in the worker cause the nightly restarts.",
+      "card": "The nightly restarts are caused by memory leaks in the worker.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-10",
+      "kind": "cause",
+      "source": "Adding an index speeds up lookups by customer ID.",
+      "card": "Lookups by customer ID are faster with an index.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-11",
+      "kind": "cause",
+      "source": "Low test coverage results in more regressions reaching production.",
+      "card": "More regressions reach production as a result of low test coverage.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-12",
+      "kind": "cause",
+      "source": "The release slipped since the security review took longer than planned.",
+      "card": "A longer-than-planned security review delayed the release.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-13",
+      "kind": "cause",
+      "source": "Rate limiting prevents a single client from exhausting the API.",
+      "card": "A single client can't exhaust the API thanks to rate limiting.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-14",
+      "kind": "cause",
+      "source": "Slow disk writes cause the queue to back up.",
+      "card": "A backed-up queue causes slow disk writes.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-15",
+      "kind": "cause",
+      "source": "Caching the product list reduces database load.",
+      "card": "Caching the product list increases database load.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-16",
+      "kind": "cause",
+      "source": "The outage was triggered by an expired TLS certificate.",
+      "card": "The outage caused the TLS certificate to expire.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-17",
+      "kind": "cause",
+      "source": "Higher traffic leads to longer checkout times.",
+      "card": "Longer checkout times lead to higher traffic.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-18",
+      "kind": "cause",
+      "source": "Because the index was rebuilt, queries are faster this week.",
+      "card": "Queries are slower this week because the index was rebuilt.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-19",
+      "kind": "cause",
+      "source": "Weak passwords lead to more account takeovers.",
+      "card": "Account takeovers lead to weak passwords.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-20",
+      "kind": "cause",
+      "source": "The team adopted code review after two production incidents.",
+      "card": "Code review caused two production incidents.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "a sequence in the source becomes a cause",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-21",
+      "kind": "cause",
+      "source": "Compressing images shrinks page weight.",
+      "card": "Compressing images increases page weight.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-22",
+      "kind": "cause",
+      "source": "Memory leaks in the worker cause the nightly restarts.",
+      "card": "The nightly restarts cause memory leaks in the worker.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-23",
+      "kind": "cause",
+      "source": "Adding an index speeds up lookups by customer ID.",
+      "card": "Adding an index slows down lookups by customer ID.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-24",
+      "kind": "cause",
+      "source": "Low test coverage results in more regressions reaching production.",
+      "card": "Regressions reaching production result in low test coverage.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-25",
+      "kind": "cause",
+      "source": "Sign-ups rose in the same month the pricing page was redesigned.",
+      "card": "The pricing page redesign drove the rise in sign-ups.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "coincidence stated as a cause",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cs-26",
+      "kind": "cause",
+      "source": "Error rates fell after the retry policy was changed.",
+      "card": "The new retry policy caused error rates to fall.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "sequence stated as a cause",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-01",
+      "kind": "quantity",
+      "source": "The client retries up to 3 times before giving up.",
+      "card": "The client gives up after at most three retries.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-02",
+      "kind": "quantity",
+      "source": "Uploads are limited to 25 MB per file.",
+      "card": "Each file can be at most 25 MB.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-03",
+      "kind": "quantity",
+      "source": "The migration took about 40 minutes on the staging database.",
+      "card": "On staging, the migration ran for roughly 40 minutes.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-04",
+      "kind": "quantity",
+      "source": "Response times stay under 200 milliseconds for 95% of requests.",
+      "card": "95% of requests complete in under 200 ms.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-05",
+      "kind": "quantity",
+      "source": "The plan includes 1,000 API calls per day.",
+      "card": "The plan allows 1000 API calls a day.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-06",
+      "kind": "quantity",
+      "source": "At least two approvals are required before merging.",
+      "card": "Merging needs a minimum of two approvals.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-07",
+      "kind": "quantity",
+      "source": "Sessions expire after 30 minutes of inactivity.",
+      "card": "After 30 minutes idle, a session expires.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-08",
+      "kind": "quantity",
+      "source": "The cluster runs between 4 and 8 worker nodes depending on load.",
+      "card": "Depending on load, the cluster uses 4-8 workers.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-09",
+      "kind": "quantity",
+      "source": "Roughly half of the tickets are resolved within a day.",
+      "card": "About 50% of tickets get resolved inside a day.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-10",
+      "kind": "quantity",
+      "source": "The free tier allows no more than five projects.",
+      "card": "Free accounts are capped at 5 projects.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-11",
+      "kind": "quantity",
+      "source": "Builds typically take 6 to 8 minutes.",
+      "card": "A build usually takes 6–8 minutes.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-12",
+      "kind": "quantity",
+      "source": "Each report covers the last 90 days of activity.",
+      "card": "Reports span the previous 90 days of activity.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-13",
+      "kind": "quantity",
+      "source": "The index holds roughly 2.5 million documents.",
+      "card": "About 2.5 million documents are in the index.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-14",
+      "kind": "quantity",
+      "source": "The client retries up to 3 times before giving up.",
+      "card": "The client retries 3 times before giving up.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-15",
+      "kind": "quantity",
+      "source": "Uploads are limited to 25 MB per file.",
+      "card": "Uploads are limited to 50 MB per file.",
+      "label": "distorted",
+      "expect": "unsupported_number",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-16",
+      "kind": "quantity",
+      "source": "The migration took about 40 minutes on the staging database.",
+      "card": "The migration took 40 minutes on the staging database.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-17",
+      "kind": "quantity",
+      "source": "Response times stay under 200 milliseconds for 95% of requests.",
+      "card": "Response times stay under 200 seconds for 95% of requests.",
+      "label": "distorted",
+      "expect": "unsupported_number",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-18",
+      "kind": "quantity",
+      "source": "The plan includes 1,000 API calls per day.",
+      "card": "The plan includes 10,000 API calls per day.",
+      "label": "distorted",
+      "expect": "unsupported_number",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-19",
+      "kind": "quantity",
+      "source": "At least two approvals are required before merging.",
+      "card": "Two approvals are required before merging.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-20",
+      "kind": "quantity",
+      "source": "Sessions expire after 30 minutes of inactivity.",
+      "card": "Sessions expire after 13 minutes of inactivity.",
+      "label": "distorted",
+      "expect": "unsupported_number",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-21",
+      "kind": "quantity",
+      "source": "The cluster runs between 4 and 8 worker nodes depending on load.",
+      "card": "The cluster runs 8 worker nodes.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-22",
+      "kind": "quantity",
+      "source": "Roughly half of the tickets are resolved within a day.",
+      "card": "All tickets are resolved within a day.",
+      "label": "distorted",
+      "expect": "absolute_added",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-23",
+      "kind": "quantity",
+      "source": "The free tier allows no more than five projects.",
+      "card": "The free tier allows five projects.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-24",
+      "kind": "quantity",
+      "source": "Builds typically take 6 to 8 minutes.",
+      "card": "Builds take 8 minutes.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-25",
+      "kind": "quantity",
+      "source": "Each report covers the last 90 days of activity.",
+      "card": "Each report covers the last 9 days of activity.",
+      "label": "distorted",
+      "expect": "unsupported_number",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "qt-26",
+      "kind": "quantity",
+      "source": "The index holds roughly 2.5 million documents.",
+      "card": "The index holds 25 million documents.",
+      "label": "distorted",
+      "expect": "unsupported_number",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-01",
+      "kind": "trade_off",
+      "source": "The columnar format speeds up analytics queries but uses more disk space.",
+      "card": "Analytics queries run faster in the columnar format, at the price of extra disk space.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-02",
+      "kind": "trade_off",
+      "source": "Synchronous replication protects against data loss at the cost of higher write latency.",
+      "card": "Synchronous replication has higher write latency but protects against data loss.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "card rewritten 2026-10-19 (was: \"Writes are slower with synchronous replication, but data loss is avoided.\"), see resolutions.json"
+    },
+    {
+      "id": "to-03",
+      "kind": "trade_off",
+      "source": "Serverless functions cut idle costs, though cold starts add latency.",
+      "card": "Serverless saves on idle costs; the trade-off is cold-start latency.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-04",
+      "kind": "trade_off",
+      "source": "A larger context window improves recall while raising token costs.",
+      "card": "Bigger context windows recall more but cost more tokens.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-05",
+      "kind": "trade_off",
+      "source": "Denormalising the tables makes reads simpler but complicates updates.",
+      "card": "Reads get simpler with denormalised tables; updates get harder.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-06",
+      "kind": "trade_off",
+      "source": "Strict type checking catches bugs earlier, although it slows down prototyping.",
+      "card": "Strict type checks find bugs sooner but make prototyping slower.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-07",
+      "kind": "trade_off",
+      "source": "Batching notifications reduces noise but delays urgent alerts.",
+      "card": "Batched notifications are less noisy, though urgent alerts arrive later.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-08",
+      "kind": "trade_off",
+      "source": "The managed database saves operations work but costs more per month than self-hosting.",
+      "card": "Managed hosting costs more monthly than self-hosting, in exchange for less operations work.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-09",
+      "kind": "trade_off",
+      "source": "Higher compression levels shrink archives while using more CPU.",
+      "card": "Stronger compression gives smaller archives and takes more CPU.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-10",
+      "kind": "trade_off",
+      "source": "Long-lived access tokens are convenient for users, but they widen the window for misuse.",
+      "card": "Long-lived tokens are convenient, but a stolen one can be misused for longer.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-11",
+      "kind": "trade_off",
+      "source": "Client-side rendering makes navigation feel instant, at the expense of a slower first load.",
+      "card": "Navigation feels instant with client-side rendering, but the first load is slower.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-12",
+      "kind": "trade_off",
+      "source": "Pinning dependency versions makes builds reproducible but means security fixes arrive later.",
+      "card": "Pinned versions give reproducible builds, while security patches land later.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-13",
+      "kind": "trade_off",
+      "source": "Running tests in parallel shortens the pipeline, though flaky tests become harder to debug.",
+      "card": "Parallel tests shorten the pipeline but make flaky failures harder to debug.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-14",
+      "kind": "trade_off",
+      "source": "The columnar format speeds up analytics queries but uses more disk space.",
+      "card": "The columnar format speeds up analytics queries and saves disk space.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "cost inverted",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-15",
+      "kind": "trade_off",
+      "source": "Synchronous replication protects against data loss at the cost of higher write latency.",
+      "card": "Synchronous replication protects against data loss with no effect on write latency.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "cost denied",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-16",
+      "kind": "trade_off",
+      "source": "Serverless functions cut idle costs, though cold starts add latency.",
+      "card": "Serverless functions cut idle costs and latency.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-17",
+      "kind": "trade_off",
+      "source": "A larger context window improves recall while raising token costs.",
+      "card": "A larger context window improves recall and lowers token costs.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "cost inverted",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-18",
+      "kind": "trade_off",
+      "source": "Denormalising the tables makes reads simpler but complicates updates.",
+      "card": "Denormalising the tables makes reads and updates simpler.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "cost inverted",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-19",
+      "kind": "trade_off",
+      "source": "Strict type checking catches bugs earlier, although it slows down prototyping.",
+      "card": "Strict type checking catches bugs earlier.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-20",
+      "kind": "trade_off",
+      "source": "Batching notifications reduces noise but delays urgent alerts.",
+      "card": "Batching notifications reduces noise without delaying anything.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "cost denied",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-21",
+      "kind": "trade_off",
+      "source": "The managed database saves operations work but costs more per month than self-hosting.",
+      "card": "The managed database saves operations work and money compared with self-hosting.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "cost inverted",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-22",
+      "kind": "trade_off",
+      "source": "Higher compression levels shrink archives while using more CPU.",
+      "card": "Higher compression levels shrink archives and save CPU.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "cost inverted",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-23",
+      "kind": "trade_off",
+      "source": "Long-lived access tokens are convenient for users, but they widen the window for misuse.",
+      "card": "Long-lived access tokens are convenient and safer for users.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "cost inverted",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-24",
+      "kind": "trade_off",
+      "source": "Client-side rendering makes navigation feel instant, at the expense of a slower first load.",
+      "card": "Client-side rendering makes navigation and the first load instant.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "cost inverted",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-25",
+      "kind": "trade_off",
+      "source": "Pinning dependency versions makes builds reproducible but means security fixes arrive later.",
+      "card": "Pinning dependency versions makes builds reproducible and keeps security fixes current.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "cost inverted",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "to-26",
+      "kind": "trade_off",
+      "source": "Running tests in parallel shortens the pipeline, though flaky tests become harder to debug.",
+      "card": "Running tests in parallel shortens the pipeline.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-01",
+      "kind": "scope",
+      "source": "Read replicas are recommended for read-only workloads.",
+      "card": "For read-only workloads, use read replicas.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-02",
+      "kind": "scope",
+      "source": "Two-factor login is mandatory for administrator accounts.",
+      "card": "Administrator accounts must use two-factor login.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-03",
+      "kind": "scope",
+      "source": "The offline mode is only available on the desktop app.",
+      "card": "Only the desktop app has offline mode.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-04",
+      "kind": "scope",
+      "source": "Automatic backups run only for paid plans.",
+      "card": "Paid plans get automatic backups; free plans don't.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-05",
+      "kind": "scope",
+      "source": "The bulk-edit tool is limited to projects with fewer than 500 items.",
+      "card": "Bulk editing works on projects of under 500 items.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-06",
+      "kind": "scope",
+      "source": "In the EU region, logs are retained for 30 days.",
+      "card": "EU-region logs are kept for 30 days.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-07",
+      "kind": "scope",
+      "source": "Single sign-on is supported for enterprise customers.",
+      "card": "Enterprise customers can sign in with single sign-on.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-08",
+      "kind": "scope",
+      "source": "The cleanup script deletes temporary files except those in the shared folder.",
+      "card": "Apart from the shared folder, the cleanup script removes temporary files.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-09",
+      "kind": "scope",
+      "source": "Price alerts are sent to premium subscribers only.",
+      "card": "Only premium subscribers receive price alerts.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-10",
+      "kind": "scope",
+      "source": "On Windows hosts, the agent runs as a service.",
+      "card": "The agent runs as a Windows service.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-11",
+      "kind": "scope",
+      "source": "The new pricing applies to customers who sign up after 1 March.",
+      "card": "Customers signing up after 1 March get the new pricing.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-12",
+      "kind": "scope",
+      "source": "Rate limits are relaxed for internal services.",
+      "card": "Internal services get looser rate limits.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-13",
+      "kind": "scope",
+      "source": "Dark launches are used only for backend changes.",
+      "card": "Only backend changes are dark-launched.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-14",
+      "kind": "scope",
+      "source": "Read replicas are recommended for read-only workloads.",
+      "card": "Read replicas are recommended.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-15",
+      "kind": "scope",
+      "source": "Two-factor login is mandatory for administrator accounts.",
+      "card": "Two-factor login is mandatory for all accounts.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-16",
+      "kind": "scope",
+      "source": "The offline mode is only available on the desktop app.",
+      "card": "Offline mode is available in the app.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-17",
+      "kind": "scope",
+      "source": "Automatic backups run only for paid plans.",
+      "card": "Automatic backups run for every plan.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-18",
+      "kind": "scope",
+      "source": "The bulk-edit tool is limited to projects with fewer than 500 items.",
+      "card": "The bulk-edit tool works on any project.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-19",
+      "kind": "scope",
+      "source": "In the EU region, logs are retained for 30 days.",
+      "card": "Logs are retained for 30 days.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-20",
+      "kind": "scope",
+      "source": "Single sign-on is supported for enterprise customers.",
+      "card": "Single sign-on is supported for customers.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-21",
+      "kind": "scope",
+      "source": "The cleanup script deletes temporary files except those in the shared folder.",
+      "card": "The cleanup script deletes all temporary files, including the shared folder.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-22",
+      "kind": "scope",
+      "source": "Price alerts are sent to premium subscribers only.",
+      "card": "Price alerts are sent to subscribers.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-23",
+      "kind": "scope",
+      "source": "On Windows hosts, the agent runs as a service.",
+      "card": "The agent runs as a service on every host.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-24",
+      "kind": "scope",
+      "source": "The new pricing applies to customers who sign up after 1 March.",
+      "card": "The new pricing applies to all customers.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-25",
+      "kind": "scope",
+      "source": "Rate limits are relaxed for internal services.",
+      "card": "Rate limits are relaxed for services.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "sc-26",
+      "kind": "scope",
+      "source": "Dark launches are used only for backend changes.",
+      "card": "Dark launches are used for all changes.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-01",
+      "kind": "compound",
+      "source": "The new search ranks recent documents higher, but it ignores files larger than 10 MB.",
+      "card": "New search favours recent documents. Files over 10 MB are ignored.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-02",
+      "kind": "compound",
+      "source": "Caching cut median latency by 40%, although the p99 latency did not change.",
+      "card": "Caching reduced median latency 40%; p99 latency stayed the same.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-03",
+      "kind": "compound",
+      "source": "The importer handles CSV and Excel files, and it skips rows with missing IDs.",
+      "card": "Importer: CSV and Excel supported; rows without IDs are skipped.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-04",
+      "kind": "compound",
+      "source": "Exports finish within a minute for most workspaces, but very large workspaces can take an hour.",
+      "card": "Most workspaces export in under a minute; very large ones can take up to an hour.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-05",
+      "kind": "compound",
+      "source": "The beta adds offline editing, though changes made offline may conflict with edits from others.",
+      "card": "Beta: offline editing, with possible conflicts against others' edits.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-06",
+      "kind": "compound",
+      "source": "Sharding raised write throughput fourfold, but cross-shard queries became slower.",
+      "card": "Sharding gave 4x write throughput; cross-shard queries slowed down.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-07",
+      "kind": "compound",
+      "source": "Admins can restore deleted pages for 30 days, after which they are purged.",
+      "card": "Deleted pages are restorable by admins for 30 days, then purged.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-08",
+      "kind": "compound",
+      "source": "The scheduler supports cron syntax, but time zones other than UTC are not supported yet.",
+      "card": "Cron syntax works in the scheduler; only UTC is supported for now.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-09",
+      "kind": "compound",
+      "source": "The API returns results in pages of 100, and clients must follow the next link to get the rest.",
+      "card": "Results come in pages of 100; follow the next link for more.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-10",
+      "kind": "compound",
+      "source": "Search indexing runs every hour, unless the queue is paused for maintenance.",
+      "card": "Indexing runs hourly except while the queue is paused for maintenance.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-11",
+      "kind": "compound",
+      "source": "Voice notes are transcribed automatically, but the transcripts are not reviewed by a person.",
+      "card": "Voice notes get automatic transcripts that no person reviews.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-12",
+      "kind": "compound",
+      "source": "The trial lasts 14 days and converts to the basic plan if no card is added.",
+      "card": "After 14 days, a trial without a card moves to the basic plan.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-13",
+      "kind": "compound",
+      "source": "The mobile app syncs photos over Wi-Fi only, to avoid using mobile data.",
+      "card": "To save mobile data, photo sync happens only on Wi-Fi.",
+      "label": "faithful",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-14",
+      "kind": "compound",
+      "source": "The new search ranks recent documents higher, but it ignores files larger than 10 MB.",
+      "card": "The new search ranks recent documents higher.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-15",
+      "kind": "compound",
+      "source": "Caching cut median latency by 40%, although the p99 latency did not change.",
+      "card": "Caching cut latency by 40%.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-16",
+      "kind": "compound",
+      "source": "The importer handles CSV and Excel files, and it skips rows with missing IDs.",
+      "card": "The importer handles CSV and Excel files and every row in them.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-17",
+      "kind": "compound",
+      "source": "Exports finish within a minute for most workspaces, but very large workspaces can take an hour.",
+      "card": "Exports finish within a minute.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-18",
+      "kind": "compound",
+      "source": "The beta adds offline editing, though changes made offline may conflict with edits from others.",
+      "card": "The beta adds offline editing.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-19",
+      "kind": "compound",
+      "source": "Sharding raised write throughput fourfold, but cross-shard queries became slower.",
+      "card": "Sharding raised write throughput fourfold and sped up cross-shard queries.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-20",
+      "kind": "compound",
+      "source": "Admins can restore deleted pages for 30 days, after which they are purged.",
+      "card": "Admins can restore deleted pages at any time.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-21",
+      "kind": "compound",
+      "source": "The scheduler supports cron syntax, but time zones other than UTC are not supported yet.",
+      "card": "The scheduler supports cron syntax in any time zone.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-22",
+      "kind": "compound",
+      "source": "The API returns results in pages of 100, and clients must follow the next link to get the rest.",
+      "card": "The API returns all results in one response.",
+      "label": "distorted",
+      "expect": "absolute_added",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-23",
+      "kind": "compound",
+      "source": "Search indexing runs every hour, unless the queue is paused for maintenance.",
+      "card": "Search indexing runs every hour.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-24",
+      "kind": "compound",
+      "source": "Voice notes are transcribed automatically, but the transcripts are not reviewed by a person.",
+      "card": "Voice notes are transcribed automatically and checked by a person.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-25",
+      "kind": "compound",
+      "source": "The trial lasts 14 days and converts to the basic plan if no card is added.",
+      "card": "The trial lasts 14 days and then converts to the basic plan.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "cp-26",
+      "kind": "compound",
+      "source": "The mobile app syncs photos over Wi-Fi only, to avoid using mobile data.",
+      "card": "The mobile app syncs photos over Wi-Fi and mobile data.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "note": "the 'only' restriction is lost",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ql-01",
+      "kind": "qualifier",
+      "source": "Prefetching the next page can make scrolling feel smoother.",
+      "card": "Scrolling may feel smoother with prefetching of the next page.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ql-02",
+      "kind": "qualifier",
+      "source": "Customers in remote regions often see slower downloads.",
+      "card": "Downloads are frequently slower for customers in remote regions.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ql-03",
+      "kind": "qualifier",
+      "source": "A warm standby could shorten recovery after a regional failure.",
+      "card": "Recovery after a regional failure might be quicker with a warm standby.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ql-04",
+      "kind": "qualifier",
+      "source": "Spot instances can lower compute bills for batch jobs.",
+      "card": "Spot instances lower compute bills for batch jobs.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ql-05",
+      "kind": "qualifier",
+      "source": "Reviewers usually respond within one business day.",
+      "card": "Reviewers respond within one business day.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ql-06",
+      "kind": "qualifier",
+      "source": "Newer GPUs may cut training time for large models.",
+      "card": "Newer GPUs cut training time for large models.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cd-01",
+      "kind": "condition",
+      "source": "The banner appears when a user's trial has fewer than three days left.",
+      "card": "If a trial has under three days left, the user sees the banner.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cd-02",
+      "kind": "condition",
+      "source": "Orders ship the same day if they are placed before 2 pm.",
+      "card": "Orders placed before 2 pm go out the same day.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cd-03",
+      "kind": "condition",
+      "source": "Unless the user opts out, weekly summaries are emailed on Monday.",
+      "card": "Weekly summaries are emailed on Monday to users who haven't opted out.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cd-04",
+      "kind": "condition",
+      "source": "The banner appears when a user's trial has fewer than three days left.",
+      "card": "The banner appears throughout the trial.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cd-05",
+      "kind": "condition",
+      "source": "Orders ship the same day if they are placed before 2 pm.",
+      "card": "Orders always ship the same day.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cd-06",
+      "kind": "condition",
+      "source": "Unless the user opts out, weekly summaries are emailed on Monday.",
+      "card": "Weekly summaries are emailed on Monday if the user opts out.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ng-01",
+      "kind": "negation",
+      "source": "The gateway does not cache authenticated responses.",
+      "card": "Authenticated responses are never cached by the gateway.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ng-02",
+      "kind": "negation",
+      "source": "Trial accounts cannot invite more than two teammates.",
+      "card": "A trial account can invite at most two teammates.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ng-03",
+      "kind": "negation",
+      "source": "The export does not include comments.",
+      "card": "Comments are left out of the export.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ng-04",
+      "kind": "negation",
+      "source": "The gateway does not cache authenticated responses.",
+      "card": "The gateway caches authenticated responses.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ng-05",
+      "kind": "negation",
+      "source": "The migration tool does not modify the original files.",
+      "card": "The migration tool modifies the original files in place.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-ng-06",
+      "kind": "negation",
+      "source": "Logs are not sent to third parties.",
+      "card": "Logs are shared with third parties.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cs-01",
+      "kind": "cause",
+      "source": "Long-running transactions cause lock contention on the orders table.",
+      "card": "Lock contention on the orders table comes from long-running transactions.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cs-02",
+      "kind": "cause",
+      "source": "Tighter alert thresholds reduced the number of missed incidents.",
+      "card": "Tightening alert thresholds led to fewer missed incidents.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cs-03",
+      "kind": "cause",
+      "source": "The checkout errors were caused by a misconfigured payment webhook.",
+      "card": "A misconfigured payment webhook was behind the checkout errors.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cs-04",
+      "kind": "cause",
+      "source": "Long-running transactions cause lock contention on the orders table.",
+      "card": "Lock contention on the orders table causes long-running transactions.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cs-05",
+      "kind": "cause",
+      "source": "Tighter alert thresholds reduced the number of missed incidents.",
+      "card": "Tighter alert thresholds increased the number of missed incidents.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cs-06",
+      "kind": "cause",
+      "source": "Support tickets dropped in the quarter the help centre launched.",
+      "card": "The help centre launch caused support tickets to drop.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-qt-01",
+      "kind": "quantity",
+      "source": "The queue holds up to 10,000 messages.",
+      "card": "At most 10000 messages fit in the queue.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-qt-02",
+      "kind": "quantity",
+      "source": "Thumbnails are generated in roughly 2 seconds.",
+      "card": "Generating a thumbnail takes about 2 s.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-qt-03",
+      "kind": "quantity",
+      "source": "Passwords must be at least 12 characters long.",
+      "card": "A password needs a minimum length of 12 characters.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-qt-04",
+      "kind": "quantity",
+      "source": "The queue holds up to 10,000 messages.",
+      "card": "The queue holds 10,000 messages.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-qt-05",
+      "kind": "quantity",
+      "source": "Thumbnails are generated in roughly 2 seconds.",
+      "card": "Thumbnails are generated in 20 seconds.",
+      "label": "distorted",
+      "expect": "unsupported_number",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-qt-06",
+      "kind": "quantity",
+      "source": "Passwords must be at least 12 characters long.",
+      "card": "Passwords must be 12 characters long.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-to-01",
+      "kind": "trade_off",
+      "source": "Event sourcing gives a full audit trail but makes queries more complex.",
+      "card": "Event sourcing provides a complete audit trail, though querying gets more complex.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-to-02",
+      "kind": "trade_off",
+      "source": "Smaller containers start faster but have less headroom for traffic spikes.",
+      "card": "Small containers boot quickly, with less headroom for traffic spikes.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-to-03",
+      "kind": "trade_off",
+      "source": "Aggressive caching lowers costs at the expense of fresher data.",
+      "card": "Heavy caching saves money but data is less fresh.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-to-04",
+      "kind": "trade_off",
+      "source": "Event sourcing gives a full audit trail but makes queries more complex.",
+      "card": "Event sourcing gives a full audit trail and simpler queries.",
+      "label": "distorted",
+      "expect": "cause_changed",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-to-05",
+      "kind": "trade_off",
+      "source": "Smaller containers start faster but have less headroom for traffic spikes.",
+      "card": "Smaller containers start faster.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-to-06",
+      "kind": "trade_off",
+      "source": "Aggressive caching lowers costs at the expense of fresher data.",
+      "card": "Aggressive caching lowers costs and keeps data fresh.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-sc-01",
+      "kind": "scope",
+      "source": "Usage-based billing is available for customers on the Growth plan.",
+      "card": "Customers on the Growth plan can use usage-based billing.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-sc-02",
+      "kind": "scope",
+      "source": "Audit logs are kept for 90 days in regulated tenants.",
+      "card": "Regulated tenants keep audit logs for 90 days.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-sc-03",
+      "kind": "scope",
+      "source": "The beta API is open only to partner accounts.",
+      "card": "Only partner accounts can use the beta API.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-sc-04",
+      "kind": "scope",
+      "source": "Usage-based billing is available for customers on the Growth plan.",
+      "card": "Usage-based billing is available to customers.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-sc-05",
+      "kind": "scope",
+      "source": "Audit logs are kept for 90 days in regulated tenants.",
+      "card": "Audit logs are kept for 90 days.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-sc-06",
+      "kind": "scope",
+      "source": "The beta API is open only to partner accounts.",
+      "card": "The beta API is open to all accounts.",
+      "label": "distorted",
+      "expect": "condition_changed",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cp-01",
+      "kind": "compound",
+      "source": "The new editor loads twice as fast, but plugins written for the old editor will not work.",
+      "card": "The new editor loads 2x faster; old-editor plugins won't work with it.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cp-02",
+      "kind": "compound",
+      "source": "Reports refresh every 15 minutes, except during the nightly maintenance window.",
+      "card": "Reports update every 15 minutes outside the nightly maintenance window.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cp-03",
+      "kind": "compound",
+      "source": "Guests can view shared boards, although they cannot leave comments.",
+      "card": "Guests may view shared boards but can't comment.",
+      "label": "faithful",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cp-04",
+      "kind": "compound",
+      "source": "The new editor loads twice as fast, but plugins written for the old editor will not work.",
+      "card": "The new editor loads twice as fast.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cp-05",
+      "kind": "compound",
+      "source": "Reports refresh every 15 minutes, except during the nightly maintenance window.",
+      "card": "Reports refresh every 15 minutes.",
+      "label": "distorted",
+      "expect": "qualifier_dropped",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h-cp-06",
+      "kind": "compound",
+      "source": "Guests can view shared boards, although they cannot leave comments.",
+      "card": "Guests can view and comment on shared boards.",
+      "label": "distorted",
+      "expect": "negation_flip",
+      "note": "held-out: written after the rules were tuned; not used for tuning",
+      "labelledBy": "draft"
+    },
+    {
+      "id": "h2-ql-01",
+      "kind": "qualifier",
+      "source": "Retrying a failed webhook delivery can occasionally produce duplicate events on the receiver side.",
+      "card": "Receivers may sometimes see the same event twice when a failed webhook is retried.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. can occasionally -> may sometimes; hedge kept"
+    },
+    {
+      "id": "h2-ql-02",
+      "kind": "qualifier",
+      "source": "Cold starts on the serverless tier typically add between one and two seconds to the first request.",
+      "card": "On the serverless tier, a cold start delays the first request by one to two seconds.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 'typically' removed; stated as always happening"
+    },
+    {
+      "id": "h2-ql-03",
+      "kind": "qualifier",
+      "source": "Most customers who churn in the first month never complete the onboarding checklist.",
+      "card": "The majority of first-month churners don't finish the onboarding checklist.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. most -> the majority; hedge kept"
+    },
+    {
+      "id": "h2-ql-04",
+      "kind": "qualifier",
+      "source": "Enabling compression may reduce backup size by roughly half for text-heavy databases.",
+      "card": "For text-heavy databases, turning on compression halves the backup size.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 'may' and 'roughly' dropped; certain exact halving"
+    },
+    {
+      "id": "h2-ql-05",
+      "kind": "qualifier",
+      "source": "Larger batch sizes tend to speed up training but can hurt final accuracy on small datasets.",
+      "card": "On small datasets, bigger batches generally train faster, though final accuracy might suffer.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. tend to -> generally, can -> might"
+    },
+    {
+      "id": "h2-ql-06",
+      "kind": "qualifier",
+      "source": "Some Android devices from older vendors fail to deliver push notifications while in battery-saver mode.",
+      "card": "Older-vendor Android devices don't deliver push notifications in battery-saver mode.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 'some' dropped; now reads as all such devices"
+    },
+    {
+      "id": "h2-ql-07",
+      "kind": "qualifier",
+      "source": "Refund requests are usually processed within three business days.",
+      "card": "Refunds are normally handled in three business days or fewer.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. usually -> normally; within -> or fewer"
+    },
+    {
+      "id": "h2-ql-08",
+      "kind": "qualifier",
+      "source": "Shipments to remote postcodes are likely to miss the next-day window.",
+      "card": "Shipments to remote postcodes will miss the next-day window.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. likely -> will; probability turned into certainty"
+    },
+    {
+      "id": "h2-ql-09",
+      "kind": "qualifier",
+      "source": "A stale cache entry might be served for up to a minute after an update.",
+      "card": "After an update, readers could still get the old cached value for as long as sixty seconds.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. might -> could; up to a minute -> as long as sixty seconds"
+    },
+    {
+      "id": "h2-ql-10",
+      "kind": "qualifier",
+      "source": "Password-reset emails are often flagged as spam by corporate mail filters.",
+      "card": "Corporate mail filters treat password-reset emails as spam.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 'often' dropped; reads as consistent behaviour"
+    },
+    {
+      "id": "h2-ql-11",
+      "kind": "qualifier",
+      "source": "Candidates referred by employees are typically hired faster than applicants from job boards.",
+      "card": "Employee referrals generally move through hiring more quickly than job-board applicants.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. typically -> generally"
+    },
+    {
+      "id": "h2-ql-12",
+      "kind": "qualifier",
+      "source": "Rotating the signing key could invalidate sessions that are still in flight.",
+      "card": "Rotating the signing key invalidates in-flight sessions.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 'could' dropped; possibility turned into fact"
+    },
+    {
+      "id": "h2-cd-01",
+      "kind": "condition",
+      "source": "The nightly export runs only when the previous day's ledger has been closed.",
+      "card": "Until the prior day's ledger is closed, the nightly export does not run.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. only when -> until ... does not; same condition"
+    },
+    {
+      "id": "h2-cd-02",
+      "kind": "condition",
+      "source": "Overtime is paid at 1.5x only when the employee has worked more than 40 hours that week.",
+      "card": "Overtime is paid at 1.5x whenever an employee works extra hours.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 40-hour threshold widened to any extra hours"
+    },
+    {
+      "id": "h2-cd-03",
+      "kind": "condition",
+      "source": "Unless the user opts in, location data is not uploaded.",
+      "card": "Location data stays on the device for anyone who hasn't opted in.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. unless opt-in -> not uploaded for non-opted-in users"
+    },
+    {
+      "id": "h2-cd-04",
+      "kind": "condition",
+      "source": "Orders are held for manual review unless the billing and shipping addresses match.",
+      "card": "Orders are held for manual review if the billing and shipping addresses match.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. unless inverted to if"
+    },
+    {
+      "id": "h2-cd-05",
+      "kind": "condition",
+      "source": "Free returns apply provided that the item is sent back within 30 days.",
+      "card": "Items sent back inside 30 days qualify for free returns.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. provided that folded into the subject"
+    },
+    {
+      "id": "h2-cd-06",
+      "kind": "condition",
+      "source": "The autoscaler adds nodes when CPU stays above 80% for five minutes.",
+      "card": "The autoscaler adds nodes whenever CPU goes above 80%.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. five-minute duration dropped; condition widened"
+    },
+    {
+      "id": "h2-cd-07",
+      "kind": "condition",
+      "source": "Except during a declared incident, production deploys require two reviewers.",
+      "card": "Two reviewers must sign off on production deploys, a requirement waived while an incident is declared.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. except during -> waived while"
+    },
+    {
+      "id": "h2-cd-08",
+      "kind": "condition",
+      "source": "Trial accounts are deleted after 14 days if no payment method has been added.",
+      "card": "Trial accounts are deleted after 14 days.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. payment-method condition dropped"
+    },
+    {
+      "id": "h2-cd-09",
+      "kind": "condition",
+      "source": "If the battery falls below 15%, the app pauses background sync.",
+      "card": "Background sync is suspended once battery drops under 15 percent.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. if -> once; pauses -> suspended"
+    },
+    {
+      "id": "h2-cd-10",
+      "kind": "condition",
+      "source": "Support tickets are escalated to tier 2 only when the customer is on an enterprise contract.",
+      "card": "Support tickets are escalated to tier 2 regardless of the customer's contract.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. enterprise-only condition widened to all customers"
+    },
+    {
+      "id": "h2-cd-11",
+      "kind": "condition",
+      "source": "The model checkpoint is uploaded only after validation loss improves.",
+      "card": "No checkpoint is uploaded unless validation loss gets better.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. only after -> no ... unless"
+    },
+    {
+      "id": "h2-cd-12",
+      "kind": "condition",
+      "source": "Drivers may skip the signature step when the parcel is under $50 in value.",
+      "card": "Drivers may skip the signature step for parcels of any value.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. value threshold widened to any value"
+    },
+    {
+      "id": "h2-ng-01",
+      "kind": "negation",
+      "source": "The free tier does not include API access.",
+      "card": "API access is excluded from the free tier.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. does not include -> excluded"
+    },
+    {
+      "id": "h2-ng-02",
+      "kind": "negation",
+      "source": "Deleted files are not recoverable after the 30-day retention period.",
+      "card": "Deleted files can be restored after the 30-day retention period.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "negation_flip",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. not recoverable -> can be restored"
+    },
+    {
+      "id": "h2-ng-03",
+      "kind": "negation",
+      "source": "Requests cannot exceed 10 MB.",
+      "card": "Requests are capped at 10 MB.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. cannot exceed -> capped at"
+    },
+    {
+      "id": "h2-ng-04",
+      "kind": "negation",
+      "source": "The migration script never modifies existing rows.",
+      "card": "The migration script rewrites existing rows in place.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "negation_flip",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. never modifies -> rewrites"
+    },
+    {
+      "id": "h2-ng-05",
+      "kind": "negation",
+      "source": "Contractors do not have access to payroll data.",
+      "card": "Payroll data is off-limits to contractors.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. do not have access -> off-limits"
+    },
+    {
+      "id": "h2-ng-06",
+      "kind": "negation",
+      "source": "The iOS app works without a network connection.",
+      "card": "The iOS app requires a network connection.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "negation_flip",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. works without -> requires"
+    },
+    {
+      "id": "h2-ng-07",
+      "kind": "negation",
+      "source": "No customer data leaves the EU region.",
+      "card": "Customer data stays within the EU region.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. no ... leaves -> stays within"
+    },
+    {
+      "id": "h2-ng-08",
+      "kind": "negation",
+      "source": "Unverified sellers cannot list items above $500.",
+      "card": "Items above $500 may be listed by unverified sellers.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "negation_flip",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. cannot -> may"
+    },
+    {
+      "id": "h2-ng-09",
+      "kind": "negation",
+      "source": "The scheduler did not retry jobs that failed with a validation error.",
+      "card": "The scheduler gave up immediately on jobs that hit a validation error.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. did not retry -> gave up immediately"
+    },
+    {
+      "id": "h2-ng-10",
+      "kind": "negation",
+      "source": "The vendor's SDK does not collect device identifiers.",
+      "card": "The vendor's SDK gathers device identifiers.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "negation_flip",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. does not collect -> gathers"
+    },
+    {
+      "id": "h2-ng-11",
+      "kind": "negation",
+      "source": "Refunds are not issued for partially used subscription months.",
+      "card": "Partially used subscription months are non-refundable.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. not issued -> non-refundable"
+    },
+    {
+      "id": "h2-ng-12",
+      "kind": "negation",
+      "source": "We have never had a breach involving payment card data.",
+      "card": "Our one breach involved payment card data.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "negation_flip",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. never had a breach -> had a breach"
+    },
+    {
+      "id": "h2-cs-01",
+      "kind": "cause",
+      "source": "Adding an index on customer_id cut the report's query time from minutes to seconds.",
+      "card": "The report's query went from minutes to seconds because of a new index on customer_id.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. same cause and effect, reordered"
+    },
+    {
+      "id": "h2-cs-02",
+      "kind": "cause",
+      "source": "High memory pressure causes the garbage collector to run more often.",
+      "card": "Frequent garbage collection runs cause high memory pressure.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "cause_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. cause and effect swapped"
+    },
+    {
+      "id": "h2-cs-03",
+      "kind": "cause",
+      "source": "Raising the learning rate made training diverge.",
+      "card": "Training diverged as a result of a higher learning rate.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. same direction, passive phrasing"
+    },
+    {
+      "id": "h2-cs-04",
+      "kind": "cause",
+      "source": "Enabling the CDN reduced origin bandwidth costs.",
+      "card": "Origin bandwidth costs grew after the CDN was switched on.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "cause_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. reduced -> grew; direction reversed"
+    },
+    {
+      "id": "h2-cs-05",
+      "kind": "cause",
+      "source": "Longer warehouse pick routes lead to slower order fulfilment.",
+      "card": "Order fulfilment slows down as a consequence of longer pick routes in the warehouse.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. lead to -> as a consequence of"
+    },
+    {
+      "id": "h2-cs-06",
+      "kind": "cause",
+      "source": "Ticket volume spiked in the same week the new pricing page went live.",
+      "card": "The new pricing page caused ticket volume to spike.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "cause_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. coincidence in time turned into cause"
+    },
+    {
+      "id": "h2-cs-07",
+      "kind": "cause",
+      "source": "Clock skew between nodes can cause token validation to fail.",
+      "card": "Token validation may fail when node clocks drift apart.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. same causal direction and hedge"
+    },
+    {
+      "id": "h2-cs-08",
+      "kind": "cause",
+      "source": "Poor sleep was correlated with lower productivity scores in the survey.",
+      "card": "In the survey, poor sleep lowered productivity scores.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "cause_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. correlation turned into causation"
+    },
+    {
+      "id": "h2-cs-09",
+      "kind": "cause",
+      "source": "Retry storms from clients overloaded the authentication service.",
+      "card": "The authentication service was overwhelmed by waves of client retries.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. same cause, passive voice"
+    },
+    {
+      "id": "h2-cs-10",
+      "kind": "cause",
+      "source": "Frequent schema changes slowed down the data team's releases.",
+      "card": "The data team's slow releases led to frequent schema changes.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "cause_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. cause and effect swapped"
+    },
+    {
+      "id": "h2-cs-11",
+      "kind": "cause",
+      "source": "Shorter onboarding reduced first-week drop-off.",
+      "card": "First-week drop-off fell thanks to a shorter onboarding.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. reduced -> fell thanks to"
+    },
+    {
+      "id": "h2-cs-12",
+      "kind": "cause",
+      "source": "Tightening rate limits decreased abuse traffic.",
+      "card": "Abuse traffic rose once rate limits were tightened.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "cause_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. decreased -> rose"
+    },
+    {
+      "id": "h2-qt-01",
+      "kind": "quantity",
+      "source": "The upload limit is 2,000 files per batch.",
+      "card": "A batch can contain up to two thousand files.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. limit 2,000 -> up to two thousand"
+    },
+    {
+      "id": "h2-qt-02",
+      "kind": "quantity",
+      "source": "Each workspace supports up to 50 members.",
+      "card": "Each workspace has 50 members.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "unsupported_number",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. limit turned into exact count"
+    },
+    {
+      "id": "h2-qt-03",
+      "kind": "quantity",
+      "source": "Latency at p99 stayed under 250 ms.",
+      "card": "The 99th-percentile latency remained below 0.25 seconds.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 250 ms = 0.25 s"
+    },
+    {
+      "id": "h2-qt-04",
+      "kind": "quantity",
+      "source": "Delivery takes 3 to 5 business days.",
+      "card": "Delivery takes 5 business days.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "unsupported_number",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. range collapsed to one value"
+    },
+    {
+      "id": "h2-qt-05",
+      "kind": "quantity",
+      "source": "Two approvals are required to merge into main.",
+      "card": "Merging into main needs at least a pair of approvals.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. required two = at least two"
+    },
+    {
+      "id": "h2-qt-06",
+      "kind": "quantity",
+      "source": "The training run used 8 GPUs for 36 hours.",
+      "card": "The training run used 8 GPUs for 36 minutes.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "unsupported_number",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. hours -> minutes"
+    },
+    {
+      "id": "h2-qt-07",
+      "kind": "quantity",
+      "source": "Sessions expire after 30 minutes of inactivity.",
+      "card": "After half an hour idle, a session expires.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 30 minutes = half an hour"
+    },
+    {
+      "id": "h2-qt-08",
+      "kind": "quantity",
+      "source": "The warehouse ships roughly 12,000 parcels per day.",
+      "card": "The warehouse ships roughly 1,200 parcels per day.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "unsupported_number",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 12,000 -> 1,200"
+    },
+    {
+      "id": "h2-qt-09",
+      "kind": "quantity",
+      "source": "Storage is billed at $0.02 per GB per month.",
+      "card": "Each gigabyte stored costs two cents a month.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. $0.02 = two cents"
+    },
+    {
+      "id": "h2-qt-10",
+      "kind": "quantity",
+      "source": "The API allows at most 100 requests per minute per key.",
+      "card": "The API allows at most 100 requests per second per key.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "unsupported_number",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. per minute -> per second"
+    },
+    {
+      "id": "h2-qt-11",
+      "kind": "quantity",
+      "source": "Employees accrue 1.5 vacation days per month.",
+      "card": "Each month, staff earn a day and a half of vacation.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 1.5 days = a day and a half"
+    },
+    {
+      "id": "h2-qt-12",
+      "kind": "quantity",
+      "source": "Between 5% and 10% of uploads fail checksum validation.",
+      "card": "Roughly 10% of uploads fail checksum validation.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "unsupported_number",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. range collapsed to its upper bound"
+    },
+    {
+      "id": "h2-to-01",
+      "kind": "trade_off",
+      "source": "Synchronous replication guarantees zero data loss on failover but adds write latency.",
+      "card": "With synchronous replication, failover loses no data; the price is slower writes.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. benefit and cost both kept"
+    },
+    {
+      "id": "h2-to-02",
+      "kind": "trade_off",
+      "source": "Caching product pages speeds up load times at the cost of showing prices that may be up to five minutes old.",
+      "card": "Caching product pages speeds up load times while keeping prices current.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. stale prices inverted into 'current'"
+    },
+    {
+      "id": "h2-to-03",
+      "kind": "trade_off",
+      "source": "Quantizing the model to 4 bits shrinks its memory footprint, though accuracy drops slightly.",
+      "card": "A 4-bit quantized model takes less memory and is marginally less accurate.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. cost kept without contrast word"
+    },
+    {
+      "id": "h2-to-04",
+      "kind": "trade_off",
+      "source": "Batching notifications cuts send costs but delays delivery by up to an hour.",
+      "card": "Batching notifications cuts send costs.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. delivery-delay cost dropped"
+    },
+    {
+      "id": "h2-to-05",
+      "kind": "trade_off",
+      "source": "The express carrier is faster but charges twice as much as standard shipping.",
+      "card": "Standard shipping costs half what the express carrier charges, and it is less fast.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. same trade-off viewed from the other option"
+    },
+    {
+      "id": "h2-to-06",
+      "kind": "trade_off",
+      "source": "Running the analysis on spot instances lowers compute cost but risks jobs being interrupted.",
+      "card": "Running the analysis on spot instances lowers compute cost and keeps jobs running without interruption.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. interruption risk inverted"
+    },
+    {
+      "id": "h2-to-07",
+      "kind": "trade_off",
+      "source": "Longer password-reset token lifetimes improve usability while widening the window for misuse.",
+      "card": "Making reset tokens last longer is friendlier for users, but gives attackers more time to abuse them.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. both sides reworded"
+    },
+    {
+      "id": "h2-to-08",
+      "kind": "trade_off",
+      "source": "Event sourcing gives a full audit history but makes the storage footprint grow considerably.",
+      "card": "Event sourcing gives a full audit history with a compact storage footprint.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. storage growth inverted into 'compact'"
+    },
+    {
+      "id": "h2-to-09",
+      "kind": "trade_off",
+      "source": "Self-hosting the search cluster avoids licence fees but means the team must handle upgrades and on-call.",
+      "card": "A self-hosted search cluster has no licence fees; upgrades and on-call become the team's job.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. benefit and cost both kept"
+    },
+    {
+      "id": "h2-to-10",
+      "kind": "trade_off",
+      "source": "A four-day work week improved retention but stretched response times on support.",
+      "card": "A four-day work week improved retention and kept support response times fast.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. slower responses inverted into 'fast'"
+    },
+    {
+      "id": "h2-to-11",
+      "kind": "trade_off",
+      "source": "Offline mode lets field staff work without signal, with the downside that conflicting edits must be resolved by hand later.",
+      "card": "Field staff can keep working with no signal in offline mode; any conflicting edits then need manual resolution.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. cost kept without 'downside'"
+    },
+    {
+      "id": "h2-to-12",
+      "kind": "trade_off",
+      "source": "Higher-resolution thumbnails look sharper on retina screens but increase page weight.",
+      "card": "Higher-resolution thumbnails look sharper on retina screens and keep pages light.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. heavier pages inverted into 'light'"
+    },
+    {
+      "id": "h2-sc-01",
+      "kind": "scope",
+      "source": "Single sign-on is available on the Enterprise plan.",
+      "card": "Enterprise-plan customers can use single sign-on.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. plan scope folded into noun"
+    },
+    {
+      "id": "h2-sc-02",
+      "kind": "scope",
+      "source": "Admins in the EU region can export audit logs as CSV.",
+      "card": "Admins can export audit logs as CSV.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. EU region scope dropped"
+    },
+    {
+      "id": "h2-sc-03",
+      "kind": "scope",
+      "source": "Dark mode is available in the iOS app.",
+      "card": "iOS app users can switch to dark mode.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. platform scope kept"
+    },
+    {
+      "id": "h2-sc-04",
+      "kind": "scope",
+      "source": "Managers can approve expense reports under $1,000.",
+      "card": "Managers can approve expense reports.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. amount limit on scope dropped"
+    },
+    {
+      "id": "h2-sc-05",
+      "kind": "scope",
+      "source": "Automatic virus scanning applies to uploaded PDF and Office files.",
+      "card": "Uploaded PDFs and Office documents are scanned for viruses automatically.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. file-type scope kept"
+    },
+    {
+      "id": "h2-sc-06",
+      "kind": "scope",
+      "source": "Two-day shipping is offered on orders within the contiguous United States.",
+      "card": "Two-day shipping is offered on orders within the United States.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 'contiguous' modifier dropped; widens to Alaska/Hawaii"
+    },
+    {
+      "id": "h2-sc-07",
+      "kind": "scope",
+      "source": "The new retention policy affects only logs from the staging environment.",
+      "card": "Staging logs are the sole target of the new retention policy.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. only -> sole target"
+    },
+    {
+      "id": "h2-sc-08",
+      "kind": "scope",
+      "source": "Full-time employees in Canada receive a wellness stipend.",
+      "card": "Full-time employees receive a wellness stipend.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. country scope dropped"
+    },
+    {
+      "id": "h2-sc-09",
+      "kind": "scope",
+      "source": "Fine-tuning is supported for the base models in the 7B family.",
+      "card": "The 7B family's base models can be fine-tuned.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. family and base-model scope kept"
+    },
+    {
+      "id": "h2-sc-10",
+      "kind": "scope",
+      "source": "Read replicas are available for PostgreSQL databases on the Pro tier.",
+      "card": "Read replicas are available for databases on the Pro tier.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. PostgreSQL engine scope dropped"
+    },
+    {
+      "id": "h2-sc-11",
+      "kind": "scope",
+      "source": "Weekend phone support is offered to premium-support subscribers in North America.",
+      "card": "North American premium-support subscribers get phone support on weekends.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. region and subscription scope kept"
+    },
+    {
+      "id": "h2-sc-12",
+      "kind": "scope",
+      "source": "Guest users can comment on shared documents.",
+      "card": "Guest users can comment on documents.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "condition_changed",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. 'shared' modifier dropped without cue word"
+    },
+    {
+      "id": "h2-cp-01",
+      "kind": "compound",
+      "source": "The migration tool copies all tables automatically, except those with custom triggers, which must be moved by hand.",
+      "card": "The migration tool copies tables automatically. Tables that have custom triggers have to be moved manually.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. exception split into its own sentence"
+    },
+    {
+      "id": "h2-cp-02",
+      "kind": "compound",
+      "source": "Most payments settle the same day, but international transfers can take up to three days.",
+      "card": "Most payments settle the same day, including international transfers.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. caveat inverted: international now same-day"
+    },
+    {
+      "id": "h2-cp-03",
+      "kind": "compound",
+      "source": "The dashboard refreshes every minute, although the revenue widget updates only hourly.",
+      "card": "Dashboard data refreshes each minute. The revenue widget is the exception, updating once an hour.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. caveat kept, reworded"
+    },
+    {
+      "id": "h2-cp-04",
+      "kind": "compound",
+      "source": "Accounts lock after five failed logins, though admins are exempt.",
+      "card": "Every account, admins included, locks after five failed logins.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. admin exemption inverted"
+    },
+    {
+      "id": "h2-cp-05",
+      "kind": "compound",
+      "source": "The courier picks up from all depots daily, but not on public holidays.",
+      "card": "Depots get a daily courier pickup; public holidays are skipped.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. caveat kept without 'not'"
+    },
+    {
+      "id": "h2-cp-06",
+      "kind": "compound",
+      "source": "The recommendation model improved click-through rate, but conversions stayed flat.",
+      "card": "The recommendation model improved click-through rate and lifted conversions too.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. flat conversions turned into an increase"
+    },
+    {
+      "id": "h2-cp-07",
+      "kind": "compound",
+      "source": "Offline sync works across all devices, though attachments larger than 25 MB are left on the server.",
+      "card": "Offline sync covers every device. Attachments over 25 MB remain on the server.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. caveat kept without contrast word"
+    },
+    {
+      "id": "h2-cp-08",
+      "kind": "compound",
+      "source": "Staff can work remotely up to three days a week, but new hires must be on-site for their first month.",
+      "card": "Staff, new hires included, can work remotely up to three days a week from day one.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. new-hire caveat inverted"
+    },
+    {
+      "id": "h2-cp-09",
+      "kind": "compound",
+      "source": "The API is backward compatible, apart from the removal of the legacy /v1/export endpoint.",
+      "card": "The API stays backward compatible with one exception: the old /v1/export endpoint is gone.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. claim and exception both kept"
+    },
+    {
+      "id": "h2-cp-10",
+      "kind": "compound",
+      "source": "Encryption at rest is enabled by default, except for volumes created before 2022.",
+      "card": "Encryption at rest is enabled by default on every volume, whatever its creation date.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. pre-2022 exception inverted"
+    },
+    {
+      "id": "h2-cp-11",
+      "kind": "compound",
+      "source": "Tests pass on Linux and macOS, while two suites still fail on Windows.",
+      "card": "On Windows, two test suites remain broken; Linux and macOS are green.",
+      "label": "faithful",
+      "labelledBy": "draft",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. claim and caveat reordered and reworded"
+    },
+    {
+      "id": "h2-cp-12",
+      "kind": "compound",
+      "source": "Customers can cancel at any time, but annual plans are not refunded pro rata.",
+      "card": "Customers can cancel at any time and get a pro-rata refund on annual plans.",
+      "label": "distorted",
+      "labelledBy": "draft",
+      "expect": "qualifier_dropped",
+      "note": "fresh held-out (2026-10-19): written by an agent that never saw the rules or the other pairs; measured only after the retune. no pro-rata refund caveat inverted"
+    }
+  ]
+}

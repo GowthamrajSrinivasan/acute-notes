@@ -46,10 +46,12 @@ import { checkProposal } from "@/ai/changes/proposalGeometry";
 import { routeConnectors } from "@/ai/changes/routing";
 import { APP_SESSION, getPendingChanges } from "@/ai/changes/pendingChanges";
 import { conflictName, currentText, proposedText, type ConflictDecision } from "@/ai/reconcile/conflicts";
+import { describeClaimEdit } from "@/ai/changes/claimPatch";
+import { skippedNote } from "@/ai/reconcile/updatePolicy";
 import { lineDiff } from "@/ai/reconcile/diff";
-import type { SceneElement } from "@/domain/canvas/adapter";
+import { getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
 import { getDocumentStore } from "@/state/documents";
-import { acceptPendingParts, acceptPendingSet } from "@/components/ai/acceptPending";
+import { acceptPendingParts, acceptPendingSet, waitingMessage } from "@/components/ai/acceptPending";
 import { recordSettled } from "@/state/agentLog";
 import { denseBlocks, useDenseBlocks } from "@/components/ai/denseBlocksStore";
 import { labelFontsReady, loadLabelFonts, preloadLabelFont } from "@/components/canvas/changeSetWriter";
@@ -57,6 +59,8 @@ import { ChevronDownIcon, SparkleIcon } from "@/components/common/icons";
 import { AnalysisRow } from "@/components/ai/AnalysisRow";
 import { CoverageRow } from "@/components/ai/CoverageRow";
 import { SectionChips } from "@/components/ai/SectionChips";
+import { RearrangeRow } from "@/components/ai/RearrangeRow";
+import { knowledgeUI, useKnowledgeUI } from "@/components/review/knowledgeStore";
 import { needsAnalysisNotice } from "@/ai/fidelity/analysis";
 import { FIDELITY_CONFIG } from "@/config/fidelity";
 import { deriveTitle, toPlainText } from "@/domain/content/richContent";
@@ -101,6 +105,7 @@ function usePendingSet(canvasId: string): ChangeSet | null {
 
 const BLOCK_NAMES = { text: "Note", todo: "Todo list", table: "Table", code: "Code" } as const;
 
+
 function titleOf(change: ProposedChange | undefined): string {
   if (!change) return "object";
   if (change.kind === "create_block") return deriveTitle(change.content, BLOCK_NAMES[change.blockType]);
@@ -130,6 +135,14 @@ function itemLabel(change: ProposedChange, byKey: Map<string, ProposedChange>, i
       return "Move an existing object";
     case "update_block":
       return `Update: ${deriveTitle(change.content, change.title ?? "Block")}`;
+    case "patch_block": {
+      // A claim-level patch (Stage 1b): each edit as "“five” → “three”", with what it means when the planner said.
+      const shown = change.edits.slice(0, 2).map(describeClaimEdit);
+      const more = change.edits.length > shown.length ? ` (+${change.edits.length - shown.length} more)` : "";
+      // Stage 1e: the new facts merged into a card the user changed, their wording kept.
+      if (change.onEditedCard) return `Updates your edited card${nameOf?.(change.target) ? ` ${nameOf(change.target)}` : ""}: ${shown.join("; ")}${more}`;
+      return `Edit ${nameOf?.(change.target) || "a card"}: ${shown.join("; ")}${more}`;
+    }
     case "update_shape":
       return `Update shape: ${change.label}`;
     case "remove":
@@ -151,6 +164,8 @@ function itemLabel(change: ProposedChange, byKey: Map<string, ProposedChange>, i
     }
     case "rebaseline":
       return "Keep your edit";
+    case "mark_review":
+      return `Mark ${nameOf?.(change.target) || "a card"} for review: ${change.review.reasons[0] ?? "its source changed"}`;
     case "restore":
       return `Restore ${nameOf?.(change.target) || "an object"} as it was`;
     case "update_connection":
@@ -189,6 +204,9 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
   const waiting = useWaitingSets(home.canvasId);
   const [expanded, setExpanded] = useState(false);
   const [accepted, setAccepted] = useState<Accepted | null>(null);
+  // While the "Added …" notice shows, it carries Knowledge Notes' "Review N" (one bottom bar at a time; §5.3).
+  useEffect(() => knowledgeUI.setNotice(home.canvasId, !!accepted), [home.canvasId, accepted]);
+  const knowledgeQueue = useKnowledgeUI(home.canvasId).queue;
   // A dense-block walk-through (`DenseBlocks`) shows its own bar where the "Added …" notice is.
   const walkingDense = useDenseBlocks(home.canvasId).current !== null;
   const [sceneVersion, setSceneVersion] = useState(0);
@@ -300,9 +318,13 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
       }
       // Clean changes plus each decided conflict's change; undecided conflicts are left alone. Logged (D31) there.
       const done = acceptPendingSet(api, home, history, set.operationId, decisions);
+      // Stale-target protection: blocks edited since the proposal were withheld and stay in this review as Keep mine /
+      // Use proposed decisions (the rest, if any, was written as one undo step).
+      if (done?.waiting) api.setToast({ message: waitingMessage(done.waiting, done.applied.length > 0), duration: 5000 });
       // A set of only "Keep mine" decisions writes metadata, not the scene: applied, but no history step.
-      if (done?.applied.length) setAccepted({ stepId: done.stepId, message: acceptedMessage(done.applied), dropped: done.dropped, dense: done.dense });
-      else if (done) api.setToast({ message: "Nothing was added: every change referred to a deleted object.", duration: 4000 });
+      else if (done?.applied.length) setAccepted({ stepId: done.stepId, message: acceptedMessage(done.applied), dropped: done.dropped, dense: done.dense });
+      // Nothing written: a card changed since the update was planned reads differently from a deleted object (`nothingAppliedMessage`).
+      else if (done) api.setToast({ message: done.nothingApplied ?? "Nothing was applied.", duration: 4000 });
     }
   }, [api, home, history, set, decisions, labelFonts]);
 
@@ -389,6 +411,19 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
               Undo
             </button>
           )}
+          {knowledgeQueue > 0 && (
+            <button
+              type="button"
+              className="acute-ask-ai__secondary"
+              title="Step through the cards and passages that need review"
+              onClick={() => {
+                setAccepted(null);
+                knowledgeUI.startWalk(home.canvasId);
+              }}
+            >
+              Review {knowledgeQueue} ›
+            </button>
+          )}
         </span>
       </div>
     );
@@ -403,6 +438,14 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
   const nodeNames = new Map(
     api.getSceneElements().flatMap((el) => {
       if (el.type === "text" && el.containerId && el.text) return [[el.containerId, el.text.replace(/\s+/g, " ").trim()] as const];
+      // A text card or page by its heading or first line (Stage 1: "Edit “Retries happen…”", not "Edit a card").
+      const ref = getEmbedRef(el as unknown as SceneElement);
+      const docId = ref?.kind === "rich-block" ? ref.documentId : ref?.kind === "page-preview" ? ref.pageId : null;
+      if (docId) {
+        const doc = getDocumentStore().get(docId);
+        const title = doc ? (ref?.kind === "page-preview" && doc.title ? doc.title : deriveTitle(doc.snapshot, "")) : "";
+        return title ? [[el.id, `“${title.length > 40 ? `${title.slice(0, 39)}…` : title}”`] as const] : [];
+      }
       // Frames by id and Lens key, for `set_lens`'s "zoom in to …".
       const name = el.type === "frame" ? (el as { name?: string | null }).name?.trim() : undefined;
       if (!name) return [];
@@ -412,9 +455,11 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
   );
   const nameOf = (id: string) => nodeNames.get(id);
   const decidedCount = conflicts.filter((c) => decisions.has(c.target)).length;
+  const elsewhere = conflicts.filter((c) => c.impact).length;
+  const related = (set.related ?? []).filter((r) => boxOf(r.target) !== undefined);
   // Any update of an existing content source (version 2+) reads as a reconciliation, even when it only adds.
   const reconciling =
-    conflicts.length > 0 || (set.contentSource?.version ?? 1) > 1 || resolved.changes.some((c) => c.kind === "update_block" || c.kind === "update_shape" || c.kind === "remove");
+    conflicts.length > 0 || (set.contentSource?.version ?? 1) > 1 || resolved.changes.some((c) => c.kind === "update_block" || c.kind === "patch_block" || c.kind === "update_shape" || c.kind === "remove");
   const decide = (target: string, d: ConflictDecision) =>
     setDecisions((m) => {
       const next = new Map(m);
@@ -466,8 +511,9 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
         <SparkleIcon />
         <span className="acute-review__summary">
           <strong>{set.title}</strong> · {set.parts ? `${set.parts.length} ${set.parts.length === 1 ? "section" : "sections"} · ` : ""}
-          {reconciling ? describeReconciliation(resolved.changes, conflicts.length, isConnector) : describeChanges(resolved.changes, { omitSections: !!set.parts })}
+          {reconciling ? describeReconciliation(resolved.changes, conflicts.length - elsewhere, isConnector, elsewhere) : describeChanges(resolved.changes, { omitSections: !!set.parts })}
           {droppedNote && <span className="acute-review__note"> {droppedNote}</span>}
+          {skippedNote(set) && <span className="acute-review__note"> {skippedNote(set)}</span>}
           {layout && (
             <span className="acute-review__note acute-review__layout" title="Layout checks on the proposal as it will be drawn">
               {" "}
@@ -507,6 +553,7 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
           </button>
         </span>
         {needsAnalysisNotice(set.analysis) && <AnalysisRow api={api} canvasId={home.canvasId} set={{ ...set, analysis: set.analysis }} />}
+        <RearrangeRow api={api} canvasId={home.canvasId} set={set} />
         {set.fidelity && FIDELITY_CONFIG.showCoverage && (
           <CoverageRow api={api} canvasId={home.canvasId} set={{ ...set, fidelity: set.fidelity }} perSectionOnCanvas={set.changes.some((c) => c.kind === "create_frame" && !!c.overview)} />
         )}
@@ -577,6 +624,7 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
               <ConflictCard
                 key={c.target}
                 conflict={c}
+                fromName={c.impact ? (nameOf(c.impact.from) ?? "a card") : undefined}
                 current={currentText(api.getSceneElements() as unknown as readonly SceneElement[], (id) => getDocumentStore().get(id), c.target)}
                 decision={decisions.get(c.target)}
                 onDecide={(d) => decide(c.target, d)}
@@ -590,23 +638,46 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
             ))}
           </ul>
         )}
+        {related.length > 0 && (
+          <ul className="acute-review__conflicts" aria-label="Related cards, not changed">
+            {related.map((r) => (
+              <li key={`related:${r.target}`} className="acute-review__conflict" data-decision="related">
+                <div className="acute-review__conflict-head">
+                  <button
+                    type="button"
+                    className="acute-review__conflict-name"
+                    onClick={() => {
+                      const b = boxOf(r.target);
+                      if (b) focusBox(api, b);
+                    }}
+                  >
+                    ↔ {r.name}
+                  </button>
+                  <span className="acute-review__note">Not changed: {r.reason}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </>
   );
 }
 
 /** "+2 new · −1 removed · ~3 updated · 2 links changed · ⚠ 1 needs your input" */
-function describeReconciliation(changes: readonly ProposedChange[], conflicts: number, isConnector: (id: string) => boolean): string {
+function describeReconciliation(changes: readonly ProposedChange[], conflicts: number, isConnector: (id: string) => boolean, elsewhere = 0): string {
   let added = 0;
   let removed = 0;
   let updated = 0;
   let links = 0;
+  let review = 0;
   for (const c of changes) {
     if (c.kind === "create_block" || c.kind === "create_shape" || c.kind === "create_page") added++;
     else if (c.kind === "remove" && isConnector(c.target)) links++;
     else if (c.kind === "remove") removed++;
-    else if (c.kind === "update_block" || c.kind === "update_shape" || c.kind === "update_node" || c.kind === "set_lens") updated++;
+    else if (c.kind === "update_block" || c.kind === "patch_block" || c.kind === "update_shape" || c.kind === "update_node" || c.kind === "set_lens") updated++;
     else if (c.kind === "connect") links++;
+    else if (c.kind === "mark_review") review++;
   }
   const parts = [
     added ? `+${added} new` : "",
@@ -614,6 +685,9 @@ function describeReconciliation(changes: readonly ProposedChange[], conflicts: n
     updated ? `~${updated} updated` : "",
     links ? `${links} ${links === 1 ? "link" : "links"} changed` : "",
     conflicts ? `⚠ ${conflicts} ${conflicts === 1 ? "needs" : "need"} your input` : "",
+    // Stage 3: other cards that repeat a changed fact, each offered for its own decision.
+    elsewhere ? `↗ ${elsewhere} elsewhere to check` : "",
+    review ? `${review} to review` : "",
   ];
   return parts.filter(Boolean).join(" · ") || "No changes";
 }
@@ -626,6 +700,8 @@ function acceptedMessage(applied: readonly ProposedChange[]): string {
 
 function ConflictCard(props: {
   conflict: ConflictItem;
+  /** An impact offer's (Stage 3): the name of the source's card where the update changes the fact. */
+  fromName?: string | undefined;
   current: string | null;
   decision: ConflictDecision | undefined;
   onDecide: (d: ConflictDecision) => void;
@@ -638,13 +714,27 @@ function ConflictCard(props: {
   const name = conflictName(conflict);
   // A revert's conflict (D30): the object changed after the agent's change; keeping it adds nothing.
   const revert = conflict.apply.kind === "restore" || conflict.apply.kind === "remove";
+  // Stage 3: not one of the source's cards — another card that says the same thing.
+  const impact = conflict.impact;
+  // Stale-target protection: the user edited the block after this update was proposed.
+  const stale = !!conflict.changedSinceProposal;
   return (
-    <li className="acute-review__conflict" aria-label={`Conflict: ${name}`} data-decision={decision ?? "undecided"}>
+    <li className="acute-review__conflict" aria-label={impact ? `Elsewhere: ${name}` : `Conflict: ${name}`} data-decision={decision ?? "undecided"}>
       <div className="acute-review__conflict-head">
         <button type="button" className="acute-review__conflict-name" onClick={props.onShow}>
-          ⚠ {name}
+          {impact ? "↗" : "⚠"} {name}
         </button>
-        <span className="acute-review__note">{revert ? "This changed after the agent's change; reverting would undo that too." : "You edited this; the new content changes it too."}</span>
+        <span className="acute-review__note">
+          {revert
+            ? "This changed after the agent's change; reverting would undo that too."
+            : stale
+              ? "Edited since this update was proposed: using the proposal would replace your edit."
+            : impact
+              ? `Says the same as ${props.fromName ?? "a card"}, which this update changes. The same edit here: ${impact.detail}`
+              : conflict.escalation
+              ? `${conflict.escalation.intent === "CONTRADICTS" ? "The new content contradicts this card" : "The new content changes this card too much to apply on its own"}: ${conflict.escalation.detail}`
+              : "You edited this; the new content changes it too."}
+        </span>
       </div>
       {props.showDiff ? (
         <pre className="acute-review__diff" aria-label="Differences">
@@ -659,7 +749,7 @@ function ConflictCard(props: {
       ) : (
         <div className="acute-review__compare">
           <div>
-            <span className="acute-review__compare-label">Yours</span>
+            <span className="acute-review__compare-label">{impact ? "Now" : "Yours"}</span>
             <pre aria-label="Your version">{current ?? ""}</pre>
           </div>
           <div>
@@ -673,10 +763,10 @@ function ConflictCard(props: {
           View diff
         </button>
         <button type="button" className="acute-ask-ai__secondary" aria-pressed={decision === "keep"} onClick={() => props.onDecide("keep")}>
-          {revert ? "Keep current" : "Keep mine"}
+          {revert ? "Keep current" : impact ? "Leave as is" : "Keep mine"}
         </button>
         <button type="button" className="acute-ask-ai__secondary" aria-pressed={decision === "apply"} onClick={() => props.onDecide("apply")}>
-          {revert ? "Revert anyway" : "Apply update"}
+          {revert ? "Revert anyway" : impact ? "Update this too" : stale ? "Use proposed" : "Apply update"}
         </button>
       </div>
     </li>
@@ -788,7 +878,7 @@ function Ghosts({ boxOf, changes, byKey }: { boxOf: BoxLookup; changes: readonly
             />
           );
         }
-        if (c.kind === "rebaseline") return null; // nothing visible changes
+        if (c.kind === "rebaseline" || c.kind === "mark_review") return null; // nothing visible changes
         if (c.kind === "group_objects") {
           // The section it will draw: its members' bounds, padded.
           const b = unionBox(c.targets.map(boxOf));

@@ -1,0 +1,133 @@
+{
+  "caseId": "kn-03-blue-green-deploy",
+  "reviewer": "R2",
+  "verdicts": [
+    {
+      "candidate": "c1",
+      "verdict": "set",
+      "claimUnits": ["u1"],
+      "conditionQuote": "It assumes you already run the service behind a load balancer.",
+      "claimQuote": "This tutorial walks through a blue-green release of `orders-api`",
+      "confidence": "medium",
+      "note": "A prerequisite scoping the whole tutorial; no single claim becomes false without it."
+    },
+    {
+      "candidate": "c2",
+      "verdict": "set",
+      "claimUnits": ["u3", "u4"],
+      "conditionQuote": "The cost is running twice the infrastructure during a release",
+      "claimQuote": "You keep two identical production environments, called blue and green.",
+      "confidence": "high",
+      "note": "A cost of the approach; the description stays true."
+    },
+    {
+      "candidate": "c3",
+      "verdict": "set",
+      "claimUnits": ["u17"],
+      "conditionQuote": "returns `200` only when the service can reach its database and its queue",
+      "claimQuote": "Poll the health endpoint on every green instance until all of them return `200`.",
+      "confidence": "medium",
+      "note": "A prerequisite on what the health check means; the health gate relies on it, but the step itself stays true."
+    },
+    {
+      "candidate": "c4",
+      "verdict": "claim",
+      "claimUnits": ["u5"],
+      "conditionQuote": "Database migrations that are backward compatible, so the old version keeps working against the new schema. This is a hard requirement: both versions share one database, and a rollback does not undo a migration.",
+      "claimQuote": "Because the old environment is still running, going back is the same one-step switch.",
+      "confidence": "high",
+      "note": "With a non-backward-compatible migration, switching back to blue does not restore a working service."
+    },
+    {
+      "candidate": "c5",
+      "verdict": "claim",
+      "claimUnits": ["u4", "u5"],
+      "conditionQuote": "If any migration is not backward compatible, do not use this procedure",
+      "claimQuote": "you deploy the new version to the idle one, test it there, and then move traffic over in one step",
+      "confidence": "medium",
+      "note": "Excludes the whole procedure in that case; overlaps c4."
+    },
+    {
+      "candidate": "c6",
+      "verdict": "set",
+      "claimUnits": ["u15"],
+      "conditionQuote": "using the same build artifact that passed staging rather than a fresh build",
+      "claimQuote": "Deploy version `2.8.0` to `orders-green`",
+      "confidence": "low",
+      "note": "A constraint on how to perform the step; could also be read as procedural detail (not_a_condition)."
+    },
+    {
+      "candidate": "c7",
+      "verdict": "set",
+      "claimUnits": ["u16"],
+      "conditionQuote": "once, from a single job rather than from every green instance at startup",
+      "claimQuote": "Apply the database migrations from the new release",
+      "confidence": "medium",
+      "note": "A constraint on running migrations; the step stays true but must carry it."
+    },
+    {
+      "candidate": "c8",
+      "verdict": "claim",
+      "claimUnits": ["u17"],
+      "conditionQuote": "If any instance is still failing health checks after 10 minutes, stop here and roll back: tear down green and leave blue serving traffic.",
+      "claimQuote": "Poll the health endpoint on every green instance until all of them return `200`.",
+      "confidence": "medium",
+      "note": "Without the 10-minute stop-and-roll-back rule the step implies waiting indefinitely and then proceeding to the switch."
+    },
+    {
+      "candidate": "c9",
+      "verdict": "claim",
+      "claimUnits": ["u18"],
+      "conditionQuote": "If one fails, treat it like a failed health check and stop.",
+      "claimQuote": "Send the smoke-test suite to green's internal address. Expected result: all smoke tests pass.",
+      "confidence": "medium",
+      "note": "Gate on proceeding to the traffic switch."
+    },
+    {
+      "candidate": "c10",
+      "verdict": "claim",
+      "claimUnits": ["u22"],
+      "conditionQuote": "If the error rate rises above 2% at any point in that window, switch back",
+      "claimQuote": "Observe the 5xx error rate on green for 15 minutes after the switch.",
+      "confidence": "medium",
+      "note": "The threshold and window define when to roll back; 'continue' is true only if the rate stays at or below 2%."
+    },
+    {
+      "candidate": "c11",
+      "verdict": "claim",
+      "claimUnits": ["u5"],
+      "conditionQuote": "Leave blue running, unchanged, for 24 hours. It is your rollback target until then.",
+      "claimQuote": "Because the old environment is still running, going back is the same one-step switch.",
+      "confidence": "medium",
+      "note": "One-step switch-back holds only while blue is still running, i.e. for the 24-hour standby."
+    },
+    {
+      "candidate": "c12",
+      "verdict": "claim",
+      "claimUnits": ["u25"],
+      "conditionQuote": "before step 5",
+      "claimQuote": "A rollback before step 5 is cheap, because customers never saw green.",
+      "confidence": "low",
+      "note": "Intra-sentence scope; the cheapness claim is false after step 5. Could also be read as just a statement, not a limit."
+    },
+    {
+      "candidate": "c13",
+      "verdict": "set",
+      "claimUnits": ["u26"],
+      "conditionQuote": "requests that were in flight on green during the switch may fail and need a client retry",
+      "claimQuote": "A switch-back after step 5 is also fast",
+      "confidence": "medium",
+      "note": "A cost of a late switch-back; it is still fast."
+    },
+    {
+      "candidate": "c14",
+      "verdict": "claim",
+      "claimUnits": ["u23"],
+      "conditionQuote": "Do not run the next release's migrations while blue is still on standby. If you do, the standby may no longer work against the schema, and the switch-back stops being a safe option.",
+      "claimQuote": "It is your rollback target until then.",
+      "confidence": "medium",
+      "note": "Blue is not a safe rollback target if the next release's migrations run during standby."
+    }
+  ],
+  "additional": []
+}

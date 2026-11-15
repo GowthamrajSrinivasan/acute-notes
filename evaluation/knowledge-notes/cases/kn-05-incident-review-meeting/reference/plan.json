@@ -6,7 +6,7 @@
     {
       "id": "g1",
       "type": "group",
-      "content": { "label": "What happened", "arrangement": "grid", "takeaway": "A config typo took checkout down for 47 minutes; detection, status updates and review all lagged." }
+      "content": { "label": "What happened", "arrangement": "grid", "takeaway": "A config typo caused 47 minutes of checkout errors; detection and the status page were slow, and config changes had no review." }
     },
     {
       "id": "n1",
@@ -72,7 +72,7 @@
     {
       "id": "g3",
       "type": "group",
-      "content": { "label": "Proposed, not agreed", "arrangement": "compare", "takeaway": "Two proposals discussed without agreement; both stay open." }
+      "content": { "label": "Proposed, not agreed", "arrangement": "compare", "takeaway": "Not agreed: a Friday deploy freeze and automatic rollback. On the freeze, nothing was decided; both stay open." }
     },
     {
       "id": "n8",
@@ -121,7 +121,7 @@
       "parent": "g5",
       "importance": "high",
       "title": "Did customers retry the 2,300 failed checkouts?",
-      "content": { "markdown": "Nobody knows yet: the payment logs would show it, but no one has looked. The answer changes what the email to customers says." }
+      "content": { "markdown": "Nobody knows yet: the payment logs would show it, but no one has looked. If most people retried, the email to customers is different." }
     }
   ],
   "relationships": [

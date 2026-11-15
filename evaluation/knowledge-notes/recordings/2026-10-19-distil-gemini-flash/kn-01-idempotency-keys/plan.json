@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "g0",
+      "role": "annotated",
+      "importance": "high",
+      "stableKey": "Idempotency keys § group#0",
+      "type": "group",
+      "content": {
+        "label": "Idempotency keys",
+        "arrangement": "stack",
+        "takeaway": "Idempotency keys make retries safe within a bounded window."
+      }
+    },
+    {
+      "id": "u0_n1",
+      "stableKey": "Idempotency keys § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "An idempotency key is a unique value that a client attaches to a request so that the server can recognise a retry of the same operation.¹ If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.² For example, a checkout client sends `Idempotency-Key: 7f3c-91ab` with a payment request.³ The connection drops before the response arrives, so the client retries with the same key.⁴ The server finds the stored result for `7f3c-91ab` and returns the original confirmation, and the customer is charged once.⁵ Keys only protect against duplicates while the server still remembers them.⁶ In this design, stored results expire after 24 hours, so a retry sent after that window is treated as a new payment.⁷ Keys also do not make two different requests safe: if a client reuses a key with a different amount, the server must reject the request rather than return the old result.⁸ In short, idempotency keys make retries safe within a bounded window; they are not a general guarantee against duplicate operations.⁹"
+      }
+    },
+    {
+      "id": "u0_n2",
+      "title": "Notes",
+      "stableKey": "Idempotency keys § text#1",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "¹ A unique identifier for an operation.\n² Prevents duplicate operations.\n³ Example of an idempotency key in a payment request.\n⁴ Client retries with the same key after a connection drop.\n⁵ Server uses the key to return the original result, preventing double charging.\n⁶ Protection is limited by the server's memory of the key.\n⁷ Stored results expire after 24 hours, making retries after this period new requests.\n⁸ Reusing a key with different request parameters (e.g., amount) requires rejection, not returning the old result.\n⁹ Idempotency keys ensure safe retries only within a specific timeframe and do not prevent all duplicate operations."
+      }
+    },
+    {
+      "id": "u0_a1",
+      "title": "Key Takeaway from Annotations",
+      "stableKey": "Idempotency keys § text#2",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The annotations clarify the specific conditions and limitations under which idempotency keys provide protection, highlighting that they are not a universal solution for all duplicate operation scenarios."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u0_n1",
+      "to": "u0_n2",
+      "type": "explained_by"
+    }
+  ],
+  "metadata": {
+    "title": "Idempotency keys"
+  }
+}

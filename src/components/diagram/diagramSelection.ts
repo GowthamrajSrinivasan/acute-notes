@@ -3,6 +3,7 @@
  * "Interactive diagram" switch), a node inside an interactive frame (kind, sublabel, …), or — merged into the arrow
  * entry — an arrow between two of its nodes (its explanation). Pure; called from the canvas `onChange`.
  */
+import { isLocked } from "@/domain/canvas/lock";
 import type { SceneElement } from "@/domain/canvas/adapter";
 import { getDiagramMeta, getEdgeSemantics, getFrameLens, getNodeLens, getNodeProject, getNodeSemantics, interactiveFrameOf, NODE_ELEMENT_TYPES } from "@/domain/canvas/diagram";
 import type { SelectedObject } from "@/components/properties/selectedBlockStore";
@@ -25,7 +26,14 @@ export function diagramSelectionTarget(elements: readonly SceneElement[], ids: r
 export function selectedDiagramObject(elements: readonly SceneElement[], single: SceneElement): SelectedObject | null {
   if (single.type === "frame") {
     const lens = getFrameLens(single);
-    return { kind: "frame", elementId: single.id, interactive: getDiagramMeta(single)?.interactive === true, level: lens?.level, ...(lens?.profile ? { profile: lens.profile } : {}) };
+    return {
+      kind: "frame",
+      elementId: single.id,
+      interactive: getDiagramMeta(single)?.interactive === true,
+      level: lens?.level,
+      ...(lens?.profile ? { profile: lens.profile } : {}),
+      ...(isLocked(single) ? { locked: true } : {}),
+    };
   }
   if (!NODE_ELEMENT_TYPES.includes(single.type)) return null;
   const frame = interactiveFrameOf(elements, single);

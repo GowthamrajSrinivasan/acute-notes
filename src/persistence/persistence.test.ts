@@ -34,3 +34,24 @@ describe("database schema (IndexedDB only)", () => {
     expect(await services.documents.listByWorkspace("ws")).toHaveLength(2);
   });
 });
+
+describe("content source versions with unit ids (knowledge-notes-plan WP1.3, IndexedDB)", () => {
+  it("needs no schema bump: a version written before units existed still loads, and one with units and lineage round-trips", async () => {
+    const name = `acute-units-${++dbCounter}`;
+    // A database as WP1.3 found it, with a version written before units existed.
+    const before = await openAcuteDB(name);
+    const header = { id: "s", workspaceId: "ws", canvasId: "cv", origin: "paste" as const, tier: "ai" as const, template: "sectioned", latestVersion: 1, createdAt: 1, updatedAt: 1 };
+    const old = { sourceId: "s", version: 1, text: "One. Two.", plan: { version: 1 }, createdAt: 1 };
+    await before.put("contentSources", header);
+    await before.put("contentSourceVersions", old);
+    before.close();
+
+    const { contentSources } = createIndexedDbServices(openAcuteDB(name));
+    expect(await contentSources.getVersion("s", 1)).toEqual(old);
+    const units = { units: [{ id: "u1", kind: "sentence" as const, text: "One.", hash: "h", topic: "", span: { start: 0, end: 4 } }], nextId: 2 };
+    const lineage = { fromVersion: 1, toVersion: 2, entries: [{ state: "added" as const, to: "u1" }] };
+    await contentSources.append({ ...header, latestVersion: 2 }, { ...old, version: 2, units, lineage });
+    expect(await contentSources.getVersion("s", 2)).toEqual({ ...old, version: 2, units, lineage });
+    expect(await contentSources.getVersion("s", 1)).toEqual(old);
+  });
+});

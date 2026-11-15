@@ -13,6 +13,7 @@
  */
 import { UNIT_SEPARATOR } from "@/ai/reconcile/keys";
 import type { RelationType } from "@/domain/types";
+import type { Organisation } from "./grouping";
 import type { SectionKind, SectionProminence } from "./sectionKinds";
 import type { GroupArrangement, VisualNode, VisualPlan, VisualTemplate } from "./types";
 
@@ -46,19 +47,37 @@ export const isClusterKey = (key: string) => /::cluster\d+$/.test(key);
 /** Id of the takeaway line rendered under a group's title (content fidelity Wave B), when the group has one. */
 export const groupTakeawayKey = (groupId: string) => `${groupId}::takeaway`;
 
+/** Id of the backdrop drawn behind a section's `index`th sub-group (organisation v2, plan §3.2). */
+export const subGroupKey = (groupId: string, index: number) => `${groupId}::sub${index}`;
+
+/** Id of the small title drawn at the top of a sub-group's backdrop; it carries the sub-group's `stableKey`. */
+export const subGroupTitleKey = (groupId: string, index: number) => `${subGroupKey(groupId, index)}::title`;
+
+/** The sub-group backdrop keys a layout may hold (`subGroupKey`). */
+export const isSubGroupKey = (key: string) => /::sub\d+$/.test(key);
+
+/** The sub-group title keys a layout may hold (`subGroupTitleKey`). */
+export const isSubGroupTitleKey = (key: string) => /::sub\d+::title$/.test(key);
+
+/** Any backdrop a layout may draw behind cards: a sub-topic's (`clusterKey`) or a sub-group's (`subGroupKey`). */
+export const isBackdropKey = (key: string) => isClusterKey(key) || isSubGroupKey(key);
+
 /**
  * Flattens a grouped plan: every group becomes a heading node (its title), and `parent` fields are dropped.
  * Links between whole sections are dropped too: they are arrows between frames, drawn once on the first run,
- * and never between the title objects reconciliation compares sections by.
+ * and never between the title objects reconciliation compares sections by. A sub-group (a group inside a
+ * section, organisation v2) becomes a plain heading, not a section title: on the canvas it is its backdrop's
+ * title object, and it reconciles by its own `stableKey` like a sub-topic heading.
  */
 export function ungroup(plan: VisualPlan): VisualPlan {
   if (!plan.nodes.some((n) => n.type === "group" || n.parent !== undefined)) return plan;
   const groups = new Set(plan.nodes.flatMap((n) => (n.type === "group" ? [n.id] : [])));
   const nodes = plan.nodes.map((n): VisualNode => {
-    const { parent: _parent, ...rest } = n;
+    const { parent, ...rest } = n;
     if (rest.type !== "group") return rest as VisualNode;
     const { content, ...common } = rest;
-    return { ...common, type: "heading", role: "section", content: { text: content.label } };
+    const sub = parent !== undefined && groups.has(parent);
+    return sub ? { ...common, type: "heading", content: { text: content.label } } : { ...common, type: "heading", role: "section", content: { text: content.label } };
   });
   return { ...plan, nodes, relationships: plan.relationships.filter((r) => !groups.has(r.from) && !groups.has(r.to)) };
 }
@@ -134,6 +153,11 @@ export interface WrapOptions {
   subtitle?: string;
   /** Links between whole sections (their frames). */
   links?: readonly SectionLink[];
+  /**
+   * "v2" keeps a node's own `parent` when it names a group of the same section (the model's sub-group, plan §3.2), so
+   * validation can keep that sub-group; "v1" (default) puts every node of a section directly in it, as before.
+   */
+  organisation?: Organisation;
 }
 
 const SUBTITLE_MAX = 300;
@@ -264,7 +288,7 @@ function flowSteps(
  * unchanged when there is no section, so short, heading-less content keeps its template's own layout.
  */
 export function wrapSections(input: unknown, sections: readonly SectionSpec[], options: WrapOptions = {}): unknown {
-  const { idPrefix = "", flat = false, titleKey = null, subtitle, links = [] } = options;
+  const { idPrefix = "", flat = false, titleKey = null, subtitle, links = [], organisation = "v1" } = options;
   if (!isObject(input) || !Array.isArray(input.nodes) || !sections.length) return input;
   // One detail card per node (Wave D), before anything is framed or numbered.
   const detail = mergeDetailCards(input.nodes, Array.isArray(input.relationships) ? input.relationships : []);
@@ -275,6 +299,13 @@ export function wrapSections(input: unknown, sections: readonly SectionSpec[], o
     return i < 0 ? null : key.slice(0, i);
   };
   const specs = new Map(sections.map((s, i) => [s.key, { ...s, id: `${idPrefix}g${i}` }] as const));
+  // v2: the model's own groups, by id, so a node whose parent is a group of its own section keeps it (a sub-group).
+  const rawGroups = new Map<string, Record<string, unknown>>();
+  if (organisation === "v2") for (const n of raw.nodes) if (isObject(n) && n.type === "group" && typeof n.id === "string") rawGroups.set(n.id, n);
+  const ownSubGroup = (node: Record<string, unknown>, unit: string): boolean => {
+    const parent = typeof node.parent === "string" ? rawGroups.get(node.parent) : undefined;
+    return !!parent && parent !== node && unitOf(parent) === unit;
+  };
   const nodes: unknown[] = [];
   const emitted = new Set<string>();
   const subtitleNode = subtitle?.trim()
@@ -323,7 +354,7 @@ export function wrapSections(input: unknown, sections: readonly SectionSpec[], o
     if (node.type === "heading" && typeof content.text === "string" && norm(content.text) === norm(spec.label)) continue;
     const step = typeof node.id === "string" ? steps.get(node.id) : undefined;
     const numbered = step !== undefined && typeof content.label === "string" ? { ...node, content: { ...content, label: `${step} · ${unnumbered(content.label)}` } } : node;
-    nodes.push(flat ? numbered : { ...numbered, parent: spec.id });
+    nodes.push(flat ? numbered : { ...numbered, parent: ownSubGroup(node, unit!) ? node.parent : spec.id });
   }
   if (!subtitlePlaced) nodes.unshift(subtitleNode);
   const relationships = [

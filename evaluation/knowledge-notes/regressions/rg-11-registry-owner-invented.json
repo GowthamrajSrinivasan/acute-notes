@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-registry-owner-invented",
+  "distortion": "invented_detail",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The undecided registry owner is filled in with the platform team.",
+  "mutations": [
+    { "op": "replace_text", "node": "s3", "find": "owner: not decided", "replace": "owner: platform team" }
+  ],
+  "expectFailing": ["a.no-invented-owner", "a.registry-owner-open"]
+}

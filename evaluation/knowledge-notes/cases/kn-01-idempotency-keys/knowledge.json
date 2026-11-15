@@ -5,7 +5,7 @@
     {
       "id": "ku.definition",
       "title": "An idempotency key lets the server recognise a retry",
-      "claim": "An idempotency key is a unique value a client attaches to a request so the server can tell a retry of the same operation from a new one.",
+      "claim": "An idempotency key is a unique value a client attaches to a request so the server can recognise a retry of the same operation.",
       "explanation": "The core concept. Everything else in the source is how it is used and where it stops working.",
       "type": "definition",
       "importance": "critical",

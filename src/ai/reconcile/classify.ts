@@ -33,6 +33,8 @@
  * longer has → its pieces are removed like any object whose node is gone.
  */
 import type { VisualNode, VisualPlan } from "@/ai/visual-plan/types";
+import type { CardReview, NoteModel } from "@/ai/fidelity/contracts";
+import type { RichContent } from "@/domain/types";
 
 export interface ExistingObject {
   objectId: string;
@@ -53,6 +55,19 @@ export interface ExistingObject {
   frameId?: string;
   /** A piece of a split block (F42 Phase 4): the node it shows part of, and that node's fingerprint when split. */
   splitOf?: { stableNodeKey: string; fingerprint: string };
+  /** Knowledge Notes: the units it cites (`AIMetadata.sourceUnits`), its review state, and the note model it was made under; never compared. */
+  sourceUnits?: string[];
+  review?: CardReview;
+  noteModel?: NoteModel;
+  /**
+   * Locked by the user (Stage 1e): the card itself, or the section frame it is in. Skipped like `excluded` while
+   * "Preserve locked sections" is on (`UpdateOptions.preserveLockedSections`); a marker only when it is off.
+   */
+  locked?: "card" | "section";
+  /** Its content is the user's wording (`AIMetadata.userWording`): updated as an edited card even while untouched since (Stage 1e). */
+  userWording?: boolean;
+  /** A block's or page's content as it is now (a page's title too), for planning claim-level patches (`claimPlanner.ts`); never compared. */
+  rich?: { content: RichContent; title?: string };
 }
 
 export type ReconciliationItem =

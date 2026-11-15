@@ -1,0 +1,513 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "g0",
+      "role": "notes",
+      "importance": "high",
+      "stableKey": "Post-incident review: checkout outage, March 14 § group#0",
+      "type": "group",
+      "content": {
+        "label": "Post-incident review: checkout outage, March 14",
+        "arrangement": "grid",
+        "takeaway": "Outage caused by config typo; improved alerting, status page, and config review proposed."
+      }
+    },
+    {
+      "id": "u0_u0_n1",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Attendees: Dana (facilitator), Marcus (on-call SRE), Leila (payments backend lead), Tomás (release engineering), Kenji (customer support lead)"
+      }
+    },
+    {
+      "id": "u0_u0_n2",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#1",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "This is the blameless review for the checkout outage on Friday, March 14."
+      }
+    },
+    {
+      "id": "u0_u0_n3",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § heading#0",
+      "parent": "g0",
+      "type": "heading",
+      "content": {
+        "text": "Timeline of Outage"
+      }
+    },
+    {
+      "id": "u0_u0_n4",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#2",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "At 16:40 a config change to the payments service went out. It changed the gateway connection pool from 50 connections to 5. This was a typo; the intent was 55. Checkout requests started queuing for a connection and timing out almost immediately."
+      }
+    },
+    {
+      "id": "u0_u0_n5",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#3",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Our error-rate alert fired at 17:02, 22 minutes after the change. The config was rolled back at 17:15, and checkout was fully recovered at 17:27. Customers saw errors for 47 minutes in total."
+      }
+    },
+    {
+      "id": "u0_u0_n6",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#4",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "About 2,300 failed checkouts occurred in that window. Support received 140 tickets before the status page was posted."
+      }
+    },
+    {
+      "id": "u0_u0_n7",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § heading#1",
+      "parent": "g0",
+      "type": "heading",
+      "content": {
+        "text": "Alerting Issues"
+      }
+    },
+    {
+      "id": "u0_u0_n8",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#5",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "The alert only fires when the checkout error rate is above 10% for 15 minutes. Errors went over 10% around 16:47, so the earliest it could fire was 17:02. It did exactly what it was configured to do, but this is too slow for checkout."
+      }
+    },
+    {
+      "id": "u0_u0_n9",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#6",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Proposed change: 5% over 5 minutes for checkout specifically. This would have paged twice on noise in the last 30 days, both during the payment provider's own maintenance. Two noisy pages a month is fine for checkout."
+      }
+    },
+    {
+      "id": "u0_u0_n10",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § todo#0",
+      "parent": "g0",
+      "type": "todo",
+      "content": {
+        "items": [
+          {
+            "text": "Lower the checkout error-rate alert to 5% over 5 minutes (Marcus to own, by Wednesday, March 19).",
+            "checked": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "u0_u0_n11",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § heading#2",
+      "parent": "g0",
+      "type": "heading",
+      "content": {
+        "text": "Status Page Update Process"
+      }
+    },
+    {
+      "id": "u0_u0_n12",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#7",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "The status page went up at 17:20, 40 minutes after the errors started. Customers were asking on social media before an update was provided."
+      }
+    },
+    {
+      "id": "u0_u0_n13",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#8",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Currently, the incident commander posts the status page. On Friday, Marcus was incident commander and was busy rolling back, so it was the last thing on his mind."
+      }
+    },
+    {
+      "id": "u0_u0_n14",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § todo#1",
+      "parent": "g0",
+      "type": "todo",
+      "content": {
+        "items": [
+          {
+            "text": "Allow support to post a status-page update directly, without waiting for the incident commander.",
+            "checked": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "u0_u0_n15",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § heading#3",
+      "parent": "g0",
+      "type": "heading",
+      "content": {
+        "text": "Config Change Process"
+      }
+    },
+    {
+      "id": "u0_u0_n16",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#9",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Config changes don't go through code review. They are edited in the deploy dashboard and applied directly. Code changes need two approvals; config needs none. This is a gap, as a typo in code would have been caught by a reviewer or a test."
+      }
+    },
+    {
+      "id": "u0_u0_n17",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 1 § text#10",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Proposal: payments config goes through the same review as code."
+      }
+    },
+    {
+      "id": "u0_u1_n1",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § config_change_process",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Config changes to the payments service will go through pull-request review with one payments-team approval."
+      }
+    },
+    {
+      "id": "u0_u1_n2",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § leila_action",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Leila will move the config into the repo and add the approval rule by Friday, March 21."
+      }
+    },
+    {
+      "id": "u0_u1_n3",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § tomas_proposal_freeze",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Tomás proposes to stop deploying anything to payments after 15:00 on Fridays, citing the incident's timing (16:40 on a Friday) when half the team had logged off."
+      }
+    },
+    {
+      "id": "u0_u1_n4",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § leila_disagreement_freeze",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Leila disagrees, stating a freeze moves risk to Monday morning when traffic is higher, and the problem was lack of review, not the day."
+      }
+    },
+    {
+      "id": "u0_u1_n5",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § tomas_argument_recovery",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Tomás argues that fewer people around means slower recovery for any cause, despite the review fixing this specific cause."
+      }
+    },
+    {
+      "id": "u0_u1_n6",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § leila_counter_recovery",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Leila counters that recovery took 25 minutes after the alert, and Marcus was on call, so Friday didn't slow it down."
+      }
+    },
+    {
+      "id": "u0_u1_n7",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § tomas_data_suggestion",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Tomás suggests this is one incident and a pattern might be visible if more data is examined."
+      }
+    },
+    {
+      "id": "u0_u1_n8",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § dana_action_freeze",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Dana suggests not deciding on the freeze now. Tomás will pull incident data from the last six months to see if late-Friday deploys are over-represented, and bring findings to the next review on April 2."
+      }
+    },
+    {
+      "id": "u0_u1_n9",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § marcus_proposal_rollback",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Marcus proposes automatic rollback: if the checkout error rate doubles within 10 minutes of a deploy, the pipeline rolls back automatically."
+      }
+    },
+    {
+      "id": "u0_u1_n10",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § leila_concern_rollback",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Leila is nervous about automatic rollback for code, especially with database migrations, as rolling back code without the migration could worsen the situation. She agrees it might work for config."
+      }
+    },
+    {
+      "id": "u0_u1_n11",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § marcus_solution_rollback",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Marcus suggests excluding releases with migrations from automatic rollback."
+      }
+    },
+    {
+      "id": "u0_u1_n12",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § leila_condition_rollback",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Leila wants to know how often migrations are shipped before agreeing to anything."
+      }
+    },
+    {
+      "id": "u0_u1_n13",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § dana_status_rollback",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Dana notes that auto-rollback is an open question due to unknown frequency of releases with migrations, and suggests leaving it open."
+      }
+    },
+    {
+      "id": "u0_u1_n14",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § kenji_question_retries",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Kenji asks if any of the 2,300 failed checkouts were retried successfully, as this impacts the customer email."
+      }
+    },
+    {
+      "id": "u0_u1_n15",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § marcus_info_retries",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Marcus states that the payment logs would show this, but nobody has looked yet."
+      }
+    },
+    {
+      "id": "u0_u1_n16",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § dana_action_email",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Dana identifies this as another open question. Kenji will draft the customer email regardless."
+      }
+    },
+    {
+      "id": "u0_u1_n17",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § marcus_timeline_recap",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Marcus recaps the timeline for the documentation: change went out at 16:40, alert fired at 17:02, rollback at 17:15, recovered at 17:27."
+      }
+    },
+    {
+      "id": "u0_u1_n18",
+      "stableKey": "Post-incident review: checkout outage, March 14 § part 2 § coffee_machine_note",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Someone needs to report the coffee machine."
+      }
+    },
+    {
+      "id": "u0_ax1",
+      "title": "Summary of Outage",
+      "stableKey": "Post-incident review: checkout outage, March 14 § text#0",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "A config change to the payments service at 16:40 on March 14, intended to be 55 connections, was mistakenly set to 5. This caused checkout requests to queue and time out, leading to 2,300 failed checkouts over 47 minutes. The alert fired 22 minutes after the change, and recovery took 25 minutes after the alert."
+      }
+    },
+    {
+      "id": "u0_ax2",
+      "title": "Alerting Issues",
+      "stableKey": "Post-incident review: checkout outage, March 14 § text#1",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The existing alert system for checkout error rates (10% over 15 minutes) was too slow, delaying detection by 22 minutes. The proposed change to 5% over 5 minutes aims to reduce this delay, with an acceptable risk of two noisy pages per month."
+      }
+    },
+    {
+      "id": "u0_ax3",
+      "title": "Status Page Update Process",
+      "stableKey": "Post-incident review: checkout outage, March 14 § text#2",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The status page update was delayed by 40 minutes because the incident commander (Marcus) was occupied with rollback. Allowing support to post directly is proposed to expedite communication with customers."
+      }
+    },
+    {
+      "id": "u0_ax4",
+      "title": "Config Change Process",
+      "stableKey": "Post-incident review: checkout outage, March 14 § text#3",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Config changes, unlike code changes, currently bypass code review, which allowed the typo to go unnoticed. The proposal is to implement pull-request review with one approval for payments service config changes, mirroring the code review process."
+      }
+    },
+    {
+      "id": "u0_ax5",
+      "title": "Open Questions and Actions",
+      "stableKey": "Post-incident review: checkout outage, March 14 § text#4",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "*   **Alerting:** Marcus to change checkout error-rate alert to 5% over 5 minutes by March 19.\n*   **Status Page:** Support can now post status page updates directly.\n*   **Config Changes:** Leila to move payments config to repo and add approval rule by March 21.\n*   **Friday Freeze:** Tomás to pull incident data for late-Friday deploys for the next review on April 2.\n*   **Automatic Rollback:** Open question due to unknown frequency of migrations; needs further investigation.\n*   **Customer Retries:** Kenji to draft customer email; payment logs need to be checked to determine if failed checkouts were retried successfully."
+      }
+    },
+    {
+      "id": "u0_src~page",
+      "stableKey": "Post-incident review: checkout outage, March 14 § page#0",
+      "parent": "g0",
+      "type": "page",
+      "content": {
+        "title": "Source details",
+        "markdown": "Dana: Okay, I think everyone's here. Did people manage to grab coffee? The machine on four is broken again.\n\nKenji: I brought my own. Lesson learned.\n\nDana: Smart. Right, let's start. Marcus, can you walk us through the timeline?\n\nMarcus: Sure.\n\n15 minutes of sustained errors is a long time when every minute is lost revenue.\n\nDana: Fair. What do we want instead?\n\nDana: Anyone against? ...\n\nMarcus: Yes.\n\nKenji: Whoever is incident commander, when they remember.\n\nKenji: I'd like that, yes.\n\nLeila: No objection from me.\n\nDana: Great. Next, how did a config value like that get through?\n\nTomás: That's the real gap.\n\nLeila: Yes.\n\nTomás: Can I raise something else?\n\nLeila: I don't agree with that. The problem here wasn't the day, it was that nobody reviewed the change.\n\nDana: I don't think we're going to settle this today. Let's not decide the freeze now.\n\nTomás: Sure, I can do that.\n\nLeila: For config, maybe.\n\nLeila: Possibly. I'd want to know how often we ship migrations before I agree to anything.\n\nWe don't know how many releases include migrations. Let's leave it open.\n\nIf most people retried, the email we send is different.\n\nKenji, can you draft the customer email either way?\n\nKenji: Yes, I'll take the email draft.\n\nDana: Thanks. Anything else? ... Good review, everyone."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u0_u1_n1",
+      "to": "u0_u1_n2",
+      "type": "implements",
+      "label": "setup task"
+    },
+    {
+      "from": "u0_u1_n3",
+      "to": "u0_u1_n4",
+      "type": "blocks",
+      "label": "disagreement"
+    },
+    {
+      "from": "u0_u1_n3",
+      "to": "u0_u1_n5",
+      "type": "supports",
+      "label": "reasoning"
+    },
+    {
+      "from": "u0_u1_n4",
+      "to": "u0_u1_n6",
+      "type": "supports",
+      "label": "reasoning"
+    },
+    {
+      "from": "u0_u1_n5",
+      "to": "u0_u1_n7",
+      "type": "supports",
+      "label": "further argument"
+    },
+    {
+      "from": "u0_u1_n3",
+      "to": "u0_u1_n8",
+      "type": "relates_to",
+      "label": "deferred decision"
+    },
+    {
+      "from": "u0_u1_n9",
+      "to": "u0_u1_n10",
+      "type": "blocks",
+      "label": "concern"
+    },
+    {
+      "from": "u0_u1_n10",
+      "to": "u0_u1_n11",
+      "type": "relates_to",
+      "label": "proposed solution"
+    },
+    {
+      "from": "u0_u1_n10",
+      "to": "u0_u1_n12",
+      "type": "depends_on",
+      "label": "information needed"
+    },
+    {
+      "from": "u0_u1_n9",
+      "to": "u0_u1_n13",
+      "type": "relates_to",
+      "label": "open question"
+    },
+    {
+      "from": "u0_u1_n14",
+      "to": "u0_u1_n15",
+      "type": "relates_to",
+      "label": "information source"
+    },
+    {
+      "from": "u0_u1_n14",
+      "to": "u0_u1_n16",
+      "type": "relates_to",
+      "label": "open question"
+    },
+    {
+      "from": "u0_ax1",
+      "to": "u0_u0_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u0_ax2",
+      "to": "u0_u0_n7",
+      "type": "relates_to"
+    },
+    {
+      "from": "u0_ax3",
+      "to": "u0_u0_n11",
+      "type": "relates_to"
+    },
+    {
+      "from": "u0_ax4",
+      "to": "u0_u0_n15",
+      "type": "relates_to"
+    },
+    {
+      "from": "u0_ax5",
+      "to": "u0_u1_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u0_u0_n3",
+      "to": "u0_u0_n4",
+      "type": "explained_by"
+    }
+  ],
+  "metadata": {}
+}

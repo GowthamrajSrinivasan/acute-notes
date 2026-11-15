@@ -1,0 +1,150 @@
+{
+  "caseId": "kn-07-photo-sharing-hld",
+  "reviewer": "blind independent reviewer, 2026-11-13",
+  "records": [
+    {
+      "id": "r1",
+      "claimUnits": ["u9"], "claimSummary": "The gateway checks the caller's access token with the auth service and routes the request to the right service.",
+      "conditionUnits": ["u10"], "kind": "exception",
+      "conditionSummary": "If the auth service cannot be reached, the gateway rejects the request (fails closed) rather than letting it through.",
+      "mustConvey": "auth service unreachable -> request rejected (not let through unchecked)",
+      "binding": "claim", "bindingReason": "When the auth service is unreachable the gateway does not route the request at all, so 'checks the token and routes the request' is misleading for that case.",
+      "claimCards": ["u2_n20"], "carriers": ["u2_n20"],
+      "perClaimCard": { "u2_n20": "carried" },
+      "confidence": "high", "notes": ""
+    },
+    {
+      "id": "r2",
+      "claimUnits": ["u9"], "claimSummary": "The gateway applies a rate limit.",
+      "conditionUnits": ["u9"], "kind": "bound",
+      "conditionSummary": "The rate limit is 120 requests per minute per account.",
+      "mustConvey": "120 requests per minute, per account",
+      "binding": "set", "bindingReason": "'The gateway applies a rate limit' stays true without the value; the bound is a specification that must appear somewhere.",
+      "claimCards": ["u2_n20"], "carriers": ["u2_n20"],
+      "perClaimCard": { "u2_n20": "carried" },
+      "confidence": "medium", "notes": "Intra-sentence bound; could be argued claim-binding if a card stated a different scope (e.g. global)."
+    },
+    {
+      "id": "r3",
+      "claimUnits": ["u8"], "claimSummary": "Every client request enters through the API gateway.",
+      "conditionUnits": ["u11"], "kind": "exception",
+      "conditionSummary": "Photo bytes are served to clients by the CDN, never by the gateway.",
+      "mustConvey": "photo bytes served by the CDN, never by the gateway",
+      "binding": "claim", "bindingReason": "For photo/thumbnail loads the traffic goes to the CDN, so 'every client request enters through the gateway' would be read as covering photo bytes and be false.",
+      "claimCards": ["u2_n20"], "carriers": ["u2_n20"],
+      "perClaimCard": { "u2_n20": "carried" },
+      "confidence": "medium", "notes": "u7 (direct upload to object storage) is a second exception of the same kind; u2_n19 / u4_n4 convey it."
+    },
+    {
+      "id": "r4",
+      "claimUnits": ["u7"], "claimSummary": "Clients upload photos directly to object storage with a signed URL.",
+      "conditionUnits": ["u7"], "kind": "scope",
+      "conditionSummary": "The signed URL is short-lived.",
+      "mustConvey": "short-lived (signed URL)",
+      "binding": "set", "bindingReason": "Direct upload via signed URL is still true without 'short-lived'; it is a security property that should appear somewhere.",
+      "claimCards": ["u2_n19", "u2_n22", "u3_n2", "u4_n4"], "carriers": ["u2_n19"],
+      "perClaimCard": { "u2_n19": "carried", "u2_n22": "separated", "u3_n2": "separated", "u4_n4": "separated" },
+      "confidence": "low", "notes": "Borderline adjective vs. condition; kept because it is the only limit on the signed URL's validity. u2_n19 conveys it only via the appended 'From the source: short-lived' fragment."
+    },
+    {
+      "id": "r5",
+      "claimUnits": ["u34"], "claimSummary": "The upload service and workers only meet through the message queue so a slow/failed thumbnail job never blocks or fails an upload.",
+      "conditionUnits": ["u34"], "kind": "caveat",
+      "conditionSummary": "Cost: a new photo takes a few seconds to appear in feeds.",
+      "mustConvey": "a few seconds' delay before a new photo appears in feeds",
+      "binding": "set", "bindingReason": "The queue decision and its benefit stay true; the delay is the accepted cost that must be recorded somewhere.",
+      "claimCards": ["u4_n1", "u4_n2", "u4_a1"], "carriers": ["u4_n2"],
+      "perClaimCard": { "u4_n1": "linked", "u4_n2": "carried", "u4_a1": "separated" },
+      "confidence": "high", "notes": ""
+    },
+    {
+      "id": "r6",
+      "claimUnits": ["u19"], "claimSummary": "A worker outage delays thumbnails but does not lose uploads.",
+      "conditionUnits": ["u19"], "kind": "bound",
+      "conditionSummary": "Because the queue keeps an event for up to 7 days.",
+      "mustConvey": "events retained up to 7 days",
+      "binding": "claim", "bindingReason": "An outage longer than 7 days would lose events, so 'does not lose uploads' is false beyond the retention bound.",
+      "claimCards": ["u2_n26"], "carriers": ["u2_n26"],
+      "perClaimCard": { "u2_n26": "carried" },
+      "confidence": "high", "notes": ""
+    },
+    {
+      "id": "r7",
+      "claimUnits": ["u31", "u32"], "claimSummary": "In the posting flow the worker creates thumbnails, marks the photo ready, and the feed service adds it to followers' feeds.",
+      "conditionUnits": ["u20"], "kind": "exception",
+      "conditionSummary": "A photo whose processing keeps failing stays 'processing' and is never shown in any feed.",
+      "mustConvey": "repeatedly failing processing -> stays 'processing', not shown in feeds",
+      "binding": "claim", "bindingReason": "For a photo whose processing keeps failing, the flow's outcome (photo distributed to followers' feeds) does not happen, so an unconditional reading of the flow is false.",
+      "claimCards": ["u3_n8", "u3_a2"], "carriers": ["u2_n26"],
+      "perClaimCard": { "u3_n8": "separated", "u3_a2": "separated" },
+      "confidence": "medium", "notes": "u3_a2 ('the entire flow ensures that a user's photo is ... distributed to followers' feeds') is the clearest claim card. The source flow is sequential, so binding could be argued 'set' for u32 alone."
+    },
+    {
+      "id": "r8",
+      "claimUnits": ["u14", "u23"], "claimSummary": "The feed service keeps ready-made feed pages in the cache.",
+      "conditionUnits": ["u23"], "kind": "bound",
+      "conditionSummary": "Feed pages are cached for 60 seconds.",
+      "mustConvey": "60 seconds",
+      "binding": "set", "bindingReason": "Caching feed pages stays true without the TTL; the 60 s staleness bound must appear somewhere.",
+      "claimCards": ["u2_n29", "u2_n23", "u4_n8"], "carriers": ["u2_n29"],
+      "perClaimCard": { "u2_n29": "carried", "u2_n23": "separated", "u4_n8": "separated" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r9",
+      "claimUnits": ["u35"], "claimSummary": "Clients send photo bytes straight to object storage; routing through the gateway would make it the bottleneck.",
+      "conditionUnits": ["u35"], "kind": "fact",
+      "conditionSummary": "Originals can be up to 25 MB (the deciding fact).",
+      "mustConvey": "up to 25 MB",
+      "binding": "set", "bindingReason": "The direct-upload decision stays true without the size; the 25 MB figure is the deciding fact that should appear somewhere.",
+      "claimCards": ["u4_n3", "u4_n4", "u2_n19", "u4_a1"], "carriers": ["u4_n4"],
+      "perClaimCard": { "u4_n3": "linked", "u4_n4": "carried", "u2_n19": "separated", "u4_a1": "separated" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r10",
+      "claimUnits": ["u38"], "claimSummary": "Pinhole uses a third-party CDN and push-notification provider instead of running its own.",
+      "conditionUnits": ["u38"], "kind": "caveat",
+      "conditionSummary": "We accept that their outages are outside our control.",
+      "mustConvey": "third-party outages are outside Pinhole's control",
+      "binding": "set", "bindingReason": "The buy decision stays true; the accepted risk is a caveat that must be recorded somewhere.",
+      "claimCards": ["u4_n9", "u4_n10", "u4_a1"], "carriers": ["u4_n10"],
+      "perClaimCard": { "u4_n9": "linked", "u4_n10": "carried", "u4_a1": "separated" },
+      "confidence": "high", "notes": ""
+    },
+    {
+      "id": "r11",
+      "claimUnits": ["u18", "u32"], "claimSummary": "The feed service asks the push-notification provider to alert followers.",
+      "conditionUnits": ["u27"], "kind": "caveat",
+      "conditionSummary": "Pinhole only sends requests and does not control when an alert arrives.",
+      "mustConvey": "Pinhole does not control alert delivery timing",
+      "binding": "set", "bindingReason": "'Asks the provider to alert' stays true; the lack of control over timing is a caveat.",
+      "claimCards": ["u2_n23", "u3_n8"], "carriers": ["u5_n3"],
+      "perClaimCard": { "u2_n23": "separated", "u3_n8": "separated" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r12",
+      "claimUnits": ["u18", "u32"], "claimSummary": "Followers are alerted (via the push-notification provider) when a photo is ready.",
+      "conditionUnits": ["u18"], "kind": "scope",
+      "conditionSummary": "Only followers who have notifications turned on are alerted.",
+      "mustConvey": "only followers with notifications turned on",
+      "binding": "claim", "bindingReason": "Followers with notifications off are not alerted, so 'alerts followers' is false for them.",
+      "claimCards": ["u2_n23", "u3_n8", "u3_a2"], "carriers": ["u2_n23"],
+      "perClaimCard": { "u2_n23": "carried", "u3_n8": "separated", "u3_a2": "separated" },
+      "confidence": "high", "notes": "Source u32 itself drops the scope; u3_n8 follows u32."
+    },
+    {
+      "id": "r13",
+      "claimUnits": ["u20"], "claimSummary": "A photo whose processing keeps failing stays in the 'processing' state.",
+      "conditionUnits": ["u39"], "kind": "caveat",
+      "conditionSummary": "How failed processing is retried and when a stuck photo is cleaned up is not decided yet.",
+      "mustConvey": "retry and cleanup of stuck photos undecided",
+      "binding": "set", "bindingReason": "The stuck-state statement stays true; the open question is a caveat that must be recorded somewhere.",
+      "claimCards": ["u2_n26"], "carriers": ["u6_n1", "u6_a1"],
+      "perClaimCard": { "u2_n26": "separated" },
+      "confidence": "medium", "notes": ""
+    }
+  ],
+  "notes": "No records for u1-u6 (purpose, scope, client description), u21/u22/u36 (facts and rationale, not limits), u25/u26/u28 (boundary facts), u29/u30/u33 (flow steps without conditions), u37 (rationale - 'because' clause, a cause), u40 (deferred feed precompute, an open question with no limited claim), u13 'once the upload completes' (timing detail, judged minor). Decision-title shapes (u4_n1/u4_n3/u4_n9) were treated as claim cards since their visible text names the decision; they are linked to their detail text. Component-label shapes in g1 (e.g. 'Cache', 'API Gateway') were not treated as claim cards. Group-to-group arrows (g1 -> g2 etc.) were not counted as linking individual cards."
+}

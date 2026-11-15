@@ -1,0 +1,1102 @@
+{
+  "caseId": "kn-04-queue-choice",
+  "schema": "ClauseRecordV31 (review-v3/attachmentSchema.ts)",
+  "dataset": "v3.1-pre",
+  "records": [
+    {
+      "id": "k1",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u3"
+      ],
+      "clause": "queued but not yet started",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u3"
+          ],
+          "claimQuote": "a deploy or a crash loses any job",
+          "evidence": "migrated: needs evidence",
+          "justification": "Narrows which jobs are lost; the takeaway (the current pool loses jobs) stands. Set.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k1 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k1",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u3"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k2",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u14"
+      ],
+      "clause": "Three VMs plus upgrades and on-call",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k2",
+            "verdict": "not_a_condition",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k3",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u15"
+      ],
+      "clause": "Uses spare capacity on the existing primary",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u15"
+          ],
+          "claimQuote": "Database job table | $0 extra",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: '$0 extra' is weighed against load on the primary, which the source calls the main month-end risk (u34). Without the clause, Option C looks free.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k3 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k3",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u15"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k4",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u16"
+      ],
+      "clause": "assumes current volume",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u13"
+          ],
+          "claimQuote": "Managed cloud queue | $310",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: the figure feeds the cost criterion and the must-have is 3x volume. Uses Y's minimal span, which X's full sentence contains.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k4 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k4",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u13"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k5",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u17"
+      ],
+      "clause": "At three times today's volume it would be roughly $900 a month",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u13"
+          ],
+          "claimQuote": "Managed cloud queue | $310",
+          "evidence": "migrated: needs evidence",
+          "justification": "The projected cost at the must-have volume can reverse the cost comparison. The row's 'grows with volume' does not make the $900 at 3x figure recognisable.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k5 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k5",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u13"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k6",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u17"
+      ],
+      "clause": "until the cluster needs a fourth machine",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u17"
+          ],
+          "claimQuote": "the broker's cost would stay flat",
+          "evidence": "migrated: needs evidence",
+          "justification": "The flat-cost claim is used directly in the 3x-volume cost comparison against $900. Without the bound, a reader would take B's cost as fixed at any volume, and could choose wrongly on the 30% cost criterion. Claim.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k6 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k6",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u17"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k7",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u18"
+      ],
+      "clause": "an option that fails either is out regardless of its score",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u21"
+          ],
+          "claimQuote": "The remaining criteria are weighted for scoring",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without the gate, a high-scoring option that fails a must-have could be chosen.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k7 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k7",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u21"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k8",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u25"
+      ],
+      "clause": "Portability away from our cloud provider: 10%",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k8",
+            "verdict": "not_a_condition",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k9",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u27"
+      ],
+      "clause": "the service delivers each message at least once",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u26"
+          ],
+          "claimQuote": "Option A needs almost no operational work",
+          "evidence": "migrated: needs evidence",
+          "justification": "A real limit on A (duplicate delivery), introduced by 'The catch'. But the action-relevant limit that decides the trade-off is the idempotency requirement (k10). The delivery semantics are a cause the notes must contain, without changing the takeaway on their own: set. Found by X only; accepted with a different verdict.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k9 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k9",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u26"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k10",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u27"
+      ],
+      "clause": "every job handler must be made idempotent before we switch",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u26"
+          ],
+          "claimQuote": "Option A needs almost no operational work",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: the source presents A's benefit as weighed against this catch.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k10 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k10",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u26"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k11",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u27"
+      ],
+      "clause": "today only the email handler is",
+      "verdict": "ambiguous",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u26"
+          ],
+          "claimQuote": "Option A needs almost no operational work",
+          "evidence": "migrated: needs evidence",
+          "justification": "The source does not settle it: the status sits inside 'the catch', but no later sentence uses it in a comparison.",
+          "binding": "ambiguous",
+          "levelDerived": "local",
+          "source": "v3 k11 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "readingA": "claim: the current status shows how much work stands between A and the switch (all but one handler), so a reader without it would underestimate A's cost and readiness.",
+      "readingB": "set: the requirement 'every job handler must be made idempotent' (k10) already conveys the work; the current status is colour on that requirement.",
+      "decidingQuestion": "Does the source use the current idempotency status to weigh Option A's effort or readiness against B and C, or only as background to the requirement in u27/u44?",
+      "confidence": "low",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k11",
+            "verdict": "ambiguous",
+            "rule": "R3",
+            "status": "unresolved",
+            "claimUnits": [
+              "u26"
+            ],
+            "confidence": "low",
+            "readingA": "claim: the current status shows how much work stands between A and the switch (all but one handler), so a reader without it would underestimate A's cost and readiness.",
+            "readingB": "set: the requirement 'every job handler must be made idempotent' (k10) already conveys the work; the current status is colour on that requirement.",
+            "decidingQuestion": "Does the source use the current idempotency status to weigh Option A's effort or readiness against B and C, or only as background to the requirement in u27/u44?"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k12",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u28"
+      ],
+      "clause": "It also ties us to one provider's API",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u26"
+          ],
+          "claimQuote": "Option A needs almost no operational work",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: a secondary cost (portability is weighted at 10%).",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k12 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k12",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u26"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k13",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u28"
+      ],
+      "clause": "local development needs an emulator that does not support dead-lettering",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u26"
+          ],
+          "claimQuote": "failed messages move to a dead-letter queue automatically",
+          "evidence": "migrated: needs evidence",
+          "justification": "The automatic DLQ claim is false in local development. Only u2_n1 states the DLQ claim.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k13 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k13",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "agreed",
+            "claimUnits": [
+              "u26"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k14",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u30"
+      ],
+      "clause": "the 12 hours a month is an estimate, not a measurement",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "Self-hosted broker | $540 | about 12 hours",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: the figure feeds the 40% operational-effort criterion and the source explicitly warns about its reliability.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k14 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k14",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k15",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u31"
+      ],
+      "clause": "Upgrades need a maintenance window.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u29"
+          ],
+          "claimQuote": "Option B gives us priority queues and delayed delivery",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: a secondary operational cost.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k15 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k15",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u29"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k16",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u33"
+      ],
+      "clause": "only covers jobs created inside the billing database transaction",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u32"
+          ],
+          "claimQuote": "a job can never be lost between the commit and the enqueue",
+          "evidence": "migrated: needs evidence",
+          "justification": "'never be lost' is false outside the transaction. u2_a1's 'for billing-related jobs' conveys this scope.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k16 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k16",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u32"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k17",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u33"
+      ],
+      "clause": "jobs enqueued by the reporting service, which has its own database, would not get it",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u32"
+          ],
+          "claimQuote": "a job can never be lost between the commit and the enqueue",
+          "evidence": "migrated: needs evidence",
+          "justification": "Names the concrete excluded producer. u2_a1 does not make the reporting-service exclusion recognisable.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k17 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k17",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u32"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k18",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u34"
+      ],
+      "clause": "Polling also adds read load to the primary database, which is the main risk at month-end",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u15"
+          ],
+          "claimQuote": "Database job table | $0 extra",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both claim (R3: the source calls it the main risk). Links differ. R4: the transactional guarantee in u32 is not falsified by read load; the '$0 extra' cost claim is what misleads. 'which is the main risk at month-end' qualifies the same clause and is not split.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k18 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k18",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u15"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k19",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u36"
+      ],
+      "clause": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k19",
+            "verdict": "not_a_condition",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k20",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u38"
+      ],
+      "clause": "We did not test 1,800 jobs per minute",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u36"
+          ],
+          "claimQuote": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: explicit reliability warning on evidence for a must-have.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k20 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k20",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u36"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k21",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u38"
+      ],
+      "clause": "the staging copy is about a quarter of production size, so these results may not carry over",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u36"
+          ],
+          "claimQuote": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: explicit reliability warning.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k21 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k21",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u36"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k22",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u39"
+      ],
+      "clause": "We have not load-tested Options A or B.",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u7"
+          ],
+          "claimQuote": "the provider handles storage, scaling and redelivery",
+          "evidence": "migrated: needs evidence",
+          "justification": "X asked whether any source claim treats A's throughput as established. u7 does: 'the provider handles ... scaling'. A reader taking that as verified would pass A on the 1,800/min must-have. So R2 gives claim, linked to u7, the most specific claim (R4). B has no throughput claim, so for B the clause limits nothing further.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k22 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k22",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u7"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k23",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u40"
+      ],
+      "clause": "but that is the provider's figure, not ours",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u40"
+          ],
+          "claimQuote": "The provider documents throughput far above our peak for Option A",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: an explicit provenance hedge on decision evidence.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k23 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k23",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u40"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k24",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u42"
+      ],
+      "clause": "until Option C has been measured at 1,800 jobs per minute on a production-sized database",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u42"
+          ],
+          "claimQuote": "The decision is deferred",
+          "evidence": "migrated: needs evidence",
+          "justification": "The unblocking condition. u3_n1 and u3_a1 omit the 1,800/min threshold, so any measurement would seem to settle it; the limit is not recognisable there. The u3_n1->u3_n6 'deferred until' arrow reaches only the 'Option C' shape, not a carrier, and chains do not count.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k24 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k24",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u42"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k25",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u44"
+      ],
+      "clause": "every job handler made idempotent",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u26"
+          ],
+          "claimQuote": "Option A needs almost no operational work",
+          "evidence": "migrated: needs evidence",
+          "justification": "The open requirement restated in its own unit; separate from k10.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k25 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k25",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u26"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k26",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u45"
+      ],
+      "clause": "a named owner for broker on-call and upgrades",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u29"
+          ],
+          "claimQuote": "Option B gives us priority queues and delayed delivery",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both claim (R1: choosing B without an owner leaves no on-call). R4: u8 already says 'we install, patch and monitor ourselves', so it is not misled. The benefit claim u29 is, parallel to u44 -> u26 and u46 -> u32.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k26 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k26",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u29"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k27",
+      "case": "kn-04-queue-choice",
+      "units": [
+        "u46"
+      ],
+      "clause": "a passing load test at 1,800 jobs per minute",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u32"
+          ],
+          "claimQuote": "Option C writes a job in the same transaction as the billing change that causes it",
+          "evidence": "migrated: needs evidence",
+          "justification": "Open requirement gating Option C's benefit claim.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k27 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k27",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u32"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    }
+  ]
+}

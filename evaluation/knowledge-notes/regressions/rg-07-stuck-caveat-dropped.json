@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-stuck-caveat-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The workers lose u20's caveat (a photo that keeps failing stays 'processing' and is not shown) and gain an invented retry policy instead. 'fail' + 'processing' still occur, which the old check accepted.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-workers",
+      "find": "A photo that keeps failing stays 'processing' and is never shown in a feed",
+      "replace": "Failed jobs are retried until processing succeeds"
+    }
+  ],
+  "expectFailing": [
+    "a.stuck-with-workers",
+    "a.no-retry-policy"
+  ]
+}

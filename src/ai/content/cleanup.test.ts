@@ -20,6 +20,20 @@ describe("cleanupAIText — timestamps", () => {
   });
 });
 
+describe("cleanupAIText — tidies only where it removed something", () => {
+  it("keeps a space before a colon or other mark that no removal touched (\"FastAPI :8000\")", () => {
+    const doc = '{ "sublabel": "FastAPI :8000", "note": "Ratio : 2 ; fine !" }';
+    expect(cleanupAIText(doc)).toBe(doc);
+    expect(cleanupAIText("Order API on FastAPI :8000 [1].")).toBe("Order API on FastAPI :8000.");
+  });
+
+  it("still closes the gap a removal leaves", () => {
+    expect(cleanupAIText("capacity [02:33]. Next")).toBe("capacity. Next");
+    expect(cleanupAIText("first. [1] Then")).toBe("first. Then");
+    expect(cleanupAIText("a [1] [2] b")).toBe("a b");
+  });
+});
+
 describe("cleanupAIText — citations", () => {
   it("removes numeric marks and runs", () => {
     expect(cleanupAIText("Grew 5% in 2024.[1][2] Then fell [3, 4].", on)).toBe("Grew 5% in 2024. Then fell.");

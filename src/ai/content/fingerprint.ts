@@ -13,7 +13,7 @@ import { contentToMarkdown } from "@/domain/content/markdown";
 import type { RichContent } from "@/domain/types";
 
 /** cyrb53: a fast 53-bit string hash, stable across runs and platforms. */
-function cyrb53(str: string): string {
+export function cyrb53(str: string): string {
   let h1 = 0xdeadbeef;
   let h2 = 0x41c6ce57;
   for (let i = 0; i < str.length; i++) {

@@ -1,0 +1,1428 @@
+{
+  "meta": {
+    "run": "2026-10-19-gemini-2-5-flash",
+    "approvedBy": "Gowthamraj Srinivasan (chat, 2026-10-19)",
+    "recordedAt": "2026-10-19T12:21:36.398Z",
+    "provider": "openrouter",
+    "model": "google/gemini-2.5-flash",
+    "promptVersion": "1",
+    "temperature": 0,
+    "batch": 24,
+    "calls": 15,
+    "tokensIn": 17853,
+    "tokensOut": 14732,
+    "costUsd": 0.042186,
+    "pairs": 352,
+    "missing": []
+  },
+  "answers": {
+    "ql-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-04": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-06": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-08": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-10": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-12": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-13": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ql-14": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedge 'can', making the claim absolute."
+    },
+    "ql-15": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedge 'usually', making the claim absolute."
+    },
+    "ql-16": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedge 'may', making the claim absolute."
+    },
+    "ql-17": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedge 'often', implying the linter catches all such imports."
+    },
+    "ql-18": {
+      "verdict": "not_supported",
+      "reason": "The card removes 'Some customers' and 'rather than PDF', making the claim universal and absolute."
+    },
+    "ql-19": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedge 'might', making the claim absolute."
+    },
+    "ql-20": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedge 'generally', making the claim absolute."
+    },
+    "ql-21": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedge 'may', making the claim absolute."
+    },
+    "ql-22": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedge 'likely to', making the claim absolute."
+    },
+    "ql-23": {
+      "verdict": "not_supported",
+      "reason": "The card changes 'reduce the risk' to 'remove the risk', which is a stronger, absolute claim."
+    },
+    "ql-24": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedges 'can' and 'typically', making the claim absolute and universal."
+    },
+    "ql-25": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedge 'may', making the statement a certainty."
+    },
+    "ql-26": {
+      "verdict": "not_supported",
+      "reason": "The card removes the hedge 'tends to', making the statement a certainty."
+    },
+    "cd-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-04": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-06": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-08": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-10": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-12": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-13": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cd-14": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition 'when the request hash matches a previous query', implying the cache returns the stored answer for every request, which is not what the source says."
+    },
+    "cd-15": {
+      "verdict": "not_supported",
+      "reason": "The card removes the specific conditions ('exceeds 2% for five minutes'), implying deploys pause for any error, which is a wider claim than the source."
+    },
+    "cd-16": {
+      "verdict": "not_supported",
+      "reason": "The card flips the condition 'unless the order has already shipped' to 'if the order has already shipped', reversing the meaning."
+    },
+    "cd-17": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition 'provided the deadline has not passed', implying assignments can be resubmitted at any time, which is a wider claim than the source."
+    },
+    "cd-18": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition 'When a pull request touches the schema', implying a database reviewer must approve every pull request, which is a wider claim than the source."
+    },
+    "cd-19": {
+      "verdict": "not_supported",
+      "reason": "The card removes the specific condition 'only when the failure is a network timeout', implying the job retries for any failure, which is a wider claim than the source."
+    },
+    "cd-20": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition 'If the token expires mid-session', implying the client refreshes the token silently on every request, which is a wider claim than the source."
+    },
+    "cd-21": {
+      "verdict": "not_supported",
+      "reason": "The card changes the timing from 'once the nightly snapshot completes' to 'continuously', which is a different frequency."
+    },
+    "cd-22": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition 'only if the outage lasts longer than ten minutes', implying the on-call engineer is paged as soon as an outage starts, which is a different condition."
+    },
+    "cd-23": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition for discounts to apply, making it an absolute claim."
+    },
+    "cd-24": {
+      "verdict": "not_supported",
+      "reason": "The card implies approval is needed, whereas the source states acceptance is the default unless an objection occurs."
+    },
+    "cd-25": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition for dark mode, making it an absolute claim."
+    },
+    "cd-26": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition for read receipts to be sent, making it an absolute claim."
+    },
+    "ng-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-04": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-06": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-08": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-10": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-12": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-13": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "ng-14": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the meaning of the source by stating that failed rows are retried, when the source explicitly says they are not."
+    },
+    "ng-15": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the meaning of the source by stating that guest accounts can create shared folders, when the source explicitly says they cannot."
+    },
+    "ng-16": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the meaning of the source by stating that Python 3.7 is supported, when the source explicitly says it is no longer supported."
+    },
+    "ng-17": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the meaning of the source by stating that archived projects are included in search results, when the source explicitly says they are not."
+    },
+    "ng-18": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the meaning of the source by stating that passwords are stored on the device, when the source explicitly says they are not."
+    },
+    "ng-19": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the meaning of the source by stating that the plugin starts without a license key, when the source explicitly says it will not start without one."
+    },
+    "ng-20": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the meaning of the source by stating that webhooks are signed in the free plan, when the source explicitly says they are not."
+    },
+    "ng-21": {
+      "verdict": "not_supported",
+      "reason": "The card states the opposite of the source. The source says the scheduler does not run jobs on public holidays, while the card says it does."
+    },
+    "ng-22": {
+      "verdict": "not_supported",
+      "reason": "The card states the opposite of the source. The source says exported files contain no personal data, while the card says they do."
+    },
+    "ng-23": {
+      "verdict": "not_supported",
+      "reason": "The card states the opposite of the source. The source says read replicas are not used for writes, while the card says writes go to them."
+    },
+    "ng-24": {
+      "verdict": "not_supported",
+      "reason": "The card states the opposite of the source. The source says changing the theme does not reload the page, while the card says it does."
+    },
+    "ng-25": {
+      "verdict": "not_supported",
+      "reason": "The card states the opposite of the source. The source says draft posts are not visible to subscribers, while the card says they can see them."
+    },
+    "ng-26": {
+      "verdict": "not_supported",
+      "reason": "The card states the opposite of the source. The source says the API does not return deleted records by default, while the card says it does."
+    },
+    "cs-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-04": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-06": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-08": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-10": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-12": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-13": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cs-14": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the cause and effect. The source states slow disk writes cause the queue to back up, while the card states a backed-up queue causes slow disk writes."
+    },
+    "cs-15": {
+      "verdict": "not_supported",
+      "reason": "The card states the opposite effect. The source says caching reduces database load, while the card says it increases it."
+    },
+    "cs-16": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the cause and effect. The source states an expired TLS certificate caused the outage, while the card states the outage caused the certificate to expire."
+    },
+    "cs-17": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the cause and effect. The source states higher traffic leads to longer checkout times, while the card states longer checkout times lead to higher traffic."
+    },
+    "cs-18": {
+      "verdict": "not_supported",
+      "reason": "The card states the opposite effect. The source says queries are faster, while the card says they are slower."
+    },
+    "cs-19": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the cause and effect stated in the source."
+    },
+    "cs-20": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the cause and effect, implying code review caused incidents rather than being adopted after them."
+    },
+    "cs-21": {
+      "verdict": "not_supported",
+      "reason": "The card negates the claim in the source, stating the opposite effect."
+    },
+    "cs-22": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the cause and effect, implying restarts cause memory leaks rather than being caused by them."
+    },
+    "cs-23": {
+      "verdict": "not_supported",
+      "reason": "The card negates the claim in the source, stating the opposite effect."
+    },
+    "cs-24": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the cause and effect, implying regressions cause low test coverage rather than being a result of it."
+    },
+    "cs-25": {
+      "verdict": "not_supported",
+      "reason": "The card turns a correlation into a cause, stating the redesign 'drove' the rise in sign-ups, which the source does not claim."
+    },
+    "cs-26": {
+      "verdict": "not_supported",
+      "reason": "The card turns a temporal sequence into a cause, stating the new policy 'caused' the fall, which the source does not claim."
+    },
+    "qt-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-04": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-06": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-08": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-10": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-12": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-13": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-14": {
+      "verdict": "not_supported",
+      "reason": "The card removes the 'up to' hedge, implying exactly 3 retries rather than a maximum of 3."
+    },
+    "qt-15": {
+      "verdict": "not_supported",
+      "reason": "The card changes the numerical limit from 25 MB to 50 MB."
+    },
+    "qt-16": {
+      "verdict": "not_supported",
+      "reason": "The card removes the 'about' hedge, making the duration exact rather than approximate."
+    },
+    "qt-17": {
+      "verdict": "not_supported",
+      "reason": "The unit of time is changed from milliseconds to seconds, making the claim significantly weaker."
+    },
+    "qt-18": {
+      "verdict": "not_supported",
+      "reason": "The number of API calls is increased from 1,000 to 10,000, a tenfold increase."
+    },
+    "qt-19": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-20": {
+      "verdict": "not_supported",
+      "reason": "The expiration time is changed from 30 minutes to 13 minutes, making the claim stricter."
+    },
+    "qt-21": {
+      "verdict": "not_supported",
+      "reason": "The source states a range of 4 to 8 worker nodes depending on load, while the card states a fixed 8 nodes, removing the variability and the lower bound."
+    },
+    "qt-22": {
+      "verdict": "not_supported",
+      "reason": "The source states 'roughly half' of the tickets are resolved within a day, while the card states 'All' tickets are resolved within a day, which is an absolute claim."
+    },
+    "qt-23": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "qt-24": {
+      "verdict": "not_supported",
+      "reason": "The source states builds 'typically take 6 to 8 minutes', while the card states they 'take 8 minutes', removing the range and the hedge 'typically'."
+    },
+    "qt-25": {
+      "verdict": "not_supported",
+      "reason": "The period of activity covered is changed from 90 days to 9 days, a significant reduction."
+    },
+    "qt-26": {
+      "verdict": "not_supported",
+      "reason": "The number of documents is increased from roughly 2.5 million to 25 million, a tenfold increase."
+    },
+    "to-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-04": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-06": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-08": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-10": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-12": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-13": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-14": {
+      "verdict": "not_supported",
+      "reason": "The source states the columnar format 'uses more disk space', while the card states it 'saves disk space', which is a direct contradiction."
+    },
+    "to-15": {
+      "verdict": "not_supported",
+      "reason": "The card claims 'no effect on write latency' while the source states 'at the cost of higher write latency', which is a direct contradiction."
+    },
+    "to-16": {
+      "verdict": "not_supported",
+      "reason": "The card claims serverless functions cut 'latency', but the source explicitly states 'cold starts add latency'."
+    },
+    "to-17": {
+      "verdict": "not_supported",
+      "reason": "The card claims a larger context window 'lowers token costs', but the source states it 'raises token costs'."
+    },
+    "to-18": {
+      "verdict": "not_supported",
+      "reason": "The card claims denormalising tables makes 'updates simpler', but the source states it 'complicates updates'."
+    },
+    "to-19": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "to-20": {
+      "verdict": "not_supported",
+      "reason": "The card claims batching notifications reduces noise 'without delaying anything', but the source states it 'delays urgent alerts'."
+    },
+    "to-21": {
+      "verdict": "not_supported",
+      "reason": "The card claims the managed database saves 'money', but the source states it 'costs more per month than self-hosting'."
+    },
+    "to-22": {
+      "verdict": "not_supported",
+      "reason": "The card claims higher compression levels 'save CPU', but the source states they use 'more CPU'."
+    },
+    "to-23": {
+      "verdict": "not_supported",
+      "reason": "The card claims long-lived access tokens are 'safer for users', but the source states they 'widen the window for misuse'."
+    },
+    "to-24": {
+      "verdict": "not_supported",
+      "reason": "The card claims client-side rendering makes 'the first load instant', but the source states it is 'at the expense of a slower first load'."
+    },
+    "to-25": {
+      "verdict": "not_supported",
+      "reason": "The card claims pinning dependency versions 'keeps security fixes current', but the source states it 'means security fixes arrive later'."
+    },
+    "to-26": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-04": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-06": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-08": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-10": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-12": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-13": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "sc-14": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition 'for read-only workloads', implying read replicas are recommended for all workloads."
+    },
+    "sc-15": {
+      "verdict": "not_supported",
+      "reason": "The card widens the scope from 'administrator accounts' to 'all accounts'."
+    },
+    "sc-16": {
+      "verdict": "not_supported",
+      "reason": "The card removes the limitation 'only on the desktop app', implying it's available in any app."
+    },
+    "sc-17": {
+      "verdict": "not_supported",
+      "reason": "The card inverts the condition, stating backups run for 'every plan' instead of 'only for paid plans'."
+    },
+    "sc-18": {
+      "verdict": "not_supported",
+      "reason": "The card removes the limitation 'with fewer than 500 items', implying it works on any project regardless of size."
+    },
+    "sc-19": {
+      "verdict": "not_supported",
+      "reason": "The card removes the regional scope 'In the EU region', implying logs are retained for 30 days everywhere."
+    },
+    "sc-20": {
+      "verdict": "not_supported",
+      "reason": "The card widens the scope from 'enterprise customers' to all 'customers'."
+    },
+    "sc-21": {
+      "verdict": "not_supported",
+      "reason": "The card inverts the exception, stating it deletes files 'including the shared folder' instead of 'except those in the shared folder'."
+    },
+    "sc-22": {
+      "verdict": "not_supported",
+      "reason": "The card removes the limitation 'to premium subscribers only', implying alerts are sent to all subscribers."
+    },
+    "sc-23": {
+      "verdict": "not_supported",
+      "reason": "The card widens the scope from 'On Windows hosts' to 'on every host'."
+    },
+    "sc-24": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition 'who sign up after 1 March', implying the new pricing applies to all customers regardless of signup date."
+    },
+    "sc-25": {
+      "verdict": "not_supported",
+      "reason": "The card removes the specific condition 'for internal services', implying rate limits are relaxed for all services."
+    },
+    "sc-26": {
+      "verdict": "not_supported",
+      "reason": "The card widens the scope from 'only for backend changes' to 'for all changes'."
+    },
+    "cp-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-04": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-06": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-08": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-10": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-12": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-13": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "cp-14": {
+      "verdict": "partly",
+      "reason": "The card omits the negative constraint that files larger than 10 MB are ignored, which is a significant detail for a reader."
+    },
+    "cp-15": {
+      "verdict": "not_supported",
+      "reason": "The card claims caching cut latency by 40% generally, but the source specifies this was only for median latency and that p99 latency did not change, implying a more limited benefit."
+    },
+    "cp-16": {
+      "verdict": "not_supported",
+      "reason": "The card claims the importer handles 'every row' in CSV and Excel files, but the source explicitly states it 'skips rows with missing IDs'."
+    },
+    "cp-17": {
+      "verdict": "not_supported",
+      "reason": "The card states exports finish within a minute, but the source adds a significant caveat that 'very large workspaces can take an hour'."
+    },
+    "cp-18": {
+      "verdict": "partly",
+      "reason": "The card states the beta adds offline editing, but omits the important caveat that 'changes made offline may conflict with edits from others'."
+    },
+    "cp-19": {
+      "verdict": "not_supported",
+      "reason": "The card claims sharding 'sped up cross-shard queries', which directly contradicts the source stating 'cross-shard queries became slower'."
+    },
+    "cp-20": {
+      "verdict": "not_supported",
+      "reason": "The card claims admins can restore deleted pages 'at any time', which contradicts the source's limit of 'for 30 days'."
+    },
+    "cp-21": {
+      "verdict": "not_supported",
+      "reason": "The card claims the scheduler supports cron syntax 'in any time zone', but the source explicitly states 'time zones other than UTC are not supported yet'."
+    },
+    "cp-22": {
+      "verdict": "not_supported",
+      "reason": "The card claims the API returns 'all results in one response', which contradicts the source stating it returns results 'in pages of 100' and clients 'must follow the next link to get the rest'."
+    },
+    "cp-23": {
+      "verdict": "partly",
+      "reason": "The card states search indexing runs every hour, but omits the condition 'unless the queue is paused for maintenance'."
+    },
+    "cp-24": {
+      "verdict": "not_supported",
+      "reason": "The card claims voice notes are 'checked by a person', which directly contradicts the source stating 'the transcripts are not reviewed by a person'."
+    },
+    "cp-25": {
+      "verdict": "partly",
+      "reason": "The card omits the condition 'if no card is added' for the trial converting to the basic plan."
+    },
+    "cp-26": {
+      "verdict": "not_supported",
+      "reason": "The card claims the app syncs photos over 'mobile data', which contradicts the source stating it syncs 'over Wi-Fi only, to avoid using mobile data'."
+    },
+    "h-ql-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-ql-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-ql-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-ql-04": {
+      "verdict": "not_supported",
+      "reason": "The card states spot instances 'lower' compute bills, removing the hedge 'can' from the source, which implies a certainty not present in the original."
+    },
+    "h-ql-05": {
+      "verdict": "not_supported",
+      "reason": "The card states reviewers 'respond' within one business day, removing the hedge 'usually' from the source, implying a guarantee not present in the original."
+    },
+    "h-ql-06": {
+      "verdict": "not_supported",
+      "reason": "The card states newer GPUs 'cut' training time, removing the hedge 'may' from the source, implying a certainty not present in the original."
+    },
+    "h-cd-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-cd-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-cd-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-cd-04": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition that the banner only appears when fewer than three days are left, implying it appears for the entire trial."
+    },
+    "h-cd-05": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition that orders must be placed before 2 pm to ship the same day, making the claim absolute."
+    },
+    "h-cd-06": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the condition for receiving emails; it states emails are sent if the user opts out, which is the opposite of the source."
+    },
+    "h-ng-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-ng-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-ng-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-ng-04": {
+      "verdict": "not_supported",
+      "reason": "The card negates the source's claim; the source states authenticated responses are NOT cached, while the card states they ARE cached."
+    },
+    "h-ng-05": {
+      "verdict": "not_supported",
+      "reason": "The card negates the source's claim; the source states the tool does NOT modify files, while the card states it DOES modify them."
+    },
+    "h-ng-06": {
+      "verdict": "not_supported",
+      "reason": "The card negates the source's claim; the source states logs are NOT sent to third parties, while the card states they ARE shared."
+    },
+    "h-cs-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-cs-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-cs-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-cs-04": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the cause and effect; the source states long-running transactions CAUSE lock contention, while the card states lock contention CAUSES long-running transactions."
+    },
+    "h-cs-05": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the outcome; the source states thresholds REDUCED incidents, while the card states they INCREASED incidents."
+    },
+    "h-cs-06": {
+      "verdict": "not_supported",
+      "reason": "The card turns a correlation into causation; the source states tickets dropped IN the quarter the help centre launched, while the card states the launch CAUSED the drop."
+    },
+    "h-qt-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-qt-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-qt-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-qt-04": {
+      "verdict": "not_supported",
+      "reason": "The card removes the 'up to' qualifier, implying the queue always holds exactly 10,000 messages, rather than a maximum of that amount."
+    },
+    "h-qt-05": {
+      "verdict": "not_supported",
+      "reason": "The card changes the number from 'roughly 2 seconds' to '20 seconds', which is a significant difference."
+    },
+    "h-qt-06": {
+      "verdict": "not_supported",
+      "reason": "The card removes the 'at least' qualifier, implying the password must be exactly 12 characters long, rather than a minimum of 12."
+    },
+    "h-to-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-to-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-to-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-to-04": {
+      "verdict": "not_supported",
+      "reason": "The card claims queries are simpler, but the source states they are more complex."
+    },
+    "h-to-05": {
+      "verdict": "partly",
+      "reason": "The card omits the negative consequence of less headroom for traffic spikes, which is a significant detail."
+    },
+    "h-to-06": {
+      "verdict": "not_supported",
+      "reason": "The card claims data is kept fresh, but the source states it comes at the expense of fresher data."
+    },
+    "h-sc-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-sc-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-sc-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-sc-04": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition that usage-based billing is only for customers on the Growth plan, implying it's available to all customers."
+    },
+    "h-sc-05": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition that audit logs are kept for 90 days only in regulated tenants, implying it's a general rule."
+    },
+    "h-sc-06": {
+      "verdict": "not_supported",
+      "reason": "The card claims the beta API is open to all accounts, but the source states it is open only to partner accounts."
+    },
+    "h-cp-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-cp-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-cp-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h-cp-04": {
+      "verdict": "partly",
+      "reason": "The card omits the negative consequence that plugins written for the old editor will not work, which is a significant detail."
+    },
+    "h-cp-05": {
+      "verdict": "not_supported",
+      "reason": "The card removes the exception for the nightly maintenance window, implying reports refresh every 15 minutes without interruption."
+    },
+    "h-cp-06": {
+      "verdict": "not_supported",
+      "reason": "The card claims guests can comment, but the source states they cannot leave comments."
+    },
+    "h2-ql-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ql-02": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ql-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ql-04": {
+      "verdict": "not_supported",
+      "reason": "The card states compression halves the backup size, but the source says it 'may reduce backup size by roughly half'."
+    },
+    "h2-ql-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ql-06": {
+      "verdict": "not_supported",
+      "reason": "The card states older-vendor Android devices 'don't deliver' push notifications, but the source says 'Some Android devices from older vendors fail to deliver', which is less absolute."
+    },
+    "h2-ql-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ql-08": {
+      "verdict": "not_supported",
+      "reason": "The card states shipments 'will miss' the window, but the source says they are 'likely to miss', which is a stronger claim."
+    },
+    "h2-ql-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ql-10": {
+      "verdict": "not_supported",
+      "reason": "The source says 'often flagged as spam', implying it's not always the case, while the card states 'treat as spam', which is an absolute claim."
+    },
+    "h2-ql-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ql-12": {
+      "verdict": "not_supported",
+      "reason": "The source uses 'could invalidate', indicating a possibility, while the card states 'invalidates', making it a certainty."
+    },
+    "h2-cd-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cd-02": {
+      "verdict": "not_supported",
+      "reason": "The source specifies 'only when the employee has worked more than 40 hours', while the card generalizes to 'whenever an employee works extra hours', which is a broader condition."
+    },
+    "h2-cd-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cd-04": {
+      "verdict": "not_supported",
+      "reason": "The source says 'unless the billing and shipping addresses match', meaning they are held if they *don't* match. The card says 'if the billing and shipping addresses match', which is the opposite condition."
+    },
+    "h2-cd-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cd-06": {
+      "verdict": "not_supported",
+      "reason": "The source specifies 'for five minutes' and 'above 80%', while the card generalizes to 'whenever CPU goes above 80%', removing the duration and implying any brief spike."
+    },
+    "h2-cd-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cd-08": {
+      "verdict": "not_supported",
+      "reason": "The source includes the condition 'if no payment method has been added', which is omitted in the card, making the card's claim absolute."
+    },
+    "h2-cd-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cd-10": {
+      "verdict": "not_supported",
+      "reason": "The source states 'only when the customer is on an enterprise contract', implying a specific condition. The card states 'regardless of the customer's contract', which is a direct contradiction."
+    },
+    "h2-cd-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cd-12": {
+      "verdict": "not_supported",
+      "reason": "The source specifies 'when the parcel is under $50 in value'. The card states 'for parcels of any value', which removes this condition and broadens the scope."
+    },
+    "h2-ng-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ng-02": {
+      "verdict": "not_supported",
+      "reason": "The source says 'not recoverable after the 30-day retention period'. The card says 'can be restored after the 30-day retention period', which is the opposite."
+    },
+    "h2-ng-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ng-04": {
+      "verdict": "not_supported",
+      "reason": "The source states 'never modifies existing rows'. The card states 'rewrites existing rows in place', which is a direct contradiction."
+    },
+    "h2-ng-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ng-06": {
+      "verdict": "not_supported",
+      "reason": "The source says 'works without a network connection'. The card says 'requires a network connection', which is the opposite."
+    },
+    "h2-ng-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ng-08": {
+      "verdict": "not_supported",
+      "reason": "The source says 'cannot list items above $500'. The card says 'may be listed by unverified sellers', which is the opposite."
+    },
+    "h2-ng-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ng-10": {
+      "verdict": "not_supported",
+      "reason": "The card claims the SDK 'gathers' identifiers, which is the opposite of the source's claim that it 'does not collect' them."
+    },
+    "h2-ng-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-ng-12": {
+      "verdict": "not_supported",
+      "reason": "The card claims a breach 'involved payment card data', which directly contradicts the source's claim of 'never had a breach involving payment card data'."
+    },
+    "h2-cs-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cs-02": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the cause and effect. The source states 'High memory pressure causes garbage collector to run more often', while the card states 'Frequent garbage collection runs cause high memory pressure'."
+    },
+    "h2-cs-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cs-04": {
+      "verdict": "not_supported",
+      "reason": "The card claims costs 'grew', which is the opposite of the source's claim that enabling the CDN 'reduced' costs."
+    },
+    "h2-cs-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cs-06": {
+      "verdict": "not_supported",
+      "reason": "The card turns a correlation ('spiked in the same week') into a cause ('caused ticket volume to spike')."
+    },
+    "h2-cs-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cs-08": {
+      "verdict": "not_supported",
+      "reason": "The card states 'poor sleep lowered productivity scores', implying a direct causal link, whereas the source states 'Poor sleep was correlated with lower productivity scores', indicating a relationship but not necessarily causation."
+    },
+    "h2-cs-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cs-10": {
+      "verdict": "not_supported",
+      "reason": "The card reverses the cause and effect. The source states 'Frequent schema changes slowed down the data team's releases', while the card states 'The data team's slow releases led to frequent schema changes'."
+    },
+    "h2-cs-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cs-12": {
+      "verdict": "not_supported",
+      "reason": "The card claims abuse traffic 'rose', which is the opposite of the source's claim that tightening rate limits 'decreased' abuse traffic."
+    },
+    "h2-qt-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-qt-02": {
+      "verdict": "not_supported",
+      "reason": "The card states 'Each workspace has 50 members', implying an exact count, while the source states 'supports up to 50 members', indicating a maximum limit."
+    },
+    "h2-qt-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-qt-04": {
+      "verdict": "not_supported",
+      "reason": "The card narrows the delivery time to a single value ('5 business days'), while the source specifies a range ('3 to 5 business days')."
+    },
+    "h2-qt-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-qt-06": {
+      "verdict": "not_supported",
+      "reason": "The card changes the unit of time from '36 hours' to '36 minutes'."
+    },
+    "h2-qt-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-qt-08": {
+      "verdict": "not_supported",
+      "reason": "The card changes the number of parcels from '12,000' to '1,200'."
+    },
+    "h2-qt-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-qt-10": {
+      "verdict": "not_supported",
+      "reason": "The unit of time for requests per key has been changed from 'minute' to 'second', which is a significant change in the rate limit."
+    },
+    "h2-qt-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-qt-12": {
+      "verdict": "not_supported",
+      "reason": "The card collapses a range of 'Between 5% and 10%' to a specific 'Roughly 10%', which is a stronger claim than the source."
+    },
+    "h2-to-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-to-02": {
+      "verdict": "not_supported",
+      "reason": "The card claims prices are 'current', which directly contradicts the source's caveat that prices 'may be up to five minutes old'."
+    },
+    "h2-to-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-to-04": {
+      "verdict": "not_supported",
+      "reason": "The card omits the caveat that batching notifications 'delays delivery by up to an hour'."
+    },
+    "h2-to-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-to-06": {
+      "verdict": "not_supported",
+      "reason": "The card claims jobs run 'without interruption', which directly contradicts the source's warning that jobs 'risks being interrupted'."
+    },
+    "h2-to-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-to-08": {
+      "verdict": "not_supported",
+      "reason": "The card claims a 'compact storage footprint', which directly contradicts the source's statement that the storage footprint 'grow considerably'."
+    },
+    "h2-to-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-to-10": {
+      "verdict": "not_supported",
+      "reason": "The card claims support response times were 'kept fast', which contradicts the source's statement that it 'stretched response times on support'."
+    },
+    "h2-to-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-to-12": {
+      "verdict": "not_supported",
+      "reason": "The card claims pages are 'kept light', which contradicts the source's statement that higher-resolution thumbnails 'increase page weight'."
+    },
+    "h2-sc-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-sc-02": {
+      "verdict": "not_supported",
+      "reason": "The card removes the scope limitation that only 'Admins in the EU region' can export audit logs, implying all admins can."
+    },
+    "h2-sc-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-sc-04": {
+      "verdict": "not_supported",
+      "reason": "The card removes the condition that managers can only approve expense reports 'under $1,000'."
+    },
+    "h2-sc-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-sc-06": {
+      "verdict": "not_supported",
+      "reason": "The card removes the geographical limitation 'contiguous' from 'United States', implying two-day shipping is offered throughout the entire US."
+    },
+    "h2-sc-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-sc-08": {
+      "verdict": "not_supported",
+      "reason": "The card removes the geographical limitation that only full-time employees 'in Canada' receive a wellness stipend."
+    },
+    "h2-sc-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-sc-10": {
+      "verdict": "not_supported",
+      "reason": "The card implies read replicas are available for all databases on the Pro tier, but the source specifies 'PostgreSQL databases'."
+    },
+    "h2-sc-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-sc-12": {
+      "verdict": "not_supported",
+      "reason": "The card removes the scope 'shared' from documents, implying guest users can comment on any document, not just shared ones."
+    },
+    "h2-cp-01": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cp-02": {
+      "verdict": "not_supported",
+      "reason": "The card states 'including international transfers' settle the same day, which contradicts the source that says international transfers 'can take up to three days'."
+    },
+    "h2-cp-03": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cp-04": {
+      "verdict": "not_supported",
+      "reason": "The card states 'admins included' are locked after five failed logins, which directly contradicts the source that says 'admins are exempt'."
+    },
+    "h2-cp-05": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cp-06": {
+      "verdict": "not_supported",
+      "reason": "The card claims the model 'lifted conversions too', but the source states conversions 'stayed flat'."
+    },
+    "h2-cp-07": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cp-08": {
+      "verdict": "not_supported",
+      "reason": "The card states 'new hires included, can work remotely... from day one', which contradicts the source that says 'new hires must be on-site for their first month'."
+    },
+    "h2-cp-09": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cp-10": {
+      "verdict": "not_supported",
+      "reason": "The card states encryption is enabled on 'every volume, whatever its creation date', which contradicts the source's exception for 'volumes created before 2022'."
+    },
+    "h2-cp-11": {
+      "verdict": "supported",
+      "reason": ""
+    },
+    "h2-cp-12": {
+      "verdict": "not_supported",
+      "reason": "The card claims customers 'get a pro-rata refund on annual plans', which contradicts the source that states 'annual plans are not refunded pro rata'."
+    }
+  }
+}

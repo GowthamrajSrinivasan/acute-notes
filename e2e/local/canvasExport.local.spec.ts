@@ -38,8 +38,17 @@ test("the dialog opens with JSON and every detail checked; Escape closes it with
   await openExport(page);
   await expect(dialog(page).getByRole("radio", { name: "JSON" })).toBeChecked();
   const boxes = dialog(page).getByRole("checkbox");
-  await expect(boxes).toHaveCount(6);
+  await expect(boxes).toHaveCount(7);
   for (const box of await boxes.all()) await expect(box).toBeChecked();
+  // Knowledge Notes §6.4 (WP2.9): "Sources" is the seventh detail, on by default; the demo canvas has none stored here.
+  const sources = dialog(page).getByRole("checkbox", { name: /^Sources / });
+  await expect(sources).toBeChecked();
+  await expect(sources).toHaveAccessibleName(/This canvas has no sources on this device\./);
+  await expect(dialog(page).getByRole("status").filter({ hasText: "won't include the original sources" })).toHaveCount(0);
+  // Unticked, the export warns that citations in the file can't be checked (advice, not a blocker).
+  await sources.uncheck();
+  await expect(dialog(page).getByRole("status").filter({ hasText: "won't include the original sources" })).toBeVisible();
+  await expect(dialog(page).getByRole("button", { name: "Export", exact: true })).toBeEnabled();
   await page.keyboard.press("Escape");
   await expect(dialog(page)).toBeHidden();
 });
@@ -59,7 +68,11 @@ test("JSON with everything: a one-canvas bundle carrying origin, styles, relatio
 
 test("unchecking details leaves them out of the file", async () => {
   await openExport(page);
-  for (const label of ["Block styles", "Connection types", "Origin"]) await dialog(page).getByRole("checkbox", { name: label }).uncheck();
+  // Anchored names: a checkbox's name includes its hint, and Sources' hint says "original" (a bare "Origin" would match it too).
+  for (const label of [/^Block styles /, /^Connection types /, /^Origin /]) await dialog(page).getByRole("checkbox", { name: label }).uncheck();
+  // Sources needs Origin (each object's link to its source lives there): with Origin off the hint says so and the warning shows.
+  await expect(dialog(page).getByRole("checkbox", { name: /^Sources / })).toHaveAccessibleName(/Needs Origin/);
+  await expect(dialog(page).getByRole("status").filter({ hasText: "won't include the original sources" })).toBeVisible();
   const bundle = JSON.parse((await exportFile(page)).text);
   const custom = bundle.canvases[0].elements.map((e: { customData?: Record<string, unknown> }) => e.customData ?? {});
   expect(custom.some((c: Record<string, unknown>) => (c.acute as { style?: unknown } | undefined)?.style)).toBe(false);

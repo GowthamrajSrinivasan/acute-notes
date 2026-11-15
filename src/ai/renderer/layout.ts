@@ -9,10 +9,14 @@
  * Positions are local (an arbitrary origin near 0,0); `place.ts` translates
  * the whole result into free canvas space.
  */
-import { clusterKey, groupTakeawayKey, groupTitleKey } from "@/ai/visual-plan/groups";
+import type { Organisation } from "@/ai/visual-plan/grouping";
+import { clusterKey, groupTakeawayKey, groupTitleKey, subGroupKey, subGroupTitleKey } from "@/ai/visual-plan/groups";
 import type { GroupArrangement, VisualNode, VisualPlan, VisualRelationship } from "@/ai/visual-plan/types";
 import { templateFor, type LayoutStrategyId } from "@/ai/visual-plan/templates";
 import { measureNode, SECTION_TITLE_FONT_SIZE, takeawayHeight } from "./measure";
+import { orderFrames } from "./frameOrder";
+import { fitsScreen, groupParts, linkComponents, partFrameKey, partTitle, partTitleKey, splittable, type FramePart, type SplitBoundary, type SplitUnit } from "./frameSplit";
+import { FIT_SCREEN, READABLE_FIT_ZOOM } from "./screen";
 import type { Box } from "./types";
 
 const GAP = 48;
@@ -42,15 +46,48 @@ const SECTION_GAP = 96;
 
 export type LocalLayout = ReadonlyMap<string, Box>;
 
+export interface LayoutOptions {
+  /**
+   * Node id → the size to lay it out at, instead of `measureNode`'s estimate (Re-arrange passes each existing object's
+   * real box: a card the user resized, or an auto-height card taller than estimated). Absent: every node is measured.
+   */
+  sizes?: ReadonlyMap<string, { width: number; height: number }>;
+  /** The organisation rules (organisation-layout plan §3.0). "v1" (default): today's layout. "v2": frames ordered by their links, sub-groups. */
+  organisation?: Organisation;
+}
+
+/** Each node's size: the given one, else `measureNode`'s estimate. */
+function sizesOf(plan: VisualPlan, options: LayoutOptions): Map<string, NodeSize> {
+  return new Map(plan.nodes.map((n) => [n.id, options.sizes?.get(n.id) ?? measureNode(n)] as const));
+}
+
 /**
  * Sizes every node, then arranges them per the plan's template. Child
  * explanations (the target of an `explained_by` from another node, F38b) are
  * kept out of the template's arrangement so they never stretch it: the
  * concepts are laid out alone, and each explanation hangs below its parent.
  */
-export function layoutPlan(plan: VisualPlan): LocalLayout {
-  if (plan.nodes.some((n) => n.type === "group")) return layoutGrouped(plan);
-  const sizes = new Map(plan.nodes.map((n) => [n.id, measureNode(n)] as const));
+export function layoutPlan(plan: VisualPlan, options: LayoutOptions = {}): LocalLayout {
+  return layoutPlanWithParts(plan, options).boxes;
+}
+
+export interface LayoutWithParts {
+  boxes: LocalLayout;
+  /**
+   * Organisation v2: each section split into parts (frameSplit.ts), by its group id, part 1 first. A split section's
+   * later parts are boxes of their own (`partFrameKey`, `partTitleKey`); its cards keep their ids. Empty in v1.
+   */
+  parts: ReadonlyMap<string, readonly FramePart[]>;
+}
+
+/** `layoutPlan`, plus the frames a split section is drawn as (`render.ts` draws one frame per part). */
+export function layoutPlanWithParts(plan: VisualPlan, options: LayoutOptions = {}): LayoutWithParts {
+  if (plan.nodes.some((n) => n.type === "group")) return layoutGrouped(plan, options);
+  return { boxes: layoutFlat(plan, options), parts: new Map() };
+}
+
+function layoutFlat(plan: VisualPlan, options: LayoutOptions): LocalLayout {
+  const sizes = sizesOf(plan, options);
   const parentOf = explanationParents(plan);
   const core = plan.nodes.filter((n) => !parentOf.has(n.id));
   const coreIds = new Set(core.map((n) => n.id));
@@ -715,9 +752,8 @@ function packRows(nodes: readonly VisualNode[], sizes: ReadonlyMap<string, NodeS
   return best.out;
 }
 
-/** The screen a result should fit (a laptop viewport, 16:9), and the zoom from which it counts as readable. */
-const FIT_SCREEN = { width: 1600, height: 900 };
-const READABLE_FIT_ZOOM = 0.5;
+/** The screen a result should fit, and the zoom from which it counts as readable: `screen.ts`. */
+export { FIT_SCREEN, READABLE_FIT_ZOOM };
 /** A row of sections holds at most this many. */
 const MAX_PER_ROW = 4;
 
@@ -770,20 +806,61 @@ function normalise(boxes: ReadonlyMap<string, Box>): { boxes: Map<string, Box>; 
 /**
  * Each non-group node's section (F42): its own `parent`, except that an explanation (the target of an
  * `explained_by`) always goes with the node it explains, so a section's frame holds its explanations too.
+ * In organisation v2 a sub-group's member resolves to the sub-group's section (the top-level group): the frame
+ * it sits in.
  */
-export function sectionOfNodes(plan: VisualPlan): Map<string, string | undefined> {
+export function sectionOfNodes(plan: VisualPlan, options: Pick<LayoutOptions, "organisation"> = {}): Map<string, string | undefined> {
   const parentOf = explanationParents(plan);
   const byId = new Map(plan.nodes.map((n) => [n.id, n] as const));
+  const v2 = options.organisation === "v2";
   const out = new Map<string, string | undefined>();
   for (const n of plan.nodes) {
     if (n.type === "group") continue;
     let at = n.id;
     for (let hops = 0; parentOf.has(at) && hops < plan.nodes.length; hops++) at = parentOf.get(at)!;
-    const parent = byId.get(at)!.parent;
+    let parent = byId.get(at)!.parent;
+    for (let hops = 0; v2 && parent && hops < plan.nodes.length; hops++) {
+      const up = byId.get(parent)?.parent;
+      if (!up || byId.get(up)?.type !== "group" || byId.get(parent)?.type !== "group") break;
+      parent = up;
+    }
     out.set(n.id, parent && byId.get(parent)?.type === "group" ? parent : undefined);
   }
   return out;
 }
+
+/**
+ * Sub-groups (organisation v2, plan §3.2): each section's groups inside it, in plan order, and the sub-group each card
+ * belongs to directly: its own parent, or for an explanation the parent of the node it explains.
+ */
+export function subGroupLayout(plan: VisualPlan): { subsOf: Map<string, VisualNode[]>; subOf: Map<string, string> } {
+  const byId = new Map(plan.nodes.map((n) => [n.id, n] as const));
+  const isTop = (g: VisualNode | undefined) => g?.type === "group" && !(g.parent && byId.get(g.parent)?.type === "group");
+  const subsOf = new Map<string, VisualNode[]>();
+  for (const n of plan.nodes) if (n.type === "group" && n.parent && isTop(byId.get(n.parent))) (subsOf.get(n.parent) ?? subsOf.set(n.parent, []).get(n.parent)!).push(n);
+  const subIds = new Set([...subsOf.values()].flat().map((n) => n.id));
+  const parentOf = explanationParents(plan);
+  const subOf = new Map<string, string>();
+  for (const n of plan.nodes) {
+    if (n.type === "group") continue;
+    let at = n.id;
+    for (let hops = 0; parentOf.has(at) && hops < plan.nodes.length; hops++) at = parentOf.get(at)!;
+    const p = byId.get(at)!.parent;
+    if (p && subIds.has(p)) subOf.set(n.id, p);
+  }
+  return { subsOf, subOf };
+}
+
+/** Each sub-group backdrop's key and the cards it holds (for `geometryOf`'s `outsideSubGroups`). */
+export function subGroupMembers(plan: VisualPlan): Map<string, string[]> {
+  const { subsOf, subOf } = subGroupLayout(plan);
+  const out = new Map<string, string[]>();
+  for (const [g, subs] of subsOf) subs.forEach((sub, i) => out.set(subGroupKey(g, i), [...subOf].filter(([, s]) => s === sub.id).map(([id]) => id)));
+  return out;
+}
+
+/** Space between a sub-group's title and its cards. */
+const SUB_TITLE_GAP = 16;
 
 /** Space between a sub-topic's backdrop and what it holds. */
 const TOPIC_PAD = 32;
@@ -794,8 +871,11 @@ const TOPIC_PAD = 32;
  * or none, is laid out as before. When every heading starts with a number the sub-topics are in that order, else in plan order. A node before the
  * first heading joins the first sub-topic; an explanation goes with the node it explains.
  */
+/** A node that starts a sub-topic: a plain heading (not a title, subtitle or section title). */
+const startsSubTopic = (n: VisualNode) => n.type === "heading" && n.role !== "title" && n.role !== "subtitle" && n.role !== "section";
+
 function subTopics(core: readonly VisualNode[], members: readonly VisualNode[], parentOf: ReadonlyMap<string, string>): { core: VisualNode[]; members: VisualNode[] }[] | null {
-  const starts = (n: VisualNode) => n.type === "heading" && n.role !== "title" && n.role !== "subtitle" && n.role !== "section";
+  const starts = startsSubTopic;
   if (core.filter(starts).length < 2) return null;
   const topics: { head: VisualNode; core: VisualNode[] }[] = [];
   const lead: VisualNode[] = [];
@@ -844,92 +924,254 @@ function flowBoxes(sizes: readonly { width: number; height: number }[]): Box[] {
  * nodes are then packed in rows (`packRows`), below any document title (a top-level heading with role
  * "title"), centred across the grid. An explanation always sits in the section of the node it explains.
  */
-function layoutGrouped(plan: VisualPlan): LocalLayout {
-  const sizes = new Map(plan.nodes.map((n) => [n.id, measureNode(n)] as const));
+function layoutGrouped(plan: VisualPlan, options: LayoutOptions): LayoutWithParts {
+  const sizes = sizesOf(plan, options);
   const parentOf = explanationParents(plan);
-  const sections = sectionOfNodes(plan);
+  const v2 = options.organisation === "v2";
+  const sections = sectionOfNodes(plan, { organisation: options.organisation });
+  // v2: a section's sub-groups are laid out inside it, each as one sized item (§3.2); v1 has none (validation flattens them).
+  const { subsOf, subOf } = v2 ? subGroupLayout(plan) : { subsOf: new Map<string, VisualNode[]>(), subOf: new Map<string, string>() };
+  const subIds = new Set([...subsOf.values()].flat().map((n) => n.id));
+  const planIndex = new Map(plan.nodes.map((n, i) => [n.id, i] as const));
   const sectionOf = (n: VisualNode) => sections.get(n.id);
   /** Each group's members (and its title) relative to the group's own corner, offset once the group is placed. */
   const inner = new Map<string, Map<string, Box>>();
+  /** v2: each split section's parts (frameSplit.ts), and its later parts as items to pack right after it. */
+  const split = new Map<string, FramePart[]>();
+  const laterParts = new Map<string, VisualNode[]>();
 
   for (const g of plan.nodes) {
-    if (g.type !== "group") continue;
+    if (g.type !== "group" || subIds.has(g.id)) continue;
     const members = plan.nodes.filter((n) => n.type !== "group" && sectionOf(n) === g.id);
     const core = members.filter((n) => !parentOf.has(n.id));
-    const arrangement = g.content.arrangement;
-    /** One set of nodes (a section's, or one sub-topic's) laid out with the section's arrangement, from 0,0. */
-    const arrange = (setCore: readonly VisualNode[], setMembers: readonly VisualNode[]) => {
+    const subs = subsOf.get(g.id) ?? [];
+    /** One set of nodes laid out with `arrangement` from 0,0, linked by `rels` (default: the plan's links among them). */
+    const arrangeFlat = (setCore: readonly VisualNode[], setMembers: readonly VisualNode[], arrangement: GroupArrangement, rels?: readonly VisualRelationship[]) => {
       const coreIds = new Set(setCore.map((n) => n.id));
-      const rels = plan.relationships.filter((r) => coreIds.has(r.from) && coreIds.has(r.to));
+      const links = rels ?? plan.relationships.filter((r) => coreIds.has(r.from) && coreIds.has(r.to));
       // In a tree, a node's explanations sit in a column to its right, as part of the node's room in the tree: below
       // it are its children, so an explanation hung there was pushed under them, its link running through them.
       // Elsewhere (grid, compare, stack, chain), under their node, as part of its room. A concept map places its own.
       const beside =
         arrangement === "tree" ? sideExplanations(setCore, setMembers, parentOf, sizes) : arrangement !== "radial" ? explanationsBelow(setCore, setMembers, parentOf, sizes) : null;
-      const arranged = ARRANGEMENTS[arrangement](setCore, rels, beside?.sizes ?? sizes);
+      const arranged = ARRANGEMENTS[arrangement](setCore, links, beside?.sizes ?? sizes);
       const placed = new Map<string, Box>(setCore.map((n) => [n.id, { ...(arranged.get(n.id) ?? { x: 0, y: 0 }), ...sizes.get(n.id)! }] as const));
       if (beside) beside.place(placed);
       placeExplanations(setMembers.filter((n) => parentOf.has(n.id) && !placed.has(n.id)), parentOf, sizes, placed);
       return normalise(placed);
     };
-    const topics = subTopics(core, members, parentOf);
-    let local: Map<string, Box>;
-    if (topics) {
-      // Each sub-topic is arranged on its own and drawn on a backdrop; the backdrops are then flowed in reading order.
-      const arrangedTopics = topics.map((t) => ({ ...arrange(t.core, t.members), pad: TOPIC_PAD }));
-      const slots = flowBoxes(arrangedTopics.map((t) => ({ width: t.width + t.pad * 2, height: t.height + t.pad * 2 })));
-      local = new Map();
-      arrangedTopics.forEach((t, i) => {
-        const slot = slots[i]!;
-        local.set(clusterKey(g.id, i), slot);
-        for (const [id, b] of t.boxes) local.set(id, { ...b, x: b.x + slot.x + t.pad, y: b.y + slot.y + t.pad });
+    /**
+     * One set of nodes (a section's, or one sub-topic's) laid out with the section's arrangement, from 0,0. In v2 each
+     * sub-group among them is arranged on its own (its own arrangement, under its small title, on a backdrop), then
+     * takes part in the section's arrangement as one sized item, its links standing in for its members'.
+     */
+    const arrange = (setCore: readonly VisualNode[], setMembers: readonly VisualNode[]) => {
+      const present = subs.filter((s) => setMembers.some((n) => subOf.get(n.id) === s.id));
+      if (!present.length) return arrangeFlat(setCore, setMembers, g.content.arrangement);
+      const inner = new Map<string, { boxes: Map<string, Box>; width: number; height: number; title: NodeSize; index: number }>();
+      for (const s of present) {
+        if (s.type !== "group") continue;
+        const sMembers = setMembers.filter((n) => subOf.get(n.id) === s.id);
+        const laid = arrangeFlat(sMembers.filter((n) => !parentOf.has(n.id)), sMembers, s.content.arrangement);
+        const title = measureNode({ id: s.id, type: "heading", content: { text: s.content.label } });
+        inner.set(s.id, { ...laid, title, index: subs.indexOf(s) });
+        sizes.set(s.id, { width: Math.max(laid.width, title.width) + TOPIC_PAD * 2, height: TOPIC_PAD + title.height + SUB_TITLE_GAP + laid.height + TOPIC_PAD });
+      }
+      const itemOf = (id: string) => subOf.get(id) ?? id;
+      const outerCore = [...setCore.filter((n) => !subOf.has(n.id)), ...present].sort((a, b) => planIndex.get(a.id)! - planIndex.get(b.id)!);
+      const outerIds = new Set(outerCore.map((n) => n.id));
+      const seen = new Set<string>();
+      const rels = plan.relationships.flatMap((r) => {
+        const from = itemOf(r.from);
+        const to = itemOf(r.to);
+        const key = [from, to, r.type].join("\u0000");
+        if (from === to || !outerIds.has(from) || !outerIds.has(to) || seen.has(key)) return [];
+        seen.add(key);
+        return [{ ...r, from, to }];
       });
-    } else local = new Map(arrange(core, members).boxes);
-    const { boxes: content, width, height } = normalise(local);
-    const titleEstimate = g.content.label.length * SECTION_TITLE_FONT_SIZE * SECTION_TITLE_EM;
-    const titleWidth = Math.min(1200, titleEstimate);
-    const boxWidth = Math.max(width, titleWidth) + GROUP_PAD * 2;
-    const offsetX = GROUP_PAD + (boxWidth - GROUP_PAD * 2 - width) / 2;
-    // The section's takeaway (Wave B), one centred line (wrapped when long) between its title and its members.
-    const bandWidth = boxWidth - GROUP_PAD * 2;
-    const titleHeight = Math.max(1, Math.ceil(titleEstimate / bandWidth)) * GROUP_TITLE_HEIGHT;
-    const takeaway = g.content.takeaway ? takeawayHeight(g.content.takeaway, bandWidth) : 0;
-    const takeawayBand = takeaway ? takeaway + TAKEAWAY_GAP : 0;
-    const offsetY = GROUP_PAD + titleHeight + takeawayBand + GROUP_TITLE_GAP;
-    const rel = new Map<string, Box>([[groupTitleKey(g.id), { x: GROUP_PAD, y: GROUP_PAD, width: bandWidth, height: titleHeight }]]);
-    if (takeaway) rel.set(groupTakeawayKey(g.id), { x: GROUP_PAD, y: GROUP_PAD + titleHeight + TAKEAWAY_GAP, width: bandWidth, height: takeaway });
-    for (const [id, b] of content) rel.set(id, { ...b, x: b.x + offsetX, y: b.y + offsetY });
-    inner.set(g.id, rel);
-    sizes.set(g.id, { width: boxWidth, height: offsetY + height + GROUP_PAD });
+      const outerMembers = [...outerCore, ...setMembers.filter((n) => parentOf.has(n.id) && !subOf.has(n.id))];
+      const placed = new Map(arrangeFlat(outerCore, outerMembers, g.content.arrangement, rels).boxes);
+      for (const [id, sub] of inner) {
+        const at = placed.get(id)!;
+        placed.delete(id);
+        placed.set(subGroupKey(g.id, sub.index), at);
+        placed.set(subGroupTitleKey(g.id, sub.index), { x: at.x + TOPIC_PAD, y: at.y + TOPIC_PAD, ...sub.title });
+        const left = at.x + TOPIC_PAD + (at.width - TOPIC_PAD * 2 - sub.width) / 2;
+        const top = at.y + TOPIC_PAD + sub.title.height + SUB_TITLE_GAP;
+        for (const [m, b] of sub.boxes) placed.set(m, { ...b, x: b.x + left, y: b.y + top });
+      }
+      return normalise(placed);
+    };
+    // Sub-groups take precedence over sub-topics: a section with sub-groups isn't also cut at its headings.
+    const topics = subs.length ? null : subTopics(core, members, parentOf);
+    /**
+     * One frame's boxes relative to its corner, and its size: a title band (`label` at `titleKey`, then the takeaway
+     * when given) over either sub-topics (each arranged on its own on a backdrop keyed by its index among the
+     * section's sub-topics, the backdrops flowed in reading order) or one arrangement of `setCore`.
+     */
+    const frameLayout = (
+      setCore: readonly VisualNode[],
+      setMembers: readonly VisualNode[],
+      setTopics: readonly { core: VisualNode[]; members: VisualNode[]; index: number }[] | null,
+      label: string,
+      titleKey: string,
+      takeawayText: string | undefined,
+    ) => {
+      let local: Map<string, Box>;
+      if (setTopics) {
+        // Each sub-topic is arranged on its own and drawn on a backdrop; the backdrops are then flowed in reading order.
+        const arrangedTopics = setTopics.map((t) => ({ ...arrange(t.core, t.members), pad: TOPIC_PAD }));
+        const slots = flowBoxes(arrangedTopics.map((t) => ({ width: t.width + t.pad * 2, height: t.height + t.pad * 2 })));
+        local = new Map();
+        arrangedTopics.forEach((t, i) => {
+          const slot = slots[i]!;
+          local.set(clusterKey(g.id, setTopics[i]!.index), slot);
+          for (const [id, b] of t.boxes) local.set(id, { ...b, x: b.x + slot.x + t.pad, y: b.y + slot.y + t.pad });
+        });
+      } else local = new Map(arrange(setCore, setMembers).boxes);
+      const { boxes: content, width, height } = normalise(local);
+      const titleEstimate = label.length * SECTION_TITLE_FONT_SIZE * SECTION_TITLE_EM;
+      const titleWidth = Math.min(1200, titleEstimate);
+      const boxWidth = Math.max(width, titleWidth) + GROUP_PAD * 2;
+      const offsetX = GROUP_PAD + (boxWidth - GROUP_PAD * 2 - width) / 2;
+      // The section's takeaway (Wave B), one centred line (wrapped when long) between its title and its members.
+      const bandWidth = boxWidth - GROUP_PAD * 2;
+      const titleHeight = Math.max(1, Math.ceil(titleEstimate / bandWidth)) * GROUP_TITLE_HEIGHT;
+      const takeaway = takeawayText ? takeawayHeight(takeawayText, bandWidth) : 0;
+      const takeawayBand = takeaway ? takeaway + TAKEAWAY_GAP : 0;
+      const offsetY = GROUP_PAD + titleHeight + takeawayBand + GROUP_TITLE_GAP;
+      const rel = new Map<string, Box>([[titleKey, { x: GROUP_PAD, y: GROUP_PAD, width: bandWidth, height: titleHeight }]]);
+      if (takeaway) rel.set(groupTakeawayKey(g.id), { x: GROUP_PAD, y: GROUP_PAD + titleHeight + TAKEAWAY_GAP, width: bandWidth, height: takeaway });
+      for (const [id, b] of content) rel.set(id, { ...b, x: b.x + offsetX, y: b.y + offsetY });
+      return { rel, size: { width: boxWidth, height: offsetY + height + GROUP_PAD } };
+    };
+    const whole = frameLayout(core, members, topics?.map((t, index) => ({ ...t, index })) ?? null, g.content.label, groupTitleKey(g.id), g.content.takeaway);
+    inner.set(g.id, whole.rel);
+    sizes.set(g.id, whole.size);
+
+    // v2: a frame too large to read whole is split along its meaning boundaries (frameSplit.ts, plan §3.3).
+    if (!v2 || fitsScreen(whole.size) || !splittable(plan, g, core.length)) continue;
+    const boundary: SplitBoundary = subs.length ? "sub-groups" : topics ? "sub-topics" : "links";
+    const units: SplitUnit[] =
+      boundary === "sub-topics"
+        ? topics!.map((t, index) => {
+            const head = t.core.find(startsSubTopic);
+            return { core: t.core, members: t.members, topic: index, ...(head?.type === "heading" ? { label: head.content.text } : {}) };
+          })
+        : boundary === "sub-groups"
+          ? subGroupUnits(core, members, subs, subOf, parentOf, planIndex)
+          : linkComponents(core, members, plan.relationships, parentOf);
+    if (units.length < 2) continue;
+    const layoutPart = (part: readonly SplitUnit[], index: number, count: number) => {
+      const partCore = part.flatMap((u) => u.core);
+      const partMembers = part.flatMap((u) => u.members);
+      const partTopics = boundary === "sub-topics" && part.length > 1 ? part.map((u) => ({ core: u.core, members: u.members, index: u.topic! })) : null;
+      const first = index === 1;
+      return frameLayout(partCore, partMembers, partTopics, partTitle(g.content.label, part, index, count), first ? groupTitleKey(g.id) : partTitleKey(g.id, index), first ? g.content.takeaway : undefined);
+    };
+    const parts = groupParts(units, boundary, (part) => fitsScreen(layoutPart(part, 2, 2).size));
+    if (parts.length < 2) continue;
+    const drawn = parts.map((part, i) => {
+      const index = i + 1;
+      const laid = layoutPart(part, index, parts.length);
+      const key = partFrameKey(g.id, index);
+      inner.set(key, laid.rel);
+      sizes.set(key, laid.size);
+      const title = partTitle(g.content.label, part, index, parts.length);
+      return { index, count: parts.length, key, titleKey: index === 1 ? groupTitleKey(g.id) : partTitleKey(g.id, index), title, children: [...laid.rel.keys()] };
+    });
+    split.set(g.id, drawn);
+    // Later parts pack as items of their own, right after the section (`place`).
+    laterParts.set(
+      g.id,
+      drawn.slice(1).map((p): VisualNode => ({ id: p.key, type: "group", content: { label: p.title, arrangement: g.content.arrangement }, ...(g.importance ? { importance: g.importance } : {}) })),
+    );
   }
 
   const inSection = (n: VisualNode) => n.type !== "group" && !!sectionOf(n);
-  const top = plan.nodes.filter((n) => n.type === "group" || (!inSection(n) && !parentOf.has(n.id)));
+  const top = plan.nodes.filter((n) => (n.type === "group" && !subIds.has(n.id)) || (n.type !== "group" && !inSection(n) && !parentOf.has(n.id)));
   // The document's title and the outline's subtitle, stacked and centred above the sections.
   const titles = top.filter((n) => n.type === "heading" && (n.role === "title" || n.role === "subtitle"));
   const items = top.filter((n) => !titles.includes(n));
-  const packed = packRows(items, sizes);
-  const gridWidth = Math.max(0, ...items.map((n) => packed.get(n.id)!.x + sizes.get(n.id)!.width));
-  const boxes = new Map<string, Box>();
-  let y = 0;
-  for (const t of titles) {
-    const s = sizes.get(t.id)!;
-    boxes.set(t.id, { x: Math.max(0, (gridWidth - s.width) / 2), y, ...s });
-    y += s.height + ROW_GAP;
+  /** The whole layout with the top-level items packed in `order` (a split section's later parts right after it). */
+  const place = (itemOrder: readonly VisualNode[]): Map<string, Box> => {
+    const order = laterParts.size ? itemOrder.flatMap((n) => [n, ...(laterParts.get(n.id) ?? [])]) : itemOrder;
+    const packed = packRows(order, sizes);
+    const gridWidth = Math.max(0, ...order.map((n) => packed.get(n.id)!.x + sizes.get(n.id)!.width));
+    const boxes = new Map<string, Box>();
+    let y = 0;
+    for (const t of titles) {
+      const s = sizes.get(t.id)!;
+      boxes.set(t.id, { x: Math.max(0, (gridWidth - s.width) / 2), y, ...s });
+      y += s.height + ROW_GAP;
+    }
+    const gridTop = titles.length ? y - ROW_GAP + GAP : 0;
+    for (const n of order) {
+      const box = { ...packed.get(n.id)!, ...sizes.get(n.id)! };
+      box.y += gridTop;
+      boxes.set(n.id, box);
+      for (const [id, b] of inner.get(n.id) ?? []) boxes.set(id, { ...b, x: b.x + box.x, y: b.y + box.y });
+    }
+    // Explanations of loose top-level nodes hang below them, as without sections.
+    placeExplanations(
+      plan.nodes.filter((n) => parentOf.has(n.id) && !boxes.has(n.id)),
+      parentOf,
+      sizes,
+      boxes,
+    );
+    return boxes;
+  };
+  // v2: frames in the order their links read best (frameOrder.ts); v1, and any plan whose links stay inside frames: plan order.
+  if ((options.organisation ?? "v1") === "v2") {
+    const children = new Map([...inner].map(([g, rel]) => [g, [...rel.keys()]] as const));
+    if (!split.size) return { boxes: orderFrames({ plan, items, place, children }).boxes, parts: split };
+    // A split section is scored as its parts (each a frame listing its own cards, right after the section in reading
+    // order), and moves as one item: its links to other frames count from any of its parts.
+    const scored: VisualPlan = { ...plan, nodes: plan.nodes.flatMap((n) => [n, ...(laterParts.get(n.id) ?? [])]) };
+    for (const [g, parts] of split) children.set(g, parts.flatMap((p) => p.children));
+    for (const parts of split.values()) for (const p of parts.slice(1)) children.set(p.key, p.children);
+    const ordered = orderFrames({ plan: scored, items, place, children }).boxes;
+    // The scoring lists every part's cards under the section's own frame too; only part 1's are drawn there.
+    return { boxes: ordered, parts: split };
   }
-  const gridTop = titles.length ? y - ROW_GAP + GAP : 0;
-  for (const n of items) {
-    const box = { ...packed.get(n.id)!, ...sizes.get(n.id)! };
-    box.y += gridTop;
-    boxes.set(n.id, box);
-    for (const [id, b] of inner.get(n.id) ?? []) boxes.set(id, { ...b, x: b.x + box.x, y: b.y + box.y });
+  return { boxes: place(items), parts: split };
+}
+
+/**
+ * A section with sub-groups as split units: each sub-group (its cards and their explanations, under its label), and
+ * each run of loose cards between them (in the order the section lays them out), with their explanations.
+ */
+function subGroupUnits(
+  core: readonly VisualNode[],
+  members: readonly VisualNode[],
+  subs: readonly VisualNode[],
+  subOf: ReadonlyMap<string, string>,
+  parentOf: ReadonlyMap<string, string>,
+  planIndex: ReadonlyMap<string, number>,
+): SplitUnit[] {
+  const rootOf = (id: string) => {
+    let at = id;
+    for (let hops = 0; parentOf.has(at) && hops < members.length; hops++) at = parentOf.get(at)!;
+    return at;
+  };
+  const present = subs.filter((s) => core.some((n) => subOf.get(n.id) === s.id));
+  const items = [...core.filter((n) => !subOf.has(n.id)), ...present].sort((a, b) => planIndex.get(a.id)! - planIndex.get(b.id)!);
+  const units: SplitUnit[] = [];
+  let loose: VisualNode[] = [];
+  const flush = () => {
+    if (!loose.length) return;
+    const ids = new Set(loose.map((n) => n.id));
+    units.push({ core: loose, members: members.filter((n) => !subOf.has(n.id) && ids.has(rootOf(n.id))) });
+    loose = [];
+  };
+  for (const it of items) {
+    if (it.type !== "group") {
+      loose.push(it);
+      continue;
+    }
+    flush();
+    units.push({ core: core.filter((n) => subOf.get(n.id) === it.id), members: members.filter((n) => subOf.get(n.id) === it.id), label: it.content.label });
   }
-  // Explanations of loose top-level nodes hang below them, as without sections.
-  placeExplanations(
-    plan.nodes.filter((n) => parentOf.has(n.id) && !boxes.has(n.id)),
-    parentOf,
-    sizes,
-    boxes,
-  );
-  return boxes;
+  flush();
+  return units;
 }

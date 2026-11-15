@@ -1,0 +1,16 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-http-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The HTTP API is moved from API & orchestration into Domain services, beside the ledger: the API layer is split and the layer boundary the dependency rule needs disappears.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n-http",
+      "group": "g-domain"
+    }
+  ],
+  "expectFailing": ["a.in-http", "a.together-api", "a.apart-http-ledger"]
+}

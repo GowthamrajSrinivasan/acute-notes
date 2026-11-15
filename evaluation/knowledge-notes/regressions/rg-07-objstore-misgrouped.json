@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-objstore-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "Object storage is moved into the Open questions frame: its links from the mobile app, workers and CDN now run over third frames (and one through a card).",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n-objstore",
+      "group": "g-open"
+    }
+  ],
+  "expectFailing": [
+    "a.links-over-frames",
+    "a.layout",
+    "a.together-stores"
+  ]
+}

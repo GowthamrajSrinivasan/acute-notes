@@ -67,6 +67,12 @@ export const DISTORTIONS = [
   "invented_detail",
   "fabricated_agreement",
   "unsupported_recommendation",
+  "removed_content_kept",
+  "unnecessary_regeneration",
+  /** A card in the wrong frame (organisation): `move_to_group`. */
+  "misgrouped_element",
+  /** Frames in an order the layout can't handle (a link through a card): `shuffle_groups`. */
+  "frame_order_breaks_layout",
 ] as const;
 
 const review = z.object({
@@ -399,6 +405,33 @@ export const checkSchema = z.discriminatedUnion("check", [
   z.object({ check: z.literal("cards_no_overlap") }),
   z.object({ check: z.literal("children_inside_frames") }),
   z.object({ check: z.literal("frames_no_overlap") }),
+  // Gate 3, from the geometry report (organisation-layout plan §5.1; Lane I).
+  /** Pairs of frames the canvas reads in another order than the plan lists them (row-major), at most `max`. */
+  z.object({ check: z.literal("reading_order_max"), max: z.number().int().min(0) }),
+  /** Every frame can be read whole at the readable zoom on the fit screen (`renderer/screen.ts`). */
+  z.object({ check: z.literal("frames_fit_screen") }),
+  /** Card-to-card links that pass over a third frame (one holding neither end), at most `max`. */
+  z.object({ check: z.literal("links_over_frames_max"), max: z.number().int().min(0) }),
+  /** Frames as rendered (the layout view; `frame_count` is the plan's organisation). */
+  z.object({ check: z.literal("rendered_frame_count"), min: z.number().int().min(0), max: z.number().int().min(0) }),
+  /**
+   * The elements share one sub-group inside `frame` (a group whose parent is that frame's group), whose label matches
+   * `label` when given; rendered with sub-groups (organisation v2), each sits inside that sub-group's backdrop.
+   */
+  z.object({ check: z.literal("subgroup_contains"), frame: frameId, elements: z.array(elementId).min(1), label: z.array(z.array(text).min(1)).min(1).optional(), why: text }),
+  /**
+   * The elements are drawn in one frame of `frame`'s section: its own frame or, when the renderer split the section
+   * (organisation v2, frame splitting), one of its parts. With `title`, that frame's drawn title must match it (a
+   * part is titled "Section — sub-topic"). Use it to say what stays together when a section is split.
+   */
+  z.object({ check: z.literal("frame_part_contains"), frame: frameId, elements: z.array(elementId).min(1), title: z.array(z.array(text).min(1)).min(1).optional(), why: text }),
+  // Gate 1, on the run's own output (`KnowledgeRunOutput`, tooling/runOutput.ts): not_evaluable on a run without it.
+  /** Each expected element on the plan cites at least one unit its knowledge comes from (units matched by text). */
+  z.object({ check: z.literal("cites"), element: elementId.optional() }),
+  /** Every source unit of the version is Represented, Needs review, or omitted where the case allows it. */
+  z.object({ check: z.literal("units_accounted"), version: z.number().int().min(1).optional() }),
+  /** These units (default: the case's ambiguous/conflicting/unknown ones) are in Needs review; none when there are none. */
+  z.object({ check: z.literal("review_flagged"), units: z.array(unitId).optional() }),
 ]);
 
 export const assertionSchema = z.object({
@@ -411,6 +444,12 @@ export const assertionSchema = z.object({
   support,
   /** Capability ids (reports/capability-inventory.md) the assertion needs; required when support isn't "implemented". */
   requires: z.array(text).optional(),
+  /**
+   * A render assertion decided only on a render with these organisation rules (organisation-layout plan §3.0: "v1"
+   * today's layout, "v2" with frame order, sub-groups and frame splitting); `not_evaluable` on any other render.
+   * Absent: decided on every render.
+   */
+  organisation: z.enum(["v1", "v2"]).optional(),
   regression: z.enum(DISTORTIONS).optional(),
   description: text,
   check: checkSchema.optional(),
@@ -484,6 +523,13 @@ export const mutationSchema = z.discriminatedUnion("op", [
   z.object({ op: z.literal("lens_remove_edge"), level, from: text, to: text }),
   z.object({ op: z.literal("lens_reverse_edge"), level, from: text, to: text }),
   z.object({ op: z.literal("reconcile_set"), item: text, state: z.enum(RECONCILE_STATES), text: z.string().optional() }),
+  /**
+   * The plan's top-level groups in another order (they swap slots in `nodes`; members keep their own): `order` lists
+   * every top-level group id in the new order, or `seed` picks one order as the frame order robustness report does.
+   */
+  z.object({ op: z.literal("shuffle_groups"), order: z.array(text).min(2).optional(), seed: z.number().int().min(0).optional() }),
+  /** A node moved into another group (its `parent` set to `group`). */
+  z.object({ op: z.literal("move_to_group"), node: text, group: text }),
 ]);
 
 export const regressionSchema = z.object({
@@ -568,7 +614,26 @@ export const recordingMetaSchema = z.object({
   pipeline: z.object({ noteModel: z.enum(["preserve", "distil"]), promptVersion: text, appVersion: text }),
   /** When true, a critical deterministic failure in this recording fails the replay test. */
   gate: z.boolean(),
-  cases: z.array(z.object({ caseId, plan: text.optional(), lens: text.optional(), reconcile: text.optional(), replies: text.optional() })),
+  cases: z.array(
+    z.object({
+      caseId,
+      /** 1-based repeat of the case within the run (knowledge-notes-plan §7.3 records gating cases 3 times). */
+      attempt: z.number().int().min(1).optional(),
+      /** Paths relative to the run directory. */
+      plan: text.optional(),
+      lens: text.optional(),
+      reconcile: text.optional(),
+      replies: text.optional(),
+      /** `KnowledgeRunOutput` without the plan (tooling/runOutput.ts `runEvidenceSchema`). */
+      run: text.optional(),
+      /** The accepted canvas (tooling/recordedScene.ts): the Lens projection is derived from it when `lens` is absent. */
+      scene: text.optional(),
+      /** The canvas before an update (with the user's edit applied): with `scene`, the reconcile outcome is derived from the two. */
+      sceneBefore: text.optional(),
+      /** Why a case has no output (it failed, or the recorder can't drive that part yet). */
+      note: z.string().optional(),
+    }),
+  ),
 });
 
 /**

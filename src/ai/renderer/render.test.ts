@@ -8,6 +8,8 @@ import { describe, expect, it } from "vitest";
 import { parseChangeSet } from "@/ai/changes/changeSet";
 import { VALID_PLAN_FIXTURES } from "@/ai/visual-plan/fixtures";
 import type { VisualNode, VisualPlan, VisualRelationship } from "@/ai/visual-plan/types";
+import { geometryOf } from "./geometry";
+import { subGroupMembers } from "./layout";
 import { renderVisualPlan, type RenderContext } from "./render";
 
 const stubMarkdown = (md: string) => [{ type: "paragraph" as const, content: md }];
@@ -115,5 +117,50 @@ describe("renderVisualPlan defends against what F29 should already have filtered
   it("throws rather than silently rendering an image node (unreachable via any real template, but defensive)", async () => {
     const plan = { version: 1, template: "action_plan", nodes: [{ id: "i", type: "image", content: { assetRef: "a1" } }], relationships: [] } as unknown as VisualPlan;
     await expect(renderVisualPlan(plan, provenance())).rejects.toThrow(/image/);
+  });
+});
+
+describe("renderVisualPlan — sub-groups (organisation v2)", () => {
+  const plan: VisualPlan = {
+    version: 1,
+    template: "sectioned",
+    nodes: [
+      { id: "s", type: "group", stableKey: "p § group#0", content: { label: "Persistence", arrangement: "grid" } },
+      { id: "ext", type: "group", parent: "s", stableKey: "p § group#1", content: { label: "External", arrangement: "grid" } },
+      { id: "db", type: "shape", parent: "s", content: { shape: "rectangle", label: "Orders DB" } },
+      { id: "sup", type: "shape", parent: "ext", content: { shape: "rectangle", label: "Supplier API" } },
+      { id: "pay", type: "shape", parent: "ext", content: { shape: "rectangle", label: "Payments API" } },
+    ],
+    relationships: [
+      { from: "db", to: "sup", type: "calls" },
+      { from: "db", to: "ext", type: "depends_on" },
+    ],
+  };
+
+  it("draws one frame, a backdrop and a titled heading for the sub-group; its members belong to the outer frame", async () => {
+    const set = await renderVisualPlan(plan, { ...provenance(), organisation: "v2" });
+    expect(() => parseChangeSet(set)).not.toThrow();
+    const frames = set.changes.filter((c) => c.kind === "create_frame");
+    expect(frames.map((f) => f.key)).toEqual(["s"]);
+    const children = frames[0]!.kind === "create_frame" ? frames[0]!.children : [];
+    expect(children).toEqual(expect.arrayContaining(["s::title", "s::sub0", "s::sub0::title", "db", "sup", "pay"]));
+    expect(set.changes.find((c) => "key" in c && c.key === "s::sub0")).toMatchObject({ kind: "create_shape", backdrop: true });
+    // The sub-group's title carries its stable key: the object it reconciles by.
+    expect(set.changes.find((c) => "key" in c && c.key === "s::sub0::title")).toMatchObject({ kind: "create_block", stableNodeKey: "p § group#1" });
+    // A link to the whole sub-group ends at its backdrop.
+    const toGroup = set.changes.find((c) => c.kind === "connect" && c.relation === "depends_on");
+    expect(toGroup).toMatchObject({ to: { created: "s::sub0" } });
+  });
+
+  it("is clean: no overlaps, every card inside its frame and every member inside its backdrop", async () => {
+    const set = await renderVisualPlan(plan, { ...provenance(), organisation: "v2" });
+    const g = geometryOf(set.changes, [], { subGroups: subGroupMembers(plan) });
+    expect(g.cardOverlaps).toEqual([]);
+    expect(g.outsideFrames).toEqual([]);
+    expect(g.outsideSubGroups).toEqual([]);
+  });
+
+  it("is deterministic", async () => {
+    expect(await renderVisualPlan(plan, { ...provenance(), organisation: "v2" })).toEqual(await renderVisualPlan(plan, { ...provenance(), organisation: "v2" }));
   });
 });

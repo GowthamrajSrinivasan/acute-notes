@@ -44,11 +44,23 @@ export const resolvePolicy = (source: ToolPolicySource | undefined): ToolPolicy 
 /** Safe reads: no side effects, same answer for the same state, nothing outside this workspace. */
 export const READ_ANNOTATIONS: ToolAnnotations = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 
-/** Proposals: they add a change set for review (not idempotent: each call is a new proposal) and never delete or overwrite. */
+/**
+ * Proposals: each call puts a new change set up for the user's review (not idempotent). With these annotations the
+ * proposal only adds objects, or changes existing ones' position, frame membership or status-like fields; it never
+ * removes anything or replaces user-authored content. A tool whose accepted proposal can remove, restore or replace
+ * existing content uses `DESTRUCTIVE_ANNOTATIONS` instead (audit 2026-11-15 §4.8).
+ */
 export const WRITE_ANNOTATIONS: ToolAnnotations = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
 
-/** `delete_object`: destructive, so clients ask before calling it; the user still confirms in the review. */
-export const DELETE_ANNOTATIONS: ToolAnnotations = { ...WRITE_ANNOTATIONS, destructiveHint: true };
+/**
+ * Proposals that, once accepted, can remove, restore or replace existing content: `delete_object`, `delete_connection`,
+ * `revert_agent_changes`, `update_block`, `update_connection` (label/explanation, `null` clears), `update_knowledge`.
+ * Clients use the hint to ask before calling; the user still confirms every change in the review.
+ */
+export const DESTRUCTIVE_ANNOTATIONS: ToolAnnotations = { ...WRITE_ANNOTATIONS, destructiveHint: true };
+
+/** @deprecated The old name of `DESTRUCTIVE_ANNOTATIONS`. */
+export const DELETE_ANNOTATIONS = DESTRUCTIVE_ANNOTATIONS;
 
 /** A failure the client should see as a tool error (`isError`), with a message meant for the model and the user. */
 export class ToolFailure extends Error {

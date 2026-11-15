@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-registry-rule-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The registry loses its critical rule (u16): nothing says an event type must be registered before clients can send it.",
+  "mutations": [
+    { "op": "replace_text", "node": "s3", "find": "every event type registered before it is sent", "replace": "event types are listed here" }
+  ],
+  "expectFailing": ["a.registry-rule"]
+}

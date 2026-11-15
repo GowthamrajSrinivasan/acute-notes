@@ -1,0 +1,706 @@
+{
+  "caseId": "kn-07-photo-sharing-hld",
+  "schema": "ClauseRecordV31 (review-v3/attachmentSchema.ts)",
+  "dataset": "v3.1-pre",
+  "records": [
+    {
+      "id": "k1",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u2"
+      ],
+      "clause": "about 2 million daily active users at launch",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u2"
+          ],
+          "claimQuote": "The design is sized for about 2 million daily active users at launch.",
+          "evidence": "migrated: needs evidence",
+          "justification": "A sizing scope the notes must state; no other claim becomes false without it.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k1 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k1",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u2"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k2",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u7"
+      ],
+      "clause": "short-lived",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u7"
+          ],
+          "claimQuote": "Clients upload a photo directly to object storage with a short-lived signed URL",
+          "evidence": "migrated: needs evidence",
+          "justification": "A real property of the signed URL, but the HLD takeaway (direct upload) stands without it.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k2 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k2",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u7"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k3",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u9"
+      ],
+      "clause": "of 120 requests per minute per account",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u9"
+          ],
+          "claimQuote": "applies a rate limit",
+          "evidence": "migrated: needs evidence",
+          "justification": "\"The gateway applies a rate limit\" stays true without the figure; the figure is a specification the notes must carry, not a condition that falsifies the claim.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k3 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k3",
+            "verdict": "set",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u9"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k4",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u10"
+      ],
+      "clause": "If the auth service cannot be reached",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u10"
+          ],
+          "claimQuote": "the gateway rejects the request instead of letting it through unchecked",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without the trigger the gateway would appear to reject every request.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k4 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k4",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u10"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k5",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u11"
+      ],
+      "clause": "never by the gateway",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u8"
+          ],
+          "claimQuote": "Every client request enters through the API gateway.",
+          "evidence": "migrated: needs evidence",
+          "justification": "u11 stays true without the clause; the claim it corrects is u8's 'every client request through the gateway', which would wrongly route photo bytes via the gateway.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k5 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k5",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u8"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k6",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u18"
+      ],
+      "clause": "who have notifications turned on",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u18"
+          ],
+          "claimQuote": "asks the push-notification provider to alert followers",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it all followers would be alerted, which is false for those with notifications off.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k6 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k6",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u18"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k7",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u19"
+      ],
+      "clause": "for up to 7 days",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u19"
+          ],
+          "claimQuote": "a worker outage delays thumbnails but does not lose uploads",
+          "evidence": "migrated: needs evidence",
+          "justification": "An outage longer than 7 days would lose events, so 'does not lose uploads' is false without the bound.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k7 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k7",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u19"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k8",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u19"
+      ],
+      "clause": "a worker outage delays thumbnails",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u19"
+          ],
+          "claimQuote": "does not lose uploads",
+          "evidence": "migrated: needs evidence",
+          "justification": "A real cost (delay) attached to the durability claim, but the takeaway 'uploads are not lost' stands without it; accepted as set.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k8 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "low",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k8",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u19"
+            ],
+            "confidence": "low"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k9",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u20"
+      ],
+      "clause": "whose processing keeps failing",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u32"
+          ],
+          "claimQuote": "the feed service adds the photo to the followers' feeds",
+          "evidence": "migrated: needs evidence",
+          "justification": "The exception falsifies the main flow's unconditional 'photo is added to followers' feeds' (u32); u18 is already gated on PhotoReady so is not misled.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k9 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k9",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u32"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k10",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u23"
+      ],
+      "clause": "for 60 seconds",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u23"
+          ],
+          "claimQuote": "The cache holds ready-made feed pages",
+          "evidence": "migrated: needs evidence",
+          "justification": "The cache claim stays true without the TTL and the source frames the cache as disposable; the TTL is a real bound to carry somewhere.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k10 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k10",
+            "verdict": "set",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u23"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k11",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u27"
+      ],
+      "clause": "does not control when an alert arrives",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u18"
+          ],
+          "claimQuote": "asks the push-notification provider to alert followers",
+          "evidence": "migrated: needs evidence",
+          "justification": "An explicit non-guarantee of alert timing; without it a reader would take alerting as a delivered, timely outcome. Quote narrowed to Y's span ('Pinhole only sends it requests' is elaboration of the same limit).",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k11 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k11",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u18"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k12",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u34"
+      ],
+      "clause": "The cost is that a new photo takes a few seconds to appear in feeds.",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u34"
+          ],
+          "claimQuote": "the upload service and the workers only meet through the message queue",
+          "evidence": "migrated: needs evidence",
+          "justification": "A design decision presented as weighed against its cost; without it the queue looks free.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k12 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k12",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u34"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k13",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u35"
+      ],
+      "clause": "Originals can be up to 25 MB",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k13",
+            "verdict": "not_a_condition",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k14",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u38"
+      ],
+      "clause": "we accept that their outages are outside our control",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u38"
+          ],
+          "claimQuote": "We use a third-party CDN and push-notification provider instead of running our own",
+          "evidence": "migrated: needs evidence",
+          "justification": "The buy-not-build decision is explicitly weighed against accepting outages outside the team's control.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k14 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k14",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u38"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k15",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u39"
+      ],
+      "clause": "is not decided yet",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u20"
+          ],
+          "claimQuote": "A photo whose processing keeps failing stays in the \"processing\" state and is not shown in any feed.",
+          "evidence": "migrated: needs evidence",
+          "justification": "u20 asserts nothing about retry or cleanup, so it stays true without the open question; the gap is a real caveat the notes must contain.",
+          "binding": "set",
+          "levelDerived": "elsewhere",
+          "source": "v3 k15 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k15",
+            "verdict": "set",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u20"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k16",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u40"
+      ],
+      "clause": "is left to the feed service's own low-level design",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "The feed service builds each person's feed from the photos of the accounts they follow",
+          "evidence": "migrated: needs evidence",
+          "justification": "A deferral scoping the feed-building claim; the takeaway is unchanged.",
+          "binding": "set",
+          "levelDerived": "elsewhere",
+          "source": "v3 k16 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k16",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k17",
+      "case": "kn-07-photo-sharing-hld",
+      "units": [
+        "u4"
+      ],
+      "clause": "It does not describe code, internal modules or individual operations",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u3"
+          ],
+          "claimQuote": "This document is the high-level design only",
+          "evidence": "migrated: needs evidence",
+          "justification": "Document-level scope note linked to the summary claim it scopes (R5).",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k17 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k17",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u3"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    }
+  ]
+}

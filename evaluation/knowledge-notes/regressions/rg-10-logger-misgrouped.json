@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-logger-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The logger is moved into the client & presentation frame: the HTTP API's and the retry helper's links to it now run over third frames (and through a card).",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n-logger",
+      "group": "g-ui"
+    }
+  ],
+  "expectFailing": [
+    "a.links-over-frames",
+    "a.layout",
+    "a.in-logger"
+  ]
+}

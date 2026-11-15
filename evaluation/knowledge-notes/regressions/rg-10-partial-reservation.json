@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-partial-reservation",
+  "distortion": "condition_dropped",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The all-or-nothing condition is inverted on the orchestrator: 'if stock is short, makes a partial reservation of what is available'. The old a.no-partial-with-orch passed on the bare word 'partial'.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-orch",
+      "find": "Rejects the whole order if stock is short; never makes a partial reservation",
+      "replace": "If stock is short, makes a partial reservation of what is available"
+    }
+  ],
+  "expectFailing": [
+    "a.no-partial-with-orch",
+    "a.no-partial-reservation"
+  ]
+}

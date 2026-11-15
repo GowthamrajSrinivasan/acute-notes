@@ -1,0 +1,18 @@
+{
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "reviewer": "R2",
+  "verdicts": [
+    { "candidate": "c1", "verdict": "set", "claimUnits": ["u5"], "conditionQuote": "which is the only component allowed to talk to the external model provider", "claimQuote": "calls the Model Gateway", "confidence": "medium", "note": "Exclusivity constraint on model access; the call claim stays true without it." },
+    { "candidate": "c2", "verdict": "set", "claimUnits": ["u8"], "conditionQuote": "reads published articles from the Help Center CMS every 15 minutes", "claimQuote": "Articles reach the Vector store through the Ingestion worker", "confidence": "medium", "note": "Freshness bound and published-only scope on ingestion." },
+    { "candidate": "c3", "verdict": "set", "claimUnits": ["u8", "u6"], "conditionQuote": "This document does not describe the Ingestion worker's internals, and how the Vector store is partitioned has not been decided.", "claimQuote": "The Retrieval service reads from the Vector store, a Postgres database with the pgvector extension.", "confidence": "medium", "note": "Scope gap and open decision on the ingestion worker and vector store." },
+    { "candidate": "c4", "verdict": "set", "claimUnits": ["u16"], "conditionQuote": "using the same embedding model as the Ingestion worker", "claimQuote": "The Query embedder turns the question into a vector", "confidence": "medium", "note": "Coupling requirement between query and ingestion embeddings." },
+    { "candidate": "c5", "verdict": "claim", "claimUnits": ["u21"], "conditionQuote": "If the Reranker does not respond within 800 ms, the Rerank client skips reranking, keeps the first 8 candidates in vector-similarity order", "claimQuote": "The Rerank client sends the 50 candidates to the Reranker and keeps the top 8.", "confidence": "high", "note": "On timeout the kept 8 are not reranked, so 'keeps the top 8' is false in that case." },
+    { "candidate": "c6", "verdict": "set", "claimUnits": ["u27"], "conditionQuote": "limited to 6,000 tokens", "claimQuote": "builds the prompt with the Context builder", "confidence": "medium", "note": "Size bound on the prompt." },
+    { "candidate": "c7", "verdict": "set", "claimUnits": ["u27"], "conditionQuote": "The model call has a 20-second timeout.", "claimQuote": "calls the Model Gateway", "confidence": "medium", "note": "Timeout bound on the model call." },
+    { "candidate": "c8", "verdict": "claim", "claimUnits": ["u24"], "conditionQuote": "If it times out, `composeAnswer` returns an error and the API responds with HTTP 504; no partial answer is shown.", "claimQuote": "The Answers API returns the answer to the Agent Console.", "confidence": "medium", "note": "On model timeout no answer is returned, so the flow's final step is false in that case." },
+    { "candidate": "c9", "verdict": "ambiguous", "claimUnits": ["u14", "u24"], "conditionQuote": "`composeAnswer` removes the sentence that carries it and marks the answer as partial, rather than rejecting the whole answer", "claimQuote": "The Citation checker verifies that each citation in a draft answer points to one of the passages that were supplied.", "confidence": "low", "note": "Reading A (claim): the answer returned in u24 may be partial, which the flow hides; reading B (set): it is the handling detail of the citation check in u14, which stays true." }
+  ],
+  "additional": [
+    { "conditionUnits": ["u34"], "verdict": "set", "claimUnits": ["u31", "u32", "u33"], "conditionQuote": "The design does not give code locations for the Ingestion worker or the Reranker.", "claimQuote": "`composeAnswer` is in `services/orchestrator/src/compose.ts`, lines 40–118.", "confidence": "low", "note": "Coverage gap in the code map." }
+  ]
+}

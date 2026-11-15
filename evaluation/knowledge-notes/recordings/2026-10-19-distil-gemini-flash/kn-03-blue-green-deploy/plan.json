@@ -1,0 +1,529 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "Blue-green deployment for orders service: setup, steps, and rollback."
+      }
+    },
+    {
+      "id": "g0",
+      "role": "annotated",
+      "importance": "high",
+      "stableKey": "Blue-green deployment for the orders service › How blue-green works § group#0",
+      "type": "group",
+      "content": {
+        "label": "How blue-green works",
+        "arrangement": "stack",
+        "takeaway": "Blue-green deployments use two identical environments for safe, zero-downtime releases."
+      }
+    },
+    {
+      "id": "u0_n1",
+      "stableKey": "Blue-green deployment for the orders service › How blue-green works § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "You keep two identical production environments, called blue and green.¹ One of them serves all live traffic while the other sits idle; you deploy the new version to the idle one, test it there, and then move traffic over in one step.² Because the old environment is still running, going back is the same one-step switch.³ The cost is running twice the infrastructure during a release, which is why the idle environment is scaled down between releases.⁴"
+      }
+    },
+    {
+      "id": "u0_n2",
+      "title": "Notes",
+      "stableKey": "Blue-green deployment for the orders service › How blue-green works § text#1",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "¹ These environments are identical to ensure consistency.\n² This allows for zero-downtime deployments and easy rollback.\n³ This is a key benefit of blue-green deployments, enabling rapid recovery from issues.\n⁴ Scaling down helps manage costs, but the infrastructure still incurs some expense."
+      }
+    },
+    {
+      "id": "u0_a1",
+      "title": "Annotation Value",
+      "stableKey": "Blue-green deployment for the orders service › How blue-green works § text#2",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The annotations clarify the 'why' and 'how' behind each step of the blue-green deployment process, adding depth to the initial description. They highlight the benefits (zero-downtime, easy rollback) and trade-offs (cost of infrastructure) that are implied but not explicitly stated in the original prose."
+      }
+    },
+    {
+      "id": "g1",
+      "role": "cards",
+      "importance": "high",
+      "stableKey": "Blue-green deployment for the orders service › Before you start § group#0",
+      "type": "group",
+      "content": {
+        "label": "Before you start",
+        "arrangement": "grid",
+        "takeaway": "Ensure all prerequisites are met before the first release."
+      }
+    },
+    {
+      "id": "u1_n1",
+      "title": "Two identical environments are required",
+      "stableKey": "Blue-green deployment for the orders service › Before you start § text#0",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "You need two identical environments, `orders-blue` and `orders-green`, with the same instance count, size, and configuration."
+      }
+    },
+    {
+      "id": "u1_n2",
+      "title": "Health endpoint must be available",
+      "stableKey": "Blue-green deployment for the orders service › Before you start § text#1",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "A `GET /healthz` endpoint is required that returns `200` only when the service can reach its database and queue."
+      }
+    },
+    {
+      "id": "u1_n3",
+      "title": "Database migrations must be backward compatible",
+      "stableKey": "Blue-green deployment for the orders service › Before you start § text#2",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Database migrations must be backward compatible, allowing the old version to function with the new schema. Both versions share one database, and a rollback does not undo a migration. If any migration is not backward compatible, do not use this procedure; instead, split the migration into an additive release first and a cleanup release later."
+      }
+    },
+    {
+      "id": "u1_n4",
+      "title": "Access to load balancer listener rules is essential",
+      "stableKey": "Blue-green deployment for the orders service › Before you start § text#3",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "You need access to the load balancer's listener rules, as the switch involves changing which target group the listener forwards to."
+      }
+    },
+    {
+      "id": "u1_n5",
+      "title": "Error rate monitoring is necessary",
+      "stableKey": "Blue-green deployment for the orders service › Before you start § text#4",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "A dashboard or query showing the 5xx error rate per environment is needed to differentiate errors between green and blue environments."
+      }
+    },
+    {
+      "id": "g2",
+      "role": "flow",
+      "importance": "high",
+      "stableKey": "Blue-green deployment for the orders service › Steps § group#0",
+      "type": "group",
+      "content": {
+        "label": "Steps",
+        "arrangement": "chain",
+        "takeaway": "Blue/green deployment with rollback points and a 24-hour standby for blue."
+      }
+    },
+    {
+      "id": "u2_n1",
+      "stableKey": "Blue-green deployment for the orders service › Steps § shape#0",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Deploy to idle environment"
+      }
+    },
+    {
+      "id": "u2_n2",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#0",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Deploy version `2.8.0` to `orders-green` using the same build artifact that passed staging. All green instances should report the new version, and blue should still serve 100% of traffic."
+      }
+    },
+    {
+      "id": "u2_n3",
+      "stableKey": "Blue-green deployment for the orders service › Steps § shape#1",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Run migrations"
+      }
+    },
+    {
+      "id": "u2_n4",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#1",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Apply database migrations from the new release once, from a single job. The migration job should exit with code 0, and blue should continue serving requests without new errors, confirming backward compatibility."
+      }
+    },
+    {
+      "id": "u2_n5",
+      "stableKey": "Blue-green deployment for the orders service › Steps § shape#2",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · Check health on green"
+      }
+    },
+    {
+      "id": "u2_n6",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#2",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Poll the health endpoint on every green instance until all return `200`. If any instance fails health checks after 10 minutes, stop and roll back by tearing down green, leaving blue to serve traffic."
+      }
+    },
+    {
+      "id": "u2_n7",
+      "stableKey": "Blue-green deployment for the orders service › Steps § shape#3",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Smoke-test green"
+      }
+    },
+    {
+      "id": "u2_n8",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#3",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Send the smoke-test suite to green's internal address. All smoke tests must pass. If one fails, treat it as a failed health check and stop."
+      }
+    },
+    {
+      "id": "u2_n9",
+      "stableKey": "Blue-green deployment for the orders service › Steps § shape#4",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "5 · Switch traffic"
+      }
+    },
+    {
+      "id": "u2_n10",
+      "stableKey": "Blue-green deployment for the orders service › Steps § code#0",
+      "parent": "g2",
+      "type": "code",
+      "content": {
+        "language": "bash",
+        "source": "aws elbv2 modify-listener \\\n --listener-arn \"$ORDERS_LISTENER_ARN\" \\\n --default-actions Type=forward,TargetGroupArn=\"$GREEN_TG_ARN\""
+      }
+    },
+    {
+      "id": "u2_n11",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#4",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Within about 30 seconds, new requests should be served by green, and blue should receive no new connections."
+      }
+    },
+    {
+      "id": "u2_n12",
+      "stableKey": "Blue-green deployment for the orders service › Steps § shape#5",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "6 · Watch error rate"
+      }
+    },
+    {
+      "id": "u2_n13",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#5",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Observe the 5xx error rate on green for 15 minutes. If the error rate rises above 2% at any point, switch back to blue using `$BLUE_TG_ARN` (traffic returns to blue within about 30 seconds). If it stays at or below 2%, continue."
+      }
+    },
+    {
+      "id": "u2_n14",
+      "stableKey": "Blue-green deployment for the orders service › Steps § shape#6",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "7 · Keep blue as standby"
+      }
+    },
+    {
+      "id": "u2_n15",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#6",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "Leave blue running, unchanged, for 24 hours as a rollback target."
+      }
+    },
+    {
+      "id": "u2_n16",
+      "stableKey": "Blue-green deployment for the orders service › Steps § shape#7",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "8 · Retire blue"
+      }
+    },
+    {
+      "id": "u2_n17",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#7",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "After 24 hours without a switch-back, scale blue down. Blue then becomes the idle environment for the next release, with roles reversed."
+      }
+    },
+    {
+      "id": "u2_a1",
+      "title": "Initial State",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#8",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Blue is live, and green is idle."
+      }
+    },
+    {
+      "id": "u2_a2",
+      "title": "Rollback Points",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#9",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The process includes explicit rollback points if health checks or smoke tests fail, or if the error rate on green exceeds 2% after traffic switch. These ensure customer impact is minimized."
+      }
+    },
+    {
+      "id": "u2_a3",
+      "title": "Outcome",
+      "stableKey": "Blue-green deployment for the orders service › Steps § text#10",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The new version is deployed to green, traffic is switched, and blue is retired after a 24-hour standby period, becoming the idle environment for the next release."
+      }
+    },
+    {
+      "id": "g3",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Blue-green deployment for the orders service › When things go wrong § group#0",
+      "type": "group",
+      "content": {
+        "label": "When things go wrong",
+        "arrangement": "stack",
+        "takeaway": "Understand rollback implications and avoid migrations on standby."
+      }
+    },
+    {
+      "id": "u3_n1",
+      "title": "Rollback before step 5",
+      "stableKey": "Blue-green deployment for the orders service › When things go wrong § text#0",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Rolling back before step 5 is inexpensive as customers haven't seen the new version yet."
+      }
+    },
+    {
+      "id": "u3_n2",
+      "title": "Switch-back after step 5",
+      "stableKey": "Blue-green deployment for the orders service › When things go wrong § text#1",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Switching back after step 5 is quick, but in-flight requests might fail and require client retries."
+      }
+    },
+    {
+      "id": "u3_n3",
+      "title": "Database and backward compatibility",
+      "stableKey": "Blue-green deployment for the orders service › When things go wrong § text#2",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Neither rollback method reverts the database, emphasizing the importance of backward-compatible migrations."
+      }
+    },
+    {
+      "id": "u3_n4",
+      "title": "Record failures",
+      "stableKey": "Blue-green deployment for the orders service › When things go wrong § text#3",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Always record what caused a failure before retrying, as the same build often fails for the same reason."
+      }
+    },
+    {
+      "id": "u3_n5",
+      "title": "Avoid migrations on standby",
+      "stableKey": "Blue-green deployment for the orders service › When things go wrong § text#4",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Do not run the next release's database migrations while the blue environment is on standby."
+      }
+    },
+    {
+      "id": "u3_n6",
+      "title": "Risk of schema incompatibility",
+      "stableKey": "Blue-green deployment for the orders service › When things go wrong § text#5",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "Running migrations on standby can make the standby incompatible with the schema, removing the safe switch-back option."
+      }
+    },
+    {
+      "id": "g4",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Blue-green deployment for the orders service § group#0",
+      "type": "group",
+      "content": {
+        "label": "Blue-green deployment for the orders service",
+        "arrangement": "grid",
+        "takeaway": "Tutorial for blue-green deployment of `orders-api` from fresh build to cleaned environment."
+      }
+    },
+    {
+      "id": "u4_n1",
+      "title": "Tutorial Overview",
+      "stableKey": "Blue-green deployment for the orders service § text#0",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "This tutorial details a blue-green release process for the `orders-api` web service. The process starts from a fresh build and deploys to a cleaned-up environment."
+      }
+    },
+    {
+      "id": "u4_n2",
+      "title": "Prerequisites",
+      "stableKey": "Blue-green deployment for the orders service § text#1",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "It is assumed that the `orders-api` service is already operating behind a load balancer."
+      }
+    },
+    {
+      "id": "u4_a1",
+      "title": "Summary",
+      "stableKey": "Blue-green deployment for the orders service § text#2",
+      "parent": "g4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This section introduces a tutorial for performing a blue-green deployment of the `orders-api` service. The key aspects covered are the starting state (fresh build) and the target environment (cleaned-up). A prerequisite for this tutorial is an existing load balancer setup for the service."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u0_n1",
+      "to": "u0_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_n1",
+      "to": "u2_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n3",
+      "to": "u2_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n5",
+      "to": "u2_n7",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n7",
+      "to": "u2_n9",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n9",
+      "to": "u2_n12",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n12",
+      "to": "u2_n14",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n14",
+      "to": "u2_n16",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_a1",
+      "to": "u2_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a2",
+      "to": "u2_n5",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a2",
+      "to": "u2_n7",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a2",
+      "to": "u2_n12",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_a3",
+      "to": "u2_n16",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_n5",
+      "to": "u3_n6",
+      "type": "caused_by",
+      "label": "if violated"
+    },
+    {
+      "from": "g2",
+      "to": "g3",
+      "type": "references",
+      "label": "rollback scenarios"
+    },
+    {
+      "from": "g4",
+      "to": "g0",
+      "type": "explained_by",
+      "label": "introduction"
+    }
+  ],
+  "metadata": {
+    "title": "How blue-green works"
+  }
+}

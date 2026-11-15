@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-next-step-changed",
+  "distortion": "invented_detail",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "Priya's action item changes task: she no longer brings the load-test result but picks the queue, an assignment the note never makes. A match on the owner's name alone used to accept it.",
+  "mutations": [
+    { "op": "replace_text", "node": "n11", "find": "Priya: bring the load-test result to the next architecture review", "replace": "Priya: pick the queue at the next architecture review" }
+  ],
+  "expectFailing": ["a.next-step"]
+}

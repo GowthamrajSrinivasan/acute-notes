@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-12-approval-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-12-flag-rollout-update",
+  "target": "reconcile",
+  "description": "The changed dependency is missed: the gate card is 'updated' but still says the metrics check alone lets a flag leave canary, dropping v2's on-call approval.",
+  "mutations": [
+    { "op": "reconcile_set", "item": "advancing-from-canary § gate", "state": "update_clean", "text": "A flag leaves canary only when the metrics check passes." }
+  ],
+  "expectFailing": ["a.rc-advance"]
+}

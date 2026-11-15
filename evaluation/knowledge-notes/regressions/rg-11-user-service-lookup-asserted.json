@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-user-service-lookup-asserted",
+  "distortion": "invented_detail",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "A mechanism is invented on the user-service shape ('one lookup per event from enrichment'), a wording the original mechanism check (synchronous / replica / per-event call) missed.",
+  "mutations": [
+    { "op": "replace_text", "node": "s6", "find": "expected to stay lightly loaded", "replace": "serves one lookup per event from enrichment" }
+  ],
+  "expectFailing": ["a.no-invented-mechanism"]
+}

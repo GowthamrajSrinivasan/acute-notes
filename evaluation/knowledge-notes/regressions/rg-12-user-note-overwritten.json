@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-12-user-note-overwritten",
+  "distortion": "user_edit_overwritten",
+  "caseId": "kn-12-flag-rollout-update",
+  "target": "reconcile",
+  "description": "The user-edited kill-switch card is treated as a clean update and regenerated from the v2 source wording, so the user's runbook note is silently lost.",
+  "mutations": [
+    { "op": "reconcile_set", "item": "kill-switch § requirement", "state": "update_clean", "text": "Every flag must have a kill switch that turns it off within 1 minute. The kill switch is tested in staging before the flag enters canary, and the test is recorded in the rollout tool." }
+  ],
+  "expectFailing": ["a.rc-kill-switch"]
+}

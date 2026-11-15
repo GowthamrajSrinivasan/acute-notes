@@ -11,7 +11,10 @@
 | `ai-connection-validation-matrix.md` (F36 matrix) | Which AI connections pass |
 | `product-positioning.md` | Built vs Planned claims for marketing |
 | `acute-lens-prd.md` + `acute-lens-plan.md` | Acute Lens (L0–L5 semantic zoom view over interactive frames + Repo Map). Decisions locked 2026-09-30; Phase 0 clean-ups done 2026-10-01; Phase 1A-i next |
-| `knowledge-notes-plan.md` | How notes are made: ideas over words, citations to stable source units, the source panel, citation-driven updates (Revision 3 of `content-fidelity-plan.md`). Approved 2026-10-19; decisions OD1–OD7 recorded; Phase 0 started 2026-10-19 |
+| `knowledge-notes-plan.md` | How notes are made: ideas over words, citations to stable source units, the source panel, citation-driven updates (Revision 3 of `content-fidelity-plan.md`). Approved 2026-10-19; decisions OD1–OD7 recorded. Phases 0–2 done offline 2026-10-19 (mock AI, C1b and C2 green; distil stays a developer setting) and Phase 3 built with its switch off; meaning rules are hints only; OD5b pending. **Next (approval):** S1.8/C1c live run, then S2.6 (R1) |
+| `intelligent-update-engine-plan.md` | Claim-level patching of existing content from new content (the patch contract, intent classifier, Node Router). Stage 0–1 built and gated offline 2026-11-13; Stage 1 live-verification and Stages 2–4 not started |
+| `open-intelligent-ui-audit.md` + `openui-integration-plan.md` | Generative-UI (OpenUI) note cards. Phases 1–3 built 2026-11-13; live-verified (generation, pin, free rule check; evidence `openui-live-2026-11-13.md`). Pinned cards stay review-gated: conditions still split from claims. **Phases 4–5 wait on the Intelligent Update Engine** (Stage 1 live-verified + Stage 2 shipped) |
+| `study-mode-design.md` | Study Mode v1: concept = source + cited units (through lineage), a device-local store, MCP read-only later. Draft, SM-D1 provisional; build after the P0 items |
 
 **Priority order (revised 2026-09-27, user):**
 1. **P0:** close the loose ends in features the tracker already marks Done.
@@ -20,7 +23,7 @@
 
 **Standing rules:** the invariants in tracker §1 apply to every item. No git commits, pushes or PRs from this work unless the user asks. Every item ends with `npm run typecheck && npm run lint && npm run test` green. When an item is done, update the owning doc (tracker, F42 plan or ICP doc), and then tick it here.
 
-_Baseline: code and docs as of 2026-09-27. The repo has no commits yet. Last updated 2026-10-19 (Knowledge Notes plan added; topic merge status; selection-scope rule)._
+_Baseline: code and docs as of 2026-09-27. The repo has no commits yet. Last updated 2026-10-19 (Knowledge Notes plan added, then its Phases 0–2 status; topic merge status; selection-scope rule)._
 
 ---
 
@@ -268,7 +271,7 @@ Killer workflows #6–#8, #13, #14, #16, #17, #19, #20.
 
 ## Suggested running order (one line each)
 
-0. **L0 first: Visualize result quality** (the user's top priority). Content fidelity Revision 2 (Waves A–E, F2, F3) is done. **Next: the Knowledge Notes plan** (`knowledge-notes-plan.md`, Revision 3), Phase 0 (offline fixes, started 2026-10-19), then Phase 1 (idea fidelity) and Phase 2 (source panel) up to its release gate R1. Existing behaviour stays as it is until R1; citation-based updates stay off until R2.
+0. **L0 first: Visualize result quality** (the user's top priority). Content fidelity Revision 2 (Waves A–E, F2, F3) is done. **Next: the Knowledge Notes plan** (`knowledge-notes-plan.md`, Revision 3), Phases 0–2 (offline fixes, idea fidelity, source panel and review) are done offline as of 2026-10-19, with the mock AI only (C1b and C2 green), and Phase 3 (citation updates) is built with its switch off. The meaning rules are hints only (labels provisional under OD7a; [evaluation](./meaning-rules-evaluation-2026-10-19.md)); the model check stays off until the user decides OD5b. **Next, each needing the user's approval:** S1.8/C1c (first live distil run, fixtures × 3), then S2.6 (R1 live runs, judge rubric, comprehension study) and the R1 decision. Not built yet: WP2.8 "Keep full detail" (hidden until R1). Existing behaviour stays as it is until R1; citation-based updates stay off until R2.
 1. L3: F43 real-client check — Claude Code ✅; VS Code and interactive Claude Code still by hand (user).
 2. Wave 1 step 2: score killer workflows #1–#4 on a real repo. Correct the ICP doc and positioning from the results.
 3. L1 AI e2e runs and L2 connection validation (whenever the user approves AI spend).

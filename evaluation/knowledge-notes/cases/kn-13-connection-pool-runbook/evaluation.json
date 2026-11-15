@@ -1,0 +1,1030 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-13-connection-pool-runbook",
+  "assertions": [
+    {
+      "id": "a.setup",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Why pool: the 30 ms setup the pool skips.",
+      "check": {
+        "check": "element_present",
+        "element": "e.setup"
+      }
+    },
+    {
+      "id": "a.cap",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Why pool: the cap protects the database.",
+      "check": {
+        "check": "element_present",
+        "element": "e.cap"
+      }
+    },
+    {
+      "id": "a.pool-size",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The sizing rule is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.pool-size"
+      }
+    },
+    {
+      "id": "a.why-18",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The arithmetic behind 18 instances is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.why-18"
+      }
+    },
+    {
+      "id": "a.bigger-pool",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The 'bigger pool' rule is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.bigger-pool"
+      }
+    },
+    {
+      "id": "a.borrow",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The borrow limit is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.borrow"
+      }
+    },
+    {
+      "id": "a.wait-why",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The reason for the 2-second wait is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.wait-why"
+      }
+    },
+    {
+      "id": "a.statement",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The statement timeout is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.statement"
+      }
+    },
+    {
+      "id": "a.transactions",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The 500 ms transaction rule is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.transactions"
+      }
+    },
+    {
+      "id": "a.idle-check",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The idle health check is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.idle-check"
+      }
+    },
+    {
+      "id": "a.failover",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Failover behaviour is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.failover"
+      }
+    },
+    {
+      "id": "a.refill",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The refill limit is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.refill"
+      }
+    },
+    {
+      "id": "a.refill-why",
+      "dimension": "coverage",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Why the refill is slowed is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.refill-why"
+      }
+    },
+    {
+      "id": "a.leak-log",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Leak detection is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.leak-log"
+      }
+    },
+    {
+      "id": "a.leak-cause",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Where leaks come from is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.leak-cause"
+      }
+    },
+    {
+      "id": "a.alert",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The paging condition is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.alert"
+      }
+    },
+    {
+      "id": "a.queue",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The queue diagnosis rule is on the canvas.",
+      "check": {
+        "check": "element_present",
+        "element": "e.queue"
+      }
+    },
+    {
+      "id": "a.idle-gauge",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The idle gauge as failover signal is kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.idle-gauge"
+      }
+    },
+    {
+      "id": "a.takeaway",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The takeaway appears (as a card or a section's takeaway).",
+      "check": {
+        "check": "element_present",
+        "element": "e.takeaway"
+      }
+    },
+    {
+      "id": "a.saturation-with-claim",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The saturation limit sits on the bigger-pool card.",
+      "check": {
+        "check": "text_present",
+        "element": "e.bigger-pool",
+        "all": [
+          [
+            "saturat"
+          ],
+          [
+            "slower",
+            "slows",
+            "slow down"
+          ]
+        ],
+        "why": "the CPU-saturation limit qualifies the 'bigger pool' claim and must stay on its card (u7)"
+      }
+    },
+    {
+      "id": "a.migrations-with-claim",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "critical_exception_omitted",
+      "description": "The migrations exception sits on the statement-timeout card.",
+      "check": {
+        "check": "text_present",
+        "element": "e.statement",
+        "all": [
+          [
+            "migration"
+          ]
+        ],
+        "why": "migrations are exempt from the statement timeout (u12)"
+      }
+    },
+    {
+      "id": "a.failover-errors-with-claim",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "critical_exception_omitted",
+      "description": "The failover's error window sits on the failover card.",
+      "check": {
+        "check": "text_present",
+        "element": "e.failover",
+        "all": [
+          [
+            "4 seconds",
+            "4 s",
+            "4-second"
+          ],
+          [
+            "pool_exhausted",
+            "error"
+          ]
+        ],
+        "why": "callers may see POOL_EXHAUSTED for up to about 4 seconds during a failover (u18)"
+      }
+    },
+    {
+      "id": "a.no-reclaim-with-claim",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "'Never reclaimed' sits on the leak-detection card.",
+      "check": {
+        "check": "text_present",
+        "element": "e.leak-log",
+        "all": [
+          [
+            "force",
+            "reclaim",
+            "take back",
+            "takes back",
+            "taken back"
+          ]
+        ],
+        "why": "a leaked connection is logged, never taken back by force (u20)"
+      }
+    },
+    {
+      "id": "a.usually",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "possibility_to_guarantee",
+      "description": "The queue rule keeps its qualifier.",
+      "check": {
+        "check": "text_present",
+        "element": "e.queue",
+        "all": [
+          [
+            "usually",
+            "often",
+            "most",
+            "typically",
+            "likely"
+          ]
+        ],
+        "why": "the source says 'usually': slow queries are the likely cause, not the only one (u25)"
+      }
+    },
+    {
+      "id": "a.exact-size",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The sizing numbers survive exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.pool-size",
+        "all": [
+          [
+            "20"
+          ],
+          [
+            "18"
+          ]
+        ],
+        "why": "protected numbers (u4, u6)"
+      }
+    },
+    {
+      "id": "a.exact-borrow",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The borrow limit and its error survive exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.borrow",
+        "all": [
+          [
+            "2 seconds",
+            "2 s",
+            "2-second"
+          ],
+          [
+            "pool_exhausted"
+          ]
+        ],
+        "why": "protected number and identifier (u9)"
+      }
+    },
+    {
+      "id": "a.exact-statement",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The statement timeout survives exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.statement",
+        "all": [
+          [
+            "3 seconds",
+            "3s",
+            "3 s"
+          ]
+        ],
+        "why": "protected number (u11)"
+      }
+    },
+    {
+      "id": "a.exact-check",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The health check's threshold and query survive exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.idle-check",
+        "all": [
+          [
+            "60 seconds",
+            "60 s"
+          ],
+          [
+            "select 1"
+          ]
+        ],
+        "why": "protected number and identifier (u14)"
+      }
+    },
+    {
+      "id": "a.exact-alert",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The paging threshold survives exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.alert",
+        "all": [
+          [
+            "30 seconds",
+            "30 s"
+          ]
+        ],
+        "why": "protected number (u24)"
+      }
+    },
+    {
+      "id": "a.no-absolute",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "possibility_to_guarantee",
+      "description": "No absolute claim the source doesn't make.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(?<!(?:\\bnot|n't|\\bnever|\\bno)(?: [\\w'-]+){0,2} )\\b(always|guarantee[sd]?)\\b",
+        "why": "the source qualifies its rules ('usually', 'only while', 'may'); negated mentions pass"
+      }
+    },
+    {
+      "id": "a.no-auto-reclaim",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "The pool is never said to reclaim leaks.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "pool (automatically |forcibly )?(reclaims|takes back|force[- ]closes|kills)",
+        "why": "the pool never takes a leaked connection back by force (u20)"
+      }
+    },
+    {
+      "id": "a.frame-why",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A section for why the service pools.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.why"
+      }
+    },
+    {
+      "id": "a.frame-operating",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "One section for operating the pool.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.operating"
+      }
+    },
+    {
+      "id": "a.frame-count",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The plan keeps the source's few sections (the split is the renderer's, not the plan's).",
+      "check": {
+        "check": "frame_count",
+        "min": 2,
+        "max": 4
+      }
+    },
+    {
+      "id": "a.together-operating",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The plan keeps the operating cards in one section.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.pool-size",
+          "e.why-18",
+          "e.bigger-pool",
+          "e.borrow",
+          "e.wait-why",
+          "e.statement",
+          "e.transactions",
+          "e.idle-check",
+          "e.failover",
+          "e.refill",
+          "e.refill-why",
+          "e.leak-log",
+          "e.leak-cause",
+          "e.alert",
+          "e.queue",
+          "e.idle-gauge"
+        ],
+        "why": "one section of the source; splitting is a rendering of it"
+      }
+    },
+    {
+      "id": "a.in-why-setup",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The setup cost sits in the why section.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.setup",
+        "frame": "f.why"
+      }
+    },
+    {
+      "id": "a.in-why-cap",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The cap sits in the why section.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.cap",
+        "frame": "f.why"
+      }
+    },
+    {
+      "id": "a.in-op-pool-size",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.pool-size sits in the operating section.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.pool-size",
+        "frame": "f.operating"
+      }
+    },
+    {
+      "id": "a.in-op-failover",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.failover sits in the operating section.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.failover",
+        "frame": "f.operating"
+      }
+    },
+    {
+      "id": "a.hierarchy-size",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The arithmetic hangs off the sizing rule.",
+      "check": {
+        "check": "hierarchy",
+        "main": "e.pool-size",
+        "supporting": [
+          "e.why-18"
+        ],
+        "why": "an explanation supports its rule"
+      }
+    },
+    {
+      "id": "a.hierarchy-wait",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The deadline reason hangs off the wait limit.",
+      "check": {
+        "check": "hierarchy",
+        "main": "e.borrow",
+        "supporting": [
+          "e.wait-why"
+        ],
+        "why": "an explanation supports its rule"
+      }
+    },
+    {
+      "id": "a.rel-size-why",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The sizing rule links to its arithmetic.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.size-why"
+      }
+    },
+    {
+      "id": "a.rel-wait-why",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The wait limit links to its reason.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.wait-why"
+      }
+    },
+    {
+      "id": "a.rel-refill-why",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The refill limit links to its reason.",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.refill-why"
+      }
+    },
+    {
+      "id": "a.no-overlap",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Cards don't overlap.",
+      "check": {
+        "check": "cards_no_overlap"
+      }
+    },
+    {
+      "id": "a.inside-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Every frame (or part) holds its cards.",
+      "check": {
+        "check": "children_inside_frames"
+      }
+    },
+    {
+      "id": "a.frames-no-overlap",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames don't overlap.",
+      "check": {
+        "check": "frames_no_overlap"
+      }
+    },
+    {
+      "id": "a.crossings",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "At most 1 link crossing.",
+      "check": {
+        "check": "layout_crossings_max",
+        "max": 1
+      }
+    },
+    {
+      "id": "a.links-over",
+      "dimension": "visual",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No link runs over a third frame.",
+      "check": {
+        "check": "links_over_frames_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.layout",
+      "dimension": "visual",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "No link runs through a card (organisation v2: in v1 the sub-topic backdrops are reported as cards the links inside them cross).",
+      "check": {
+        "check": "layout_no_fatal"
+      }
+    },
+    {
+      "id": "a.fits",
+      "dimension": "visual",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "Every frame can be read whole at 50% zoom on a 1600 × 900 screen: the operating section is split (v2 only; v1 draws one frame of about 3,270 × 1,880 px).",
+      "check": {
+        "check": "frames_fit_screen"
+      }
+    },
+    {
+      "id": "a.rendered-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "The operating section is drawn as several frames: at least one more than the plan's sections (v2 only).",
+      "check": {
+        "check": "rendered_frame_count",
+        "min": 4,
+        "max": 9
+      }
+    },
+    {
+      "id": "a.reading-order",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "The parts read in order, right after the section they continue (v2 only).",
+      "check": {
+        "check": "reading_order_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.part-sizing",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "Sizing's cards, with the explanation and the limit, are drawn in one frame of the section (v2).",
+      "check": {
+        "check": "frame_part_contains",
+        "frame": "f.operating",
+        "elements": [
+          "e.pool-size",
+          "e.why-18",
+          "e.bigger-pool"
+        ],
+        "why": "the sizing rule, its arithmetic and the bigger-pool rule with its limit are one sub-topic"
+      }
+    },
+    {
+      "id": "a.part-timeouts",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "A part titled 'Operating the pool — Timeouts' holds the timeout cards and the wait limit's reason (v2).",
+      "check": {
+        "check": "frame_part_contains",
+        "frame": "f.operating",
+        "elements": [
+          "e.borrow",
+          "e.wait-why",
+          "e.statement",
+          "e.transactions"
+        ],
+        "title": [
+          [
+            "operat",
+            "running the pool",
+            "run the pool",
+            "managing the pool"
+          ],
+          [
+            "timeout"
+          ]
+        ],
+        "why": "a part is titled 'Section — sub-topic', and the wait limit's explanation stays with it"
+      }
+    },
+    {
+      "id": "a.part-failover",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "A part titled 'Operating the pool — Health checks and failover' holds those cards and the refill's reason (v2).",
+      "check": {
+        "check": "frame_part_contains",
+        "frame": "f.operating",
+        "elements": [
+          "e.idle-check",
+          "e.failover",
+          "e.refill",
+          "e.refill-why"
+        ],
+        "title": [
+          [
+            "operat",
+            "running the pool",
+            "run the pool",
+            "managing the pool"
+          ],
+          [
+            "failover",
+            "health check"
+          ]
+        ],
+        "why": "the refill limit's reason and the failover's error window stay in the failover part"
+      }
+    },
+    {
+      "id": "a.part-leaks",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "A part titled 'Operating the pool — Connection leaks' holds the leak cards (v2).",
+      "check": {
+        "check": "frame_part_contains",
+        "frame": "f.operating",
+        "elements": [
+          "e.leak-log",
+          "e.leak-cause"
+        ],
+        "title": [
+          [
+            "operat",
+            "running the pool",
+            "run the pool",
+            "managing the pool"
+          ],
+          [
+            "leak"
+          ]
+        ],
+        "why": "leak detection, with its 'never reclaimed' limit, and the usual cause are one sub-topic"
+      }
+    },
+    {
+      "id": "a.part-watching",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "A part titled 'Operating the pool — Watching the pool' holds the monitoring cards (v2).",
+      "check": {
+        "check": "frame_part_contains",
+        "frame": "f.operating",
+        "elements": [
+          "e.alert",
+          "e.queue",
+          "e.idle-gauge"
+        ],
+        "title": [
+          [
+            "operat",
+            "running the pool",
+            "run the pool",
+            "managing the pool"
+          ],
+          [
+            "watch",
+            "monitor",
+            "alert"
+          ]
+        ],
+        "why": "the alert, the queue rule with its qualifier and the idle gauge are one sub-topic"
+      }
+    },
+    {
+      "id": "a.cites",
+      "dimension": "traceability",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "future",
+      "requires": [
+        "ai.cites"
+      ],
+      "description": "Every card cites its units; each part's cards cite units of its own sub-topic only (sizing u4–u8, timeouts u9–u13, failover u14–u18, leaks u19–u22, watching u23–u26)."
+    },
+    {
+      "id": "a.accounting",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "future",
+      "requires": [
+        "ai.unit-accounting",
+        "ai.source-unit-ids"
+      ],
+      "description": "All 27 units are Represented; none is omittable."
+    },
+    {
+      "id": "a.judge-parts",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "human",
+      "target": "render",
+      "support": "implemented",
+      "description": "The split reads as one section continued, not as unrelated sections.",
+      "judge": {
+        "question": "Looking at the canvas at 50% zoom: does each part of 'Operating the pool' read as a continuation of that section (titles, order, placement), and is every caveat and explanation in the same frame as the claim it qualifies?",
+        "pass": "Parts sit together in reading order, each titled 'Operating the pool — <sub-topic>'; the saturation limit, the migrations exception, the 4-second error window and 'never reclaimed' are on their claims' cards; each explanation is in its claim's frame.",
+        "fail": "A part is far from the others or reads as a new topic; a limit or explanation ended up in another part; a part holds a single card."
+      }
+    },
+    {
+      "id": "a.judge-meaning",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "human",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Each card keeps the meaning of what it covers.",
+      "judge": {
+        "question": "Compare each card with its units. Is any qualifier ('only while', 'usually', 'may', 'about'), exception or limit weakened, widened or dropped?",
+        "pass": "Every qualifier and exception survives with its claim, and every number is exact.",
+        "fail": "A card implies a bigger pool always helps, the timeout covers migrations, leaks are reclaimed, slow queries are always the cause, or a failover is invisible to callers."
+      }
+    }
+  ]
+}

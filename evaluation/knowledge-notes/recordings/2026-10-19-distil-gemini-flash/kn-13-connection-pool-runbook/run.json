@@ -1,0 +1,779 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "Opening a new database connection costs the Ledger service about 30 ms, because each one needs a TLS handshake and an authentication round trip.",
+        "hash": "f01825cvkd",
+        "topic": "Running a shared connection pool › Why pool connections",
+        "span": {
+          "start": 61,
+          "end": 205
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "A pool keeps a set of connections open and lends them to requests, so most requests skip that cost entirely.",
+        "hash": "1ra92zybwh1",
+        "topic": "Running a shared connection pool › Why pool connections",
+        "span": {
+          "start": 206,
+          "end": 314
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "The pool also caps how many connections the service can hold, which protects the database from a traffic spike.",
+        "hash": "t1fp9yqzft",
+        "topic": "Running a shared connection pool › Why pool connections",
+        "span": {
+          "start": 315,
+          "end": 426
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "Each Ledger instance runs a pool of at most 20 connections.",
+        "hash": "3z5101n5eu",
+        "topic": "Running a shared connection pool › Operating the pool › Sizing the pool",
+        "span": {
+          "start": 472,
+          "end": 531
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "The database accepts 400 connections in total, and 40 of those are reserved for migrations and administrators.",
+        "hash": "15ug6tn8gbb",
+        "topic": "Running a shared connection pool › Operating the pool › Sizing the pool",
+        "span": {
+          "start": 532,
+          "end": 642
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "That leaves room for 18 instances at full size, so the autoscaler is capped at 18 instances.",
+        "hash": "2bqyr6z6tk8",
+        "topic": "Running a shared connection pool › Operating the pool › Sizing the pool",
+        "span": {
+          "start": 643,
+          "end": 735
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "Raising the pool size only helps while requests are waiting for a connection; once the database CPU is saturated, more connections make every query slower.",
+        "hash": "bl62ynsxhs",
+        "topic": "Running a shared connection pool › Operating the pool › Sizing the pool",
+        "span": {
+          "start": 736,
+          "end": 891
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "sentence",
+        "text": "A pool sized for peak traffic also holds idle connections at night, which costs memory on the database but nothing else.",
+        "hash": "19335djftuz",
+        "topic": "Running a shared connection pool › Operating the pool › Sizing the pool",
+        "span": {
+          "start": 892,
+          "end": 1012
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "sentence",
+        "text": "A request waits at most 2 seconds to borrow a connection before it fails with `POOL_EXHAUSTED`.",
+        "hash": "1xvna3lclg9",
+        "topic": "Running a shared connection pool › Operating the pool › Timeouts",
+        "span": {
+          "start": 1028,
+          "end": 1123
+        },
+        "prev": "u8",
+        "next": "u10"
+      },
+      {
+        "id": "u10",
+        "kind": "sentence",
+        "text": "The wait limit is deliberately shorter than the 5-second request deadline, so the caller still has time to return a clear error.",
+        "hash": "12e6vak45fn",
+        "topic": "Running a shared connection pool › Operating the pool › Timeouts",
+        "span": {
+          "start": 1124,
+          "end": 1252
+        },
+        "prev": "u9",
+        "next": "u11"
+      },
+      {
+        "id": "u11",
+        "kind": "sentence",
+        "text": "Each query also has a statement timeout of 3 seconds, set with `SET statement_timeout = '3s'` when the connection is opened.",
+        "hash": "7vyiosgz7t",
+        "topic": "Running a shared connection pool › Operating the pool › Timeouts",
+        "span": {
+          "start": 1253,
+          "end": 1377
+        },
+        "prev": "u10",
+        "next": "u12"
+      },
+      {
+        "id": "u12",
+        "kind": "sentence",
+        "text": "The statement timeout does not apply to migrations, which run on their own reserved connections without a limit.",
+        "hash": "3yy5l52a2k",
+        "topic": "Running a shared connection pool › Operating the pool › Timeouts",
+        "span": {
+          "start": 1378,
+          "end": 1490
+        },
+        "prev": "u11",
+        "next": "u13"
+      },
+      {
+        "id": "u13",
+        "kind": "sentence",
+        "text": "A long transaction holds its connection for its whole duration, so the team keeps transactions under 500 ms.",
+        "hash": "6w3do8txb3",
+        "topic": "Running a shared connection pool › Operating the pool › Timeouts",
+        "span": {
+          "start": 1491,
+          "end": 1599
+        },
+        "prev": "u12",
+        "next": "u14"
+      },
+      {
+        "id": "u14",
+        "kind": "sentence",
+        "text": "Before lending a connection that has been idle for more than 60 seconds, the pool runs `SELECT 1` to check that it still works.",
+        "hash": "20feh74k8t8",
+        "topic": "Running a shared connection pool › Operating the pool › Health checks and failover",
+        "span": {
+          "start": 1633,
+          "end": 1760
+        },
+        "prev": "u13",
+        "next": "u15"
+      },
+      {
+        "id": "u15",
+        "kind": "sentence",
+        "text": "A connection that fails the check is closed and replaced, and the request gets a fresh one.",
+        "hash": "cfwndd2hzi",
+        "topic": "Running a shared connection pool › Operating the pool › Health checks and failover",
+        "span": {
+          "start": 1761,
+          "end": 1852
+        },
+        "prev": "u14",
+        "next": "u16"
+      },
+      {
+        "id": "u16",
+        "kind": "sentence",
+        "text": "During a database failover, every open connection breaks at once, so the pool is drained and refilled from the new primary.",
+        "hash": "1cm5exlkb75",
+        "topic": "Running a shared connection pool › Operating the pool › Health checks and failover",
+        "span": {
+          "start": 1853,
+          "end": 1976
+        },
+        "prev": "u15",
+        "next": "u17"
+      },
+      {
+        "id": "u17",
+        "kind": "sentence",
+        "text": "Refilling is limited to 5 new connections per second per instance, so that 18 instances reconnecting together don't overload the new primary.",
+        "hash": "1ajah9ffecv",
+        "topic": "Running a shared connection pool › Operating the pool › Health checks and failover",
+        "span": {
+          "start": 1977,
+          "end": 2118
+        },
+        "prev": "u16",
+        "next": "u18"
+      },
+      {
+        "id": "u18",
+        "kind": "sentence",
+        "text": "Until the pool is refilled, requests may see `POOL_EXHAUSTED` errors for up to about 4 seconds.",
+        "hash": "rh1rh900im",
+        "topic": "Running a shared connection pool › Operating the pool › Health checks and failover",
+        "span": {
+          "start": 2119,
+          "end": 2214
+        },
+        "prev": "u17",
+        "next": "u19"
+      },
+      {
+        "id": "u19",
+        "kind": "sentence",
+        "text": "A connection that stays borrowed for more than 10 seconds is logged as a possible leak, together with the stack trace of the code that borrowed it.",
+        "hash": "r92psrlljy",
+        "topic": "Running a shared connection pool › Operating the pool › Connection leaks",
+        "span": {
+          "start": 2238,
+          "end": 2385
+        },
+        "prev": "u18",
+        "next": "u20"
+      },
+      {
+        "id": "u20",
+        "kind": "sentence",
+        "text": "The pool does not take a leaked connection back by force, because the code holding it may still be using it.",
+        "hash": "1ebtr3hxw1u",
+        "topic": "Running a shared connection pool › Operating the pool › Connection leaks",
+        "span": {
+          "start": 2386,
+          "end": 2494
+        },
+        "prev": "u19",
+        "next": "u21"
+      },
+      {
+        "id": "u21",
+        "kind": "sentence",
+        "text": "Most leaks the team has found came from error paths that returned early without releasing the connection.",
+        "hash": "1vwu0haxceh",
+        "topic": "Running a shared connection pool › Operating the pool › Connection leaks",
+        "span": {
+          "start": 2495,
+          "end": 2600
+        },
+        "prev": "u20",
+        "next": "u22"
+      },
+      {
+        "id": "u22",
+        "kind": "sentence",
+        "text": "Leak warnings are reviewed every week, and a leak that comes back gets a ticket for the team that owns the code.",
+        "hash": "1sjula9fnr8",
+        "topic": "Running a shared connection pool › Operating the pool › Connection leaks",
+        "span": {
+          "start": 2601,
+          "end": 2713
+        },
+        "prev": "u21",
+        "next": "u23"
+      },
+      {
+        "id": "u23",
+        "kind": "sentence",
+        "text": "The pool exports three gauges: connections in use, idle connections, and requests waiting to borrow.",
+        "hash": "z0vugotwyl",
+        "topic": "Running a shared connection pool › Operating the pool › Watching the pool",
+        "span": {
+          "start": 2738,
+          "end": 2838
+        },
+        "prev": "u22",
+        "next": "u24"
+      },
+      {
+        "id": "u24",
+        "kind": "sentence",
+        "text": "An alert pages the on-call engineer when requests have been waiting for more than 30 seconds in a row.",
+        "hash": "5hthwxolp4",
+        "topic": "Running a shared connection pool › Operating the pool › Watching the pool",
+        "span": {
+          "start": 2839,
+          "end": 2941
+        },
+        "prev": "u23",
+        "next": "u25"
+      },
+      {
+        "id": "u25",
+        "kind": "sentence",
+        "text": "A sustained queue usually means slow queries rather than a pool that is too small, so the runbook starts with the slowest statements, not with the pool size.",
+        "hash": "20kugc3kkzv",
+        "topic": "Running a shared connection pool › Operating the pool › Watching the pool",
+        "span": {
+          "start": 2942,
+          "end": 3099
+        },
+        "prev": "u24",
+        "next": "u26"
+      },
+      {
+        "id": "u26",
+        "kind": "sentence",
+        "text": "The idle gauge drops to zero during a failover and recovers as the pool refills, which makes it a quick way to confirm that a failover has finished.",
+        "hash": "2f3nf4phh0h",
+        "topic": "Running a shared connection pool › Operating the pool › Watching the pool",
+        "span": {
+          "start": 3100,
+          "end": 3248
+        },
+        "prev": "u25",
+        "next": "u27"
+      },
+      {
+        "id": "u27",
+        "kind": "sentence",
+        "text": "A pool makes connections cheap and bounded, but its size, its timeouts and its failover behaviour have to be set together with the database's own limits.",
+        "hash": "20h0xx6mcbp",
+        "topic": "Running a shared connection pool › Takeaway",
+        "span": {
+          "start": 3263,
+          "end": 3416
+        },
+        "prev": "u26"
+      }
+    ],
+    "nextId": 28
+  },
+  "cites": {
+    "u1_n1": [
+      "u1"
+    ],
+    "u1_n2": [
+      "u2"
+    ],
+    "u1_n3": [
+      "u3"
+    ],
+    "u2_n2": [
+      "u4",
+      "u5",
+      "u6",
+      "u7",
+      "u8"
+    ],
+    "u2_n8": [
+      "u9",
+      "u10",
+      "u11",
+      "u12",
+      "u13"
+    ],
+    "u2_n14": [
+      "u14",
+      "u15",
+      "u16",
+      "u17",
+      "u18"
+    ],
+    "u2_n20": [
+      "u19",
+      "u20",
+      "u21",
+      "u22"
+    ],
+    "u2_n25": [
+      "u23",
+      "u24",
+      "u25",
+      "u26"
+    ],
+    "u3_n1": [
+      "u27"
+    ],
+    "u3_n2": [
+      "u27"
+    ],
+    "u3_n3": [
+      "u27"
+    ],
+    "u3_n4": [
+      "u27"
+    ]
+  },
+  "omitted": [],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "cited",
+      "u3": "cited",
+      "u4": "cited",
+      "u5": "cited",
+      "u6": "cited",
+      "u7": "cited",
+      "u8": "cited",
+      "u9": "cited",
+      "u10": "cited",
+      "u11": "cited",
+      "u12": "cited",
+      "u13": "cited",
+      "u14": "cited",
+      "u15": "cited",
+      "u16": "cited",
+      "u17": "cited",
+      "u18": "cited",
+      "u19": "cited",
+      "u20": "cited",
+      "u21": "cited",
+      "u22": "cited",
+      "u23": "cited",
+      "u24": "cited",
+      "u25": "cited",
+      "u26": "cited",
+      "u27": "cited"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "represented",
+      "u3": "represented",
+      "u4": "represented",
+      "u5": "represented",
+      "u6": "represented",
+      "u7": "represented",
+      "u8": "represented",
+      "u9": "represented",
+      "u10": "represented",
+      "u11": "represented",
+      "u12": "represented",
+      "u13": "represented",
+      "u14": "represented",
+      "u15": "represented",
+      "u16": "represented",
+      "u17": "represented",
+      "u18": "represented",
+      "u19": "represented",
+      "u20": "represented",
+      "u21": "represented",
+      "u22": "represented",
+      "u23": "represented",
+      "u24": "represented",
+      "u25": "represented",
+      "u26": "represented",
+      "u27": "represented"
+    },
+    "critical": {
+      "u1": [
+        "protected"
+      ],
+      "u4": [
+        "requirement",
+        "protected"
+      ],
+      "u5": [
+        "protected"
+      ],
+      "u6": [
+        "protected"
+      ],
+      "u7": [
+        "requirement"
+      ],
+      "u8": [
+        "limitation"
+      ],
+      "u9": [
+        "requirement",
+        "protected"
+      ],
+      "u10": [
+        "protected"
+      ],
+      "u11": [
+        "condition",
+        "protected"
+      ],
+      "u12": [
+        "limitation"
+      ],
+      "u13": [
+        "protected"
+      ],
+      "u14": [
+        "protected"
+      ],
+      "u17": [
+        "limitation",
+        "requirement",
+        "protected"
+      ],
+      "u18": [
+        "protected"
+      ],
+      "u19": [
+        "protected"
+      ],
+      "u20": [
+        "limitation"
+      ],
+      "u22": [
+        "limitation"
+      ],
+      "u23": [
+        "protected"
+      ],
+      "u24": [
+        "condition",
+        "protected"
+      ],
+      "u26": [
+        "protected"
+      ],
+      "u27": [
+        "limitation"
+      ]
+    },
+    "flags": [
+      {
+        "code": "uncited_card",
+        "card": "u2_n1",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u2_n7",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u2_n13",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u2_n19",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u2_n24",
+        "detail": "the card cites no passage of the source"
+      }
+    ],
+    "sections": [
+      {
+        "topic": "Running a shared connection pool › Why pool connections",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Running a shared connection pool › Operating the pool › Sizing the pool",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Running a shared connection pool › Operating the pool › Timeouts",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Running a shared connection pool › Operating the pool › Health checks and failover",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Running a shared connection pool › Operating the pool › Connection leaks",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Running a shared connection pool › Operating the pool › Watching the pool",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Running a shared connection pool › Takeaway",
+        "represented": 1,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      }
+    ]
+  },
+  "flags": [
+    {
+      "code": "uncited_card",
+      "card": "u2_n1",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u2_n7",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u2_n13",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u2_n19",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u2_n24",
+      "detail": "the card cites no passage of the source"
+    }
+  ],
+  "hints": [
+    {
+      "code": "negation_flip",
+      "unit": "u3",
+      "card": "u1_n3",
+      "detail": "source says \"The pool also caps how many connections the service can hold, which protects the database from a traffic spike.\"; the card negates it",
+      "evidence": {
+        "source": "The pool also caps how many connections the service can hold, which protects the database from a traffic spike.",
+        "card": "This prevents the database from being overwhelmed during sudden traffic surges."
+      }
+    },
+    {
+      "code": "caveat_dropped",
+      "unit": "u8",
+      "card": "u2_n6",
+      "detail": "the card drops the source's caveat \"but nothing else\"",
+      "evidence": {
+        "source": "but nothing else"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u2_n9",
+      "detail": "the card says \"2-second\"; the source has \"5-second\"",
+      "evidence": {
+        "card": "2-second"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u17",
+      "card": "u2_n17",
+      "detail": "source says \"limited to 5 new connections per second\"",
+      "evidence": {
+        "source": "limited to 5 new connections per second"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u17",
+      "card": "u2_n17",
+      "detail": "source says \"so that 18 instances reconnecting together don't overload the new primary.\"; the card drops the negation",
+      "evidence": {
+        "source": "so that 18 instances reconnecting together don't overload the new primary.",
+        "card": "Refilling is rate-limited to 5 new connections per second per instance."
+      }
+    },
+    {
+      "code": "absolute_added",
+      "card": "u2_n18",
+      "detail": "the card says \"fully\"; the source doesn't",
+      "evidence": {
+        "card": "fully"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u22",
+      "card": "u2_n23",
+      "detail": "the card says \"result in\"; the source states no cause",
+      "evidence": {
+        "card": "result in"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u25",
+      "card": "u2_n27",
+      "detail": "source says \"so the runbook starts with the slowest statements, not with the pool size.\"; the card drops the negation",
+      "evidence": {
+        "source": "so the runbook starts with the slowest statements, not with the pool size.",
+        "card": "The runbook prioritizes investigating slow statements over adjusting pool size."
+      }
+    },
+    {
+      "code": "caveat_dropped",
+      "unit": "u27",
+      "card": "u3_n1",
+      "detail": "the card drops the source's caveat \"but its size, its timeouts and its failover behaviour have to be set together with the database's own limits\"",
+      "evidence": {
+        "source": "but its size, its timeouts and its failover behaviour have to be set together with the database's own limits"
+      }
+    },
+    {
+      "code": "caveat_dropped",
+      "unit": "u27",
+      "card": "u3_n2",
+      "detail": "the card drops the source's caveat \"but its size, its timeouts and its failover behaviour have to be set together with the database's own limits\"",
+      "evidence": {
+        "source": "but its size, its timeouts and its failover behaviour have to be set together with the database's own limits"
+      }
+    },
+    {
+      "code": "caveat_dropped",
+      "unit": "u27",
+      "card": "u3_n3",
+      "detail": "the card drops the source's caveat \"but its size, its timeouts and its failover behaviour have to be set together with the database's own limits\"",
+      "evidence": {
+        "source": "but its size, its timeouts and its failover behaviour have to be set together with the database's own limits"
+      }
+    }
+  ],
+  "reviews": {
+    "u2_n1": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u2_n7": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u2_n13": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u2_n19": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u2_n24": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    }
+  }
+}

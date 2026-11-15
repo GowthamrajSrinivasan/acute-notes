@@ -1,0 +1,920 @@
+{
+  "caseId": "kn-09-billing-codebase-map",
+  "schema": "ClauseRecordV31 (review-v3/attachmentSchema.ts)",
+  "dataset": "v3.1-pre",
+  "records": [
+    {
+      "id": "k1",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u1"
+      ],
+      "clause": "as of commit `a41c9e2`",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u1"
+          ],
+          "claimQuote": "This note maps the invoice path of the Ledgerline billing service",
+          "evidence": "migrated: needs evidence",
+          "justification": "A document-level scope (snapshot in time) on the map's summary claim; the takeaway stands without it but the notes must carry it.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k1 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k1",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u1"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k2",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u4"
+      ],
+      "clause": "Refunds, dunning and the customer portal are out of scope.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u1"
+          ],
+          "claimQuote": "This note maps the invoice path of the Ledgerline billing service",
+          "evidence": "migrated: needs evidence",
+          "justification": "Document-level scope note linked to the summary claim it scopes (R5). Claim cards do not convey the exclusion; g9's takeaway omits it; the only arrow (u10_ax4->u10_n4) joins two carriers.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k2 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k2",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u1"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k3",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u22"
+      ],
+      "clause": "Events flagged `is_test` are skipped.",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u21"
+          ],
+          "claimQuote": "It reads the `usage_events` table, selecting the account's rows whose `occurred_at` falls inside the period, and groups them by meter into usage lines.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without the exclusion, a reader believes every in-period row becomes a usage line, false for test events.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k3 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k3",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u21"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k4",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u27"
+      ],
+      "clause": "probably",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u27"
+          ],
+          "claimQuote": "`priceUsage` probably also reads the `discounts` table.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: the source defines 'probably' as unconfirmed (u3) and explicitly warns about this link (u29, u57); taken as verified, a reader would rely on discounts being applied.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k4 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k4",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u27"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k5",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u28"
+      ],
+      "clause": "I did not find a call site and have not confirmed that it ever runs",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u27"
+          ],
+          "claimQuote": "`priceUsage` probably also reads the `discounts` table.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: explicit reliability warning on the discounts claim; the import alone would otherwise read as evidence the lookup runs.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k5 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k5",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u27"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k6",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u29"
+      ],
+      "clause": "Treat this link as unconfirmed",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u27"
+          ],
+          "claimQuote": "`priceUsage` probably also reads the `discounts` table.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: an explicit warning not to rely on the discounts read. X's span also included 'until someone traces it'; that is a separate clause (k7), split per §1.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k6 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k6",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u27"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k7",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u29"
+      ],
+      "clause": "until someone traces it",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u29"
+          ],
+          "claimQuote": "Treat this link as unconfirmed",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: the release condition of the instruction. Following 'treat as unconfirmed' without it is over-cautious, not wrong, so set. X's x5 span contained these words but did not treat them as a separate limit.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k7 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k7",
+            "verdict": "set",
+            "rule": "R1",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u29"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k8",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u31"
+      ],
+      "clause": "a timeout of 8 seconds",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u30"
+          ],
+          "claimQuote": "whose `quote(draft)` method sends the draft invoice to an external tax provider, Taxwell, over HTTPS",
+          "evidence": "migrated: needs evidence",
+          "justification": "A real bound on the call; the description of what quote does stands without it.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k8 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k8",
+            "verdict": "set",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u30"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k9",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u34"
+      ],
+      "clause": "How retries work for the tax provider is not documented.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u30"
+          ],
+          "claimQuote": "whose `quote(draft)` method sends the draft invoice to an external tax provider, Taxwell, over HTTPS",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: the source itself places retry behaviour beside the verified path as an unverified part (u56 vs u57), not as a hedge on what quote does; u30 stays true and its takeaway is unchanged. A real gap the notes must carry: set.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k9 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k9",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u30"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k10",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u35"
+      ],
+      "clause": "`TaxClient.quote` contains no retry code",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u30"
+          ],
+          "claimQuote": "whose `quote(draft)` method sends the draft invoice to an external tax provider, Taxwell, over HTTPS",
+          "evidence": "migrated: needs evidence",
+          "justification": "General test: the source never states or implies that quote retries, so restating u30 without this verified fact creates no false belief. A real limit the notes must contain: set.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k10 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k10",
+            "verdict": "set",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u30"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k11",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u35"
+      ],
+      "clause": "I could not find out whether its callers retry, whether the Taxwell client library retries on its own",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u30"
+          ],
+          "claimQuote": "whose `quote(draft)` method sends the draft invoice to an external tax provider, Taxwell, over HTTPS",
+          "evidence": "migrated: needs evidence",
+          "justification": "Y combined two clauses; the timeout-fate clause is split off as k12. Y's deciding question (does the source present the unknown as undermining the tax step or as an open item beside it?) is answered by u56/u57: the verified path includes the quote call and the retry behaviour is listed separately as unverified. R2: the hedge does not change what the step does: set. Link kept on u30 (the Tax section's claim); Y's u18 noted.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k11 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k11",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u30"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k12",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u35"
+      ],
+      "clause": "what happens to the invoice when a quote times out",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u18"
+          ],
+          "claimQuote": "Third, it calls `TaxClient.quote(draft)` to get the tax for the draft invoice.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Human reviewers (item H06) both gave set. A: R2: an admitted unknown about the timeout path; the description of the happy path stays true without it, but the gap belongs in the notes. Linked to the timeout in u31; u33 (amount added before saving) is the other candidate. | B: One of the listed unknowns; real gap, but the no-retry-code finding stands. Could be read as the unknown itself, not a limit.",
+          "binding": "set",
+          "levelDerived": "elsewhere",
+          "source": "v3 k12 link kept as a placeholder: humans agree on the verdict but their links differ (A u31, B u35; reference u18)",
+          "linkStatus": "needs_human_readjudication"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "low",
+      "rule": "R2",
+      "status": "human_adjudicated",
+      "flags": [
+        "link_needs_human_readjudication"
+      ],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k12",
+            "verdict": "ambiguous",
+            "rule": "R2",
+            "status": "unresolved",
+            "claimUnits": [
+              "u18"
+            ],
+            "confidence": "low",
+            "readingA": "claim: an 8-second timeout is real (u31), so the tax step can fail; without this clause a reader takes 'gets the tax for the draft invoice' as always true and would not plan for invoices whose quote timed out.",
+            "readingB": "set: the verified sequence stands; the timeout outcome is an open unknown listed beside it, like the retry gap, not a limit on what the step does.",
+            "decidingQuestion": "Does u18 ('to get the tax for the draft invoice') assert that every generated invoice receives its tax from Taxwell, so that an unknown timeout outcome undermines it, or only describe the call order?"
+          }
+        ],
+        "human": {
+          "item": "H06",
+          "verdictA": "set",
+          "verdictB": "set",
+          "linksA": [
+            "u31"
+          ],
+          "linksB": [
+            "u35"
+          ],
+          "answersA": {
+            "file": "review-v3/human-review/answers-A.json",
+            "sha256": "7ab024f0895b1ed83a93d384370da120bc50076570e9bc949a31866d97d3a39a"
+          },
+          "answersB": {
+            "file": "review-v3/human-review/answers-B.json",
+            "sha256": "0aec354c468b59d74ee6d490f4f9419bd34cfea1055f05072f5ecf6c8df5c4e0"
+          },
+          "sampleKey": {
+            "file": "review-v3/human-review/SAMPLE-KEY.json",
+            "sha256": "e7426e794225dec07c5ee21c1af226e01c3ffa600e0cfdb38cfc4290877b9a31"
+          },
+          "selector": "review-v3/human-review/discrepancies-2.json rows with pattern humans_agree_model_differs, re-checked against both answer files"
+        },
+        "migration": "Verdict set to the two humans' shared verdict; confidence is the lower of theirs. v3 readings kept above only as provenance."
+      }
+    },
+    {
+      "id": "k13",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u41"
+      ],
+      "clause": "I did not read their code.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u41"
+          ],
+          "claimQuote": "The payment and email services subscribe to that topic",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: an epistemic caveat that colours the subscription statement without changing its takeaway.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k13 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k13",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u41"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k14",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u42"
+      ],
+      "clause": "What happens when publishing fails after the commit is unknown.",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u39"
+          ],
+          "claimQuote": "After the transaction commits, `generateInvoice` calls `publishInvoiceFinalized(invoice)` in `billing/events/publish.ts`.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it a reader assumes every committed invoice reliably produces its event.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k14 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k14",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u39"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k15",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u43"
+      ],
+      "clause": "an invoice can exist without its event",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u39"
+          ],
+          "claimQuote": "After the transaction commits, `generateInvoice` calls `publishInvoiceFinalized(invoice)` in `billing/events/publish.ts`.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Directly falsifies the assumption that every invoice has its finalized event; downstream payment/email consumers would miss it.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k15 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k15",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u39"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k16",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u43"
+      ],
+      "clause": "I found no job that re-sends missed events",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u39"
+          ],
+          "claimQuote": "After the transaction commits, `generateInvoice` calls `publishInvoiceFinalized(invoice)` in `billing/events/publish.ts`.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it a reader could assume missed events are recovered. Y's span also included 'and no note saying whether one is planned' (X's x15), which is rejected as a separate record.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k16 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k16",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u39"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k17",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u46"
+      ],
+      "clause": "until `TaxClient.quote` returns",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u45"
+          ],
+          "claimQuote": "taxCents?: number;",
+          "evidence": "migrated: needs evidence",
+          "justification": "General test: the type already marks taxCents optional, so the shape claim is not falsified without the clause; the clause adds lifecycle detail the notes should contain: set.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k17 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k17",
+            "verdict": "set",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u45"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k18",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u48"
+      ],
+      "clause": "as far as I could see",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u48"
+          ],
+          "claimQuote": "no code outside it reads `price_plans`, so a pricing change should only need edits there",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: the statement is used for a decision (where pricing changes need edits); taken as verified, a reader would skip checking other modules.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k18 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k18",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u48"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k19",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u49"
+      ],
+      "clause": "This is an interpretation of the current structure, not a rule the code enforces",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u48"
+          ],
+          "claimQuote": "`billing/pricing` acts, in effect, as the pricing boundary",
+          "evidence": "migrated: needs evidence",
+          "justification": "Explicit warning that the boundary is not enforced. u8_n1's 'appears' conveys interpretation but not 'not enforced'; it is joined to carrier u8_n2 by a card-to-card arrow (label 'caveat'), so linked. g7's takeaway states the boundary flatly with no carrier arrow: separated.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k19 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k19",
+            "verdict": "claim",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u48"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k20",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u49"
+      ],
+      "clause": "nothing stops another module from querying `price_plans` directly",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u48"
+          ],
+          "claimQuote": "so a pricing change should only need edits there",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: the source says explicitly that the benefit (pricing changes stay local) is not guaranteed; without it a reader would treat the boundary as safe to rely on when changing pricing.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k20 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k20",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u48"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k21",
+      "case": "kn-09-billing-codebase-map",
+      "units": [
+        "u52"
+      ],
+      "clause": "I could not find the scheduler that calls `generateInvoice` for every account",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "The admin console's \"Regenerate invoice\" action calls it from `billing/admin/regenerate.ts`.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R5: u52 itself contrasts it with the admin action ('The admin action is clear, but...'), so it scopes the map's account of callers of generateInvoice to the verified admin path. The map never claims the admin action is the only caller, so it falsifies nothing: set, not claim; not not_a_condition because it scopes a stated claim.",
+          "binding": "set",
+          "levelDerived": "elsewhere",
+          "source": "v3 k21 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k21",
+            "verdict": "set",
+            "rule": "R5",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    }
+  ]
+}

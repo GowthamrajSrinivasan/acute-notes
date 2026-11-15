@@ -64,7 +64,7 @@
       "frameKey": "pinhole.metadata-db",
       "title": "Metadata database: what it holds",
       "availability": "partial",
-      "unavailableReason": "Only the metadata database has stated parts (its two record kinds, u22). No service has stated internals, so no other L2 frame exists.",
+      "unavailableReason": "Only the stores have stated parts, and only as named contents: the metadata database's two record kinds (u22) are the one L2 frame this case expects; object storage's originals and thumbnails (u21) could support a similar frame but are not required. No service has stated internals, so no service has an L2 frame.",
       "reveals": "The two record kinds the metadata database holds; nothing about schema.",
       "nodes": [
         "follow-relationships",

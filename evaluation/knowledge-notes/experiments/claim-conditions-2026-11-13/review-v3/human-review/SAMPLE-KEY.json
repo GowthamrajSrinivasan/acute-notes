@@ -1,0 +1,1532 @@
+[
+  {
+    "item": "H01",
+    "stratum": "changed-from-phase3",
+    "case": "kn-11-ambiguous-analytics-proposal",
+    "id": "k3",
+    "units": [
+      "u11"
+    ],
+    "clause": "The enrichment step uses the user service.",
+    "verdict": "not_a_condition",
+    "claimUnits": [],
+    "rule": "general",
+    "status": "agreed",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      },
+      {
+        "who": "Y",
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      },
+      {
+        "who": "phase3",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u10"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H02",
+    "stratum": "changed-from-phase3",
+    "case": "kn-12-flag-rollout-update",
+    "id": "k4",
+    "units": [
+      "u8"
+    ],
+    "clause": "the guide sets no minimum for it",
+    "verdict": "set",
+    "claimUnits": [
+      "u8"
+    ],
+    "rule": "R1",
+    "status": "agreed",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "set",
+        "claimUnits": [
+          "u8"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "set",
+        "claimUnits": [
+          "u8"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u8"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H03",
+    "stratum": "R2-hedge",
+    "case": "kn-04-queue-choice",
+    "id": "k20",
+    "units": [
+      "u38"
+    ],
+    "clause": "We did not test 1,800 jobs per minute",
+    "verdict": "claim",
+    "claimUnits": [
+      "u36"
+    ],
+    "rule": "R2",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u36"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u36"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u36",
+          "u37"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H04",
+    "stratum": "R3-cost",
+    "case": "kn-06-hybrid-search-reranking",
+    "id": "k28",
+    "units": [
+      "u47"
+    ],
+    "clause": "at some cost in recall",
+    "verdict": "claim",
+    "claimUnits": [
+      "u47"
+    ],
+    "rule": "R3",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u47"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u47"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u47"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H05",
+    "stratum": "source-contradiction",
+    "case": "kn-11-ambiguous-analytics-proposal",
+    "id": "k12",
+    "units": [
+      "u33"
+    ],
+    "clause": "90 days",
+    "verdict": "ambiguous",
+    "claimUnits": [
+      "u22"
+    ],
+    "rule": "R4",
+    "status": "agreed",
+    "confidence": "low",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u22"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u22"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u22"
+        ]
+      }
+    ],
+    "decidingQuestion": "Do u22 and u33 describe the same store (a drafting contradiction) or different stores (a scope on where 30 days applies), and which figure is intended?",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H06",
+    "stratum": "unresolved",
+    "case": "kn-09-billing-codebase-map",
+    "id": "k12",
+    "units": [
+      "u35"
+    ],
+    "clause": "what happens to the invoice when a quote times out",
+    "verdict": "ambiguous",
+    "claimUnits": [
+      "u18"
+    ],
+    "rule": "R2",
+    "status": "unresolved",
+    "confidence": "low",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u18"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u18"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u30",
+          "u18",
+          "u33"
+        ]
+      }
+    ],
+    "decidingQuestion": "Does u18 ('to get the tax for the draft invoice') assert that every generated invoice receives its tax from Taxwell, so that an unknown timeout outcome undermines it, or only describe the call order?",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H07",
+    "stratum": "R2-hedge",
+    "case": "kn-04-queue-choice",
+    "id": "k4",
+    "units": [
+      "u16"
+    ],
+    "clause": "assumes current volume",
+    "verdict": "claim",
+    "claimUnits": [
+      "u13"
+    ],
+    "rule": "R2",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u13"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u13"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u13",
+          "u17"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H08",
+    "stratum": "changed-from-phase3",
+    "case": "kn-06-hybrid-search-reranking",
+    "id": "k1",
+    "units": [
+      "u9"
+    ],
+    "clause": "Its weakness is vocabulary mismatch",
+    "verdict": "claim",
+    "claimUnits": [
+      "u7"
+    ],
+    "rule": "R3",
+    "status": "agreed",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u7"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u7"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u7"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H09",
+    "stratum": "R1-instruction",
+    "case": "kn-03-blue-green-deploy",
+    "id": "k9",
+    "units": [
+      "u16"
+    ],
+    "clause": "once, from a single job rather than from every green instance at startup",
+    "verdict": "claim",
+    "claimUnits": [
+      "u16"
+    ],
+    "rule": "R1",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u16"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u16"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u16"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H10",
+    "stratum": "R1-instruction",
+    "case": "kn-02-edge-cache-invalidation",
+    "id": "k29",
+    "units": [
+      "u50"
+    ],
+    "clause": "so they still need a TTL, a purge or both",
+    "verdict": "claim",
+    "claimUnits": [
+      "u46"
+    ],
+    "rule": "R1",
+    "status": "adjudicated",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u46"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u45"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u45"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H11",
+    "stratum": "clear-set",
+    "case": "kn-03-blue-green-deploy",
+    "id": "k1",
+    "units": [
+      "u2"
+    ],
+    "clause": "It assumes you already run the service behind a load balancer.",
+    "verdict": "set",
+    "claimUnits": [
+      "u1"
+    ],
+    "rule": "R5",
+    "status": "agreed",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "set",
+        "claimUnits": [
+          "u1"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "set",
+        "claimUnits": [
+          "u1"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u1"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H12",
+    "stratum": "unresolved",
+    "case": "kn-05-incident-review-meeting",
+    "id": "k8",
+    "units": [
+      "u56"
+    ],
+    "clause": "it needs one approval from the payments team",
+    "verdict": "ambiguous",
+    "claimUnits": [
+      "u56",
+      "u59"
+    ],
+    "rule": "R4",
+    "status": "unresolved",
+    "confidence": "low",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u56"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u59"
+        ]
+      }
+    ],
+    "decidingQuestion": "Does a proposal sentence count as a separate claim link when the agreed decision immediately restates the same requirement (R4: do both genuinely mislead)?",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H13",
+    "stratum": "clear-set",
+    "case": "kn-10-inventory-architecture-frames",
+    "id": "k10",
+    "units": [
+      "u37"
+    ],
+    "clause": "capped at 60 seconds",
+    "verdict": "set",
+    "claimUnits": [
+      "u37"
+    ],
+    "rule": "general",
+    "status": "agreed",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "set",
+        "claimUnits": [
+          "u37"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "set",
+        "claimUnits": [
+          "u37"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u34"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": [
+      [
+        "u34"
+      ]
+    ]
+  },
+  {
+    "item": "H14",
+    "stratum": "two-attachments",
+    "case": "kn-08-helpdesk-answers-hld-lld",
+    "id": "k8",
+    "units": [
+      "u25"
+    ],
+    "clause": "If the Reranker does not respond within 800 ms",
+    "verdict": "claim",
+    "claimUnits": [
+      "u21"
+    ],
+    "rule": "R4",
+    "status": "adjudicated",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u21"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u25"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u21"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": [
+      [
+        "u25"
+      ]
+    ]
+  },
+  {
+    "item": "H15",
+    "stratum": "R3-cost",
+    "case": "kn-06-hybrid-search-reranking",
+    "id": "k20",
+    "units": [
+      "u36"
+    ],
+    "clause": "but they do not show whether the passage itself is current",
+    "verdict": "claim",
+    "claimUnits": [
+      "u36"
+    ],
+    "rule": "R3",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u36"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u36"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u36"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H16",
+    "stratum": "changed-from-phase3",
+    "case": "kn-02-edge-cache-invalidation",
+    "id": "k26",
+    "units": [
+      "u43"
+    ],
+    "clause": "not a way to make content fresher",
+    "verdict": "claim",
+    "claimUnits": [
+      "u37"
+    ],
+    "rule": "R3",
+    "status": "agreed",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u37"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u37"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u39"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H17",
+    "stratum": "two-attachments",
+    "case": "kn-02-edge-cache-invalidation",
+    "id": "k21",
+    "units": [
+      "u40"
+    ],
+    "clause": "but not on live election results",
+    "verdict": "claim",
+    "claimUnits": [
+      "u37"
+    ],
+    "rule": "R4",
+    "status": "adjudicated",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u40"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u40"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u37",
+          "u38",
+          "u39"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": [
+      [
+        "u40"
+      ]
+    ]
+  },
+  {
+    "item": "H18",
+    "stratum": "clear-set",
+    "case": "kn-10-inventory-architecture-frames",
+    "id": "k6",
+    "units": [
+      "u24"
+    ],
+    "clause": "Every 10 minutes",
+    "verdict": "set",
+    "claimUnits": [
+      "u24"
+    ],
+    "rule": "general",
+    "status": "agreed",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "set",
+        "claimUnits": [
+          "u24"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "set",
+        "claimUnits": [
+          "u24"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u23"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H19",
+    "stratum": "not-a-condition",
+    "case": "kn-05-incident-review-meeting",
+    "id": "k13",
+    "units": [
+      "u60"
+    ],
+    "clause": "Leila, can you set that up?",
+    "verdict": "not_a_condition",
+    "claimUnits": [],
+    "rule": "general",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      },
+      {
+        "who": "Y",
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u59"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H20",
+    "stratum": "not-a-condition",
+    "case": "kn-05-incident-review-meeting",
+    "id": "k9",
+    "units": [
+      "u57"
+    ],
+    "clause": "Tomás: I'm fine with that.",
+    "verdict": "not_a_condition",
+    "claimUnits": [],
+    "rule": "general",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      },
+      {
+        "who": "Y",
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u59"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H21",
+    "stratum": "changed-from-phase3",
+    "case": "kn-10-inventory-architecture-frames",
+    "id": "k9",
+    "units": [
+      "u36"
+    ],
+    "clause": "at most 5 attempts per delivery",
+    "verdict": "claim",
+    "claimUnits": [
+      "u34"
+    ],
+    "rule": "general",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u34"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u34"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u34"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H22",
+    "stratum": "unresolved",
+    "case": "kn-10-inventory-architecture-frames",
+    "id": "k14",
+    "units": [
+      "u48"
+    ],
+    "clause": "The admin UI has no automated tests yet.",
+    "verdict": "ambiguous",
+    "claimUnits": [
+      "u43"
+    ],
+    "rule": "R4",
+    "status": "unresolved",
+    "confidence": "low",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u43"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "set",
+        "claimUnits": [
+          "u43"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u43"
+        ]
+      }
+    ],
+    "decidingQuestion": "Does u43 assert that every part of the codebase, including the admin front end, has automated tests?",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H23",
+    "stratum": "clear-claim",
+    "case": "kn-01-idempotency-keys",
+    "id": "k2",
+    "units": [
+      "u6"
+    ],
+    "clause": "while the server still remembers them",
+    "verdict": "claim",
+    "claimUnits": [
+      "u6"
+    ],
+    "rule": "general",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u6"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u6"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u2"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": [
+      [
+        "u2"
+      ]
+    ]
+  },
+  {
+    "item": "H24",
+    "stratum": "clear-claim",
+    "case": "kn-01-idempotency-keys",
+    "id": "k3",
+    "units": [
+      "u7"
+    ],
+    "clause": "stored results expire after 24 hours, so a retry sent after that window is treated as a new payment",
+    "verdict": "claim",
+    "claimUnits": [
+      "u2"
+    ],
+    "rule": "general",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u2"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u2"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u2"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H25",
+    "stratum": "clear-set",
+    "case": "kn-08-helpdesk-answers-hld-lld",
+    "id": "k3",
+    "units": [
+      "u8"
+    ],
+    "clause": "published",
+    "verdict": "set",
+    "claimUnits": [
+      "u8"
+    ],
+    "rule": "R5",
+    "status": "agreed",
+    "confidence": "low",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "set",
+        "claimUnits": [
+          "u8"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "set",
+        "claimUnits": [
+          "u8"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u8"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H26",
+    "stratum": "unresolved",
+    "case": "kn-04-queue-choice",
+    "id": "k11",
+    "units": [
+      "u27"
+    ],
+    "clause": "today only the email handler is",
+    "verdict": "ambiguous",
+    "claimUnits": [
+      "u26"
+    ],
+    "rule": "R3",
+    "status": "unresolved",
+    "confidence": "low",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "set",
+        "claimUnits": [
+          "u26"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u26"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u26"
+        ]
+      }
+    ],
+    "decidingQuestion": "Does the source use the current idempotency status to weigh Option A's effort or readiness against B and C, or only as background to the requirement in u27/u44?",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H27",
+    "stratum": "unresolved",
+    "case": "kn-11-ambiguous-analytics-proposal",
+    "id": "k13",
+    "units": [
+      "u35"
+    ],
+    "clause": "the web app's sign-up and checkout events",
+    "verdict": "ambiguous",
+    "claimUnits": [
+      "u14"
+    ],
+    "rule": "R4",
+    "status": "unresolved",
+    "confidence": "low",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u14"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u14"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u4"
+        ]
+      }
+    ],
+    "decidingQuestion": "Are the first dashboards promised as a phase 1 deliverable?",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H28",
+    "stratum": "two-attachments",
+    "case": "kn-02-edge-cache-invalidation",
+    "id": "k20",
+    "units": [
+      "u40"
+    ],
+    "clause": "where a minute of staleness is acceptable",
+    "verdict": "claim",
+    "claimUnits": [
+      "u37"
+    ],
+    "rule": "R4",
+    "status": "adjudicated",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u40"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u37"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u37",
+          "u38",
+          "u39"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": [
+      [
+        "u40"
+      ]
+    ]
+  },
+  {
+    "item": "H29",
+    "stratum": "R2-hedge",
+    "case": "kn-09-billing-codebase-map",
+    "id": "k9",
+    "units": [
+      "u34"
+    ],
+    "clause": "How retries work for the tax provider is not documented.",
+    "verdict": "set",
+    "claimUnits": [
+      "u30"
+    ],
+    "rule": "R2",
+    "status": "adjudicated",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u30"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "set",
+        "claimUnits": [
+          "u30"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u30",
+          "u18",
+          "u33"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H30",
+    "stratum": "R1-instruction",
+    "case": "kn-12-flag-rollout-update",
+    "id": "k7",
+    "units": [
+      "u14"
+    ],
+    "clause": "does not raise the percentage by hand during this time",
+    "verdict": "claim",
+    "claimUnits": [
+      "u13"
+    ],
+    "rule": "R1",
+    "status": "agreed",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u13"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u13"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "set",
+        "claimUnits": [
+          "u13"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H31",
+    "stratum": "two-attachments",
+    "case": "kn-06-hybrid-search-reranking",
+    "id": "k7",
+    "units": [
+      "u15"
+    ],
+    "clause": "whenever the encoder changes",
+    "verdict": "claim",
+    "claimUnits": [
+      "u15"
+    ],
+    "rule": "general",
+    "status": "adjudicated",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "set",
+        "claimUnits": [
+          "u10"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u15"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u15",
+          "u10"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": [
+      [
+        "u10"
+      ]
+    ]
+  },
+  {
+    "item": "H32",
+    "stratum": "clear-claim",
+    "case": "kn-05-incident-review-meeting",
+    "id": "k11",
+    "units": [
+      "u59"
+    ],
+    "clause": "to the payments service",
+    "verdict": "claim",
+    "claimUnits": [
+      "u59"
+    ],
+    "rule": "R5",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u59"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u59"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u59"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H33",
+    "stratum": "R3-cost",
+    "case": "kn-04-queue-choice",
+    "id": "k15",
+    "units": [
+      "u31"
+    ],
+    "clause": "Upgrades need a maintenance window.",
+    "verdict": "set",
+    "claimUnits": [
+      "u29"
+    ],
+    "rule": "R3",
+    "status": "agreed",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "set",
+        "claimUnits": [
+          "u29"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "set",
+        "claimUnits": [
+          "u29"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u8"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H34",
+    "stratum": "two-attachments",
+    "case": "kn-03-blue-green-deploy",
+    "id": "k10",
+    "units": [
+      "u17"
+    ],
+    "clause": "until all of them return `200`",
+    "verdict": "claim",
+    "claimUnits": [
+      "u17"
+    ],
+    "rule": "R4",
+    "status": "adjudicated",
+    "confidence": "medium",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u17"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u19"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u17"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": [
+      [
+        "u19"
+      ]
+    ]
+  },
+  {
+    "item": "H35",
+    "stratum": "unresolved",
+    "case": "kn-05-incident-review-meeting",
+    "id": "k19",
+    "units": [
+      "u72"
+    ],
+    "clause": "That's one incident.",
+    "verdict": "ambiguous",
+    "claimUnits": [
+      "u71"
+    ],
+    "rule": "R2",
+    "status": "unresolved",
+    "confidence": "low",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u71"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u71"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      }
+    ],
+    "decidingQuestion": "Does an opposing speaker's rebuttal in an unresolved debate count as the source warning about the reliability of the other side's evidence?",
+    "secondLinkCandidate": []
+  },
+  {
+    "item": "H36",
+    "stratum": "clear-claim",
+    "case": "kn-05-incident-review-meeting",
+    "id": "k22",
+    "units": [
+      "u75"
+    ],
+    "clause": "Let's not decide the freeze now.",
+    "verdict": "claim",
+    "claimUnits": [
+      "u63"
+    ],
+    "rule": "R4",
+    "status": "agreed",
+    "confidence": "high",
+    "readings": [
+      {
+        "who": "X",
+        "verdict": "claim",
+        "claimUnits": [
+          "u63"
+        ]
+      },
+      {
+        "who": "Y",
+        "verdict": "claim",
+        "claimUnits": [
+          "u63"
+        ]
+      },
+      {
+        "who": "phase3",
+        "verdict": "claim",
+        "claimUnits": [
+          "u63"
+        ]
+      }
+    ],
+    "decidingQuestion": "",
+    "secondLinkCandidate": []
+  }
+]

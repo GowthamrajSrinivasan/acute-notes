@@ -1,0 +1,1879 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every forced template > action_plan 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "action_plan" (Action Plan) — Steps, tasks, follow-ups
+Node types this template uses: "heading", "todo", "text", "table", "code", "page".
+Relationship types this template uses: "flows_to", "relates_to", "depends_on", "blocks", "explained_by".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"action_plan","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every forced template > architecture 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "architecture" (Architecture) — Components, services, data flows
+Node types this template uses: "heading", "shape", "text", "table". Roles it's usually built around: "component" (optional).
+Relationship types this template uses: "flows_to", "depends_on", "relates_to", "implements", "references", "explained_by".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"architecture","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Architecture: draw each component (service, UI, store, queue, external system) as a "shape" with a short "label", and add to its content "kind" — one of "frontend", "backend", "database", "cloud", "security", "messagebus", "external" — plus, where the content says, "sublabel" (its technology or file, e.g. "FastAPI :8000"), "tag" (a short note, e.g. "cached") and "details" (up to 8 short responsibilities). Link components with "flows_to" / "depends_on" and a short "label" saying what passes (e.g. "SQL", "question"), and an "explanation" of why when the content gives one. Optionally add "cards" to "metadata": up to 6 {"title":"...","items":["..."]} summarising cross-cutting points (security, cost, deployment) the content states.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every forced template > causal_map 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "causal_map" (Causal Map) — Multiple interacting causes and effects, not a strict 3-column problem/cause/solution
+Node types this template uses: "heading", "shape", "text".
+Relationship types this template uses: "caused_by", "depends_on", "supports", "blocks", "derived_from", "relates_to", "explained_by".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"causal_map","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every forced template > comparison 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "comparison" (Comparison) — A vs B, pros/cons, option evaluation
+Node types this template uses: "heading", "table", "text", "shape".
+Relationship types this template uses: "relates_to", "supports", "blocks", "explained_by".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"comparison","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every forced template > concept_map 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "concept_map" (Concept Map) — Research notes, explanations of related ideas
+Node types this template uses: "heading", "text", "shape". Roles it's usually built around: "center" (optional).
+Relationship types this template uses: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"concept_map","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every forced template > decision_tree 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "decision_tree" (Decision Tree) — Options, conditions, if/then guidance
+Node types this template uses: "heading", "shape", "text". Roles it's usually built around: "decision", "outcome" (optional).
+Relationship types this template uses: "flows_to", "depends_on", "relates_to", "blocks", "explained_by".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"decision_tree","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every forced template > flow 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "flow" (Flow) — User logs in → API validates → token generated → dashboard
+Node types this template uses: "heading", "shape", "text", "code". Roles it's usually built around: "step" (optional).
+Relationship types this template uses: "flows_to", "relates_to", "depends_on", "explained_by".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"flow","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every forced template > problem_cause_solution 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "problem_cause_solution" (Problem → Cause → Solution) — App is failing because of three possible causes…
+Node types this template uses: "heading", "text", "shape", "todo". Roles it's usually built around: "problem", "cause", "solution" (optional).
+Relationship types this template uses: "caused_by", "depends_on", "supports", "blocks", "explained_by".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"problem_cause_solution","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every forced template > sectioned 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "sectioned" (Sections) — Long or mixed content with several sections of different kinds (options, steps, tables, diagrams)
+Node types this template uses: "group", "heading", "text", "todo", "table", "code", "page", "shape".
+Relationship types this template uses: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every forced template > timeline 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "timeline" (Timeline) — Dated events, release plans, incident timelines
+Node types this template uses: "heading", "text", "shape". Roles it's usually built around: "event" (optional).
+Relationship types this template uses: "flows_to", "relates_to", "derived_from", "explained_by".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"timeline","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every section kind, analysed, with numbered blocks > annotated 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "annotated" section: running prose where specific phrases or claims need their own explanation, caveat or source attached, without breaking the prose into cards.
+Keep the prose as ONE "text" node, lightly edited, with a small numbered marker ("¹", "²", "³"…) right after each phrase that needs its own note — never breaking the prose into separate cards. A second "text" node, linked from the first with "explained_by", lists each marker's note in order, one line per marker (e.g. "¹ <the note>"). Every marker in the prose has exactly one line in the notes card, in the same order.
+Node types to use: "text". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- What the annotations add that the prose alone wouldn't tell a reader — the one thing worth noticing across all of them.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every section kind, analysed, with numbered blocks > cards 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "cards" section: 2–6 parallel, independent concepts of similar weight, each short (personas, categories, principles, options without shared attributes).
+Represent each concept as its own "text" node with the concept's name as its "title" and, as its body, everything the content says about it — as bullets, in the content's own words. When a concept's body is long, keep its first points on the card and put the rest in a "page" linked from it with "explained_by".
+Node types to use: "text", "todo". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- What the concepts have in common, how they differ, and which one matters most.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every section kind, analysed, with numbered blocks > comparison 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "comparison" section: several entities (options, plans, tiers, products, alternatives) described by the same attributes, even when those facts are scattered across the text — including a change described case by case: how several cases, inputs or checks behaved before and how they behave now (old vs new, v2 vs v3).
+When the entities are already a table in the content, that table IS the comparison: place it as it is (every row and cell), never a re-arranged or shortened copy — its rows and columns stay the content's. A change described case by case is ONE "table" with one row per case and the columns ["<what the cases are, e.g. Case>", "Before", "Now"]: "Before" is what the content says happened before for that case — a general "before" statement, or "instead of X" / "no longer X" / "used to X" about the case, says it (X is its Before). A general "before" statement covers every case it names or includes: when the content says "Before, A was rejected. That included B and C", the rows for A, B and C all have "rejected" as Before — fill it for each, never only the first row. "Now" is its new behaviour with its full detail (examples, units, quoted messages, exceptions). Leave "Before" empty for a case the content gives no before for. The table replaces the list or paragraphs it was made from: don't also place them as text — their full wording is in the cells. Otherwise, when the facts are scattered in prose: represent it as ONE "table": the first column names the attribute, then one column per entity, named as the content names it (e.g. ["", "<entity 1>", "<entity 2>"] — never column names the content doesn't use), one row per attribute. Merge every fact the content gives about an entity into its column, wherever it appears, with its full value (numbers, limits, conditions). Leave a cell empty when the content doesn't say — never guess a ✓ or a value. Anything the content says around the comparison (context, a recommendation, caveats, footnotes) goes in a "text" node beside the table, never left out. Never one card or one section per entity.
+Node types to use: "table", "text". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- What actually differs between the entities and what that means for choosing between them (which fits when) — for a change, which case changed most, what is still an exception or left unchecked, and what the reader must now do differently. Never a restatement of the table or of the takeaway.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every section kind, analysed, with numbered blocks > decision 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "decision" section: a recommendation, decision, conclusion or chosen direction — including a set of decisions or proposals (D1, D2, …; question → proposal), even when they are numbered.
+When the decisions are already a table in the content, that table IS their structure: place it (every row and cell) and don't add a shape or card per decision. When they are prose: one "shape" per decision (importance "high"), labelled with what is being decided in a few words, and its proposal or answer, reasons, conditions and trade-offs — every one the content gives — in a "text" node linked from its shape with "explained_by". Decisions are NOT a sequence: link two only when the content says one depends on, blocks or follows from another ("depends_on", "blocks"), never in list order.
+Node types to use: "shape", "text", "table". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- The overall recommendation, and a "text" node titled "Status" with ONE line per decision, by its id or name: its status as the content implies it (decided · proposed · needs <whom>'s agreement · deferred until <what> · blocked by <which>) and why, in a few words — e.g. "D2 — needs the engineer's agreement: rerunning the full test set". Every decision gets its line.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every section kind, analysed, with numbered blocks > flow 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "flow" section: a sequence: steps, stages or a chain of cause and effect, where the order is the point.
+Represent each step as a "shape" with a short label, linked from each step to the next one ("flows_to", or "depends_on"/"caused_by" when stated), in order. What the content says about a step (what happens, who does it, conditions, outputs) goes in a "text" node linked from that step with "explained_by" — never another step.
+Node types to use: "shape", "text", "page". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- Where the sequence branches, waits or can fail, and what the whole sequence achieves.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every section kind, analysed, with numbered blocks > hierarchy 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "hierarchy" section: a hierarchy, branching, categorisation or parent/child structure (A contains or branches into B), including an ASCII/box-drawing tree.
+Represent the hierarchy as "shape" nodes (one per concept, a short label) connected parent → child with "relates_to" (or a more specific type when stated). What the content says about a concept beyond its name goes in a "text" node linked from its shape with "explained_by". Never an ASCII drawing, a code block or a paragraph describing the tree.
+Node types to use: "shape", "text", "page". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- How the parts relate: what the structure groups together and why, and which branch matters most for the reader.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every section kind, analysed, with numbered blocks > metrics 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "metrics" section: numbers, measurements, metrics, costs or things to track.
+Represent the metrics as ONE "table" with a column per metric (or a row per metric when there are many), every metric the content gives — the table is mandatory, always the primary record, and is never replaced. Keep numbers, units and qualifiers exactly as written. Any explanation of the metrics goes in a "text" node beside the table. When the numbers also show a trend over an ordered series (dates, steps, versions) or a comparison worth seeing at a glance, additionally add ONE "code" node with "language":"acute-chart" linked from the table with "explained_by", its "source" this exact JSON (no other text): {"chartType":"bar"|"line","categories":[...every category, in the table's order...],"series":[{"name":"<metric name>","values":[...the table's own numbers, same order...]}]}. A line is for a trend over an ordered series; a bar is for comparing categories. Never invent numbers the table doesn't have, and never omit the table in favour of the chart.
+Node types to use: "table", "text", "code". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- What the numbers show: the notable result, trend or outlier, and whether it is good or bad against a target the content gives.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every section kind, analysed, with numbered blocks > notes 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "notes" section: anything else.
+Use the node types that fit: a checklist is a "todo", a table a "table", code a "code" block, prose a "text" with all of it (a "page" when it is long).
+Node types to use: "text", "todo", "table", "code", "page", "shape". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- For a status or hand-off note: what is done, pending, blocked, and what needs a decision or someone's action (whose) — one line per item the content names (D1, D2 …, each request). Otherwise: the main point and what the reader should do with it.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > every section kind, analysed, with numbered blocks > supporting 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "supporting" section: reasoning, evidence, examples, caveats or background that supports another section rather than being a main idea.
+Keep it visually secondary, not shorter: one "text" node with all of its points as bullets in the content's own words, or a "page" when it is long. It supports the main sections, so it must not compete with them for attention.
+Node types to use: "text", "page". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- Which main point it supports, and how.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > numberSource's numbered view 1`] = `
+{
+  "numbered": "## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`",
+  "refs": [
+    "P1:paragraph",
+    "T1:table",
+    "L1:list",
+    "C1:code",
+  ],
+}
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > pieces, retries, dense, updates, appended and repair feedback > analysisRetry 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "notes" section: anything else.
+Use the node types that fit: a checklist is a "todo", a table a "table", code a "code" block, prose a "text" with all of it (a "page" when it is long).
+Node types to use: "text", "todo", "table", "code", "page", "shape". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- For a status or hand-off note: what is done, pending, blocked, and what needs a decision or someone's action (whose) — one line per item the content names (D1, D2 …, each request). Otherwise: the main point and what the reader should do with it.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+An earlier plan of this section fell short of an analysis: it lacked takeaway and analysis. This time give "metadata.takeaway" and "text" nodes marked "origin":"analysis" that cover all of it, as described above, together with every detail.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > pieces, retries, dense, updates, appended and repair feedback > appended 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "notes" section: anything else.
+Use the node types that fit: a checklist is a "todo", a table a "table", code a "code" block, prose a "text" with all of it (a "page" when it is long).
+Node types to use: "text", "todo", "table", "code", "page", "shape". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+These blocks are new paragraphs added to a section that is already drawn (below). Place a block that is a new concept by reference. A block that adds to what an existing node already describes (another row of its table, another item of its list, another clause of its sentence) is not placed by reference: reply that node in full with the addition, as described below.
+
+This section is already on the user's canvas as the representation below, and it stays exactly as it is. New paragraphs were appended to the section; the content below is ONLY those paragraphs. Reply with only what they add:
+- A new concept: a new node with a new "id" and a new, unique "stableKey".
+- New explanation of an existing concept: a new node linked from that concept's id with "explained_by".
+- A new fact that belongs to what an existing node already describes (another row of its table, another item of its list): the full node, keeping its "id" and "stableKey", with the fact added and everything it said before kept.
+Never repeat an existing node you don't change, and never leave one out on purpose: every node you don't mention is kept. Relationships: only those that involve a node you reply with (they may refer to the ids below).
+
+Current representation:
+{"nodes":[{"id":"p1","stableKey":"retry","type":"shape","content":{"shape":"rectangle","label":"Retry"}}],"relationships":[]}
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > pieces, retries, dense, updates, appended and repair feedback > architecture 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+Template: "architecture" (Architecture) — Components, services, data flows
+Node types this template uses: "heading", "shape", "text", "table". Roles it's usually built around: "component" (optional).
+Relationship types this template uses: "flows_to", "depends_on", "relates_to", "implements", "references", "explained_by".
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"architecture","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Architecture: draw each component (service, UI, store, queue, external system) as a "shape" with a short "label", and add to its content "kind" — one of "frontend", "backend", "database", "cloud", "security", "messagebus", "external" — plus, where the content says, "sublabel" (its technology or file, e.g. "FastAPI :8000"), "tag" (a short note, e.g. "cached") and "details" (up to 8 short responsibilities). Link components with "flows_to" / "depends_on" and a short "label" saying what passes (e.g. "SQL", "question"), and an "explanation" of why when the content gives one. Optionally add "cards" to "metadata": up to 6 {"title":"...","items":["..."]} summarising cross-cutting points (security, cost, deployment) the content states.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > pieces, retries, dense, updates, appended and repair feedback > dense 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "notes" section: anything else.
+Use the node types that fit: a checklist is a "todo", a table a "table", code a "code" block, prose a "text" with all of it (a "page" when it is long).
+Node types to use: "text", "todo", "table", "code", "page", "shape". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+This content was one block on a canvas with too much in it to read (a 12-row table). Split it into a more visual form — every fact kept, nothing added:
+- A table whose cells are paragraphs: one card per row, for every row — a "text" node whose "title" is the row's short name (its name or item, a few words) and whose markdown starts with the row's short values in bold labels on one line (e.g. "**Size:** M · **Status:** ✅ Done"), then the rest of the row. When a cell is long, the card keeps its opening sentences and the whole cell goes in a "page" node (titled with the row's name) linked from the card with "explained_by".
+- Rows, items or steps whose order matters (a numbered order, a sequence): link them in that order with "flows_to".
+- A checklist whose items are paragraphs: a "todo" of each item's lead (its first sentence, keeping checked/unchecked), with each item's detail as a "text" node linked "explained_by".
+- Prose: every point as its own "text" card in the content's own words (or a "shape" for a few-word idea, with its detail linked "explained_by"), linked only where the text relates them; long background in a "page".
+Keep cards readable: when a card would pass about 400 characters, move the rest into a "page" linked from it — never cut it.
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > pieces, retries, dense, updates, appended and repair feedback > part 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "notes" section: anything else.
+Use the node types that fit: a checklist is a "todo", a table a "table", code a "code" block, prose a "text" with all of it (a "page" when it is long).
+Node types to use: "text", "todo", "table", "code", "page", "shape". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+The content below is part 1 of 2 of this section, generated on its own: place everything in it, and nothing about the other parts (don't summarize the section, don't refer to the other parts, and give no takeaway or analysis — those are written for the whole section afterwards).
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional"}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+The content below is numbered block by block: [T1], [T2] … tables, [L1] … lists, [C1] … code, [P1] … paragraphs. To place a block exactly as it is, use {"id":"n9","type":"source","ref":"T1"} (it takes "title", "importance" and links like any node) instead of retyping it: the app inserts the whole block, word for word. Place every table this way, with all its rows and columns — never a shortened copy — and any list, code or paragraph you would otherwise copy. Place each block at most once. The numbers are for placing blocks only: never write "[P1]", "[T1]" or the like in your own text. Never restate a block you placed: no shape, card or node repeating its rows, items or sentences — the block already shows them, and a second copy only crowds the canvas. Your own nodes are for what the content doesn't already show: structure the blocks don't have (shapes and links for a flow, a tree, dependencies between items) and your analysis.
+
+Content to visualize:
+
+## Retries
+
+[P1] Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+[T1] | Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+[L1] - Use an idempotency key
+- Log every retry
+
+[C1] \`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > pieces, retries, dense, updates, appended and repair feedback > repair 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "notes" section: anything else.
+Use the node types that fit: a checklist is a "todo", a table a "table", code a "code" block, prose a "text" with all of it (a "page" when it is long).
+Node types to use: "text", "todo", "table", "code", "page", "shape". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- For a status or hand-off note: what is done, pending, blocked, and what needs a decision or someone's action (whose) — one line per item the content names (D1, D2 …, each request). Otherwise: the main point and what the reader should do with it.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+An earlier plan of this section left out these points of the content. This time, place every one of them in the plan, at its level (a node's label, its detail, a table row, a step), together with everything else:
+  «Log every retry»
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`
+
+Your last reply was not valid JSON."
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > pieces, retries, dense, updates, appended and repair feedback > retry 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "notes" section: anything else.
+Use the node types that fit: a checklist is a "todo", a table a "table", code a "code" block, prose a "text" with all of it (a "page" when it is long).
+Node types to use: "text", "todo", "table", "code", "page", "shape". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ..., {"id":"a1","type":"text","origin":"analysis","title":"...","content":{"markdown":"..."}}],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- For a status or hand-off note: what is done, pending, blocked, and what needs a decision or someone's action (whose) — one line per item the content names (D1, D2 …, each request). Otherwise: the main point and what the reader should do with it.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+An earlier plan of this section left out these points of the content. This time, place every one of them in the plan, at its level (a node's label, its detail, a table row, a step), together with everything else:
+  «Log every retry»
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > pieces, retries, dense, updates, appended and repair feedback > update 1`] = `
+"You turn content into a VisualPlan: a structured description of what it means, for an app to render as native objects. You never generate an image, HTML, or any UI yourself — only this JSON structure. You never invent a node type, relationship type, or template beyond the ones given.
+----
+This is one section, "Retries", of a larger workspace. It is a "notes" section: anything else.
+Use the node types that fit: a checklist is a "todo", a table a "table", code a "code" block, prose a "text" with all of it (a "page" when it is long).
+Node types to use: "text", "todo", "table", "code", "page", "shape". Relationship types: "relates_to", "flows_to", "caused_by", "depends_on", "supports", "blocks", "implements", "derived_from", "references", "explained_by", "supersedes", "deviates_from", "option_of", "calls", "reads", "writes", "publishes", "subscribes", "contains". The app shows the section's label as its title, so don't repeat it as a heading node.
+
+Reply with JSON only, exactly this shape:
+{"version":1,"template":"sectioned","nodes":[<node>, ...],"relationships":[{"from":"n1","to":"n2","type":"depends_on","label":"optional"}],"metadata":{"title":"optional","takeaway":"..."}}
+
+Each node is one of (pick freely, mixing types is normal):
+{"id":"n1","type":"heading","content":{"text":"..."}}
+{"id":"n2","type":"text","content":{"markdown":"..."}}
+{"id":"n3","type":"todo","content":{"items":[{"text":"...","checked":false}]}}
+{"id":"n4","type":"table","content":{"columns":["..."],"rows":[["..."]]}}
+{"id":"n5","type":"code","content":{"language":"typescript","source":"..."}}
+{"id":"n6","type":"page","content":{"title":"...","markdown":"..."}}
+{"id":"n7","type":"shape","content":{"shape":"rectangle","label":"..."}}
+
+Give every node a unique "id" ("n1", "n2", ...); relationships refer to those ids. Use as many nodes as the content needs. Use "role" on a node (e.g. "problem", "cause") where the template calls for it. Optionally give a node a "stableKey": a short structural label from its role and position (e.g. "cause#2", "step#1"), never its wording. A "title" on a node becomes a small heading above it, when it helps.
+
+Visualize the content — do not summarize it. Every piece of information in it must appear somewhere in your plan: facts, numbers and units, names, conditions and qualifications ("only", "unless", "except", "not", "at most"), examples, exceptions, steps and relationships. Short labels are encouraged; missing information is not. You may shorten wording, reorder and group, but never leave out a detail because it seems minor.
+Represent only what the content says: never add steps, items, examples, pages or facts it doesn't contain, and never pad a short content out.
+Put each piece of information at its level:
+- Structure (the concepts, steps, options, components): one node each, with a short label.
+- What the content says about one of them (how it works, why, conditions, examples, caveats): in the content's own words, in the body of its "text" node — or, for a "shape" (which holds only a label), in its own "text" node linked from it with {"from":"<concept id>","to":"<detail id>","type":"explained_by"}. Never folded into the concept node's label, and never added as another step of a flow.
+- Long background, examples or code: a "page" node (or "code" node) linked the same way.
+- A list item that only introduces a nested list ("**Example:**", "**Significance:**", "**Key challenges:**" followed by sub-bullets) is ONE unit with its sub-bullets: keep the label and every sub-bullet together in the same "text" node — the label as its bold first line (or its "title"), the sub-bullets as bullets beneath it. Never a node holding only the label, and never its sub-bullets as separate nodes away from it: a reader must see which label each point belongs to. The same goes for a bold label with its own items in a list (e.g. "**What it is:** …" / "**Significance:** …" / "**Example:** …" of one concept): they are the parts of ONE concept's node, not separate cards.
+A table in the content stays a "table" with every row and every cell's full text (numbers, names, paths, conditions) — never a shortened copy. You may add a visual of it (a flow, a tree) beside the table, but not instead of it.
+A link between steps of a sequence goes from the earlier step to the later one ("flows_to"), so arrows follow the order of the steps. Use "relates_to" only for an association with no direction or order.
+
+How this section's text changed since the current representation:
+Edited — the same point as before, now corrected or reworded (reflect it in the existing node that shows it; never add a node for it):
+  «Log every retry»
+No paragraph was added to this section — so no new node is needed.
+
+This section is already on the user's canvas as the representation below. The content has since changed. Update the representation for what changed in *meaning*, not in wording:
+- A node whose concept is unchanged — the content states the same facts about it, only worded differently: reply with only {"id":"<its id>","unchanged":true}.
+- A node whose concept changed — any fact it states is now different, added or corrected, however small (a number, a duration, a name, a condition, a step): reply with the full node, keeping its "id" and "stableKey", and with that fact in the node itself.
+- A new fact that belongs to what an existing node already describes (another row of its table, another item of its list, another clause of its sentence) changes that node — it is not a new concept.
+- A new concept (something the section didn't cover at all): a new node with a new "id" and a new, unique "stableKey" (keys are identities, not positions — never renumber existing ones).
+- A concept no longer in the content: leave it out.
+- New explanation of an existing concept: a new explanation node linked with "explained_by", never a change to the concept node.
+Relationships: reply with the full set for the section, using these ids (e.g. a new step inserted between two others replaces the old link between them).
+
+Current representation:
+{"nodes":[{"id":"p1","stableKey":"retry","type":"shape","content":{"shape":"rectangle","label":"Retry"}}],"relationships":[]}
+
+Content to visualize:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > the analysis patch, for every kind and for an unknown one > annotated 1`] = `
+"You analyse one section of a document for a visual workspace: its main point and what it means, specific to its own content. You never invent facts the content doesn't contain, and you reply with JSON only.
+----
+A plan of one section, "Retries" (a "annotated" section: running prose where specific phrases or claims need their own explanation, caveat or source attached, without breaking the prose into cards), already exists, but it lacks takeaway and analysis. Do not redo the plan: give only what is missing, from the content below.
+
+The plan's nodes:
+- n1 (text): Retry
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- What the annotations add that the prose alone wouldn't tell a reader — the one thing worth noticing across all of them.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Reply with JSON only, exactly this shape:
+{"takeaway":"..."}
+Give only "takeaway".
+
+Content:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > the analysis patch, for every kind and for an unknown one > cards 1`] = `
+"You analyse one section of a document for a visual workspace: its main point and what it means, specific to its own content. You never invent facts the content doesn't contain, and you reply with JSON only.
+----
+A plan of one section, "Retries" (a "cards" section: 2–6 parallel, independent concepts of similar weight, each short (personas, categories, principles, options without shared attributes)), already exists, but it lacks takeaway and analysis. Do not redo the plan: give only what is missing, from the content below.
+
+The plan's nodes:
+- n1 (text): Retry
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- What the concepts have in common, how they differ, and which one matters most.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Reply with JSON only, exactly this shape:
+{"takeaway":"..."}
+Give only "takeaway".
+
+Content:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > the analysis patch, for every kind and for an unknown one > comparison 1`] = `
+"You analyse one section of a document for a visual workspace: its main point and what it means, specific to its own content. You never invent facts the content doesn't contain, and you reply with JSON only.
+----
+A plan of one section, "Retries" (a "comparison" section: several entities (options, plans, tiers, products, alternatives) described by the same attributes, even when those facts are scattered across the text — including a change described case by case: how several cases, inputs or checks behaved before and how they behave now (old vs new, v2 vs v3)), already exists, but it lacks takeaway and analysis. Do not redo the plan: give only what is missing, from the content below.
+
+The plan's nodes:
+- n1 (text): Retry
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- What actually differs between the entities and what that means for choosing between them (which fits when) — for a change, which case changed most, what is still an exception or left unchecked, and what the reader must now do differently. Never a restatement of the table or of the takeaway.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Reply with JSON only, exactly this shape:
+{"takeaway":"..."}
+Give only "takeaway".
+
+Content:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > the analysis patch, for every kind and for an unknown one > decision 1`] = `
+"You analyse one section of a document for a visual workspace: its main point and what it means, specific to its own content. You never invent facts the content doesn't contain, and you reply with JSON only.
+----
+A plan of one section, "Retries" (a "decision" section: a recommendation, decision, conclusion or chosen direction — including a set of decisions or proposals (D1, D2, …; question → proposal), even when they are numbered), already exists, but it lacks takeaway and analysis. Do not redo the plan: give only what is missing, from the content below.
+
+The plan's nodes:
+- n1 (text): Retry
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- The overall recommendation, and a "text" node titled "Status" with ONE line per decision, by its id or name: its status as the content implies it (decided · proposed · needs <whom>'s agreement · deferred until <what> · blocked by <which>) and why, in a few words — e.g. "D2 — needs the engineer's agreement: rerunning the full test set". Every decision gets its line.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Reply with JSON only, exactly this shape:
+{"takeaway":"..."}
+Give only "takeaway".
+
+Content:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > the analysis patch, for every kind and for an unknown one > flow 1`] = `
+"You analyse one section of a document for a visual workspace: its main point and what it means, specific to its own content. You never invent facts the content doesn't contain, and you reply with JSON only.
+----
+A plan of one section, "Retries" (a "flow" section: a sequence: steps, stages or a chain of cause and effect, where the order is the point), already exists, but it lacks takeaway and analysis. Do not redo the plan: give only what is missing, from the content below.
+
+The plan's nodes:
+- n1 (text): Retry
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- Where the sequence branches, waits or can fail, and what the whole sequence achieves.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Reply with JSON only, exactly this shape:
+{"takeaway":"..."}
+Give only "takeaway".
+
+Content:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > the analysis patch, for every kind and for an unknown one > hierarchy 1`] = `
+"You analyse one section of a document for a visual workspace: its main point and what it means, specific to its own content. You never invent facts the content doesn't contain, and you reply with JSON only.
+----
+A plan of one section, "Retries" (a "hierarchy" section: a hierarchy, branching, categorisation or parent/child structure (A contains or branches into B), including an ASCII/box-drawing tree), already exists, but it lacks takeaway and analysis. Do not redo the plan: give only what is missing, from the content below.
+
+The plan's nodes:
+- n1 (text): Retry
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- How the parts relate: what the structure groups together and why, and which branch matters most for the reader.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Reply with JSON only, exactly this shape:
+{"takeaway":"..."}
+Give only "takeaway".
+
+Content:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > the analysis patch, for every kind and for an unknown one > metrics 1`] = `
+"You analyse one section of a document for a visual workspace: its main point and what it means, specific to its own content. You never invent facts the content doesn't contain, and you reply with JSON only.
+----
+A plan of one section, "Retries" (a "metrics" section: numbers, measurements, metrics, costs or things to track), already exists, but it lacks takeaway and analysis. Do not redo the plan: give only what is missing, from the content below.
+
+The plan's nodes:
+- n1 (text): Retry
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- What the numbers show: the notable result, trend or outlier, and whether it is good or bad against a target the content gives.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Reply with JSON only, exactly this shape:
+{"takeaway":"..."}
+Give only "takeaway".
+
+Content:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > the analysis patch, for every kind and for an unknown one > notes 1`] = `
+"You analyse one section of a document for a visual workspace: its main point and what it means, specific to its own content. You never invent facts the content doesn't contain, and you reply with JSON only.
+----
+A plan of one section, "Retries" (a "notes" section: anything else), already exists, but it lacks takeaway and analysis. Do not redo the plan: give only what is missing, from the content below.
+
+The plan's nodes:
+- n1 (text): Retry
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- For a status or hand-off note: what is done, pending, blocked, and what needs a decision or someone's action (whose) — one line per item the content names (D1, D2 …, each request). Otherwise: the main point and what the reader should do with it.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Reply with JSON only, exactly this shape:
+{"takeaway":"..."}
+Give only "takeaway".
+
+Content:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > the analysis patch, for every kind and for an unknown one > other 1`] = `
+"You analyse one section of a document for a visual workspace: its main point and what it means, specific to its own content. You never invent facts the content doesn't contain, and you reply with JSON only.
+----
+A plan of one section, "Retries", already exists, but it lacks takeaway and analysis. Do not redo the plan: give only what is missing, from the content below.
+
+The plan's nodes:
+- n1 (text): Retry
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- What it means: the conclusions, what is decided or open, and the trade-offs the content implies.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Reply with JSON only, exactly this shape:
+{"takeaway":"..."}
+Give only "takeaway".
+
+Content:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;
+
+exports[`preserve prompts are byte-identical to before Knowledge Notes (G7) > the analysis patch, for every kind and for an unknown one > supporting 1`] = `
+"You analyse one section of a document for a visual workspace: its main point and what it means, specific to its own content. You never invent facts the content doesn't contain, and you reply with JSON only.
+----
+A plan of one section, "Retries" (a "supporting" section: reasoning, evidence, examples, caveats or background that supports another section rather than being a main idea), already exists, but it lacks takeaway and analysis. Do not redo the plan: give only what is missing, from the content below.
+
+The plan's nodes:
+- n1 (text): Retry
+
+Then analyse it — the reader must understand it at a glance, not only find its details:
+- "metadata.takeaway": the section's main point in one line of your own words (at most 15 words), e.g. "Merge v3 now; two decisions wait on the engineer". Always give one.
+- Which main point it supports, and how.
+- Put this analysis in "text" nodes marked "origin":"analysis" (e.g. {"id":"a1","type":"text","origin":"analysis","title":"Status","content":{"markdown":"..."}}), linked to what it is about where that helps. It may state what the content implies but doesn't say; it must never contradict the content or add facts it doesn't contain.
+- The takeaway and analysis are specific to this content: name its own things (its checks, files, numbers, decisions). Never add a generic benefit or outcome it doesn't state ("improves user experience", "increases efficiency", "enhances reliability"); when the content gives no outcome, say what changed or what is open instead.
+- The content's own details stay as they are above (in its own words, nothing left out). Analysis is added on top, never instead of them.
+
+Reply with JSON only, exactly this shape:
+{"takeaway":"..."}
+Give only "takeaway".
+
+Content:
+
+## Retries
+
+Retries can improve reliability when the cache holds a valid result. However, they must not exceed 3 attempts.
+
+| Case | Before | Now |
+|---|---|---|
+| Timeout | dropped | retried up to 3 times |
+
+- Use an idempotency key
+- Log every retry
+
+\`\`\`ts
+retry(3);
+\`\`\`"
+`;

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-exactly-once-unnegated",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The negation is dropped: 'at-least-once (not exactly-once) delivery' becomes 'at-least-once (in practice exactly-once) delivery' in the managed queue's title. The negation-aware a.no-exactly-once must still catch the unnegated claim.",
+  "mutations": [
+    { "op": "replace_text", "node": "n3", "find": "(not exactly-once)", "replace": "(in practice exactly-once)" }
+  ],
+  "expectFailing": ["a.no-exactly-once"]
+}

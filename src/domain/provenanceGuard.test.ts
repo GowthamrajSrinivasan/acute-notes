@@ -78,18 +78,53 @@ describe("provenance is descriptive only", () => {
  * only" — read by the reconciliation engine (F38) and the code that stamps or
  * maintains them, and by nothing else: never by editing, rendering, search,
  * export or MCP.
+ *
+ * Knowledge Notes (knowledge-notes-plan §4.1, §6.2, WP1.3) adds `sourceUnits`, `noteModel` and `review`. "review" is an
+ * everyday word in this code base (the review bar, "up for review: …"), so it is matched only as a property read
+ * (`ai.review`, `meta?.review`) or an optional field declaration (`review?:`), never as a word in a string. A module path
+ * (`@/ai/fidelity/sourceUnits`) isn't a field either.
  */
-const RECONCILIATION_FIELD = /\b(contentSourceId|contentSourceVersion|stableNodeKey|contentFingerprint|modificationState|excludeFromReconciliation|splitOf|splitFingerprint)\b/;
+const RECONCILIATION_FIELD =
+  /(?<![/\w])(contentSourceId|contentSourceVersion|stableNodeKey|contentFingerprint|modificationState|excludeFromReconciliation|splitOf|splitFingerprint|sourceUnits|noteModel)\b|(?<=[\w)\]?])\.review\b|\breview\?:/;
 const RECONCILIATION_DIR = rel("ai/reconcile/");
 const RECONCILIATION_READERS: Record<string, string> = {
   [rel("domain/types.ts")]: "declares the fields",
   [rel("domain/provenance.ts")]: "normalizes them (only on request) and reads an object's link",
   [rel("ai/changes/changeSet.ts")]: "carries each created/updated object's stable key to the writer",
+  [rel("components/ai/unapplied.ts")]: "Stage 1 gate 4 follow-up (2026-11-15): reads the stable node key of a dropped patch or an undecided conflict (change-set items, never an object's metadata) so the recorded source version keeps that node as it was",
+  [rel("ai/changes/staleTarget.ts")]: "stale-target protection (2026-11-15): copies an update_block's stable node key onto the Keep mine / Use proposed decision it becomes (change-set items, never an object's metadata)",
   [rel("ai/renderer/mapNode.ts")]: "copies a node's stableKey onto its create change",
   [rel("components/canvas/changeSetWriter.ts")]: "stamps the link and baseline fingerprint on write",
   [rel("components/canvas/reconcileActions.ts")]: "the explicit user actions: opt out, update the source from an edit",
   [rel("testUtils/reconcileHarness.ts")]: "test-only: stamps accepted objects as the writer would, for the update and topic-merge tests",
   [rel("testUtils/repoMapWorld.ts")]: "test-only: the Repo Map test world's writer stamps the link and fingerprints as changeSetWriter.ts does",
+  [rel("ai/fidelity/contracts.ts")]: "declares the Knowledge Notes types the fields hold (NoteModel, CardReview) and the run output the evaluation reads",
+  [rel("config/fidelity.ts")]: "declares the noteModel switch (a developer setting until R1); never reads an object's metadata",
+  [rel("ai/visualize/tasks.ts")]: "the generation input's noteModel picks the distil wording rules (§4.4); never reads an object's metadata",
+  [rel("ai/visualize/outlined.ts")]: "reads the noteModel switch to send distil section prompts with labelled units; never reads an object's metadata",
+  [rel("ai/visualize/types.ts")]: "VisualizeInput.noteModel: the run's own note model (WP2.8 'Keep full detail'); never reads an object's metadata",
+  [rel("ai/ingest/ingest.ts")]: "passes the dialog's per-run noteModel through to visualizeContent (WP2.8); never reads an object's metadata",
+  [rel("components/ai/VisualizeDialog.tsx")]: "the 'Keep full detail' choice sets the run's noteModel (WP2.8, hidden until R1); never reads an object's metadata",
+  [rel("ai/visualize/analysisPatch.ts")]: "the analysis patch's input noteModel picks the distil analysis wording (§4.4); never reads an object's metadata",
+  [rel("ai/visualize/visualize.ts")]: "stamps noteModel on a distil run's change set and its cards' units on the content source it records (WP1.10); never reads an object's metadata",
+  [rel("components/canvas/ExcalidrawCanvas.tsx")]: "dev builds only: __acuteDev.setNoteModel switches the noteModel developer setting for the fidelity e2e (§6.3); never reads an object's metadata",
+  [rel("components/review/chipView.ts")]: "Lane H (not mounted): a card's source chip shows amber while its review is open; given the card's review by the caller, never reads object metadata itself",
+  [rel("components/review/queue.ts")]: "Lane H (not mounted): the review queue is rebuilt from cards' stored reviews; given them by the caller, never reads object metadata itself",
+  [rel("ai/fidelity/knowledgeRun.ts")]: "builds a distil run's per-card sourceUnits and review for the writer (by stable key) and the run output; never reads an object's metadata",
+  [rel("components/review/knowledgeObjects.ts")]:
+    "the review UI's one reader of a distil object's link (`reconciliationOf`): its source version, cited units and review, for the Source tab, chips and queue (knowledge-notes-plan §5); never for preserve objects",
+  [rel("components/review/knowledgeActions.ts")]:
+    "the user's own review actions (Keep, Use source wording, Pin quote, Include): resolves a card's review and adds a passage card citing its unit; given the objects by knowledgeObjects.ts",
+  [rel("components/review/KnowledgeOverlay.tsx")]: "draws a distil card's source chip from the review knowledgeObjects.ts gives it (amber while open)",
+  [rel("components/review/KnowledgeReviewBar.tsx")]: "builds the review queue from the cards' stored reviews and the source version's passage record (U3, U8); given the objects by knowledgeObjects.ts",
+  [rel("components/openui/notes/notesModel.ts")]:
+    "the OpenUI Notes view (openui-integration-plan Phase 2): shows a distil card's cited units and whether its review is open, read-only, from the objects knowledgeObjects.ts gives it",
+  [rel("components/openui/notes/promotion.ts")]:
+    "pins a generated note as a new card (openui-integration-plan Phase 2): stamps its cited units and the distil note model through the change set's `passage` path, as knowledgeActions.ts's Add to canvas does",
+  [rel("components/ai/ChangeSetReview.tsx")]:
+    "names a citation-driven update's `mark_review` change in the review list by its first reason (the proposed change's own review, §6.1); never reads object metadata",
+  [rel("portability/sanitize.ts")]:
+    "export/import with sources (knowledge-notes-plan §6.4): keeps an object's link only when its source is in the file, and remaps it to the imported source's new id",
 };
 
 /**

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-12-user-note-truncated",
+  "distortion": "user_edit_overwritten",
+  "caseId": "kn-12-flag-rollout-update",
+  "target": "reconcile",
+  "description": "The user-edited kill-switch card keeps its state and the runbook id, but the rest of the user's note is rewritten away: 'during an incident use the Orbit console toggle, not the API' is lost.",
+  "mutations": [
+    { "op": "reconcile_set", "item": "kill-switch § requirement", "state": "unchanged", "text": "Every flag needs a kill switch that turns it off within 1 minute. Tested in staging before canary and recorded in the rollout tool: a flag without a tested kill switch cannot enter canary. Anyone on the owning team may use it without approval. Turning the flag back on restarts the rollout from the internal stage. My note: Runbook RB-12." }
+  ],
+  "expectFailing": ["a.rc-kill-switch"]
+}

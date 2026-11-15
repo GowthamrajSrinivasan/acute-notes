@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-retention-unbounded",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The queue's 7-day bound (u19) is dropped and the claim becomes unbounded: 'keeps every event until it is processed … never loses an upload'. The old pattern only caught 'never lost'.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-queue",
+      "find": "Keeps events up to 7 days, so a worker outage within that window delays thumbnails but never loses an upload",
+      "replace": "Keeps every event until it is processed, so a worker outage delays thumbnails but never loses an upload"
+    }
+  ],
+  "expectFailing": [
+    "a.retention-with-queue",
+    "a.no-never-lost"
+  ]
+}

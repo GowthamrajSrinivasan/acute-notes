@@ -135,7 +135,9 @@ describe("layout D: first import of chat 1, then the three-chat merge (mock mode
     expect(moreFromSection(roomy.merged.changeSet!.changes)).toBe(0);
     const tight = await world({ nodeChars: 95 }).run();
     expect(moreFromSection(tight.merged.changeSet!.changes)).toBeGreaterThan(0);
-  });
+    // Two full import-and-merge runs: the default 5s timeout flakes under full-suite load (Wave F3) even though it
+    // passes in ~2.5s alone, the same generous budget the sibling load-sensitive tests use.
+  }, 60_000);
 
   it("DENSE FIRST IMPORT: when the first import filled the plan's 300-node limit, the sections it folded into pages are still the notes' sections — no new outline, no analysis cards", async () => {
     // 78 characters per node: the first import draws 365 objects; its last sections' nodes are all in "More from this section" pages whose
@@ -164,7 +166,8 @@ describe("layout D: first import of chat 1, then the three-chat merge (mock mode
     expect(d.overflow.reduce((n, o) => n + o.pages, 0)).toBe(moreFromSection(tight.merged.changeSet!.changes));
     const roomy = await world({ nodeChars: 300 }).run();
     expect(roomy.merged.diagnostics.overflow).toEqual([]);
-  });
+    // Two full import-and-merge runs: see OVERFLOW LIMITS for the timeout.
+  }, 60_000);
 
   it("NO REMOVAL: a completed merge proposes no removal, and every object and every sentence of the notes is still there", async () => {
     const w = world();

@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-takeaway-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The article's conclusion (u60, u61) is replaced by a neutral caption: nothing says no single technique is enough or that they cover each other's gaps.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "g5",
+      "find": "No single technique is enough; layer them so each covers the gaps of the others.",
+      "replace": "The table summarises freshness, cost and caveat per technique."
+    }
+  ],
+  "expectFailing": [
+    "a.takeaway"
+  ]
+}

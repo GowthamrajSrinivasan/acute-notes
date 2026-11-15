@@ -32,12 +32,24 @@
       "why": "The constant's value is part of the formula."
     },
     {
+      "quote": "That accuracy is expensive, so the cross-encoder runs only on the fused candidates, never on the whole collection.",
+      "why": "'only … never': the reranker never scores the whole collection, which is why it can't find passages retrieval missed."
+    },
+    {
       "quote": "Reranking improves the precision of the top results, but it does not guarantee that the final answer is correct.",
       "why": "Precision of the ranking is not correctness of the answer."
     },
     {
       "quote": "The reranker can only reorder what retrieval found: if the right passage is not among the candidates, reranking cannot recover it.",
       "why": "The reranker can't add a passage retrieval missed."
+    },
+    {
+      "quote": "A passage can also be highly relevant and still out of date, which no relevance score will detect.",
+      "why": "Relevance is not currency: a second reason reranking can't make the answer correct."
+    },
+    {
+      "quote": "The language model receives the question and the top 8 passages, and is instructed to answer only from them and to cite the passages it used.",
+      "why": "The grounding rule ('only from them'); it is an instruction to the model, not a guarantee of its behaviour."
     },
     {
       "quote": "If none of the passages addresses the question, it should say so rather than answer from its general knowledge.",
@@ -91,7 +103,7 @@
         "Reranking improves the precision of the top results — it does not guarantee a correct answer and can only reorder what retrieval found"
       ],
       [
-        "The model answers only from the top 8 passages, cites them, and says so when none applies",
+        "The model is told to answer only from the top 8 passages and cite them, and to say so when none applies",
         "Example: 'What does E-4012 mean?' — BM25 finds the error-code table, vectors the resumable-uploads article; both reach the top 8"
       ]
     ],
@@ -108,7 +120,7 @@
   },
   "hierarchy": [
     {
-      "main": "The model answers only from the top 8 passages, cites them, and says so when none applies",
+      "main": "The model is told to answer only from the top 8 passages and cite them, and to say so when none applies",
       "supporting": [
         "Example: 'What does E-4012 mean?' — BM25 finds the error-code table, vectors the resumable-uploads article; both reach the top 8"
       ]
@@ -135,12 +147,12 @@
     },
     {
       "from": "A cross-encoder reads query and passage together, rescoring only the fused candidates; the top 8 are kept",
-      "to": "The model answers only from the top 8 passages, cites them, and says so when none applies",
+      "to": "The model is told to answer only from the top 8 passages and cite them, and to say so when none applies",
       "type": "flows_to",
       "label": "top 8 passages"
     },
     {
-      "from": "The model answers only from the top 8 passages, cites them, and says so when none applies",
+      "from": "The model is told to answer only from the top 8 passages and cite them, and to say so when none applies",
       "to": "Example: 'What does E-4012 mean?' — BM25 finds the error-code table, vectors the resumable-uploads article; both reach the top 8",
       "type": "explained_by",
       "label": "for example"

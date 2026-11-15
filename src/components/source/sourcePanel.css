@@ -1,0 +1,245 @@
+/* ---- Source tab (knowledge-notes-plan §5.1, §5.2) --------------------------
+   Theme tokens from globals.css (--acute-*), sizes as in the Origin section (.acute-provenance).
+   Marks follow the indicator budget: Represented plain, Omitted grey, Needs review amber. */
+.acute-source {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  height: 100%;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--acute-text);
+}
+.acute-source__message {
+  margin: 8px 0;
+  color: var(--acute-text-muted);
+}
+.acute-source__message strong {
+  display: block;
+  color: var(--acute-text);
+}
+.acute-source__message p {
+  margin: 4px 0 0;
+}
+.acute-source__meta {
+  margin: 0;
+  color: var(--acute-text-muted);
+}
+.acute-source__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.acute-source button {
+  font: inherit;
+  color: inherit;
+}
+.acute-source__actions,
+.acute-source__filters,
+.acute-source__stepper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.acute-source__actions button,
+.acute-source__filters button,
+.acute-source__stepper button {
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--acute-border);
+  border-radius: 6px;
+  background: var(--acute-surface);
+  color: var(--acute-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.acute-source__actions button:hover,
+.acute-source__filters button:hover,
+.acute-source__stepper button:hover {
+  background: var(--acute-surface-muted);
+}
+.acute-source__actions button[data-primary] {
+  border-color: var(--acute-cta);
+  background: var(--acute-cta);
+  color: var(--acute-cta-text);
+}
+.acute-source__filters button[aria-pressed="true"] {
+  border-color: var(--acute-accent);
+  background: var(--acute-accent-soft);
+}
+.acute-source__count {
+  color: var(--acute-text-muted);
+}
+.acute-source button:focus-visible,
+.acute-source__unit:focus-visible {
+  outline: 2px solid var(--acute-accent);
+  outline-offset: 1px;
+}
+
+.acute-source__updated {
+  padding: 6px 8px;
+  border: 1px solid var(--acute-border);
+  border-left: 3px solid var(--acute-accent);
+  border-radius: 6px;
+  background: var(--acute-surface-muted);
+}
+.acute-source__updated > p {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+.acute-source__changes p {
+  margin: 6px 0 2px;
+  color: var(--acute-text-muted);
+}
+.acute-source__changes ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.acute-source__changes li button {
+  display: block;
+  width: 100%;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-source__change {
+  font-weight: 600;
+}
+.acute-source__change--removed,
+.acute-source__change--ambiguous {
+  color: var(--acute-warning);
+}
+
+.acute-source__outline summary {
+  cursor: pointer;
+  color: var(--acute-text-muted);
+}
+.acute-source__outline ol {
+  max-height: 160px;
+  margin: 4px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.acute-source__outline li button {
+  display: flex;
+  width: 100%;
+  gap: 6px;
+  padding: 1px 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-source__outline li button:hover {
+  background: var(--acute-surface-muted);
+}
+.acute-source__heading-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acute-source__counts {
+  flex: none;
+  color: var(--acute-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.acute-source__dot--omitted {
+  color: var(--acute-text-muted);
+  opacity: 0.75;
+}
+.acute-source__dot--review {
+  color: var(--acute-warning);
+  font-weight: 600;
+}
+
+.acute-source__body {
+  flex: 1;
+  min-height: 160px;
+  overflow-y: auto;
+  overflow-anchor: none;
+  border-top: 1px solid var(--acute-border);
+}
+.acute-source__heading {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 28px;
+  gap: 4px;
+  margin: 0;
+  border: 0;
+  background: none;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.acute-source__heading--static {
+  cursor: default;
+}
+.acute-source__chevron {
+  width: 10px;
+  color: var(--acute-text-muted);
+}
+.acute-source__chunk {
+  margin: 0;
+  padding: 3px 4px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.acute-source__item {
+  padding: 4px 0 8px;
+  border-bottom: 1px solid var(--acute-border);
+}
+.acute-source__reason {
+  margin: 2px 4px 4px;
+  color: var(--acute-text-muted);
+}
+
+/* Marks */
+.acute-source__unit {
+  border-radius: 2px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.acute-source__unit--omitted {
+  color: var(--acute-text-muted);
+  text-decoration: underline dotted var(--acute-text-muted);
+  text-underline-offset: 3px;
+}
+.acute-source__unit--review {
+  background: color-mix(in srgb, var(--acute-warning) 18%, transparent);
+  box-shadow: inset 0 -2px 0 var(--acute-warning);
+}
+.acute-source__unit.is-selected {
+  background: var(--acute-accent-soft);
+}
+.acute-source__unit--review.is-selected {
+  background: color-mix(in srgb, var(--acute-warning) 22%, var(--acute-accent-soft));
+}
+.acute-source__unit.is-current,
+.acute-source__unit.is-active {
+  outline: 2px solid var(--acute-accent);
+  outline-offset: 0;
+}
+
+.acute-source__active {
+  padding: 6px 0 0;
+  border-top: 1px solid var(--acute-border);
+}
+.acute-source__excerpt {
+  margin: 0 4px 4px;
+}
+

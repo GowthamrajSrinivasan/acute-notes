@@ -8,11 +8,15 @@
  * Also the deterministic table repair: a table the model retyped with the same rows but fewer columns or shortened
  * cells gets the source table's full rows and columns back, in place.
  *
- * Pure and deterministic, except `numberSource` (which parses).
+ * Also, in distil mode (knowledge-notes-plan WP1.4), `labelSource`: the same blocks with their source units labelled.
+ *
+ * Pure and deterministic, except `numberSource` and `labelSource` (which parse).
  */
 import { parseContent } from "@/ai/content/parser";
 import type { ParsedBlock } from "@/ai/content/types";
+import type { SourceUnit, UnitId, UnitLabels } from "./contracts";
 import { significant } from "./information";
+import { draftUnits, hashUnit } from "./sourceUnits";
 
 export type SourceBlockKind = "table" | "list" | "checklist" | "code" | "paragraph";
 
@@ -78,6 +82,101 @@ export async function numberSource(text: string): Promise<{ blocks: SourceBlock[
     lines.push(`[${ref}] ${block.text}`);
   }
   return { blocks, numbered: lines.join("\n\n") };
+}
+
+/** A section's source with its units labelled for the prompt (WP1.4): what the model cites, and what the app maps back. */
+export interface LabelledSource {
+  /** The same blocks, refs and order as `numberSource`, so references expand the same way. */
+  blocks: SourceBlock[];
+  /** The prompt's view: each block's number, then its units one per line behind their labels (a table's rows behind theirs). */
+  labelled: string;
+  /** Label → unit id, for this section only. */
+  labels: UnitLabels;
+  /** Block ref → the units it holds: a block placed by reference cites them all. */
+  blockUnits: Readonly<Record<string, UnitId[]>>;
+}
+
+/**
+ * A section's text with its source units labelled per block (knowledge-notes-plan §3.1, WP1.4): `P2.3` is paragraph
+ * block P2's third sentence, `L1.4` list L1's fourth item, `T1.r4` table T1's fourth data row (`T1.r0` its header),
+ * `C1` code block C1. The model cites labels; `labels` maps them to the unit ids of `units` — the source version's
+ * units (`ContentSourceVersion.units`), matched to the section's own units by their text's hash, in order — so the
+ * model never sees or retypes an id. Without `units` (no version yet) the ids are the section's own (`u1`, `u2`, …).
+ * A unit `units` doesn't have (the section text differs from the version's) is shown without a label.
+ *
+ * New in distil mode only: `numberSource` and its output are unchanged.
+ */
+export async function labelSource(text: string, units?: readonly SourceUnit[]): Promise<LabelledSource> {
+  const parsed = await parseContent(text);
+  const drafts = draftUnits(parsed, text);
+  const ids = units ? matchIds(drafts.map((d) => hashUnit(d.text, d.kind)), units) : drafts.map((_, i) => `u${i + 1}`);
+  const counts: Record<string, number> = {};
+  const blocks: SourceBlock[] = [];
+  const lines: string[] = [];
+  const labels: Record<string, UnitId> = {};
+  const blockUnits: Record<string, UnitId[]> = {};
+  const one = (s: string) => s.replace(/\s+/g, " ").trim();
+  for (const b of parsed.blocks) {
+    if (b.type === "heading") {
+      lines.push(text.slice(b.span.start, b.span.end).trim());
+      continue;
+    }
+    const block = blockOf(b, text);
+    if (!block) continue;
+    const prefix = PREFIX[block.kind];
+    counts[prefix] = (counts[prefix] ?? 0) + 1;
+    const ref = `${prefix}${counts[prefix]}`;
+    blocks.push({ ref, ...block });
+    const inside = drafts.flatMap((d, i) => (d.span.start >= b.span.start && d.span.end <= b.span.end ? [i] : []));
+    const label = (name: string, i: number) => {
+      const id = ids[i];
+      if (!id) return "";
+      labels[name] = id;
+      (blockUnits[ref] ??= []).push(id);
+      return `${name} `;
+    };
+    if (b.type === "table") {
+      // The pipe table's lines are header, delimiter, then the rows; each row line is labelled with its unit.
+      const rowTexts = [b.columns, ...b.rows].map((cells) => cells.join(" | "));
+      const rowLabel: string[] = rowTexts.map(() => "");
+      let cursor = 0;
+      for (const i of inside) {
+        const at = rowTexts.indexOf(drafts[i]!.text, cursor);
+        if (at < 0) continue;
+        rowLabel[at] = label(`${ref}.r${at}`, i);
+        cursor = at + 1;
+      }
+      const table = block.text.split("\n").map((line, n) => (n === 0 ? rowLabel[0] : n === 1 ? "" : rowLabel[n - 1]) + line);
+      lines.push(`[${ref}]\n${table.join("\n")}`);
+    } else if (b.type === "code") {
+      const i = inside[0];
+      if (i !== undefined) label(ref, i);
+      lines.push(`[${ref}] ${block.text}`);
+    } else if (inside.length) {
+      lines.push(`[${ref}]\n${inside.map((i, k) => `${label(`${ref}.${k + 1}`, i)}${one(drafts[i]!.text)}`).join("\n")}`);
+    } else {
+      lines.push(`[${ref}] ${block.text}`);
+    }
+  }
+  return { blocks, labelled: lines.join("\n\n"), labels, blockUnits };
+}
+
+/**
+ * The version's unit id for each of the section's units, by hash, one-to-one and in document order: the first unused
+ * unit with the same hash after the previous match (a repeated sentence keeps its own), else any unused one; "" when
+ * the version has none.
+ */
+function matchIds(hashes: readonly string[], units: readonly SourceUnit[]): UnitId[] {
+  const used = new Set<number>();
+  let last = -1;
+  return hashes.map((hash) => {
+    let at = units.findIndex((u, i) => i > last && !used.has(i) && u.hash === hash);
+    if (at < 0) at = units.findIndex((u, i) => !used.has(i) && u.hash === hash);
+    if (at < 0) return "";
+    used.add(at);
+    last = at;
+    return units[at]!.id;
+  });
 }
 
 function isObject(v: unknown): v is Record<string, unknown> {

@@ -71,6 +71,7 @@ export function createCopilotProvider(config: CopilotProviderConfig = {}): AIPro
         model: request.model ?? config.defaultModel,
         temperature: request.temperature,
         maxTokens: request.maxTokens,
+        ...(request.reasoningEffort ? { reasoningEffort: request.reasoningEffort } : {}),
         timeoutMs: request.timeoutMs,
       },
       provider: config.byok,
@@ -82,7 +83,9 @@ export function createCopilotProvider(config: CopilotProviderConfig = {}): AIPro
     name: config.name ?? "GitHub Copilot",
     authTypes: ["subscription", "api_key", "local"],
     transport: "ai_host_local",
-    capabilities: CAPABILITIES,
+    // §12.25: a BYOK connection hands `maxTokens` to the model (SDK `ProviderConfig.maxOutputTokens`); a Copilot
+    // subscription session drops it.
+    capabilities: { ...CAPABILITIES, outputCap: config.byok ? "passed" : "ignored" },
 
     async isConfigured() {
       return Boolean(config.gitHubToken || config.byok || config.allowHostLoggedInUser);

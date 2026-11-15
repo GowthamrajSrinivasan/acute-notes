@@ -19,7 +19,7 @@
       "type": "group",
       "content": {
         "label": "Clients",
-        "arrangement": "grid",
+        "arrangement": "stack",
         "takeaway": "Two thin apps on one public HTTPS API",
         "diagram": "architecture",
         "level": 0
@@ -61,7 +61,7 @@
       "type": "group",
       "content": {
         "label": "Edge & API",
-        "arrangement": "grid",
+        "arrangement": "stack",
         "takeaway": "One way in: TLS, token check, rate limit, routing",
         "diagram": "architecture",
         "level": 1
@@ -81,7 +81,7 @@
           "Terminates TLS",
           "Checks each caller's access token",
           "Rate limit: 120 requests per minute per account",
-          "Fails closed: rejects the request when auth can't be reached",
+          "Fails closed: rejects the request instead of letting it through unchecked when auth can't be reached",
           "Routes to the right service; never serves photo bytes"
         ]
       }
@@ -91,7 +91,7 @@
       "type": "group",
       "content": {
         "label": "Core services",
-        "arrangement": "grid",
+        "arrangement": "stack",
         "takeaway": "Auth, upload and feed own the synchronous work",
         "diagram": "architecture",
         "level": 1
@@ -140,51 +140,18 @@
         "sublabel": "Builds each person's feed from the accounts they follow",
         "details": [
           "Keeps ready-made feed pages",
-          "On PhotoReady: adds the photo to followers' feeds and requests follower alerts"
+          "On PhotoReady: adds the photo to followers' feeds and asks the push-notification provider to alert followers"
         ]
       }
     },
     {
-      "id": "g-async",
-      "type": "group",
+      "id": "n-dec-signed",
+      "type": "text",
+      "parent": "g-core",
+      "importance": "medium",
+      "title": "Signed URLs keep big files off the gateway",
       "content": {
-        "label": "Asynchronous processing",
-        "arrangement": "grid",
-        "takeaway": "Upload and processing only meet through the queue",
-        "diagram": "architecture",
-        "level": 1
-      }
-    },
-    {
-      "id": "n-queue",
-      "type": "shape",
-      "parent": "g-async",
-      "importance": "high",
-      "content": {
-        "shape": "rectangle",
-        "label": "Message queue",
-        "kind": "messagebus",
-        "sublabel": "PhotoUploaded, PhotoReady",
-        "details": [
-          "Keeps events up to 7 days: a processing outage delays thumbnails but loses no uploads"
-        ]
-      }
-    },
-    {
-      "id": "n-workers",
-      "type": "shape",
-      "parent": "g-async",
-      "importance": "high",
-      "content": {
-        "shape": "rectangle",
-        "label": "Media processing workers",
-        "kind": "backend",
-        "sublabel": "Thumbnails 150, 640 and 1080 px wide",
-        "details": [
-          "Read the original, write the thumbnails back",
-          "Mark the photo 'ready', then publish PhotoReady",
-          "A photo that keeps failing stays 'processing' and is never shown in a feed"
-        ]
+        "markdown": "Originals can be up to 25 MB; routing them through the gateway would make it the bottleneck. Clients send bytes straight to object storage; the upload service only signs the URL and records the result."
       }
     },
     {
@@ -192,7 +159,7 @@
       "type": "group",
       "content": {
         "label": "Storage",
-        "arrangement": "grid",
+        "arrangement": "stack",
         "takeaway": "The metadata database is the source of truth; the cache is a copy",
         "diagram": "architecture",
         "level": 1
@@ -238,11 +205,84 @@
       }
     },
     {
+      "id": "n-dec-meta",
+      "type": "text",
+      "parent": "g-storage",
+      "importance": "medium",
+      "title": "Metadata lives apart from photo bytes",
+      "content": {
+        "markdown": "Bytes go to object storage, everything queried goes to the metadata database: the two grow at very different rates and need different backups."
+      }
+    },
+    {
+      "id": "n-dec-cache",
+      "type": "text",
+      "parent": "g-storage",
+      "importance": "medium",
+      "title": "The cache is disposable",
+      "content": {
+        "markdown": "Feed pages are cached for speed only. The cache is not the source of truth; the metadata database stays it, so the cache can be flushed at any time."
+      }
+    },
+    {
+      "id": "g-async",
+      "type": "group",
+      "content": {
+        "label": "Asynchronous processing",
+        "arrangement": "stack",
+        "takeaway": "Upload and processing only meet through the queue",
+        "diagram": "architecture",
+        "level": 1
+      }
+    },
+    {
+      "id": "n-queue",
+      "type": "shape",
+      "parent": "g-async",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Message queue",
+        "kind": "messagebus",
+        "sublabel": "PhotoUploaded, PhotoReady",
+        "details": [
+          "Keeps events up to 7 days, so a worker outage within that window delays thumbnails but never loses an upload"
+        ]
+      }
+    },
+    {
+      "id": "n-workers",
+      "type": "shape",
+      "parent": "g-async",
+      "importance": "high",
+      "content": {
+        "shape": "rectangle",
+        "label": "Media processing workers",
+        "kind": "backend",
+        "sublabel": "Thumbnails 150, 640 and 1080 px wide",
+        "details": [
+          "Read the original, write the thumbnails back",
+          "Mark the photo 'ready', then publish PhotoReady",
+          "A photo that keeps failing stays 'processing' and is never shown in a feed"
+        ]
+      }
+    },
+    {
+      "id": "n-dec-queue",
+      "type": "text",
+      "parent": "g-async",
+      "importance": "medium",
+      "title": "A queue keeps thumbnails from failing uploads",
+      "content": {
+        "markdown": "A slow or failed thumbnail job must never block or fail an upload, so the upload service and the workers only meet through the message queue.\n\n**Cost:** a new photo takes a few seconds to appear in feeds."
+      }
+    },
+    {
       "id": "g-external",
       "type": "group",
       "content": {
         "label": "External (outside the Pinhole boundary)",
-        "arrangement": "grid",
+        "arrangement": "stack",
         "takeaway": "Run by third parties; Pinhole only sends them requests",
         "diagram": "architecture",
         "level": 0
@@ -273,58 +313,9 @@
       }
     },
     {
-      "id": "g-decisions",
-      "type": "group",
-      "content": {
-        "label": "Design decisions",
-        "arrangement": "grid",
-        "takeaway": "Why the system has this shape"
-      }
-    },
-    {
-      "id": "n-dec-queue",
-      "type": "text",
-      "parent": "g-decisions",
-      "importance": "medium",
-      "title": "A queue keeps thumbnails from failing uploads",
-      "content": {
-        "markdown": "A slow or failed thumbnail job must never block or fail an upload, so the upload service and the workers only meet through the message queue.\n\n**Cost:** a new photo takes a few seconds to appear in feeds."
-      }
-    },
-    {
-      "id": "n-dec-signed",
-      "type": "text",
-      "parent": "g-decisions",
-      "importance": "medium",
-      "title": "Signed URLs keep big files off the gateway",
-      "content": {
-        "markdown": "Originals can be up to 25 MB; routing them through the gateway would make it the bottleneck. Clients send bytes straight to object storage; the upload service only signs the URL and records the result."
-      }
-    },
-    {
-      "id": "n-dec-meta",
-      "type": "text",
-      "parent": "g-decisions",
-      "importance": "medium",
-      "title": "Metadata lives apart from photo bytes",
-      "content": {
-        "markdown": "Bytes go to object storage, everything queried goes to the metadata database: the two grow at very different rates and need different backups."
-      }
-    },
-    {
-      "id": "n-dec-cache",
-      "type": "text",
-      "parent": "g-decisions",
-      "importance": "medium",
-      "title": "The cache is disposable",
-      "content": {
-        "markdown": "Feed pages are cached for speed only; the metadata database stays the source of truth, so the cache can be flushed at any time."
-      }
-    },
-    {
       "id": "n-dec-buy",
       "type": "text",
-      "parent": "g-decisions",
+      "parent": "g-external",
       "importance": "medium",
       "title": "Buy CDN and push delivery, don't build them",
       "content": {
@@ -347,7 +338,7 @@
       "importance": "medium",
       "title": "Open: retrying failed processing",
       "content": {
-        "markdown": "How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet."
+        "markdown": "How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet: no retry count or backoff is set."
       }
     },
     {
@@ -379,12 +370,6 @@
       "to": "n-objstore",
       "type": "writes",
       "label": "uploads original via signed URL"
-    },
-    {
-      "from": "n-mobile",
-      "to": "n-cdn",
-      "type": "reads",
-      "label": "loads thumbnails"
     },
     {
       "from": "n-gateway",

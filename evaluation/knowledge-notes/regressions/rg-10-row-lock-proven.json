@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-row-lock-proven",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The ledger box claims its row lock holds under peak load, although the source says that has not been measured; the known-gaps card still says 'not been measured', so only the now-critical a.no-lock-proven can catch it.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-ledger",
+      "find": "Only module that writes stock",
+      "replace": "Only module that writes stock; its row lock holds under peak load"
+    }
+  ],
+  "expectFailing": [
+    "a.no-lock-proven"
+  ]
+}

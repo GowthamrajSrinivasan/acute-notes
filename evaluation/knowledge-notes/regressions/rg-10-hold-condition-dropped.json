@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-hold-condition-dropped",
+  "distortion": "condition_dropped",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The hold expiry loses its condition: every hold is released after 15 minutes, not only unconfirmed ones.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-ledger",
+      "find": "Releases holds not confirmed within 15 minutes",
+      "replace": "Releases every hold after 15 minutes"
+    }
+  ],
+  "expectFailing": [
+    "a.hold-with-ledger"
+  ]
+}

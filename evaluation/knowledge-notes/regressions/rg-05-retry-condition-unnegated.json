@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-retry-condition-unnegated",
+  "distortion": "condition_dropped",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "The condition is dropped: 'If most people retried, the email … is different' becomes 'Most people retried, so the email … is different', while the card still says nobody knows. The condition-aware a.no-retry-answer must still catch it.",
+  "mutations": [
+    { "op": "replace_text", "node": "n11", "find": "If most people retried, the email", "replace": "Most people retried, so the email" }
+  ],
+  "expectFailing": ["a.no-retry-answer"]
+}

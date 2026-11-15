@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-freeze-objection-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "The freeze card loses the disagreement: Leila's objection (the freeze moves the risk to Monday; the cause was the missing review) and Tomás's reply are gone, leaving only the proposal and its status (u55–u60).",
+  "mutations": [
+    { "op": "replace_text", "node": "n8", "find": "\n\n**Disagreement**\n- Leila: a freeze moves the risk to Monday morning, when traffic is higher; the cause was the missing review, not the day.\n- Tomás: fewer people around slows recovery for any cause.\n- Leila: recovery took 25 minutes after the alert, with Marcus on call.", "replace": "" }
+  ],
+  "expectFailing": ["a.freeze-disagreement"]
+}

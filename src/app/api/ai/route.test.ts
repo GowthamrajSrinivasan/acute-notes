@@ -20,6 +20,8 @@ function postRequest(url: string, body: unknown, token?: string): NextRequest {
   return new NextRequest(url, {
     method: "POST",
     headers: {
+      // A real request always carries Host; the local-trust gate (localTrust.ts) requires it for the logged-in-user fallback.
+      host: new URL(url).host,
       "content-type": "application/json",
       ...(token ? { authorization: `Bearer ${token}` } : {}),
     },
@@ -29,7 +31,7 @@ function postRequest(url: string, body: unknown, token?: string): NextRequest {
 
 function getRequest(url: string, token?: string): NextRequest {
   return new NextRequest(url, {
-    headers: token ? { authorization: `Bearer ${token}` } : {},
+    headers: { host: new URL(url).host, ...(token ? { authorization: `Bearer ${token}` } : {}) },
   });
 }
 

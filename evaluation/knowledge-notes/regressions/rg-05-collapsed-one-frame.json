@@ -1,0 +1,65 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-collapsed-one-frame",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "Every card is put into the action-items frame: what happened, decisions, proposals and open questions collapse into one frame too large to read whole on the fit screen.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n1",
+      "group": "g4"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n2",
+      "group": "g4"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n3",
+      "group": "g4"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n4",
+      "group": "g4"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n5",
+      "group": "g4"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n6",
+      "group": "g4"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n7",
+      "group": "g4"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n8",
+      "group": "g4"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n9",
+      "group": "g4"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n11",
+      "group": "g4"
+    }
+  ],
+  "expectFailing": [
+    "a.fit-screen",
+    "a.rendered-frames",
+    "a.frame-count"
+  ]
+}

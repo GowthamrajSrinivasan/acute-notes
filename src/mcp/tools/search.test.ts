@@ -107,3 +107,18 @@ describe("search_workspace index across calls", () => {
     expect((await search.search(token)).total).toBe(0);
   });
 });
+
+describe("suggest_placement (the Node Router over the session's index, Stage 2c)", () => {
+  it("routes over the persisted canvas, and stays incremental across calls", async () => {
+    const { state, search } = workspace(
+      { cv: [block("retries", "d-r", { version: 1 } as never), block("owners", "d-o", { version: 1 } as never)] },
+      [doc("d-r", para("Retries happen five times with exponential backoff.")), doc("d-o", para("The payments team owns the gateway."))],
+    );
+    const r = await search.route("Retries happen three times.", "cv");
+    expect(r.decision).toBe("route");
+    expect(r.candidates[0]).toMatchObject({ id: "retries", action: "update", claim: { intent: "SUPERSEDES" } });
+    expect(r.candidates[0]!.routing).not.toBe(r.candidates[0]!.update);
+    state.docs = state.docs.map((d) => (d.id === "d-o" ? { ...d, snapshot: para("The platform team owns the gateway."), updatedAt: 9 } : d));
+    expect((await search.route("The platform team owns the gateway now.", "cv")).candidates[0]!.id).toBe("owners");
+  });
+});

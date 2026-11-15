@@ -17,6 +17,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { aiMarkers, useAIMarkers } from "./aiMarkersStore";
 import { useDenseBlocks } from "./denseBlocksStore";
 import { useStaleMarkers } from "./staleMarkersStore";
+import { useKnowledgeUI } from "@/components/review/knowledgeStore";
 
 export function AIChangeMarkers({ api, canvasId }: { api: ExcalidrawImperativeAPI; canvasId: string }) {
   const ids = useAIMarkers(canvasId);
@@ -24,7 +25,9 @@ export function AIChangeMarkers({ api, canvasId }: { api: ExcalidrawImperativeAP
   // asks something of the user; its "added" dot, only news, gives way.
   const dense = useDenseBlocks(canvasId).entries;
   const stale = useStaleMarkers(canvasId);
-  const quieter = useMemo(() => new Set([...dense.map((e) => e.id), ...stale]), [dense, stale]);
+  // A distil card's source chip (knowledge-notes-plan §4.2) is its one marker too: the "added" dot gives way to it.
+  const chips = useKnowledgeUI(canvasId).chips;
+  const quieter = useMemo(() => new Set([...dense.map((e) => e.id), ...stale, ...chips]), [dense, stale, chips]);
   const layerRef = useRef<HTMLDivElement>(null);
   const [sceneVersion, setSceneVersion] = useState(0);
   const active = ids.size > 0;

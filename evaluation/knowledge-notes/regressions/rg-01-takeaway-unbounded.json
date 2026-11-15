@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-01-takeaway-unbounded",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-01-idempotency-keys",
+  "target": "plan",
+  "description": "The takeaway loses its bound and its 'not a general guarantee' half. The replay card still says '24 hours' and 'retry', which used to satisfy e.takeaway on its own.",
+  "mutations": [
+    { "op": "replace_text", "node": "g1", "find": "Retries are safe within a bounded window, not always: keys are not a general guarantee against duplicates and don't guarantee exactly-once processing.", "replace": "Retries are always safe with idempotency keys." }
+  ],
+  "expectFailing": ["a.takeaway", "a.no-absolute"]
+}

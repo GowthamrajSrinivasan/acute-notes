@@ -1,0 +1,340 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "An idempotency key is a unique value that a client attaches to a request so that the server can recognise a retry of the same operation.",
+        "hash": "pjoi7awsjo",
+        "topic": "Idempotency keys",
+        "span": {
+          "start": 20,
+          "end": 156
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.",
+        "hash": "1m5g76jvieo",
+        "topic": "Idempotency keys",
+        "span": {
+          "start": 157,
+          "end": 289
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "For example, a checkout client sends `Idempotency-Key: 7f3c-91ab` with a payment request.",
+        "hash": "n82883olks",
+        "topic": "Idempotency keys",
+        "span": {
+          "start": 291,
+          "end": 380
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "The connection drops before the response arrives, so the client retries with the same key.",
+        "hash": "1f4cf3jmsln",
+        "topic": "Idempotency keys",
+        "span": {
+          "start": 381,
+          "end": 471
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "The server finds the stored result for `7f3c-91ab` and returns the original confirmation, and the customer is charged once.",
+        "hash": "1sirupc2cam",
+        "topic": "Idempotency keys",
+        "span": {
+          "start": 472,
+          "end": 595
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "Keys only protect against duplicates while the server still remembers them.",
+        "hash": "nqxlkff0xq",
+        "topic": "Idempotency keys",
+        "span": {
+          "start": 597,
+          "end": 672
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "In this design, stored results expire after 24 hours, so a retry sent after that window is treated as a new payment.",
+        "hash": "16zh6f4qhtq",
+        "topic": "Idempotency keys",
+        "span": {
+          "start": 673,
+          "end": 789
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "sentence",
+        "text": "Keys also do not make two different requests safe: if a client reuses a key with a different amount, the server must reject the request rather than return the old result.",
+        "hash": "3g4e8559l3",
+        "topic": "Idempotency keys",
+        "span": {
+          "start": 790,
+          "end": 960
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "sentence",
+        "text": "In short, idempotency keys make retries safe within a bounded window; they are not a general guarantee against duplicate operations.",
+        "hash": "1r5yxpr7hz2",
+        "topic": "Idempotency keys",
+        "span": {
+          "start": 962,
+          "end": 1094
+        },
+        "prev": "u8"
+      }
+    ],
+    "nextId": 10
+  },
+  "cites": {
+    "u0_n1": [
+      "u1",
+      "u2",
+      "u3",
+      "u4",
+      "u5",
+      "u6",
+      "u7",
+      "u8",
+      "u9"
+    ],
+    "u0_n2": [
+      "u1",
+      "u2",
+      "u3",
+      "u4",
+      "u5",
+      "u6",
+      "u7",
+      "u8",
+      "u9"
+    ]
+  },
+  "omitted": [],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "cited",
+      "u3": "cited",
+      "u4": "cited",
+      "u5": "cited",
+      "u6": "cited",
+      "u7": "cited",
+      "u8": "cited",
+      "u9": "cited"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "represented",
+      "u3": "represented",
+      "u4": "represented",
+      "u5": "represented",
+      "u6": "represented",
+      "u7": "represented",
+      "u8": "represented",
+      "u9": "represented"
+    },
+    "critical": {
+      "u2": [
+        "condition"
+      ],
+      "u3": [
+        "protected"
+      ],
+      "u5": [
+        "protected"
+      ],
+      "u6": [
+        "requirement"
+      ],
+      "u7": [
+        "protected"
+      ],
+      "u8": [
+        "limitation",
+        "requirement",
+        "condition",
+        "protected"
+      ]
+    },
+    "flags": [],
+    "sections": [
+      {
+        "topic": "Idempotency keys",
+        "represented": 9,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      }
+    ]
+  },
+  "flags": [],
+  "hints": [
+    {
+      "code": "cause_changed",
+      "unit": "u1",
+      "card": "u0_n1",
+      "detail": "the card says \"so\"; the source states no cause",
+      "evidence": {
+        "card": "so"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u3",
+      "card": "u0_n1",
+      "detail": "the card says \"so\"; the source states no cause",
+      "evidence": {
+        "card": "so"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u6",
+      "card": "u0_n1",
+      "detail": "source says \"Keys only protect against duplicates while the server still remembers them.\"; the card negates it",
+      "evidence": {
+        "source": "Keys only protect against duplicates while the server still remembers them.",
+        "card": "they are not a general guarantee against duplicate operations.⁹"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u8",
+      "card": "u0_n1",
+      "detail": "source says \"if a client reuses a key with a different amount, the server must reject the request rather than return the old result.\"; the card negates it",
+      "evidence": {
+        "source": "if a client reuses a key with a different amount, the server must reject the request rather than return the old result.",
+        "card": "so a retry sent after that window is treated as a new payment.⁷ Keys also do not make two different requests safe"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u9",
+      "card": "u0_n1",
+      "detail": "the card says \"so\"; the source states no cause",
+      "evidence": {
+        "card": "so"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u9",
+      "card": "u0_n1",
+      "detail": "source says \"In short, idempotency keys make retries safe within a bounded window\"; the card negates it",
+      "evidence": {
+        "source": "In short, idempotency keys make retries safe within a bounded window",
+        "card": "so a retry sent after that window is treated as a new payment.⁷ Keys also do not make two different requests safe"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u0_n1",
+      "detail": "the card names \"operation.¹\"; the source doesn't",
+      "evidence": {
+        "card": "operation.¹"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u1",
+      "card": "u0_n2",
+      "detail": "source says \"An idempotency key is a unique value that a client attaches to a request so that the server can recognise a retry of the same operation.\"; the card negates it",
+      "evidence": {
+        "source": "An idempotency key is a unique value that a client attaches to a request so that the server can recognise a retry of the same operation.",
+        "card": "⁹ Idempotency keys ensure safe retries only within a specific timeframe and do not prevent all duplicate operations."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u2",
+      "card": "u0_n2",
+      "detail": "source says \"If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.\"; the card negates it",
+      "evidence": {
+        "source": "If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.",
+        "card": "⁸ Reusing a key with different request parameters (e.g., amount) requires rejection, not returning the old result."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u5",
+      "card": "u0_n2",
+      "detail": "source says \"The server finds the stored result for `7f3c-91ab` and returns the original confirmation, and the customer is charged once.\"; the card negates it",
+      "evidence": {
+        "source": "The server finds the stored result for `7f3c-91ab` and returns the original confirmation, and the customer is charged once.",
+        "card": "⁵ Server uses the key to return the original result, preventing double charging."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u6",
+      "card": "u0_n2",
+      "detail": "source says \"Keys only protect against duplicates while the server still remembers them.\"; the card negates it",
+      "evidence": {
+        "source": "Keys only protect against duplicates while the server still remembers them.",
+        "card": "⁹ Idempotency keys ensure safe retries only within a specific timeframe and do not prevent all duplicate operations."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u8",
+      "card": "u0_n2",
+      "detail": "source says \"Keys also do not make two different requests safe\"; the card drops the negation",
+      "evidence": {
+        "source": "Keys also do not make two different requests safe",
+        "card": "⁷ Stored results expire after 24 hours, making retries after this period new requests."
+      }
+    },
+    {
+      "code": "absolute_added",
+      "card": "u0_n2",
+      "detail": "the card says \"all\"; the source doesn't",
+      "evidence": {
+        "card": "all"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u0_n2",
+      "detail": "the card names \"e.g\"; the source doesn't",
+      "evidence": {
+        "card": "e.g"
+      }
+    }
+  ],
+  "reviews": {}
+}

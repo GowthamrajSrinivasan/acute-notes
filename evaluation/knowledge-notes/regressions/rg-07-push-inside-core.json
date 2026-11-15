@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-push-inside-core",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The third-party push provider is drawn inside the Core services frame, next to the feed service, across the system boundary (u25). Proves the narrowed e.push match still finds the provider.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n-push",
+      "group": "g-core"
+    }
+  ],
+  "expectFailing": [
+    "a.apart-push",
+    "a.in-push"
+  ]
+}

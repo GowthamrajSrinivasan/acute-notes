@@ -849,6 +849,27 @@ describe("Lens Phase 2: a scripted map opened in Lens down to L5, with D21 ident
     expect(root.edges.some((e) => e.relation === "publishes")).toBe(true);
   });
 
+  it("stale-target (update_shape): a relabel staged by upsert_map_section carries the label it was planned against; a label the user edits before Accept is never overwritten", async () => {
+    const { w, mapId } = await mapped();
+    const card = w.canvas.cardOf("mod:payments")!;
+    const labelOf = () => w.canvas.elements.find((e) => e.type === "text" && e.containerId === card.id && !e.isDeleted) as (El & { text: string; originalText?: string }) | undefined;
+    const changed = overview({
+      nodes: [
+        { key: "mod:payments", type: "shape", shape: "rectangle", label: "Billing", kind: "backend", source: { path: "src/payments/index.ts" } },
+        { key: "mod:orders", type: "text", title: "Orders", markdown: "Order lifecycle", kind: "backend" },
+      ],
+    });
+    expect((await call(w, "upsert_map_section", { mapId, ...changed })).isError).toBeFalsy();
+    const relabel = w.canvas.set!.changes.find((c) => c.kind === "update_shape" && c.target === card.id);
+    expect(relabel).toMatchObject({ label: "Billing", expectedFingerprint: expect.stringMatching(/^s/) });
+    // The user retypes the label while the relabel waits for review.
+    Object.assign(labelOf()!, { text: "Payments (mine)", originalText: "Payments (mine)" });
+    const r = w.canvas.accept()!;
+    expect(labelOf()!.text).toBe("Payments (mine)");
+    expect(r.applied.some((c) => c.kind === "update_shape")).toBe(false);
+    expect(r.dropped).toEqual(expect.arrayContaining([expect.objectContaining({ reason: "target_changed", change: expect.objectContaining({ kind: "update_shape", target: card.id }) })]));
+  });
+
   it("(2) a node the user edited comes back as a conflict when the agent sends its key again — never overwritten", async () => {
     const { w, mapId } = await mapped();
     w.canvas.edit("mod:orders", "My own note about orders");

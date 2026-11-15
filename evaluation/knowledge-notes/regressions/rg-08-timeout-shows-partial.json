@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-timeout-shows-partial",
+  "distortion": "invented_detail",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "The timeout path borrows the citation path's outcome: a timed-out model call shows the partial answer (the source says no partial answer is shown, u29).",
+  "mutations": [
+    { "op": "replace_text", "node": "c-timeout", "find": "error → HTTP 504; never a partial answer", "replace": "error → HTTP 504 and shows the partial answer" }
+  ],
+  "expectFailing": ["a.no-partial-on-timeout", "a.timeout-path"]
+}

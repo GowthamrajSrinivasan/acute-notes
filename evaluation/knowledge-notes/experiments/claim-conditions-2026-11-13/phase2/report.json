@@ -1,0 +1,1711 @@
+{
+  "at": "2026-11-13",
+  "cost": "$0 (no model call)",
+  "data": "recordings/2026-10-19-distil-gemini-flash (saved output)",
+  "root": "evaluation/knowledge-notes",
+  "devPhase1": [
+    {
+      "caseId": "kn-01-idempotency-keys",
+      "reviewed": 4,
+      "extracted": 10,
+      "matched": 3,
+      "bindingAgree": 3,
+      "missed": [
+        "kn01.replay.window"
+      ]
+    },
+    {
+      "caseId": "kn-02-edge-cache-invalidation",
+      "reviewed": 16,
+      "extracted": 44,
+      "matched": 5,
+      "bindingAgree": 2,
+      "missed": [
+        "kn02.ttl.guess",
+        "kn02.purge.rate",
+        "kn02.walkthrough.bound",
+        "kn02.surrogate.tagged",
+        "kn02.surrogate.silent",
+        "kn02.surrogate.burst",
+        "kn02.swr.bound",
+        "kn02.swr.tolerance",
+        "kn02.versioned.html",
+        "kn02.versioned.still-need",
+        "kn02.versioned.old-assets"
+      ]
+    }
+  ],
+  "dev": {
+    "aggregate": {
+      "cases": 2,
+      "extraction": {
+        "reviewed": 26,
+        "extracted": 36,
+        "matched": 12,
+        "precision": 0.33,
+        "recall": 0.46,
+        "binding": {
+          "claim_claim": 10,
+          "claim_set": 1,
+          "set_claim": 1,
+          "set_set": 0
+        },
+        "bindingAccuracy": 0.83
+      },
+      "integrity": {
+        "pairs": 29,
+        "truthFailures": 10,
+        "oracle": {
+          "tp": 8,
+          "fp": 5,
+          "fn": 2,
+          "tn": 14,
+          "precision": 0.62,
+          "recall": 0.8
+        },
+        "oracleRecordsAutoCards": {
+          "tp": 4,
+          "fp": 7,
+          "fn": 6,
+          "tn": 18,
+          "precision": 0.36,
+          "recall": 0.4
+        },
+        "endToEnd": {
+          "tp": 1,
+          "fp": 9,
+          "fn": 9,
+          "tn": 37,
+          "precision": 0.1,
+          "recall": 0.1
+        },
+        "rules": {
+          "tp": 2,
+          "fp": 5,
+          "fn": 8,
+          "tn": 14,
+          "precision": 0.29,
+          "recall": 0.2
+        }
+      },
+      "coverage": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0,
+        "tn": 24,
+        "precision": 0,
+        "recall": null
+      },
+      "carriers": {
+        "tp": 29,
+        "fp": 8,
+        "fn": 16,
+        "tn": 1005,
+        "precision": 0.78,
+        "recall": 0.64
+      },
+      "citation": {
+        "cardsWithAnyCite": 0.79,
+        "claimCardsCitingClaim": 0.73,
+        "carriersCitingCondition": 0.69,
+        "citedButNotConveyed": 2
+      }
+    },
+    "perCase": [
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "extraction": {
+          "reviewed": 14,
+          "extracted": 23,
+          "matched": 8,
+          "precision": 0.35,
+          "recall": 0.57,
+          "binding_truth_vs_extracted": {
+            "claim_claim": 8,
+            "claim_set": 0,
+            "set_claim": 0,
+            "set_set": 0
+          },
+          "missed": [
+            "r1 u10+u27→u5 (claim)",
+            "r2 u13→u16 (claim)",
+            "r10 u29+u30→u23 (claim)",
+            "r11 u26→u22 (set)",
+            "r13 u6→u3+u4 (set)",
+            "r14 u2→u1 (set)"
+          ],
+          "spurious": 15
+        },
+        "integrity": {
+          "pairs": 13,
+          "truthFailures": 4,
+          "oracle": {
+            "tp": 4,
+            "fp": 1,
+            "fn": 0,
+            "tn": 8,
+            "precision": 0.8,
+            "recall": 1,
+            "fpList": [
+              "r12|u3_n1"
+            ],
+            "fnList": [],
+            "outcomeAgreement5way": 0.85
+          },
+          "oracleRecordsAutoCards": {
+            "tp": 3,
+            "fp": 2,
+            "fn": 1,
+            "tn": 8,
+            "precision": 0.6,
+            "recall": 0.75,
+            "fpList": [
+              "r12|u3_n1",
+              "r10|u2_n14"
+            ],
+            "fnList": [
+              "r1|u0_n2"
+            ]
+          },
+          "endToEnd": {
+            "tp": 0,
+            "fp": 7,
+            "fn": 4,
+            "tn": 15,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "r12|u3_n1",
+              "spurious:x3|u2_n4",
+              "spurious:x5|u2_n4",
+              "spurious:x7|u2_n2",
+              "spurious:x16|u3_n2",
+              "spurious:x20|u2_n4",
+              "spurious:x21|u0_n1"
+            ],
+            "fnList": [
+              "r1|u0_n1",
+              "r1|u0_n2",
+              "r2|u2_n4",
+              "r10|u2_n15"
+            ]
+          },
+          "rules": {
+            "tp": 1,
+            "fp": 2,
+            "fn": 3,
+            "tn": 7,
+            "precision": 0.33,
+            "recall": 0.25,
+            "fpList": [
+              "r9|u2_a3",
+              "r12|u3_n1"
+            ],
+            "fnList": [
+              "r1|u0_n1",
+              "r2|u2_n4",
+              "r10|u2_n15"
+            ]
+          }
+        },
+        "coverage": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "tn": 12,
+          "precision": 0,
+          "recall": null,
+          "fpList": [
+            "r10",
+            "r12"
+          ],
+          "fnList": []
+        },
+        "carriers": {
+          "tp": 16,
+          "fp": 4,
+          "fn": 7,
+          "tn": 575,
+          "precision": 0.8,
+          "recall": 0.7,
+          "fpList": [
+            "r7|u2_n6",
+            "r7|u3_n2",
+            "r7|u3_n4",
+            "r11|u3_n1"
+          ],
+          "fnList": [
+            "r1|u3_n3",
+            "r9|g2",
+            "r10|u3_n5",
+            "r10|u3_n6",
+            "r12|u3_n1",
+            "r13|u0_n2",
+            "r14|u4_a1"
+          ]
+        },
+        "citation": {
+          "cardsWithAnyCite": 0.86,
+          "cards": 37,
+          "claimCardsCitingClaim": 0.88,
+          "claimCardRefs": 16,
+          "carriersCitingCondition": 0.74,
+          "carrierRefs": 23,
+          "citedButNotConveyed": 0
+        }
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "extraction": {
+          "reviewed": 12,
+          "extracted": 13,
+          "matched": 4,
+          "precision": 0.31,
+          "recall": 0.33,
+          "binding_truth_vs_extracted": {
+            "claim_claim": 2,
+            "claim_set": 1,
+            "set_claim": 1,
+            "set_set": 0
+          },
+          "missed": [
+            "r1 u18→u21+u22+u23+u24+u25 (claim)",
+            "r2 u16+u17→u13 (claim)",
+            "r4 u27+u44→u26 (set)",
+            "r6 u30→u14 (claim)",
+            "r8 u34→u15 (set)",
+            "r9 u38→u36+u37 (claim)",
+            "r10 u39+u40→u40 (claim)",
+            "r12 u3→u3 (claim)"
+          ],
+          "spurious": 9
+        },
+        "integrity": {
+          "pairs": 16,
+          "truthFailures": 6,
+          "oracle": {
+            "tp": 4,
+            "fp": 4,
+            "fn": 2,
+            "tn": 6,
+            "precision": 0.5,
+            "recall": 0.67,
+            "fpList": [
+              "r1|u1_n2",
+              "r2|u5_n1",
+              "r3|u5_n3",
+              "r7|u2_a1"
+            ],
+            "fnList": [
+              "r3|u5_a1",
+              "r6|u5_n1"
+            ],
+            "outcomeAgreement5way": 0.63
+          },
+          "oracleRecordsAutoCards": {
+            "tp": 1,
+            "fp": 5,
+            "fn": 5,
+            "tn": 10,
+            "precision": 0.17,
+            "recall": 0.17,
+            "fpList": [
+              "r1|u1_n2",
+              "r2|u5_n1",
+              "r3|u5_n3",
+              "r1|u2_a1",
+              "r11|u5_n1"
+            ],
+            "fnList": [
+              "r2|u5_n2",
+              "r3|u5_a1",
+              "r6|u5_n1",
+              "r6|u5_n2",
+              "r11|u3_a1"
+            ]
+          },
+          "endToEnd": {
+            "tp": 1,
+            "fp": 2,
+            "fn": 5,
+            "tn": 22,
+            "precision": 0.33,
+            "recall": 0.17,
+            "fpList": [
+              "spurious:x4|u3_n3",
+              "spurious:x4|u3_a1"
+            ],
+            "fnList": [
+              "r2|u5_n2",
+              "r3|u5_a1",
+              "r6|u5_n1",
+              "r6|u5_n2",
+              "r11|u3_a1"
+            ]
+          },
+          "rules": {
+            "tp": 1,
+            "fp": 3,
+            "fn": 5,
+            "tn": 7,
+            "precision": 0.25,
+            "recall": 0.17,
+            "fpList": [
+              "r7|u2_n1",
+              "r7|u2_a1",
+              "r12|u4_a1"
+            ],
+            "fnList": [
+              "r2|u5_n2",
+              "r3|u5_a1",
+              "r6|u5_n1",
+              "r6|u5_n2",
+              "r11|u3_n1"
+            ]
+          }
+        },
+        "coverage": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 12,
+          "precision": null,
+          "recall": null,
+          "fpList": [],
+          "fnList": []
+        },
+        "carriers": {
+          "tp": 13,
+          "fp": 4,
+          "fn": 9,
+          "tn": 430,
+          "precision": 0.76,
+          "recall": 0.59,
+          "fpList": [
+            "r3|u5_a1",
+            "r6|u5_n1",
+            "r9|u3_n7",
+            "r11|u6_n1"
+          ],
+          "fnList": [
+            "r1|g1",
+            "r2|u5_n1",
+            "r2|u5_n3",
+            "r3|u5_n3",
+            "r4|u2_a1",
+            "r4|u3_n3",
+            "r4|u3_a1",
+            "r6|u2_a1",
+            "r10|g6"
+          ]
+        },
+        "citation": {
+          "cardsWithAnyCite": 0.7,
+          "cards": 30,
+          "claimCardsCitingClaim": 0.62,
+          "claimCardRefs": 21,
+          "carriersCitingCondition": 0.64,
+          "carrierRefs": 22,
+          "citedButNotConveyed": 2
+        }
+      }
+    ]
+  },
+  "final": {
+    "frozenAt": "2026-11-13T15:20:42.729Z",
+    "scoredCode": {
+      "extract.ts": "2d46ae52eecaf655f6ea0e0c6b787eb24ff2ce22a876f9bda860cce0a455d593",
+      "clauseCheck.ts": "bf3c94a5f8d86d011b7bdac1cef75524e1254d1428f58d41b1231eafed0f3b68",
+      "checker.ts": "d258dab7bda35eea6b44994f4eeecfe82eb4b1b6b0083c60ca12927228735e32",
+      "data.ts": "7332ff52d931a31dc88c9b4d72e6f87cfcebcf7de524fd4b0b4a29a248dbd0ec",
+      "phase2.test.ts": "03efe8070a35526aa52e3aedc6588b27519bd7d6124a30020cdce5f58115e997"
+    },
+    "aggregate": {
+      "cases": 8,
+      "extraction": {
+        "reviewed": 86,
+        "extracted": 191,
+        "matched": 27,
+        "precision": 0.14,
+        "recall": 0.31,
+        "binding": {
+          "claim_claim": 16,
+          "claim_set": 2,
+          "set_claim": 6,
+          "set_set": 3
+        },
+        "bindingAccuracy": 0.7
+      },
+      "integrity": {
+        "pairs": 94,
+        "truthFailures": 29,
+        "oracle": {
+          "tp": 28,
+          "fp": 17,
+          "fn": 1,
+          "tn": 48,
+          "precision": 0.62,
+          "recall": 0.97
+        },
+        "oracleRecordsAutoCards": {
+          "tp": 10,
+          "fp": 28,
+          "fn": 19,
+          "tn": 61,
+          "precision": 0.26,
+          "recall": 0.34
+        },
+        "endToEnd": {
+          "tp": 0,
+          "fp": 107,
+          "fn": 29,
+          "tn": 187,
+          "precision": 0,
+          "recall": 0
+        },
+        "rules": {
+          "tp": 12,
+          "fp": 22,
+          "fn": 17,
+          "tn": 43,
+          "precision": 0.35,
+          "recall": 0.41
+        }
+      },
+      "coverage": {
+        "tp": 0,
+        "fp": 10,
+        "fn": 0,
+        "tn": 76,
+        "precision": 0,
+        "recall": null
+      },
+      "carriers": {
+        "tp": 88,
+        "fp": 21,
+        "fn": 68,
+        "tn": 5070,
+        "precision": 0.81,
+        "recall": 0.56
+      },
+      "citation": {
+        "cardsWithAnyCite": 0.79,
+        "claimCardsCitingClaim": 0.62,
+        "carriersCitingCondition": 0.62,
+        "citedButNotConveyed": 1
+      }
+    },
+    "perCase": [
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "extraction": {
+          "reviewed": 10,
+          "extracted": 24,
+          "matched": 3,
+          "precision": 0.13,
+          "recall": 0.3,
+          "binding_truth_vs_extracted": {
+            "claim_claim": 3,
+            "claim_set": 0,
+            "set_claim": 0,
+            "set_set": 0
+          },
+          "missed": [
+            "r2 u29→u33 (claim)",
+            "r3 u30+u31→u33 (set)",
+            "r4 u59+u56→u59 (claim)",
+            "r6 u74+u75+u76→u63 (claim)",
+            "r8 u80+u81+u82+u83→u79 (set)",
+            "r9 u86+u87+u88→u79 (claim)",
+            "r10 u90+u91+u93+u94→u95+u96 (set)"
+          ],
+          "spurious": 21
+        },
+        "integrity": {
+          "pairs": 14,
+          "truthFailures": 1,
+          "oracle": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 0,
+            "tn": 12,
+            "precision": 0.5,
+            "recall": 1,
+            "fpList": [
+              "r9|u0_u1_n7"
+            ],
+            "fnList": [],
+            "outcomeAgreement5way": 0.86
+          },
+          "oracleRecordsAutoCards": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 1,
+            "tn": 12,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "r9|u0_u1_n7",
+              "r1|u0_u0_n11",
+              "r1|u0_ax1"
+            ],
+            "fnList": [
+              "r4|u0_u0_n19"
+            ]
+          },
+          "endToEnd": {
+            "tp": 0,
+            "fp": 19,
+            "fn": 1,
+            "tn": 29,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "spurious:x1|u0_ax1",
+              "spurious:x3|u0_ax1",
+              "r1|u0_u0_n11",
+              "r1|u0_ax1",
+              "spurious:x5|u0_u0_n9",
+              "spurious:x8|u0_u0_n14",
+              "spurious:x10|u0_ax1",
+              "spurious:x10|u0_ax3",
+              "spurious:x12|u0_u0_n18",
+              "spurious:x12|u0_u0_n19",
+              "spurious:x12|u0_ax1",
+              "spurious:x12|u0_ax3",
+              "spurious:x13|u0_u1_n4",
+              "spurious:x13|u0_u1_n9",
+              "spurious:x17|u0_u0_n13",
+              "spurious:x17|u0_u0_n14",
+              "spurious:x17|u0_u0_n15",
+              "spurious:x17|u0_u0_n16",
+              "spurious:x17|u0_ax1"
+            ],
+            "fnList": [
+              "r4|u0_u0_n19"
+            ]
+          },
+          "rules": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 1,
+            "tn": 9,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "r1|u0_ax3",
+              "r2|u0_ax1",
+              "r4|u0_ax1",
+              "r6|u0_ax2"
+            ],
+            "fnList": [
+              "r4|u0_u0_n19"
+            ]
+          }
+        },
+        "coverage": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "tn": 9,
+          "precision": 0,
+          "recall": null,
+          "fpList": [
+            "r9"
+          ],
+          "fnList": []
+        },
+        "carriers": {
+          "tp": 15,
+          "fp": 0,
+          "fn": 5,
+          "tn": 340,
+          "precision": 1,
+          "recall": 0.75,
+          "fpList": [],
+          "fnList": [
+            "r6|g0",
+            "r8|u0_ax2",
+            "r9|g0",
+            "r9|u0_u1_n9",
+            "r9|u0_ax2"
+          ]
+        },
+        "citation": {
+          "cardsWithAnyCite": 0.8,
+          "cards": 35,
+          "claimCardsCitingClaim": 0.5,
+          "claimCardRefs": 20,
+          "carriersCitingCondition": 0.5,
+          "carrierRefs": 20,
+          "citedButNotConveyed": 1
+        }
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "extraction": {
+          "reviewed": 12,
+          "extracted": 34,
+          "matched": 5,
+          "precision": 0.15,
+          "recall": 0.42,
+          "binding_truth_vs_extracted": {
+            "claim_claim": 3,
+            "claim_set": 1,
+            "set_claim": 0,
+            "set_set": 1
+          },
+          "missed": [
+            "r4 u31+u49→u31 (set)",
+            "r5 u32→u31+u28 (claim)",
+            "r6 u33→u28 (set)",
+            "r7 u35→u34 (set)",
+            "r8 u36→u36 (set)",
+            "r9 u46+u39→u41+u42+u43+u44 (claim)",
+            "r11 u14→u14 (claim)"
+          ],
+          "spurious": 29
+        },
+        "integrity": {
+          "pairs": 23,
+          "truthFailures": 8,
+          "oracle": {
+            "tp": 8,
+            "fp": 4,
+            "fn": 0,
+            "tn": 11,
+            "precision": 0.67,
+            "recall": 1,
+            "fpList": [
+              "r5|g3",
+              "r5|u4_ax1",
+              "r5|u4_n2",
+              "r5|u7_n4"
+            ],
+            "fnList": [],
+            "outcomeAgreement5way": 0.7
+          },
+          "oracleRecordsAutoCards": {
+            "tp": 3,
+            "fp": 2,
+            "fn": 5,
+            "tn": 14,
+            "precision": 0.6,
+            "recall": 0.38,
+            "fpList": [
+              "r5|u4_n2",
+              "r5|u3_n14"
+            ],
+            "fnList": [
+              "r1|g2",
+              "r1|g1",
+              "r1|u2_a1",
+              "r1|u7_n2",
+              "r9|g5"
+            ]
+          },
+          "endToEnd": {
+            "tp": 0,
+            "fp": 14,
+            "fn": 8,
+            "tn": 44,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "spurious:x2|u1_n2",
+              "spurious:x3|u2_n1",
+              "spurious:x4|u2_n2",
+              "spurious:x11|u4_n2",
+              "spurious:x16|u1_n1",
+              "spurious:x21|u3_n14",
+              "spurious:x21|u3_ax3",
+              "spurious:x21|u4_n5",
+              "spurious:x22|u5_n7",
+              "spurious:x23|u3_n14",
+              "spurious:x25|u1_n1",
+              "spurious:x31|u3_n9",
+              "spurious:x31|u3_ax1",
+              "spurious:x33|u5_n4"
+            ],
+            "fnList": [
+              "r1|g2",
+              "r1|g1",
+              "r1|u2_a1",
+              "r1|u7_n2",
+              "r9|u6_n2",
+              "r9|u6_n3",
+              "r9|u6_a1",
+              "r9|g5"
+            ]
+          },
+          "rules": {
+            "tp": 3,
+            "fp": 7,
+            "fn": 5,
+            "tn": 8,
+            "precision": 0.3,
+            "recall": 0.38,
+            "fpList": [
+              "r1|u3_ax1",
+              "r1|u3_ax4",
+              "r2|u3_ax3",
+              "r3|u4_ax2",
+              "r5|u4_ax1",
+              "r5|u7_n4",
+              "r11|u2_a1"
+            ],
+            "fnList": [
+              "r1|g2",
+              "r1|g1",
+              "r9|u6_n2",
+              "r9|u6_n3",
+              "r9|g5"
+            ]
+          }
+        },
+        "coverage": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 12,
+          "precision": null,
+          "recall": null,
+          "fpList": [],
+          "fnList": []
+        },
+        "carriers": {
+          "tp": 13,
+          "fp": 3,
+          "fn": 13,
+          "tn": 667,
+          "precision": 0.81,
+          "recall": 0.5,
+          "fpList": [
+            "r2|u6_n4",
+            "r2|u6_n6",
+            "r9|u6_n1"
+          ],
+          "fnList": [
+            "r1|u3_ax1",
+            "r1|u3_ax4",
+            "r4|g6",
+            "r4|u7_n7",
+            "r5|g3",
+            "r5|u4_ax1",
+            "r5|u4_ax3",
+            "r6|g3",
+            "r6|u4_ax3",
+            "r8|g4",
+            "r8|u5_a1",
+            "r9|u6_n5",
+            "r11|u2_a1"
+          ]
+        },
+        "citation": {
+          "cardsWithAnyCite": 0.73,
+          "cards": 49,
+          "claimCardsCitingClaim": 0.36,
+          "claimCardRefs": 36,
+          "carriersCitingCondition": 0.5,
+          "carrierRefs": 26,
+          "citedButNotConveyed": 0
+        }
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "extraction": {
+          "reviewed": 13,
+          "extracted": 25,
+          "matched": 4,
+          "precision": 0.16,
+          "recall": 0.31,
+          "binding_truth_vs_extracted": {
+            "claim_claim": 0,
+            "claim_set": 0,
+            "set_claim": 3,
+            "set_set": 1
+          },
+          "missed": [
+            "r1 u10→u9 (claim)",
+            "r2 u9→u9 (set)",
+            "r3 u11→u8 (claim)",
+            "r6 u19→u19 (claim)",
+            "r7 u20→u31+u32 (claim)",
+            "r8 u23→u14+u23 (set)",
+            "r11 u27→u18+u32 (set)",
+            "r12 u18→u18+u32 (claim)",
+            "r13 u39→u20 (set)"
+          ],
+          "spurious": 21
+        },
+        "integrity": {
+          "pairs": 8,
+          "truthFailures": 4,
+          "oracle": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 1,
+            "tn": 4,
+            "precision": 1,
+            "recall": 0.75,
+            "fpList": [],
+            "fnList": [
+              "r12|u3_n8"
+            ],
+            "outcomeAgreement5way": 0.88
+          },
+          "oracleRecordsAutoCards": {
+            "tp": 1,
+            "fp": 7,
+            "fn": 3,
+            "tn": 5,
+            "precision": 0.13,
+            "recall": 0.25,
+            "fpList": [
+              "r3|u2_n5",
+              "r3|u2_a1",
+              "r7|u2_n23",
+              "r7|u2_n24",
+              "r7|u3_n5",
+              "r7|u3_n6",
+              "r7|u3_n7"
+            ],
+            "fnList": [
+              "r7|u3_a2",
+              "r12|u3_n8",
+              "r12|u3_a2"
+            ]
+          },
+          "endToEnd": {
+            "tp": 0,
+            "fp": 21,
+            "fn": 4,
+            "tn": 11,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "spurious:x1|u1_n4",
+              "spurious:x1|u1_ax4",
+              "spurious:x2|u1_n3",
+              "spurious:x3|u6_n2",
+              "spurious:x3|u6_a1",
+              "spurious:x4|u4_n4",
+              "r4|u2_n19",
+              "r4|u4_n4",
+              "spurious:x7|u5_n2",
+              "spurious:x9|u2_n22",
+              "spurious:x10|u4_n2",
+              "spurious:x11|u2_n24",
+              "spurious:x15|u4_n10",
+              "spurious:x19|u2_n19",
+              "spurious:x19|u3_n1",
+              "spurious:x19|u3_n2",
+              "spurious:x22|u4_n8",
+              "spurious:x23|u5_n1",
+              "r10|u4_n10",
+              "spurious:x25|u6_n1",
+              "spurious:x25|u6_a1"
+            ],
+            "fnList": [
+              "r7|u3_n8",
+              "r7|u3_a2",
+              "r12|u3_n8",
+              "r12|u3_a2"
+            ]
+          },
+          "rules": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 2,
+            "tn": 4,
+            "precision": 1,
+            "recall": 0.5,
+            "fpList": [],
+            "fnList": [
+              "r7|u3_n8",
+              "r12|u3_n8"
+            ]
+          }
+        },
+        "coverage": {
+          "tp": 0,
+          "fp": 3,
+          "fn": 0,
+          "tn": 10,
+          "precision": 0,
+          "recall": null,
+          "fpList": [
+            "r4",
+            "r10",
+            "r13"
+          ],
+          "fnList": []
+        },
+        "carriers": {
+          "tp": 9,
+          "fp": 5,
+          "fn": 5,
+          "tn": 982,
+          "precision": 0.64,
+          "recall": 0.64,
+          "fpList": [
+            "r5|u2_n26",
+            "r6|u2_n29",
+            "r6|u4_n8",
+            "r6|u4_a1",
+            "r12|u3_n8"
+          ],
+          "fnList": [
+            "r4|u2_n19",
+            "r5|u4_n2",
+            "r10|u4_n10",
+            "r13|u6_n1",
+            "r13|u6_a1"
+          ]
+        },
+        "citation": {
+          "cardsWithAnyCite": 0.78,
+          "cards": 69,
+          "claimCardsCitingClaim": 0.66,
+          "claimCardRefs": 29,
+          "carriersCitingCondition": 0.93,
+          "carrierRefs": 14,
+          "citedButNotConveyed": 0
+        }
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "extraction": {
+          "reviewed": 10,
+          "extracted": 7,
+          "matched": 1,
+          "precision": 0.14,
+          "recall": 0.1,
+          "binding_truth_vs_extracted": {
+            "claim_claim": 0,
+            "claim_set": 0,
+            "set_claim": 1,
+            "set_set": 0
+          },
+          "missed": [
+            "r1 u25→u21 (claim)",
+            "r2 u26→u25 (set)",
+            "r4 u8→u8 (set)",
+            "r5 u9→u6 (set)",
+            "r6 u27→u27+u12 (set)",
+            "r7 u28→u27 (set)",
+            "r8 u29→u24 (claim)",
+            "r9 u30→u14+u27 (set)",
+            "r10 u16→u16 (set)"
+          ],
+          "spurious": 6
+        },
+        "integrity": {
+          "pairs": 5,
+          "truthFailures": 5,
+          "oracle": {
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "precision": 1,
+            "recall": 1,
+            "fpList": [],
+            "fnList": [],
+            "outcomeAgreement5way": 1
+          },
+          "oracleRecordsAutoCards": {
+            "tp": 3,
+            "fp": 4,
+            "fn": 2,
+            "tn": 2,
+            "precision": 0.43,
+            "recall": 0.6,
+            "fpList": [
+              "r1|u3_n7",
+              "r8|u2_n1",
+              "r8|u2_a1",
+              "r8|u3_n15"
+            ],
+            "fnList": [
+              "r1|u3_a1",
+              "r8|u3_a3"
+            ]
+          },
+          "endToEnd": {
+            "tp": 0,
+            "fp": 8,
+            "fn": 5,
+            "tn": 7,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "spurious:x1|u3_n5",
+              "spurious:x1|u3_n6",
+              "spurious:x1|u3_a1",
+              "r3|u2_a1",
+              "spurious:x3|u2_a1",
+              "spurious:x3|u2_a2",
+              "spurious:x7|u2_n1",
+              "spurious:x7|u5_n4"
+            ],
+            "fnList": [
+              "r1|u3_n8",
+              "r1|u3_a1",
+              "r8|u3_n16",
+              "r8|u3_a1",
+              "r8|u3_a3"
+            ]
+          },
+          "rules": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 2,
+            "tn": 0,
+            "precision": 1,
+            "recall": 0.6,
+            "fpList": [],
+            "fnList": [
+              "r1|u3_n8",
+              "r8|u3_n16"
+            ]
+          }
+        },
+        "coverage": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 10,
+          "precision": null,
+          "recall": null,
+          "fpList": [],
+          "fnList": []
+        },
+        "carriers": {
+          "tp": 12,
+          "fp": 4,
+          "fn": 7,
+          "tn": 547,
+          "precision": 0.75,
+          "recall": 0.63,
+          "fpList": [
+            "r2|u3_n8",
+            "r2|u3_n9",
+            "r10|u2_n1",
+            "r10|u2_a1"
+          ],
+          "fnList": [
+            "r1|u3_a2",
+            "r2|u3_a2",
+            "r5|g1",
+            "r5|u2_n2",
+            "r5|u2_a1",
+            "r5|u2_a2",
+            "r9|u6_a1"
+          ]
+        },
+        "citation": {
+          "cardsWithAnyCite": 0.79,
+          "cards": 48,
+          "claimCardsCitingClaim": 0.78,
+          "claimCardRefs": 23,
+          "carriersCitingCondition": 0.79,
+          "carrierRefs": 19,
+          "citedButNotConveyed": 0
+        }
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "extraction": {
+          "reviewed": 8,
+          "extracted": 22,
+          "matched": 0,
+          "precision": 0,
+          "recall": 0,
+          "binding_truth_vs_extracted": {
+            "claim_claim": 0,
+            "claim_set": 0,
+            "set_claim": 0,
+            "set_set": 0
+          },
+          "missed": [
+            "r1 u4→u1 (set)",
+            "r2 u22→u21 (claim)",
+            "r3 u28+u29→u27 (claim)",
+            "r4 u31→u30 (set)",
+            "r5 u34+u35→u30+u18 (set)",
+            "r6 u42+u43→u39+u40 (claim)",
+            "r7 u46→u45 (set)",
+            "r8 u49→u48 (claim)"
+          ],
+          "spurious": 22
+        },
+        "integrity": {
+          "pairs": 13,
+          "truthFailures": 4,
+          "oracle": {
+            "tp": 4,
+            "fp": 5,
+            "fn": 0,
+            "tn": 4,
+            "precision": 0.44,
+            "recall": 1,
+            "fpList": [
+              "r3|u3_n8",
+              "r3|u3_ax1",
+              "r3|u9_n2",
+              "r6|u6_n4",
+              "r6|u6_n5"
+            ],
+            "fnList": [],
+            "outcomeAgreement5way": 0.54
+          },
+          "oracleRecordsAutoCards": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 4,
+            "tn": 5,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "r3|u3_n8",
+              "r3|u3_ax1",
+              "r6|u6_n4",
+              "r6|u6_n5"
+            ],
+            "fnList": [
+              "r6|u1_n12",
+              "r6|u3_n7",
+              "r6|u1_a1",
+              "r8|g7"
+            ]
+          },
+          "endToEnd": {
+            "tp": 0,
+            "fp": 10,
+            "fn": 4,
+            "tn": 19,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "spurious:x1|u2_a1",
+              "spurious:x3|u2_n6",
+              "spurious:x3|u2_n7",
+              "spurious:x3|u2_a1",
+              "spurious:x4|u2_n6",
+              "spurious:x5|u2_n1",
+              "spurious:x7|u9_n2",
+              "spurious:x9|u5_n3",
+              "spurious:x18|u3_n2",
+              "spurious:x19|u8_n3"
+            ],
+            "fnList": [
+              "r6|u1_n12",
+              "r6|u3_n7",
+              "r6|u1_a1",
+              "r8|g7"
+            ]
+          },
+          "rules": {
+            "tp": 1,
+            "fp": 5,
+            "fn": 3,
+            "tn": 4,
+            "precision": 0.17,
+            "recall": 0.25,
+            "fpList": [
+              "r2|u4_n1",
+              "r3|u4_n1",
+              "r3|u4_a1",
+              "r3|u3_ax1",
+              "r8|u8_n1"
+            ],
+            "fnList": [
+              "r6|u1_n12",
+              "r6|u3_n7",
+              "r8|g7"
+            ]
+          }
+        },
+        "coverage": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "tn": 7,
+          "precision": 0,
+          "recall": null,
+          "fpList": [
+            "r5"
+          ],
+          "fnList": []
+        },
+        "carriers": {
+          "tp": 8,
+          "fp": 0,
+          "fn": 15,
+          "tn": 617,
+          "precision": 1,
+          "recall": 0.35,
+          "fpList": [],
+          "fnList": [
+            "r3|g2",
+            "r3|u3_n8",
+            "r3|u3_ax1",
+            "r3|g3",
+            "r3|u4_a1",
+            "r3|u9_n2",
+            "r5|g2",
+            "r5|u3_n8",
+            "r5|u3_ax1",
+            "r5|g4",
+            "r5|u5_n5",
+            "r5|u5_n6",
+            "r5|u5_a1",
+            "r6|g5",
+            "r6|u6_n8"
+          ]
+        },
+        "citation": {
+          "cardsWithAnyCite": 0.84,
+          "cards": 68,
+          "claimCardsCitingClaim": 0.5,
+          "claimCardRefs": 20,
+          "carriersCitingCondition": 0.43,
+          "carrierRefs": 23,
+          "citedButNotConveyed": 0
+        }
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "extraction": {
+          "reviewed": 10,
+          "extracted": 41,
+          "matched": 4,
+          "precision": 0.1,
+          "recall": 0.4,
+          "binding_truth_vs_extracted": {
+            "claim_claim": 0,
+            "claim_set": 1,
+            "set_claim": 2,
+            "set_set": 1
+          },
+          "missed": [
+            "r2 u14→u13 (set)",
+            "r4 u36+u37+u38→u34 (set)",
+            "r6 u26→u24 (claim)",
+            "r7 u50→u38+u7 (set)",
+            "r8 u49→u18+u46 (set)",
+            "r10 u24→u23 (set)"
+          ],
+          "spurious": 37
+        },
+        "integrity": {
+          "pairs": 4,
+          "truthFailures": 0,
+          "oracle": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 0,
+            "tn": 0,
+            "precision": 0,
+            "recall": null,
+            "fpList": [
+              "r1|u3_n8",
+              "r1|u3_n7",
+              "r6|u5_n6",
+              "r6|u5_n5"
+            ],
+            "fnList": [],
+            "outcomeAgreement5way": 0
+          },
+          "oracleRecordsAutoCards": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 0,
+            "tn": 2,
+            "precision": 0,
+            "recall": null,
+            "fpList": [
+              "r1|u3_n8",
+              "r6|u5_n6",
+              "r6|u5_n4",
+              "r6|u5_n8"
+            ],
+            "fnList": []
+          },
+          "endToEnd": {
+            "tp": 0,
+            "fp": 21,
+            "fn": 0,
+            "tn": 28,
+            "precision": 0,
+            "recall": null,
+            "fpList": [
+              "spurious:x1|u5_n4",
+              "spurious:x1|u5_n6",
+              "spurious:x1|u5_n8",
+              "spurious:x3|u7_n1",
+              "spurious:x4|u3_n1",
+              "spurious:x4|u3_n2",
+              "r3|u3_n8",
+              "spurious:x10|u5_n4",
+              "spurious:x10|u5_n6",
+              "spurious:x10|u5_n8",
+              "spurious:x16|u1_n5",
+              "spurious:x18|u5_n11",
+              "spurious:x19|u5_n9",
+              "spurious:x20|u7_n2",
+              "spurious:x22|u1_n5",
+              "spurious:x25|u5_n11",
+              "spurious:x30|u7_n3",
+              "spurious:x32|u6_n1",
+              "spurious:x33|u9_n4",
+              "spurious:x39|u5_n4",
+              "spurious:x41|u10_n3"
+            ],
+            "fnList": []
+          },
+          "rules": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 4,
+            "precision": null,
+            "recall": null,
+            "fpList": [],
+            "fnList": []
+          }
+        },
+        "coverage": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "tn": 8,
+          "precision": 0,
+          "recall": null,
+          "fpList": [
+            "r1",
+            "r8"
+          ],
+          "fnList": []
+        },
+        "carriers": {
+          "tp": 7,
+          "fp": 1,
+          "fn": 12,
+          "tn": 740,
+          "precision": 0.88,
+          "recall": 0.37,
+          "fpList": [
+            "r9|u8_n3"
+          ],
+          "fnList": [
+            "r1|u3_n8",
+            "r2|g2",
+            "r2|u3_a1",
+            "r6|g4",
+            "r6|u5_a1",
+            "r6|u5_a2",
+            "r7|g9",
+            "r7|u10_a1",
+            "r8|g9",
+            "r8|u10_n2",
+            "r8|u10_a1",
+            "r9|u4_n2"
+          ]
+        },
+        "citation": {
+          "cardsWithAnyCite": 0.83,
+          "cards": 64,
+          "claimCardsCitingClaim": 0.94,
+          "claimCardRefs": 17,
+          "carriersCitingCondition": 0.53,
+          "carrierRefs": 19,
+          "citedButNotConveyed": 0
+        }
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "extraction": {
+          "reviewed": 11,
+          "extracted": 16,
+          "matched": 4,
+          "precision": 0.25,
+          "recall": 0.36,
+          "binding_truth_vs_extracted": {
+            "claim_claim": 4,
+            "claim_set": 0,
+            "set_claim": 0,
+            "set_set": 0
+          },
+          "missed": [
+            "r2 u7→u7 (claim)",
+            "r4 u12→u10 (claim)",
+            "r5 u13→u21 (claim)",
+            "r6 u15→u11 (set)",
+            "r7 u33→u22 (claim)",
+            "r8 u24→u22 (set)",
+            "r10 u38→u42 (set)"
+          ],
+          "spurious": 12
+        },
+        "integrity": {
+          "pairs": 13,
+          "truthFailures": 5,
+          "oracle": {
+            "tp": 5,
+            "fp": 1,
+            "fn": 0,
+            "tn": 7,
+            "precision": 0.83,
+            "recall": 1,
+            "fpList": [
+              "r11|u5_n2"
+            ],
+            "fnList": [],
+            "outcomeAgreement5way": 0.77
+          },
+          "oracleRecordsAutoCards": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 3,
+            "tn": 8,
+            "precision": 0.67,
+            "recall": 0.4,
+            "fpList": [
+              "r11|u5_n2"
+            ],
+            "fnList": [
+              "r5|u6_a1",
+              "r5|g5",
+              "r7|g6"
+            ]
+          },
+          "endToEnd": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 5,
+            "tn": 24,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "r11|u5_n2",
+              "spurious:x2|u4_n2",
+              "spurious:x12|u7_n5"
+            ],
+            "fnList": [
+              "r5|u6_n3",
+              "r5|u6_a1",
+              "r5|g5",
+              "r7|u7_n1",
+              "r7|g6"
+            ]
+          },
+          "rules": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 4,
+            "tn": 7,
+            "precision": 0.5,
+            "recall": 0.2,
+            "fpList": [
+              "r9|u9_a1"
+            ],
+            "fnList": [
+              "r5|u6_n3",
+              "r5|g5",
+              "r7|u7_n1",
+              "r7|g6"
+            ]
+          }
+        },
+        "coverage": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "tn": 10,
+          "precision": 0,
+          "recall": null,
+          "fpList": [
+            "r11"
+          ],
+          "fnList": []
+        },
+        "carriers": {
+          "tp": 11,
+          "fp": 7,
+          "fn": 5,
+          "tn": 681,
+          "precision": 0.61,
+          "recall": 0.69,
+          "fpList": [
+            "r3|u2_n2",
+            "r5|u2_a1",
+            "r5|u2_a3",
+            "r5|u3_n1",
+            "r8|u7_n1",
+            "r9|u9_n2",
+            "r9|u9_n4"
+          ],
+          "fnList": [
+            "r6|u2_a4",
+            "r9|u9_n5",
+            "r10|g8",
+            "r10|u9_a1",
+            "r11|u5_n2"
+          ]
+        },
+        "citation": {
+          "cardsWithAnyCite": 0.79,
+          "cards": 52,
+          "claimCardsCitingClaim": 0.68,
+          "claimCardRefs": 19,
+          "carriersCitingCondition": 0.69,
+          "carrierRefs": 16,
+          "citedButNotConveyed": 0
+        }
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "extraction": {
+          "reviewed": 12,
+          "extracted": 22,
+          "matched": 6,
+          "precision": 0.27,
+          "recall": 0.5,
+          "binding_truth_vs_extracted": {
+            "claim_claim": 6,
+            "claim_set": 0,
+            "set_claim": 0,
+            "set_set": 0
+          },
+          "missed": [
+            "r2 u8→u8 (claim)",
+            "r5 u14→u13 (set)",
+            "r8 u21+u22→u9 (claim)",
+            "r9 u24→u24 (set)",
+            "r11 u28→u28 (claim)",
+            "r12 u3→u2 (set)"
+          ],
+          "spurious": 16
+        },
+        "integrity": {
+          "pairs": 14,
+          "truthFailures": 2,
+          "oracle": {
+            "tp": 2,
+            "fp": 2,
+            "fn": 0,
+            "tn": 10,
+            "precision": 0.5,
+            "recall": 1,
+            "fpList": [
+              "r2|u1_n2",
+              "r6|u1_a1"
+            ],
+            "fnList": [],
+            "outcomeAgreement5way": 0.86
+          },
+          "oracleRecordsAutoCards": {
+            "tp": 1,
+            "fp": 3,
+            "fn": 1,
+            "tn": 13,
+            "precision": 0.25,
+            "recall": 0.5,
+            "fpList": [
+              "r2|u1_n2",
+              "r6|u1_a1",
+              "r1|u1_a1"
+            ],
+            "fnList": [
+              "r8|u1_a1"
+            ]
+          },
+          "endToEnd": {
+            "tp": 0,
+            "fp": 11,
+            "fn": 2,
+            "tn": 25,
+            "precision": 0,
+            "recall": 0,
+            "fpList": [
+              "r6|u1_a1",
+              "spurious:x1|u1_n8",
+              "spurious:x3|u1_n9",
+              "spurious:x3|u2_a2",
+              "spurious:x4|u0_n4",
+              "spurious:x5|u2_n5",
+              "r1|u1_a1",
+              "spurious:x8|u1_n8",
+              "spurious:x13|u2_n2",
+              "spurious:x13|u2_a2",
+              "spurious:x18|u1_n4"
+            ],
+            "fnList": [
+              "r8|u1_n4",
+              "r8|u1_a1"
+            ]
+          },
+          "rules": {
+            "tp": 2,
+            "fp": 5,
+            "fn": 0,
+            "tn": 7,
+            "precision": 0.29,
+            "recall": 1,
+            "fpList": [
+              "r1|u1_n2",
+              "r2|u1_n2",
+              "r3|u1_n4",
+              "r4|u1_n4",
+              "r6|u1_a1"
+            ],
+            "fnList": []
+          }
+        },
+        "coverage": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "tn": 10,
+          "precision": 0,
+          "recall": null,
+          "fpList": [
+            "r2",
+            "r5"
+          ],
+          "fnList": []
+        },
+        "carriers": {
+          "tp": 13,
+          "fp": 1,
+          "fn": 6,
+          "tn": 496,
+          "precision": 0.93,
+          "recall": 0.68,
+          "fpList": [
+            "r10|u3_n4"
+          ],
+          "fnList": [
+            "r2|u1_n2",
+            "r5|u1_n4",
+            "r6|u1_a1",
+            "r8|u2_n2",
+            "r8|u2_a2",
+            "r12|u0_ax2"
+          ]
+        },
+        "citation": {
+          "cardsWithAnyCite": 0.71,
+          "cards": 38,
+          "claimCardsCitingClaim": 0.78,
+          "claimCardRefs": 18,
+          "carriersCitingCondition": 0.74,
+          "carrierRefs": 19,
+          "citedButNotConveyed": 0
+        }
+      }
+    ]
+  }
+}

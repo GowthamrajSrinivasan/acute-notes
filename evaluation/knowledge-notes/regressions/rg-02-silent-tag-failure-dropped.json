@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-silent-tag-failure-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The surrogate-key card keeps 'a page missing the tag stays stale' but loses 'with no error anywhere' and claims the CDN reports it: the silent failure (u33) is gone.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n5",
+      "find": "a page missing the tag stays stale, with no error anywhere.",
+      "replace": "a page missing the tag stays stale until the CDN reports the missing tag."
+    }
+  ],
+  "expectFailing": [
+    "a.tag-discipline"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-rejected-events-dropped-asserted",
+  "distortion": "invented_detail",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The open question about rejected events (u39) is settled on the collector shape: 'rejected events are dropped'.",
+  "mutations": [
+    { "op": "replace_text", "node": "s2", "find": "rejects the rest", "replace": "rejects the rest; rejected events are dropped" }
+  ],
+  "expectFailing": ["a.no-rejected-resolved"]
+}

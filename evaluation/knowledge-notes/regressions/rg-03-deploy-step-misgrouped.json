@@ -1,0 +1,21 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-deploy-step-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The first release step (deploy to the idle colour) is moved into the concept frame: the step chain's links now cross and run over a third frame (and through a card).",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n6",
+      "group": "g1"
+    }
+  ],
+  "expectFailing": [
+    "a.links-over-frames",
+    "a.crossings",
+    "a.layout",
+    "a.in-step-deploy"
+  ]
+}

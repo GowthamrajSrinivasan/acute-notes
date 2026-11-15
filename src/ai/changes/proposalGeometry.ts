@@ -7,6 +7,11 @@
  *
  * New objects are named `created:<key>`, existing ones by their element id;
  * links by their change key (new) or arrow id (existing).
+ *
+ * Sub-topic and sub-group backdrops (`create_shape` with `backdrop`, `customData.acuteBackdrop` on the scene) sit
+ * behind the cards they group: a link inside a sub-topic always runs over its own backdrop, so a backdrop is never a
+ * card a link may not cross (`cards`). They are still route obstacles, as the writer's `isRouteObstacle` keeps them,
+ * so routes are predicted as drawn; `backdrops` lists them for checks that need their boxes.
  */
 import type { SceneElement } from "@/domain/canvas/adapter";
 import type { Box, ChangeTarget, ProposedChange } from "./changeSet";
@@ -29,7 +34,12 @@ const createdId = (key: string) => `created:${key}`;
 export interface ProposalGeometry extends LayoutGeometry {
   /** What the proposal adds or moves: links it draws or re-routes, cards it creates or moves. */
   focus: Set<string>;
+  /** Sub-topic and sub-group backdrops (not in `cards`: a link may cross a backdrop, never a card). */
+  backdrops: RoutedBox[];
 }
+
+/** A scene element drawn as a sub-topic or sub-group backdrop. */
+export const isBackdrop = (el: SceneElement): boolean => !!el.customData?.acuteBackdrop;
 
 export function proposalGeometry(changes: readonly ProposedChange[], scene: readonly SceneElement[]): ProposalGeometry {
   const removed = new Set(changes.flatMap((c) => (c.kind === "remove" ? [c.target] : [])));
@@ -38,22 +48,28 @@ export function proposalGeometry(changes: readonly ProposedChange[], scene: read
   const live = scene.filter((el) => !el.isDeleted && !removed.has(el.id));
 
   const cardById = new Map<string, RoutedBox>();
+  const backdropIds = new Set<string>();
   for (const el of live) {
     if (!isObstacle(el)) continue;
     const to = moves.get(el.id);
     cardById.set(el.id, { id: el.id, ...boxOf(el), ...(to ?? {}) });
+    if (isBackdrop(el)) backdropIds.add(el.id);
     if (to) focus.add(el.id);
   }
   const frames: RoutedBox[] = live.filter((el) => el.type === "frame").map((el) => ({ id: el.id, ...boxOf(el), ...(moves.get(el.id) ?? {}) }));
   for (const c of changes) {
     if (c.kind === "create_block" || c.kind === "create_shape" || c.kind === "create_page") {
       cardById.set(createdId(c.key), { ...boxOnly(c.box), id: createdId(c.key) });
+      if (c.kind === "create_shape" && c.backdrop) backdropIds.add(createdId(c.key));
       focus.add(createdId(c.key));
     } else if (c.kind === "create_frame") {
       frames.push({ ...boxOnly(c.box), id: createdId(c.key) });
     }
   }
-  const cards = [...cardById.values()];
+  /** Every route obstacle, backdrops included (the writer routes around them all). */
+  const obstacles = [...cardById.values()];
+  const cards = obstacles.filter((c) => !backdropIds.has(c.id));
+  const backdrops = obstacles.filter((c) => backdropIds.has(c.id));
 
   // Labels of existing arrows are text elements bound to them.
   const labels = new Map<string, string>();
@@ -114,7 +130,7 @@ export function proposalGeometry(changes: readonly ProposedChange[], scene: read
   }
   taken.push(...frames.map(frameNameBand));
   // Two batches, as the writer routes them: new connectors together, then the re-routed ones (ports spread per batch).
-  const routes = new Map([...routeConnectors(connects, cards), ...routeConnectors(reroute, cards)]);
+  const routes = new Map([...routeConnectors(connects, obstacles), ...routeConnectors(reroute, obstacles)]);
   for (const r of [...connects, ...reroute]) {
     const route = routes.get(r.key)!;
     const label = labelOf.get(r.key);
@@ -126,7 +142,7 @@ export function proposalGeometry(changes: readonly ProposedChange[], scene: read
     if (at && size) taken.push({ x: at.x - size.width / 2, y: at.y - size.height / 2, ...size });
     links.push({ key: r.key, fromId: r.from.id, toId: r.to.id, points, ...(label && at ? { label, labelAt: at } : {}) });
   }
-  return { cards, frames, links, focus };
+  return { cards, frames, links, focus, backdrops };
 }
 
 /** What `changes` add or move, as layout ids: new links, new cards, moved objects. */

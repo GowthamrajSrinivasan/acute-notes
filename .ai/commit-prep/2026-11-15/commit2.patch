@@ -1,0 +1,526 @@
+diff --git a/.ai/docs/study-mode-design.md b/.ai/docs/study-mode-design.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..e8eb91d5d242bb317e2e6183ceb62ea5c4ce2e11
+--- /dev/null
++++ b/.ai/docs/study-mode-design.md
+@@ -0,0 +1,106 @@
++# Study Mode — design (v1 data model and concept identity)
++
++Status: **draft, decisions provisional** (2026-11-13). Related: [openui-integration-plan.md](./openui-integration-plan.md)
++(Phase 3 built the study cards: `QuizCard`, `Flashcard`, and the Notes view's Study mode), and
++[openui-live-2026-11-13.md](./openui-live-2026-11-13.md).
++
++Agreed order (user, 2026-11-13): design Study Mode now. Build only its smallest independent slice, after the P0 items
++(meaning-check comparison, real ChatGPT MCP run) and the verified-pinning contract. No `domain/types.ts` change for v1:
++results live in their own store, keyed by stable concept ids.
++
++## 1. What exists today
++
++- The Notes view's **Study** mode makes flashcards and quiz cards from the canvas's notes (`ai/openui/study.ts`).
++  Interaction is local state only, and **nothing is remembered**: a reload forgets every answer.
++- Each note is identified by its **canvas object id**. That id isn't stable: regenerating a section replaces the
++  objects, so history keyed on it would silently reset after an update.
++
++## 2. The decision: what a "concept" is (SM-D1, provisional)
++
++**A concept is the source passages it teaches: `(contentSourceId, its cited unit ids)`.** Not the card, and not the
++object.
++
++Why:
++- **Unit ids survive edits.** `matchVersions` carries ids across source versions, and lineage says what happened to each
++  unit (`unchanged`, `changed`, `moved`, `removed`, `ambiguous`). A concept keyed on units keeps its history when the
++  source changes, and knows when it should.
++- **It survives regeneration.** A regenerated card cites the same units, so it maps to the same concept even though its
++  object id changed. That holds for distil Visualize cards, pinned OpenUI cards (`promotion.ts` stamps `sourceUnits`) and
++  passage cards.
++- **It's the identity the update engine already reasons about.** Claim-level patches and the Node Router work on cited
++  units too, so Study Mode doesn't invent a third identity scheme (the shared-provenance point, §5).
++
++Concept id, deterministic: `c:<contentSourceId>:<sorted unit ids joined by +>`, e.g. `c:src_Fmea…:u6+u7`. Cards citing
++the same units are the same concept. Cards citing overlapping sets are different concepts: v1 doesn't merge them.
++
++On a new source version, each stored concept is mapped through lineage:
++
++| Lineage of its units | What happens |
++|---|---|
++| All `unchanged` (moves included) | Same concept, history kept |
++| Any `changed` | Same concept, marked **source changed since you studied it**; the next review counts as fresh |
++| Any `ambiguous` | Kept, marked as needing review; no automatic remap |
++| All `removed` | Retired: history kept, never quizzed again |
++
++Cards with no source link (a user's own card, a card made before Knowledge Notes) get a **local concept**
++`l:<canvasId>:<objectId>`. It's honest that it resets if that card is deleted or recreated, and it never syncs to MCP.
++
++## 3. v1 data model (device-local, no schema change)
++
++Stored in the `meta` repository under `study.<workspaceId>`, the same device-local and never-exported posture as content
++sources and conversations. Bounded: the last 20 attempts per concept, at most 2,000 concepts per workspace (oldest
++evicted).
++
++```ts
++interface StudyRecord {
++  version: 1;
++  concepts: Record<ConceptId, {
++    sourceId?: string;          // absent for local concepts
++    units?: string[];           // cited unit ids at the version last studied
++    sourceVersion?: number;
++    title: string;              // the card title when last studied (display only)
++    attempts: { at: number; kind: "quiz" | "flashcard"; correct: boolean; ms?: number }[];
++    flag?: "source_changed" | "needs_review" | "retired";
++  }>;
++}
++```
++
++"Weak concept" (v1, deterministic, explainable): at least 2 attempts and accuracy over the last 5 below 60%, or the last
++attempt was wrong; ranked by recency and how many units the concept covers. No spaced-repetition scheduler in v1.
++
++## 4. MCP contract (later slice; read-only)
++
++`get_study_status` gives each weak concept as `{ conceptId, title, sourceId, units, accuracy, lastAttempt, flag }`, plus
++the cited passages' text, so ChatGPT can produce personalised revision grounded in the source.
++- Any revision it produces comes back as an ordinary proposal (`create_block`) through review. There's no
++  write path into the study store from MCP.
++- Local concepts are never exposed.
++
++## 5. Shared provenance contract (applies to OpenUI, the update engine and Study Mode)
++
++Every AI-generated artefact on the canvas uses the **existing** `AIMetadata` fields; no feature adds its own:
++
++| Need | Field (exists today) |
++|---|---|
++| Source, version, cited units | `contentSourceId`, `contentSourceVersion`, `sourceUnits` |
++| Model and run | `provider`, `model`, `operationId`, `task` |
++| Verification status and result | `review` (`reasons`, `checked`) |
++| Stable identity once pinned | `stableNodeKey` |
++| Managed by reconciliation or excluded | `excludeFromReconciliation` |
++
++Study Mode reads these and doesn't write them: its own records stay in its store, keyed by concept.
++`domain/provenanceGuard.test.ts` keeps every reader documented.
++
++## 6. Smallest slice to build (when prioritised)
++
++1. A pure `conceptOf(card)` and a pure lineage remap, with tests (unit-id fixtures from the golden cases).
++2. A `studyStore` over `meta`: record an attempt, list weak concepts.
++3. The Notes view's Study mode records quiz and flashcard results, and shows "weak" and "source changed" badges.
++
++Acceptance: results persist across reloads, and the weak-concept list is reproducible from stored attempts.
++The interactive canvas card type, and `get_study_status`, come after this slice, with integrator sign-off.
++
++## 7. Open questions
++
++- SM-Q1: do overlapping unit sets ever need merging (two cards teaching nearly the same thing)? v1 says no.
++- SM-Q2: should Study history ever sync (cloud-sync plan)? v1: device-local only, like content sources.
+diff --git a/e2e/local/openuiDemo.local.spec.ts b/e2e/local/openuiDemo.local.spec.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..831283b472c3b0f8d6ee79f9ccf42e4c13866f75
+--- /dev/null
++++ b/e2e/local/openuiDemo.local.spec.ts
+@@ -0,0 +1,47 @@
++/**
++ * Phase 1 OpenUI spike (`.ai/docs/open-intelligent-ui-audit.md`, Option A): drives the dev-only demo page at
++ * `/dev/openui-demo` and saves screenshots so the rendering + streaming behaviour can be reviewed without opening
++ * a browser. No AI calls — the page renders `acuteCardLibrary` on static fixture text (`src/ai/openui/library.tsx`).
++ *
++ * Screenshots land in OPENUI_DEMO_OUTPUT_DIR (defaults to a repo-local folder) rather than Playwright's own
++ * test-results, so they're easy to find on their own.
++ */
++import { expect, test } from "@playwright/test";
++import { mkdirSync } from "node:fs";
++import { join } from "node:path";
++
++const OUTPUT_DIR = process.env.OPENUI_DEMO_OUTPUT_DIR ?? join(process.cwd(), "test-results", "openui-demo");
++mkdirSync(OUTPUT_DIR, { recursive: true });
++
++test("OpenUI demo page streams a card in and renders all 5 components", async ({ page }) => {
++  await page.goto("/dev/openui-demo");
++
++  const streamSection = page.getByTestId("stream-demo");
++  const gallery = page.getByTestId("component-gallery");
++
++  // 1. Just loaded: streaming has started but almost nothing has arrived yet.
++  await expect(streamSection).toHaveAttribute("data-streaming", "true");
++  await page.screenshot({ path: join(OUTPUT_DIR, "01-stream-start.png"), fullPage: true });
++
++  // 2. Mid-stream: some content visible, still marked streaming.
++  await page.waitForTimeout(650);
++  await expect(streamSection).toHaveAttribute("data-streaming", "true");
++  await expect(streamSection).toContainText("Idempotency keys", { timeout: 5_000 });
++  await page.screenshot({ path: join(OUTPUT_DIR, "02-stream-mid.png"), fullPage: true });
++
++  // 3. Complete: the card finished streaming in, full body + both citation chips present.
++  await expect(streamSection).toHaveAttribute("data-streaming", "false", { timeout: 10_000 });
++  await expect(streamSection.locator(".openui-idea-card__body")).toContainText("charging twice");
++  await expect(streamSection.locator(".openui-citation-chip")).toHaveCount(2);
++  await page.screenshot({ path: join(OUTPUT_DIR, "03-stream-complete.png"), fullPage: true });
++
++  // 4. The gallery: one of each of the 5 components, fully rendered.
++  await expect(gallery.locator(".openui-idea-card")).toHaveCount(1);
++  await expect(gallery.locator(".openui-callout")).toHaveCount(2);
++  await expect(gallery.locator(".openui-comparison-table")).toHaveCount(1);
++  await expect(gallery.locator(".openui-source-link")).toHaveCount(1);
++  await gallery.screenshot({ path: join(OUTPUT_DIR, "04-component-gallery.png") });
++
++  // Full-page final state, for a single at-a-glance look.
++  await page.screenshot({ path: join(OUTPUT_DIR, "05-full-page.png"), fullPage: true });
++});
+diff --git a/src/ai/openui/study.test.ts b/src/ai/openui/study.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..202c80bc4ec6420780b3730141d9e61e3b996db5
+--- /dev/null
++++ b/src/ai/openui/study.test.ts
+@@ -0,0 +1,79 @@
++import { createParser } from "@openuidev/react-lang";
++import { describe, expect, it } from "vitest";
++import { acuteCardLibrary } from "./library";
++import { flashcardLang, quizLang, studyNoteOf, type StudyNote } from "./study";
++
++const parse = (lang: string) => createParser(acuteCardLibrary.toJSONSchema()).parse(lang);
++
++const NOTES: StudyNote[] = [
++  { id: "n1", title: "Idempotency keys prevent duplicate charges", body: 'A retry with the same key returns the original result — "exactly once" to the client.', cites: ["u4", "u7"] },
++  { id: "n2", title: "Keys expire after a window", body: "After 24 hours a retry is a new payment.\nPlan retries inside it.", cites: ["u7"] },
++  { id: "n3", title: "Store the response, not just the key", body: "The server replays the stored response body and status.", cites: [] },
++  { id: "n4", title: "Scope keys per merchant", body: "Two merchants may pick the same key.", cites: ["u9"] },
++  { id: "n5", title: "Reject a reused key with a different body", body: "A mismatch is a client bug, not a retry.", cites: ["u11"] },
++];
++
++describe("studyNoteOf (study-mode plan §7, issue A)", () => {
++  it("carries an open review through to the study note, and leaves it off when there is none", () => {
++    expect(studyNoteOf({ id: "n1", title: "T", body: "B", cites: ["u1"], needsReview: "drops the 300 seconds" })).toEqual({ id: "n1", title: "T", body: "B", cites: ["u1"], needsReview: "drops the 300 seconds" });
++    expect(studyNoteOf({ id: "n2", title: "T", body: "B", cites: [] })).toEqual({ id: "n2", title: "T", body: "B", cites: [] });
++  });
++
++  it("doesn't change the card Lang: the mark is the host's, outside the card", () => {
++    const plain = NOTES[0]!;
++    const flagged = studyNoteOf({ ...plain, needsReview: "x" });
++    expect(flashcardLang(flagged)).toBe(flashcardLang(plain));
++    expect(quizLang([flagged, ...NOTES.slice(1)], 0)).toBe(quizLang(NOTES, 0));
++  });
++});
++
++describe("flashcardLang", () => {
++  it("parses cleanly with title as front, body as back and the first cite as unit — quotes and newlines intact", () => {
++    for (const note of NOTES) {
++      const r = parse(flashcardLang(note));
++      expect(r.meta.errors).toEqual([]);
++      expect(r.root?.typeName).toBe("Flashcard");
++      expect(r.root?.props.front).toBe(note.title);
++      expect(r.root?.props.back).toBe(note.body);
++      expect(r.root?.props.unit).toBe(note.cites[0]);
++    }
++  });
++});
++
++describe("quizLang", () => {
++  it("parses cleanly; the answer index points at the note's own title; choices are distinct", () => {
++    NOTES.forEach((note, i) => {
++      const lang = quizLang(NOTES, i)!;
++      const r = parse(lang);
++      expect(r.meta.errors).toEqual([]);
++      expect(r.root?.typeName).toBe("QuizCard");
++      const choices = r.root!.props.choices as string[];
++      expect(choices.length).toBe(4);
++      expect(new Set(choices).size).toBe(choices.length);
++      expect(choices[r.root!.props.answer as number]).toBe(note.title);
++      expect(r.root?.props.unit).toBe(note.cites[0]);
++    });
++  });
++
++  it("is deterministic: same notes, same quiz", () => {
++    expect(NOTES.map((_, i) => quizLang(NOTES, i))).toEqual(NOTES.map((_, i) => quizLang([...NOTES], i)));
++  });
++
++  it("doesn't always put the answer in the same slot", () => {
++    const slots = new Set(NOTES.map((_, i) => parse(quizLang(NOTES, i)!).root!.props.answer));
++    expect(slots.size).toBeGreaterThan(1);
++  });
++
++  it("uses fewer distractors when there are few notes, and none at all → null", () => {
++    const two = quizLang(NOTES.slice(0, 2), 0)!;
++    expect(parse(two).root!.props.choices).toHaveLength(2);
++    expect(quizLang(NOTES.slice(0, 1), 0)).toBeNull();
++    expect(quizLang(NOTES, 99)).toBeNull();
++    // A duplicate title is not a distractor.
++    expect(quizLang([NOTES[0]!, { ...NOTES[1]!, title: NOTES[0]!.title }], 0)).toBeNull();
++  });
++
++  it("skips a title-only note: its stem would give the answer away", () => {
++    expect(quizLang([{ id: "a", title: "Where things stand", body: "  ", cites: [] }, { id: "b", title: "Other", body: "x", cites: [] }], 0)).toBeNull();
++  });
++});
+diff --git a/src/ai/openui/study.ts b/src/ai/openui/study.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..16e1748d2ad6f38c4a0c4ac2b473bfa78ecec6d3
+--- /dev/null
++++ b/src/ai/openui/study.ts
+@@ -0,0 +1,99 @@
++/**
++ * Study mode (`.ai/docs/openui-integration-plan.md` Phase 3, "learning cards and quizzes"): turns notes the user already
++ * has into Flashcard / QuizCard OpenUI Lang, deterministically and with no model call. Pure — no React, no randomness:
++ * the same notes always give the same cards (choice order is seeded from the note id).
++ *
++ * Every string literal goes through `JSON.stringify`, which round-trips through the OpenUI Lang parser (double-quoted,
++ * backslash-escaped strings).
++ */
++
++export interface StudyNote {
++  id: string;
++  title: string;
++  body: string;
++  cites: string[];
++  /**
++   * The first reason of an open review on the card it comes from (`Note.needsReview`). A study card made from such a
++   * note shows the same "Needs review" mark (study-mode plan §7, issue A); the mark is drawn by the host, outside the
++   * card, so the Flashcard / QuizCard props don't change.
++   */
++  needsReview?: string;
++}
++
++/** A note as Study takes it: review state carried through, never dropped (study-mode plan §0 gap). */
++export function studyNoteOf(note: { id: string; title: string; body: string; cites: readonly string[]; needsReview?: string }): StudyNote {
++  return { id: note.id, title: note.title, body: note.body, cites: [...note.cites], ...(note.needsReview ? { needsReview: note.needsReview } : {}) };
++}
++
++const lit = (s: string) => JSON.stringify(s);
++
++/** One Flashcard: the note's title as the prompt, its body as the answer, its first citation as the unit. */
++export function flashcardLang(note: StudyNote): string {
++  const args = [lit(note.title), lit(note.body || note.title)];
++  if (note.cites[0]) args.push(lit(note.cites[0]));
++  return `root = Flashcard(${args.join(", ")})`;
++}
++
++/** cyrb53-style 32-bit string hash; stable across runs and platforms. */
++function hash(s: string): number {
++  let h = 0x811c9dc5;
++  for (let i = 0; i < s.length; i++) {
++    h ^= s.charCodeAt(i);
++    h = Math.imul(h, 0x01000193);
++  }
++  return h >>> 0;
++}
++
++/** A small deterministic PRNG (mulberry32) seeded from `seed`. */
++function rng(seed: number): () => number {
++  let a = seed;
++  return () => {
++    a = (a + 0x6d2b79f5) | 0;
++    let t = Math.imul(a ^ (a >>> 15), 1 | a);
++    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
++    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
++  };
++}
++
++function shuffle<T>(items: T[], seed: string): T[] {
++  const out = [...items];
++  const next = rng(hash(seed));
++  for (let i = out.length - 1; i > 0; i--) {
++    const j = Math.floor(next() * (i + 1));
++    [out[i], out[j]] = [out[j]!, out[i]!];
++  }
++  return out;
++}
++
++/** Truncates a body to a readable question stem. */
++function stem(body: string, max = 220): string {
++  const flat = body.replace(/\s+/g, " ").trim();
++  return flat.length <= max ? flat : `${flat.slice(0, max - 1).trimEnd()}…`;
++}
++
++/**
++ * A QuizCard for `notes[index]`: "Which idea does this describe?" with the note's body as the stem, its title as the
++ * correct choice and up to 3 other notes' titles as distractors (distinct titles only). Null when there are fewer than
++ * 2 notes with distinct titles, the index is out of range, or the note has no body (a title-only card would quote its
++ * own answer as the stem).
++ */
++export function quizLang(notes: readonly StudyNote[], index: number): string | null {
++  const note = notes[index];
++  if (!note || !note.body.trim()) return null;
++  const seen = new Set([note.title.trim().toLowerCase()]);
++  const others: string[] = [];
++  for (const other of shuffle(notes.filter((n) => n.id !== note.id), `${note.id}:distractors`)) {
++    const key = other.title.trim().toLowerCase();
++    if (!key || seen.has(key)) continue;
++    seen.add(key);
++    others.push(other.title);
++    if (others.length === 3) break;
++  }
++  if (!others.length) return null;
++  const choices = shuffle([note.title, ...others], `${note.id}:choices`);
++  const answer = choices.indexOf(note.title);
++  const question = `Which idea does this describe? “${stem(note.body)}”`;
++  const args = [lit(question), `[${choices.map(lit).join(", ")}]`, String(answer), lit(`${note.title}: ${stem(note.body, 400)}`)];
++  if (note.cites[0]) args.push(lit(note.cites[0]));
++  return `root = QuizCard(${args.join(", ")})`;
++}
+diff --git a/src/app/dev/openui-demo/page.tsx b/src/app/dev/openui-demo/page.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..947abd17eee747a18fa9108ef14bcc660ac29999
+--- /dev/null
++++ b/src/app/dev/openui-demo/page.tsx
+@@ -0,0 +1,165 @@
++"use client";
++
++/**
++ * Dev-only demo for the Phase 1 OpenUI spike (`.ai/docs/open-intelligent-ui-audit.md`, Option A). Not linked from
++ * app nav, not part of the canvas or Visualize — renders `acuteCardLibrary` through the real
++ * `@openuidev/react-lang` runtime on static fixture text, so the rendering + streaming behaviour can be watched
++ * in a browser. No model calls.
++ */
++import { useEffect, useRef, useState, type CSSProperties } from "react";
++import { NotesHostProvider, type NotesHost } from "@/ai/openui/hostContext";
++import { flashcardLang, quizLang, type StudyNote } from "@/ai/openui/study";
++import { OpenUiCardRenderer } from "@/components/openui/OpenUiCardRenderer";
++import "@/components/openui/interactions.css";
++
++// Same fixture validated in src/ai/openui/library.test.tsx.
++const STREAM_FIXTURE = `
++root = IdeaCard("Idempotency keys prevent duplicate charges", "When a client retries a payment request after a timeout, the server matches the request's idempotency key and returns the original result instead of charging twice.", "high", [c1, c2])
++c1 = CitationChip("u4")
++c2 = CitationChip("u7", "u7")
++`.trim();
++
++const STATIC_CARDS = {
++  idea: `root = IdeaCard("Keys expire after a fixed window", "Idempotency protection only lasts while the server still remembers the key; after the window closes, a retry is treated as a brand new payment.", "medium", [c1])\nc1 = CitationChip("u7", "u7")`,
++  calloutWarn: `root = Callout("warning", "Needs review: the source's 24-hour window was not cited by any card.")`,
++  calloutInfo: `root = Callout("info", "Checked by AI: this section's cards were verified against 3 source units.")`,
++  table: `root = ComparisonTable(["Queue", "Ordering", "Max delay"], [["SQS Standard", "Best-effort", "Minutes"], ["SQS FIFO", "Strict per group", "Minutes"], ["Kafka", "Strict per partition", "Hours+"]])`,
++  source: `root = SourceLink("u7", "u7")`,
++};
++
++// Phase 3 knowledge-interaction cards (src/ai/openui/interactions.tsx), static Lang — no model calls.
++const PHASE3_CARDS = {
++  decision: `root = DecisionCard("Which queue should orders use?", [a, b, c], "SQS FIFO", "Orders need strict per-customer ordering; throughput is well under the FIFO limit.", ["u3"])
++a = DecisionOption("SQS Standard", ["Cheap", "Unlimited throughput"], ["Best-effort ordering"])
++b = DecisionOption("SQS FIFO", ["Strict ordering per group"], ["300 msg/s per group"])
++c = DecisionOption("Kafka", ["Replay", "Strict per partition"], ["Ops overhead"])`,
++  timeline: `root = Timeline("Blue-green rollout", [e1, e2, e3])
++e1 = TimelineEvent("Mon", "Green deployed beside blue", "No traffic yet; smoke tests only.", "u2")
++e2 = TimelineEvent("Tue", "5% canary", "Error rate held at baseline for 24 hours.")
++e3 = TimelineEvent("Wed", "Full switch")`,
++  flow: `root = FlowDiagram("Idempotent retry", ["Client sends key", "Server looks up key", "Replay or execute", "Store response"], ["Generated once per logical request.", "Keyed per merchant.", "A hit replays the stored response; a miss runs the charge.", "Kept for the 24-hour window."])`,
++  links: `root = NoteLink("n2")`,
++};
++
++const STUDY_NOTES: StudyNote[] = [
++  { id: "n1", title: "Idempotency keys prevent duplicate charges", body: "A retry with the same key returns the original result instead of charging twice.", cites: ["u4"] },
++  { id: "n2", title: "Keys expire after a fixed window", body: "After the window closes, a retry is treated as a brand new payment.", cites: ["u7"] },
++  { id: "n3", title: "Store the response, not just the key", body: "The server replays the stored response body and status code.", cites: [] },
++];
++
++const DEMO_UNITS: Record<string, string> = {
++  u2: "Green is deployed next to blue and receives no user traffic until it passes smoke tests.",
++  u3: "FIFO queues guarantee order within a message group, up to 300 messages per second per group.",
++  u4: "If the same idempotency key is received again, the stored result is returned.",
++  u7: "Keys are retained for 24 hours.",
++};
++
++const CHUNK_CHARS = 18;
++const CHUNK_DELAY_MS = 220;
++
++export default function OpenUiDemoPage() {
++  const [streamedText, setStreamedText] = useState<string | null>(null);
++  const [streaming, setStreaming] = useState(true);
++  const indexRef = useRef(0);
++
++  useEffect(() => {
++    const id = setInterval(() => {
++      indexRef.current += CHUNK_CHARS;
++      if (indexRef.current >= STREAM_FIXTURE.length) {
++        setStreamedText(STREAM_FIXTURE);
++        setStreaming(false);
++        clearInterval(id);
++        return;
++      }
++      setStreamedText(STREAM_FIXTURE.slice(0, indexRef.current));
++    }, CHUNK_DELAY_MS);
++    return () => clearInterval(id);
++  }, []);
++
++  return (
++    <main style={page}>
++      <h1 style={{ fontSize: 22, marginBottom: 4 }}>OpenUI card renderer — Phase 1 spike</h1>
++      <p style={{ color: "#6b727e", marginTop: 0, marginBottom: 32, fontSize: 14 }}>
++        Dev-only demo page, not linked from the app nav. Renders <code>acuteCardLibrary</code> through the real{" "}
++        <code>@openuidev/react-lang</code> runtime on static fixture text — no model calls.
++      </p>
++
++      <section data-testid="stream-demo" data-streaming={streaming ? "true" : "false"} style={{ marginBottom: 48 }}>
++        <h2 style={sectionTitle}>1. Streaming a card in (isStreaming = {String(streaming)})</h2>
++        <OpenUiCardRenderer response={streamedText} isStreaming={streaming} />
++      </section>
++
++      <section data-testid="component-gallery" style={{ marginBottom: 48 }}>
++        <h2 style={sectionTitle}>2. All 5 components, rendered complete</h2>
++        <div style={{ display: "grid", gap: 14 }}>
++          <OpenUiCardRenderer response={STATIC_CARDS.idea} />
++          <OpenUiCardRenderer response={STATIC_CARDS.calloutWarn} />
++          <OpenUiCardRenderer response={STATIC_CARDS.calloutInfo} />
++          <OpenUiCardRenderer response={STATIC_CARDS.table} />
++          <OpenUiCardRenderer response={STATIC_CARDS.source} />
++        </div>
++      </section>
++
++      <Phase3Section />
++
++      <style>{CSS}</style>
++    </main>
++  );
++}
++
++function Phase3Section() {
++  const [visited, setVisited] = useState<string | null>(null);
++  const host: NotesHost = {
++    unitText: (u) => DEMO_UNITS[u],
++    navigate: (id) => setVisited(id),
++    noteTitle: (id) => STUDY_NOTES.find((n) => n.id === id)?.title,
++  };
++  return (
++    <section data-testid="phase3-gallery" style={{ marginBottom: 48 }}>
++      <h2 style={sectionTitle}>3. Knowledge interactions (Phase 3) — local state only, no model calls</h2>
++      <NotesHostProvider value={host}>
++        <div style={{ display: "grid", gap: 14 }}>
++          <OpenUiCardRenderer response={PHASE3_CARDS.decision} />
++          <OpenUiCardRenderer response={PHASE3_CARDS.timeline} />
++          <OpenUiCardRenderer response={PHASE3_CARDS.flow} />
++          <OpenUiCardRenderer response={quizLang(STUDY_NOTES, 0)} />
++          <OpenUiCardRenderer response={flashcardLang(STUDY_NOTES[1]!)} />
++          <div data-testid="note-link-demo">
++            <OpenUiCardRenderer response={PHASE3_CARDS.links} />
++            {visited && <p style={{ fontSize: 13, color: "#6b727e", margin: "6px 0 0" }}>Navigated to note {visited}</p>}
++          </div>
++        </div>
++      </NotesHostProvider>
++    </section>
++  );
++}
++
++const page: CSSProperties = {
++  maxWidth: 760,
++  margin: "0 auto",
++  padding: "40px 24px 80px",
++  fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
++  color: "#14171c",
++  background: "#fbfbfc",
++  minHeight: "100vh",
++};
++
++const sectionTitle: CSSProperties = { fontSize: 15, fontWeight: 640, color: "#3a4049", marginBottom: 12 };
++
++const CSS = `
++.openui-idea-card { border: 1px solid #d4d8df; border-radius: 10px; padding: 16px 18px; background: #fff; }
++.openui-idea-card[data-importance="high"] { border-left: 3px solid #0e8f8a; }
++.openui-idea-card[data-importance="medium"] { border-left: 3px solid #b9770e; }
++.openui-idea-card__title { margin: 0 0 6px; font-size: 15px; }
++.openui-idea-card__body { margin: 0 0 10px; color: #3a4049; font-size: 14px; line-height: 1.5; }
++.openui-idea-card__citations { display: flex; gap: 6px; flex-wrap: wrap; }
++.openui-citation-chip { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 11px; background: #e4f3f2; color: #0a6b67; border-radius: 100px; padding: 2px 8px; }
++.openui-source-link { font-family: inherit; font-size: 13px; background: #fff; border: 1px solid #d4d8df; border-radius: 8px; padding: 6px 12px; cursor: pointer; color: #0a6b67; }
++.openui-callout { margin: 0; border-radius: 8px; padding: 12px 14px; font-size: 13.5px; border: 1px solid; }
++.openui-callout[data-tone="warning"] { background: #f7efde; border-color: #e3c98a; color: #8a5a00; }
++.openui-callout[data-tone="info"] { background: #e4f3f2; border-color: #9ad8d4; color: #0a6b67; }
++.openui-callout[data-tone="success"] { background: #e8f3ec; border-color: #9bd1ae; color: #1d6b3c; }
++.openui-comparison-table { border-collapse: collapse; width: 100%; font-size: 13px; background: #fff; border: 1px solid #d4d8df; border-radius: 10px; overflow: hidden; }
++.openui-comparison-table th, .openui-comparison-table td { border-bottom: 1px solid #e3e6eb; padding: 8px 10px; text-align: left; }
++.openui-comparison-table th { background: #f3f4f6; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #6b727e; }
++`;

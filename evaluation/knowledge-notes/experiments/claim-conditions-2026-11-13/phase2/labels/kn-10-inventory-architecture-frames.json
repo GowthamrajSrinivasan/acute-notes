@@ -1,0 +1,117 @@
+{
+  "caseId": "kn-10-inventory-architecture-frames",
+  "reviewer": "blind independent reviewer, 2026-11-13",
+  "records": [
+    {
+      "id": "r1",
+      "claimUnits": ["u13"], "claimSummary": "The orchestrator publishes a StockReserved event to the message broker.",
+      "conditionUnits": ["u13"], "kind": "precondition",
+      "conditionSummary": "Only once both the ledger reservation and the pricing step succeed.",
+      "mustConvey": "only after both reserve and pricing succeed",
+      "binding": "claim", "bindingReason": "Publishing StockReserved is false when either the reservation or the pricing step fails.",
+      "claimCards": ["u3_n8", "u3_n7"], "carriers": ["u3_n8"],
+      "perClaimCard": { "u3_n8": "carried", "u3_n7": "linked" },
+      "confidence": "high", "notes": "Intra-sentence. Edges u3_n5->u3_n7 and u3_n6->u3_n7 are labelled 'if successful', which also conveys it; u3_n7->u3_n8 makes it linked."
+    },
+    {
+      "id": "r2",
+      "claimUnits": ["u13"], "claimSummary": "The orchestrator asks the stock ledger to reserve the requested quantity.",
+      "conditionUnits": ["u14"], "kind": "exception",
+      "conditionSummary": "If the ledger cannot reserve the full quantity, the whole order is rejected; never a partial reservation.",
+      "mustConvey": "all-or-nothing: whole order rejected if full quantity unavailable, no partial reservation",
+      "binding": "set", "bindingReason": "The reserve-request sentence stays true; the all-or-nothing rule is an outcome that must be recorded somewhere.",
+      "claimCards": ["u3_n8", "u3_n5"], "carriers": ["u3_n9", "u3_a1", "g2"],
+      "perClaimCard": { "u3_n8": "frame", "u3_n5": "frame" },
+      "confidence": "medium", "notes": "g2 takeaway 'manages atomic stock reservations' judged recognisable for all-or-nothing. u3_n5 is also linked to u3_n9 ('if ledger cannot reserve')."
+    },
+    {
+      "id": "r3",
+      "claimUnits": ["u13"], "claimSummary": "The ledger reserves the requested stock for the order.",
+      "conditionUnits": ["u15"], "kind": "bound",
+      "conditionSummary": "A reservation not confirmed within 15 minutes is released and the stock becomes available again.",
+      "mustConvey": "15 minutes; unconfirmed reservations are released",
+      "binding": "set", "bindingReason": "The reservation still happens; the 15-minute release bounds how long it holds.",
+      "claimCards": ["u3_n8", "u3_n5"], "carriers": ["u3_n10"],
+      "perClaimCard": { "u3_n8": "separated", "u3_n5": "separated" },
+      "confidence": "medium", "notes": "g2 takeaway ('with a timeout') and u3_a1 ('time-based release') lack the 15-minute value, so not carriers. u3_n10 is joined only to u3_n3 (orchestrator label) via 'timeout condition'."
+    },
+    {
+      "id": "r4",
+      "claimUnits": ["u34"], "claimSummary": "The feed adapter wraps supplier API calls in the retry helper.",
+      "conditionUnits": ["u36", "u37", "u38"], "kind": "bound",
+      "conditionSummary": "At most 5 attempts per delivery; backoff 2 s doubling capped at 60 s; after 5th failure, published to inventory.dlq for staff review.",
+      "mustConvey": "max 5 attempts; 2 s start, doubling, 60 s cap; then inventory.dlq",
+      "binding": "set", "bindingReason": "'Calls are retried' stays true; the policy bounds it.",
+      "claimCards": ["u7_n3"], "carriers": ["u7_n3"],
+      "perClaimCard": { "u7_n3": "carried" },
+      "confidence": "high", "notes": ""
+    },
+    {
+      "id": "r5",
+      "claimUnits": ["u34", "u35"], "claimSummary": "Supplier calls are retried under the retry policy.",
+      "conditionUnits": ["u39", "u40"], "kind": "scope",
+      "conditionSummary": "Retries apply only to supplier calls; reservations are never retried automatically and failures return an error to the caller.",
+      "mustConvey": "retries only for supplier calls; reservations never auto-retried (error returned to caller)",
+      "binding": "set", "bindingReason": "The retry policy statement is true for supplier calls; the scope note prevents over-generalisation.",
+      "claimCards": ["u7_n3"], "carriers": ["u7_n4"],
+      "perClaimCard": { "u7_n3": "separated" },
+      "confidence": "medium", "notes": "u7_n3 names supplier API calls but not the 'only' / reservations-never-retried part; g6 takeaway is silent; no arrows inside g6."
+    },
+    {
+      "id": "r6",
+      "claimUnits": ["u24"], "claimSummary": "The adapter converts each delivery into a restock and asks the ledger to record it.",
+      "conditionUnits": ["u26"], "kind": "exception",
+      "conditionSummary": "A delivery it cannot parse is logged and skipped, not retried.",
+      "mustConvey": "unparsable deliveries are logged and skipped (not retried)",
+      "binding": "claim", "bindingReason": "'Each delivery is converted into a restock' is false for deliveries that cannot be parsed.",
+      "claimCards": ["u5_n6", "u5_n5"], "carriers": ["u5_n11", "u5_a1", "u5_a2", "g4"],
+      "perClaimCard": { "u5_n6": "frame", "u5_n5": "frame" },
+      "confidence": "medium", "notes": "g4 takeaway '... logging unparsable data' judged recognisable but weak on 'skipped'. u5_n5 links to u5_n10 ('Handle Unparsable Delivery'), a label I did not count as a carrier on its own."
+    },
+    {
+      "id": "r7",
+      "claimUnits": ["u38", "u7"], "claimSummary": "Dead-lettered deliveries are reviewed by staff in the admin UI.",
+      "conditionUnits": ["u50"], "kind": "caveat",
+      "conditionSummary": "They are only found when someone opens the admin UI; nothing alerts when inventory.dlq fills.",
+      "mustConvey": "no alerting on inventory.dlq; found only by manually opening the admin UI",
+      "binding": "set", "bindingReason": "Staff do review the DLQ in the UI; the lack of alerting is an operational gap, not a falsifier.",
+      "claimCards": ["u7_n3", "u8_n2"], "carriers": ["u10_n3", "u10_a1", "g9"],
+      "perClaimCard": { "u7_n3": "separated", "u8_n2": "separated" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r8",
+      "claimUnits": ["u18", "u46"], "claimSummary": "The ledger is the only writer of stock; others go through it.",
+      "conditionUnits": ["u49"], "kind": "caveat",
+      "conditionSummary": "Orchestrator and adapter can change the same product at once; consistency relies on a row lock unmeasured under peak load.",
+      "mustConvey": "concurrent changes rely on a DB row lock whose behaviour at peak load is unmeasured",
+      "binding": "set", "bindingReason": "Single-writer remains true; the unmeasured lock is a risk caveat.",
+      "claimCards": ["u4_n1", "u2_n2"], "carriers": ["u10_n2", "u10_a1", "g9"],
+      "perClaimCard": { "u4_n1": "separated", "u2_n2": "separated" },
+      "confidence": "low", "notes": "Attachment of u49 to a specific claim is debatable (could also qualify u3 peak throughput)."
+    },
+    {
+      "id": "r9",
+      "claimUnits": ["u20"], "claimSummary": "Pricing rules read price lists from Redis.",
+      "conditionUnits": ["u20"], "kind": "bound",
+      "conditionSummary": "Price lists are cached for 300 seconds.",
+      "mustConvey": "300-second cache",
+      "binding": "set", "bindingReason": "Reading from Redis stays true; the TTL bounds staleness.",
+      "claimCards": ["u4_n2", "u6_n2"], "carriers": ["u4_n2"],
+      "perClaimCard": { "u4_n2": "carried", "u6_n2": "separated" },
+      "confidence": "medium", "notes": "Intra-sentence. u6_n2 ('Caches price lists') has no TTL and no arrow to u4_n2."
+    },
+    {
+      "id": "r10",
+      "claimUnits": ["u23"], "claimSummary": "The supplier feed adapter brings in restocks from suppliers.",
+      "conditionUnits": ["u24"], "kind": "bound",
+      "conditionSummary": "It polls the supplier API every 10 minutes.",
+      "mustConvey": "every 10 minutes",
+      "binding": "set", "bindingReason": "Restocks still arrive via the adapter; the interval bounds latency.",
+      "claimCards": ["u5_n2"], "carriers": ["u5_n4"],
+      "perClaimCard": { "u5_n2": "separated" },
+      "confidence": "low", "notes": "g4 takeaway and u5_a1 ('scheduled task') lack the interval. u5_n2 has no arrows."
+    }
+  ],
+  "notes": "No records for overview facts (u1-u5), UI facts (u6-u8), 'only entry point'/'only module'/'only external system' exclusivity statements (u9, u25, u31, u45-u47), which are claims in their own right rather than limits on another claim, reading order (u41-u43), and u48 (no UI tests, standalone gap). u3 '3,000 per hour at peak' left without a record; u49 is attached to the ledger claim instead (r8, low confidence)."
+}

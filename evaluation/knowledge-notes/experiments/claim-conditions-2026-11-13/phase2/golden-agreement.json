@@ -1,0 +1,430 @@
+{
+  "kn-03-blue-green-deploy": [
+    {
+      "edge": "ku.non-compatible → ku.prereq-migrations",
+      "cond": [
+        "u13"
+      ],
+      "claim": [
+        "u10"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": "r2"
+    },
+    {
+      "edge": "ku.inflight → ku.switch-back",
+      "cond": [],
+      "claim": [
+        "u29"
+      ],
+      "mapped": false,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.no-next-migrations → ku.step-standby",
+      "cond": [],
+      "claim": [
+        "u31"
+      ],
+      "mapped": false,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    }
+  ],
+  "kn-04-queue-choice": [
+    {
+      "edge": "ku.cost-growth → ku.cost-table",
+      "cond": [
+        "u14",
+        "u15"
+      ],
+      "claim": [
+        "u11",
+        "u12",
+        "u13"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.b-effort-estimate → ku.cost-table",
+      "cond": [
+        "u28"
+      ],
+      "claim": [
+        "u11",
+        "u12",
+        "u13"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": "r5"
+    },
+    {
+      "edge": "ku.a-at-least-once → ku.a-benefits",
+      "cond": [
+        "u25"
+      ],
+      "claim": [
+        "u24"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.c-scope → ku.c-transactional",
+      "cond": [
+        "u31"
+      ],
+      "claim": [
+        "u30"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.load-test-limits → ku.load-test",
+      "cond": [
+        "u36"
+      ],
+      "claim": [
+        "u33",
+        "u34",
+        "u35"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    }
+  ],
+  "kn-05-incident-review-meeting": [
+    {
+      "edge": "ku.freeze-objection → ku.freeze-proposal",
+      "cond": [
+        "u55",
+        "u56",
+        "u57",
+        "u58",
+        "u59",
+        "u60"
+      ],
+      "claim": [
+        "u53",
+        "u54"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": "r4"
+    },
+    {
+      "edge": "ku.freeze-undecided → ku.freeze-proposal",
+      "cond": [
+        "u61",
+        "u62"
+      ],
+      "claim": [
+        "u53",
+        "u54"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.rollback-open → ku.rollback-proposal",
+      "cond": [
+        "u71",
+        "u72",
+        "u73"
+      ],
+      "claim": [
+        "u66",
+        "u67",
+        "u68",
+        "u69",
+        "u70"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    }
+  ],
+  "kn-06-hybrid-search-reranking": [
+    {
+      "edge": "ku.bm25-mismatch → ku.bm25",
+      "cond": [
+        "u9"
+      ],
+      "claim": [
+        "u4",
+        "u5",
+        "u6",
+        "u7",
+        "u8"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.vector-exact-weakness → ku.vector",
+      "cond": [
+        "u12",
+        "u13",
+        "u14"
+      ],
+      "claim": [
+        "u10",
+        "u11"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": "r11"
+    },
+    {
+      "edge": "ku.hybrid-condition → ku.hybrid",
+      "cond": [
+        "u17",
+        "u18"
+      ],
+      "claim": [
+        "u16",
+        "u17"
+      ],
+      "mapped": true,
+      "reviewer": "r1",
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.rerank-limits → ku.rerank-precision",
+      "cond": [
+        "u31",
+        "u32",
+        "u33"
+      ],
+      "claim": [
+        "u31"
+      ],
+      "mapped": true,
+      "reviewer": "r4",
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.citation-limit → ku.generation",
+      "cond": [
+        "u36"
+      ],
+      "claim": [
+        "u34",
+        "u35"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": "r8"
+    },
+    {
+      "edge": "ku.figures-caveat → ku.rerank-latency",
+      "cond": [
+        "u42"
+      ],
+      "claim": [
+        "u41"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    }
+  ],
+  "kn-07-photo-sharing-hld": [
+    {
+      "edge": "ku.gateway-fails-closed → ku.gateway",
+      "cond": [
+        "u10"
+      ],
+      "claim": [
+        "u8",
+        "u9"
+      ],
+      "mapped": true,
+      "reviewer": "r1",
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.queue-retention → ku.message-queue",
+      "cond": [
+        "u19"
+      ],
+      "claim": [
+        "u13",
+        "u15",
+        "u17",
+        "u18"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": "r6"
+    },
+    {
+      "edge": "ku.stuck-photos → ku.workers",
+      "cond": [
+        "u20"
+      ],
+      "claim": [
+        "u15",
+        "u16",
+        "u17",
+        "u31"
+      ],
+      "mapped": true,
+      "reviewer": "r7",
+      "conditionLabelledElsewhere": null
+    }
+  ],
+  "kn-08-helpdesk-answers-hld-lld": [
+    {
+      "edge": "ku.rerank-fallback → ku.flow-rerank",
+      "cond": [
+        "u25",
+        "u26"
+      ],
+      "claim": [
+        "u21"
+      ],
+      "mapped": true,
+      "reviewer": "r1",
+      "conditionLabelledElsewhere": null
+    }
+  ],
+  "kn-09-billing-codebase-map": [
+    {
+      "edge": "ku.tax-retries-unknown → ku.tax-client",
+      "cond": [
+        "u34",
+        "u35"
+      ],
+      "claim": [
+        "u30",
+        "u31",
+        "u33"
+      ],
+      "mapped": true,
+      "reviewer": "r5",
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.publish-failure-unknown → ku.publish",
+      "cond": [
+        "u42",
+        "u43"
+      ],
+      "claim": [
+        "u39",
+        "u40"
+      ],
+      "mapped": true,
+      "reviewer": "r6",
+      "conditionLabelledElsewhere": null
+    }
+  ],
+  "kn-10-inventory-architecture-frames": [
+    {
+      "edge": "ku.no-partial → ku.orchestrator",
+      "cond": [
+        "u14"
+      ],
+      "claim": [
+        "u11",
+        "u12",
+        "u13"
+      ],
+      "mapped": true,
+      "reviewer": "r2",
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.hold-expiry → ku.ledger",
+      "cond": [
+        "u15"
+      ],
+      "claim": [
+        "u16",
+        "u17",
+        "u18",
+        "u46"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": "r3"
+    },
+    {
+      "edge": "ku.unparseable-skipped → ku.feed-adapter",
+      "cond": [
+        "u26"
+      ],
+      "claim": [
+        "u23",
+        "u24",
+        "u25",
+        "u47"
+      ],
+      "mapped": true,
+      "reviewer": "r6",
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.retry-scope → ku.retry-policy",
+      "cond": [
+        "u39",
+        "u40"
+      ],
+      "claim": [
+        "u36",
+        "u37",
+        "u38"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": "r5"
+    }
+  ],
+  "kn-11-ambiguous-analytics-proposal": [
+    {
+      "edge": "ku.enrichment-user-service → ku.enrichment",
+      "cond": [
+        "u11"
+      ],
+      "claim": [
+        "u10",
+        "u12"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": null
+    },
+    {
+      "edge": "ku.freshness-conflict → ku.warehouse-load",
+      "cond": [
+        "u13",
+        "u21"
+      ],
+      "claim": [
+        "u13",
+        "u14"
+      ],
+      "mapped": true,
+      "reviewer": null,
+      "conditionLabelledElsewhere": "r5"
+    }
+  ],
+  "kn-12-flag-rollout-update": [],
+  "summary": {
+    "goldenLimitEdges": 29,
+    "unmapped": 2,
+    "foundByBlindReviewers": 9
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-01-exactly-once-unnegated",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-01-idempotency-keys",
+  "target": "plan",
+  "description": "The negation is dropped: 'don't guarantee exactly-once processing' becomes 'guarantee exactly-once processing'. The negation-aware a.no-absolute must still catch the unnegated claim.",
+  "mutations": [
+    { "op": "replace_text", "node": "g1", "find": "and don't guarantee exactly-once processing.", "replace": "and guarantee exactly-once processing." }
+  ],
+  "expectFailing": ["a.no-absolute"]
+}

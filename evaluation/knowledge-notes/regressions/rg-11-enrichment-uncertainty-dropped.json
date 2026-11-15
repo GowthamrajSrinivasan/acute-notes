@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-enrichment-uncertainty-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The enrichment shape drops its caveat that how it uses the user service is unclear; the doubt survives only in the open-questions frame, apart from its claim.",
+  "mutations": [
+    { "op": "replace_text", "node": "s5", "find": "how it gets account data is unclear", "replace": "" }
+  ],
+  "expectFailing": ["a.enrichment-uncertain"]
+}

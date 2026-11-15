@@ -1,0 +1,260 @@
+{
+  "id": "kn-07-photo-sharing-hld",
+  "kind": "architecture_proposal",
+  "source": "# Pinhole: high-level design for photo sharing\n\n## Purpose and scope\n\nPinhole lets people post photos and see the photos of the accounts they follow in a feed. The design is sized for about 2 million daily active users at launch. This document is the high-level design only: it names the parts of the system, what each part is responsible for, how the parts talk to each other and why we chose this shape. It does not describe code, internal modules or individual operations; those belong in the low-level designs that each service team will write later.\n\n## Clients\n\nPeople use Pinhole through two clients: a mobile app for iOS and Android, and a web app that runs in the browser. Both clients speak the same public HTTPS API and hold no business rules of their own beyond simple input checks. Clients upload a photo directly to object storage with a short-lived signed URL, so large files never pass through our own services.\n\n## Edge and API\n\nEvery client request enters through the API gateway. The gateway terminates TLS, checks the caller's access token with the auth service, applies a rate limit of 120 requests per minute per account, and routes the request to the right service. If the auth service cannot be reached, the gateway rejects the request instead of letting it through unchecked. Photo bytes are served to clients by the CDN, never by the gateway.\n\n## Core services\n\nThe auth service issues and verifies access tokens and owns accounts and sessions. The upload service hands the client a signed upload URL, records the new photo in the metadata database with the status \"processing\" once the upload completes, and publishes a PhotoUploaded event to the message queue. The feed service builds each person's feed from the photos of the accounts they follow: it reads photo metadata from the metadata database and keeps ready-made feed pages in the cache.\n\n## Asynchronous processing\n\nMedia processing workers subscribe to PhotoUploaded events on the message queue. For each event, a worker reads the original from object storage, creates thumbnails in three sizes (150, 640 and 1080 pixels wide), writes them back to object storage and marks the photo \"ready\" in the metadata database. The worker then publishes a PhotoReady event. The feed service subscribes to PhotoReady events to add the photo to the followers' feeds, and asks the push-notification provider to alert followers who have notifications turned on.\n\nThe queue keeps an event for up to 7 days, so a worker outage delays thumbnails but does not lose uploads. A photo whose processing keeps failing stays in the \"processing\" state and is not shown in any feed.\n\n## Storage\n\nObject storage holds the original photos and their thumbnails; originals are kept unchanged and are never overwritten. The metadata database holds follow relationships and photo records with their processing status, and it is the source of truth for whether a photo exists. The cache holds ready-made feed pages for 60 seconds. It is only a copy kept for speed: losing it makes feeds slower, never wrong.\n\n## External dependencies and system boundary\n\nThe CDN and the push-notification provider are run by third parties and sit outside the Pinhole system boundary. The CDN reads photos and thumbnails from object storage and serves them to clients from locations close to the user. The push-notification provider delivers alerts to phones; Pinhole only sends it requests and does not control when an alert arrives. Everything else in this document (the gateway, the three services, the workers, the queue and the three stores) is inside the boundary and is operated by the Pinhole team.\n\n## Main data flow: posting a photo\n\n1. The client asks the upload service for a signed URL and uploads the original straight to object storage.\n2. The upload service records the photo as \"processing\" and publishes PhotoUploaded.\n3. A media processing worker picks up the event, creates the thumbnails and marks the photo \"ready\".\n4. The worker publishes PhotoReady; the feed service adds the photo to the followers' feeds and asks the push-notification provider to alert them.\n5. Followers' clients fetch the updated feed through the gateway and load the thumbnails from the CDN.\n\n## Design decisions\n\n- **A queue between upload and processing.** A slow or failed thumbnail job must never block or fail an upload, so the upload service and the workers only meet through the message queue. The cost is that a new photo takes a few seconds to appear in feeds.\n- **Direct upload with signed URLs.** Originals can be up to 25 MB, and routing them through the gateway would make it the bottleneck, so clients send bytes straight to object storage and the upload service only signs the URL and records the result.\n- **Metadata apart from bytes.** Photo bytes live in object storage and everything we query lives in the metadata database, because the two grow at very different rates and need different backups.\n- **The cache is disposable.** Feed pages are cached for speed only; the metadata database stays the source of truth, so the cache can be flushed at any time.\n- **Buy delivery, don't build it.** We use a third-party CDN and push-notification provider instead of running our own, and we accept that their outages are outside our control.\n\n## Open questions\n\n- How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet.\n- Whether the feed service should precompute feeds for accounts with very many followers is left to the feed service's own low-level design.\n",
+  "critical": [
+    {
+      "quote": "This document is the high-level design only: it names the parts of the system, what each part is responsible for, how the parts talk to each other and why we chose this shape.",
+      "why": "The source is HLD only; it sets the depth any Lens view may reach."
+    },
+    {
+      "quote": "It does not describe code, internal modules or individual operations; those belong in the low-level designs that each service team will write later.",
+      "why": "No code, modules or operations: L3-L5 have nothing to show and must not be invented."
+    },
+    {
+      "quote": "If the auth service cannot be reached, the gateway rejects the request instead of letting it through unchecked.",
+      "why": "The gateway fails closed when auth is down."
+    },
+    {
+      "quote": "The upload service hands the client a signed upload URL, records the new photo in the metadata database with the status \"processing\" once the upload completes, and publishes a PhotoUploaded event to the message queue.",
+      "why": "Defines the upload service's two outgoing edges: metadata database (writes), message queue (publishes)."
+    },
+    {
+      "quote": "Media processing workers subscribe to PhotoUploaded events on the message queue.",
+      "why": "Direction of the dependency: workers consume from the queue."
+    },
+    {
+      "quote": "The queue keeps an event for up to 7 days, so a worker outage delays thumbnails but does not lose uploads.",
+      "why": "No upload is lost only within the 7-day retention; the bound must stay with the claim."
+    },
+    {
+      "quote": "A photo whose processing keeps failing stays in the \"processing\" state and is not shown in any feed.",
+      "why": "Known gap of the design: stuck photos are invisible."
+    },
+    {
+      "quote": "The metadata database holds follow relationships and photo records with their processing status, and it is the source of truth for whether a photo exists.",
+      "why": "Source of truth; the cache is not."
+    },
+    {
+      "quote": "The CDN and the push-notification provider are run by third parties and sit outside the Pinhole system boundary.",
+      "why": "The system boundary: these two are external."
+    },
+    {
+      "quote": "**A queue between upload and processing.** A slow or failed thumbnail job must never block or fail an upload, so the upload service and the workers only meet through the message queue. The cost is that a new photo takes a few seconds to appear in feeds.",
+      "why": "Main design decision, with its cost."
+    },
+    {
+      "quote": "**Direct upload with signed URLs.** Originals can be up to 25 MB, and routing them through the gateway would make it the bottleneck, so clients send bytes straight to object storage and the upload service only signs the URL and records the result.",
+      "why": "Why bytes bypass the gateway."
+    },
+    {
+      "quote": "How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet.",
+      "why": "Open; must not be presented as decided."
+    },
+    {
+      "quote": "Whether the feed service should precompute feeds for accounts with very many followers is left to the feed service's own low-level design.",
+      "why": "Deferred to the feed service's LLD; not part of this HLD."
+    }
+  ],
+  "exact": [
+    "2 million",
+    "120 requests per minute",
+    "PhotoUploaded",
+    "150, 640 and 1080 pixels",
+    "PhotoReady",
+    "7 days",
+    "60 seconds",
+    "25 MB",
+    "150",
+    "640",
+    "1080"
+  ],
+  "groups": {
+    "together": [
+      [
+        "Message queue: PhotoUploaded, PhotoReady; keeps events up to 7 days",
+        "Media processing workers: thumbnails 150, 640 and 1080 px; failing photos stay 'processing'"
+      ],
+      [
+        "Object storage: originals (never overwritten) and thumbnails",
+        "Metadata database: follow relationships, photo records and status; source of truth",
+        "Cache: ready-made feed pages for 60 seconds; only a copy"
+      ],
+      [
+        "Auth service: issues and verifies tokens, owns accounts and sessions",
+        "Upload service: signs URLs, records new photos, publishes PhotoUploaded",
+        "Feed service: builds feeds, caches pages, fans out on PhotoReady"
+      ]
+    ],
+    "apart": [
+      [
+        "CDN (third party): serves photos and thumbnails near the user",
+        "Object storage: originals (never overwritten) and thumbnails"
+      ],
+      [
+        "Push-notification provider (third party): delivers alerts; Pinhole doesn't control timing",
+        "Feed service: builds feeds, caches pages, fans out on PhotoReady"
+      ],
+      [
+        "Open: how failed processing is retried and stuck photos cleaned up",
+        "A queue keeps slow or failed thumbnail jobs from blocking uploads; cost: a few seconds before a photo appears"
+      ]
+    ]
+  },
+  "hierarchy": [
+    {
+      "main": "Upload service: signs URLs, records new photos, publishes PhotoUploaded",
+      "supporting": [
+        "Signed-URL direct upload keeps 25 MB originals off the gateway"
+      ]
+    },
+    {
+      "main": "Message queue: PhotoUploaded, PhotoReady; keeps events up to 7 days",
+      "supporting": [
+        "A queue keeps slow or failed thumbnail jobs from blocking uploads; cost: a few seconds before a photo appears"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "Mobile app (iOS and Android); uploads originals with a signed URL",
+      "to": "API gateway: TLS, token check, 120 requests per minute per account, routing; rejects requests when auth can't be reached",
+      "type": "calls"
+    },
+    {
+      "from": "Web app in the browser",
+      "to": "API gateway: TLS, token check, 120 requests per minute per account, routing; rejects requests when auth can't be reached",
+      "type": "calls"
+    },
+    {
+      "from": "Mobile app (iOS and Android); uploads originals with a signed URL",
+      "to": "Object storage: originals (never overwritten) and thumbnails",
+      "type": "writes"
+    },
+    {
+      "from": "API gateway: TLS, token check, 120 requests per minute per account, routing; rejects requests when auth can't be reached",
+      "to": "Auth service: issues and verifies tokens, owns accounts and sessions",
+      "type": "calls"
+    },
+    {
+      "from": "API gateway: TLS, token check, 120 requests per minute per account, routing; rejects requests when auth can't be reached",
+      "to": "Upload service: signs URLs, records new photos, publishes PhotoUploaded",
+      "type": "calls"
+    },
+    {
+      "from": "API gateway: TLS, token check, 120 requests per minute per account, routing; rejects requests when auth can't be reached",
+      "to": "Feed service: builds feeds, caches pages, fans out on PhotoReady",
+      "type": "calls"
+    },
+    {
+      "from": "Upload service: signs URLs, records new photos, publishes PhotoUploaded",
+      "to": "Metadata database: follow relationships, photo records and status; source of truth",
+      "type": "writes"
+    },
+    {
+      "from": "Upload service: signs URLs, records new photos, publishes PhotoUploaded",
+      "to": "Message queue: PhotoUploaded, PhotoReady; keeps events up to 7 days",
+      "type": "publishes"
+    },
+    {
+      "from": "Media processing workers: thumbnails 150, 640 and 1080 px; failing photos stay 'processing'",
+      "to": "Message queue: PhotoUploaded, PhotoReady; keeps events up to 7 days",
+      "type": "subscribes"
+    },
+    {
+      "from": "Media processing workers: thumbnails 150, 640 and 1080 px; failing photos stay 'processing'",
+      "to": "Object storage: originals (never overwritten) and thumbnails",
+      "type": "writes"
+    },
+    {
+      "from": "Media processing workers: thumbnails 150, 640 and 1080 px; failing photos stay 'processing'",
+      "to": "Metadata database: follow relationships, photo records and status; source of truth",
+      "type": "writes"
+    },
+    {
+      "from": "Media processing workers: thumbnails 150, 640 and 1080 px; failing photos stay 'processing'",
+      "to": "Message queue: PhotoUploaded, PhotoReady; keeps events up to 7 days",
+      "type": "publishes"
+    },
+    {
+      "from": "Feed service: builds feeds, caches pages, fans out on PhotoReady",
+      "to": "Message queue: PhotoUploaded, PhotoReady; keeps events up to 7 days",
+      "type": "subscribes"
+    },
+    {
+      "from": "Feed service: builds feeds, caches pages, fans out on PhotoReady",
+      "to": "Metadata database: follow relationships, photo records and status; source of truth",
+      "type": "reads"
+    },
+    {
+      "from": "Feed service: builds feeds, caches pages, fans out on PhotoReady",
+      "to": "Cache: ready-made feed pages for 60 seconds; only a copy",
+      "type": "writes"
+    },
+    {
+      "from": "Feed service: builds feeds, caches pages, fans out on PhotoReady",
+      "to": "Push-notification provider (third party): delivers alerts; Pinhole doesn't control timing",
+      "type": "calls"
+    },
+    {
+      "from": "CDN (third party): serves photos and thumbnails near the user",
+      "to": "Object storage: originals (never overwritten) and thumbnails",
+      "type": "reads"
+    },
+    {
+      "from": "A queue keeps slow or failed thumbnail jobs from blocking uploads; cost: a few seconds before a photo appears",
+      "to": "Message queue: PhotoUploaded, PhotoReady; keeps events up to 7 days",
+      "type": "supports"
+    },
+    {
+      "from": "Signed-URL direct upload keeps 25 MB originals off the gateway",
+      "to": "Upload service: signs URLs, records new photos, publishes PhotoUploaded",
+      "type": "supports"
+    },
+    {
+      "from": "Metadata kept apart from photo bytes: different growth and backups",
+      "to": "Metadata database: follow relationships, photo records and status; source of truth",
+      "type": "supports"
+    },
+    {
+      "from": "The cache is disposable: the metadata database stays the source of truth",
+      "to": "Cache: ready-made feed pages for 60 seconds; only a copy",
+      "type": "supports"
+    },
+    {
+      "from": "Buy CDN and push delivery; accept their outages",
+      "to": "CDN (third party): serves photos and thumbnails near the user",
+      "type": "supports"
+    }
+  ],
+  "mustNotSay": [
+    {
+      "text": "Photo uploads pass through the API gateway or the upload service.",
+      "why": "Clients upload straight to object storage with a signed URL; the gateway never carries photo bytes."
+    },
+    {
+      "text": "The message queue calls the upload service, or the workers call the upload service directly.",
+      "why": "The upload service publishes to the queue and the workers subscribe; the two only meet through the queue."
+    },
+    {
+      "text": "The cache is the source of truth for feeds or photos.",
+      "why": "The metadata database is the source of truth; the cache is a disposable copy."
+    },
+    {
+      "text": "Uploads are never lost, whatever the length of an outage.",
+      "why": "Only within the queue's 7-day retention."
+    },
+    {
+      "text": "Failed processing is retried a fixed number of times with backoff.",
+      "why": "Retry and clean-up are explicitly undecided."
+    },
+    {
+      "text": "Named technologies (for example Kafka, S3, Postgres, Redis), internal modules, functions or file paths of any service.",
+      "why": "The source is HLD only and names no technology, module, operation or path; any such detail is invented."
+    },
+    {
+      "text": "The CDN or the push-notification provider is part of the Pinhole system.",
+      "why": "Both are third parties outside the boundary."
+    }
+  ]
+}

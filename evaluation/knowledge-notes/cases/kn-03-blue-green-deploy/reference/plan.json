@@ -194,7 +194,7 @@
         "label": "7. Keep blue on standby for 24 hours",
         "details": [
           "It is the rollback target until then",
-          "Do not run the next release's migrations while blue is on standby, or rolling back stops being safe"
+          "Do not run the next release's migrations while blue is on standby, or switching back stops being safe"
         ]
       }
     },
@@ -207,7 +207,7 @@
         "shape": "rectangle",
         "label": "8. Retire blue: scale it down",
         "details": [
-          "After 24 hours with no rollback; blue becomes the idle environment for the next release"
+          "After 24 hours without a switch-back; blue becomes the idle environment for the next release"
         ]
       }
     },
@@ -217,7 +217,7 @@
       "content": {
         "label": "When things go wrong: rolling back",
         "arrangement": "stack",
-        "takeaway": "Going back is fast; the database stays as migrated."
+        "takeaway": "Going back is fast; neither way reverts the database."
       }
     },
     {

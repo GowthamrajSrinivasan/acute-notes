@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-upload-size-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The signed-URL decision (u35, critical) loses its protected 25 MB figure.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-dec-signed",
+      "find": "Originals can be up to 25 MB;",
+      "replace": "Originals can be large;"
+    }
+  ],
+  "expectFailing": [
+    "a.upload-size"
+  ]
+}

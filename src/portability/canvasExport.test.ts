@@ -166,7 +166,7 @@ describe("export options", () => {
   it("each option off strips only its detail; the content stays, and the file stays valid", async () => {
     const services = createMemoryServices();
     const bundle = await exportCanvas(services, WS, await seed(services));
-    const off = applyExportOptions(bundle, { origin: false, blockStyles: false, connectionTypes: false, images: false, viewSettings: false, layoutHints: false });
+    const off = applyExportOptions(bundle, { origin: false, blockStyles: false, connectionTypes: false, images: false, viewSettings: false, layoutHints: false, sources: false });
     const els = new Map(off.canvases[0]!.elements.map((e) => [e.id, e.customData as Record<string, unknown> | undefined]));
     expect(els.get("b1")).toEqual({ acute: { kind: "rich-block", blockType: "text", documentId: "doc_1" } }); // no style, no layout hint
     expect(els.get("s2")).toEqual({}); // no origin

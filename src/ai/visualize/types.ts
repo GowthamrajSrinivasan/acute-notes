@@ -6,6 +6,7 @@ import type { ContentFormat } from "@/ai/content/types";
 import type { VisualTemplate } from "@/ai/visual-plan/types";
 import type { AnalysisReport } from "@/ai/fidelity/analysis";
 import type { FidelityReport } from "@/ai/fidelity/report";
+import type { NoteModel } from "@/ai/fidelity/contracts";
 import type { OutlinedReuse } from "./outlined";
 
 /** PRD §6.7's own three labels — the only stages the UI ever shows. */
@@ -25,6 +26,11 @@ export interface VisualizeInput {
   forceLocalOnly?: boolean;
   /** Ask AI even when the local tier judged the content fully explicit ("Analyse with AI" in the review). */
   forceAI?: boolean;
+  /**
+   * This run's note model (knowledge-notes-plan WP2.8, "Keep full detail" in the dialog once shown at R1). Omitted, the
+   * run uses `FIDELITY_CONFIG.noteModel`, as it always has. Applies to the outlined path; a forced template is unaffected.
+   */
+  noteModel?: NoteModel;
   operationId: string;
   title: string;
   context: RenderContext;

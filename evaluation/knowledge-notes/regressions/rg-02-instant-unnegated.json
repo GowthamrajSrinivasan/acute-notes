@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-instant-unnegated",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The negation is dropped: 'is not applied everywhere instantly' becomes 'is applied everywhere instantly'. The negation-aware a.no-instant must still catch the unnegated claim (the eventual-consistency bullet stays, so a.purge-eventual still passes).",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n3",
+      "find": "A purge request is accepted quickly but is not applied everywhere instantly.",
+      "replace": "A purge request is accepted quickly and is applied everywhere instantly."
+    }
+  ],
+  "expectFailing": [
+    "a.no-instant"
+  ]
+}

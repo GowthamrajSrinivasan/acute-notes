@@ -2,7 +2,7 @@
   "datasetVersion": "1.0.0",
   "caseId": "kn-07-photo-sharing-hld",
   "template": "sectioned",
-  "templateNote": "Sectioned: the only template with frames and calls/reads/writes/publishes/subscribes. One architecture frame per responsibility group (clients, edge, core services, async processing, storage, external), plus a decisions frame and an open-questions frame. The source is HLD only, so no frame below container level is expected.",
+  "templateNote": "Sectioned: the only template with frames and calls/reads/writes/publishes/subscribes. One architecture frame per responsibility group (clients, edge, core services, async processing, storage, external), plus an open-questions frame. Each design decision is a card inside the frame of the component it justifies, linked to it, so the reason sits next to what it explains. The source is HLD only, so no frame below container level is expected.",
   "frames": [
     {
       "id": "f.clients",
@@ -62,11 +62,12 @@
         ]
       },
       "purpose": "The synchronous services: auth, upload, feed.",
-      "rationale": "Grouped by role: each owns a piece of the request path.",
+      "rationale": "Grouped by role: each owns a piece of the request path. The signed-URL decision card sits here, beside the upload service it justifies.",
       "children": [
         "e.auth",
         "e.upload",
-        "e.feed"
+        "e.feed",
+        "e.dec-signed-url"
       ],
       "arrangement": "grid",
       "diagram": "architecture",
@@ -91,7 +92,8 @@
       "rationale": "The source's main decision is to decouple processing behind a queue; the queue and its consumers form one group.",
       "children": [
         "e.queue",
-        "e.workers"
+        "e.workers",
+        "e.dec-queue"
       ],
       "arrangement": "grid",
       "diagram": "architecture",
@@ -117,7 +119,9 @@
       "children": [
         "e.object-storage",
         "e.metadata-db",
-        "e.cache"
+        "e.cache",
+        "e.dec-metadata-apart",
+        "e.dec-cache"
       ],
       "arrangement": "grid",
       "diagram": "architecture",
@@ -141,7 +145,8 @@
       "rationale": "The source draws the boundary explicitly (u25, u28); external systems must not share a frame with internal containers.",
       "children": [
         "e.cdn",
-        "e.push"
+        "e.push",
+        "e.dec-buy"
       ],
       "arrangement": "grid",
       "diagram": "architecture",
@@ -156,31 +161,6 @@
           "reason": "The push provider is called by the feed service but is a third party."
         }
       ],
-      "requirement": "mandatory",
-      "support": "implemented"
-    },
-    {
-      "id": "f.decisions",
-      "title": "Design decisions",
-      "titleMatch": {
-        "all": [
-          [
-            "decision",
-            "rationale",
-            "trade-off"
-          ]
-        ]
-      },
-      "purpose": "The five decisions with their reasons and costs.",
-      "rationale": "Decisions are evidence for the shape of the diagram; each card is linked to the component it justifies.",
-      "children": [
-        "e.dec-queue",
-        "e.dec-signed-url",
-        "e.dec-metadata-apart",
-        "e.dec-cache",
-        "e.dec-buy"
-      ],
-      "arrangement": "grid",
       "requirement": "mandatory",
       "support": "implemented"
     },
@@ -342,8 +322,7 @@
           ],
           [
             "issue",
-            "session",
-            "account"
+            "session"
           ]
         ]
       },
@@ -582,6 +561,16 @@
           [
             "push",
             "notification provider"
+          ],
+          [
+            "deliver",
+            "phone",
+            "arriv",
+            "timing",
+            "control",
+            "third part",
+            "third-part",
+            "outside"
           ]
         ]
       },
@@ -647,7 +636,7 @@
         ]
       },
       "hierarchy": "secondary",
-      "frame": "f.decisions",
+      "frame": "f.async",
       "requirement": "mandatory",
       "support": "implemented"
     },
@@ -679,7 +668,7 @@
         ]
       },
       "hierarchy": "secondary",
-      "frame": "f.decisions",
+      "frame": "f.core",
       "requirement": "mandatory",
       "support": "implemented"
     },
@@ -710,7 +699,7 @@
         ]
       },
       "hierarchy": "secondary",
-      "frame": "f.decisions",
+      "frame": "f.storage",
       "requirement": "mandatory",
       "support": "implemented"
     },
@@ -738,7 +727,7 @@
         ]
       },
       "hierarchy": "secondary",
-      "frame": "f.decisions",
+      "frame": "f.storage",
       "requirement": "mandatory",
       "support": "implemented"
     },
@@ -767,7 +756,7 @@
         ]
       },
       "hierarchy": "secondary",
-      "frame": "f.decisions",
+      "frame": "f.external",
       "requirement": "mandatory",
       "support": "implemented"
     },
@@ -821,7 +810,23 @@
             "precomputed"
           ],
           [
-            "follower"
+            "follower",
+            "large account",
+            "big account",
+            "popular account"
+          ],
+          [
+            "open",
+            "undecided",
+            "not decided",
+            "unresolved",
+            "tbd",
+            "deferred",
+            "left to",
+            "low-level design",
+            "low level design",
+            "lld",
+            "whether"
           ]
         ]
       },

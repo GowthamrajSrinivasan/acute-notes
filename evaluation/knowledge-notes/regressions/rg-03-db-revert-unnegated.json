@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-db-revert-unnegated",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The negation is dropped from the failure frame's takeaway: 'neither way reverts the database' (u37's 'neither kind of rollback reverts the database') becomes 'either way reverts the database'. The negation-aware a.no-db-revert must still catch it.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "g4",
+      "find": "neither way reverts the database.",
+      "replace": "either way reverts the database."
+    }
+  ],
+  "expectFailing": [
+    "a.no-db-revert"
+  ]
+}

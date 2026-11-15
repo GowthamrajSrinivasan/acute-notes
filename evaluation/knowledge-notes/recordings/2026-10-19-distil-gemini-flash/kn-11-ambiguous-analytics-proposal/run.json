@@ -1,0 +1,1030 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "The growth team wants to understand how customers use the Lumen web and mobile apps.",
+        "hash": "87hs6ioc7o",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Context",
+        "span": {
+          "start": 71,
+          "end": 155
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "Today, product events are scattered across three logging tools, and nobody can answer a simple funnel question without exporting CSV files by hand.",
+        "hash": "y2bwxjvuvv",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Context",
+        "span": {
+          "start": 156,
+          "end": 303
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "This proposal describes a single pipeline that collects product-analytics events, enriches them and makes them available in the warehouse.",
+        "hash": "gs6po7ksp2",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Context",
+        "span": {
+          "start": 304,
+          "end": 442
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "The first questions the team wants answered are how many new accounts finish onboarding, and which features paying customers use in their first month.",
+        "hash": "yu5p2fck9k",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Context",
+        "span": {
+          "start": 443,
+          "end": 593
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "Client SDKs in the web and mobile apps send events to a collector service over HTTPS.",
+        "hash": "153sik96lth",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 615,
+          "end": 700
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "Clients batch events and send them every 10 seconds, or sooner when the app goes to the background.",
+        "hash": "17q6azsscr7",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 701,
+          "end": 800
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "Each event carries an event name, a timestamp, an anonymous device id and, for signed-in users, an account id.",
+        "hash": "4rg649q2wn",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 801,
+          "end": 911
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "sentence",
+        "text": "The collector validates each event against the schema registry and rejects events that do not match a registered schema.",
+        "hash": "1uvco12n8nh",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 912,
+          "end": 1032
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "sentence",
+        "text": "Accepted events are published to the `analytics.events` topic on the message bus.",
+        "hash": "1tkoesko4k7",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 1033,
+          "end": 1114
+        },
+        "prev": "u8",
+        "next": "u10"
+      },
+      {
+        "id": "u10",
+        "kind": "sentence",
+        "text": "An enrichment step consumes the topic and adds account attributes, such as plan tier and region.",
+        "hash": "nk0gdrd2nr",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 1116,
+          "end": 1212
+        },
+        "prev": "u9",
+        "next": "u11"
+      },
+      {
+        "id": "u11",
+        "kind": "sentence",
+        "text": "The enrichment step uses the user service.",
+        "hash": "2uonkzhios",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 1213,
+          "end": 1255
+        },
+        "prev": "u10",
+        "next": "u12"
+      },
+      {
+        "id": "u12",
+        "kind": "sentence",
+        "text": "If an account cannot be found, the event is passed on without account attributes.",
+        "hash": "ya7e58jewg",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 1256,
+          "end": 1337
+        },
+        "prev": "u11",
+        "next": "u13"
+      },
+      {
+        "id": "u13",
+        "kind": "sentence",
+        "text": "Enriched events are then written to the warehouse in hourly batches, where the analytics team builds dashboards on them.",
+        "hash": "lc35oibaxz",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 1338,
+          "end": 1458
+        },
+        "prev": "u12",
+        "next": "u14"
+      },
+      {
+        "id": "u14",
+        "kind": "sentence",
+        "text": "The first dashboards will cover the onboarding funnel and weekly active accounts per plan tier.",
+        "hash": "1w870i6ehar",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 1459,
+          "end": 1554
+        },
+        "prev": "u13",
+        "next": "u15"
+      },
+      {
+        "id": "u15",
+        "kind": "sentence",
+        "text": "We expect the user service to stay lightly loaded, so enrichment should avoid adding much traffic to it.",
+        "hash": "1f00edmveoe",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "span": {
+          "start": 1556,
+          "end": 1660
+        },
+        "prev": "u14",
+        "next": "u16"
+      },
+      {
+        "id": "u16",
+        "kind": "sentence",
+        "text": "Every event type must be registered before clients can send it.",
+        "hash": "13q7ng94iaz",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Schema registry",
+        "span": {
+          "start": 1682,
+          "end": 1745
+        },
+        "prev": "u15",
+        "next": "u17"
+      },
+      {
+        "id": "u17",
+        "kind": "sentence",
+        "text": "Schemas are versioned, and a breaking change requires a new version rather than an edit to the existing one.",
+        "hash": "24z8otdpji",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Schema registry",
+        "span": {
+          "start": 1746,
+          "end": 1854
+        },
+        "prev": "u16",
+        "next": "u18"
+      },
+      {
+        "id": "u18",
+        "kind": "sentence",
+        "text": "Ownership of the schema registry has not been decided; the platform team and the data team have each suggested the other.",
+        "hash": "hw7kj13n2c",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Schema registry",
+        "span": {
+          "start": 1855,
+          "end": 1976
+        },
+        "prev": "u17",
+        "next": "u19"
+      },
+      {
+        "id": "u19",
+        "kind": "sentence",
+        "text": "Product managers have asked to see feature adoption as it happens, especially during launches.",
+        "hash": "5uvimtal8l",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Freshness",
+        "span": {
+          "start": 1992,
+          "end": 2086
+        },
+        "prev": "u18",
+        "next": "u20"
+      },
+      {
+        "id": "u20",
+        "kind": "sentence",
+        "text": "Launch reviews usually happen within 2 hours of a release.",
+        "hash": "1o2j3uewf1l",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Freshness",
+        "span": {
+          "start": 2087,
+          "end": 2145
+        },
+        "prev": "u19",
+        "next": "u21"
+      },
+      {
+        "id": "u21",
+        "kind": "sentence",
+        "text": "With this pipeline, events reach the warehouse in real time, so launch dashboards stay current.",
+        "hash": "3aos1ybfi0",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Freshness",
+        "span": {
+          "start": 2146,
+          "end": 2241
+        },
+        "prev": "u20",
+        "next": "u22"
+      },
+      {
+        "id": "u22",
+        "kind": "sentence",
+        "text": "Raw events will be kept for 30 days and then deleted; only aggregated tables are kept longer.",
+        "hash": "8rsooug81f",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Retention and privacy",
+        "span": {
+          "start": 2269,
+          "end": 2362
+        },
+        "prev": "u21",
+        "next": "u23"
+      },
+      {
+        "id": "u23",
+        "kind": "sentence",
+        "text": "Deleting raw events after a fixed period also limits what an access request has to search.",
+        "hash": "1j3qgd4urur",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Retention and privacy",
+        "span": {
+          "start": 2363,
+          "end": 2453
+        },
+        "prev": "u22",
+        "next": "u24"
+      },
+      {
+        "id": "u24",
+        "kind": "sentence",
+        "text": "How long the aggregated tables are kept is TBD.",
+        "hash": "bp1i9tm69t",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Retention and privacy",
+        "span": {
+          "start": 2454,
+          "end": 2501
+        },
+        "prev": "u23",
+        "next": "u25"
+      },
+      {
+        "id": "u25",
+        "kind": "sentence",
+        "text": "Events must not contain email addresses or free-text input from users.",
+        "hash": "xp9tws5th",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Retention and privacy",
+        "span": {
+          "start": 2502,
+          "end": 2572
+        },
+        "prev": "u24",
+        "next": "u26"
+      },
+      {
+        "id": "u26",
+        "kind": "sentence",
+        "text": "IP addresses are truncated by the collector before an event is published.",
+        "hash": "1kwnuqq224g",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Retention and privacy",
+        "span": {
+          "start": 2573,
+          "end": 2646
+        },
+        "prev": "u25",
+        "next": "u27"
+      },
+      {
+        "id": "u27",
+        "kind": "sentence",
+        "text": "This pipeline is not meant for operational monitoring or alerting; error logs and service metrics stay in the existing observability stack.",
+        "hash": "150xigyw96k",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Non-goals",
+        "span": {
+          "start": 2662,
+          "end": 2801
+        },
+        "prev": "u26",
+        "next": "u28"
+      },
+      {
+        "id": "u28",
+        "kind": "sentence",
+        "text": "It will not replace the billing system's records of revenue.",
+        "hash": "q1pcrqgr23",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Non-goals",
+        "span": {
+          "start": 2802,
+          "end": 2862
+        },
+        "prev": "u27",
+        "next": "u29"
+      },
+      {
+        "id": "u29",
+        "kind": "table_row",
+        "text": "Component | Owner | Retention",
+        "hash": "2e8grvv8dkv",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Components",
+        "span": {
+          "start": 2879,
+          "end": 2912
+        },
+        "prev": "u28",
+        "next": "u30"
+      },
+      {
+        "id": "u30",
+        "kind": "table_row",
+        "text": "Collector | Platform team | none",
+        "hash": "1b7xc96sdwz",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Components",
+        "span": {
+          "start": 2927,
+          "end": 2963
+        },
+        "prev": "u29",
+        "next": "u31"
+      },
+      {
+        "id": "u31",
+        "kind": "table_row",
+        "text": "analytics.events topic | Platform team | 7 days",
+        "hash": "1nb2u3ewepl",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Components",
+        "span": {
+          "start": 2964,
+          "end": 3017
+        },
+        "prev": "u30",
+        "next": "u32"
+      },
+      {
+        "id": "u32",
+        "kind": "table_row",
+        "text": "Enrichment | Data team | none",
+        "hash": "im5yrj8lkn",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Components",
+        "span": {
+          "start": 3018,
+          "end": 3051
+        },
+        "prev": "u31",
+        "next": "u33"
+      },
+      {
+        "id": "u33",
+        "kind": "table_row",
+        "text": "Warehouse raw events | Data team | 90 days",
+        "hash": "1k2zc1bj529",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Components",
+        "span": {
+          "start": 3052,
+          "end": 3098
+        },
+        "prev": "u32",
+        "next": "u34"
+      },
+      {
+        "id": "u34",
+        "kind": "table_row",
+        "text": "Schema registry | TBD | indefinite",
+        "hash": "1be0uaxsu7h",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Components",
+        "span": {
+          "start": 3099,
+          "end": 3137
+        },
+        "prev": "u33",
+        "next": "u35"
+      },
+      {
+        "id": "u35",
+        "kind": "sentence",
+        "text": "Phase 1 covers the web app's sign-up and checkout events.",
+        "hash": "pjj6e2lnu9",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout",
+        "span": {
+          "start": 3151,
+          "end": 3208
+        },
+        "prev": "u34",
+        "next": "u36"
+      },
+      {
+        "id": "u36",
+        "kind": "sentence",
+        "text": "Phase 2 adds mobile events once the mobile SDK is ready; no date has been set for it.",
+        "hash": "2cnq2r56fgc",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout",
+        "span": {
+          "start": 3209,
+          "end": 3294
+        },
+        "prev": "u35",
+        "next": "u37"
+      },
+      {
+        "id": "u37",
+        "kind": "sentence",
+        "text": "Phase 1 is expected to take about 6 weeks for 2 engineers.",
+        "hash": "1r9uz14p5y8",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout",
+        "span": {
+          "start": 3295,
+          "end": 3353
+        },
+        "prev": "u36",
+        "next": "u38"
+      },
+      {
+        "id": "u38",
+        "kind": "sentence",
+        "text": "The cost of running the pipeline has not been estimated yet.",
+        "hash": "muajumjj1x",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout",
+        "span": {
+          "start": 3354,
+          "end": 3414
+        },
+        "prev": "u37",
+        "next": "u39"
+      },
+      {
+        "id": "u39",
+        "kind": "list_item",
+        "text": "Who owns the schema registry?",
+        "hash": "12veitir3ml",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Open questions",
+        "span": {
+          "start": 3437,
+          "end": 3466
+        },
+        "prev": "u38",
+        "next": "u40"
+      },
+      {
+        "id": "u40",
+        "kind": "list_item",
+        "text": "What happens to events the collector rejects: are they dropped, or kept somewhere for debugging?",
+        "hash": "1wybapq3m3r",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Open questions",
+        "span": {
+          "start": 3469,
+          "end": 3565
+        },
+        "prev": "u39",
+        "next": "u41"
+      },
+      {
+        "id": "u41",
+        "kind": "list_item",
+        "text": "Should mobile events use the same schemas as web events?",
+        "hash": "dudootxokd",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Open questions",
+        "span": {
+          "start": 3568,
+          "end": 3624
+        },
+        "prev": "u40",
+        "next": "u42"
+      },
+      {
+        "id": "u42",
+        "kind": "sentence",
+        "text": "We ask for approval to start phase 1 while the open questions are settled in parallel.",
+        "hash": "8sj1851c1s",
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Next step",
+        "span": {
+          "start": 3640,
+          "end": 3726
+        },
+        "prev": "u41"
+      }
+    ],
+    "nextId": 43
+  },
+  "cites": {
+    "u1_n1": [
+      "u1"
+    ],
+    "u1_n2": [
+      "u2"
+    ],
+    "u1_n3": [
+      "u3"
+    ],
+    "u1_n4": [
+      "u4"
+    ],
+    "u2_n1": [
+      "u5"
+    ],
+    "u2_n2": [
+      "u5",
+      "u6",
+      "u7"
+    ],
+    "u2_n3": [
+      "u8"
+    ],
+    "u2_n4": [
+      "u8"
+    ],
+    "u2_n5": [
+      "u9"
+    ],
+    "u2_n6": [
+      "u9"
+    ],
+    "u2_n7": [
+      "u10"
+    ],
+    "u2_n8": [
+      "u10",
+      "u11",
+      "u12"
+    ],
+    "u2_n9": [
+      "u13"
+    ],
+    "u2_n10": [
+      "u13",
+      "u14"
+    ],
+    "u2_n11": [
+      "u15"
+    ],
+    "u3_n1": [
+      "u29",
+      "u30",
+      "u31",
+      "u32",
+      "u33",
+      "u34"
+    ],
+    "u4_n1": [
+      "u39"
+    ],
+    "u4_n2": [
+      "u40"
+    ],
+    "u4_n3": [
+      "u41"
+    ],
+    "u5_n1": [
+      "u16"
+    ],
+    "u5_n2": [
+      "u17"
+    ],
+    "u5_n3": [
+      "u18"
+    ],
+    "u6_n1": [
+      "u19"
+    ],
+    "u6_n2": [
+      "u20"
+    ],
+    "u6_n3": [
+      "u21"
+    ],
+    "u7_n1": [
+      "u22"
+    ],
+    "u7_n2": [
+      "u23"
+    ],
+    "u7_n3": [
+      "u24"
+    ],
+    "u7_n4": [
+      "u25"
+    ],
+    "u7_n5": [
+      "u26"
+    ],
+    "u8_n1": [
+      "u27"
+    ],
+    "u8_n2": [
+      "u28"
+    ],
+    "u9_n1": [
+      "u35"
+    ],
+    "u9_n2": [
+      "u35",
+      "u37"
+    ],
+    "u9_n4": [
+      "u36"
+    ],
+    "u9_n5": [
+      "u36"
+    ],
+    "u9_n6": [
+      "u38"
+    ],
+    "u10_n1": [
+      "u42"
+    ],
+    "u10_n2": [
+      "u42"
+    ],
+    "u10_n3": [
+      "u42"
+    ],
+    "u10_n4": [
+      "u42"
+    ]
+  },
+  "omitted": [],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "cited",
+      "u3": "cited",
+      "u4": "cited",
+      "u5": "cited",
+      "u6": "cited",
+      "u7": "cited",
+      "u8": "cited",
+      "u9": "cited",
+      "u10": "cited",
+      "u11": "cited",
+      "u12": "cited",
+      "u13": "cited",
+      "u14": "cited",
+      "u15": "cited",
+      "u16": "cited",
+      "u17": "cited",
+      "u18": "cited",
+      "u19": "cited",
+      "u20": "cited",
+      "u21": "cited",
+      "u22": "cited",
+      "u23": "cited",
+      "u24": "cited",
+      "u25": "cited",
+      "u26": "cited",
+      "u27": "cited",
+      "u28": "cited",
+      "u29": "cited",
+      "u30": "cited",
+      "u31": "cited",
+      "u32": "cited",
+      "u33": "cited",
+      "u34": "cited",
+      "u35": "cited",
+      "u36": "cited",
+      "u37": "cited",
+      "u38": "cited",
+      "u39": "cited",
+      "u40": "cited",
+      "u41": "cited",
+      "u42": "cited"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "represented",
+      "u3": "represented",
+      "u4": "represented",
+      "u5": "represented",
+      "u6": "represented",
+      "u7": "represented",
+      "u8": "represented",
+      "u9": "represented",
+      "u10": "represented",
+      "u11": "represented",
+      "u12": "represented",
+      "u13": "represented",
+      "u14": "represented",
+      "u15": "represented",
+      "u16": "represented",
+      "u17": "represented",
+      "u18": "represented",
+      "u19": "represented",
+      "u20": "represented",
+      "u21": "represented",
+      "u22": "represented",
+      "u23": "represented",
+      "u24": "represented",
+      "u25": "represented",
+      "u26": "represented",
+      "u27": "represented",
+      "u28": "represented",
+      "u29": "represented",
+      "u30": "represented",
+      "u31": "represented",
+      "u32": "represented",
+      "u33": "represented",
+      "u34": "represented",
+      "u35": "represented",
+      "u36": "represented",
+      "u37": "represented",
+      "u38": "represented",
+      "u39": "represented",
+      "u40": "represented",
+      "u41": "represented",
+      "u42": "represented"
+    },
+    "critical": {
+      "u2": [
+        "protected"
+      ],
+      "u3": [
+        "protected"
+      ],
+      "u6": [
+        "condition",
+        "protected"
+      ],
+      "u7": [
+        "protected"
+      ],
+      "u8": [
+        "limitation",
+        "requirement"
+      ],
+      "u9": [
+        "protected"
+      ],
+      "u12": [
+        "limitation",
+        "condition"
+      ],
+      "u16": [
+        "requirement"
+      ],
+      "u17": [
+        "requirement"
+      ],
+      "u20": [
+        "protected"
+      ],
+      "u22": [
+        "requirement",
+        "protected"
+      ],
+      "u25": [
+        "requirement",
+        "protected"
+      ],
+      "u29": [
+        "protected"
+      ],
+      "u30": [
+        "protected"
+      ],
+      "u31": [
+        "protected"
+      ],
+      "u32": [
+        "protected"
+      ],
+      "u33": [
+        "protected"
+      ],
+      "u34": [
+        "protected"
+      ],
+      "u35": [
+        "protected"
+      ],
+      "u36": [
+        "protected"
+      ],
+      "u37": [
+        "protected"
+      ],
+      "u42": [
+        "protected"
+      ]
+    },
+    "flags": [],
+    "sections": [
+      {
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Context",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Proposed design",
+        "represented": 11,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Schema registry",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Freshness",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Retention and privacy",
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Non-goals",
+        "represented": 2,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Components",
+        "represented": 6,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Rollout",
+        "represented": 4,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Open questions",
+        "represented": 3,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      },
+      {
+        "topic": "Proposal: product-analytics event pipeline (draft v0.3) › Next step",
+        "represented": 1,
+        "omitted": 0,
+        "needsReview": 0,
+        "highOmittedShare": false
+      }
+    ]
+  },
+  "flags": [],
+  "hints": [
+    {
+      "code": "qualifier_dropped",
+      "unit": "u2",
+      "card": "u1_n2",
+      "detail": "source says \"can answer a simple funnel question without\"",
+      "evidence": {
+        "source": "can answer a simple funnel question without"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u2",
+      "card": "u1_n2",
+      "detail": "source says \"Today, product events are scattered across three logging tools, and nobody can answer a simple funnel question without exporting CSV files by hand.\"; the card keeps only one of its two negations",
+      "evidence": {
+        "source": "Today, product events are scattered across three logging tools, and nobody can answer a simple funnel question without exporting CSV files by hand.",
+        "card": "Product events are currently dispersed across three different logging tools, making it difficult to answer basic funnel questions without manual CSV exports."
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u5",
+      "card": "u2_n1",
+      "detail": "source limits it: \"in the web and mobile apps\"",
+      "evidence": {
+        "source": "in the web and mobile apps"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u8",
+      "card": "u2_n4",
+      "detail": "source says \"The collector validates each event against the schema registry and rejects events that do not match a registered schema.\"; the card drops the negation",
+      "evidence": {
+        "source": "The collector validates each event against the schema registry and rejects events that do not match a registered schema.",
+        "card": "The collector validates each event against the schema registry."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u10",
+      "card": "u2_n8",
+      "detail": "source says \"An enrichment step consumes the topic and adds account attributes, such as plan tier and region.\"; the card negates it",
+      "evidence": {
+        "source": "An enrichment step consumes the topic and adds account attributes, such as plan tier and region.",
+        "card": "If an account is not found, the event is passed on without account attributes."
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u2_n8",
+      "detail": "the card names \"analytics.events\"; the source doesn't",
+      "evidence": {
+        "card": "analytics.events"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u15",
+      "card": "u2_n11",
+      "detail": "source says \"so enrichment should avoid adding much traffic to it.\"; the card negates it",
+      "evidence": {
+        "source": "so enrichment should avoid adding much traffic to it.",
+        "card": "so the enrichment process should not significantly increase its traffic."
+      }
+    },
+    {
+      "code": "absolute_added",
+      "card": "u6_n3",
+      "detail": "the card says \"ensures\"; the source doesn't",
+      "evidence": {
+        "card": "ensures"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u36",
+      "card": "u9_n4",
+      "detail": "source says \"once the mobile SDK is ready\"",
+      "evidence": {
+        "source": "once the mobile SDK is ready"
+      }
+    },
+    {
+      "code": "caveat_dropped",
+      "unit": "u42",
+      "card": "u10_n1",
+      "detail": "the card drops the source's caveat \"while the open questions are settled in parallel\"",
+      "evidence": {
+        "source": "while the open questions are settled in parallel"
+      }
+    },
+    {
+      "code": "caveat_dropped",
+      "unit": "u42",
+      "card": "u10_n2",
+      "detail": "the card drops the source's caveat \"while the open questions are settled in parallel\"",
+      "evidence": {
+        "source": "while the open questions are settled in parallel"
+      }
+    }
+  ],
+  "reviews": {}
+}

@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-stale-unbounded-unnegated",
+  "distortion": "condition_dropped",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The negation is dropped from the stale frame's takeaway: 'never indefinitely' becomes 'indefinitely'. The negation-aware a.no-unbounded-stale must still catch it.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "g3",
+      "find": "Old copies are served for a bounded time, never indefinitely, to keep responses fast",
+      "replace": "Old copies are served indefinitely to keep responses fast"
+    }
+  ],
+  "expectFailing": [
+    "a.no-unbounded-stale"
+  ]
+}

@@ -1,0 +1,2908 @@
+{
+  "noteModel": "distil",
+  "units": {
+    "units": [
+      {
+        "id": "u1",
+        "kind": "sentence",
+        "text": "Attendees: Dana (facilitator), Marcus (on-call SRE), Leila (payments backend lead), Tomás (release engineering), Kenji (customer support lead)",
+        "hash": "knntrba8e6",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 51,
+          "end": 193
+        },
+        "next": "u2"
+      },
+      {
+        "id": "u2",
+        "kind": "sentence",
+        "text": "Dana: Okay, I think everyone's here.",
+        "hash": "dq42kkcdlh",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 200,
+          "end": 236
+        },
+        "prev": "u1",
+        "next": "u3"
+      },
+      {
+        "id": "u3",
+        "kind": "sentence",
+        "text": "Did people manage to grab coffee?",
+        "hash": "ggymg7q2y8",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 237,
+          "end": 270
+        },
+        "prev": "u2",
+        "next": "u4"
+      },
+      {
+        "id": "u4",
+        "kind": "sentence",
+        "text": "The machine on four is broken again.",
+        "hash": "2784p6etw31",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 271,
+          "end": 307
+        },
+        "prev": "u3",
+        "next": "u5"
+      },
+      {
+        "id": "u5",
+        "kind": "sentence",
+        "text": "Kenji: I brought my own.",
+        "hash": "21x3t4zfem2",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 309,
+          "end": 333
+        },
+        "prev": "u4",
+        "next": "u6"
+      },
+      {
+        "id": "u6",
+        "kind": "sentence",
+        "text": "Lesson learned.",
+        "hash": "20bvsnj40wr",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 334,
+          "end": 349
+        },
+        "prev": "u5",
+        "next": "u7"
+      },
+      {
+        "id": "u7",
+        "kind": "sentence",
+        "text": "Dana: Smart.",
+        "hash": "16gn90374pr",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 351,
+          "end": 363
+        },
+        "prev": "u6",
+        "next": "u8"
+      },
+      {
+        "id": "u8",
+        "kind": "sentence",
+        "text": "Right, let's start.",
+        "hash": "1kl6quq3ww1",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 364,
+          "end": 383
+        },
+        "prev": "u7",
+        "next": "u9"
+      },
+      {
+        "id": "u9",
+        "kind": "sentence",
+        "text": "This is the blameless review for the checkout outage on Friday, March 14.",
+        "hash": "1fguonrjh38",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 384,
+          "end": 457
+        },
+        "prev": "u8",
+        "next": "u10"
+      },
+      {
+        "id": "u10",
+        "kind": "sentence",
+        "text": "Marcus, can you walk us through the timeline?",
+        "hash": "4nexnupzp9",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 458,
+          "end": 503
+        },
+        "prev": "u9",
+        "next": "u11"
+      },
+      {
+        "id": "u11",
+        "kind": "sentence",
+        "text": "Marcus: Sure.",
+        "hash": "2cacx2oagzt",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 505,
+          "end": 518
+        },
+        "prev": "u10",
+        "next": "u12"
+      },
+      {
+        "id": "u12",
+        "kind": "sentence",
+        "text": "At 16:40 a config change to the payments service went out.",
+        "hash": "adty6byuid",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 519,
+          "end": 577
+        },
+        "prev": "u11",
+        "next": "u13"
+      },
+      {
+        "id": "u13",
+        "kind": "sentence",
+        "text": "It changed the gateway connection pool from 50 connections to 5.",
+        "hash": "x84tn4bssp",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 578,
+          "end": 642
+        },
+        "prev": "u12",
+        "next": "u14"
+      },
+      {
+        "id": "u14",
+        "kind": "sentence",
+        "text": "That was a typo; the intent was 55.",
+        "hash": "1y7v2iyqe69",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 643,
+          "end": 678
+        },
+        "prev": "u13",
+        "next": "u15"
+      },
+      {
+        "id": "u15",
+        "kind": "sentence",
+        "text": "Checkout requests started queuing for a connection and timing out almost immediately.",
+        "hash": "16fp7ixxii3",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 679,
+          "end": 764
+        },
+        "prev": "u14",
+        "next": "u16"
+      },
+      {
+        "id": "u16",
+        "kind": "sentence",
+        "text": "Marcus: Our error-rate alert fired at 17:02, so 22 minutes after the change.",
+        "hash": "23jpoklgfax",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 766,
+          "end": 842
+        },
+        "prev": "u15",
+        "next": "u17"
+      },
+      {
+        "id": "u17",
+        "kind": "sentence",
+        "text": "I rolled the config back at 17:15, and checkout was fully recovered at 17:27.",
+        "hash": "fbawnlvav1",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 843,
+          "end": 920
+        },
+        "prev": "u16",
+        "next": "u18"
+      },
+      {
+        "id": "u18",
+        "kind": "sentence",
+        "text": "So customers saw errors for 47 minutes in total.",
+        "hash": "1p3wni8n8jv",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 921,
+          "end": 969
+        },
+        "prev": "u17",
+        "next": "u19"
+      },
+      {
+        "id": "u19",
+        "kind": "sentence",
+        "text": "Kenji: And on our side, we counted about 2,300 failed checkouts in that window.",
+        "hash": "b9x3mvoimz",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 971,
+          "end": 1050
+        },
+        "prev": "u18",
+        "next": "u20"
+      },
+      {
+        "id": "u20",
+        "kind": "sentence",
+        "text": "Support got 140 tickets before we posted the status page.",
+        "hash": "2cg22o1d0f5",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1051,
+          "end": 1108
+        },
+        "prev": "u19",
+        "next": "u21"
+      },
+      {
+        "id": "u21",
+        "kind": "sentence",
+        "text": "Dana: Why did the alert take 22 minutes?",
+        "hash": "1nmlkab6ia2",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1110,
+          "end": 1150
+        },
+        "prev": "u20",
+        "next": "u22"
+      },
+      {
+        "id": "u22",
+        "kind": "sentence",
+        "text": "Marcus: The alert only fires when the checkout error rate is above 10% for 15 minutes.",
+        "hash": "1lnsqelr69",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1152,
+          "end": 1238
+        },
+        "prev": "u21",
+        "next": "u23"
+      },
+      {
+        "id": "u23",
+        "kind": "sentence",
+        "text": "Errors went over 10% around 16:47, so the earliest it could fire was 17:02.",
+        "hash": "lt8v7ue0eg",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1239,
+          "end": 1314
+        },
+        "prev": "u22",
+        "next": "u24"
+      },
+      {
+        "id": "u24",
+        "kind": "sentence",
+        "text": "It did exactly what it was configured to do.",
+        "hash": "ml6skwg9im",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1315,
+          "end": 1359
+        },
+        "prev": "u23",
+        "next": "u25"
+      },
+      {
+        "id": "u25",
+        "kind": "sentence",
+        "text": "Leila: Which is too slow for checkout.",
+        "hash": "10s8mux3pli",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1361,
+          "end": 1399
+        },
+        "prev": "u24",
+        "next": "u26"
+      },
+      {
+        "id": "u26",
+        "kind": "sentence",
+        "text": "15 minutes of sustained errors is a long time when every minute is lost revenue.",
+        "hash": "1ew0zqv73r7",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1400,
+          "end": 1480
+        },
+        "prev": "u25",
+        "next": "u27"
+      },
+      {
+        "id": "u27",
+        "kind": "sentence",
+        "text": "Dana: Fair.",
+        "hash": "1gxhvxd2vcy",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1482,
+          "end": 1493
+        },
+        "prev": "u26",
+        "next": "u28"
+      },
+      {
+        "id": "u28",
+        "kind": "sentence",
+        "text": "What do we want instead?",
+        "hash": "1fiot9oj7m",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1494,
+          "end": 1518
+        },
+        "prev": "u27",
+        "next": "u29"
+      },
+      {
+        "id": "u29",
+        "kind": "sentence",
+        "text": "Marcus: I'd propose 5% over 5 minutes for checkout specifically.",
+        "hash": "1icb5aa20ud",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1520,
+          "end": 1584
+        },
+        "prev": "u28",
+        "next": "u30"
+      },
+      {
+        "id": "u30",
+        "kind": "sentence",
+        "text": "I checked the last 30 days and that would have paged twice on noise, both during the payment provider's own maintenance.",
+        "hash": "w5rcxd7uv4",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1585,
+          "end": 1705
+        },
+        "prev": "u29",
+        "next": "u31"
+      },
+      {
+        "id": "u31",
+        "kind": "sentence",
+        "text": "Leila: Two noisy pages a month is fine for checkout.",
+        "hash": "1nmlm05vtnv",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1707,
+          "end": 1759
+        },
+        "prev": "u30",
+        "next": "u32"
+      },
+      {
+        "id": "u32",
+        "kind": "sentence",
+        "text": "Dana: Anyone against? ... Okay.",
+        "hash": "1uivj5k05mo",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1761,
+          "end": 1792
+        },
+        "prev": "u31",
+        "next": "u33"
+      },
+      {
+        "id": "u33",
+        "kind": "sentence",
+        "text": "Agreed: we'll lower the checkout error-rate alert to 5% over 5 minutes. Marcus, can you own that?",
+        "hash": "sqi2eg7k8d",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1793,
+          "end": 1890
+        },
+        "prev": "u32",
+        "next": "u34"
+      },
+      {
+        "id": "u34",
+        "kind": "sentence",
+        "text": "Marcus: Yes.",
+        "hash": "1x2r6w8bbpy",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1892,
+          "end": 1904
+        },
+        "prev": "u33",
+        "next": "u35"
+      },
+      {
+        "id": "u35",
+        "kind": "sentence",
+        "text": "I'll have it changed by Wednesday, March 19.",
+        "hash": "2cbb5uhma1y",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1905,
+          "end": 1949
+        },
+        "prev": "u34",
+        "next": "u36"
+      },
+      {
+        "id": "u36",
+        "kind": "sentence",
+        "text": "Kenji: One more thing from support.",
+        "hash": "157d1d9rmm4",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1951,
+          "end": 1986
+        },
+        "prev": "u35",
+        "next": "u37"
+      },
+      {
+        "id": "u37",
+        "kind": "sentence",
+        "text": "The status page went up at 17:20, which is 40 minutes after the errors started.",
+        "hash": "18pf9zmruuh",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 1987,
+          "end": 2066
+        },
+        "prev": "u36",
+        "next": "u38"
+      },
+      {
+        "id": "u38",
+        "kind": "sentence",
+        "text": "Customers were asking on social media before we said anything.",
+        "hash": "blptbq134o",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2067,
+          "end": 2129
+        },
+        "prev": "u37",
+        "next": "u39"
+      },
+      {
+        "id": "u39",
+        "kind": "sentence",
+        "text": "Dana: Who posts the status page today?",
+        "hash": "2bh6d4ob72e",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2131,
+          "end": 2169
+        },
+        "prev": "u38",
+        "next": "u40"
+      },
+      {
+        "id": "u40",
+        "kind": "sentence",
+        "text": "Kenji: Whoever is incident commander, when they remember.",
+        "hash": "2ahi3eypwry",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2171,
+          "end": 2228
+        },
+        "prev": "u39",
+        "next": "u41"
+      },
+      {
+        "id": "u41",
+        "kind": "sentence",
+        "text": "On Friday that was Marcus, and he was busy rolling back.",
+        "hash": "25rkwjwy53a",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2229,
+          "end": 2285
+        },
+        "prev": "u40",
+        "next": "u42"
+      },
+      {
+        "id": "u42",
+        "kind": "sentence",
+        "text": "Marcus: Honestly, it was the last thing on my mind.",
+        "hash": "xmziinyssh",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2287,
+          "end": 2338
+        },
+        "prev": "u41",
+        "next": "u43"
+      },
+      {
+        "id": "u43",
+        "kind": "sentence",
+        "text": "Dana: Should support be allowed to post it directly?",
+        "hash": "1l35w6x2he9",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2340,
+          "end": 2392
+        },
+        "prev": "u42",
+        "next": "u44"
+      },
+      {
+        "id": "u44",
+        "kind": "sentence",
+        "text": "Kenji: I'd like that, yes.",
+        "hash": "n5urtb47qw",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2394,
+          "end": 2420
+        },
+        "prev": "u43",
+        "next": "u45"
+      },
+      {
+        "id": "u45",
+        "kind": "sentence",
+        "text": "Leila: No objection from me.",
+        "hash": "1a261513roi",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2422,
+          "end": 2450
+        },
+        "prev": "u44",
+        "next": "u46"
+      },
+      {
+        "id": "u46",
+        "kind": "sentence",
+        "text": "Dana: Agreed: support can post a status-page update directly, without waiting for the incident commander.",
+        "hash": "1lg52tgiw3k",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2452,
+          "end": 2557
+        },
+        "prev": "u45",
+        "next": "u47"
+      },
+      {
+        "id": "u47",
+        "kind": "sentence",
+        "text": "Dana: Great.",
+        "hash": "s46h71vclg",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2559,
+          "end": 2571
+        },
+        "prev": "u46",
+        "next": "u48"
+      },
+      {
+        "id": "u48",
+        "kind": "sentence",
+        "text": "Next, how did a config value like that get through?",
+        "hash": "st45g7218c",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2572,
+          "end": 2623
+        },
+        "prev": "u47",
+        "next": "u49"
+      },
+      {
+        "id": "u49",
+        "kind": "sentence",
+        "text": "Leila: Config changes don't go through code review.",
+        "hash": "19zxmvswk74",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2625,
+          "end": 2676
+        },
+        "prev": "u48",
+        "next": "u50"
+      },
+      {
+        "id": "u50",
+        "kind": "sentence",
+        "text": "They're edited in the deploy dashboard and applied directly.",
+        "hash": "268jvee0g2q",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2677,
+          "end": 2737
+        },
+        "prev": "u49",
+        "next": "u51"
+      },
+      {
+        "id": "u51",
+        "kind": "sentence",
+        "text": "Code changes need two approvals; config needs none.",
+        "hash": "yb25i3ary0",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2738,
+          "end": 2789
+        },
+        "prev": "u50",
+        "next": "u52"
+      },
+      {
+        "id": "u52",
+        "kind": "sentence",
+        "text": "Tomás: That's the real gap.",
+        "hash": "ffgqmxq7pf",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2791,
+          "end": 2818
+        },
+        "prev": "u51",
+        "next": "u53"
+      },
+      {
+        "id": "u53",
+        "kind": "sentence",
+        "text": "A typo in code would have been caught by the reviewer or by a test.",
+        "hash": "ec6sammp7g",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2819,
+          "end": 2886
+        },
+        "prev": "u52",
+        "next": "u54"
+      },
+      {
+        "id": "u54",
+        "kind": "sentence",
+        "text": "Dana: So the proposal is that payments config goes through the same review as code?",
+        "hash": "2wggoebrjo",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2888,
+          "end": 2971
+        },
+        "prev": "u53",
+        "next": "u55"
+      },
+      {
+        "id": "u55",
+        "kind": "sentence",
+        "text": "Leila: Yes.",
+        "hash": "1aaljrwcb9b",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2973,
+          "end": 2984
+        },
+        "prev": "u54",
+        "next": "u56"
+      },
+      {
+        "id": "u56",
+        "kind": "sentence",
+        "text": "Config lives in the repo, it gets a pull request, and it needs one approval from the payments team.",
+        "hash": "1hmj3evs4zh",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 2985,
+          "end": 3084
+        },
+        "prev": "u55",
+        "next": "u57"
+      },
+      {
+        "id": "u57",
+        "kind": "sentence",
+        "text": "Tomás: I'm fine with that.",
+        "hash": "13784b5i3lc",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3086,
+          "end": 3112
+        },
+        "prev": "u56",
+        "next": "u58"
+      },
+      {
+        "id": "u58",
+        "kind": "sentence",
+        "text": "Marcus: Same.",
+        "hash": "nu5xzt6knm",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3114,
+          "end": 3127
+        },
+        "prev": "u57",
+        "next": "u59"
+      },
+      {
+        "id": "u59",
+        "kind": "sentence",
+        "text": "Dana: Agreed: config changes to the payments service will go through pull-request review with one payments-team approval.",
+        "hash": "mpqxmulkhi",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3129,
+          "end": 3250
+        },
+        "prev": "u58",
+        "next": "u60"
+      },
+      {
+        "id": "u60",
+        "kind": "sentence",
+        "text": "Leila, can you set that up?",
+        "hash": "1n9v3jmqlto",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3251,
+          "end": 3278
+        },
+        "prev": "u59",
+        "next": "u61"
+      },
+      {
+        "id": "u61",
+        "kind": "sentence",
+        "text": "Leila: I'll move the config into the repo and add the approval rule by Friday, March 21.",
+        "hash": "15pdsuh96kq",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3280,
+          "end": 3368
+        },
+        "prev": "u60",
+        "next": "u62"
+      },
+      {
+        "id": "u62",
+        "kind": "sentence",
+        "text": "Tomás: Can I raise something else?",
+        "hash": "i6nitlarh3",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3370,
+          "end": 3404
+        },
+        "prev": "u61",
+        "next": "u63"
+      },
+      {
+        "id": "u63",
+        "kind": "sentence",
+        "text": "I'd like us to stop deploying anything to payments after 15:00 on Fridays.",
+        "hash": "21bq7ra14qk",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3405,
+          "end": 3479
+        },
+        "prev": "u62",
+        "next": "u64"
+      },
+      {
+        "id": "u64",
+        "kind": "sentence",
+        "text": "This went out at 16:40 on a Friday, and half the team had already logged off.",
+        "hash": "1jbrcknle53",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3480,
+          "end": 3557
+        },
+        "prev": "u63",
+        "next": "u65"
+      },
+      {
+        "id": "u65",
+        "kind": "sentence",
+        "text": "Leila: I don't agree with that.",
+        "hash": "2ftbxphimxj",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3559,
+          "end": 3590
+        },
+        "prev": "u64",
+        "next": "u66"
+      },
+      {
+        "id": "u66",
+        "kind": "sentence",
+        "text": "A freeze just moves the risk to Monday morning, when traffic is higher.",
+        "hash": "1sdhg2fv95d",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3591,
+          "end": 3662
+        },
+        "prev": "u65",
+        "next": "u67"
+      },
+      {
+        "id": "u67",
+        "kind": "sentence",
+        "text": "The problem here wasn't the day, it was that nobody reviewed the change.",
+        "hash": "275qgv6ey7n",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3663,
+          "end": 3735
+        },
+        "prev": "u66",
+        "next": "u68"
+      },
+      {
+        "id": "u68",
+        "kind": "sentence",
+        "text": "Tomás: The review fixes this one cause.",
+        "hash": "15a84wqgp36",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3737,
+          "end": 3776
+        },
+        "prev": "u67",
+        "next": "u69"
+      },
+      {
+        "id": "u69",
+        "kind": "sentence",
+        "text": "But fewer people around means slower recovery for any cause.",
+        "hash": "112d21x7s7p",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3777,
+          "end": 3837
+        },
+        "prev": "u68",
+        "next": "u70"
+      },
+      {
+        "id": "u70",
+        "kind": "sentence",
+        "text": "Leila: Recovery took 25 minutes after the alert, and Marcus was on call.",
+        "hash": "w5vuowozbi",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3839,
+          "end": 3911
+        },
+        "prev": "u69",
+        "next": "u71"
+      },
+      {
+        "id": "u71",
+        "kind": "sentence",
+        "text": "Being Friday didn't slow that down.",
+        "hash": "1w5httv9xma",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3912,
+          "end": 3947
+        },
+        "prev": "u70",
+        "next": "u72"
+      },
+      {
+        "id": "u72",
+        "kind": "sentence",
+        "text": "Tomás: That's one incident.",
+        "hash": "1b8495wcnsa",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3949,
+          "end": 3976
+        },
+        "prev": "u71",
+        "next": "u73"
+      },
+      {
+        "id": "u73",
+        "kind": "sentence",
+        "text": "I think we'd see a pattern if we looked.",
+        "hash": "4a8lkcp0ub",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 3977,
+          "end": 4017
+        },
+        "prev": "u72",
+        "next": "u74"
+      },
+      {
+        "id": "u74",
+        "kind": "sentence",
+        "text": "Dana: I don't think we're going to settle this today.",
+        "hash": "o8k93p0lje",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4019,
+          "end": 4072
+        },
+        "prev": "u73",
+        "next": "u75"
+      },
+      {
+        "id": "u75",
+        "kind": "sentence",
+        "text": "Let's not decide the freeze now.",
+        "hash": "1cmxm5kuika",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4073,
+          "end": 4105
+        },
+        "prev": "u74",
+        "next": "u76"
+      },
+      {
+        "id": "u76",
+        "kind": "sentence",
+        "text": "Tomás, could you pull the incidents from the last six months and see whether late-Friday deploys are over-represented?",
+        "hash": "mxy4jiuyoc",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4106,
+          "end": 4224
+        },
+        "prev": "u75",
+        "next": "u77"
+      },
+      {
+        "id": "u77",
+        "kind": "sentence",
+        "text": "Bring it to the next review on April 2.",
+        "hash": "265io19ay43",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4225,
+          "end": 4264
+        },
+        "prev": "u76",
+        "next": "u78"
+      },
+      {
+        "id": "u78",
+        "kind": "sentence",
+        "text": "Tomás: Sure, I can do that.",
+        "hash": "8i0x3y0mpf",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4266,
+          "end": 4293
+        },
+        "prev": "u77",
+        "next": "u79"
+      },
+      {
+        "id": "u79",
+        "kind": "sentence",
+        "text": "Marcus: While we're on prevention, I'd also propose automatic rollback: if the checkout error rate doubles within 10 minutes of a deploy, the pipeline rolls back on its own.",
+        "hash": "qh7omkz75",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4295,
+          "end": 4468
+        },
+        "prev": "u78",
+        "next": "u80"
+      },
+      {
+        "id": "u80",
+        "kind": "sentence",
+        "text": "Leila: For config, maybe.",
+        "hash": "hhujoawjyz",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4470,
+          "end": 4495
+        },
+        "prev": "u79",
+        "next": "u81"
+      },
+      {
+        "id": "u81",
+        "kind": "sentence",
+        "text": "For code, I'm nervous.",
+        "hash": "1skpyci44sv",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4496,
+          "end": 4518
+        },
+        "prev": "u80",
+        "next": "u82"
+      },
+      {
+        "id": "u82",
+        "kind": "sentence",
+        "text": "If a release includes a database migration, rolling back the code without the migration can leave us worse off.",
+        "hash": "27toxwmcekf",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4519,
+          "end": 4630
+        },
+        "prev": "u81",
+        "next": "u83"
+      },
+      {
+        "id": "u83",
+        "kind": "sentence",
+        "text": "Marcus: We could exclude releases with migrations.",
+        "hash": "6nldwv5zcj",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4632,
+          "end": 4682
+        },
+        "prev": "u82",
+        "next": "u84"
+      },
+      {
+        "id": "u84",
+        "kind": "sentence",
+        "text": "Leila: Possibly.",
+        "hash": "1r0fos4jkzu",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4684,
+          "end": 4700
+        },
+        "prev": "u83",
+        "next": "u85"
+      },
+      {
+        "id": "u85",
+        "kind": "sentence",
+        "text": "I'd want to know how often we ship migrations before I agree to anything.",
+        "hash": "pxvfmi8fz2",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4701,
+          "end": 4774
+        },
+        "prev": "u84",
+        "next": "u86"
+      },
+      {
+        "id": "u86",
+        "kind": "sentence",
+        "text": "Dana: Okay, so auto-rollback is an open question.",
+        "hash": "anj2l7brik",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4776,
+          "end": 4825
+        },
+        "prev": "u85",
+        "next": "u87"
+      },
+      {
+        "id": "u87",
+        "kind": "sentence",
+        "text": "We don't know how many releases include migrations.",
+        "hash": "244no7sfdge",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4826,
+          "end": 4877
+        },
+        "prev": "u86",
+        "next": "u88"
+      },
+      {
+        "id": "u88",
+        "kind": "sentence",
+        "text": "Let's leave it open.",
+        "hash": "247pnfscnkq",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4878,
+          "end": 4898
+        },
+        "prev": "u87",
+        "next": "u89"
+      },
+      {
+        "id": "u89",
+        "kind": "sentence",
+        "text": "Kenji: Can I go back to customers?",
+        "hash": "1a9o44j8dsl",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4900,
+          "end": 4934
+        },
+        "prev": "u88",
+        "next": "u90"
+      },
+      {
+        "id": "u90",
+        "kind": "sentence",
+        "text": "Do we know whether any of the 2,300 failed checkouts were retried successfully?",
+        "hash": "1mnfsul57fy",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 4935,
+          "end": 5014
+        },
+        "prev": "u89",
+        "next": "u91"
+      },
+      {
+        "id": "u91",
+        "kind": "sentence",
+        "text": "If most people retried, the email we send is different.",
+        "hash": "jq0cu64uuw",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5015,
+          "end": 5070
+        },
+        "prev": "u90",
+        "next": "u92"
+      },
+      {
+        "id": "u92",
+        "kind": "sentence",
+        "text": "Marcus: I don't know.",
+        "hash": "cjmb0bf3nk",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5072,
+          "end": 5093
+        },
+        "prev": "u91",
+        "next": "u93"
+      },
+      {
+        "id": "u93",
+        "kind": "sentence",
+        "text": "The payment logs would show it, but nobody has looked yet.",
+        "hash": "1tgx52cs487",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5094,
+          "end": 5152
+        },
+        "prev": "u92",
+        "next": "u94"
+      },
+      {
+        "id": "u94",
+        "kind": "sentence",
+        "text": "Dana: That's an open question too, then.",
+        "hash": "1zff90wxinj",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5154,
+          "end": 5194
+        },
+        "prev": "u93",
+        "next": "u95"
+      },
+      {
+        "id": "u95",
+        "kind": "sentence",
+        "text": "Kenji, can you draft the customer email either way?",
+        "hash": "2edw61e1vc5",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5195,
+          "end": 5246
+        },
+        "prev": "u94",
+        "next": "u96"
+      },
+      {
+        "id": "u96",
+        "kind": "sentence",
+        "text": "Kenji: Yes, I'll take the email draft.",
+        "hash": "1i2cygpylij",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5248,
+          "end": 5286
+        },
+        "prev": "u95",
+        "next": "u97"
+      },
+      {
+        "id": "u97",
+        "kind": "sentence",
+        "text": "Marcus: So just to recap the timeline again for the doc: the change went out at 16:40, the alert fired at 17:02, rollback at 17:15, recovered at 17:27.",
+        "hash": "1pnhdy0j3nc",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5288,
+          "end": 5439
+        },
+        "prev": "u96",
+        "next": "u98"
+      },
+      {
+        "id": "u98",
+        "kind": "sentence",
+        "text": "Dana: Thanks.",
+        "hash": "1cw8gqpm73n",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5441,
+          "end": 5454
+        },
+        "prev": "u97",
+        "next": "u99"
+      },
+      {
+        "id": "u99",
+        "kind": "sentence",
+        "text": "Anything else? ... Okay.",
+        "hash": "1djnervsw2i",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5455,
+          "end": 5479
+        },
+        "prev": "u98",
+        "next": "u100"
+      },
+      {
+        "id": "u100",
+        "kind": "sentence",
+        "text": "Good review, everyone.",
+        "hash": "1lztms82igg",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5480,
+          "end": 5502
+        },
+        "prev": "u99",
+        "next": "u101"
+      },
+      {
+        "id": "u101",
+        "kind": "sentence",
+        "text": "And someone please report the coffee machine.",
+        "hash": "19bpebdz8rf",
+        "topic": "Post-incident review: checkout outage, March 14",
+        "span": {
+          "start": 5503,
+          "end": 5548
+        },
+        "prev": "u100"
+      }
+    ],
+    "nextId": 102
+  },
+  "cites": {
+    "u0_u0_n1": [
+      "u12"
+    ],
+    "u0_u0_n2": [
+      "u12",
+      "u13",
+      "u14"
+    ],
+    "u0_u0_n3": [
+      "u15"
+    ],
+    "u0_u0_n4": [
+      "u15"
+    ],
+    "u0_u0_n5": [
+      "u16"
+    ],
+    "u0_u0_n6": [
+      "u16",
+      "u22",
+      "u23"
+    ],
+    "u0_u0_n7": [
+      "u17"
+    ],
+    "u0_u0_n8": [
+      "u17"
+    ],
+    "u0_u0_n9": [
+      "u17"
+    ],
+    "u0_u0_n10": [
+      "u17",
+      "u18",
+      "u19",
+      "u20"
+    ],
+    "u0_u0_n11": [
+      "u37"
+    ],
+    "u0_u0_n12": [
+      "u37",
+      "u40",
+      "u41",
+      "u42"
+    ],
+    "u0_u0_n13": [
+      "u25",
+      "u26"
+    ],
+    "u0_u0_n14": [
+      "u29",
+      "u30",
+      "u31",
+      "u33",
+      "u35"
+    ],
+    "u0_u0_n15": [
+      "u46"
+    ],
+    "u0_u0_n16": [
+      "u49",
+      "u50",
+      "u51"
+    ],
+    "u0_u0_n17": [
+      "u52",
+      "u53"
+    ],
+    "u0_u1_n2": [
+      "u56",
+      "u59"
+    ],
+    "u0_u1_n4": [
+      "u60",
+      "u61"
+    ],
+    "u0_u1_n6": [
+      "u63",
+      "u64"
+    ],
+    "u0_u1_n8": [
+      "u66",
+      "u67",
+      "u70",
+      "u71"
+    ],
+    "u0_u1_n10": [
+      "u68",
+      "u69",
+      "u73"
+    ],
+    "u0_u1_n12": [
+      "u74",
+      "u75",
+      "u76",
+      "u77",
+      "u78"
+    ],
+    "u0_u1_n14": [
+      "u79"
+    ],
+    "u0_u1_n16": [
+      "u81",
+      "u82",
+      "u85"
+    ],
+    "u0_u1_n18": [
+      "u86",
+      "u87",
+      "u88"
+    ],
+    "u0_u1_n20": [
+      "u90",
+      "u91"
+    ],
+    "u0_u1_n22": [
+      "u92",
+      "u93"
+    ],
+    "u0_u1_n24": [
+      "u95",
+      "u96"
+    ],
+    "u0_u1_n26": [
+      "u97"
+    ],
+    "u0_fs1": [
+      "u1",
+      "u4",
+      "u9",
+      "u21"
+    ]
+  },
+  "omitted": [
+    {
+      "unit": "u1",
+      "reason": "meta"
+    },
+    {
+      "unit": "u2",
+      "reason": "filler"
+    },
+    {
+      "unit": "u3",
+      "reason": "filler"
+    },
+    {
+      "unit": "u4",
+      "reason": "filler"
+    },
+    {
+      "unit": "u5",
+      "reason": "filler"
+    },
+    {
+      "unit": "u6",
+      "reason": "filler"
+    },
+    {
+      "unit": "u7",
+      "reason": "filler"
+    },
+    {
+      "unit": "u8",
+      "reason": "filler"
+    },
+    {
+      "unit": "u9",
+      "reason": "filler"
+    },
+    {
+      "unit": "u10",
+      "reason": "filler"
+    },
+    {
+      "unit": "u11",
+      "reason": "filler"
+    },
+    {
+      "unit": "u21",
+      "reason": "filler"
+    },
+    {
+      "unit": "u24",
+      "reason": "filler"
+    },
+    {
+      "unit": "u27",
+      "reason": "filler"
+    },
+    {
+      "unit": "u28",
+      "reason": "filler"
+    },
+    {
+      "unit": "u32",
+      "reason": "filler"
+    },
+    {
+      "unit": "u34",
+      "reason": "filler"
+    },
+    {
+      "unit": "u36",
+      "reason": "filler"
+    },
+    {
+      "unit": "u39",
+      "reason": "filler"
+    },
+    {
+      "unit": "u43",
+      "reason": "filler"
+    },
+    {
+      "unit": "u44",
+      "reason": "filler"
+    },
+    {
+      "unit": "u45",
+      "reason": "filler"
+    },
+    {
+      "unit": "u47",
+      "reason": "filler"
+    },
+    {
+      "unit": "u48",
+      "reason": "filler"
+    },
+    {
+      "unit": "u54",
+      "reason": "filler"
+    },
+    {
+      "unit": "u55",
+      "reason": "filler"
+    },
+    {
+      "unit": "u57",
+      "reason": "filler"
+    },
+    {
+      "unit": "u58",
+      "reason": "filler"
+    },
+    {
+      "unit": "u62",
+      "reason": "filler"
+    },
+    {
+      "unit": "u80",
+      "reason": "filler"
+    },
+    {
+      "unit": "u83",
+      "reason": "filler"
+    },
+    {
+      "unit": "u84",
+      "reason": "filler"
+    },
+    {
+      "unit": "u89",
+      "reason": "filler"
+    },
+    {
+      "unit": "u94",
+      "reason": "filler"
+    },
+    {
+      "unit": "u98",
+      "reason": "filler"
+    },
+    {
+      "unit": "u99",
+      "reason": "filler"
+    },
+    {
+      "unit": "u100",
+      "reason": "filler"
+    },
+    {
+      "unit": "u101",
+      "reason": "filler"
+    }
+  ],
+  "accounting": {
+    "state": {
+      "u1": "cited",
+      "u2": "omitted",
+      "u3": "omitted",
+      "u4": "cited",
+      "u5": "omitted",
+      "u6": "omitted",
+      "u7": "omitted",
+      "u8": "omitted",
+      "u9": "cited",
+      "u10": "omitted",
+      "u11": "omitted",
+      "u12": "cited",
+      "u13": "cited",
+      "u14": "cited",
+      "u15": "cited",
+      "u16": "cited",
+      "u17": "cited",
+      "u18": "cited",
+      "u19": "cited",
+      "u20": "cited",
+      "u21": "cited",
+      "u22": "cited",
+      "u23": "cited",
+      "u24": "omitted",
+      "u25": "cited",
+      "u26": "cited",
+      "u27": "omitted",
+      "u28": "omitted",
+      "u29": "cited",
+      "u30": "cited",
+      "u31": "cited",
+      "u32": "review",
+      "u33": "cited",
+      "u34": "omitted",
+      "u35": "cited",
+      "u36": "omitted",
+      "u37": "cited",
+      "u38": "review",
+      "u39": "omitted",
+      "u40": "cited",
+      "u41": "cited",
+      "u42": "cited",
+      "u43": "omitted",
+      "u44": "omitted",
+      "u45": "review",
+      "u46": "cited",
+      "u47": "omitted",
+      "u48": "omitted",
+      "u49": "cited",
+      "u50": "cited",
+      "u51": "cited",
+      "u52": "cited",
+      "u53": "cited",
+      "u54": "omitted",
+      "u55": "omitted",
+      "u56": "cited",
+      "u57": "review",
+      "u58": "omitted",
+      "u59": "cited",
+      "u60": "cited",
+      "u61": "cited",
+      "u62": "omitted",
+      "u63": "cited",
+      "u64": "cited",
+      "u65": "review",
+      "u66": "cited",
+      "u67": "cited",
+      "u68": "cited",
+      "u69": "cited",
+      "u70": "cited",
+      "u71": "review",
+      "u72": "review",
+      "u73": "review",
+      "u74": "cited",
+      "u75": "cited",
+      "u76": "cited",
+      "u77": "cited",
+      "u78": "cited",
+      "u79": "cited",
+      "u80": "omitted",
+      "u81": "cited",
+      "u82": "cited",
+      "u83": "omitted",
+      "u84": "omitted",
+      "u85": "cited",
+      "u86": "cited",
+      "u87": "cited",
+      "u88": "cited",
+      "u89": "omitted",
+      "u90": "cited",
+      "u91": "cited",
+      "u92": "cited",
+      "u93": "cited",
+      "u94": "omitted",
+      "u95": "cited",
+      "u96": "cited",
+      "u97": "cited",
+      "u98": "omitted",
+      "u99": "omitted",
+      "u100": "omitted",
+      "u101": "omitted"
+    },
+    "outcome": {
+      "u1": "represented",
+      "u2": "omitted",
+      "u3": "omitted",
+      "u4": "represented",
+      "u5": "omitted",
+      "u6": "omitted",
+      "u7": "omitted",
+      "u8": "omitted",
+      "u9": "represented",
+      "u10": "omitted",
+      "u11": "omitted",
+      "u12": "represented",
+      "u13": "represented",
+      "u14": "represented",
+      "u15": "represented",
+      "u16": "represented",
+      "u17": "represented",
+      "u18": "represented",
+      "u19": "represented",
+      "u20": "represented",
+      "u21": "represented",
+      "u22": "represented",
+      "u23": "represented",
+      "u24": "omitted",
+      "u25": "represented",
+      "u26": "represented",
+      "u27": "omitted",
+      "u28": "omitted",
+      "u29": "represented",
+      "u30": "represented",
+      "u31": "represented",
+      "u32": "needs_review",
+      "u33": "represented",
+      "u34": "omitted",
+      "u35": "represented",
+      "u36": "omitted",
+      "u37": "represented",
+      "u38": "needs_review",
+      "u39": "omitted",
+      "u40": "represented",
+      "u41": "represented",
+      "u42": "represented",
+      "u43": "omitted",
+      "u44": "omitted",
+      "u45": "needs_review",
+      "u46": "represented",
+      "u47": "omitted",
+      "u48": "omitted",
+      "u49": "represented",
+      "u50": "represented",
+      "u51": "represented",
+      "u52": "represented",
+      "u53": "represented",
+      "u54": "omitted",
+      "u55": "omitted",
+      "u56": "represented",
+      "u57": "needs_review",
+      "u58": "omitted",
+      "u59": "represented",
+      "u60": "represented",
+      "u61": "represented",
+      "u62": "omitted",
+      "u63": "represented",
+      "u64": "represented",
+      "u65": "needs_review",
+      "u66": "represented",
+      "u67": "represented",
+      "u68": "represented",
+      "u69": "represented",
+      "u70": "represented",
+      "u71": "needs_review",
+      "u72": "needs_review",
+      "u73": "needs_review",
+      "u74": "represented",
+      "u75": "represented",
+      "u76": "represented",
+      "u77": "represented",
+      "u78": "represented",
+      "u79": "represented",
+      "u80": "omitted",
+      "u81": "represented",
+      "u82": "represented",
+      "u83": "omitted",
+      "u84": "omitted",
+      "u85": "represented",
+      "u86": "represented",
+      "u87": "represented",
+      "u88": "represented",
+      "u89": "omitted",
+      "u90": "represented",
+      "u91": "represented",
+      "u92": "represented",
+      "u93": "represented",
+      "u94": "omitted",
+      "u95": "represented",
+      "u96": "represented",
+      "u97": "represented",
+      "u98": "omitted",
+      "u99": "omitted",
+      "u100": "omitted",
+      "u101": "omitted"
+    },
+    "critical": {
+      "u1": [
+        "protected"
+      ],
+      "u4": [
+        "protected"
+      ],
+      "u9": [
+        "protected"
+      ],
+      "u12": [
+        "protected"
+      ],
+      "u13": [
+        "protected"
+      ],
+      "u14": [
+        "protected"
+      ],
+      "u16": [
+        "protected"
+      ],
+      "u17": [
+        "protected"
+      ],
+      "u18": [
+        "protected"
+      ],
+      "u19": [
+        "protected"
+      ],
+      "u20": [
+        "protected"
+      ],
+      "u21": [
+        "protected"
+      ],
+      "u22": [
+        "requirement",
+        "condition",
+        "protected"
+      ],
+      "u23": [
+        "protected"
+      ],
+      "u26": [
+        "condition",
+        "protected"
+      ],
+      "u29": [
+        "protected"
+      ],
+      "u30": [
+        "protected"
+      ],
+      "u31": [
+        "protected"
+      ],
+      "u32": [
+        "decision"
+      ],
+      "u33": [
+        "decision",
+        "protected"
+      ],
+      "u35": [
+        "protected"
+      ],
+      "u37": [
+        "protected"
+      ],
+      "u40": [
+        "condition"
+      ],
+      "u45": [
+        "decision"
+      ],
+      "u46": [
+        "decision",
+        "protected"
+      ],
+      "u49": [
+        "limitation",
+        "requirement"
+      ],
+      "u51": [
+        "protected"
+      ],
+      "u57": [
+        "decision"
+      ],
+      "u59": [
+        "decision",
+        "protected"
+      ],
+      "u61": [
+        "protected"
+      ],
+      "u63": [
+        "protected"
+      ],
+      "u64": [
+        "protected"
+      ],
+      "u65": [
+        "limitation",
+        "requirement"
+      ],
+      "u66": [
+        "limitation",
+        "condition"
+      ],
+      "u69": [
+        "limitation"
+      ],
+      "u70": [
+        "protected"
+      ],
+      "u73": [
+        "condition"
+      ],
+      "u74": [
+        "limitation",
+        "requirement"
+      ],
+      "u76": [
+        "protected"
+      ],
+      "u77": [
+        "protected"
+      ],
+      "u79": [
+        "condition",
+        "protected"
+      ],
+      "u82": [
+        "condition"
+      ],
+      "u86": [
+        "protected"
+      ],
+      "u87": [
+        "limitation",
+        "requirement"
+      ],
+      "u90": [
+        "protected"
+      ],
+      "u91": [
+        "condition"
+      ],
+      "u92": [
+        "limitation",
+        "requirement"
+      ],
+      "u93": [
+        "limitation"
+      ],
+      "u97": [
+        "protected"
+      ]
+    },
+    "flags": [
+      {
+        "code": "critical_omitted",
+        "unit": "u32",
+        "detail": "omitted as filler, but it carries a decision: \"Dana: Anyone against? ... Okay.\"",
+        "evidence": {
+          "source": "Dana: Anyone against? ... Okay."
+        }
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u38",
+        "detail": "neither on a card nor omitted: \"Customers were asking on social media before we said anything.\""
+      },
+      {
+        "code": "critical_omitted",
+        "unit": "u45",
+        "detail": "omitted as filler, but it carries a decision: \"Leila: No objection from me.\"",
+        "evidence": {
+          "source": "Leila: No objection from me."
+        }
+      },
+      {
+        "code": "critical_omitted",
+        "unit": "u57",
+        "detail": "omitted as filler, but it carries a decision: \"Tomás: I'm fine with that.\"",
+        "evidence": {
+          "source": "Tomás: I'm fine with that."
+        }
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u65",
+        "detail": "neither on a card nor omitted: \"Leila: I don't agree with that.\""
+      },
+      {
+        "code": "unaccounted",
+        "unit": "u72",
+        "detail": "neither on a card nor omitted: \"Tomás: That's one incident.\""
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n1",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n3",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n5",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n7",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n9",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n11",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n13",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n15",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n17",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n19",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n21",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n23",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "uncited_card",
+        "card": "u0_u1_n25",
+        "detail": "the card cites no passage of the source"
+      },
+      {
+        "code": "citation_unrelated",
+        "card": "u0_u1_n8",
+        "unit": "u71",
+        "detail": "the card shares no words with the passage it cites: \"Being Friday didn't slow that down.\"",
+        "evidence": {
+          "source": "Being Friday didn't slow that down."
+        }
+      },
+      {
+        "code": "citation_unrelated",
+        "card": "u0_u1_n10",
+        "unit": "u73",
+        "detail": "the card shares no words with the passage it cites: \"I think we'd see a pattern if we looked.\"",
+        "evidence": {
+          "source": "I think we'd see a pattern if we looked."
+        }
+      },
+      {
+        "code": "ai_check",
+        "card": "u0_u0_n4",
+        "detail": "checked by AI: not supported: The card adds a cause ('due to the reduced connection pool') that is not explicitly stated in the source for this specific item."
+      }
+    ],
+    "sections": [
+      {
+        "topic": "Post-incident review: checkout outage, March 14",
+        "represented": 62,
+        "omitted": 31,
+        "needsReview": 8,
+        "highOmittedShare": true
+      }
+    ]
+  },
+  "flags": [
+    {
+      "code": "critical_omitted",
+      "unit": "u32",
+      "detail": "omitted as filler, but it carries a decision: \"Dana: Anyone against? ... Okay.\"",
+      "evidence": {
+        "source": "Dana: Anyone against? ... Okay."
+      }
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u38",
+      "detail": "neither on a card nor omitted: \"Customers were asking on social media before we said anything.\""
+    },
+    {
+      "code": "critical_omitted",
+      "unit": "u45",
+      "detail": "omitted as filler, but it carries a decision: \"Leila: No objection from me.\"",
+      "evidence": {
+        "source": "Leila: No objection from me."
+      }
+    },
+    {
+      "code": "critical_omitted",
+      "unit": "u57",
+      "detail": "omitted as filler, but it carries a decision: \"Tomás: I'm fine with that.\"",
+      "evidence": {
+        "source": "Tomás: I'm fine with that."
+      }
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u65",
+      "detail": "neither on a card nor omitted: \"Leila: I don't agree with that.\""
+    },
+    {
+      "code": "unaccounted",
+      "unit": "u72",
+      "detail": "neither on a card nor omitted: \"Tomás: That's one incident.\""
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n1",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n3",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n5",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n7",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n9",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n11",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n13",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n15",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n17",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n19",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n21",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n23",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "uncited_card",
+      "card": "u0_u1_n25",
+      "detail": "the card cites no passage of the source"
+    },
+    {
+      "code": "citation_unrelated",
+      "card": "u0_u1_n8",
+      "unit": "u71",
+      "detail": "the card shares no words with the passage it cites: \"Being Friday didn't slow that down.\"",
+      "evidence": {
+        "source": "Being Friday didn't slow that down."
+      }
+    },
+    {
+      "code": "citation_unrelated",
+      "card": "u0_u1_n10",
+      "unit": "u73",
+      "detail": "the card shares no words with the passage it cites: \"I think we'd see a pattern if we looked.\"",
+      "evidence": {
+        "source": "I think we'd see a pattern if we looked."
+      }
+    },
+    {
+      "code": "ai_check",
+      "card": "u0_u0_n4",
+      "detail": "checked by AI: not supported: The card adds a cause ('due to the reduced connection pool') that is not explicitly stated in the source for this specific item."
+    }
+  ],
+  "hints": [
+    {
+      "code": "named_term_changed",
+      "unit": "u41",
+      "card": "u0_u0_n12",
+      "detail": "source names \"Friday\"; no card citing it does",
+      "evidence": {
+        "source": "Friday"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u70",
+      "card": "u0_u1_n8",
+      "detail": "source names \"Marcus\"; no card citing it does",
+      "evidence": {
+        "source": "Marcus"
+      }
+    },
+    {
+      "code": "named_term_changed",
+      "unit": "u71",
+      "card": "u0_u1_n8",
+      "detail": "source names \"Being Friday\"; no card citing it does",
+      "evidence": {
+        "source": "Being Friday"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u15",
+      "card": "u0_u0_n4",
+      "detail": "the card says \"due to\"; the source states no cause",
+      "evidence": {
+        "card": "due to"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u22",
+      "card": "u0_u0_n6",
+      "detail": "source restricts it: \"the alert only fires when the\"; the card doesn't",
+      "evidence": {
+        "source": "the alert only fires when the"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u0_u0_n6",
+      "detail": "the card says \"02\"; the source doesn't",
+      "evidence": {
+        "card": "02"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u40",
+      "card": "u0_u0_n12",
+      "detail": "source says \"when they remember\"",
+      "evidence": {
+        "source": "when they remember"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u41",
+      "card": "u0_u0_n12",
+      "detail": "the card says \"because\"; the source states no cause",
+      "evidence": {
+        "card": "because"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u42",
+      "card": "u0_u0_n12",
+      "detail": "the card says \"because\"; the source states no cause",
+      "evidence": {
+        "card": "because"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u25",
+      "card": "u0_u0_n13",
+      "detail": "the card says \"leading to\"; the source states no cause",
+      "evidence": {
+        "card": "leading to"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u0_u0_n13",
+      "detail": "the card says \"10%\"; the source doesn't",
+      "evidence": {
+        "card": "10%"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u30",
+      "card": "u0_u0_n14",
+      "detail": "the card says \"trigger*\"; the source states no cause",
+      "evidence": {
+        "card": "trigger*"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u31",
+      "card": "u0_u0_n14",
+      "detail": "the card says \"trigger*\"; the source states no cause",
+      "evidence": {
+        "card": "trigger*"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u33",
+      "card": "u0_u0_n14",
+      "detail": "source says \"can you own that\"",
+      "evidence": {
+        "source": "can you own that"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u51",
+      "card": "u0_u0_n16",
+      "detail": "source says \"Code changes need two approvals\"; the card negates it",
+      "evidence": {
+        "source": "Code changes need two approvals",
+        "card": "Config changes for payments do not undergo code review."
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u53",
+      "card": "u0_u0_n17",
+      "detail": "source says \"A typo in code would have been caught by the reviewer or by a test.\"; the card negates it",
+      "evidence": {
+        "source": "A typo in code would have been caught by the reviewer or by a test.",
+        "card": "This lack of review is a significant gap, as a typo in code would likely be caught by a reviewer or tests."
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u0_u1_n6",
+      "detail": "the card says \"00\"; the source doesn't",
+      "evidence": {
+        "card": "00"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u76",
+      "card": "u0_u1_n12",
+      "detail": "source says \"could you pull the incidents from the\"",
+      "evidence": {
+        "source": "could you pull the incidents from the"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u78",
+      "card": "u0_u1_n12",
+      "detail": "source says \"can do that\"",
+      "evidence": {
+        "source": "can do that"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u79",
+      "card": "u0_u1_n14",
+      "detail": "source says \"While we're on prevention, I'd also propose automatic rollback\"; the card drops the negation",
+      "evidence": {
+        "source": "While we're on prevention, I'd also propose automatic rollback",
+        "card": "Marcus proposes automatic rollback"
+      }
+    },
+    {
+      "code": "negation_flip",
+      "unit": "u82",
+      "card": "u0_u1_n16",
+      "detail": "source says \"If a release includes a database migration, rolling back the code without the migration can leave us worse off.\"; the card keeps only one of its two negations",
+      "evidence": {
+        "source": "If a release includes a database migration, rolling back the code without the migration can leave us worse off.",
+        "card": "Leila is nervous about auto-rollback for code, especially with database migrations, as rolling back code without the migration could worsen the situation."
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u87",
+      "card": "u0_u1_n18",
+      "detail": "the card says \"due to\"; the source states no cause",
+      "evidence": {
+        "card": "due to"
+      }
+    },
+    {
+      "code": "cause_changed",
+      "unit": "u88",
+      "card": "u0_u1_n18",
+      "detail": "the card says \"due to\"; the source states no cause",
+      "evidence": {
+        "card": "due to"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u91",
+      "card": "u0_u1_n20",
+      "detail": "source says \"most people retried, the email we sen\"",
+      "evidence": {
+        "source": "most people retried, the email we sen"
+      }
+    },
+    {
+      "code": "caveat_dropped",
+      "unit": "u93",
+      "card": "u0_u1_n22",
+      "detail": "the card drops the source's caveat \"but nobody has looked yet\"",
+      "evidence": {
+        "source": "but nobody has looked yet"
+      }
+    },
+    {
+      "code": "qualifier_dropped",
+      "unit": "u95",
+      "card": "u0_u1_n24",
+      "detail": "source says \"can you draft the customer email either\"",
+      "evidence": {
+        "source": "can you draft the customer email either"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u95",
+      "card": "u0_u1_n24",
+      "detail": "the card says \"regardless\"; the source doesn't",
+      "evidence": {
+        "card": "regardless"
+      }
+    },
+    {
+      "code": "condition_changed",
+      "unit": "u96",
+      "card": "u0_u1_n24",
+      "detail": "the card says \"regardless\"; the source doesn't",
+      "evidence": {
+        "card": "regardless"
+      }
+    },
+    {
+      "code": "unsupported_number",
+      "card": "u0_u1_n26",
+      "detail": "the card says \"02\"; the source doesn't",
+      "evidence": {
+        "card": "02"
+      }
+    },
+    {
+      "code": "critical_dropped",
+      "card": "u0_u0_n12",
+      "unit": "u40",
+      "detail": "the card drops the condition \"when they remember\"",
+      "evidence": {
+        "source": "when they remember"
+      }
+    },
+    {
+      "code": "critical_dropped",
+      "card": "u0_u1_n12",
+      "unit": "u74",
+      "detail": "the card drops the requirement \"don't think we're going to settle this today\"",
+      "evidence": {
+        "source": "don't think we're going to settle this today"
+      }
+    },
+    {
+      "code": "critical_dropped",
+      "card": "u0_u1_n18",
+      "unit": "u87",
+      "detail": "the card drops the requirement \"don't know how many releases include migrations\"",
+      "evidence": {
+        "source": "don't know how many releases include migrations"
+      }
+    },
+    {
+      "code": "critical_dropped",
+      "card": "u0_u1_n22",
+      "unit": "u92",
+      "detail": "the card drops the requirement \"don't know\"",
+      "evidence": {
+        "source": "don't know"
+      }
+    },
+    {
+      "code": "critical_dropped",
+      "card": "u0_u1_n22",
+      "unit": "u93",
+      "detail": "the card drops the caveat \"but nobody has looked yet\"",
+      "evidence": {
+        "source": "but nobody has looked yet"
+      }
+    }
+  ],
+  "reviews": {
+    "u0_u0_n1": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n3": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n4": {
+      "reasons": [
+        "checked by AI: not supported: The card adds a cause ('due to the reduced connection pool') that is not explicitly stated in the source for this specific item."
+      ],
+      "hints": [
+        "the card says \"due to\"; the source states no cause"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "not_supported",
+        "reason": "The card adds a cause ('due to the reduced connection pool') that is not explicitly stated in the source for this specific item."
+      }
+    },
+    "u0_u0_n5": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n6": {
+      "reasons": [],
+      "hints": [
+        "source restricts it: \"the alert only fires when the\"; the card doesn't",
+        "the card says \"02\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n7": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n8": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n9": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n10": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n11": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n12": {
+      "reasons": [],
+      "hints": [
+        "source names \"Friday\"; no card citing it does",
+        "source says \"when they remember\"",
+        "the card says \"because\"; the source states no cause",
+        "the card drops the condition \"when they remember\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n13": {
+      "reasons": [],
+      "hints": [
+        "the card says \"leading to\"; the source states no cause",
+        "the card says \"10%\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n14": {
+      "reasons": [],
+      "hints": [
+        "the card says \"trigger*\"; the source states no cause",
+        "source says \"can you own that\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n15": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n16": {
+      "reasons": [],
+      "hints": [
+        "source says \"Code changes need two approvals\"; the card negates it"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u0_n17": {
+      "reasons": [],
+      "hints": [
+        "source says \"A typo in code would have been caught by the reviewer or by a test.\"; the card negates it"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n1": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n2": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n3": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n4": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n5": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n6": {
+      "reasons": [],
+      "hints": [
+        "the card says \"00\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n7": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n8": {
+      "reasons": [
+        "the card shares no words with the passage it cites: \"Being Friday didn't slow that down.\""
+      ],
+      "hints": [
+        "source names \"Marcus\"; no card citing it does",
+        "source names \"Being Friday\"; no card citing it does"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n9": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n10": {
+      "reasons": [
+        "the card shares no words with the passage it cites: \"I think we'd see a pattern if we looked.\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n11": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n12": {
+      "reasons": [],
+      "hints": [
+        "source says \"could you pull the incidents from the\"",
+        "source says \"can do that\"",
+        "the card drops the requirement \"don't think we're going to settle this today\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n13": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n14": {
+      "reasons": [],
+      "hints": [
+        "source says \"While we're on prevention, I'd also propose automatic rollback\"; the card drops the negation"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n15": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n16": {
+      "reasons": [],
+      "hints": [
+        "source says \"If a release includes a database migration, rolling back the code without the migration can leave us worse off.\"; the card keeps only one of its two negations"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n17": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n18": {
+      "reasons": [],
+      "hints": [
+        "the card says \"due to\"; the source states no cause",
+        "the card drops the requirement \"don't know how many releases include migrations\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n19": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n20": {
+      "reasons": [],
+      "hints": [
+        "source says \"most people retried, the email we sen\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n21": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n22": {
+      "reasons": [],
+      "hints": [
+        "the card drops the source's caveat \"but nobody has looked yet\"",
+        "the card drops the requirement \"don't know\"",
+        "the card drops the caveat \"but nobody has looked yet\""
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n23": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n24": {
+      "reasons": [],
+      "hints": [
+        "source says \"can you draft the customer email either\"",
+        "the card says \"regardless\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_u1_n25": {
+      "reasons": [
+        "the card cites no passage of the source"
+      ]
+    },
+    "u0_u1_n26": {
+      "reasons": [],
+      "hints": [
+        "the card says \"02\"; the source doesn't"
+      ],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    },
+    "u0_fs1": {
+      "reasons": [],
+      "checked": {
+        "by": "ai",
+        "verdict": "supported"
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-retry-policy-invented",
+  "distortion": "invented_detail",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The open retry question (u39) gets an invented policy written out in words: 'retried three times with backoff', 'cleaned up after a day'. The old pattern only caught digits and 'exponential backoff'.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n-open-retry",
+      "find": "How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet: no retry count or backoff is set.",
+      "replace": "Failed processing is retried three times with backoff; a stuck photo is cleaned up after a day."
+    }
+  ],
+  "expectFailing": [
+    "a.no-retry-policy"
+  ]
+}

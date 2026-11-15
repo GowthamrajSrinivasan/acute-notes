@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-dead-letter-invented",
+  "distortion": "invented_detail",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "An invented home for rejected events: the collector sends them to a dead-letter queue (u39 only asks).",
+  "mutations": [
+    { "op": "replace_text", "node": "s2", "find": "rejects the rest", "replace": "rejects the rest into a dead-letter queue" }
+  ],
+  "expectFailing": ["a.no-dead-letter"]
+}

@@ -1,0 +1,705 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "kn-10-inventory-architecture-frames",
+  "title": "Shelfwise inventory service: a tour of the codebase",
+  "scenario": "Code architecture inside semantic frames: a codebase description whose modules are grouped by responsibility, with file paths, labelled dependencies, dependency rules and one LLD-level detail (the retry policy).",
+  "sourceType": "codebase_description",
+  "audience": "Engineers new to the Shelfwise codebase",
+  "objective": "See which module owns what, grouped by responsibility; follow every dependency with its meaning and direction; find the files to open; and keep the exact retry policy and the dependency rules.",
+  "complexity": "high",
+  "sourceFiles": [
+    {
+      "version": 1,
+      "path": "source.md",
+      "words": 907,
+      "title": "Shelfwise inventory service: a tour of the codebase"
+    }
+  ],
+  "sections": [
+    {
+      "id": "s1",
+      "heading": "Overview"
+    },
+    {
+      "id": "s2",
+      "heading": "Client and presentation"
+    },
+    {
+      "id": "s3",
+      "heading": "API and orchestration"
+    },
+    {
+      "id": "s4",
+      "heading": "Domain services"
+    },
+    {
+      "id": "s5",
+      "heading": "Supplier integration"
+    },
+    {
+      "id": "s6",
+      "heading": "Persistence and external systems"
+    },
+    {
+      "id": "s7",
+      "heading": "Observability and error handling"
+    },
+    {
+      "id": "s8",
+      "heading": "Where to start reading"
+    },
+    {
+      "id": "s9",
+      "heading": "Dependency rules"
+    },
+    {
+      "id": "s10",
+      "heading": "Known gaps"
+    }
+  ],
+  "units": [
+    {
+      "id": "u1",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "Shelfwise is the service that keeps track of how much stock each warehouse holds and reserves stock for incoming orders.",
+      "tags": [
+        "definition"
+      ]
+    },
+    {
+      "id": "u2",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "It is one deployable TypeScript service with a small admin front end."
+    },
+    {
+      "id": "u3",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "At peak it handles about 3,000 reservations per hour.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "3,000 reservations per hour"
+        }
+      ]
+    },
+    {
+      "id": "u4",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "This tour walks through the code by responsibility: what each group of modules owns, which files to open first, and how the groups depend on each other.",
+      "omittable": {
+        "reason": "meta",
+        "note": "Describes the document, not the system."
+      }
+    },
+    {
+      "id": "u5",
+      "section": "s1",
+      "kind": "sentence",
+      "quote": "The groups are presentation, API and orchestration, domain services, supplier integration, persistence and external systems, and observability and error handling.",
+      "tags": [
+        "terminology"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "The six responsibility groups that should become frames."
+      }
+    },
+    {
+      "id": "u6",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "The admin web UI lives in `web/admin/`.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "web/admin/"
+        }
+      ]
+    },
+    {
+      "id": "u7",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "Warehouse staff use it to look up stock levels, place manual holds and review failed supplier imports."
+    },
+    {
+      "id": "u8",
+      "section": "s2",
+      "kind": "sentence",
+      "quote": "It holds no stock logic of its own: every screen calls the service's REST API, and the UI never talks to the database directly.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "The UI's only dependency is the REST API."
+      }
+    },
+    {
+      "id": "u9",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "The HTTP handlers in `src/api/routes.ts` are the only entry point for requests.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "src/api/routes.ts"
+        }
+      ]
+    },
+    {
+      "id": "u10",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "They validate the request body, attach a correlation ID and pass the work on; they contain no business rules."
+    },
+    {
+      "id": "u11",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "A `POST /reservations` request goes to the reservation orchestrator in `src/orders/reserve.ts`.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "POST /reservations"
+        },
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "src/orders/reserve.ts"
+        }
+      ]
+    },
+    {
+      "id": "u12",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "The reservation orchestrator coordinates a reservation from start to finish."
+    },
+    {
+      "id": "u13",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "It asks the stock ledger to reserve the requested quantity, asks the pricing rules for the order's price, and, once both succeed, publishes a StockReserved event to the message broker.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "StockReserved"
+        }
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "The orchestrator's three outgoing dependencies and their direction."
+      }
+    },
+    {
+      "id": "u14",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order; it never makes a partial reservation.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "All-or-nothing reservation."
+      }
+    },
+    {
+      "id": "u15",
+      "section": "s3",
+      "kind": "sentence",
+      "quote": "A reservation that is not confirmed within 15 minutes is released by the ledger and the stock becomes available again.",
+      "tags": [
+        "condition",
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "15 minutes"
+        }
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "Hold expiry, owned by the ledger."
+      }
+    },
+    {
+      "id": "u16",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "The stock ledger in `src/ledger/ledger.ts` owns stock levels.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "src/ledger/ledger.ts"
+        }
+      ]
+    },
+    {
+      "id": "u17",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "It records every change as an append-only ledger entry (reserve, release, restock) and writes those entries to Postgres."
+    },
+    {
+      "id": "u18",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "The ledger is the only module allowed to write to the stock tables; other modules ask it to make changes.",
+      "critical": {
+        "reason": "requirement",
+        "note": "Sole writer of stock."
+      }
+    },
+    {
+      "id": "u19",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "The pricing rules in `src/pricing/rules.ts` work out the price of an order from the supplier price lists and any active discounts.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "src/pricing/rules.ts"
+        }
+      ]
+    },
+    {
+      "id": "u20",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "They read price lists from Redis, where they are cached for 300 seconds, and they never change stock.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "300 seconds"
+        }
+      ]
+    },
+    {
+      "id": "u21",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "Neither domain module imports anything from `src/api/` or `src/orders/`.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "src/api/"
+        },
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "src/orders/"
+        }
+      ],
+      "critical": {
+        "reason": "requirement",
+        "note": "Dependency direction: domain never depends on the API or orchestration layers."
+      }
+    },
+    {
+      "id": "u22",
+      "section": "s4",
+      "kind": "sentence",
+      "quote": "Dependencies point inwards: the API layer calls the orchestrator, the orchestrator calls the domain modules, and the domain modules depend only on persistence and the platform helpers."
+    },
+    {
+      "id": "u23",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "The supplier feed adapter in `src/suppliers/feedAdapter.ts` brings in restocks from suppliers.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "src/suppliers/feedAdapter.ts"
+        }
+      ]
+    },
+    {
+      "id": "u24",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "Every 10 minutes it calls the supplier API for new deliveries, converts each delivery into a restock and asks the stock ledger to record it.",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "10 minutes"
+        }
+      ]
+    },
+    {
+      "id": "u25",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "The adapter is the only module that knows the supplier's data format, so a change on the supplier's side stays inside this one file."
+    },
+    {
+      "id": "u26",
+      "section": "s5",
+      "kind": "sentence",
+      "quote": "A delivery the adapter cannot parse is logged and skipped; it is not retried, because sending the same bad data again would fail the same way.",
+      "tags": [
+        "condition",
+        "limitation"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "Parse failures are not retried; only call failures are."
+      }
+    },
+    {
+      "id": "u27",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "Postgres holds the ledger entries and the current stock level per warehouse and product; it is the source of truth for stock.",
+      "critical": {
+        "reason": "requirement",
+        "note": "Source of truth for stock."
+      }
+    },
+    {
+      "id": "u28",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "Redis holds cached price lists and nothing that cannot be rebuilt from the supplier feed."
+    },
+    {
+      "id": "u29",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "The message broker carries StockReserved events to other services, such as fulfilment, and also hosts the dead-letter queue described below.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "StockReserved"
+        }
+      ]
+    },
+    {
+      "id": "u30",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "Postgres schema changes live in `db/migrations/` and run on every deploy.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "db/migrations/"
+        }
+      ]
+    },
+    {
+      "id": "u31",
+      "section": "s6",
+      "kind": "sentence",
+      "quote": "The supplier API is run by the suppliers, outside our control, and is the only external system Shelfwise calls.",
+      "critical": {
+        "reason": "requirement",
+        "note": "System boundary: the only external dependency."
+      }
+    },
+    {
+      "id": "u32",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Every module logs through the structured logger in `src/platform/log.ts`, which writes one JSON line per event and always includes the correlation ID that the HTTP handlers attached.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "src/platform/log.ts"
+        }
+      ]
+    },
+    {
+      "id": "u33",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "The handlers log each request, and the retry helper logs each failed attempt."
+    },
+    {
+      "id": "u34",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Calls to the supplier API can fail, so the feed adapter wraps them in the retry helper in `src/platform/retry.ts`.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "path",
+          "value": "src/platform/retry.ts"
+        }
+      ]
+    },
+    {
+      "id": "u35",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "The retry policy is:",
+      "omittable": {
+        "reason": "filler",
+        "note": "Introduces the list."
+      }
+    },
+    {
+      "id": "u36",
+      "section": "s7",
+      "kind": "list_item",
+      "quote": "at most 5 attempts per delivery;",
+      "tags": [
+        "numeric"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "5 attempts"
+        }
+      ],
+      "critical": {
+        "reason": "protected",
+        "note": "Exact retry limit."
+      }
+    },
+    {
+      "id": "u37",
+      "section": "s7",
+      "kind": "list_item",
+      "quote": "exponential backoff that starts at 2 seconds, doubles after each failure and is capped at 60 seconds;",
+      "tags": [
+        "numeric",
+        "formula"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "2 seconds"
+        },
+        {
+          "tier": "exact",
+          "kind": "number",
+          "value": "60 seconds"
+        }
+      ],
+      "critical": {
+        "reason": "protected",
+        "note": "Exact backoff values."
+      }
+    },
+    {
+      "id": "u38",
+      "section": "s7",
+      "kind": "list_item",
+      "quote": "after the 5th failed attempt, the delivery is published to the dead-letter queue `inventory.dlq` on the message broker, and staff review it in the admin UI.",
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "inventory.dlq"
+        }
+      ],
+      "critical": {
+        "reason": "protected",
+        "note": "Dead-letter destination."
+      }
+    },
+    {
+      "id": "u39",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Retries apply only to supplier calls.",
+      "tags": [
+        "limitation"
+      ],
+      "critical": {
+        "reason": "limitation",
+        "note": "Scope of the retry policy."
+      }
+    },
+    {
+      "id": "u40",
+      "section": "s7",
+      "kind": "sentence",
+      "quote": "Reservations are never retried automatically: a failed reservation is returned to the caller as an error.",
+      "tags": [
+        "condition"
+      ],
+      "critical": {
+        "reason": "condition",
+        "note": "Reservations fail fast."
+      }
+    },
+    {
+      "id": "u41",
+      "section": "s8",
+      "kind": "sentence",
+      "quote": "New contributors usually start with `src/orders/reserve.ts`, because it shows a whole reservation in about 120 lines and names every module it depends on.",
+      "tags": [
+        "numeric"
+      ]
+    },
+    {
+      "id": "u42",
+      "section": "s8",
+      "kind": "sentence",
+      "quote": "After that, `src/ledger/ledger.ts` explains how stock is counted."
+    },
+    {
+      "id": "u43",
+      "section": "s8",
+      "kind": "sentence",
+      "quote": "Each module keeps its tests next to its code."
+    },
+    {
+      "id": "u44",
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "Three rules keep the structure readable.",
+      "omittable": {
+        "reason": "filler"
+      }
+    },
+    {
+      "id": "u45",
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "First, nothing in the domain modules may depend on the HTTP layer; the ledger and the pricing rules must stay usable from a script or a test without a web server.",
+      "critical": {
+        "reason": "requirement",
+        "note": "No reversed dependency from domain to HTTP."
+      }
+    },
+    {
+      "id": "u46",
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "Second, only the ledger writes stock to Postgres; the orchestrator and the adapter go through it.",
+      "critical": {
+        "reason": "requirement",
+        "note": "Repeats u18 as a rule; kept because it names the two modules that must not write directly."
+      }
+    },
+    {
+      "id": "u47",
+      "section": "s9",
+      "kind": "sentence",
+      "quote": "Third, only the supplier feed adapter calls the supplier API.",
+      "critical": {
+        "reason": "requirement",
+        "note": "Single integration point."
+      }
+    },
+    {
+      "id": "u48",
+      "section": "s10",
+      "kind": "sentence",
+      "quote": "The admin UI has no automated tests yet.",
+      "tags": [
+        "limitation"
+      ]
+    },
+    {
+      "id": "u49",
+      "section": "s10",
+      "kind": "sentence",
+      "quote": "The reservation orchestrator and the feed adapter can both change the same product's stock at once, and the ledger currently relies on a database row lock to keep them consistent; whether that holds under peak load has not been measured.",
+      "tags": [
+        "limitation",
+        "question"
+      ],
+      "critical": {
+        "reason": "open_question",
+        "note": "Unverified concurrency assumption."
+      }
+    },
+    {
+      "id": "u50",
+      "section": "s10",
+      "kind": "sentence",
+      "quote": "Dead-lettered deliveries are only found when someone opens the admin UI; nothing alerts the team when `inventory.dlq` starts to fill up.",
+      "tags": [
+        "limitation"
+      ],
+      "protected": [
+        {
+          "tier": "exact",
+          "kind": "identifier",
+          "value": "inventory.dlq"
+        }
+      ]
+    }
+  ],
+  "safeToOmit": [
+    {
+      "units": [
+        "u4",
+        "u35",
+        "u44"
+      ],
+      "why": "Sentences about the document itself or list introductions."
+    },
+    {
+      "units": [
+        "u41",
+        "u42",
+        "u43"
+      ],
+      "why": "Reading advice: useful, but not part of the architecture; may be dropped or kept as a small note."
+    }
+  ],
+  "capabilities": [
+    "canvas.shape",
+    "canvas.frame",
+    "canvas.arrow-labeled",
+    "canvas.relation-types",
+    "canvas.node-kinds",
+    "canvas.text-card",
+    "canvas.page",
+    "ai.sectioned-template",
+    "ai.takeaway",
+    "arch.interactive-frame",
+    "ai.architecture-template-relations",
+    "ai.cites",
+    "ai.unit-accounting"
+  ],
+  "provenance": {
+    "synthetic": true,
+    "note": "Original text written for this dataset. Shelfwise, its modules, every file path (web/admin/, src/api/routes.ts, src/orders/reserve.ts, src/ledger/ledger.ts, src/pricing/rules.ts, src/suppliers/feedAdapter.ts, src/platform/log.ts, src/platform/retry.ts, db/migrations/), the queue name inventory.dlq and all numbers are invented. Only paths written in source.md may appear in expectations."
+  },
+  "review": {
+    "status": "reviewed",
+    "authoredBy": "Claude Code (assistant-drafted by hand; not produced by the Acute pipeline)",
+    "reviewers": [
+      "model: Claude (subagent), 2026-10-19 — not a human review"
+    ],
+    "approvedAt": null,
+    "notes": "Model review 2026-10-19 (not a human review; needs a person before approval). All 50 quotes occur in source.md; frames follow the six responsibility groups of u5 plus a known-gaps frame; every architecture edge is labelled and points the way the source says (UI calls the API, the API calls the orchestrator, the orchestrator calls ledger and pricing and publishes StockReserved, the ledger writes Postgres, pricing reads Redis, the adapter calls the supplier API and the ledger); no reversed dependency in the reference. Reference group nodes and relationships unchanged. Changed: (1) evaluation: a.no-partial-with-orch passed on the bare word 'partial', so its own target distortion ('makes partial reservations') passed; that term is gone and a new critical a.no-partial-reservation (text_absent, negation-aware) guards u14. a.no-retried-reservations only knew 'reservations are retried' and missed 'the orchestrator retries failed reservations' / 'retries apply to all calls'. a.no-lock-proven only knew 'row lock is proven / guarantees / always holds' and missed 'row lock holds under peak load'; raised to critical (u49 is critical). a.no-invented-paths now also catches unstated db/ and web/ paths, .sql files and repository/DAO/controller classes (mustNotClaim names a StockRepository class). a.hold-with-ledger now needs the condition ('confirm'), not only '15 min'; a.retry-values also needs the doubling (exponential) backoff of u37; a.skip-with-adapter and a.gap-lock accept more faithful wordings ('aren't retried', 'not yet measured'). New critical a.no-pricing-to-orch: a reversed orchestrator -> pricing arrow only failed a major check. a.rel-ui-http (u8) and a.rel-orch-pricing (u13) raised to critical. (2) canvas: e.domain-rule matched any group or text with 'http' and 'no ', so the API frame's takeaway ('HTTP handlers ... no business rules') could stand in for a missing domain rule; it now also needs a domain term and a dependency term. (3) reference plan (node text only): 'never makes a partial reservation', 'whether the row lock holds under peak load has not been measured', 'they aren't retried', and the orchestrator now says it publishes StockReserved once stock and price both succeed (u13's condition was missing from the reference). Follow-up: regressions rg-10-reservations-retried, rg-10-row-lock-proven, rg-10-invented-repository, rg-10-partial-reservation, rg-10-hold-condition-dropped, rg-10-backoff-not-doubling, rg-10-domain-rule-dropped, rg-10-pricing-calls-orchestrator and rg-10-ui-call-reversed added. Open findings: a.no-pricing-to-http (u21/u45), a.no-orch-calls-supplier (u47) and a.no-ui-to-db (u8) guard critical units but stay major, because no mutation can add a relationship, so a must-fail regression for them would only test a matcher trick; u13's 'once both succeed' condition has no deterministic check; r.retry-broker says the retry helper publishes to inventory.dlq, while the source only says 'the delivery is published' (who publishes is a reading, marked explicit); a.retry-values matches numbers as substrings ('12 seconds' contains '2 seconds', '160 seconds' contains '60 seconds'); a.retry-scope doesn't require 'only' (u39) and its 'never / not / no' group can be met anywhere on the card; a.domain-rule-text's 'not / no' group is loose; ku.gap-row-lock states an unmeasured assumption but is provenance explicit with no review.required; u41-u43 are omittable only through ku.reading-order (omission allowed), not by a per-unit omittable. Render checks (Lane J, 2026-10-19): v1 and v2 differ, so v1/v2 twins: a.crossings (v1 15) / a.crossings-v2 (8), a.reading-order (v1 0) / a.reading-order-v2 (1), a.links-over-frames (v1 1) / a.links-over-frames-v2 (2); a.fit-screen and a.rendered-frames (6–9) unscoped; a.subgroup-external (future, v2: the supplier API in an 'External' sub-group of f.persistence; needs a reference with the sub-group and the distil note model). Regressions rg-10-collapsed-one-frame, rg-10-logger-misgrouped. canvas.json's unsupported entry still names canvas.frame-nesting for the External sub-frame; sub-groups (v2) now cover it — a person may update that entry."
+  }
+}

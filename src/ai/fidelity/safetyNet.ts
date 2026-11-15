@@ -155,8 +155,13 @@ function markdownTable(columns: readonly string[], rows: readonly (readonly stri
  * `raw` (a section's untrusted plan reply) with the parts of `sectionText` it doesn't cover attached as nodes of
  * its own, and the section's coverage. A reply that isn't plan-shaped is returned as is (the caller's fallback
  * handles it).
+ *
+ * `attach: false` (distil mode, knowledge-notes-plan §5.3, WP1.11): nothing is attached — no "Also in the source" card
+ * and no "Source details" page; the units it would have attached are accounted for instead (Needs review or
+ * Intentionally omitted, shown in the source panel). The coverage is still measured, as a diagnostic until R1 (§6.3),
+ * with nothing counted as attached.
  */
-export async function attachUncovered(raw: unknown, sectionText: string): Promise<{ raw: unknown; coverage: SectionCoverage }> {
+export async function attachUncovered(raw: unknown, sectionText: string, options: { attach?: boolean } = {}): Promise<{ raw: unknown; coverage: SectionCoverage }> {
   const empty = { raw, coverage: { total: 0, covered: 0, attached: 0, added: [], keyTerms: { total: 0, placedByAI: 0, missing: [], all: [] } } };
   if (!isObject(raw) || !Array.isArray(raw.nodes)) return empty;
   let parsed;
@@ -193,6 +198,8 @@ export async function attachUncovered(raw: unknown, sectionText: string): Promis
 
   const terms = keyTerms(sectionText);
   const missingTerms = terms.filter((t) => !vocab.has(t));
+  const keyTermCoverage = { total: terms.length, placedByAI: terms.length - missingTerms.length, missing: missingTerms, all: terms };
+  if (options.attach === false) return { raw, coverage: { total: count.total, covered: count.covered, attached: 0, added: [], keyTerms: keyTermCoverage } };
   return {
     raw: added.length ? { ...raw, nodes: [...raw.nodes, ...added] } : raw,
     coverage: {
@@ -200,7 +207,7 @@ export async function attachUncovered(raw: unknown, sectionText: string): Promis
       covered: count.covered,
       attached: missing.texts.length,
       added: missing.texts,
-      keyTerms: { total: terms.length, placedByAI: terms.length - missingTerms.length, missing: missingTerms, all: terms },
+      keyTerms: keyTermCoverage,
     },
   };
 }

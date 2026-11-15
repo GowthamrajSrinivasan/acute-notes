@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-old-assets-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "The old-asset retention rule (u52) is dropped from the versioning card.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n8",
+      "find": "\n- Keep old asset versions available at least as long as the longest HTML TTL, or cached pages can send readers to missing files.",
+      "replace": ""
+    }
+  ],
+  "expectFailing": [
+    "a.old-assets"
+  ]
+}

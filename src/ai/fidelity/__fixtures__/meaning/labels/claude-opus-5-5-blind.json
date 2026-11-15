@@ -1,0 +1,1675 @@
+{
+  "labeller": "Claude Opus 5.5 (blind)",
+  "type": "model",
+  "model": "claude-opus-5-5",
+  "validation": "Not validated by a person. Blind: saw only the sheet (no repo, drafts, other labels or rubric examples). Never edited.",
+  "importedFrom": "baselines/claude-opus-5-5-blind.sheet.md",
+  "rubricVersion": 2,
+  "labels": {
+    "ng-12": {
+      "answer": "faithful",
+      "source": "Draft posts are not visible to subscribers.",
+      "card": "Subscribers cannot see draft posts.",
+      "at": "2026-10-19T11:39:01.044Z"
+    },
+    "h-ql-03": {
+      "answer": "faithful",
+      "source": "A warm standby could shorten recovery after a regional failure.",
+      "card": "Recovery after a regional failure might be quicker with a warm standby.",
+      "at": "2026-10-19T11:39:01.047Z"
+    },
+    "qt-08": {
+      "answer": "faithful",
+      "source": "The cluster runs between 4 and 8 worker nodes depending on load.",
+      "card": "Depending on load, the cluster uses 4-8 workers.",
+      "at": "2026-10-19T11:39:01.047Z"
+    },
+    "h-to-04": {
+      "answer": "distorted",
+      "note": "Card says event sourcing makes queries simpler, but the source says it makes them more complex.",
+      "source": "Event sourcing gives a full audit trail but makes queries more complex.",
+      "card": "Event sourcing gives a full audit trail and simpler queries.",
+      "at": "2026-10-19T11:39:01.047Z"
+    },
+    "cp-16": {
+      "answer": "distorted",
+      "note": "Card implies every row is imported, but rows with missing IDs are skipped.",
+      "source": "The importer handles CSV and Excel files, and it skips rows with missing IDs.",
+      "card": "The importer handles CSV and Excel files and every row in them.",
+      "at": "2026-10-19T11:39:01.047Z"
+    },
+    "ng-22": {
+      "answer": "distorted",
+      "note": "Card says exports contain personal data, but they contain none.",
+      "source": "Exported files contain no personal data.",
+      "card": "Exported files contain personal data.",
+      "at": "2026-10-19T11:39:01.047Z"
+    },
+    "sc-15": {
+      "answer": "distorted",
+      "note": "Card widens mandatory two-factor from administrator accounts to all accounts.",
+      "source": "Two-factor login is mandatory for administrator accounts.",
+      "card": "Two-factor login is mandatory for all accounts.",
+      "at": "2026-10-19T11:39:01.047Z"
+    },
+    "sc-17": {
+      "answer": "distorted",
+      "note": "Card says backups run for every plan, but only paid plans get them.",
+      "source": "Automatic backups run only for paid plans.",
+      "card": "Automatic backups run for every plan.",
+      "at": "2026-10-19T11:39:01.047Z"
+    },
+    "cd-07": {
+      "answer": "faithful",
+      "source": "If the token expires mid-session, the client refreshes it silently.",
+      "card": "The client silently refreshes a token that expires during a session.",
+      "at": "2026-10-19T11:39:01.047Z"
+    },
+    "h-qt-03": {
+      "answer": "faithful",
+      "source": "Passwords must be at least 12 characters long.",
+      "card": "A password needs a minimum length of 12 characters.",
+      "at": "2026-10-19T11:39:01.047Z"
+    },
+    "cp-18": {
+      "answer": "distorted",
+      "note": "Card drops the caveat that offline changes may conflict with edits from others.",
+      "source": "The beta adds offline editing, though changes made offline may conflict with edits from others.",
+      "card": "The beta adds offline editing.",
+      "at": "2026-10-19T11:39:01.047Z"
+    },
+    "to-12": {
+      "answer": "faithful",
+      "source": "Pinning dependency versions makes builds reproducible but means security fixes arrive later.",
+      "card": "Pinned versions give reproducible builds, while security patches land later.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "qt-01": {
+      "answer": "faithful",
+      "source": "The client retries up to 3 times before giving up.",
+      "card": "The client gives up after at most three retries.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "h-cd-02": {
+      "answer": "faithful",
+      "source": "Orders ship the same day if they are placed before 2 pm.",
+      "card": "Orders placed before 2 pm go out the same day.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "ql-05": {
+      "answer": "faithful",
+      "source": "Some customers prefer exporting reports as CSV rather than PDF.",
+      "card": "Some customers would rather export reports to CSV than PDF.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "ng-16": {
+      "answer": "distorted",
+      "note": "Card says Python 3.7 is supported, but support was dropped.",
+      "source": "The SDK no longer supports Python 3.7.",
+      "card": "The SDK supports Python 3.7.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "to-26": {
+      "answer": "distorted",
+      "note": "Card drops the cost that flaky tests become harder to debug.",
+      "source": "Running tests in parallel shortens the pipeline, though flaky tests become harder to debug.",
+      "card": "Running tests in parallel shortens the pipeline.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "qt-14": {
+      "answer": "distorted",
+      "note": "Card turns a limit of up to 3 retries into exactly 3 retries.",
+      "source": "The client retries up to 3 times before giving up.",
+      "card": "The client retries 3 times before giving up.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "ql-24": {
+      "answer": "distorted",
+      "note": "Card turns \"can typically be served\" into a certainty that static pages are always served from the CDN.",
+      "source": "Static pages can typically be served straight from the CDN.",
+      "card": "Static pages are served straight from the CDN.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "to-07": {
+      "answer": "faithful",
+      "source": "Batching notifications reduces noise but delays urgent alerts.",
+      "card": "Batched notifications are less noisy, though urgent alerts arrive later.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "sc-07": {
+      "answer": "faithful",
+      "source": "Single sign-on is supported for enterprise customers.",
+      "card": "Enterprise customers can sign in with single sign-on.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "h-qt-04": {
+      "answer": "distorted",
+      "note": "Card turns a capacity limit of up to 10,000 into a fixed count of 10,000 messages.",
+      "source": "The queue holds up to 10,000 messages.",
+      "card": "The queue holds 10,000 messages.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "cp-03": {
+      "answer": "faithful",
+      "source": "The importer handles CSV and Excel files, and it skips rows with missing IDs.",
+      "card": "Importer: CSV and Excel supported; rows without IDs are skipped.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "ql-22": {
+      "answer": "distorted",
+      "note": "Card turns \"likely\" into a certainty that the parser handles malformed headers better.",
+      "source": "The new parser is likely to handle malformed headers better.",
+      "card": "The new parser handles malformed headers better.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "cs-03": {
+      "answer": "faithful",
+      "source": "The outage was triggered by an expired TLS certificate.",
+      "card": "An expired TLS certificate caused the outage.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "to-22": {
+      "answer": "distorted",
+      "note": "Card says higher compression saves CPU, but it uses more CPU.",
+      "source": "Higher compression levels shrink archives while using more CPU.",
+      "card": "Higher compression levels shrink archives and save CPU.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "cd-15": {
+      "answer": "distorted",
+      "note": "Card says deploys pause on any error, dropping the 2%-for-five-minutes threshold.",
+      "source": "Deploys pause automatically if the error rate exceeds 2% for five minutes.",
+      "card": "Deploys pause automatically whenever errors occur.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "ql-26": {
+      "answer": "distorted",
+      "note": "Card turns \"tends to\" into a certainty that pair programming shortens onboarding.",
+      "source": "Pair programming tends to shorten onboarding for new hires.",
+      "card": "Pair programming shortens onboarding for new hires.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "sc-14": {
+      "answer": "distorted",
+      "note": "Card recommends read replicas generally, dropping the read-only workload scope.",
+      "source": "Read replicas are recommended for read-only workloads.",
+      "card": "Read replicas are recommended.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "cs-09": {
+      "answer": "faithful",
+      "source": "Memory leaks in the worker cause the nightly restarts.",
+      "card": "The nightly restarts are caused by memory leaks in the worker.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "ng-08": {
+      "answer": "faithful",
+      "source": "The scheduler doesn't run jobs on public holidays.",
+      "card": "The scheduler runs no jobs on public holidays.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "ng-20": {
+      "answer": "distorted",
+      "note": "Card says free-plan webhooks are signed, but they are not.",
+      "source": "Webhooks are not signed in the free plan.",
+      "card": "Webhooks are signed in the free plan.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "to-20": {
+      "answer": "distorted",
+      "note": "Card says batching delays nothing, but it delays urgent alerts.",
+      "source": "Batching notifications reduces noise but delays urgent alerts.",
+      "card": "Batching notifications reduces noise without delaying anything.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "cd-03": {
+      "answer": "faithful",
+      "source": "Refunds are issued automatically unless the order has already shipped.",
+      "card": "Orders that have not shipped yet get refunded automatically.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "cd-04": {
+      "answer": "faithful",
+      "source": "Students can resubmit an assignment provided the deadline has not passed.",
+      "card": "Assignments may be resubmitted as long as the deadline is still open.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "ng-10": {
+      "answer": "faithful",
+      "source": "The free tier does not include priority support.",
+      "card": "Priority support isn't part of the free tier.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "h-ng-03": {
+      "answer": "faithful",
+      "source": "The export does not include comments.",
+      "card": "Comments are left out of the export.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "qt-13": {
+      "answer": "faithful",
+      "source": "The index holds roughly 2.5 million documents.",
+      "card": "About 2.5 million documents are in the index.",
+      "at": "2026-10-19T11:39:01.048Z"
+    },
+    "cp-10": {
+      "answer": "faithful",
+      "source": "Search indexing runs every hour, unless the queue is paused for maintenance.",
+      "card": "Indexing runs hourly except while the queue is paused for maintenance.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cp-15": {
+      "answer": "distorted",
+      "note": "Card implies latency overall fell 40%, but only median latency did and p99 was unchanged.",
+      "source": "Caching cut median latency by 40%, although the p99 latency did not change.",
+      "card": "Caching cut latency by 40%.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cp-01": {
+      "answer": "faithful",
+      "source": "The new search ranks recent documents higher, but it ignores files larger than 10 MB.",
+      "card": "New search favours recent documents. Files over 10 MB are ignored.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "qt-12": {
+      "answer": "faithful",
+      "source": "Each report covers the last 90 days of activity.",
+      "card": "Reports span the previous 90 days of activity.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "sc-26": {
+      "answer": "distorted",
+      "note": "Card says dark launches are used for all changes, but only backend changes.",
+      "source": "Dark launches are used only for backend changes.",
+      "card": "Dark launches are used for all changes.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "sc-08": {
+      "answer": "faithful",
+      "source": "The cleanup script deletes temporary files except those in the shared folder.",
+      "card": "Apart from the shared folder, the cleanup script removes temporary files.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "h-sc-03": {
+      "answer": "faithful",
+      "source": "The beta API is open only to partner accounts.",
+      "card": "Only partner accounts can use the beta API.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cd-24": {
+      "answer": "distorted",
+      "note": "Card says acceptance needs approval from a reviewer, but it happens automatically unless someone objects within two days.",
+      "source": "Unless a reviewer objects within two days, the proposal is accepted.",
+      "card": "The proposal is accepted once a reviewer approves it.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cp-11": {
+      "answer": "faithful",
+      "source": "Voice notes are transcribed automatically, but the transcripts are not reviewed by a person.",
+      "card": "Voice notes get automatic transcripts that no person reviews.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "ng-21": {
+      "answer": "distorted",
+      "note": "Card says jobs run on public holidays, but they do not.",
+      "source": "The scheduler doesn't run jobs on public holidays.",
+      "card": "The scheduler runs jobs on public holidays as well.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "ql-17": {
+      "answer": "distorted",
+      "note": "Card turns \"often\" into a certainty that the linter catches the imports reviewers miss.",
+      "source": "The linter often catches unused imports that reviewers miss.",
+      "card": "The linter catches the unused imports reviewers miss.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "sc-18": {
+      "answer": "distorted",
+      "note": "Card says bulk edit works on any project, but it is limited to projects under 500 items.",
+      "source": "The bulk-edit tool is limited to projects with fewer than 500 items.",
+      "card": "The bulk-edit tool works on any project.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cd-22": {
+      "answer": "distorted",
+      "note": "Card says paging is immediate, but it only happens after ten minutes of outage.",
+      "source": "Alerts page the on-call engineer only if the outage lasts longer than ten minutes.",
+      "card": "Alerts page the on-call engineer as soon as an outage starts.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "h-cp-05": {
+      "answer": "distorted",
+      "note": "Card drops the exception for the nightly maintenance window.",
+      "source": "Reports refresh every 15 minutes, except during the nightly maintenance window.",
+      "card": "Reports refresh every 15 minutes.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "qt-22": {
+      "answer": "distorted",
+      "note": "Card says all tickets are resolved within a day, but only roughly half are.",
+      "source": "Roughly half of the tickets are resolved within a day.",
+      "card": "All tickets are resolved within a day.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "qt-02": {
+      "answer": "faithful",
+      "source": "Uploads are limited to 25 MB per file.",
+      "card": "Each file can be at most 25 MB.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "qt-21": {
+      "answer": "distorted",
+      "note": "Card collapses the 4 to 8 node range into a fixed 8 nodes.",
+      "source": "The cluster runs between 4 and 8 worker nodes depending on load.",
+      "card": "The cluster runs 8 worker nodes.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cs-08": {
+      "answer": "faithful",
+      "source": "Compressing images shrinks page weight.",
+      "card": "Page weight goes down when images are compressed.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "qt-24": {
+      "answer": "distorted",
+      "note": "Card collapses a typical 6 to 8 minute range into a certain 8 minutes.",
+      "source": "Builds typically take 6 to 8 minutes.",
+      "card": "Builds take 8 minutes.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cs-19": {
+      "answer": "distorted",
+      "note": "Card reverses cause and effect: takeovers do not lead to weak passwords.",
+      "source": "Weak passwords lead to more account takeovers.",
+      "card": "Account takeovers lead to weak passwords.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "sc-05": {
+      "answer": "faithful",
+      "source": "The bulk-edit tool is limited to projects with fewer than 500 items.",
+      "card": "Bulk editing works on projects of under 500 items.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cd-05": {
+      "answer": "faithful",
+      "source": "When a pull request touches the schema, a database reviewer must approve it.",
+      "card": "Pull requests that change the schema need a database reviewer's approval.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "ng-03": {
+      "answer": "faithful",
+      "source": "The SDK no longer supports Python 3.7.",
+      "card": "Python 3.7 support has been dropped from the SDK.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cd-21": {
+      "answer": "distorted",
+      "note": "Card says copying is continuous, but it happens once the nightly snapshot completes.",
+      "source": "Backups are copied to the second region once the nightly snapshot completes.",
+      "card": "Backups are copied to the second region continuously.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "to-10": {
+      "answer": "faithful",
+      "source": "Long-lived access tokens are convenient for users, but they widen the window for misuse.",
+      "card": "Long-lived tokens are convenient, but a stolen one can be misused for longer.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "h-sc-05": {
+      "answer": "distorted",
+      "note": "Card applies 90-day retention to all tenants, dropping the regulated-tenant scope.",
+      "source": "Audit logs are kept for 90 days in regulated tenants.",
+      "card": "Audit logs are kept for 90 days.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cs-23": {
+      "answer": "distorted",
+      "note": "Card says the index slows lookups, but it speeds them up.",
+      "source": "Adding an index speeds up lookups by customer ID.",
+      "card": "Adding an index slows down lookups by customer ID.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "ql-21": {
+      "answer": "distorted",
+      "note": "Card turns \"may lower\" into a certainty that HTTP/2 lowers load times.",
+      "source": "Switching to HTTP/2 may lower page load times for image-heavy pages.",
+      "card": "HTTP/2 lowers page load times for image-heavy pages.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cs-06": {
+      "answer": "faithful",
+      "source": "Weak passwords lead to more account takeovers.",
+      "card": "Account takeovers increase with weak passwords.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cd-08": {
+      "answer": "faithful",
+      "source": "Backups are copied to the second region once the nightly snapshot completes.",
+      "card": "After the nightly snapshot finishes, backups are copied to the second region.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "h-sc-02": {
+      "answer": "faithful",
+      "source": "Audit logs are kept for 90 days in regulated tenants.",
+      "card": "Regulated tenants keep audit logs for 90 days.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "sc-10": {
+      "answer": "partly",
+      "note": "Card can be read as the agent being Windows-only or always a Windows service, rather than running as a service on Windows hosts.",
+      "source": "On Windows hosts, the agent runs as a service.",
+      "card": "The agent runs as a Windows service.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "to-09": {
+      "answer": "faithful",
+      "source": "Higher compression levels shrink archives while using more CPU.",
+      "card": "Stronger compression gives smaller archives and takes more CPU.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cs-24": {
+      "answer": "distorted",
+      "note": "Card reverses cause and effect: regressions do not cause low test coverage.",
+      "source": "Low test coverage results in more regressions reaching production.",
+      "card": "Regressions reaching production result in low test coverage.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cd-01": {
+      "answer": "faithful",
+      "source": "The cache returns the stored answer when the request hash matches a previous query.",
+      "card": "If a request's hash matches an earlier query, the cache serves the stored answer.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "sc-23": {
+      "answer": "distorted",
+      "note": "Card widens running as a service from Windows hosts to every host.",
+      "source": "On Windows hosts, the agent runs as a service.",
+      "card": "The agent runs as a service on every host.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cp-13": {
+      "answer": "faithful",
+      "source": "The mobile app syncs photos over Wi-Fi only, to avoid using mobile data.",
+      "card": "To save mobile data, photo sync happens only on Wi-Fi.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cd-10": {
+      "answer": "faithful",
+      "source": "The form saves a draft whenever the user leaves a field.",
+      "card": "Each time the user leaves a field, the form saves a draft.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "h-cp-02": {
+      "answer": "faithful",
+      "source": "Reports refresh every 15 minutes, except during the nightly maintenance window.",
+      "card": "Reports update every 15 minutes outside the nightly maintenance window.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cs-14": {
+      "answer": "distorted",
+      "note": "Card reverses cause and effect: slow disk writes cause the backed-up queue, not the other way.",
+      "source": "Slow disk writes cause the queue to back up.",
+      "card": "A backed-up queue causes slow disk writes.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "ng-26": {
+      "answer": "distorted",
+      "note": "Card says deleted records are returned by default, but they are not.",
+      "source": "The API does not return deleted records by default.",
+      "card": "The API returns deleted records by default.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cp-21": {
+      "answer": "distorted",
+      "note": "Card says any time zone works, but only UTC is supported.",
+      "source": "The scheduler supports cron syntax, but time zones other than UTC are not supported yet.",
+      "card": "The scheduler supports cron syntax in any time zone.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "sc-11": {
+      "answer": "faithful",
+      "source": "The new pricing applies to customers who sign up after 1 March.",
+      "card": "Customers signing up after 1 March get the new pricing.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "ql-11": {
+      "answer": "faithful",
+      "source": "Static pages can typically be served straight from the CDN.",
+      "card": "Static pages can usually be served directly from the CDN.",
+      "at": "2026-10-19T11:39:01.049Z"
+    },
+    "cd-09": {
+      "answer": "faithful",
+      "source": "Alerts page the on-call engineer only if the outage lasts longer than ten minutes.",
+      "card": "The on-call engineer is paged only for outages longer than ten minutes.",
+      "at": "2026-10-19T11:39:01.050Z"
+    },
+    "to-04": {
+      "answer": "faithful",
+      "source": "A larger context window improves recall while raising token costs.",
+      "card": "Bigger context windows recall more but cost more tokens.",
+      "at": "2026-10-19T11:39:01.050Z"
+    },
+    "sc-21": {
+      "answer": "distorted",
+      "note": "Card says the shared folder is cleaned too, but it is excluded.",
+      "source": "The cleanup script deletes temporary files except those in the shared folder.",
+      "card": "The cleanup script deletes all temporary files, including the shared folder.",
+      "at": "2026-10-19T11:39:01.050Z"
+    },
+    "h-cp-01": {
+      "answer": "faithful",
+      "source": "The new editor loads twice as fast, but plugins written for the old editor will not work.",
+      "card": "The new editor loads 2x faster; old-editor plugins won't work with it.",
+      "at": "2026-10-19T11:39:01.050Z"
+    },
+    "qt-17": {
+      "answer": "distorted",
+      "note": "Card changes the unit from 200 milliseconds to 200 seconds.",
+      "source": "Response times stay under 200 milliseconds for 95% of requests.",
+      "card": "Response times stay under 200 seconds for 95% of requests.",
+      "at": "2026-10-19T11:39:01.050Z"
+    },
+    "qt-04": {
+      "answer": "faithful",
+      "source": "Response times stay under 200 milliseconds for 95% of requests.",
+      "card": "95% of requests complete in under 200 ms.",
+      "at": "2026-10-19T11:39:01.050Z"
+    },
+    "cd-06": {
+      "answer": "faithful",
+      "source": "The job retries only when the failure is a network timeout.",
+      "card": "Only network timeouts trigger a retry of the job.",
+      "at": "2026-10-19T11:39:01.050Z"
+    },
+    "cd-19": {
+      "answer": "distorted",
+      "note": "Card says the job retries on any failure, but only on network timeouts.",
+      "source": "The job retries only when the failure is a network timeout.",
+      "card": "The job retries whenever it fails.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cd-14": {
+      "answer": "distorted",
+      "note": "Card says the stored answer is returned for every request, but only when the hash matches.",
+      "source": "The cache returns the stored answer when the request hash matches a previous query.",
+      "card": "The cache returns the stored answer for every request.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-13": {
+      "answer": "faithful",
+      "source": "Enabling verbose logging can slow the service down noticeably.",
+      "card": "Verbose logging may noticeably slow the service.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-11": {
+      "answer": "faithful",
+      "source": "Client-side rendering makes navigation feel instant, at the expense of a slower first load.",
+      "card": "Navigation feels instant with client-side rendering, but the first load is slower.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-21": {
+      "answer": "distorted",
+      "note": "Card says compressing images increases page weight, but it shrinks it.",
+      "source": "Compressing images shrinks page weight.",
+      "card": "Compressing images increases page weight.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-24": {
+      "answer": "distorted",
+      "note": "Card says changing the theme reloads the page, but it does not.",
+      "source": "Changing the theme does not reload the page.",
+      "card": "Changing the theme reloads the page.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-17": {
+      "answer": "distorted",
+      "note": "Card says token costs go down, but they go up.",
+      "source": "A larger context window improves recall while raising token costs.",
+      "card": "A larger context window improves recall and lowers token costs.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-14": {
+      "answer": "distorted",
+      "note": "Card turns \"can improve\" into a certainty that a reranker improves quality.",
+      "source": "Adding a reranker can improve answer quality on long documents.",
+      "card": "A reranker improves answer quality on long documents.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-18": {
+      "answer": "distorted",
+      "note": "Card says queries are slower, but they are faster.",
+      "source": "Because the index was rebuilt, queries are faster this week.",
+      "card": "Queries are slower this week because the index was rebuilt.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-to-01": {
+      "answer": "faithful",
+      "source": "Event sourcing gives a full audit trail but makes queries more complex.",
+      "card": "Event sourcing provides a complete audit trail, though querying gets more complex.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-02": {
+      "answer": "faithful",
+      "source": "Synchronous replication protects against data loss at the cost of higher write latency.",
+      "card": "Synchronous replication has higher write latency but protects against data loss.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-to-03": {
+      "answer": "faithful",
+      "source": "Aggressive caching lowers costs at the expense of fresher data.",
+      "card": "Heavy caching saves money but data is less fresh.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-23": {
+      "answer": "distorted",
+      "note": "Card says flags remove release risk, but they only can reduce it.",
+      "source": "Feature flags can reduce the risk of a bad release.",
+      "card": "Feature flags remove the risk of a bad release.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-19": {
+      "answer": "distorted",
+      "note": "Card drops the cost that strict type checking slows prototyping.",
+      "source": "Strict type checking catches bugs earlier, although it slows down prototyping.",
+      "card": "Strict type checking catches bugs earlier.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-24": {
+      "answer": "distorted",
+      "note": "Card says the first load is instant, but it is slower.",
+      "source": "Client-side rendering makes navigation feel instant, at the expense of a slower first load.",
+      "card": "Client-side rendering makes navigation and the first load instant.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cp-26": {
+      "answer": "distorted",
+      "note": "Card says photos sync over mobile data, but sync is Wi-Fi only.",
+      "source": "The mobile app syncs photos over Wi-Fi only, to avoid using mobile data.",
+      "card": "The mobile app syncs photos over Wi-Fi and mobile data.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cd-11": {
+      "answer": "faithful",
+      "source": "Discounts apply if the basket total is above fifty dollars.",
+      "card": "Baskets over fifty dollars qualify for the discount.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cp-14": {
+      "answer": "distorted",
+      "note": "Card drops the limitation that files over 10 MB are ignored.",
+      "source": "The new search ranks recent documents higher, but it ignores files larger than 10 MB.",
+      "card": "The new search ranks recent documents higher.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-05": {
+      "answer": "faithful",
+      "source": "Denormalising the tables makes reads simpler but complicates updates.",
+      "card": "Reads get simpler with denormalised tables; updates get harder.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-20": {
+      "answer": "distorted",
+      "note": "Card widens SSO support from enterprise customers to customers in general.",
+      "source": "Single sign-on is supported for enterprise customers.",
+      "card": "Single sign-on is supported for customers.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-20": {
+      "answer": "distorted",
+      "note": "Card invents a causal claim that code review caused the incidents, reversing the sequence.",
+      "source": "The team adopted code review after two production incidents.",
+      "card": "Code review caused two production incidents.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-26": {
+      "answer": "distorted",
+      "note": "Card turns a sequence in time into a claim that the retry policy caused the drop.",
+      "source": "Error rates fell after the retry policy was changed.",
+      "card": "The new retry policy caused error rates to fall.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-cd-04": {
+      "answer": "distorted",
+      "note": "Card says the banner shows throughout the trial, but only in the last three days.",
+      "source": "The banner appears when a user's trial has fewer than three days left.",
+      "card": "The banner appears throughout the trial.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-21": {
+      "answer": "distorted",
+      "note": "Card says the managed database saves money, but it costs more per month.",
+      "source": "The managed database saves operations work but costs more per month than self-hosting.",
+      "card": "The managed database saves operations work and money compared with self-hosting.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-12": {
+      "answer": "faithful",
+      "source": "The release slipped since the security review took longer than planned.",
+      "card": "A longer-than-planned security review delayed the release.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-20": {
+      "answer": "distorted",
+      "note": "Card turns \"generally\" into a certainty.",
+      "source": "Smaller batch sizes generally reduce memory pressure during training.",
+      "card": "Smaller batch sizes reduce memory pressure during training.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-05": {
+      "answer": "faithful",
+      "source": "Because the index was rebuilt, queries are faster this week.",
+      "card": "Queries are faster this week thanks to the rebuilt index.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cd-02": {
+      "answer": "faithful",
+      "source": "Deploys pause automatically if the error rate exceeds 2% for five minutes.",
+      "card": "An error rate above 2% for five minutes automatically pauses deploys.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-06": {
+      "answer": "faithful",
+      "source": "In the EU region, logs are retained for 30 days.",
+      "card": "EU-region logs are kept for 30 days.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-04": {
+      "answer": "faithful",
+      "source": "Automatic backups run only for paid plans.",
+      "card": "Paid plans get automatic backups; free plans don't.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cp-08": {
+      "answer": "faithful",
+      "source": "The scheduler supports cron syntax, but time zones other than UTC are not supported yet.",
+      "card": "Cron syntax works in the scheduler; only UTC is supported for now.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-to-05": {
+      "answer": "distorted",
+      "note": "Card drops the cost of less headroom for traffic spikes.",
+      "source": "Smaller containers start faster but have less headroom for traffic spikes.",
+      "card": "Smaller containers start faster.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-12": {
+      "answer": "faithful",
+      "source": "Rate limits are relaxed for internal services.",
+      "card": "Internal services get looser rate limits.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cd-18": {
+      "answer": "distorted",
+      "note": "Card requires database review for every PR, not only schema-touching ones.",
+      "source": "When a pull request touches the schema, a database reviewer must approve it.",
+      "card": "A database reviewer must approve every pull request.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cd-26": {
+      "answer": "distorted",
+      "note": "Card says receipts are always sent, but only when both users enabled them.",
+      "source": "Read receipts are sent only if both users have enabled them.",
+      "card": "Read receipts are always sent.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-19": {
+      "answer": "distorted",
+      "note": "Card turns \"might add\" into a certainty that cold starts add noticeable delay.",
+      "source": "Cold starts might add noticeable delay to the first request.",
+      "card": "Cold starts add noticeable delay to the first request.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-25": {
+      "answer": "distorted",
+      "note": "Card widens relaxed rate limits from internal services to services in general.",
+      "source": "Rate limits are relaxed for internal services.",
+      "card": "Rate limits are relaxed for services.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-22": {
+      "answer": "distorted",
+      "note": "Card reverses cause and effect: restarts do not cause the memory leaks.",
+      "source": "Memory leaks in the worker cause the nightly restarts.",
+      "card": "The nightly restarts cause memory leaks in the worker.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cp-05": {
+      "answer": "faithful",
+      "source": "The beta adds offline editing, though changes made offline may conflict with edits from others.",
+      "card": "Beta: offline editing, with possible conflicts against others' edits.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-ng-02": {
+      "answer": "faithful",
+      "source": "Trial accounts cannot invite more than two teammates.",
+      "card": "A trial account can invite at most two teammates.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-15": {
+      "answer": "distorted",
+      "note": "Card says guests can create shared folders, but they cannot.",
+      "source": "Guest accounts cannot create shared folders.",
+      "card": "Guest accounts can create shared folders.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-cs-06": {
+      "answer": "distorted",
+      "note": "Card turns a coincidence in timing into a claim that the help centre caused the drop.",
+      "source": "Support tickets dropped in the quarter the help centre launched.",
+      "card": "The help centre launch caused support tickets to drop.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-09": {
+      "answer": "faithful",
+      "source": "Exported files contain no personal data.",
+      "card": "Personal data is not included in exported files.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "qt-19": {
+      "answer": "faithful",
+      "source": "At least two approvals are required before merging.",
+      "card": "Two approvals are required before merging.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-ql-05": {
+      "answer": "distorted",
+      "note": "Card turns \"usually\" into a certainty that reviewers respond within a business day.",
+      "source": "Reviewers usually respond within one business day.",
+      "card": "Reviewers respond within one business day.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-cs-01": {
+      "answer": "faithful",
+      "source": "Long-running transactions cause lock contention on the orders table.",
+      "card": "Lock contention on the orders table comes from long-running transactions.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cp-20": {
+      "answer": "distorted",
+      "note": "Card says restore is possible any time, but only for 30 days before purge.",
+      "source": "Admins can restore deleted pages for 30 days, after which they are purged.",
+      "card": "Admins can restore deleted pages at any time.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "qt-18": {
+      "answer": "distorted",
+      "note": "Card changes 1,000 calls per day to 10,000.",
+      "source": "The plan includes 1,000 API calls per day.",
+      "card": "The plan includes 10,000 API calls per day.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-qt-02": {
+      "answer": "faithful",
+      "source": "Thumbnails are generated in roughly 2 seconds.",
+      "card": "Generating a thumbnail takes about 2 s.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-25": {
+      "answer": "distorted",
+      "note": "Card turns \"may take\" into a certainty that large imports take several minutes.",
+      "source": "Large imports may take several minutes to appear in search.",
+      "card": "Large imports take several minutes to appear in search.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "qt-26": {
+      "answer": "distorted",
+      "note": "Card changes roughly 2.5 million documents to 25 million.",
+      "source": "The index holds roughly 2.5 million documents.",
+      "card": "The index holds 25 million documents.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-15": {
+      "answer": "distorted",
+      "note": "Card says no effect on write latency, but latency is higher.",
+      "source": "Synchronous replication protects against data loss at the cost of higher write latency.",
+      "card": "Synchronous replication protects against data loss with no effect on write latency.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-cd-05": {
+      "answer": "distorted",
+      "note": "Card says orders always ship same day, dropping the before-2-pm condition.",
+      "source": "Orders ship the same day if they are placed before 2 pm.",
+      "card": "Orders always ship the same day.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-ql-04": {
+      "answer": "distorted",
+      "note": "Card turns \"can lower\" into a certainty that spot instances lower bills.",
+      "source": "Spot instances can lower compute bills for batch jobs.",
+      "card": "Spot instances lower compute bills for batch jobs.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-11": {
+      "answer": "faithful",
+      "source": "Changing the theme does not reload the page.",
+      "card": "The page stays loaded when the theme changes.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-qt-01": {
+      "answer": "faithful",
+      "source": "The queue holds up to 10,000 messages.",
+      "card": "At most 10000 messages fit in the queue.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-17": {
+      "answer": "distorted",
+      "note": "Card says archived projects appear in search results, but they do not.",
+      "source": "Archived projects are not included in search results.",
+      "card": "Search results include archived projects.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-ql-06": {
+      "answer": "distorted",
+      "note": "Card turns \"may cut\" into a certainty that newer GPUs cut training time.",
+      "source": "Newer GPUs may cut training time for large models.",
+      "card": "Newer GPUs cut training time for large models.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-07": {
+      "answer": "faithful",
+      "source": "The build failed because a dependency was removed from the registry.",
+      "card": "A dependency removed from the registry broke the build.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-13": {
+      "answer": "faithful",
+      "source": "Rate limiting prevents a single client from exhausting the API.",
+      "card": "A single client can't exhaust the API thanks to rate limiting.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-cs-05": {
+      "answer": "distorted",
+      "note": "Card says missed incidents increased, but they decreased.",
+      "source": "Tighter alert thresholds reduced the number of missed incidents.",
+      "card": "Tighter alert thresholds increased the number of missed incidents.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-01": {
+      "answer": "faithful",
+      "source": "Slow disk writes cause the queue to back up.",
+      "card": "The queue backs up because disk writes are slow.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-ng-04": {
+      "answer": "distorted",
+      "note": "Card says the gateway caches authenticated responses, but it does not.",
+      "source": "The gateway does not cache authenticated responses.",
+      "card": "The gateway caches authenticated responses.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-cd-01": {
+      "answer": "faithful",
+      "source": "The banner appears when a user's trial has fewer than three days left.",
+      "card": "If a trial has under three days left, the user sees the banner.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-cd-03": {
+      "answer": "faithful",
+      "source": "Unless the user opts out, weekly summaries are emailed on Monday.",
+      "card": "Weekly summaries are emailed on Monday to users who haven't opted out.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "qt-06": {
+      "answer": "faithful",
+      "source": "At least two approvals are required before merging.",
+      "card": "Merging needs a minimum of two approvals.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-02": {
+      "answer": "faithful",
+      "source": "Nightly compaction usually finishes before the morning peak.",
+      "card": "Compaction typically completes ahead of the morning peak.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-23": {
+      "answer": "distorted",
+      "note": "Card says writes go to read replicas, but they are not used for writes.",
+      "source": "Read replicas are not used for writes.",
+      "card": "Writes go to the read replicas.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cs-25": {
+      "answer": "distorted",
+      "note": "Card turns a same-month coincidence into a claim that the redesign drove sign-ups.",
+      "source": "Sign-ups rose in the same month the pricing page was redesigned.",
+      "card": "The pricing page redesign drove the rise in sign-ups.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cd-23": {
+      "answer": "distorted",
+      "note": "Card says discounts apply to every basket, but only those above fifty dollars.",
+      "source": "Discounts apply if the basket total is above fifty dollars.",
+      "card": "Discounts apply to every basket.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-13": {
+      "answer": "faithful",
+      "source": "Running tests in parallel shortens the pipeline, though flaky tests become harder to debug.",
+      "card": "Parallel tests shorten the pipeline but make flaky failures harder to debug.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-12": {
+      "answer": "faithful",
+      "source": "Large imports may take several minutes to appear in search.",
+      "card": "Search might take several minutes to show large imports.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-09": {
+      "answer": "faithful",
+      "source": "The new parser is likely to handle malformed headers better.",
+      "card": "The new parser should probably cope better with malformed headers.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-cp-03": {
+      "answer": "faithful",
+      "source": "Guests can view shared boards, although they cannot leave comments.",
+      "card": "Guests may view shared boards but can't comment.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-cp-04": {
+      "answer": "distorted",
+      "note": "Card drops the cost that old-editor plugins will not work.",
+      "source": "The new editor loads twice as fast, but plugins written for the old editor will not work.",
+      "card": "The new editor loads twice as fast.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cp-17": {
+      "answer": "distorted",
+      "note": "Card says all exports finish within a minute, but very large workspaces can take an hour.",
+      "source": "Exports finish within a minute for most workspaces, but very large workspaces can take an hour.",
+      "card": "Exports finish within a minute.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-13": {
+      "answer": "faithful",
+      "source": "Dark launches are used only for backend changes.",
+      "card": "Only backend changes are dark-launched.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-22": {
+      "answer": "distorted",
+      "note": "Card widens price alerts from premium subscribers to subscribers in general.",
+      "source": "Price alerts are sent to premium subscribers only.",
+      "card": "Price alerts are sent to subscribers.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-04": {
+      "answer": "faithful",
+      "source": "Archived projects are not included in search results.",
+      "card": "Search results leave out archived projects.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-10": {
+      "answer": "faithful",
+      "source": "Most incidents last year were caused by configuration changes.",
+      "card": "Configuration changes were behind most of last year's incidents.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-sc-01": {
+      "answer": "faithful",
+      "source": "Usage-based billing is available for customers on the Growth plan.",
+      "card": "Customers on the Growth plan can use usage-based billing.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "qt-16": {
+      "answer": "distorted",
+      "note": "Card turns an approximate 40 minutes into an exact 40 minutes.",
+      "source": "The migration took about 40 minutes on the staging database.",
+      "card": "The migration took 40 minutes on the staging database.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-01": {
+      "answer": "faithful",
+      "source": "The importer does not retry failed rows.",
+      "card": "Failed rows are never retried by the importer.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cp-22": {
+      "answer": "distorted",
+      "note": "Card says all results come in one response, but they are paged in 100s.",
+      "source": "The API returns results in pages of 100, and clients must follow the next link to get the rest.",
+      "card": "The API returns all results in one response.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-02": {
+      "answer": "faithful",
+      "source": "Two-factor login is mandatory for administrator accounts.",
+      "card": "Administrator accounts must use two-factor login.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-24": {
+      "answer": "distorted",
+      "note": "Card applies new pricing to all customers, not only those signing up after 1 March.",
+      "source": "The new pricing applies to customers who sign up after 1 March.",
+      "card": "The new pricing applies to all customers.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cp-06": {
+      "answer": "faithful",
+      "source": "Sharding raised write throughput fourfold, but cross-shard queries became slower.",
+      "card": "Sharding gave 4x write throughput; cross-shard queries slowed down.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-qt-06": {
+      "answer": "distorted",
+      "note": "Card turns a minimum of 12 characters into an exact length of 12.",
+      "source": "Passwords must be at least 12 characters long.",
+      "card": "Passwords must be 12 characters long.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-16": {
+      "answer": "distorted",
+      "note": "Card implies offline mode is generally available in the app, dropping the desktop-only restriction.",
+      "source": "The offline mode is only available on the desktop app.",
+      "card": "Offline mode is available in the app.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-19": {
+      "answer": "distorted",
+      "note": "Card says the plugin starts without a licence key, but it will not.",
+      "source": "Without a valid licence key, the plugin will not start.",
+      "card": "The plugin starts without a licence key.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-15": {
+      "answer": "distorted",
+      "note": "Card turns \"usually\" into a certainty that compaction finishes before the peak.",
+      "source": "Nightly compaction usually finishes before the morning peak.",
+      "card": "Nightly compaction finishes before the morning peak.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-01": {
+      "answer": "faithful",
+      "source": "The columnar format speeds up analytics queries but uses more disk space.",
+      "card": "Analytics queries run faster in the columnar format, at the price of extra disk space.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-09": {
+      "answer": "faithful",
+      "source": "Price alerts are sent to premium subscribers only.",
+      "card": "Only premium subscribers receive price alerts.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cp-24": {
+      "answer": "distorted",
+      "note": "Card says transcripts are checked by a person, but they are not.",
+      "source": "Voice notes are transcribed automatically, but the transcripts are not reviewed by a person.",
+      "card": "Voice notes are transcribed automatically and checked by a person.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-sc-06": {
+      "answer": "distorted",
+      "note": "Card says the beta API is open to all accounts, but only partner accounts.",
+      "source": "The beta API is open only to partner accounts.",
+      "card": "The beta API is open to all accounts.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-23": {
+      "answer": "distorted",
+      "note": "Card says long-lived tokens are safer, but they widen the window for misuse.",
+      "source": "Long-lived access tokens are convenient for users, but they widen the window for misuse.",
+      "card": "Long-lived access tokens are convenient and safer for users.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-03": {
+      "answer": "faithful",
+      "source": "Users may see stale prices for a few seconds after an update.",
+      "card": "Prices can appear stale briefly after an update.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-01": {
+      "answer": "faithful",
+      "source": "Adding a reranker can improve answer quality on long documents.",
+      "card": "A reranker may improve answer quality on long documents.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "qt-15": {
+      "answer": "distorted",
+      "note": "Card changes the upload limit from 25 MB to 50 MB.",
+      "source": "Uploads are limited to 25 MB per file.",
+      "card": "Uploads are limited to 50 MB per file.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ql-18": {
+      "answer": "distorted",
+      "note": "Card generalises a preference of some customers to customers in general.",
+      "source": "Some customers prefer exporting reports as CSV rather than PDF.",
+      "card": "Customers prefer CSV exports to PDF.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-19": {
+      "answer": "distorted",
+      "note": "Card applies 30-day retention to all logs, dropping the EU-region scope.",
+      "source": "In the EU region, logs are retained for 30 days.",
+      "card": "Logs are retained for 30 days.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cd-13": {
+      "answer": "faithful",
+      "source": "The dashboard switches to dark mode when the system theme is dark.",
+      "card": "With a dark system theme, the dashboard uses dark mode.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "sc-03": {
+      "answer": "faithful",
+      "source": "The offline mode is only available on the desktop app.",
+      "card": "Only the desktop app has offline mode.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-18": {
+      "answer": "distorted",
+      "note": "Card says passwords are stored on the device, but they are not.",
+      "source": "The mobile app does not store passwords on the device.",
+      "card": "The mobile app stores passwords on the device.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "cd-20": {
+      "answer": "distorted",
+      "note": "Card says the token is refreshed on every request, but only when it expires mid-session.",
+      "source": "If the token expires mid-session, the client refreshes it silently.",
+      "card": "The client refreshes the token silently on every request.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-18": {
+      "answer": "distorted",
+      "note": "Card says updates get simpler, but they get more complicated.",
+      "source": "Denormalising the tables makes reads simpler but complicates updates.",
+      "card": "Denormalising the tables makes reads and updates simpler.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "h-sc-04": {
+      "answer": "distorted",
+      "note": "Card widens usage-based billing from Growth-plan customers to customers in general.",
+      "source": "Usage-based billing is available for customers on the Growth plan.",
+      "card": "Usage-based billing is available to customers.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "qt-05": {
+      "answer": "faithful",
+      "source": "The plan includes 1,000 API calls per day.",
+      "card": "The plan allows 1000 API calls a day.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "to-14": {
+      "answer": "distorted",
+      "note": "Card says the columnar format saves disk space, but it uses more.",
+      "source": "The columnar format speeds up analytics queries but uses more disk space.",
+      "card": "The columnar format speeds up analytics queries and saves disk space.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-02": {
+      "answer": "faithful",
+      "source": "Guest accounts cannot create shared folders.",
+      "card": "Shared folders can't be created by guest accounts.",
+      "at": "2026-10-19T11:39:01.051Z"
+    },
+    "ng-06": {
+      "answer": "faithful",
+      "source": "Without a valid licence key, the plugin will not start.",
+      "card": "The plugin won't start unless a valid licence key is present.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "qt-23": {
+      "answer": "distorted",
+      "note": "Card turns a cap of no more than five projects into a plain allowance of five, losing that it is a maximum.",
+      "source": "The free tier allows no more than five projects.",
+      "card": "The free tier allows five projects.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-cd-06": {
+      "answer": "distorted",
+      "note": "Card reverses the condition: summaries go to users who have not opted out.",
+      "source": "Unless the user opts out, weekly summaries are emailed on Monday.",
+      "card": "Weekly summaries are emailed on Monday if the user opts out.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cp-23": {
+      "answer": "distorted",
+      "note": "Card drops the exception for when the queue is paused for maintenance.",
+      "source": "Search indexing runs every hour, unless the queue is paused for maintenance.",
+      "card": "Search indexing runs every hour.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cd-25": {
+      "answer": "distorted",
+      "note": "Card says the dashboard is always dark, but only when the system theme is dark.",
+      "source": "The dashboard switches to dark mode when the system theme is dark.",
+      "card": "The dashboard always uses dark mode.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "to-03": {
+      "answer": "faithful",
+      "source": "Serverless functions cut idle costs, though cold starts add latency.",
+      "card": "Serverless saves on idle costs; the trade-off is cold-start latency.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "ng-25": {
+      "answer": "distorted",
+      "note": "Card says subscribers can see drafts, but they cannot.",
+      "source": "Draft posts are not visible to subscribers.",
+      "card": "Subscribers can see draft posts.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "qt-09": {
+      "answer": "faithful",
+      "source": "Roughly half of the tickets are resolved within a day.",
+      "card": "About 50% of tickets get resolved inside a day.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cs-16": {
+      "answer": "distorted",
+      "note": "Card reverses cause and effect: the expired certificate caused the outage.",
+      "source": "The outage was triggered by an expired TLS certificate.",
+      "card": "The outage caused the TLS certificate to expire.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "ql-04": {
+      "answer": "faithful",
+      "source": "The linter often catches unused imports that reviewers miss.",
+      "card": "Reviewers miss unused imports that the linter frequently flags.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "ng-13": {
+      "answer": "faithful",
+      "source": "The service never deletes data without a confirmation step.",
+      "card": "Data is deleted only after a confirmation step.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-ng-01": {
+      "answer": "faithful",
+      "source": "The gateway does not cache authenticated responses.",
+      "card": "Authenticated responses are never cached by the gateway.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cp-02": {
+      "answer": "faithful",
+      "source": "Caching cut median latency by 40%, although the p99 latency did not change.",
+      "card": "Caching reduced median latency 40%; p99 latency stayed the same.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cp-09": {
+      "answer": "faithful",
+      "source": "The API returns results in pages of 100, and clients must follow the next link to get the rest.",
+      "card": "Results come in pages of 100; follow the next link for more.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cp-12": {
+      "answer": "faithful",
+      "source": "The trial lasts 14 days and converts to the basic plan if no card is added.",
+      "card": "After 14 days, a trial without a card moves to the basic plan.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cp-07": {
+      "answer": "faithful",
+      "source": "Admins can restore deleted pages for 30 days, after which they are purged.",
+      "card": "Deleted pages are restorable by admins for 30 days, then purged.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "ng-14": {
+      "answer": "distorted",
+      "note": "Card says failed rows are retried, but they are not.",
+      "source": "The importer does not retry failed rows.",
+      "card": "The importer retries failed rows.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "ql-07": {
+      "answer": "faithful",
+      "source": "Smaller batch sizes generally reduce memory pressure during training.",
+      "card": "In general, smaller batches lower memory pressure in training.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "ng-07": {
+      "answer": "faithful",
+      "source": "Webhooks are not signed in the free plan.",
+      "card": "On the free plan, webhooks come unsigned.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-to-02": {
+      "answer": "faithful",
+      "source": "Smaller containers start faster but have less headroom for traffic spikes.",
+      "card": "Small containers boot quickly, with less headroom for traffic spikes.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "to-06": {
+      "answer": "faithful",
+      "source": "Strict type checking catches bugs earlier, although it slows down prototyping.",
+      "card": "Strict type checks find bugs sooner but make prototyping slower.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "qt-10": {
+      "answer": "faithful",
+      "source": "The free tier allows no more than five projects.",
+      "card": "Free accounts are capped at 5 projects.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cp-04": {
+      "answer": "partly",
+      "note": "Card adds \"up to an hour\", implying an upper bound the source does not state.",
+      "source": "Exports finish within a minute for most workspaces, but very large workspaces can take an hour.",
+      "card": "Most workspaces export in under a minute; very large ones can take up to an hour.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cs-15": {
+      "answer": "distorted",
+      "note": "Card says caching increases database load, but it reduces it.",
+      "source": "Caching the product list reduces database load.",
+      "card": "Caching the product list increases database load.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "to-25": {
+      "answer": "distorted",
+      "note": "Card says security fixes stay current, but they arrive later.",
+      "source": "Pinning dependency versions makes builds reproducible but means security fixes arrive later.",
+      "card": "Pinning dependency versions makes builds reproducible and keeps security fixes current.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-ql-01": {
+      "answer": "faithful",
+      "source": "Prefetching the next page can make scrolling feel smoother.",
+      "card": "Scrolling may feel smoother with prefetching of the next page.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "qt-11": {
+      "answer": "faithful",
+      "source": "Builds typically take 6 to 8 minutes.",
+      "card": "A build usually takes 6–8 minutes.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "ng-05": {
+      "answer": "faithful",
+      "source": "The mobile app does not store passwords on the device.",
+      "card": "Passwords are never kept on the device by the mobile app.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-cs-03": {
+      "answer": "faithful",
+      "source": "The checkout errors were caused by a misconfigured payment webhook.",
+      "card": "A misconfigured payment webhook was behind the checkout errors.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-cs-02": {
+      "answer": "faithful",
+      "source": "Tighter alert thresholds reduced the number of missed incidents.",
+      "card": "Tightening alert thresholds led to fewer missed incidents.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cd-17": {
+      "answer": "distorted",
+      "note": "Card says resubmission is allowed any time, but only before the deadline.",
+      "source": "Students can resubmit an assignment provided the deadline has not passed.",
+      "card": "Students can resubmit an assignment at any time.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-ng-05": {
+      "answer": "distorted",
+      "note": "Card says original files are modified, but they are not.",
+      "source": "The migration tool does not modify the original files.",
+      "card": "The migration tool modifies the original files in place.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cp-25": {
+      "answer": "distorted",
+      "note": "Card says every trial converts to basic, dropping the no-card condition.",
+      "source": "The trial lasts 14 days and converts to the basic plan if no card is added.",
+      "card": "The trial lasts 14 days and then converts to the basic plan.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cd-12": {
+      "answer": "faithful",
+      "source": "Unless a reviewer objects within two days, the proposal is accepted.",
+      "card": "The proposal is accepted if no reviewer objects within two days.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "qt-03": {
+      "answer": "faithful",
+      "source": "The migration took about 40 minutes on the staging database.",
+      "card": "On staging, the migration ran for roughly 40 minutes.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cs-17": {
+      "answer": "distorted",
+      "note": "Card reverses cause and effect between traffic and checkout times.",
+      "source": "Higher traffic leads to longer checkout times.",
+      "card": "Longer checkout times lead to higher traffic.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "to-16": {
+      "answer": "distorted",
+      "note": "Card says serverless cuts latency, but cold starts add latency.",
+      "source": "Serverless functions cut idle costs, though cold starts add latency.",
+      "card": "Serverless functions cut idle costs and latency.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "qt-07": {
+      "answer": "faithful",
+      "source": "Sessions expire after 30 minutes of inactivity.",
+      "card": "After 30 minutes idle, a session expires.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-to-06": {
+      "answer": "distorted",
+      "note": "Card says data stays fresh, but aggressive caching sacrifices freshness.",
+      "source": "Aggressive caching lowers costs at the expense of fresher data.",
+      "card": "Aggressive caching lowers costs and keeps data fresh.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cs-02": {
+      "answer": "faithful",
+      "source": "Caching the product list reduces database load.",
+      "card": "Database load drops when the product list is cached.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-qt-05": {
+      "answer": "distorted",
+      "note": "Card changes roughly 2 seconds to 20 seconds.",
+      "source": "Thumbnails are generated in roughly 2 seconds.",
+      "card": "Thumbnails are generated in 20 seconds.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-cs-04": {
+      "answer": "distorted",
+      "note": "Card reverses cause and effect: long transactions cause the lock contention.",
+      "source": "Long-running transactions cause lock contention on the orders table.",
+      "card": "Lock contention on the orders table causes long-running transactions.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-ng-06": {
+      "answer": "distorted",
+      "note": "Card says logs are shared with third parties, but they are not.",
+      "source": "Logs are not sent to third parties.",
+      "card": "Logs are shared with third parties.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "qt-25": {
+      "answer": "distorted",
+      "note": "Card changes 90 days to 9 days.",
+      "source": "Each report covers the last 90 days of activity.",
+      "card": "Each report covers the last 9 days of activity.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "ql-06": {
+      "answer": "faithful",
+      "source": "Cold starts might add noticeable delay to the first request.",
+      "card": "The first request may be noticeably slower due to cold starts.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "h-cp-06": {
+      "answer": "distorted",
+      "note": "Card says guests can comment, but they cannot.",
+      "source": "Guests can view shared boards, although they cannot leave comments.",
+      "card": "Guests can view and comment on shared boards.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cd-16": {
+      "answer": "distorted",
+      "note": "Card reverses the condition: refunds are automatic only if the order has not shipped.",
+      "source": "Refunds are issued automatically unless the order has already shipped.",
+      "card": "Refunds are issued automatically if the order has already shipped.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "ql-16": {
+      "answer": "distorted",
+      "note": "Card turns \"may see\" into a certainty that users see stale prices.",
+      "source": "Users may see stale prices for a few seconds after an update.",
+      "card": "Users see stale prices for a few seconds after an update.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "qt-20": {
+      "answer": "distorted",
+      "note": "Card changes 30 minutes to 13 minutes.",
+      "source": "Sessions expire after 30 minutes of inactivity.",
+      "card": "Sessions expire after 13 minutes of inactivity.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "to-08": {
+      "answer": "faithful",
+      "source": "The managed database saves operations work but costs more per month than self-hosting.",
+      "card": "Managed hosting costs more monthly than self-hosting, in exchange for less operations work.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cp-19": {
+      "answer": "distorted",
+      "note": "Card says cross-shard queries sped up, but they became slower.",
+      "source": "Sharding raised write throughput fourfold, but cross-shard queries became slower.",
+      "card": "Sharding raised write throughput fourfold and sped up cross-shard queries.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cs-11": {
+      "answer": "faithful",
+      "source": "Low test coverage results in more regressions reaching production.",
+      "card": "More regressions reach production as a result of low test coverage.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "cs-10": {
+      "answer": "faithful",
+      "source": "Adding an index speeds up lookups by customer ID.",
+      "card": "Lookups by customer ID are faster with an index.",
+      "at": "2026-10-19T11:39:01.052Z"
+    },
+    "ql-08": {
+      "answer": "faithful",
+      "source": "Retrying a timed-out upload sometimes produces a duplicate file.",
+      "card": "A retried upload that timed out can occasionally create a duplicate file.",
+      "at": "2026-10-19T11:39:01.053Z"
+    },
+    "h-ql-02": {
+      "answer": "faithful",
+      "source": "Customers in remote regions often see slower downloads.",
+      "card": "Downloads are frequently slower for customers in remote regions.",
+      "at": "2026-10-19T11:39:01.053Z"
+    },
+    "sc-01": {
+      "answer": "faithful",
+      "source": "Read replicas are recommended for read-only workloads.",
+      "card": "For read-only workloads, use read replicas.",
+      "at": "2026-10-19T11:39:01.053Z"
+    },
+    "cs-04": {
+      "answer": "faithful",
+      "source": "Higher traffic leads to longer checkout times.",
+      "card": "Checkout times grow as traffic rises.",
+      "at": "2026-10-19T11:39:01.053Z"
+    }
+  }
+}

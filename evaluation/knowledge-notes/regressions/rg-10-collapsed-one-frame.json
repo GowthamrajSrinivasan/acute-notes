@@ -1,0 +1,75 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-collapsed-one-frame",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "Every card is put into the domain-services frame: the seven responsibility frames collapse into one frame too large to read whole on the fit screen.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n-ui",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-http",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-orch",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-postgres",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-redis",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-broker",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-supplier",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-gaps",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-adapter",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-logger",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-retry",
+      "group": "g-domain"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-policy",
+      "group": "g-domain"
+    }
+  ],
+  "expectFailing": [
+    "a.fit-screen",
+    "a.rendered-frames",
+    "a.frame-count"
+  ]
+}

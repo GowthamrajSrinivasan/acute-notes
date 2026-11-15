@@ -7,6 +7,7 @@
 import { useSyncExternalStore } from "react";
 import { DEFAULT_RESPONSE_STYLE, setResponseStyleSource, type ResponseStyle } from "@/ai/changes/responseStyle";
 import { DEFAULT_CLEANUP, type CleanupOptions } from "@/ai/content/cleanup";
+import { DEFAULT_UPDATE_POLICY, setUpdatePolicySource, type UpdatePolicy } from "@/ai/reconcile/updatePolicy";
 import { getPersistence } from "@/persistence";
 
 /**
@@ -36,6 +37,8 @@ export interface UiPrefs {
   aiStyle: ResponseStyle;
   /** What Visualize strips from pasted AI answers first (AI settings → Clean pasted answers). */
   aiCleanup: CleanupOptions;
+  /** How updates from new content treat locked and edited cards (AI settings → Update behaviour). */
+  aiUpdate: UpdatePolicy;
   arrowTool: ArrowTool;
 }
 
@@ -47,6 +50,7 @@ const DEFAULTS: UiPrefs = {
   lensPanelWidth: 640,
   aiStyle: DEFAULT_RESPONSE_STYLE,
   aiCleanup: DEFAULT_CLEANUP,
+  aiUpdate: DEFAULT_UPDATE_POLICY,
   arrowTool: "excalidraw",
 };
 
@@ -65,7 +69,7 @@ function ensureLoaded() {
     .meta.get<Partial<UiPrefs>>(KEY)
     .then((stored) => {
       if (stored) {
-        prefs = { ...DEFAULTS, ...stored, aiStyle: { ...DEFAULTS.aiStyle, ...stored.aiStyle }, aiCleanup: { ...DEFAULTS.aiCleanup, ...stored.aiCleanup } };
+        prefs = { ...DEFAULTS, ...stored, aiStyle: { ...DEFAULTS.aiStyle, ...stored.aiStyle }, aiCleanup: { ...DEFAULTS.aiCleanup, ...stored.aiCleanup }, aiUpdate: { ...DEFAULTS.aiUpdate, ...stored.aiUpdate } };
         emit();
       }
     });
@@ -96,6 +100,12 @@ export function useUiPref<K extends keyof UiPrefs>(key: K): UiPrefs[K] {
     () => DEFAULTS[key],
   );
 }
+
+// Every update and merge follows the current update behaviour.
+setUpdatePolicySource(() => {
+  ensureLoaded();
+  return prefs.aiUpdate;
+});
 
 // Every AI proposal is styled with the current preference.
 setResponseStyleSource(() => {

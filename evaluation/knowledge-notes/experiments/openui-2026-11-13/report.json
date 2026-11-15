@@ -1,0 +1,752 @@
+{
+  "kn-01-idempotency-keys": {
+    "sourceUnits": 9,
+    "distilVisualize": {
+      "cards": 4,
+      "gate1": {
+        "pass": 11,
+        "fail": [],
+        "undecided": 1
+      },
+      "verdict": [
+        {
+          "gate": 1,
+          "pass": true,
+          "failedCritical": []
+        },
+        {
+          "gate": 2,
+          "pass": true,
+          "failedCritical": []
+        },
+        {
+          "gate": 3,
+          "pass": true,
+          "failedCritical": []
+        }
+      ],
+      "units": {
+        "total": 9,
+        "represented": 9,
+        "omitted": 0,
+        "needsReview": 0
+      },
+      "cardsNeedingReview": 0,
+      "flags": {},
+      "hints": {
+        "cause_changed": 3,
+        "negation_flip": 7,
+        "unsupported_number": 2,
+        "absolute_added": 1
+      },
+      "exactMissing": []
+    },
+    "openui": {
+      "cards": 5,
+      "gate1": {
+        "pass": 6,
+        "fail": [
+          "critical:a.definition",
+          "major:a.takeaway",
+          "critical:a.reuse-with-claim",
+          "critical:a.completed-condition",
+          "major:a.exact-key"
+        ],
+        "undecided": 1
+      },
+      "verdict": [
+        {
+          "gate": 1,
+          "pass": false,
+          "failedCritical": [
+            "a.definition",
+            "a.reuse-with-claim",
+            "a.completed-condition"
+          ]
+        },
+        {
+          "gate": 2,
+          "pass": false,
+          "failedCritical": [
+            "a.frame"
+          ]
+        },
+        {
+          "gate": 3,
+          "pass": true,
+          "failedCritical": []
+        }
+      ],
+      "units": {
+        "total": 9,
+        "represented": 5,
+        "omitted": 0,
+        "needsReview": 4
+      },
+      "cardsNeedingReview": 3,
+      "flags": {
+        "exact_missing": 4,
+        "critical_dropped": 2
+      },
+      "hints": {
+        "named_term_changed": 1,
+        "qualifier_dropped": 1,
+        "negation_flip": 3,
+        "caveat_dropped": 1,
+        "unsupported_number": 2,
+        "absolute_added": 1,
+        "longer_than_source": 2
+      },
+      "exactMissing": [
+        "identifier: Idempotency-Key",
+        "identifier: 7f3c-91ab",
+        "identifier: 7f3c-91ab",
+        "number: two"
+      ]
+    },
+    "openuiV2": {
+      "cards": 9,
+      "gate1": {
+        "pass": 8,
+        "fail": [
+          "critical:a.definition",
+          "critical:a.window-with-claim",
+          "critical:a.reuse-with-claim"
+        ],
+        "undecided": 1
+      },
+      "verdict": [
+        {
+          "gate": 1,
+          "pass": false,
+          "failedCritical": [
+            "a.definition",
+            "a.window-with-claim",
+            "a.reuse-with-claim"
+          ]
+        },
+        {
+          "gate": 2,
+          "pass": false,
+          "failedCritical": [
+            "a.frame"
+          ]
+        },
+        {
+          "gate": 3,
+          "pass": true,
+          "failedCritical": []
+        }
+      ],
+      "units": {
+        "total": 9,
+        "represented": 8,
+        "omitted": 0,
+        "needsReview": 1
+      },
+      "cardsNeedingReview": 1,
+      "flags": {
+        "critical_dropped": 1
+      },
+      "hints": {
+        "negation_flip": 2,
+        "absolute_added": 1,
+        "longer_than_source": 7
+      },
+      "exactMissing": []
+    },
+    "gate1Assertions": 12,
+    "perAssertion": {
+      "a.definition": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "fail",
+        "openuiV2": "fail",
+        "openuiDetail": "no text node matches e.definition",
+        "openuiV2Detail": "no text node matches e.definition"
+      },
+      "a.replay": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "matched g3",
+        "openuiV2Detail": "matched g2, g6"
+      },
+      "a.example": {
+        "severity": "major",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "matched g2",
+        "openuiV2Detail": "matched g5"
+      },
+      "a.takeaway": {
+        "severity": "major",
+        "distil": "pass",
+        "openui": "fail",
+        "openuiV2": "pass",
+        "openuiDetail": "no group/text/heading node matches e.takeaway",
+        "openuiV2Detail": "matched g9"
+      },
+      "a.window-with-claim": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "fail",
+        "openuiDetail": "present",
+        "openuiV2Detail": "missing 24 hours|24-hour|24 h|24h in e.replay: the expiry window limits the replay claim and must stay with it"
+      },
+      "a.reuse-with-claim": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "fail",
+        "openuiV2": "fail",
+        "openuiDetail": "missing reject|refuse|error + different amount|different request|different payload|mismatch|changed amount|amount differs|amount changes in e.replay: a reused k",
+        "openuiV2Detail": "missing reject|refuse|error + different amount|different request|different payload|mismatch|changed amount|amount differs|amount changes in e.replay: a reused k"
+      },
+      "a.completed-condition": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "fail",
+        "openuiV2": "pass",
+        "openuiDetail": "missing complet|already|finished|succeeded in e.replay: the replay happens only when a request with that key has already completed (u2, critical condition)",
+        "openuiV2Detail": "present"
+      },
+      "a.no-absolute": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "absent",
+        "openuiV2Detail": "absent"
+      },
+      "a.exact-key": {
+        "severity": "major",
+        "distil": "pass",
+        "openui": "fail",
+        "openuiV2": "pass",
+        "openuiDetail": "missing 7f3c-91ab in e.example: protected identifier (u3, u5)",
+        "openuiV2Detail": "present"
+      },
+      "a.cites": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "from the run's output (derived cites check): 2 elements cite their source (2 not on the plan: e.definition, e.takeaway)",
+        "openuiV2Detail": "from the run's output (derived cites check): 3 elements cite their source (1 not on the plan: e.definition)"
+      },
+      "a.accounting": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "from the run's output (derived units_accounted check): 9 units: 5 represented, 0 omitted, 4 needs review",
+        "openuiV2Detail": "from the run's output (derived units_accounted check): 9 units: 8 represented, 0 omitted, 1 needs review"
+      },
+      "a.judge-meaning": {
+        "severity": "critical",
+        "distil": "needs_judgement",
+        "openui": "needs_judgement",
+        "openuiV2": "needs_judgement",
+        "openuiDetail": "Compare each card with the units it represents. Is any qualifier, condition or limit weakened, widened or dropped?",
+        "openuiV2Detail": "Compare each card with the units it represents. Is any qualifier, condition or limit weakened, widened or dropped?"
+      }
+    }
+  },
+  "kn-02-edge-cache-invalidation": {
+    "sourceUnits": 64,
+    "distilVisualize": {
+      "cards": 60,
+      "gate1": {
+        "pass": 16,
+        "fail": [
+          "critical:a.takeaway",
+          "critical:a.ttl-window",
+          "critical:a.purge-eventual",
+          "major:a.walkthrough-numbers",
+          "critical:a.propagation-bound",
+          "critical:a.tag-discipline",
+          "critical:a.swr-bound",
+          "critical:a.stale-tolerance",
+          "critical:a.html-caveat",
+          "critical:a.cites"
+        ],
+        "undecided": 1
+      },
+      "verdict": [
+        {
+          "gate": 1,
+          "pass": false,
+          "failedCritical": [
+            "a.takeaway",
+            "a.ttl-window",
+            "a.purge-eventual",
+            "a.propagation-bound",
+            "a.tag-discipline",
+            "a.swr-bound",
+            "a.stale-tolerance",
+            "a.html-caveat",
+            "a.cites"
+          ]
+        },
+        {
+          "gate": 2,
+          "pass": true,
+          "failedCritical": []
+        },
+        {
+          "gate": 3,
+          "pass": true,
+          "failedCritical": []
+        }
+      ],
+      "units": {
+        "total": 64,
+        "represented": 55,
+        "omitted": 1,
+        "needsReview": 8
+      },
+      "cardsNeedingReview": 1,
+      "flags": {
+        "critical_dropped": 1,
+        "unaccounted": 7
+      },
+      "hints": {
+        "named_term_changed": 1,
+        "condition_changed": 5,
+        "qualifier_dropped": 3,
+        "negation_flip": 5,
+        "unsupported_number": 9,
+        "absolute_added": 1,
+        "cause_changed": 1,
+        "longer_than_source": 21
+      },
+      "exactMissing": []
+    },
+    "openui": {
+      "cards": 14,
+      "gate1": {
+        "pass": 15,
+        "fail": [
+          "critical:a.ttl-window",
+          "major:a.purge-rate",
+          "major:a.walkthrough-numbers",
+          "critical:a.propagation-bound",
+          "critical:a.tag-discipline",
+          "major:a.tag-burst",
+          "critical:a.swr-bound",
+          "critical:a.stale-tolerance",
+          "critical:a.stale-if-error-condition",
+          "critical:a.html-caveat",
+          "minor:a.exact-ids"
+        ],
+        "undecided": 1
+      },
+      "verdict": [
+        {
+          "gate": 1,
+          "pass": false,
+          "failedCritical": [
+            "a.ttl-window",
+            "a.propagation-bound",
+            "a.tag-discipline",
+            "a.swr-bound",
+            "a.stale-tolerance",
+            "a.stale-if-error-condition",
+            "a.html-caveat"
+          ]
+        },
+        {
+          "gate": 2,
+          "pass": false,
+          "failedCritical": [
+            "a.frame-purge"
+          ]
+        },
+        {
+          "gate": 3,
+          "pass": true,
+          "failedCritical": []
+        }
+      ],
+      "units": {
+        "total": 64,
+        "represented": 31,
+        "omitted": 0,
+        "needsReview": 33
+      },
+      "cardsNeedingReview": 12,
+      "flags": {
+        "exact_missing": 48,
+        "citation_unrelated": 6,
+        "critical_dropped": 8,
+        "unaccounted": 2
+      },
+      "hints": {
+        "named_term_changed": 33,
+        "caveat_dropped": 6,
+        "negation_flip": 10,
+        "condition_changed": 4,
+        "cause_changed": 2,
+        "qualifier_dropped": 2,
+        "longer_than_source": 1
+      },
+      "exactMissing": [
+        "number: 300",
+        "number: 300 seconds",
+        "identifier: max-age",
+        "number: 60 seconds",
+        "number: 240 seconds",
+        "number: 300-second",
+        "number: 300",
+        "number: 30 seconds",
+        "number: eightfold",
+        "path: story/417",
+        "number: 1,000",
+        "number: 150 milliseconds",
+        "number: 90",
+        "number: half",
+        "number: 2 seconds",
+        "number: 20 seconds",
+        "identifier: Surrogate-Key",
+        "identifier: story-417",
+        "identifier: section-politics",
+        "identifier: story-417",
+        "number: 50",
+        "number: 12,000",
+        "identifier: section-politics",
+        "number: 300",
+        "number: 60",
+        "number: 300 seconds",
+        "identifier: Cache-Control",
+        "identifier: max-age",
+        "number: 60 seconds",
+        "number: 86400",
+        "number: 86,400 seconds",
+        "identifier: app.3f9c2e.js",
+        "number: 31536000",
+        "identifier: max-age",
+        "identifier: one-time",
+        "path: story/417",
+        "table: Technique | Freshness after a change | Main cost | Main caveat",
+        "table: TTL expiry | Up to the full TTL (300 seconds at Larkspur) | More origin traffic as the TTL shrinks | Cannot be shortened after the fact",
+        "number: 300 seconds",
+        "table: Purge by URL | Seconds (20 seconds worst case measured) | One purge call per URL | Misses other pages that show the same content",
+        "number: 20 seconds",
+        "table: Surrogate-key purge | Seconds, for every tagged page | Tagging discipline at the origin | Untagged pages stay stale",
+        "identifier: Surrogate-key",
+        "table: Stale-while-revalidate | Up to the TTL plus 60 seconds | Nothing at request time | Readers knowingly get expired copies",
+        "number: 60 seconds",
+        "identifier: Stale-while-revalidate",
+        "table: Versioned URLs | Immediate for pages that reference the new name | A build step | Does not cover HTML entry pages",
+        "identifier: trade-offs"
+      ]
+    },
+    "openuiV2": {
+      "cards": 48,
+      "gate1": {
+        "pass": 16,
+        "fail": [
+          "critical:a.ttl-window",
+          "critical:a.purge-eventual",
+          "critical:a.purge-scope",
+          "major:a.purge-rate",
+          "major:a.walkthrough-numbers",
+          "critical:a.propagation-bound",
+          "critical:a.swr-bound",
+          "critical:a.stale-tolerance",
+          "critical:a.html-caveat",
+          "minor:a.exact-ids"
+        ],
+        "undecided": 1
+      },
+      "verdict": [
+        {
+          "gate": 1,
+          "pass": false,
+          "failedCritical": [
+            "a.ttl-window",
+            "a.purge-eventual",
+            "a.purge-scope",
+            "a.propagation-bound",
+            "a.swr-bound",
+            "a.stale-tolerance",
+            "a.html-caveat"
+          ]
+        },
+        {
+          "gate": 2,
+          "pass": false,
+          "failedCritical": [
+            "a.frame-purge"
+          ]
+        },
+        {
+          "gate": 3,
+          "pass": true,
+          "failedCritical": []
+        }
+      ],
+      "units": {
+        "total": 64,
+        "represented": 43,
+        "omitted": 0,
+        "needsReview": 21
+      },
+      "cardsNeedingReview": 16,
+      "flags": {
+        "exact_missing": 16,
+        "uncited_card": 10,
+        "citation_unrelated": 5,
+        "critical_dropped": 4,
+        "unaccounted": 10
+      },
+      "hints": {
+        "named_term_changed": 14,
+        "cause_changed": 3,
+        "condition_changed": 3,
+        "negation_flip": 3,
+        "longer_than_source": 15
+      },
+      "exactMissing": [
+        "number: 300",
+        "number: 60",
+        "number: 300 seconds",
+        "identifier: Cache-Control",
+        "identifier: max-age",
+        "table: Technique | Freshness after a change | Main cost | Main caveat",
+        "table: TTL expiry | Up to the full TTL (300 seconds at Larkspur) | More origin traffic as the TTL shrinks | Cannot be shortened after the fact",
+        "number: 300 seconds",
+        "table: Purge by URL | Seconds (20 seconds worst case measured) | One purge call per URL | Misses other pages that show the same content",
+        "number: 20 seconds",
+        "table: Surrogate-key purge | Seconds, for every tagged page | Tagging discipline at the origin | Untagged pages stay stale",
+        "identifier: Surrogate-key",
+        "table: Stale-while-revalidate | Up to the TTL plus 60 seconds | Nothing at request time | Readers knowingly get expired copies",
+        "number: 60 seconds",
+        "identifier: Stale-while-revalidate",
+        "table: Versioned URLs | Immediate for pages that reference the new name | A build step | Does not cover HTML entry pages"
+      ]
+    },
+    "gate1Assertions": 27,
+    "perAssertion": {
+      "a.ttl": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "matched g2, g3",
+        "openuiV2Detail": "matched g4, g6, g8"
+      },
+      "a.ttl-tradeoff": {
+        "severity": "major",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "matched g3",
+        "openuiV2Detail": "matched g10"
+      },
+      "a.purge-url": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "matched g5",
+        "openuiV2Detail": "matched g16, g17, g18"
+      },
+      "a.surrogate": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "matched g6, g7",
+        "openuiV2Detail": "matched g25, g26, g27, g28, g29, g30"
+      },
+      "a.swr": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "matched g8",
+        "openuiV2Detail": "matched g31, g32, g33, g34"
+      },
+      "a.stale-if-error": {
+        "severity": "major",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "matched g9",
+        "openuiV2Detail": "matched g35"
+      },
+      "a.versioned": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "matched g11, g12, g14",
+        "openuiV2Detail": "matched g38, g39, g40, g43, g47"
+      },
+      "a.takeaway": {
+        "severity": "critical",
+        "distil": "fail",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "matched g1, g14",
+        "openuiV2Detail": "matched g3"
+      },
+      "a.ttl-window": {
+        "severity": "critical",
+        "distil": "fail",
+        "openui": "fail",
+        "openuiV2": "fail",
+        "openuiDetail": "missing 240 + guess|in advance|cannot shorten|can't shorten|can not shorten|cannot be shortened|can't be shortened|nothing the origin in e.ttl: the stale window",
+        "openuiV2Detail": "missing 240 + guess|in advance|cannot shorten|can't shorten|can not shorten|cannot be shortened|can't be shortened|nothing the origin in e.ttl: the stale window"
+      },
+      "a.purge-eventual": {
+        "severity": "critical",
+        "distil": "fail",
+        "openui": "pass",
+        "openuiV2": "fail",
+        "openuiDetail": "present",
+        "openuiV2Detail": "missing eventual|not instant|not at the same moment|not everywhere at once|not all at once|propagat|some locations|own schedule|different times|one by one|locat"
+      },
+      "a.purge-scope": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "fail",
+        "openuiDetail": "present",
+        "openuiV2Detail": "missing exact url|only the url|only that url|only the named|only the exact|only the specific|just the url|just that url|just the exact|only removes that|only re"
+      },
+      "a.purge-rate": {
+        "severity": "major",
+        "distil": "pass",
+        "openui": "fail",
+        "openuiV2": "fail",
+        "openuiDetail": "missing 1000|rate limit|rate-limit in e.purge-url: operational limit (u22)",
+        "openuiV2Detail": "missing 1000|rate limit|rate-limit in e.purge-url: operational limit (u22)"
+      },
+      "a.walkthrough-numbers": {
+        "severity": "major",
+        "distil": "fail",
+        "openui": "fail",
+        "openuiV2": "fail",
+        "openuiDetail": "element e.purge-walkthrough not found",
+        "openuiV2Detail": "element e.purge-walkthrough not found"
+      },
+      "a.propagation-bound": {
+        "severity": "critical",
+        "distil": "fail",
+        "openui": "fail",
+        "openuiV2": "fail",
+        "openuiDetail": "element e.purge-walkthrough not found",
+        "openuiV2Detail": "element e.purge-walkthrough not found"
+      },
+      "a.tag-discipline": {
+        "severity": "critical",
+        "distil": "fail",
+        "openui": "fail",
+        "openuiV2": "pass",
+        "openuiDetail": "missing untagged|missing tag|missing the tag|not tagged|must tag|only if the origin tag|forgot + stale|old + no error|silent|without error|without an error|with",
+        "openuiV2Detail": "present"
+      },
+      "a.tag-burst": {
+        "severity": "major",
+        "distil": "pass",
+        "openui": "fail",
+        "openuiV2": "pass",
+        "openuiDetail": "missing 12000|12 000|12k in e.surrogate: protected number (u36)",
+        "openuiV2Detail": "present"
+      },
+      "a.swr-bound": {
+        "severity": "critical",
+        "distil": "fail",
+        "openui": "fail",
+        "openuiV2": "fail",
+        "openuiDetail": "missing 60 seconds|60-second|one minute|60 s past|60s past + at most|up to|no more than|bounded|only for in e.swr: the stale bound limits the claim (u41)",
+        "openuiV2Detail": "missing 60 seconds|60-second|one minute|60 s past|60s past + at most|up to|no more than|bounded|only for in e.swr: the stale bound limits the claim (u41)"
+      },
+      "a.stale-tolerance": {
+        "severity": "critical",
+        "distil": "fail",
+        "openui": "fail",
+        "openuiV2": "fail",
+        "openuiDetail": "missing tolerance|not a way to make|not fresher|older than|not a freshness in e.swr: caveat on the claim (u43, u44)",
+        "openuiV2Detail": "missing tolerance|not a way to make|not fresher|older than|not a freshness in e.swr: caveat on the claim (u43, u44)"
+      },
+      "a.stale-if-error-condition": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "fail",
+        "openuiV2": "pass",
+        "openuiDetail": "missing while the origin|when the origin|if the origin|origin is returning error|origin returns error|origin errors|origin error|origin is down|origin fails|ori",
+        "openuiV2Detail": "present"
+      },
+      "a.html-caveat": {
+        "severity": "critical",
+        "distil": "fail",
+        "openui": "fail",
+        "openuiV2": "fail",
+        "openuiDetail": "missing html + does not help|doesn't help|not help|not cover|doesn't cover|does not cover|still need in e.versioned: scope limit of versioning (u49, u50)",
+        "openuiV2Detail": "missing html + does not help|doesn't help|not help|not cover|doesn't cover|does not cover|still need in e.versioned: scope limit of versioning (u49, u50)"
+      },
+      "a.old-assets": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "present",
+        "openuiV2Detail": "present"
+      },
+      "a.exact-ids": {
+        "severity": "minor",
+        "distil": "pass",
+        "openui": "fail",
+        "openuiV2": "fail",
+        "openuiDetail": "missing surrogate-key + stale-while-revalidate=60 + stale-if-error=86400 + max-age=31536000: protected identifiers (u29, u38, u42, u47)",
+        "openuiV2Detail": "missing surrogate-key + stale-while-revalidate=60 + stale-if-error=86400 + max-age=31536000: protected identifiers (u29, u38, u42, u47)"
+      },
+      "a.no-instant": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "absent",
+        "openuiV2Detail": "absent"
+      },
+      "a.no-unbounded-stale": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "absent",
+        "openuiV2Detail": "absent"
+      },
+      "a.cites": {
+        "severity": "critical",
+        "distil": "fail",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "from the run's output (derived cites check): 8 elements cite their source (2 not on the plan: e.purge-walkthrough, e.comparison)",
+        "openuiV2Detail": "from the run's output (derived cites check): 8 elements cite their source (2 not on the plan: e.purge-walkthrough, e.comparison)"
+      },
+      "a.accounting": {
+        "severity": "critical",
+        "distil": "pass",
+        "openui": "pass",
+        "openuiV2": "pass",
+        "openuiDetail": "from the run's output (derived units_accounted check): 64 units: 31 represented, 0 omitted, 33 needs review",
+        "openuiV2Detail": "from the run's output (derived units_accounted check): 64 units: 43 represented, 0 omitted, 21 needs review"
+      },
+      "a.judge-meaning": {
+        "severity": "critical",
+        "distil": "needs_judgement",
+        "openui": "needs_judgement",
+        "openuiV2": "needs_judgement",
+        "openuiDetail": "Compare each card with the units it covers. Is any bound, condition or scope limit weakened, widened or dropped?",
+        "openuiV2Detail": "Compare each card with the units it covers. Is any bound, condition or scope limit weakened, widened or dropped?"
+      }
+    }
+  }
+}

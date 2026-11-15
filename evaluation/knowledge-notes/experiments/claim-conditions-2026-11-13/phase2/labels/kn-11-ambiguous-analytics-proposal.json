@@ -1,0 +1,128 @@
+{
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "reviewer": "blind independent reviewer, 2026-11-13",
+  "records": [
+    {
+      "id": "r1",
+      "claimUnits": ["u6"], "claimSummary": "Clients batch events and send them every 10 seconds",
+      "conditionUnits": ["u6"], "kind": "exception",
+      "conditionSummary": "or sooner when the app goes to the background",
+      "mustConvey": "sent sooner than 10 s when the app goes to the background",
+      "binding": "claim", "bindingReason": "When the app is backgrounded, events are not sent on the 10-second cadence, so 'every 10 seconds' alone is misleading.",
+      "claimCards": ["u2_n2"], "carriers": ["u2_n2"],
+      "perClaimCard": { "u2_n2": "carried" },
+      "confidence": "medium", "notes": "Intra-sentence."
+    },
+    {
+      "id": "r2",
+      "claimUnits": ["u7"], "claimSummary": "Each event carries an account id",
+      "conditionUnits": ["u7"], "kind": "scope",
+      "conditionSummary": "account id only for signed-in users",
+      "mustConvey": "account id only for signed-in users",
+      "binding": "claim", "bindingReason": "Events from anonymous users carry no account id, so the unscoped claim is false for them.",
+      "claimCards": ["u2_n2"], "carriers": ["u2_n2"],
+      "perClaimCard": { "u2_n2": "carried" },
+      "confidence": "high", "notes": "Intra-sentence."
+    },
+    {
+      "id": "r3",
+      "claimUnits": ["u16"], "claimSummary": "Clients send event types (to the collector)",
+      "conditionUnits": ["u16"], "kind": "precondition",
+      "conditionSummary": "every event type must be registered before clients can send it",
+      "mustConvey": "registered before clients can send",
+      "binding": "claim", "bindingReason": "An unregistered event type cannot be sent (and is rejected), so 'clients send events' is false for it.",
+      "claimCards": ["u5_n1"], "carriers": ["u5_n1"],
+      "perClaimCard": { "u5_n1": "carried" },
+      "confidence": "medium", "notes": "Intra-sentence; overlaps with u8 rejection rule, which u2_n4 also carries."
+    },
+    {
+      "id": "r4",
+      "claimUnits": ["u10"], "claimSummary": "The enrichment step adds account attributes (plan tier, region) to events",
+      "conditionUnits": ["u12"], "kind": "exception",
+      "conditionSummary": "if the account cannot be found, the event is passed on without account attributes",
+      "mustConvey": "account not found -> passed on without attributes",
+      "binding": "claim", "bindingReason": "For events whose account is not found, no attributes are added, so 'adds account attributes' is false for them.",
+      "claimCards": ["u2_n8"], "carriers": ["u2_n8"],
+      "perClaimCard": { "u2_n8": "carried" },
+      "confidence": "high", "notes": ""
+    },
+    {
+      "id": "r5",
+      "claimUnits": ["u21"], "claimSummary": "Events reach the warehouse in real time, so launch dashboards stay current",
+      "conditionUnits": ["u13"], "kind": "fact",
+      "conditionSummary": "enriched events are written to the warehouse in hourly batches (contradicts real time)",
+      "mustConvey": "hourly batches",
+      "binding": "claim", "bindingReason": "With hourly batch loads, data can be up to an hour old, so 'real time' is false as written.",
+      "claimCards": ["u6_n3", "u6_a1", "g5"], "carriers": ["u2_n10"],
+      "perClaimCard": { "u6_n3": "separated", "u6_a1": "separated", "g5": "separated" },
+      "confidence": "high", "notes": "The central ambiguity of the source. g5 is a top-level frame whose takeaway repeats the real-time claim; its only arrow is g0->g5. u2_a1 says 'batch loading' but not hourly, so not counted as carrier. No node flags the contradiction."
+    },
+    {
+      "id": "r6",
+      "claimUnits": ["u11"], "claimSummary": "The enrichment step uses the user service",
+      "conditionUnits": ["u15"], "kind": "caveat",
+      "conditionSummary": "user service expected to stay lightly loaded, so enrichment should avoid adding much traffic",
+      "mustConvey": "enrichment must not add much traffic to the user service",
+      "binding": "set", "bindingReason": "Enrichment still uses the user service; the load limit adds a design constraint rather than falsifying the claim.",
+      "claimCards": ["u2_n8"], "carriers": ["u2_n11", "u2_a4"],
+      "perClaimCard": { "u2_n8": "separated" },
+      "confidence": "medium", "notes": "u2_n11 is joined to the shape u2_n7 ('constraint' arrow), not to u2_n8; both hang off u2_n7 but no direct arrow. Source wording is itself ambiguous (lightly loaded as expectation vs. requirement)."
+    },
+    {
+      "id": "r7",
+      "claimUnits": ["u22"], "claimSummary": "Raw events are kept for 30 days and then deleted",
+      "conditionUnits": ["u33"], "kind": "fact",
+      "conditionSummary": "the components table lists warehouse raw events retention as 90 days (contradicts 30)",
+      "mustConvey": "warehouse raw events: 90 days",
+      "binding": "claim", "bindingReason": "If warehouse raw events are kept 90 days per the table, the 30-day statement is false or at least contested.",
+      "claimCards": ["u7_n1", "g6"], "carriers": ["u3_n1"],
+      "perClaimCard": { "u7_n1": "separated", "g6": "separated" },
+      "confidence": "medium", "notes": "Conflicting retention values between prose and table. The table node carries 90 days but nothing flags the conflict; g6 is linked only to g1, not g2. u7_n2 ('fixed period') not counted as a claim card as it states no value."
+    },
+    {
+      "id": "r8",
+      "claimUnits": ["u22"], "claimSummary": "Only aggregated tables are kept longer than 30 days",
+      "conditionUnits": ["u24"], "kind": "caveat",
+      "conditionSummary": "how long aggregated tables are kept is TBD",
+      "mustConvey": "aggregated-table retention TBD",
+      "binding": "set", "bindingReason": "The claim that aggregated tables outlive raw events stays true; the open retention period is a caveat to note somewhere.",
+      "claimCards": ["u7_n1"], "carriers": ["u7_n3"],
+      "perClaimCard": { "u7_n1": "separated" },
+      "confidence": "medium", "notes": "Same frame, no arrow; g6 takeaway doesn't mention TBD."
+    },
+    {
+      "id": "r9",
+      "claimUnits": ["u36"], "claimSummary": "Phase 2 adds mobile events",
+      "conditionUnits": ["u36"], "kind": "precondition",
+      "conditionSummary": "once the mobile SDK is ready; no date set",
+      "mustConvey": "depends on mobile SDK being ready; no date",
+      "binding": "claim", "bindingReason": "Mobile events are not added until the SDK is ready, so an unconditioned 'phase 2 adds mobile events' implies a commitment that doesn't exist.",
+      "claimCards": ["u9_n5", "u9_n4", "u9_a1"], "carriers": ["u9_n5", "u9_a1", "g8"],
+      "perClaimCard": { "u9_n5": "carried", "u9_n4": "frame", "u9_a1": "carried" },
+      "confidence": "high", "notes": "u9_n4 is also linked to u9_n5; frame g8 takeaway 'mobile pending SDK' conveys it."
+    },
+    {
+      "id": "r10",
+      "claimUnits": ["u42"], "claimSummary": "Approval is requested to start phase 1 (open questions settled in parallel)",
+      "conditionUnits": ["u38"], "kind": "caveat",
+      "conditionSummary": "the cost of running the pipeline has not been estimated",
+      "mustConvey": "running cost not yet estimated",
+      "binding": "set", "bindingReason": "The approval request stands as stated; the missing cost estimate is a caveat a decision-maker must see somewhere.",
+      "claimCards": ["u10_n2", "u10_n1", "u10_a1", "g9"], "carriers": ["u9_n6", "u9_a1", "g8"],
+      "perClaimCard": { "u10_n2": "separated", "u10_n1": "separated", "u10_a1": "separated", "g9": "linked" },
+      "confidence": "low", "notes": "Whether the cost caveat is a condition on the approval ask is a judgement call. g9 is joined to g8 (a carrier via its takeaway) by the g8->g9 arrow."
+    },
+    {
+      "id": "r11",
+      "claimUnits": ["u17"], "claimSummary": "A change requires a new schema version rather than an edit",
+      "conditionUnits": ["u17"], "kind": "scope",
+      "conditionSummary": "only breaking changes require a new version",
+      "mustConvey": "breaking change",
+      "binding": "claim", "bindingReason": "For non-breaking changes the new-version rule does not apply, so dropping 'breaking' overstates it.",
+      "claimCards": ["u5_n2"], "carriers": ["u5_n2"],
+      "perClaimCard": { "u5_n2": "carried" },
+      "confidence": "medium", "notes": "Intra-sentence."
+    }
+  ],
+  "notes": "Two source-internal contradictions (r5 real time vs hourly batches; r7 30 vs 90 days) are recorded as deciding facts; the notes reproduce both sides but never connect them. No records for examples (plan tier/region, first dashboards), open questions (u39-u41, which restate u18/u8), non-goals (u27/u28, scope statements carried verbatim by u8_n1/u8_n2), privacy rules (u25/u26) or the phase-1 estimate (u37, carried in u9_n2). u20 (launch reviews within 2 hours) not recorded separately: it is the requirement the r5 contradiction bears on."
+}

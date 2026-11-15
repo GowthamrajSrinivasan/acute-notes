@@ -1,0 +1,96 @@
+{
+  "datasetVersion": "1.0.0",
+  "runId": "2026-10-19-preserve-gemini-flash",
+  "recordedAt": "2026-10-19T19:09:30.200Z",
+  "approvedBy": "Gowthamraj Srinivasan (chat, 2026-10-19)",
+  "provider": "OpenRouter",
+  "model": "google/gemini-2.5-flash",
+  "pipeline": {
+    "noteModel": "preserve",
+    "promptVersion": "git-66f7e3b-dirty",
+    "appVersion": "0.1.0"
+  },
+  "gate": false,
+  "cases": [
+    {
+      "caseId": "kn-01-idempotency-keys",
+      "replies": "kn-01-idempotency-keys/replies.json",
+      "plan": "kn-01-idempotency-keys/plan.json",
+      "scene": "kn-01-idempotency-keys/scene.json"
+    },
+    {
+      "caseId": "kn-02-edge-cache-invalidation",
+      "replies": "kn-02-edge-cache-invalidation/replies.json",
+      "plan": "kn-02-edge-cache-invalidation/plan.json",
+      "scene": "kn-02-edge-cache-invalidation/scene.json"
+    },
+    {
+      "caseId": "kn-03-blue-green-deploy",
+      "replies": "kn-03-blue-green-deploy/replies.json",
+      "plan": "kn-03-blue-green-deploy/plan.json",
+      "scene": "kn-03-blue-green-deploy/scene.json"
+    },
+    {
+      "caseId": "kn-04-queue-choice",
+      "replies": "kn-04-queue-choice/replies.json",
+      "plan": "kn-04-queue-choice/plan.json",
+      "scene": "kn-04-queue-choice/scene.json"
+    },
+    {
+      "caseId": "kn-05-incident-review-meeting",
+      "replies": "kn-05-incident-review-meeting/replies.json",
+      "plan": "kn-05-incident-review-meeting/plan.json",
+      "scene": "kn-05-incident-review-meeting/scene.json"
+    },
+    {
+      "caseId": "kn-06-hybrid-search-reranking",
+      "replies": "kn-06-hybrid-search-reranking/replies.json",
+      "plan": "kn-06-hybrid-search-reranking/plan.json",
+      "scene": "kn-06-hybrid-search-reranking/scene.json"
+    },
+    {
+      "caseId": "kn-07-photo-sharing-hld",
+      "replies": "kn-07-photo-sharing-hld/replies.json",
+      "plan": "kn-07-photo-sharing-hld/plan.json",
+      "scene": "kn-07-photo-sharing-hld/scene.json"
+    },
+    {
+      "caseId": "kn-08-helpdesk-answers-hld-lld",
+      "replies": "kn-08-helpdesk-answers-hld-lld/replies.json",
+      "plan": "kn-08-helpdesk-answers-hld-lld/plan.json",
+      "scene": "kn-08-helpdesk-answers-hld-lld/scene.json"
+    },
+    {
+      "caseId": "kn-09-billing-codebase-map",
+      "replies": "kn-09-billing-codebase-map/replies.json",
+      "plan": "kn-09-billing-codebase-map/plan.json",
+      "scene": "kn-09-billing-codebase-map/scene.json"
+    },
+    {
+      "caseId": "kn-10-inventory-architecture-frames",
+      "replies": "kn-10-inventory-architecture-frames/replies.json",
+      "plan": "kn-10-inventory-architecture-frames/plan.json",
+      "scene": "kn-10-inventory-architecture-frames/scene.json"
+    },
+    {
+      "caseId": "kn-11-ambiguous-analytics-proposal",
+      "replies": "kn-11-ambiguous-analytics-proposal/replies.json",
+      "plan": "kn-11-ambiguous-analytics-proposal/plan.json",
+      "scene": "kn-11-ambiguous-analytics-proposal/scene.json"
+    },
+    {
+      "caseId": "kn-12-flag-rollout-update",
+      "replies": "kn-12-flag-rollout-update/replies.json",
+      "plan": "kn-12-flag-rollout-update/plan.json",
+      "sceneBefore": "kn-12-flag-rollout-update/scene-before.json",
+      "scene": "kn-12-flag-rollout-update/scene.json",
+      "note": "user edit applied to the card sharing the most words (no card holds the source's wording): Every flag needs a kill switch that turn"
+    },
+    {
+      "caseId": "kn-13-connection-pool-runbook",
+      "replies": "kn-13-connection-pool-runbook/replies.json",
+      "plan": "kn-13-connection-pool-runbook/plan.json",
+      "scene": "kn-13-connection-pool-runbook/scene.json"
+    }
+  ]
+}

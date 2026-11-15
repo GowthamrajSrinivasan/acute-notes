@@ -1,0 +1,792 @@
+{
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "schema": "ClauseRecordV31 (review-v3/attachmentSchema.ts)",
+  "dataset": "v3.1-pre",
+  "records": [
+    {
+      "id": "k1",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u6"
+      ],
+      "clause": "or sooner when the app goes to the background",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u6"
+          ],
+          "claimQuote": "Clients batch events and send them every 10 seconds",
+          "evidence": "migrated: needs evidence",
+          "justification": "An exception to the cadence that leaves the takeaway unchanged.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k1 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k1",
+            "verdict": "set",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u6"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k2",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u7"
+      ],
+      "clause": "for signed-in users",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u7"
+          ],
+          "claimQuote": "Each event carries an event name, a timestamp, an anonymous device id and, for signed-in users, an account id.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without it every event would read as carrying an account id.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k2 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k2",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u7"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k3",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u11"
+      ],
+      "clause": "The enrichment step uses the user service.",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k3",
+            "verdict": "not_a_condition",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k4",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u12"
+      ],
+      "clause": "If an account cannot be found",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u12"
+          ],
+          "claimQuote": "the event is passed on without account attributes",
+          "evidence": "migrated: needs evidence",
+          "justification": "R4: the condition's most specific claim is its own consequent. X's link to u10 is kept as k5, the sentence-level exception.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k4 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k4",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u12"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k5",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u12"
+      ],
+      "clause": "If an account cannot be found, the event is passed on without account attributes.",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u10"
+          ],
+          "claimQuote": "An enrichment step consumes the topic and adds account attributes, such as plan tier and region.",
+          "evidence": "migrated: needs evidence",
+          "justification": "An exception to u10: some enriched events lack attributes, which matters for per-plan dashboards. u2_n7 joins carrier u2_n8 by a card arrow (linked); u2_a2 has no arrow to a carrier.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k5 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k5",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u10"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k6",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u13"
+      ],
+      "clause": "in hourly batches",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u13"
+          ],
+          "claimQuote": "Enriched events are then written to the warehouse",
+          "evidence": "migrated: needs evidence",
+          "justification": "On the u13 link the source settles it. Its Freshness section makes latency decision-relevant: launch reviews happen within 2 hours, and an hourly batch uses up to half of that. Without the clause, a reader relying on warehouse data for launches would act wrongly. The clash with u21's 'real time' is a source contradiction; it is not scored as a u21 limit, and u21 is judged not_a_condition (k7). Note: u6_n3, u6_a1 and g5 assert real-time freshness with no link to the hourly-batch carrier.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k6 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k6",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u13"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k7",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u21"
+      ],
+      "clause": "in real time",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k7",
+            "verdict": "not_a_condition",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k8",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u15"
+      ],
+      "clause": "enrichment should avoid adding much traffic to it",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u11"
+          ],
+          "claimQuote": "The enrichment step uses the user service.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: X's deciding question is about the first half ('stay lightly loaded': forecast or requirement). The 'should avoid' half is a design constraint stated whichever way that is read. Building enrichment on the user service without it (per-event lookups) would break a stated constraint. u2_n7's arrow to u2_n11 is labelled 'constraint', which does not convey the clause, but it joins a carrier (linked). u2_n8 and u2_a2 have no such arrow.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k8 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k8",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u11"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k9",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u16"
+      ],
+      "clause": "before clients can send it",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u16"
+          ],
+          "claimQuote": "Every event type must be registered",
+          "evidence": "migrated: needs evidence",
+          "justification": "R4/R1: the clause sequences the registration rule it sits in. Following 'register every event type' without the ordering would let a client ship an unregistered type, and the collector would reject its events (u8). u16 is the most specific link; Y's u5 is the general flow.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k9 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k9",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u16"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k10",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u17"
+      ],
+      "clause": "a breaking change requires a new version rather than an edit to the existing one",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u17"
+          ],
+          "claimQuote": "Schemas are versioned",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: editing a schema in place for a breaking change violates the stated rule.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k10 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k10",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u17"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k11",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u24"
+      ],
+      "clause": "How long the aggregated tables are kept is TBD.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u22"
+          ],
+          "claimQuote": "only aggregated tables are kept longer",
+          "evidence": "migrated: needs evidence",
+          "justification": "An open item; the retention takeaway stands.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k11 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k11",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u22"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k12",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u33"
+      ],
+      "clause": "90 days",
+      "verdict": "not_a_condition",
+      "links": [],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "human_adjudicated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k12",
+            "verdict": "ambiguous",
+            "rule": "R4",
+            "status": "agreed",
+            "claimUnits": [
+              "u22"
+            ],
+            "confidence": "low",
+            "readingA": "claim: the table sets warehouse raw-event retention at 90 days, which limits or contradicts the 30-day statement; a reader acting on 30 days would mishandle deletion and access requests.",
+            "readingB": "not_a_condition: a conflicting attribute in a component table; the draft is inconsistent rather than conditional.",
+            "decidingQuestion": "Do u22 and u33 describe the same store (a drafting contradiction) or different stores (a scope on where 30 days applies), and which figure is intended?"
+          }
+        ],
+        "human": {
+          "item": "H05",
+          "verdictA": "not_a_condition",
+          "verdictB": "not_a_condition",
+          "linksA": [],
+          "linksB": [],
+          "answersA": {
+            "file": "review-v3/human-review/answers-A.json",
+            "sha256": "7ab024f0895b1ed83a93d384370da120bc50076570e9bc949a31866d97d3a39a"
+          },
+          "answersB": {
+            "file": "review-v3/human-review/answers-B.json",
+            "sha256": "0aec354c468b59d74ee6d490f4f9419bd34cfea1055f05072f5ecf6c8df5c4e0"
+          },
+          "sampleKey": {
+            "file": "review-v3/human-review/SAMPLE-KEY.json",
+            "sha256": "e7426e794225dec07c5ee21c1af226e01c3ffa600e0cfdb38cfc4290877b9a31"
+          },
+          "selector": "review-v3/human-review/discrepancies-2.json rows with pattern humans_agree_model_differs, re-checked against both answer files"
+        },
+        "migration": "Verdict set to the two humans' shared verdict; confidence is the lower of theirs. v3 readings kept above only as provenance."
+      }
+    },
+    {
+      "id": "k13",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u35"
+      ],
+      "clause": "the web app's sign-up and checkout events",
+      "verdict": "ambiguous",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "The first dashboards will cover the onboarding funnel and weekly active accounts per plan tier.",
+          "evidence": "migrated: needs evidence",
+          "justification": "The source never ties the first dashboards to a phase; not forced.",
+          "binding": "ambiguous",
+          "levelDerived": "elsewhere",
+          "source": "v3 k13 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "readingA": "claim (u14): phase 1 collects only web sign-up and checkout events, so the first dashboards (onboarding funnel, weekly active accounts per plan tier) cannot be fully built from phase 1; a reader would expect them.",
+      "readingB": "set (u42): a scope on phase 1 that does not change the proposal's takeaway.",
+      "decidingQuestion": "Are the first dashboards promised as a phase 1 deliverable?",
+      "confidence": "low",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k13",
+            "verdict": "ambiguous",
+            "rule": "R4",
+            "status": "unresolved",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "low",
+            "readingA": "claim (u14): phase 1 collects only web sign-up and checkout events, so the first dashboards (onboarding funnel, weekly active accounts per plan tier) cannot be fully built from phase 1; a reader would expect them.",
+            "readingB": "set (u42): a scope on phase 1 that does not change the proposal's takeaway.",
+            "decidingQuestion": "Are the first dashboards promised as a phase 1 deliverable?"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k14",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u36"
+      ],
+      "clause": "once the mobile SDK is ready",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u36"
+          ],
+          "claimQuote": "Phase 2 adds mobile events",
+          "evidence": "migrated: needs evidence",
+          "justification": "R4: both links genuinely mislead without the clause, so one record per link (this one u36; k15 u5). Without it, phase 2 reads as unblocked.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k14 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k14",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u36"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k15",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u36"
+      ],
+      "clause": "once the mobile SDK is ready",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u5"
+          ],
+          "claimQuote": "Client SDKs in the web and mobile apps send events to a collector service over HTTPS.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R4 second link: u5 presents mobile SDKs sending events as part of the design. Without the dependency, a reader expects mobile analytics from the start. No arrow joins the design frame g1 to the rollout carriers.",
+          "binding": "claim",
+          "levelDerived": "elsewhere",
+          "source": "v3 k15 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k15",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u5"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k16",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u36"
+      ],
+      "clause": "no date has been set for it",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u36"
+          ],
+          "claimQuote": "Phase 2 adds mobile events",
+          "evidence": "migrated: needs evidence",
+          "justification": "A scheduling caveat; the takeaway stands.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k16 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k16",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u36"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k17",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u37"
+      ],
+      "clause": "is expected to take about",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u37"
+          ],
+          "claimQuote": "6 weeks for 2 engineers",
+          "evidence": "migrated: needs evidence",
+          "justification": "R2: a hedged estimate; the source neither warns about it nor makes a decision turn on its precision. The takeaway is the same verified or not.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k17 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k17",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u37"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k18",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u38"
+      ],
+      "clause": "The cost of running the pipeline has not been estimated yet.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u42"
+          ],
+          "claimQuote": "We ask for approval to start phase 1",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: the source never weighs cost against the benefit or the approval. It is listed under Rollout and is not even an open question. That answers Y's question (secondary open item): set. The cross-frame arrow g8->g9 'leads to' is not limiting.",
+          "binding": "set",
+          "levelDerived": "elsewhere",
+          "source": "v3 k18 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k18",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u42"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k19",
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "units": [
+        "u40"
+      ],
+      "clause": "What happens to events the collector rejects: are they dropped, or kept somewhere for debugging?",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u8"
+          ],
+          "claimQuote": "rejects events that do not match a registered schema",
+          "evidence": "migrated: needs evidence",
+          "justification": "An open question about rejected events; the rejection claim stands.",
+          "binding": "set",
+          "levelDerived": "elsewhere",
+          "source": "v3 k19 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R2",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k19",
+            "verdict": "set",
+            "rule": "R2",
+            "status": "agreed",
+            "claimUnits": [
+              "u8"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    }
+  ]
+}

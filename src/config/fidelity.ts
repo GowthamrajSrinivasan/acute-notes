@@ -6,7 +6,33 @@
  * Nothing here changes what is generated: the content safety net always attaches what the AI left out. These only
  * decide what the review shows and whether "Regenerate" is offered.
  */
+import type { NoteModel } from "@/ai/fidelity/contracts";
+import type { Organisation } from "@/ai/visual-plan/grouping";
+
 export interface FidelityConfig {
+  /**
+   * Which rules Visualize writes notes under (knowledge-notes-plan §6.3). `preserve` is today's behaviour, and the only
+   * mode users can reach until release gate R1. `distil` (ideas in the model's own words, every card citing the source
+   * units it represents) is a developer setting until then: no UI offers it, and tests set it on their own input.
+   */
+  noteModel: NoteModel;
+  /**
+   * WP2.8 (knowledge-notes-plan §6.3, OD2): show "Keep full detail" in the Visualize dialog. **Hidden (`false`) until
+   * R1**, and then a new Visualize run uses `noteModel` as it always has. When shown, the dialog chooses each run's note
+   * model itself (passed per run, never by changing `noteModel`): `distil` by default, `preserve` when the user ticks
+   * "Keep full detail" (specs, legal text). At R1 set this to `true` and `noteModel` to `"distil"` (for updates and the
+   * MCP import, which have no dialog choice).
+   */
+  showNoteModelChoice: boolean;
+  /**
+   * The runtime model check of cards' meaning (knowledge-notes-plan §3.4, `semanticCheck.ts`), **distil mode only**:
+   * `preserve` never calls it. **On, for every citing card (OD5b, approved by the user 2026-10-20):** the word rules failed
+   * on fresh text, the model check met every target on the labelled set, at about $0.00012 a card; one batched call per
+   * section, counted in usage. `cards: "flagged"` (OD5 as first approved) checks only the cards the rules hint about.
+   * Its verdicts read "checked by AI", never "verified": "supported" lets a card leave Needs review; "partly", "not
+   * supported" and no answer keep it there.
+   */
+  semanticCheck: { enabled: boolean; cards: "flagged" | "all" };
   /** Show the coverage row for AI Visualize results (never for the local tier, which copies the source as is). */
   showCoverage: boolean;
   regenerate: {
@@ -37,6 +63,9 @@ export interface FidelityConfig {
 }
 
 export const FIDELITY_CONFIG: FidelityConfig = {
+  noteModel: "preserve",
+  showNoteModelChoice: false,
+  semanticCheck: { enabled: true, cards: "all" },
   showCoverage: true,
   regenerate: {
     enabled: true,
@@ -53,3 +82,12 @@ export const FIDELITY_CONFIG: FidelityConfig = {
     message: "This model tends to condense; a larger model analyses better.",
   },
 };
+
+/**
+ * The organisation rules a note model lays out with (organisation-layout plan §3.0, Q10): `distil` → "v2" (frames
+ * ordered by their links, sub-groups inside a frame), anything else → "v1", today's layout byte for byte. Tied to the
+ * note model, with no setting of its own.
+ */
+export function organisationFor(noteModel: NoteModel | undefined): Organisation {
+  return noteModel === "distil" ? "v2" : "v1";
+}

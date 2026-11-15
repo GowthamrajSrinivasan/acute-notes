@@ -1,0 +1,534 @@
+{
+  "caseId": "kn-02-edge-cache-invalidation",
+  "adjudicator": "phase3-adjudicator (Claude Opus 5.5, 2026-11-13)",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u10", "u11", "u55"],
+      "verdict": "set",
+      "claimUnits": ["u6"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u6", "u7", "u8"] },
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u6"] },
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u11"] },
+        { "who": "A", "verdict": "set", "claimUnits": ["u6"] },
+        { "who": "B", "verdict": "set", "claimUnits": ["u6"] }
+      ],
+      "conditionQuote": "Its weakness is that the TTL is a guess made in advance.",
+      "claimQuote": "every cached object carries a time to live (TTL), and the edge discards or rechecks its copy once the TTL has passed",
+      "rationale": "The TTL mechanism stays true; the fixed-in-advance window that cannot be shortened is a real weakness that must appear in the notes.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g2"],
+          "carriers": ["v1:g3"],
+          "perClaimCard": { "v1:g2": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g4"],
+          "carriers": ["v2:g8", "v2:g9"],
+          "perClaimCard": { "v2:g4": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u16", "u17", "u18"],
+      "verdict": "claim",
+      "claimUnits": ["u14"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u13", "u14", "u15"] },
+        { "who": "phase1", "verdict": "claim", "claimUnits": ["u13", "u14"] },
+        { "who": "A", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "B", "verdict": "claim", "claimUnits": ["u14"] }
+      ],
+      "conditionQuote": "it is not applied everywhere at the same moment",
+      "claimQuote": "The purge removes the cached copy, so the next request for that URL is fetched fresh from the origin.",
+      "rationale": "At locations that have not yet applied the purge the next request still gets the old copy, so u14 alone is false for a short window.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g4"],
+          "carriers": ["v1:g5"],
+          "perClaimCard": { "v1:g4": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g11", "v2:g12"],
+          "carriers": ["v2:g14", "v2:g15", "v2:g23", "v2:g24", "v2:g48"],
+          "perClaimCard": { "v2:g11": "separated", "v2:g12": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u19", "u20", "u21"],
+      "verdict": "set",
+      "claimUnits": ["u13", "u14"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u13", "u14", "u15"] },
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u13", "u14"] },
+        { "who": "A", "verdict": "ambiguous", "claimUnits": ["u13", "u14"] },
+        { "who": "B", "verdict": "set", "claimUnits": ["u13", "u14"] }
+      ],
+      "conditionQuote": "it removes only the exact URL you name",
+      "claimQuote": "When content must change now, the origin can ask the CDN to purge a specific URL.",
+      "rationale": "u13 and u14 are explicitly scoped to 'a specific URL' / 'that URL' and stay true; A's claim reading rests on u62, a different summary claim, so the scope limit is set.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g4"],
+          "carriers": ["v1:g5"],
+          "perClaimCard": { "v1:g4": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g11", "v2:g12"],
+          "carriers": ["v2:g16", "v2:g17", "v2:g18"],
+          "perClaimCard": { "v2:g11": "separated", "v2:g12": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u22"],
+      "verdict": "set",
+      "claimUnits": ["u13"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u13", "u14", "u15"] },
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u13"] },
+        { "who": "A", "verdict": "set", "claimUnits": ["u13"] },
+        { "who": "B", "verdict": "set", "claimUnits": ["u13"] }
+      ],
+      "conditionQuote": "Purge APIs are also rate limited; Larkspur's plan allows 1,000 purge calls per minute, which a bulk correction across the archive can exhaust.",
+      "claimQuote": "When content must change now, the origin can ask the CDN to purge a specific URL.",
+      "rationale": "An operational limit; single-URL purging stays true at normal volumes.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g4"],
+          "carriers": [],
+          "perClaimCard": { "v1:g4": "absent" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g11"],
+          "carriers": ["v2:g19"],
+          "perClaimCard": { "v2:g11": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u26"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u18", "u23", "u27"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u27"] },
+        { "who": "A", "verdict": "set", "claimUnits": ["u18"] },
+        { "who": "B", "verdict": "set", "claimUnits": ["u23"] }
+      ],
+      "conditionQuote": "half of the locations had applied a purge within 2 seconds, and the slowest location took 20 seconds",
+      "claimQuote": "Purging is eventually consistent, not instant.",
+      "rationale": "Every reading says set but each links a different claim (u18, u23, u27), and both blind reviewers note it may be mere supporting evidence; the source does not settle which claim it bounds or whether it is a condition at all.",
+      "confidence": "low",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g5"],
+          "carriers": [],
+          "perClaimCard": { "v1:g5": "absent" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g15", "v2:g20", "v2:g24"],
+          "carriers": ["v2:g23"],
+          "perClaimCard": { "v2:g15": "separated", "v2:g20": "separated", "v2:g24": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u32", "u33"],
+      "verdict": "claim",
+      "claimUnits": ["u30"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u28", "u29", "u30"] },
+        { "who": "phase1", "verdict": "claim", "claimUnits": ["u30"] },
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "A", "verdict": "claim", "claimUnits": ["u30"] },
+        { "who": "B", "verdict": "claim", "claimUnits": ["u30"] }
+      ],
+      "conditionQuote": "A page is only purged by a key if the origin tagged it with that key, and a missing tag produces a stale page with no error anywhere.",
+      "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+      "rationale": "An untagged page that includes the story is not removed, so 'every cached page that included that story' is false in that case.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g6"],
+          "carriers": ["v1:g7"],
+          "perClaimCard": { "v1:g6": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g26"],
+          "carriers": ["v2:g28"],
+          "perClaimCard": { "v2:g26": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u35", "u36"],
+      "verdict": "set",
+      "claimUnits": ["u30"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u28", "u29", "u30"] },
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "A", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "B", "verdict": "set", "claimUnits": ["u30"] }
+      ],
+      "conditionQuote": "Purging `section-politics` at Larkspur removes about 12,000 cached objects at once, and the origin has to absorb the burst of cache misses that follows.",
+      "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+      "rationale": "A cost of tag purges; what a tag purge removes stays true.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g6"],
+          "carriers": ["v1:g7"],
+          "perClaimCard": { "v1:g6": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g26"],
+          "carriers": ["v2:g30"],
+          "perClaimCard": { "v2:g26": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u41"],
+      "verdict": "claim",
+      "claimUnits": ["u38"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u37", "u38", "u39"] },
+        { "who": "phase1", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "A", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "B", "verdict": "claim", "claimUnits": ["u38"] }
+      ],
+      "conditionQuote": "an expired copy is served for at most 60 seconds past its TTL, and after that the edge waits for the origin as it would on an ordinary miss",
+      "claimQuote": "an edge location that receives a request after the 300 seconds have passed returns the expired copy immediately and fetches a fresh one from the origin in the background",
+      "rationale": "u38 reads as unbounded; a request more than 60 s past the TTL does not get the expired copy immediately.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g8"],
+          "carriers": [],
+          "perClaimCard": { "v1:g8": "absent" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g31"],
+          "carriers": ["v2:g34"],
+          "perClaimCard": { "v2:g31": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "conditionUnits": ["u42"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u41"],
+      "status": "agreed",
+      "readings": [
+        { "who": "phase1", "verdict": "claim", "claimUnits": ["u42"] },
+        { "who": "A", "verdict": "ambiguous", "claimUnits": ["u41"] },
+        { "who": "B", "verdict": "ambiguous", "claimUnits": ["u41"] }
+      ],
+      "conditionQuote": "lets the edge keep serving the expired copy for up to 86,400 seconds, or one day, while the origin is returning errors",
+      "claimQuote": "an expired copy is served for at most 60 seconds past its TTL",
+      "rationale": "Both blind reviewers independently gave ambiguous on u41: an exception to the 60-second bound when the origin errors (claim) versus a separate directive with its own scope (not_a_condition); the source introduces it as 'a related directive' and does not settle which.",
+      "confidence": "low",
+      "notes": {
+        "openui-v1": {
+          "claimCards": [],
+          "carriers": ["v1:g9"],
+          "perClaimCard": {}
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g34"],
+          "carriers": ["v2:g35"],
+          "perClaimCard": { "v2:g34": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "conditionUnits": ["u43", "u44"],
+      "verdict": "set",
+      "claimUnits": ["u39"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u37", "u38", "u39"] },
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u37", "u38"] },
+        { "who": "A", "verdict": "set", "claimUnits": ["u39"] },
+        { "who": "B", "verdict": "set", "claimUnits": ["u39"] }
+      ],
+      "conditionQuote": "it also means some readers see a copy that is older than the TTL alone would suggest",
+      "claimQuote": "The reader gets a fast response, and the next reader gets the refreshed copy.",
+      "rationale": "A trade-off of serving stale; the fast-response claim stays true.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g8"],
+          "carriers": ["v1:g10"],
+          "perClaimCard": { "v1:g8": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g32"],
+          "carriers": ["v2:g36", "v2:g37"],
+          "perClaimCard": { "v2:g32": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c11",
+      "conditionUnits": ["u49", "u50"],
+      "verdict": "set",
+      "claimUnits": ["u45"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u45", "u46", "u47", "u48"] },
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u45", "u46"] },
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u49"] },
+        { "who": "A", "verdict": "claim", "claimUnits": ["u45", "u46"] },
+        { "who": "B", "verdict": "set", "claimUnits": ["u45"] }
+      ],
+      "conditionQuote": "Versioning does not help for HTML entry pages.",
+      "claimQuote": "For static assets, the cleanest invalidation is a new name.",
+      "rationale": "u45 and u62 are both explicitly scoped to static assets, so the claim stays true without the HTML exclusion; A's 'misleading' case (cached HTML still pointing at old names) is the separate c12 condition.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g11"],
+          "carriers": ["v1:g12"],
+          "perClaimCard": { "v1:g11": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g38"],
+          "carriers": ["v2:g41"],
+          "perClaimCard": { "v2:g38": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c12",
+      "conditionUnits": ["u51", "u52"],
+      "verdict": "claim",
+      "claimUnits": ["u46"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u45", "u46", "u47", "u48"] },
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u46", "u47"] },
+        { "who": "A", "verdict": "claim", "claimUnits": ["u46"] },
+        { "who": "B", "verdict": "claim", "claimUnits": ["u46"] }
+      ],
+      "conditionQuote": "If an HTML page stays cached longer than the origin keeps the old asset files, it can send readers to files that no longer exist.",
+      "claimQuote": "a changed file gets a new URL and the old cached copy is simply never requested again",
+      "rationale": "Stale cached HTML still requests old asset names, so 'never requested again' is false while that HTML is cached; u52 is the resulting requirement.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g11"],
+          "carriers": ["v1:g12"],
+          "perClaimCard": { "v1:g11": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": [],
+          "carriers": ["v2:g42", "v2:g43"],
+          "perClaimCard": {}
+        }
+      }
+    },
+    {
+      "id": "c13",
+      "conditionUnits": ["u62"],
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "status": "agreed",
+      "readings": [
+        { "who": "phase1", "verdict": "set", "claimUnits": ["u62"] },
+        { "who": "A", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "B", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "conditionQuote": "stale serving keeps the site fast when the origin struggles",
+      "claimQuote": "Short TTLs are the safety net, purges handle urgent corrections, stale serving keeps the site fast when the origin struggles, and versioned names take static assets out of the problem entirely.",
+      "rationale": "A concluding summary of each technique's role; itself a set of claims, not a limit on one.",
+      "confidence": "medium"
+    },
+    {
+      "id": "a1",
+      "conditionUnits": ["u40"],
+      "verdict": "set",
+      "claimUnits": ["u37", "u38", "u39"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "A", "verdict": "set", "claimUnits": ["u38"] },
+        { "who": "B", "verdict": "set", "claimUnits": ["u37", "u39"] }
+      ],
+      "conditionQuote": "where a minute of staleness is acceptable, but not on live election results",
+      "claimQuote": "returns the expired copy immediately and fetches a fresh one from the origin in the background",
+      "rationale": "Proposed independently by A (a1) and B (a4) as set on the stale-while-revalidate mechanism with non-overlapping unit links; the source scopes where it is used without making the mechanism false, so set on the u37–u39 mechanism.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g8"],
+          "carriers": [],
+          "perClaimCard": { "v1:g8": "absent" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g31", "v2:g32"],
+          "carriers": ["v2:g33"],
+          "perClaimCard": { "v2:g31": "separated", "v2:g32": "separated" }
+        }
+      }
+    },
+    {
+      "id": "a2",
+      "conditionUnits": ["u12"],
+      "verdict": "set",
+      "claimUnits": ["u62"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "A", "verdict": "set", "claimUnits": ["u62"] },
+        { "who": "B", "verdict": "set", "claimUnits": ["u12"] }
+      ],
+      "conditionQuote": "Shortening the TTL narrows the window but sends more requests back to the origin: when Larkspur dropped its article TTL from 300 to 30 seconds, origin traffic rose roughly eightfold.",
+      "claimQuote": "Short TTLs are the safety net",
+      "rationale": "Single-reviewer proposal (A); B independently proposed the same condition as set on the intra-sentence u12 claim (a5). The cost of short TTLs does not make 'short TTLs are the safety net' false, so set; kept as a distinct pairing from a5.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g14"],
+          "carriers": ["v1:g3"],
+          "perClaimCard": { "v1:g14": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g47"],
+          "carriers": ["v2:g10"],
+          "perClaimCard": { "v2:g47": "separated" }
+        }
+      }
+    },
+    {
+      "id": "a3",
+      "conditionUnits": ["u9"],
+      "verdict": "claim",
+      "claimUnits": ["u9"],
+      "status": "agreed",
+      "readings": [
+        { "who": "A", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "B", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "conditionQuote": "if the origin sent an `ETag`",
+      "claimQuote": "the edge can ask whether the copy changed and receive a short `304 Not Modified` answer when it has not",
+      "rationale": "Both reviewers independently (a3, a6) gave claim on u9: conditional revalidation is unavailable without an ETag from the origin.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g2"],
+          "carriers": ["v1:g2"],
+          "perClaimCard": { "v1:g2": "carried" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g7"],
+          "carriers": ["v2:g7"],
+          "perClaimCard": { "v2:g7": "carried" }
+        }
+      }
+    },
+    {
+      "id": "a4",
+      "conditionUnits": ["u40"],
+      "verdict": "set",
+      "claimUnits": ["u37", "u38", "u39"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "B", "verdict": "set", "claimUnits": ["u37", "u39"] },
+        { "who": "A", "verdict": "set", "claimUnits": ["u38"] }
+      ],
+      "conditionQuote": "where a minute of staleness is acceptable, but not on live election results",
+      "claimQuote": "Stale-while-revalidate turns expiry from a wait into a background task.",
+      "rationale": "Same condition as a1 (proposed by B); a usage scope that leaves the stale-while-revalidate mechanism true, so set on u37–u39.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g8"],
+          "carriers": [],
+          "perClaimCard": { "v1:g8": "absent" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g31", "v2:g32"],
+          "carriers": ["v2:g33"],
+          "perClaimCard": { "v2:g31": "separated", "v2:g32": "separated" }
+        }
+      }
+    },
+    {
+      "id": "a5",
+      "conditionUnits": ["u12"],
+      "verdict": "set",
+      "claimUnits": ["u12"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "B", "verdict": "set", "claimUnits": ["u12"] },
+        { "who": "A", "verdict": "set", "claimUnits": ["u62"] }
+      ],
+      "conditionQuote": "but sends more requests back to the origin: when Larkspur dropped its article TTL from 300 to 30 seconds, origin traffic rose roughly eightfold",
+      "claimQuote": "Shortening the TTL narrows the window",
+      "rationale": "Intra-sentence cost of the obvious remedy; narrowing the window stays true, so set. Distinct pairing from a2.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g3"],
+          "carriers": ["v1:g3"],
+          "perClaimCard": { "v1:g3": "carried" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g10"],
+          "carriers": ["v2:g10"],
+          "perClaimCard": { "v2:g10": "carried" }
+        }
+      }
+    },
+    {
+      "id": "a6",
+      "conditionUnits": ["u9"],
+      "verdict": "claim",
+      "claimUnits": ["u9"],
+      "status": "agreed",
+      "readings": [
+        { "who": "B", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "A", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "conditionQuote": "if the origin sent an `ETag`",
+      "claimQuote": "the edge can ask whether the copy changed and receive a short `304 Not Modified` answer when it has not",
+      "rationale": "Duplicate of a3 proposed by B; same verdict and claim link.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g2"],
+          "carriers": ["v1:g2"],
+          "perClaimCard": { "v1:g2": "carried" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g7"],
+          "carriers": ["v2:g7"],
+          "perClaimCard": { "v2:g7": "carried" }
+        }
+      }
+    }
+  ],
+  "notes": "Duplicate additional conditions: a1/a4 (u40) and a3/a6 (u9) were proposed independently by A and B and are adjudicated identically; a2/a5 (u12) are kept as distinct pairings (u62 vs intra-sentence u12). Borderline outcome calls: v1:g6 'associated with a specific key' and v2:g26 'tagged with that key' scope the purge to tagged pages but do not make the missing-tag limit recognisable, so c6 is separated, not carried. v1:g2's ETag detail and v2:g7 'use an ETag' were judged to carry the ETag precondition. c12 openui-v2 has no claim card: no v2 card states 'never requested again'. c9 openui-v1 has no card stating the u41 60-second bound. Many v1 cards cite units (u22, u26, u40, u41) whose content is not in their visible text; citations were ignored."
+}

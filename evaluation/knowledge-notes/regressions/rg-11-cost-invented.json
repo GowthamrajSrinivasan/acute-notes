@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-cost-invented",
+  "distortion": "invented_detail",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "A running cost is invented where the source says it has not been estimated (u37).",
+  "mutations": [
+    { "op": "replace_text", "node": "c5", "find": "Running cost: not estimated.", "replace": "Running cost: about $4,000 per month." }
+  ],
+  "expectFailing": ["a.no-invented-cost", "a.cost-open"]
+}

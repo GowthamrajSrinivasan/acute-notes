@@ -85,7 +85,7 @@ export type SelectedObject =
       diagram?: { explanation?: string };
     }
   | { kind: "page"; elementId: string; pageId: string; preview: boolean }
-  | { kind: "frame"; elementId: string; interactive: boolean; level?: number; profile?: LensProfileId }
+  | { kind: "frame"; elementId: string; interactive: boolean; level?: number; profile?: LensProfileId; locked?: boolean }
   | { kind: "diagram-node"; elementId: string; frameId: string; semantics: NodeSemantics; lens: NodeLens; project?: NodeProject };
 
 let selectedObject: SelectedObject | null = null;

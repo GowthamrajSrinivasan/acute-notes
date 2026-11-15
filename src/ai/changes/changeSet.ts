@@ -21,10 +21,14 @@ import {
   ANNOTATION_INTENTS, DECISION_STATUSES, FINDING_NOTES, FINDING_STAGES, PROGRESS_STATUSES, PROJECT_KINDS, PROJECT_LIMITS, PROJECT_STYLES, QUESTION_STATUSES, RISK_SEVERITIES,
 } from "@/domain/canvas/nodeProject";
 import { analysisReportSchema, type AnalysisReport } from "@/ai/fidelity/analysis";
-import { fidelityReportSchema, type FidelityReport } from "@/ai/fidelity/report";
+import { fidelityReportSchema, knowledgeReportSchema, type FidelityReport, type KnowledgeReport } from "@/ai/fidelity/report";
 import { z } from "zod";
 import { normalizeAIMetadata } from "@/domain/provenance";
+import { REVIEW_RESOLUTIONS, type CardReview, type Lineage, type ReviewFlag, type UnitOutcome, type UnitSet } from "@/ai/fidelity/contracts";
 import { PLAN_SHAPES } from "@/ai/visual-plan/types";
+import { fingerprintContent, fingerprintShape } from "@/ai/content/fingerprint";
+import { baselineHolds, staleConflict, type LiveShape } from "./staleTarget";
+import { MAX_CLAIM_EDITS, MAX_CLAIM_TEXT, UPDATE_INTENTS, resolvePatch, type ClaimEdit, type PatchRejection, type PatchTarget, type UpdateIntent } from "./claimPatch";
 import { RELATION_TYPES, type AIMetadata, type ContentBlockType, type ObjectId, type RelationType, type RichBlockType, type RichContent, type ShapeKind, type SourceRef } from "@/domain/types";
 
 export interface Box {
@@ -123,7 +127,11 @@ export type ProposedChange =
       /** How sure the model was that it exists (0–1), when an AI plan said (Lens plan §6.3). */
       confidence?: number;
     }
-  | { kind: "move"; target: ObjectId; to: { x: number; y: number } }
+  /**
+   * `frame`: the object joins that section frame (a citation-driven update moving a card to the section its cited
+   * passages moved to, knowledge-notes-plan §6.1: a move, never remove + add). Both frames grow to fit.
+   */
+  | { kind: "move"; target: ObjectId; to: { x: number; y: number }; frame?: ObjectId }
   // Reconciliation only (F38/F39): produced by "Update from new content", never by a first run, and — like
   // everything here — applied only on Accept, as part of one undoable transaction.
   /**
@@ -131,9 +139,37 @@ export type ProposedChange =
    * Also an MCP edit (F21): with no `contentSource` on the set and no `stableNodeKey`, the object keeps its own
    * provenance and reconciliation link, so the accepted edit counts as the user's.
    */
-  | { kind: "update_block"; target: ObjectId; content: RichContent; title?: string; stableNodeKey?: string; sourceRefs?: SourceRef[] }
-  /** A new label for an existing shape. */
-  | { kind: "update_shape"; target: ObjectId; label: string; stableNodeKey: string; sourceRefs?: SourceRef[] }
+  | {
+      kind: "update_block";
+      target: ObjectId;
+      content: RichContent;
+      title?: string;
+      stableNodeKey?: string;
+      sourceRefs?: SourceRef[];
+      /** The content is the user's wording with the source's facts merged in (an accepted `patch_block` onto an edited card, Stage 1e). */
+      userWording?: true;
+      /**
+       * The target's `fingerprintOf` when this was proposed (stale-target protection, `staleTarget.ts`): checked against the
+       * live target at Accept; a mismatch is never written, it becomes a Keep mine / Use proposed decision. Set by the
+       * producer or stamped by `PendingChanges`; `UNKNOWN_BASELINE` for a legacy proposal. Absent: written as before
+       * (a set built and committed in one step, an accepted patch's own write).
+       */
+      expectedFingerprint?: string;
+    }
+  /**
+   * Claim-level edits inside an existing block or page (intelligent-update-engine-plan Stage 1b): one or more edits
+   * applied atomically, everything else in the content kept as it is — marks, links, block ids. Conditional: at accept
+   * it is checked against the object's live content (`resolvePatch`) and becomes an `update_block` with the patched
+   * content, or is dropped whole and reported (`patch_rejected`) — never a best-guess write. `expectedFingerprint`:
+   * the object's `fingerprintOf` when the patch was planned (the plan's `expectedVersion`). `onEditedCard`: the card was
+   * changed since AI wrote it, and the edits merge the source's new facts into its current wording (Stage 1e).
+   */
+  | { kind: "patch_block"; target: ObjectId; expectedFingerprint: string; edits: ClaimEdit[]; stableNodeKey?: string; sourceRefs?: SourceRef[]; onEditedCard?: true }
+  /**
+   * A new label for an existing shape. `expectedFingerprint`: the shape's `fingerprintOf` (kind and label) when this was
+   * proposed — stale-target protection exactly as for `update_block` (`staleTarget.ts`).
+   */
+  | { kind: "update_shape"; target: ObjectId; label: string; stableNodeKey: string; sourceRefs?: SourceRef[]; expectedFingerprint?: string }
   /**
    * Patches the descriptive and project-knowledge fields of an existing node (D43): a provided field replaces, `null`
    * clears, omitted is untouched. Never touches the Lens half (key, expandsTo, sources). Reviewed like any change.
@@ -149,6 +185,12 @@ export type ProposedChange =
   | { kind: "remove"; target: ObjectId }
   /** "Keep mine": the object's current content becomes its new baseline; nothing visible changes. */
   | { kind: "rebaseline"; target: ObjectId; stableNodeKey: string }
+  /**
+   * A card's review state after a citation-driven update (knowledge-notes-plan §6.1, WP3.2–3.3): "source changed" or
+   * "source ambiguous", its content untouched. Written to the object's `AIMetadata.review`; the card shows amber until the
+   * user resolves it. Only an update from a content source proposes it.
+   */
+  | { kind: "mark_review"; target: ObjectId; stableNodeKey: string; review: CardReview }
   /**
    * Resets an element to a stored snapshot, or re-creates it from one when it was deleted, keeping its id and its
    * bindings (D43). Produced only by a revert (`revert_agent_changes`, the History tab's "Revert…"), from the
@@ -188,6 +230,13 @@ export interface ChangeSet {
    */
   split?: SplitRecord;
   /**
+   * Cards made from passages of a content source by the local tier, with no AI call (knowledge-notes-plan §5.1, §5.3:
+   * Add to canvas, Include): linked to that source version and citing their passage (`knowledge.cards`), and opted out
+   * of updates (`excludeFromReconciliation`: the user added them; an update never proposes removing or rewriting them).
+   * Never together with `contentSource` or `split`.
+   */
+  passage?: { sourceId: string; version: number };
+  /**
    * Updates to objects the user has edited since AI last wrote them (F39).
    * Never part of `changes` and never applied by "Accept all": each needs its
    * own decision — its `apply` or its `keep` change joins the accepted set.
@@ -218,6 +267,48 @@ export interface ChangeSet {
   fidelity?: FidelityReport;
   /** AI Visualize: whether AI analysed the content or only its own structure is shown, and which sections fell back. */
   analysis?: AnalysisReport;
+  /**
+   * AI Visualize in distil mode (knowledge-notes-plan WP1.10–1.11): each card's cited units and review by its
+   * `stableNodeKey`, stamped on the object's AI metadata when it is written (`sourceUnits`, `review`), and the report
+   * v2. Absent in `preserve`.
+   */
+  knowledge?: ChangeSetKnowledge;
+  /**
+   * An update from new content (Stage 1e): cards the source changed that the set leaves alone because they are locked
+   * (or in a locked section), counted for the review bar ("2 locked cards not updated").
+   */
+  skipped?: { locked: number };
+  /**
+   * An update from new content (Stage 3, impact discovery): cards elsewhere that mention a changed fact without repeating it
+   * exactly (other words, a link to a changed card) — listed for the user to check, never edited.
+   */
+  related?: RelatedCard[];
+}
+
+/** See `ChangeSet.knowledge`. */
+export interface ChangeSetKnowledge {
+  cards: Record<string, { sourceUnits: string[]; review?: CardReview }>;
+  report?: KnowledgeReport;
+  /**
+   * The run's outcome per unit (`AccountingResult.outcome`), the reasons the Source tab shows (omission reasons, Needs
+   * review details), and the Needs review flags about passages no card carries. Stored with the source version on Accept
+   * (`ai/content/sourceReview.ts`), so the Source tab and the review queue survive a reload (U3, U8).
+   */
+  units?: UnitOutcomes;
+}
+
+/** See `ChangeSetKnowledge.units`. */
+export interface UnitOutcomes {
+  outcome: Record<string, UnitOutcome>;
+  reasons: Record<string, string[]>;
+  flags: ReviewFlag[];
+}
+
+/** A card's knowledge fields (`sourceUnits`, `review`) from a distil set, for its AI metadata when written; nothing for any other set. */
+export function knowledgeOf(set: Pick<ChangeSet, "knowledge">, stableNodeKey: string): Pick<AIMetadata, "sourceUnits" | "review"> {
+  const card = set.knowledge?.cards[stableNodeKey];
+  if (!card) return {};
+  return { ...(card.sourceUnits.length ? { sourceUnits: [...card.sourceUnits] } : {}), ...(card.review ? { review: card.review } : {}) };
 }
 
 /** One section of a merged set (see `ChangeSet.parts`). */
@@ -253,6 +344,12 @@ export interface ContentSourceRecord {
   pathIds?: Record<string, string>;
   /** Where the text changes its mind (G3.3, `ContentSourceVersion.revisions`). */
   revisions?: { unit: string; earlier: string; later: string }[];
+  /**
+   * Source units and lineage (knowledge-notes-plan §3.1, WP1.3), when the producer already has them. Absent, the
+   * recording computes them (`recordAcceptedSource`).
+   */
+  units?: UnitSet;
+  lineage?: Lineage;
 }
 
 /**
@@ -265,12 +362,38 @@ export interface ConflictItem {
   target: ObjectId;
   /** Reconciliation conflicts only. */
   stableNodeKey?: string;
-  apply: Extract<ProposedChange, { kind: "update_block" | "update_shape" | "restore" | "remove" }>;
+  /** An impact offer's (`impact`) is the `patch_block` for that card, checked against its live content at accept like any patch. */
+  apply: Extract<ProposedChange, { kind: "update_block" | "update_shape" | "restore" | "remove" | "patch_block" }>;
   keep?: Extract<ProposedChange, { kind: "rebaseline" }>;
   /** What the card is called when the change itself can't say (a revert's object). */
   name?: string;
   /** Revert conflicts only: changes decided with `apply` as one card (a shape's restore with its bound label's). */
   alsoApply?: Extract<ProposedChange, { kind: "restore" | "remove" }>[];
+  /**
+   * Not a user edit: the update itself needs a decision (Stage 1a). The new text contradicts what the card says, or
+   * it changed too much to say what it means — so it is never applied by "Accept all".
+   */
+  escalation?: { intent: Extract<UpdateIntent, "CONTRADICTS" | "UNCLEAR">; detail: string };
+  /**
+   * Impact discovery (intelligent-update-engine-plan Stage 3): not one of the source's cards — a card elsewhere on the
+   * canvas that repeats a fact the update changes on `from`. "Update this too" applies `apply` (the same edit, claim-level);
+   * "Leave as is" adds nothing (no `keep`). Never applied by "Accept all". `claim`: the sentence as the source said it;
+   * `detail`: the edit in words; `proposed`: the card's text after it, for the side-by-side.
+   */
+  impact?: { from: ObjectId; claim: string; detail: string; proposed: string };
+  /**
+   * Stale-target protection (`staleTarget.ts`): the user changed the target after the update was proposed, so Accept
+   * withheld it. "Keep mine" writes nothing; "Use proposed" writes `apply` (an `update_block` / `update_shape` baselined to the content the
+   * user saw when deciding, so it is checked again).
+   */
+  changedSinceProposal?: true;
+}
+
+/** A card elsewhere that relates to a fact the update changes but is not edited (Stage 3: a reference, not a repeat), with why. */
+export interface RelatedCard {
+  target: ObjectId;
+  name: string;
+  reason: string;
 }
 
 export const MAX_CHANGES = 500;
@@ -311,8 +434,43 @@ const updateBlockSchema = z.object({
   title: z.string().min(1).max(200).optional(),
   stableNodeKey: stableKey.optional(),
   sourceRefs: sourceRefs.optional(),
+  userWording: z.literal(true).optional(),
+  expectedFingerprint: z.string().min(1).max(100).optional(),
 });
-const updateShapeSchema = z.object({ kind: z.literal("update_shape"), target: z.string().min(1), label: z.string().max(MAX_LABEL), stableNodeKey: stableKey, sourceRefs: sourceRefs.optional() });
+const claimText = z.string().max(MAX_CLAIM_TEXT);
+const claimEditSchema = z.object({
+  blockIndex: z.number().int().nonnegative().max(10_000),
+  blockId: z.string().min(1).max(200).optional(),
+  cell: z.object({ row: z.number().int().nonnegative().max(10_000), col: z.number().int().nonnegative().max(1_000) }).strict().optional(),
+  caption: z.literal(true).optional(),
+  match: z.union([
+    z.object({ exactText: claimText.min(1) }).strict(),
+    z.object({ anchor: z.object({ before: claimText, text: claimText.min(1), after: claimText }).strict() }).strict(),
+    z
+      .object({ range: z.object({ start: z.number().int().nonnegative(), end: z.number().int().positive() }).strict(), text: claimText.min(1) })
+      .strict()
+      .refine((m) => m.range.end - m.range.start === m.text.length, { message: "a range's text is as long as the range" }),
+  ]),
+  replacement: claimText,
+  intent: z.enum(UPDATE_INTENTS).optional(),
+}).refine((e) => !(e.cell && e.caption), { message: "an edit targets a cell or a caption, not both" });
+const patchBlockSchema = z.object({
+  kind: z.literal("patch_block"),
+  target: z.string().min(1),
+  expectedFingerprint: z.string().min(1).max(100),
+  edits: z.array(claimEditSchema).min(1).max(MAX_CLAIM_EDITS),
+  stableNodeKey: stableKey.optional(),
+  sourceRefs: sourceRefs.optional(),
+  onEditedCard: z.literal(true).optional(),
+});
+const updateShapeSchema = z.object({
+  kind: z.literal("update_shape"),
+  target: z.string().min(1),
+  label: z.string().max(MAX_LABEL),
+  stableNodeKey: stableKey,
+  sourceRefs: sourceRefs.optional(),
+  expectedFingerprint: z.string().min(1).max(100).optional(),
+});
 /** One patch field: absent = untouched, null = clear, a bad value drops that field only. Unknown keys (the Lens half) are stripped. */
 const patchField = <T extends z.ZodType>(schema: T) => schema.nullable().optional().catch(undefined);
 const patchText = (max: number) => patchField(z.string().trim().min(1).max(max));
@@ -340,6 +498,13 @@ const nodePatchSchema = z.object({
   next: patchField(z.boolean()),
   intent: patchField(z.enum(ANNOTATION_INTENTS)),
 });
+const cardReviewSchema = z.object({
+  reasons: z.array(z.string().max(300)).max(20),
+  hints: z.array(z.string().max(300)).max(20).optional(),
+  checked: z.object({ by: z.literal("ai"), verdict: z.enum(["supported", "partly", "not_supported"]), reason: z.string().max(300).optional() }).optional(),
+  resolved: z.enum(REVIEW_RESOLUTIONS).optional(),
+});
+
 const rebaselineSchema = z.object({ kind: z.literal("rebaseline"), target: z.string().min(1), stableNodeKey: stableKey });
 const removeSchema = z.object({ kind: z.literal("remove"), target: z.string().min(1) });
 const restoreSchema = z
@@ -410,11 +575,13 @@ const changeSchema = z.discriminatedUnion("kind", [
     explanation: explanationSchema,
     confidence: confidenceSchema,
   }),
-  z.object({ kind: z.literal("move"), target: z.string().min(1), to: z.object({ x: finite, y: finite }) }),
+  z.object({ kind: z.literal("move"), target: z.string().min(1), to: z.object({ x: finite, y: finite }), frame: z.string().min(1).optional() }),
   updateBlockSchema,
+  patchBlockSchema,
   updateShapeSchema,
   removeSchema,
   rebaselineSchema,
+  z.object({ kind: z.literal("mark_review"), target: z.string().min(1), stableNodeKey: stableKey, review: cardReviewSchema }),
   z.object({ kind: z.literal("update_node"), target: z.string().min(1), semantics: nodePatchSchema }),
   z
     .object({
@@ -437,6 +604,41 @@ const changeSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("group_objects"), key, title: z.string().trim().min(1).max(200), targets: z.array(z.string().min(1)).min(1).max(MAX_CHANGES) }),
 ]);
 
+const MAX_UNITS = 50_000;
+const unitId = z.string().min(1).max(20);
+const unitSetSchema = z.object({
+  units: z
+    .array(
+      z.object({
+        id: unitId,
+        kind: z.enum(["sentence", "list_item", "table_row", "code", "quote"]),
+        text: z.string().max(200_000),
+        hash: z.string().min(1).max(40),
+        topic: z.string().max(2000),
+        span: z.object({ start: z.number().int().nonnegative(), end: z.number().int().nonnegative() }),
+        prev: unitId.optional(),
+        next: unitId.optional(),
+      }),
+    )
+    .max(MAX_UNITS),
+  nextId: z.number().int().positive(),
+});
+const lineageSchema = z.object({
+  fromVersion: z.number().int().positive(),
+  toVersion: z.number().int().positive(),
+  entries: z
+    .array(
+      z.object({
+        state: z.enum(["unchanged", "changed", "ambiguous", "removed", "added"]),
+        from: unitId.optional(),
+        to: unitId.optional(),
+        candidates: z.array(unitId).max(MAX_UNITS).optional(),
+        moved: z.boolean().optional(),
+      }),
+    )
+    .max(2 * MAX_UNITS),
+});
+
 const contentSourceSchema = z.object({
   sourceId: z.string().min(1).max(200),
   version: z.number().int().positive(),
@@ -447,6 +649,33 @@ const contentSourceSchema = z.object({
   plan: z.unknown(),
   pathIds: z.record(z.string().max(2000), z.string().max(2000)).optional(),
   revisions: z.array(z.object({ unit: z.string().max(2000), earlier: z.string().max(20_000), later: z.string().max(20_000) })).max(500).optional(),
+  // Malformed units or lineage are dropped (the recording computes them again), never a reason to refuse the set.
+  units: unitSetSchema.optional().catch(undefined),
+  lineage: lineageSchema.optional().catch(undefined),
+});
+
+/** `ChangeSet.knowledge`: malformed, it is dropped (the objects then carry no citations), never a reason to refuse the set. */
+export const unitOutcomesSchema = z.object({
+  outcome: z.record(unitId, z.enum(["represented", "omitted", "needs_review"])),
+  reasons: z.record(unitId, z.array(z.string().max(500)).max(20)),
+  flags: z
+    .array(
+      z.object({
+        code: z.string().min(1).max(60) as unknown as z.ZodType<ReviewFlag["code"]>,
+        unit: unitId.optional(),
+        card: z.string().max(300).optional(),
+        detail: z.string().max(1_000),
+        evidence: z.object({ source: z.string().max(2_000).optional(), card: z.string().max(2_000).optional() }).optional(),
+      }),
+    )
+    .max(2_000),
+});
+
+const knowledgeSchema = z.object({
+  cards: z.record(stableKey, z.object({ sourceUnits: z.array(unitId).max(500), review: cardReviewSchema.optional() })),
+  report: knowledgeReportSchema.optional(),
+  // Malformed, it is dropped: the Source tab then shows the passages without outcomes, never a reason to refuse the set.
+  units: unitOutcomesSchema.optional().catch(undefined),
 });
 
 const changeSetSchema = z.object({
@@ -463,16 +692,22 @@ const changeSetSchema = z.object({
   // accepted Visualize and update, silently — zod strips the fields a schema doesn't name.
   contentSource: contentSourceSchema.optional(),
   split: z.object({ sourceId: z.string().min(1).max(200), version: z.number().int().positive(), of: stableKey, fingerprint: z.string().min(1).max(300) }).optional(),
+  passage: z.object({ sourceId: z.string().min(1).max(200), version: z.number().int().positive() }).optional(),
   conflicts: z
     .array(
       z.object({
         target: z.string().min(1),
         stableNodeKey: stableKey.optional(),
-        apply: z.union([updateBlockSchema, updateShapeSchema, restoreSchema, removeSchema]),
+        apply: z.union([updateBlockSchema, updateShapeSchema, restoreSchema, removeSchema, patchBlockSchema]),
         keep: rebaselineSchema.optional(),
         name: z.string().max(200).optional(),
         alsoApply: z.array(z.union([restoreSchema, removeSchema])).max(10).optional(),
-      }),
+        escalation: z.object({ intent: z.enum(["CONTRADICTS", "UNCLEAR"]), detail: z.string().max(500) }).optional(),
+        impact: z.object({ from: z.string().min(1), claim: z.string().max(500), detail: z.string().max(500), proposed: z.string().max(20_000) }).optional(),
+        changedSinceProposal: z.literal(true).optional(),
+      })
+      // A claim-level patch is a decision only as an impact offer (Stage 3), never as a reconciliation conflict's update.
+      .refine((c) => c.apply.kind !== "patch_block" || (!!c.impact && !c.keep), { message: "a patch_block conflict is an impact offer (impact, no keep)" }),
     )
     .max(MAX_MERGED_CHANGES)
     .optional(),
@@ -494,8 +729,17 @@ const changeSetSchema = z.object({
   reason: z.string().trim().min(1).max(500).optional(),
   args: z.string().max(MAX_ARGS_CHARS).optional(),
   reverts: z.array(z.string().min(1).max(200)).max(MAX_CHANGES).optional(),
-  fidelity: fidelityReportSchema.optional(),
+  // A diagnostic past its bounds (a 200k-character source with thousands of key terms left out, found at C1b) is dropped, never a
+  // reason to refuse the set: the review then shows no coverage row.
+  fidelity: fidelityReportSchema.optional().catch(undefined),
   analysis: analysisReportSchema.optional(),
+  knowledge: knowledgeSchema.optional().catch(undefined),
+  skipped: z.object({ locked: z.number().int().nonnegative() }).optional().catch(undefined),
+  related: z
+    .array(z.object({ target: z.string().min(1), name: z.string().max(200), reason: z.string().max(500) }))
+    .max(50)
+    .optional()
+    .catch(undefined),
 }).refine((s) => s.changes.length > 0 || (s.conflicts?.length ?? 0) > 0, { message: "A change set needs at least one change or conflict", path: ["changes"] });
 
 export class InvalidChangeSetError extends Error {
@@ -565,7 +809,10 @@ export function parseChangeSet(input: unknown, options: { externalKeys?: Readonl
   if (set.split && (set.contentSource || set.parts)) problems.push("split: a split set has no contentSource or parts (its pieces link to the split block's source)");
   if (problems.length) throw new InvalidChangeSetError(problems);
   // Known, bounded provenance only (F25); created objects carry the operation id whatever the producer put in metadata.
-  const metadata = { ...normalizeAIMetadata(set.metadata)!, operationId: set.operationId } as ChangeSet["metadata"];
+  // `noteModel` (knowledge-notes-plan §6.2) is the one reconciliation field a set's own metadata carries: the rules its
+  // objects were made under. Absent means `preserve`, so a `preserve` set is exactly what it was before the field.
+  const noteModel = set.metadata.noteModel === "distil" || set.metadata.noteModel === "preserve" ? set.metadata.noteModel : undefined;
+  const metadata = { ...normalizeAIMetadata(set.metadata)!, operationId: set.operationId, ...(noteModel ? { noteModel } : {}) } as ChangeSet["metadata"];
   return { ...set, metadata };
 }
 
@@ -579,8 +826,15 @@ function sameTarget(a: ChangeTarget, b: ChangeTarget): boolean {
 
 export interface DroppedChange {
   change: ProposedChange;
-  /** The only reason today: an existing object the change refers to was deleted. */
-  reason: "object_deleted";
+  /**
+   * `object_deleted`: an existing object the change refers to was deleted. `patch_rejected`: a claim-level patch no
+   * longer fits the object's content (`claimPatch.ts`), so none of its edits were applied. `target_changed`: an
+   * `update_block`'s or `update_shape`'s target changed since it was proposed (`staleTarget.ts`) and the accept path couldn't keep it for a
+   * decision (a merged set's parts) — not written, reported.
+   */
+  reason: "object_deleted" | "patch_rejected" | "target_changed";
+  /** `patch_rejected` only: which contract rule failed, and how. */
+  rejection?: { code: PatchRejection; detail: string };
 }
 
 export interface ResolvedChangeSet {
@@ -589,6 +843,11 @@ export interface ResolvedChangeSet {
   changes: ProposedChange[];
   /** Changes left out, with why — reported to the user, never silently lost. */
   dropped: DroppedChange[];
+  /**
+   * `update_block`s / `update_shape`s whose target changed since they were proposed (`staleTarget.ts`), as the decisions
+   * they now need: not in `changes`, never written by this accept. Only when `contentOf` / `shapeOf` is given (at accept).
+   */
+  stale: ConflictItem[];
 }
 
 /**
@@ -598,18 +857,58 @@ export interface ResolvedChangeSet {
  * whole set. Created objects refer to nothing existing and are never dropped,
  * so connections between them always survive.
  */
-export function resolveChangeSet(set: ChangeSet, isLive: (id: ObjectId) => boolean): ResolvedChangeSet {
+export function resolveChangeSet(
+  set: ChangeSet,
+  isLive: (id: ObjectId) => boolean,
+  /**
+   * The live content of an object, to check claim-level patches against (Stage 1b). Given (always, at accept), each
+   * `patch_block` becomes the `update_block` that writes its patched content, or is dropped (`patch_rejected`).
+   * Absent (the review's preview), patches are kept as they are.
+   */
+  contentOf?: (id: ObjectId) => PatchTarget | null | undefined,
+  /** A shape as it is now (its fingerprint and kind), for `update_shape` baselines (at accept). Absent: written as before. */
+  shapeOf?: (id: ObjectId) => LiveShape | null | undefined,
+): ResolvedChangeSet {
   const dropped: DroppedChange[] = [];
   const changes: ProposedChange[] = [];
+  const stale: ConflictItem[] = [];
   const gone = (t: ChangeTarget) => "existing" in t && !isLive(t.existing);
   for (const c of set.changes) {
     // A restore may re-create a deleted element (D43): its target needn't be live. A group needs at least one live member.
     const missing =
       c.kind === "restore" ? false : c.kind === "group_objects" ? !c.targets.some(isLive) : "target" in c ? !isLive(c.target) : c.kind === "connect" && (gone(c.from) || gone(c.to));
     if (missing) dropped.push({ change: c, reason: "object_deleted" });
-    else changes.push(c);
+    else if (c.kind === "patch_block" && contentOf) {
+      const live = contentOf(c.target);
+      const outcome = resolvePatch(c, live);
+      if (!outcome.ok) dropped.push({ change: c, reason: "patch_rejected", rejection: { code: outcome.reason, detail: outcome.detail } });
+      else changes.push(patchedUpdate(c, outcome.content, live!.title));
+    } else if (c.kind === "update_block" && c.expectedFingerprint && contentOf) {
+      // Stale-target protection: written only onto the content it was proposed for (or already says).
+      const live = contentOf(c.target);
+      if (baselineHolds(c, live, () => fingerprintContent(c.content, c.title ?? live?.title))) changes.push(c);
+      else stale.push(staleConflict(c, live));
+    } else if (c.kind === "update_shape" && c.expectedFingerprint && shapeOf) {
+      // The same for a shape's label: its baseline, or it already reads as proposed (in its own kind).
+      const live = shapeOf(c.target);
+      if (baselineHolds(c, live, () => (live ? fingerprintShape(live.shape, c.label) : ""))) changes.push(c);
+      else stale.push(staleConflict(c, live));
+    } else changes.push(c);
   }
-  return { set, changes, dropped };
+  return { set, changes, dropped, stale };
+}
+
+/** The `update_block` an accepted patch writes: the patched content, with the patch's own link fields. */
+function patchedUpdate(c: Extract<ProposedChange, { kind: "patch_block" }>, content: RichContent, title: string | undefined): Extract<ProposedChange, { kind: "update_block" }> {
+  return {
+    kind: "update_block",
+    target: c.target,
+    content,
+    ...(title !== undefined ? { title } : {}),
+    ...(c.stableNodeKey ? { stableNodeKey: c.stableNodeKey } : {}),
+    ...(c.sourceRefs ? { sourceRefs: c.sourceRefs } : {}),
+    ...(c.onEditedCard ? { userWording: true as const } : {}),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -626,6 +925,8 @@ export interface ChangeSummary {
   restored?: number;
   /** Frames (F42), counted apart from objects; only present when there are any. */
   sections?: number;
+  /** Cards marked for review by a citation-driven update; only present when there are any. */
+  reviews?: number;
 }
 
 /** Every kind that adds a new object (as opposed to connecting or moving one that already exists/was just created). */
@@ -636,9 +937,10 @@ export function summarizeChanges(changes: readonly ProposedChange[]): ChangeSumm
   for (const c of changes) {
     if (c.kind === "connect") s.connected++;
     else if (c.kind === "move") s.moved++;
-    else if (c.kind === "update_block" || c.kind === "update_shape" || c.kind === "update_node" || c.kind === "set_lens" || c.kind === "update_connection" || (c.kind === "update_frame" && c.name !== undefined)) s.updated++;
+    else if (c.kind === "update_block" || c.kind === "patch_block" || c.kind === "update_shape" || c.kind === "update_node" || c.kind === "set_lens" || c.kind === "update_connection" || (c.kind === "update_frame" && c.name !== undefined)) s.updated++;
     else if (c.kind === "remove") s.removed++;
     else if (c.kind === "restore") s.restored = (s.restored ?? 0) + 1;
+    else if (c.kind === "mark_review") s.reviews = (s.reviews ?? 0) + 1;
     else if (c.kind === "create_frame" || c.kind === "group_objects") s.sections = (s.sections ?? 0) + 1;
     else if (c.kind !== "rebaseline" && c.kind !== "update_frame") s.created++;
   }
@@ -662,6 +964,7 @@ export function describeChanges(changes: readonly ProposedChange[], options: { o
     s.updated ? plural(s.updated, "update", "updates") : "",
     s.removed ? plural(s.removed, "removal", "removals") : "",
     s.restored ? plural(s.restored, "restore", "restores") : "",
+    s.reviews ? `${plural(s.reviews, "card", "cards")} to review` : "",
   ];
   return parts.filter(Boolean).join(" · ") || "No changes";
 }
@@ -669,7 +972,15 @@ export function describeChanges(changes: readonly ProposedChange[], options: { o
 /** "1 change was skipped: an object it refers to was deleted." */
 export function describeDropped(dropped: readonly DroppedChange[]): string | null {
   if (!dropped.length) return null;
-  return `${plural(dropped.length, "change was", "changes were")} skipped: ${dropped.length === 1 ? "an object it refers to was" : "objects they refer to were"} deleted.`;
+  const deleted = dropped.filter((d) => d.reason === "object_deleted").length;
+  const changed = dropped.filter((d) => d.reason === "target_changed").length;
+  const rejected = dropped.length - deleted - changed;
+  const parts = [
+    deleted ? `${plural(deleted, "change was", "changes were")} skipped: ${deleted === 1 ? "an object it refers to was" : "objects they refer to were"} deleted.` : "",
+    changed ? `${plural(changed, "update was", "updates were")} skipped: ${changed === 1 ? "its block was" : "their blocks were"} edited since ${changed === 1 ? "it was" : "they were"} proposed, and your edit was kept.` : "",
+    rejected ? `${plural(rejected, "precise edit was", "precise edits were")} skipped: ${rejected === 1 ? "its card" : "their cards"} changed since the update was planned. Update again to redo ${rejected === 1 ? "it" : "them"}.` : "",
+  ];
+  return parts.filter(Boolean).join(" ");
 }
 
 /** Bounding box of the boxes a change set creates or moves to (null when it only connects). */

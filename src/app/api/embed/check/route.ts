@@ -6,11 +6,16 @@
  */
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { isRefusedNonLocal, notFound } from "@/config/httpExposure";
 import { isWebLink } from "@/domain/canvas/webEmbed";
 
 const TIMEOUT_MS = 5000;
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<Response> {
+  // Defence in depth behind src/proxy.ts: this route fetches any URL it is given from the server, so it answers only
+  // this machine (unless the deployment is deliberately public). Full SSRF hardening (private ranges, redirects to
+  // them) is still a tracked defect — .ai/docs/chatgpt-mcp-architecture-and-test-plan.md, "HTTP exposure filter".
+  if (isRefusedNonLocal(req.headers)) return notFound();
   const url = req.nextUrl.searchParams.get("url");
   if (!isWebLink(url)) return NextResponse.json({ error: "Expected an http(s) url." }, { status: 400 });
 

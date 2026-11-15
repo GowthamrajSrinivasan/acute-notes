@@ -1,0 +1,69 @@
+{
+  "about": "Knowledge Notes fixtures 4-10 (knowledge-notes-plan §7.3, WP1.12). Original synthetic text written for these tests; no copied material. Fixtures 1-3 are the existing files one level up. `critical`: fragments of units a run must never omit silently (G3). `protected`: exact details a run must keep or restore (G4). Fixture 9 stands in for a ChatGPT shared reply (the real share links are only used in approved live runs).",
+  "fixtures": [
+    {
+      "id": "f04-hedged-hybrid-search",
+      "number": 4,
+      "file": "f04-hedged-hybrid-search.md",
+      "title": "Hedged technical prose (hybrid search)",
+      "focus": ["qualifier", "condition"],
+      "critical": ["typically adds 20 to 40 ms", "only uses rank positions", "should be skipped when the latency budget is under 150 ms", "does not fix missing content"],
+      "protected": ["20 to 40 ms", "50", "150 ms"]
+    },
+    {
+      "id": "f05-service-config-docs",
+      "number": 5,
+      "file": "f05-service-config-docs.md",
+      "title": "Technical documentation with code and config",
+      "focus": ["code by reference", "paths", "named terms"],
+      "critical": ["at most 500", "must not be lowered below 1"],
+      "protected": ["config/ingest.yaml", "500", "Node 20.11", "/var/log/ingest/worker.log"]
+    },
+    {
+      "id": "f06-compound-caveats",
+      "number": 6,
+      "file": "f06-compound-caveats.md",
+      "title": "Compound sentences with caveats and causes",
+      "focus": ["condition", "cause", "critical units"],
+      "critical": ["up to 5 seconds behind", "unless it passes the write's commit token", "never acceptable for refunds", "can lose the last few transactions"],
+      "protected": ["5 seconds", "30 seconds"]
+    },
+    {
+      "id": "f07-meeting-action-items",
+      "number": 7,
+      "file": "f07-meeting-action-items.md",
+      "title": "Meeting notes with action items in prose",
+      "focus": ["action items", "owners", "dates"],
+      "critical": ["widen only if crash-free sessions stay above 99%"],
+      "protected": ["99.3%", "D1", "D2", "7.4.1", "2026-11-03"]
+    },
+    {
+      "id": "f08-tradeoff-argument",
+      "number": 8,
+      "file": "f08-tradeoff-argument.md",
+      "title": "An argument with trade-offs and limitations",
+      "focus": ["critical omissions", "trade-offs"],
+      "critical": ["unless the build tool caches results per package", "it does not hold for libraries", "only applies if the CI runners keep a shared cache"],
+      "protected": ["two weeks"]
+    },
+    {
+      "id": "f09-chat-reply",
+      "number": 9,
+      "file": "f09-chat-reply.md",
+      "title": "A chat assistant's shared reply (synthetic stand-in)",
+      "focus": ["real AI output shape", "tables", "filler"],
+      "critical": ["only Kafka keeps events after they are consumed"],
+      "protected": ["2,000"]
+    },
+    {
+      "id": "f10-update-series",
+      "number": 10,
+      "file": "f10-update-series.v1.md",
+      "next": "f10-update-series.v2.md",
+      "title": "Update series: rename, move, edit, deletion, duplicate",
+      "focus": ["identity", "lineage"],
+      "critical": ["A rise above 2% pauses the rollout automatically"],
+      "protected": ["5%", "30 days", "2%"]
+    }
+  ]
+}

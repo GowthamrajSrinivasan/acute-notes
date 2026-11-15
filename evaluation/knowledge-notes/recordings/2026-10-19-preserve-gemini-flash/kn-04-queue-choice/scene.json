@@ -1,0 +1,4785 @@
+{
+  "canvasId": "recorded",
+  "elements": [
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "3aletmik6r3N8HQ0hW0R",
+      "x": -866,
+      "y": -620,
+      "width": 968,
+      "height": 54,
+      "angle": 0,
+      "link": "acute://block/doc_YpFb0Y1rFtkX7nPV1PQn",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_YpFb0Y1rFtkX7nPV1PQn",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 36,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": -620
+        }
+      },
+      "version": 2,
+      "versionNonce": 1386912486,
+      "index": "a0",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "JI0c0VQN4sFig5sQUH1C",
+      "boundElements": [],
+      "updated": 1792436729069,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "GTY3PhU6xuXR1Mu2kg0v",
+      "x": -866,
+      "y": -558,
+      "width": 968,
+      "height": 33,
+      "angle": 0,
+      "link": "acute://block/doc_o899AYPF967LvTxqNN4Z",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_o899AYPF967LvTxqNN4Z",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 22,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": -558
+        }
+      },
+      "version": 3,
+      "versionNonce": 1053713146,
+      "index": "a01",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "JI0c0VQN4sFig5sQUH1C",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "oXk3sPiIlmq1R2NfKHkJ",
+      "x": 278,
+      "y": -620,
+      "width": 1468,
+      "height": 54,
+      "angle": 0,
+      "link": "acute://block/doc_eyxraCyDbE9JAxhwuozr",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_eyxraCyDbE9JAxhwuozr",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 36,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 278,
+          "y": -620
+        }
+      },
+      "version": 3,
+      "versionNonce": 637067686,
+      "index": "a02",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "0yfY6ffxxv43cdcs7Jm9",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "N9Ssvwy8R79eOdxTNlcN",
+      "x": 278,
+      "y": -558,
+      "width": 1468,
+      "height": 33,
+      "angle": 0,
+      "link": "acute://block/doc_40itBTcQ9WpdfIrTz9pa",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_40itBTcQ9WpdfIrTz9pa",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 22,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 278,
+          "y": -558
+        }
+      },
+      "version": 3,
+      "versionNonce": 2075915194,
+      "index": "a04",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "0yfY6ffxxv43cdcs7Jm9",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "ZSn47cdKTwnaUqngEJS3",
+      "x": -866,
+      "y": -139,
+      "width": 1708,
+      "height": 54,
+      "angle": 0,
+      "link": "acute://block/doc_Lohy5XHWuYwocl3zPw8r",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_Lohy5XHWuYwocl3zPw8r",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 36,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": -139
+        }
+      },
+      "version": 3,
+      "versionNonce": 620346598,
+      "index": "a05",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KNqDBKgs2jnzhgWl2c6l",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "9xar22lnojP2c28MLpyV",
+      "x": -866,
+      "y": -77,
+      "width": 1708,
+      "height": 33,
+      "angle": 0,
+      "link": "acute://block/doc_BA3FjqjwT3CAqO5eIZ82",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_BA3FjqjwT3CAqO5eIZ82",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 22,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": -77
+        }
+      },
+      "version": 3,
+      "versionNonce": 238644346,
+      "index": "a06",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KNqDBKgs2jnzhgWl2c6l",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "XJacCsixX02tSeCgRJbU",
+      "x": 1018,
+      "y": -139,
+      "width": 1448,
+      "height": 54,
+      "angle": 0,
+      "link": "acute://block/doc_m1r3Ry7m85kTXwER3H45",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_m1r3Ry7m85kTXwER3H45",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 36,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 1018,
+          "y": -139
+        }
+      },
+      "version": 3,
+      "versionNonce": 498937894,
+      "index": "a08",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KL0aJ4pEdu9DSYlgOa8g",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "e0NrT9VVic826a8js1MD",
+      "x": 1018,
+      "y": -77,
+      "width": 1448,
+      "height": 33,
+      "angle": 0,
+      "link": "acute://block/doc_9QcL5g7R3IHt5Yr9KTHd",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_9QcL5g7R3IHt5Yr9KTHd",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 22,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 1018,
+          "y": -77
+        }
+      },
+      "version": 3,
+      "versionNonce": 201968954,
+      "index": "a09",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KL0aJ4pEdu9DSYlgOa8g",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "RuKnWYRcPx711ovrxSSB",
+      "x": -866,
+      "y": 954,
+      "width": 968,
+      "height": 54,
+      "angle": 0,
+      "link": "acute://block/doc_J4mWn81jxevx2l6lc8Zb",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_J4mWn81jxevx2l6lc8Zb",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 36,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": 954
+        }
+      },
+      "version": 3,
+      "versionNonce": 1815100262,
+      "index": "a0A",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "ffJzk32cXA0tJCRzCoY5",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "NptTwHfO17paHMQ50Z2Y",
+      "x": -866,
+      "y": 1016,
+      "width": 968,
+      "height": 33,
+      "angle": 0,
+      "link": "acute://block/doc_16fQRw9lhtD5ziJy7Xj3",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_16fQRw9lhtD5ziJy7Xj3",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 22,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": 1016
+        }
+      },
+      "version": 3,
+      "versionNonce": 1519392250,
+      "index": "a0C",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "ffJzk32cXA0tJCRzCoY5",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "ShdtGMJJDx1xFP6FMm43",
+      "x": 278,
+      "y": 954,
+      "width": 460,
+      "height": 54,
+      "angle": 0,
+      "link": "acute://block/doc_mki2D8nSq3Aj5YIbunxt",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_mki2D8nSq3Aj5YIbunxt",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 36,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 278,
+          "y": 954
+        }
+      },
+      "version": 3,
+      "versionNonce": 1721753254,
+      "index": "a0D",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "sMIQulFYrYrFdjWY3Lg7",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "Utoi9B56763V06tg4dqz",
+      "x": 278,
+      "y": 1016,
+      "width": 460,
+      "height": 99,
+      "angle": 0,
+      "link": "acute://block/doc_X8aSXrUVdyCJgNbHKGbE",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_X8aSXrUVdyCJgNbHKGbE",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 22,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 278,
+          "y": 1016
+        }
+      },
+      "version": 3,
+      "versionNonce": 986662586,
+      "index": "a0E",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "sMIQulFYrYrFdjWY3Lg7",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "kItQBiaeas6tV1zLpBY6",
+      "x": 914,
+      "y": 954,
+      "width": 460,
+      "height": 54,
+      "angle": 0,
+      "link": "acute://block/doc_pSBPcd77PRB0J0lGwX18",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_pSBPcd77PRB0J0lGwX18",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 36,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 914,
+          "y": 954
+        }
+      },
+      "version": 3,
+      "versionNonce": 297343462,
+      "index": "a0G",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "JPNywEoYoshXeV1km7nq",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "b9bXqq5EbnlO6ujm9wla",
+      "x": 914,
+      "y": 1016,
+      "width": 460,
+      "height": 66,
+      "angle": 0,
+      "link": "acute://block/doc_mKDgybxVs7DQZ3zy5E1n",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_mKDgybxVs7DQZ3zy5E1n",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 22,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 914,
+          "y": 1016
+        }
+      },
+      "version": 3,
+      "versionNonce": 1433034618,
+      "index": "a0H",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "JPNywEoYoshXeV1km7nq",
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": null,
+      "type": "embeddable",
+      "id": "cBTCtqzj3KP2PrzQlrW6",
+      "x": 328,
+      "y": -741,
+      "width": 944,
+      "height": 33,
+      "angle": 0,
+      "link": "acute://block/doc_5vw0pUaLw3xJ22UZsirj",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_5vw0pUaLw3xJ22UZsirj",
+          "style": {
+            "frame": "none",
+            "fontFamily": "excalifont",
+            "fontSize": 22,
+            "textAlign": "center",
+            "autoWidth": false
+          }
+        },
+        "acuteLayout": {
+          "x": 328,
+          "y": -741
+        }
+      },
+      "version": 3,
+      "versionNonce": 1418259750,
+      "index": "a0I",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": null,
+      "boundElements": [],
+      "updated": 1792436729073,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "B4wrBLflLj1wAlQBDYSx",
+      "x": -866,
+      "y": -497,
+      "width": 460,
+      "height": 70,
+      "angle": 0,
+      "link": "acute://block/doc_0rpeLOchOvXTWTiho5W6",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_0rpeLOchOvXTWTiho5W6",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": -497
+        }
+      },
+      "version": 4,
+      "versionNonce": 1404264186,
+      "index": "a0K",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "JI0c0VQN4sFig5sQUH1C",
+      "boundElements": [
+        {
+          "id": "C8oRQde5YizGMWtSwV0u",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729226,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "FpX2WRuZZMzf6rI0cUjA",
+      "x": -358,
+      "y": -497,
+      "width": 460,
+      "height": 140,
+      "angle": 0,
+      "link": "acute://block/doc_6jQTpQFRTlfmiFUYTrPb",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_6jQTpQFRTlfmiFUYTrPb",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -358,
+          "y": -497
+        }
+      },
+      "version": 4,
+      "versionNonce": 856647802,
+      "index": "a0L",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "JI0c0VQN4sFig5sQUH1C",
+      "boundElements": [
+        {
+          "id": "C8oRQde5YizGMWtSwV0u",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729227,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "7KxXCa9ujMjSSuPdwYel",
+      "x": 278,
+      "y": -497,
+      "width": 460,
+      "height": 98,
+      "angle": 0,
+      "link": "acute://block/doc_wRWBppjc9lLNPgUCgcpf",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_wRWBppjc9lLNPgUCgcpf",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 278,
+          "y": -497
+        }
+      },
+      "version": 4,
+      "versionNonce": 118952442,
+      "index": "a0M",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "0yfY6ffxxv43cdcs7Jm9",
+      "boundElements": [],
+      "updated": 1792436729227,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "wiSopKTynHwDnPHFdZOX",
+      "x": 786,
+      "y": -497,
+      "width": 460,
+      "height": 118,
+      "angle": 0,
+      "link": "acute://block/doc_6fgEz0w6L77JNx7r74oz",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_6fgEz0w6L77JNx7r74oz",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 786,
+          "y": -497
+        }
+      },
+      "version": 4,
+      "versionNonce": 890684090,
+      "index": "a0O",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "0yfY6ffxxv43cdcs7Jm9",
+      "boundElements": [],
+      "updated": 1792436729227,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "sFE4AEa2wTgZ7gtSsFsJ",
+      "x": 1294,
+      "y": -497,
+      "width": 452,
+      "height": 145,
+      "angle": 0,
+      "link": "acute://block/doc_PJ6qXXc4H2Xr9rizOAQH",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_PJ6qXXc4H2Xr9rizOAQH",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1294,
+          "y": -497
+        }
+      },
+      "version": 4,
+      "versionNonce": 291658618,
+      "index": "a0P",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "0yfY6ffxxv43cdcs7Jm9",
+      "boundElements": [],
+      "updated": 1792436729227,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "MaeoR6J06cV6A9PD4gfX",
+      "x": -866,
+      "y": -16,
+      "width": 1200,
+      "height": 496,
+      "angle": 0,
+      "link": "acute://block/doc_rU3jT5LMNn2LN4Xf4G7g",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "table",
+          "documentId": "doc_rU3jT5LMNn2LN4Xf4G7g",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": -16
+        }
+      },
+      "version": 4,
+      "versionNonce": 977067066,
+      "index": "a0Q",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KNqDBKgs2jnzhgWl2c6l",
+      "boundElements": [],
+      "updated": 1792436729227,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "eD25EAIv7eKfJOYHcvq4",
+      "x": 382,
+      "y": -16,
+      "width": 460,
+      "height": 203,
+      "angle": 0,
+      "link": "acute://block/doc_MvEJXphqWZnYH9Ugtk3I",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_MvEJXphqWZnYH9Ugtk3I",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 382,
+          "y": -16
+        }
+      },
+      "version": 4,
+      "versionNonce": 227099898,
+      "index": "a0S",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KNqDBKgs2jnzhgWl2c6l",
+      "boundElements": [],
+      "updated": 1792436729227,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "yhi4SuZYhhMMvpnzt6ph",
+      "x": -866,
+      "y": 644,
+      "width": 460,
+      "height": 116,
+      "angle": 0,
+      "link": "acute://block/doc_X29CqTVNvbZ74SFL3vgw",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_X29CqTVNvbZ74SFL3vgw",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": 644
+        }
+      },
+      "version": 4,
+      "versionNonce": 885691834,
+      "index": "a0T",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KNqDBKgs2jnzhgWl2c6l",
+      "boundElements": [],
+      "updated": 1792436729227,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "1E7T9CK34cgTqkHYZI79",
+      "x": 1018,
+      "y": -16,
+      "width": 940,
+      "height": 157,
+      "angle": 0,
+      "link": "acute://block/doc_K9c4rOZ8kIXZ0Ali7psr",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "table",
+          "documentId": "doc_K9c4rOZ8kIXZ0Ali7psr",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1018,
+          "y": -16
+        }
+      },
+      "version": 4,
+      "versionNonce": 824430202,
+      "index": "a0U",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KL0aJ4pEdu9DSYlgOa8g",
+      "boundElements": [
+        {
+          "id": "MIXgFp6iC2tnCclHZlZc",
+          "type": "arrow"
+        },
+        {
+          "id": "tvslxRfwopEPWbVGB7Dy",
+          "type": "arrow"
+        },
+        {
+          "id": "KsJyrwuTtfm1E4sxKuqK",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729227,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "fLf8rNntpSUVkaaVdHoP",
+      "x": 2006,
+      "y": -16,
+      "width": 460,
+      "height": 91,
+      "angle": 0,
+      "link": "acute://block/doc_05htBKYlyra231tQyM4u",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_05htBKYlyra231tQyM4u",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 2006,
+          "y": -16
+        }
+      },
+      "version": 4,
+      "versionNonce": 1316808890,
+      "index": "a0V",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KL0aJ4pEdu9DSYlgOa8g",
+      "boundElements": [
+        {
+          "id": "tvslxRfwopEPWbVGB7Dy",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729228,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "T8TSgfP5IZCRL5cSbtDL",
+      "x": 1248,
+      "y": 224,
+      "width": 480,
+      "height": 198,
+      "angle": 0,
+      "link": "acute://block/doc_t7D8UWKNSfK7Ip3VCb90",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "code",
+          "documentId": "doc_t7D8UWKNSfK7Ip3VCb90",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1248,
+          "y": 224
+        }
+      },
+      "version": 4,
+      "versionNonce": 550601274,
+      "index": "a0W",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KL0aJ4pEdu9DSYlgOa8g",
+      "boundElements": [
+        {
+          "id": "MIXgFp6iC2tnCclHZlZc",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729228,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "dQkZvAeFWyMTCeOtFDi0",
+      "x": 1258,
+      "y": 552,
+      "width": 460,
+      "height": 140,
+      "angle": 0,
+      "link": "acute://block/doc_n0qBIv9H7ZfNnbpON756",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_n0qBIv9H7ZfNnbpON756",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 1258,
+          "y": 552
+        }
+      },
+      "version": 4,
+      "versionNonce": 1184443130,
+      "index": "a0X",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "KL0aJ4pEdu9DSYlgOa8g",
+      "boundElements": [
+        {
+          "id": "KsJyrwuTtfm1E4sxKuqK",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729229,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "E273yPQahUOt0KfrKsCL",
+      "x": -866,
+      "y": 1077,
+      "width": 460,
+      "height": 91,
+      "angle": 0,
+      "link": "acute://block/doc_wKxpl6gBZ9E6xc7JYiW5",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_wKxpl6gBZ9E6xc7JYiW5",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": 1077
+        }
+      },
+      "version": 4,
+      "versionNonce": 670184570,
+      "index": "a0Z",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "ffJzk32cXA0tJCRzCoY5",
+      "boundElements": [],
+      "updated": 1792436729229,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "NUXCwQOn4Fd0cqH82Lpd",
+      "x": -358,
+      "y": 1077,
+      "width": 460,
+      "height": 95,
+      "angle": 0,
+      "link": "acute://block/doc_je4hhkcK20xL7D95lUzg",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_je4hhkcK20xL7D95lUzg",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -358,
+          "y": 1077
+        }
+      },
+      "version": 4,
+      "versionNonce": 57251130,
+      "index": "a0a",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "ffJzk32cXA0tJCRzCoY5",
+      "boundElements": [],
+      "updated": 1792436729229,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "5I5PEa3SW65g9Je54Yd0",
+      "x": -866,
+      "y": 1257,
+      "width": 460,
+      "height": 70,
+      "angle": 0,
+      "link": "acute://block/doc_4fzINfLQwh9uzvjb0iQC",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_4fzINfLQwh9uzvjb0iQC",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -866,
+          "y": 1257
+        }
+      },
+      "version": 4,
+      "versionNonce": 1656151546,
+      "index": "a0b",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "ffJzk32cXA0tJCRzCoY5",
+      "boundElements": [],
+      "updated": 1792436729230,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "zOuee2RGYU901rA2FKnn",
+      "x": -358,
+      "y": 1257,
+      "width": 460,
+      "height": 191,
+      "angle": 0,
+      "link": "acute://block/doc_M9vJ9pmIRTBuO57pB9ut",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_M9vJ9pmIRTBuO57pB9ut",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": -358,
+          "y": 1257
+        }
+      },
+      "version": 4,
+      "versionNonce": 584912570,
+      "index": "a0d",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "ffJzk32cXA0tJCRzCoY5",
+      "boundElements": [],
+      "updated": 1792436729230,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "0ro3fK72X5XniK7eodJM",
+      "x": 278,
+      "y": 1143,
+      "width": 460,
+      "height": 251,
+      "angle": 0,
+      "link": "acute://block/doc_mKSA55cupQ6aRIYdS59o",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_mKSA55cupQ6aRIYdS59o",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 278,
+          "y": 1143
+        }
+      },
+      "version": 4,
+      "versionNonce": 142550906,
+      "index": "a0e",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "sMIQulFYrYrFdjWY3Lg7",
+      "boundElements": [],
+      "updated": 1792436729230,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "9ki2ssxLLJWfCr6uFY82",
+      "x": 278,
+      "y": 1483,
+      "width": 460,
+      "height": 95,
+      "angle": 0,
+      "link": "acute://block/doc_ob1ahIg9s6SLMKU4CDIa",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_ob1ahIg9s6SLMKU4CDIa",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 278,
+          "y": 1483
+        }
+      },
+      "version": 4,
+      "versionNonce": 1272981562,
+      "index": "a0f",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "sMIQulFYrYrFdjWY3Lg7",
+      "boundElements": [],
+      "updated": 1792436729230,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "Pb99QL60YL3Pju7E2CgJ",
+      "x": 914,
+      "y": 1110,
+      "width": 460,
+      "height": 206,
+      "angle": 0,
+      "link": "acute://block/doc_YVnQDyKIpDJGC9uPxnzb",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_YVnQDyKIpDJGC9uPxnzb",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 914,
+          "y": 1110
+        }
+      },
+      "version": 4,
+      "versionNonce": 618860794,
+      "index": "a0h",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "JPNywEoYoshXeV1km7nq",
+      "boundElements": [],
+      "updated": 1792436729230,
+      "locked": false
+    },
+    {
+      "strokeColor": "#dcdce3",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "roundness": {
+        "type": 3
+      },
+      "type": "embeddable",
+      "id": "BFKpNNHXx1pyhxqc0m5c",
+      "x": 914,
+      "y": 1402,
+      "width": 460,
+      "height": 116,
+      "angle": 0,
+      "link": "acute://block/doc_Um5Kyq8qj6PSgXMufRwW",
+      "customData": {
+        "acute": {
+          "kind": "rich-block",
+          "blockType": "text",
+          "documentId": "doc_Um5Kyq8qj6PSgXMufRwW",
+          "style": {
+            "frame": "card",
+            "fontFamily": "inter",
+            "fontSize": 14,
+            "textAlign": "left",
+            "autoWidth": false,
+            "autoHeight": true
+          }
+        },
+        "acuteLayout": {
+          "x": 914,
+          "y": 1402
+        }
+      },
+      "version": 4,
+      "versionNonce": 1460330938,
+      "index": "a0i",
+      "isDeleted": false,
+      "opacity": 100,
+      "seed": 1,
+      "groupIds": [],
+      "frameId": "JPNywEoYoshXeV1km7nq",
+      "boundElements": [],
+      "updated": 1792436729230,
+      "locked": false
+    },
+    {
+      "id": "JI0c0VQN4sFig5sQUH1C",
+      "type": "frame",
+      "x": -906,
+      "y": -660,
+      "width": 1048,
+      "height": 385,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0j",
+      "roundness": null,
+      "seed": 2137709370,
+      "version": 3,
+      "versionNonce": 1619017658,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key"
+          }
+        },
+        "acuteOverview": {
+          "title": "Choosing a queue for background jobs",
+          "takeaway": "This note replaces an earlier draft for the billing team's architecture review."
+        },
+        "acuteLayout": {
+          "x": -906,
+          "y": -660
+        }
+      },
+      "name": "1 · Notes"
+    },
+    {
+      "id": "0yfY6ffxxv43cdcs7Jm9",
+      "type": "frame",
+      "x": 238,
+      "y": -660,
+      "width": 1548,
+      "height": 385,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0l",
+      "roundness": null,
+      "seed": 446653434,
+      "version": 3,
+      "versionNonce": 376451302,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "QeY38n0luKrsgSxY2EdJ",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key"
+          }
+        },
+        "acuteOverview": {
+          "title": "Selection criteria",
+          "takeaway": "Options must meet two critical criteria and are then scored by four weighted factors."
+        },
+        "acuteLayout": {
+          "x": 238,
+          "y": -660
+        }
+      },
+      "name": "2 · Overview"
+    },
+    {
+      "id": "KNqDBKgs2jnzhgWl2c6l",
+      "type": "frame",
+      "x": -906,
+      "y": -179,
+      "width": 1788,
+      "height": 997,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0m",
+      "roundness": null,
+      "seed": 398775482,
+      "version": 3,
+      "versionNonce": 1821653114,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "N9ns7Em47hvqBSZxEcsd",
+          "type": "arrow"
+        },
+        {
+          "id": "QeY38n0luKrsgSxY2EdJ",
+          "type": "arrow"
+        },
+        {
+          "id": "TMmZ1ZhgR7pT3HePVhTD",
+          "type": "arrow"
+        },
+        {
+          "id": "ew29KxnZCwAllGX6NH5s",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key"
+          }
+        },
+        "acuteOverview": {
+          "title": "Options",
+          "takeaway": "Choose based on operational cost, idempotency needs, and transactional guarantees."
+        },
+        "acuteLayout": {
+          "x": -906,
+          "y": -179
+        }
+      },
+      "name": "3 · Comparison"
+    },
+    {
+      "id": "KL0aJ4pEdu9DSYlgOa8g",
+      "type": "frame",
+      "x": 978,
+      "y": -179,
+      "width": 1528,
+      "height": 953,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0n",
+      "roundness": null,
+      "seed": 1484664186,
+      "version": 3,
+      "versionNonce": 4531238,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "N9ns7Em47hvqBSZxEcsd",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key"
+          }
+        },
+        "acuteOverview": {
+          "title": "Costs",
+          "takeaway": "Database job table is cheapest, but managed queue scales significantly with volume."
+        },
+        "acuteLayout": {
+          "x": 978,
+          "y": -179
+        }
+      },
+      "name": "4 · Metrics"
+    },
+    {
+      "id": "ffJzk32cXA0tJCRzCoY5",
+      "type": "frame",
+      "x": -906,
+      "y": 914,
+      "width": 1048,
+      "height": 637,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0p",
+      "roundness": null,
+      "seed": 302935610,
+      "version": 3,
+      "versionNonce": 1831541050,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "ew29KxnZCwAllGX6NH5s",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key"
+          }
+        },
+        "acuteOverview": {
+          "title": "Decision status",
+          "takeaway": "Decision deferred until Option C load test results are available."
+        },
+        "acuteLayout": {
+          "x": -906,
+          "y": 914
+        }
+      },
+      "name": "5 · Decision"
+    },
+    {
+      "id": "sMIQulFYrYrFdjWY3Lg7",
+      "type": "frame",
+      "x": 238,
+      "y": 914,
+      "width": 540,
+      "height": 743,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0q",
+      "roundness": null,
+      "seed": 1498978042,
+      "version": 3,
+      "versionNonce": 563720038,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key"
+          }
+        },
+        "acuteOverview": {
+          "title": "Context",
+          "takeaway": "Current in-process worker pool loses jobs on deploy/crash, causing customer impact during peak loads."
+        },
+        "acuteLayout": {
+          "x": 238,
+          "y": 914
+        }
+      },
+      "name": "6 · Supporting detail"
+    },
+    {
+      "id": "JPNywEoYoshXeV1km7nq",
+      "type": "frame",
+      "x": 874,
+      "y": 914,
+      "width": 540,
+      "height": 676,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0r",
+      "roundness": null,
+      "seed": 786409402,
+      "version": 3,
+      "versionNonce": 564650490,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "TMmZ1ZhgR7pT3HePVhTD",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key"
+          }
+        },
+        "acuteOverview": {
+          "title": "Evidence",
+          "takeaway": "Option C load test shows limits; A and B lack internal validation."
+        },
+        "acuteLayout": {
+          "x": 874,
+          "y": 914
+        }
+      },
+      "name": "7 · Supporting detail"
+    },
+    {
+      "id": "C8oRQde5YizGMWtSwV0u",
+      "type": "arrow",
+      "x": -366,
+      "y": -427,
+      "width": 32,
+      "height": 35,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0t",
+      "roundness": null,
+      "seed": 180789370,
+      "version": 5,
+      "versionNonce": 482363706,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436729227,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -16,
+          0
+        ],
+        [
+          -16,
+          -35
+        ],
+        [
+          -32,
+          -35
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "FpX2WRuZZMzf6rI0cUjA",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "B4wrBLflLj1wAlQBDYSx",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "MIXgFp6iC2tnCclHZlZc",
+      "type": "arrow",
+      "x": 1488,
+      "y": 149,
+      "width": 0,
+      "height": 67,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dotted",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0u",
+      "roundness": null,
+      "seed": 1758495034,
+      "version": 4,
+      "versionNonce": 1733816122,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436729228,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "explained_by",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          67
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "1E7T9CK34cgTqkHYZI79",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "T8TSgfP5IZCRL5cSbtDL",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "dot",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "tvslxRfwopEPWbVGB7Dy",
+      "type": "arrow",
+      "x": 1966,
+      "y": 62.5,
+      "width": 32,
+      "height": 33,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0v",
+      "roundness": null,
+      "seed": 1415596538,
+      "version": 5,
+      "versionNonce": 655606138,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436729228,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "relates_to",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          -33
+        ],
+        [
+          32,
+          -33
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "1E7T9CK34cgTqkHYZI79",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "fLf8rNntpSUVkaaVdHoP",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "KsJyrwuTtfm1E4sxKuqK",
+      "type": "arrow",
+      "x": 1010,
+      "y": 62.5,
+      "width": 264,
+      "height": 559.5,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dotted",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0x",
+      "roundness": null,
+      "seed": 1954085562,
+      "version": 5,
+      "versionNonce": 1324202938,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436729229,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "explained_by",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -24,
+          0
+        ],
+        [
+          -24,
+          559.5
+        ],
+        [
+          240,
+          559.5
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "1E7T9CK34cgTqkHYZI79",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "dQkZvAeFWyMTCeOtFDi0",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "dot",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "N9ns7Em47hvqBSZxEcsd",
+      "type": "arrow",
+      "x": 890,
+      "y": 319.5,
+      "width": 80,
+      "height": 22,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dotted",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a0z",
+      "roundness": null,
+      "seed": 398300026,
+      "version": 3,
+      "versionNonce": 1232527654,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "PV4eYEF0ifucS4jc4hxVA"
+        }
+      ],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "references",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          40,
+          0
+        ],
+        [
+          40,
+          -22
+        ],
+        [
+          80,
+          -22
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "KNqDBKgs2jnzhgWl2c6l",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          1,
+          0.5001
+        ]
+      },
+      "endBinding": {
+        "elementId": "KL0aJ4pEdu9DSYlgOa8g",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0,
+          0.5001
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "PV4eYEF0ifucS4jc4hxVA",
+      "type": "text",
+      "x": 862.9360504150391,
+      "y": 309.5,
+      "width": 94.12789916992188,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a1",
+      "roundness": null,
+      "seed": 1081152570,
+      "version": 3,
+      "versionNonce": 813071610,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436729072,
+      "link": null,
+      "locked": false,
+      "text": "cost details",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "N9ns7Em47hvqBSZxEcsd",
+      "originalText": "cost details",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "QeY38n0luKrsgSxY2EdJ",
+      "type": "arrow",
+      "x": -12,
+      "y": -187,
+      "width": 1024,
+      "height": 80,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a2",
+      "roundness": null,
+      "seed": 368535462,
+      "version": 3,
+      "versionNonce": 1455402042,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "mPojdORuxClYtz2ya9TiT"
+        }
+      ],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "depends_on",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -40
+        ],
+        [
+          1024,
+          -40
+        ],
+        [
+          1024,
+          -80
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "KNqDBKgs2jnzhgWl2c6l",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5001,
+          0
+        ]
+      },
+      "endBinding": {
+        "elementId": "0yfY6ffxxv43cdcs7Jm9",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5001,
+          1
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "mPojdORuxClYtz2ya9TiT",
+      "type": "text",
+      "x": 450.90404510498047,
+      "y": -237,
+      "width": 98.19190979003906,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a3",
+      "roundness": null,
+      "seed": 1597473510,
+      "version": 4,
+      "versionNonce": 931908710,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "text": "evaluated by",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "QeY38n0luKrsgSxY2EdJ",
+      "originalText": "evaluated by",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "TMmZ1ZhgR7pT3HePVhTD",
+      "type": "arrow",
+      "x": 1144,
+      "y": 906,
+      "width": 1096,
+      "height": 80,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a4",
+      "roundness": null,
+      "seed": 1974478650,
+      "version": 3,
+      "versionNonce": 825365754,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "QlvU3JE5Nms-keJvKXfXX"
+        }
+      ],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "supports",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -40
+        ],
+        [
+          -1096,
+          -40
+        ],
+        [
+          -1096,
+          -80
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "JPNywEoYoshXeV1km7nq",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5001,
+          0
+        ]
+      },
+      "endBinding": {
+        "elementId": "KNqDBKgs2jnzhgWl2c6l",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5335570469798657,
+          1
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle_outline",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "QlvU3JE5Nms-keJvKXfXX",
+      "type": "text",
+      "x": 529.3360748291016,
+      "y": 856,
+      "width": 133.32785034179688,
+      "height": 20,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a5",
+      "roundness": null,
+      "seed": 844836858,
+      "version": 4,
+      "versionNonce": 1113673638,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "text": "load test results",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "TMmZ1ZhgR7pT3HePVhTD",
+      "originalText": "load test results",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "ew29KxnZCwAllGX6NH5s",
+      "type": "arrow",
+      "x": -382,
+      "y": 906,
+      "width": 310,
+      "height": 80,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dotted",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a6",
+      "roundness": null,
+      "seed": 1407442918,
+      "version": 3,
+      "versionNonce": 182019514,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "rrjY5NFHefDiT6NGE8ZFh"
+        }
+      ],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "acuteMeta": {
+          "ai": {
+            "createdBy": "ai",
+            "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+            "task": "generate_visual_plan",
+            "provider": "openrouter",
+            "model": "google/gemini-2.5-flash",
+            "authType": "api_key",
+            "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+            "contentSourceVersion": 1
+          }
+        },
+        "acuteRelation": "references",
+        "acuteRouted": true
+      },
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -40
+        ],
+        [
+          310,
+          -40
+        ],
+        [
+          310,
+          -80
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "ffJzk32cXA0tJCRzCoY5",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.5001,
+          0
+        ]
+      },
+      "endBinding": {
+        "elementId": "KNqDBKgs2jnzhgWl2c6l",
+        "focus": 0,
+        "gap": 8,
+        "fixedPoint": [
+          0.4664429530201342,
+          1
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "rrjY5NFHefDiT6NGE8ZFh",
+      "type": "text",
+      "x": -311.15992736816406,
+      "y": 846,
+      "width": 168.31985473632812,
+      "height": 40,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a7",
+      "roundness": null,
+      "seed": 1365963558,
+      "version": 4,
+      "versionNonce": 908356326,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1792436729073,
+      "link": null,
+      "locked": false,
+      "text": "open requirements for\noptions",
+      "fontSize": 16,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "ew29KxnZCwAllGX6NH5s",
+      "originalText": "open requirements for options",
+      "autoResize": true,
+      "lineHeight": 1.25
+    }
+  ],
+  "documents": {
+    "doc_YpFb0Y1rFtkX7nPV1PQn": {
+      "id": "doc_YpFb0Y1rFtkX7nPV1PQn",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Choosing a queue for background jobs",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs § group#0",
+          "contentFingerprint": "c11dugvp0nvz"
+        }
+      }
+    },
+    "doc_o899AYPF967LvTxqNN4Z": {
+      "id": "doc_o899AYPF967LvTxqNN4Z",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "This note replaces an earlier draft for the billing team's architecture review.",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key"
+        }
+      }
+    },
+    "doc_eyxraCyDbE9JAxhwuozr": {
+      "id": "doc_eyxraCyDbE9JAxhwuozr",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Selection criteria",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Selection criteria § group#0",
+          "contentFingerprint": "c161i78kvwz4"
+        }
+      }
+    },
+    "doc_40itBTcQ9WpdfIrTz9pa": {
+      "id": "doc_40itBTcQ9WpdfIrTz9pa",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Options must meet two critical criteria and are then scored by four weighted factors.",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key"
+        }
+      }
+    },
+    "doc_Lohy5XHWuYwocl3zPw8r": {
+      "id": "doc_Lohy5XHWuYwocl3zPw8r",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Options",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Options ⨁ Choosing a queue for background jobs › Benefits and trade-offs § group#0",
+          "contentFingerprint": "c13y4iyj8uki"
+        }
+      }
+    },
+    "doc_BA3FjqjwT3CAqO5eIZ82": {
+      "id": "doc_BA3FjqjwT3CAqO5eIZ82",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Choose based on operational cost, idempotency needs, and transactional guarantees.",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key"
+        }
+      }
+    },
+    "doc_m1r3Ry7m85kTXwER3H45": {
+      "id": "doc_m1r3Ry7m85kTXwER3H45",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Costs",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Costs § group#0",
+          "contentFingerprint": "c1e7qmk2hsnw"
+        }
+      }
+    },
+    "doc_9QcL5g7R3IHt5Yr9KTHd": {
+      "id": "doc_9QcL5g7R3IHt5Yr9KTHd",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Database job table is cheapest, but managed queue scales significantly with volume.",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key"
+        }
+      }
+    },
+    "doc_J4mWn81jxevx2l6lc8Zb": {
+      "id": "doc_J4mWn81jxevx2l6lc8Zb",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Decision status",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Decision status § group#0",
+          "contentFingerprint": "c1kw7reeqqod"
+        }
+      }
+    },
+    "doc_16fQRw9lhtD5ziJy7Xj3": {
+      "id": "doc_16fQRw9lhtD5ziJy7Xj3",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Decision deferred until Option C load test results are available.",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key"
+        }
+      }
+    },
+    "doc_mki2D8nSq3Aj5YIbunxt": {
+      "id": "doc_mki2D8nSq3Aj5YIbunxt",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Context",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Context § group#0",
+          "contentFingerprint": "c2bcyhmoi6qw"
+        }
+      }
+    },
+    "doc_X8aSXrUVdyCJgNbHKGbE": {
+      "id": "doc_X8aSXrUVdyCJgNbHKGbE",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Current in-process worker pool loses jobs on deploy/crash, causing customer impact during peak loads.",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key"
+        }
+      }
+    },
+    "doc_pSBPcd77PRB0J0lGwX18": {
+      "id": "doc_pSBPcd77PRB0J0lGwX18",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Evidence",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Evidence § group#0",
+          "contentFingerprint": "ctisfv6843t"
+        }
+      }
+    },
+    "doc_mKDgybxVs7DQZ3zy5E1n": {
+      "id": "doc_mKDgybxVs7DQZ3zy5E1n",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Option C load test shows limits; A and B lack internal validation.",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key"
+        }
+      }
+    },
+    "doc_5vw0pUaLw3xJ22UZsirj": {
+      "id": "doc_5vw0pUaLw3xJ22UZsirj",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "content": "Queue options for background jobs, their costs, benefits, and decision status.",
+          "props": {
+            "backgroundColor": "orange"
+          }
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "(outline) § subtitle#0",
+          "contentFingerprint": "c5i15quucmq"
+        }
+      }
+    },
+    "doc_0rpeLOchOvXTWTiho5W6": {
+      "id": "doc_0rpeLOchOvXTWTiho5W6",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "089407b5-a724-4020-9178-4b097fa926f8",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "This note was written for the billing team's architecture review and replaces the earlier draft shared in chat.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs § text#0",
+          "contentFingerprint": "cx1g22xcn5i"
+        }
+      }
+    },
+    "doc_6jQTpQFRTlfmiFUYTrPb": {
+      "id": "doc_6jQTpQFRTlfmiFUYTrPb",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3,
+            "backgroundColor": "orange"
+          },
+          "content": "Analysis · Purpose of the Note"
+        },
+        {
+          "type": "paragraph",
+          "id": "90c0993a-c3a3-4de7-a1d2-00ae82fe7f02",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "This document serves as an updated architecture review for the billing team, specifically addressing the selection of a queue for background jobs. It supersedes a previous draft shared via chat, indicating a formalization of the discussion.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs § text#1",
+          "contentFingerprint": "cgxguln71by"
+        }
+      }
+    },
+    "doc_wRWBppjc9lLNPgUCgcpf": {
+      "id": "doc_wRWBppjc9lLNPgUCgcpf",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3,
+            "backgroundColor": "orange"
+          },
+          "content": "Analysis · Overview"
+        },
+        {
+          "type": "paragraph",
+          "id": "742e776b-90d0-4f3f-a1c1-b4a6520f806f",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "This section outlines the criteria for selecting an option, categorizing them into must-haves and weighted criteria for scoring.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729069,
+      "updatedAt": 1792436729069,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Selection criteria § text#0",
+          "contentFingerprint": "c1agdayplh2b"
+        }
+      }
+    },
+    "doc_6fgEz0w6L77JNx7r74oz": {
+      "id": "doc_6fgEz0w6L77JNx7r74oz",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3
+          },
+          "content": "Must-Have Criteria"
+        },
+        {
+          "type": "bulletListItem",
+          "id": "1d07e4cc-4f58-4677-888d-56e93487375a",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "No job is lost when a worker crashes or the service is deployed.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "19ff13e2-d2d9-42f5-a3d8-44b9380ba0a0",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The queue absorbs 1,800 jobs per minute (three times today's peak) without manual intervention.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Selection criteria § text#1",
+          "contentFingerprint": "coepbrwcpne"
+        }
+      }
+    },
+    "doc_PJ6qXXc4H2Xr9rizOAQH": {
+      "id": "doc_PJ6qXXc4H2Xr9rizOAQH",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3
+          },
+          "content": "Weighted Criteria"
+        },
+        {
+          "type": "bulletListItem",
+          "id": "3f6ae2b9-9beb-43a6-85f8-99e499608250",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Operational effort: 40%",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "d58bc106-a272-481e-90e7-189c66909415",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Monthly cost: 30%",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "66166a32-9d34-4d91-88cd-552d0a5276f5",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Developer experience, including local testing: 20%",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "6f7be342-c1ea-4f50-bc8e-98bb240e1b83",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Portability away from our cloud provider: 10%",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Selection criteria § text#2",
+          "contentFingerprint": "cihtcxr8w27"
+        }
+      }
+    },
+    "doc_rU3jT5LMNn2LN4Xf4G7g": {
+      "id": "doc_rU3jT5LMNn2LN4Xf4G7g",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "table",
+          "content": {
+            "type": "tableContent",
+            "headerRows": 1,
+            "columnWidths": [
+              152,
+              335,
+              335,
+              335
+            ],
+            "rows": [
+              {
+                "cells": [
+                  "",
+                  "Option A: managed cloud queue",
+                  "Option B: self-hosted broker",
+                  "Option C: database job table"
+                ]
+              },
+              {
+                "cells": [
+                  "Description",
+                  "A queue service run by our cloud provider. We send messages to it and workers poll for them; the provider handles storage, scaling and redelivery.",
+                  "A message broker cluster of three virtual machines that we install, patch and monitor ourselves.",
+                  [
+                    {
+                      "type": "text",
+                      "text": "A ",
+                      "styles": {}
+                    },
+                    {
+                      "type": "text",
+                      "text": "jobs",
+                      "styles": {
+                        "code": true
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "text": " table in the existing billing Postgres database. Workers claim rows with ",
+                      "styles": {}
+                    },
+                    {
+                      "type": "text",
+                      "text": "SELECT ... FOR UPDATE SKIP LOCKED",
+                      "styles": {
+                        "code": true
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "text": " and mark them done.",
+                      "styles": {}
+                    }
+                  ]
+                ]
+              },
+              {
+                "cells": [
+                  "Operational work",
+                  "Almost no operational work",
+                  "12 hours a month (estimate)",
+                  "Adds read load to the primary database (main risk at month-end)"
+                ]
+              },
+              {
+                "cells": [
+                  "Failed messages",
+                  "Move to a dead-letter queue automatically",
+                  "",
+                  ""
+                ]
+              },
+              {
+                "cells": [
+                  "Delivery guarantee",
+                  "At least once (requires idempotent job handlers; today only email handler is)",
+                  "",
+                  "Job can never be lost between commit and enqueue (only covers jobs created inside billing database transaction; not jobs enqueued by reporting service)"
+                ]
+              },
+              {
+                "cells": [
+                  "API dependency",
+                  "Ties us to one provider's API",
+                  "",
+                  ""
+                ]
+              },
+              {
+                "cells": [
+                  "Local development",
+                  "Needs an emulator that does not support dead-lettering",
+                  "",
+                  ""
+                ]
+              },
+              {
+                "cells": [
+                  "Features",
+                  "",
+                  "Priority queues, delayed delivery (month-end invoices can jump ahead of webhook retries)",
+                  ""
+                ]
+              },
+              {
+                "cells": [
+                  "Team experience",
+                  "",
+                  "No one on the team has run this broker in production",
+                  ""
+                ]
+              },
+              {
+                "cells": [
+                  "Upgrades",
+                  "",
+                  "Need a maintenance window",
+                  ""
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Options ⨁ Choosing a queue for background jobs › Benefits and trade-offs § table#0",
+          "contentFingerprint": "c2a9s2mse3q1"
+        }
+      }
+    },
+    "doc_MvEJXphqWZnYH9Ugtk3I": {
+      "id": "doc_MvEJXphqWZnYH9Ugtk3I",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3,
+            "backgroundColor": "orange"
+          },
+          "content": "Analysis · Key Differences and Considerations"
+        },
+        {
+          "type": "paragraph",
+          "id": "24297bf1-f8e9-45c8-bf3b-5d8589e6aa36",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Option A offers the lowest operational overhead but requires all job handlers to be idempotent, which is a significant development effort. Option B provides advanced queuing features but comes with a substantial operational burden and a lack of team experience. Option C offers strong transactional guarantees for jobs within the billing database but introduces read load on the primary database and doesn't extend to other services.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Options ⨁ Choosing a queue for background jobs › Benefits and trade-offs § text#0",
+          "contentFingerprint": "ckmqti6qn9f"
+        }
+      }
+    },
+    "doc_X29CqTVNvbZ74SFL3vgw": {
+      "id": "doc_X29CqTVNvbZ74SFL3vgw",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3
+          },
+          "content": "Also in the source"
+        },
+        {
+          "type": "paragraph",
+          "id": "c69376fc-0eec-4b05-b9e7-7869de669d10",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The catch is that the service delivers each message at least once, so every job handler must be made idempotent before we switch; today only the email handler is.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Options ⨁ Choosing a queue for background jobs › Benefits and trade-offs § text#1",
+          "contentFingerprint": "cj1qkhvsyhl"
+        }
+      }
+    },
+    "doc_K9c4rOZ8kIXZ0Ali7psr": {
+      "id": "doc_K9c4rOZ8kIXZ0Ali7psr",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "table",
+          "content": {
+            "type": "tableContent",
+            "headerRows": 1,
+            "columnWidths": [
+              171,
+              194,
+              171,
+              360
+            ],
+            "rows": [
+              {
+                "cells": [
+                  "Option",
+                  "Monthly infrastructure",
+                  "Monthly team effort",
+                  "Notes"
+                ]
+              },
+              {
+                "cells": [
+                  "Managed cloud queue",
+                  "$310",
+                  "about 2 hours",
+                  "Priced per million requests; grows with volume"
+                ]
+              },
+              {
+                "cells": [
+                  "Self-hosted broker",
+                  "$540",
+                  "about 12 hours",
+                  "Three VMs plus upgrades and on-call"
+                ]
+              },
+              {
+                "cells": [
+                  "Database job table",
+                  "$0 extra",
+                  "about 4 hours",
+                  "Uses spare capacity on the existing primary"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Costs § table#0",
+          "contentFingerprint": "c1bvrunweqfi"
+        }
+      }
+    },
+    "doc_05htBKYlyra231tQyM4u": {
+      "id": "doc_05htBKYlyra231tQyM4u",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "d254535d-139a-4aae-a361-aece0899c721",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The managed queue's figure assumes current volume. At three times today's volume it would be roughly $900 a month, while the broker's cost would stay flat until the cluster needs a fourth machine.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Costs § text#0",
+          "contentFingerprint": "c1k4nf4vrcqe"
+        }
+      }
+    },
+    "doc_t7D8UWKNSfK7Ip3VCb90": {
+      "id": "doc_t7D8UWKNSfK7Ip3VCb90",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "codeBlock",
+          "props": {
+            "language": ""
+          },
+          "content": "{\"chartType\":\"bar\",\"categories\":[\"Managed cloud queue\",\"Self-hosted broker\",\"Database job table\"],\"series\":[{\"name\":\"Monthly infrastructure\",\"values\":[310,540,0]},{\"name\":\"Monthly team effort (hours)\",\"values\":[2,12,4]}]}"
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Costs § code#0",
+          "contentFingerprint": "c1r6shxjc2gr"
+        }
+      }
+    },
+    "doc_n0qBIv9H7ZfNnbpON756": {
+      "id": "doc_n0qBIv9H7ZfNnbpON756",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3,
+            "backgroundColor": "orange"
+          },
+          "content": "Analysis · Cost Analysis"
+        },
+        {
+          "type": "paragraph",
+          "id": "4d033616-5dd7-46cd-ace2-0eba5e1e40b2",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The Database job table is the cheapest option for infrastructure, but the Self-hosted broker requires the most team effort. The Managed cloud queue's cost scales with volume, becoming the most expensive at three times current volume.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Costs § text#1",
+          "contentFingerprint": "c1c1hkoye9ud"
+        }
+      }
+    },
+    "doc_wKxpl6gBZ9E6xc7JYiW5": {
+      "id": "doc_wKxpl6gBZ9E6xc7JYiW5",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "f2aa1d24-bcfd-4a25-a73b-365f56265d8b",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "This note does not recommend an option. The decision is deferred until Option C has been measured at 1,800 jobs per minute on a production-sized database. Until then, each option carries an open requirement:",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Decision status § text#0",
+          "contentFingerprint": "c1m2tdka059d"
+        }
+      }
+    },
+    "doc_je4hhkcK20xL7D95lUzg": {
+      "id": "doc_je4hhkcK20xL7D95lUzg",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "bulletListItem",
+          "id": "013062c3-8a44-4ca1-8dba-8d3c6e967f94",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Option A: every job handler made idempotent.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "f617fae4-7b35-4479-964a-b11d3c44e097",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Option B: a named owner for broker on-call and upgrades.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "dd60b08a-c2a1-40c5-b0e7-28e606a5976e",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Option C: a passing load test at 1,800 jobs per minute.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Decision status § text#1",
+          "contentFingerprint": "chbgsr0wapr"
+        }
+      }
+    },
+    "doc_4fzINfLQwh9uzvjb0iQC": {
+      "id": "doc_4fzINfLQwh9uzvjb0iQC",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "paragraph",
+          "id": "e4af169e-b187-41aa-8c82-7a5259f7804d",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Priya will bring the load-test result to the next architecture review. Thanks to everyone who commented on the first draft.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Decision status § text#2",
+          "contentFingerprint": "c1acdf8mk8tt"
+        }
+      }
+    },
+    "doc_M9vJ9pmIRTBuO57pB9ut": {
+      "id": "doc_M9vJ9pmIRTBuO57pB9ut",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3,
+            "backgroundColor": "orange"
+          },
+          "content": "Analysis · Status"
+        },
+        {
+          "type": "paragraph",
+          "id": "48c6e299-8b17-4972-8fc8-42f8d0aa49a7",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Decision deferred until Option C load test results are available.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "a1326c31-3a85-409a-a8f0-e9d8d1ca9437",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Option A: open requirement - job handlers made idempotent.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "1323e6f0-faed-4980-be4e-affd744c87e7",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Option B: open requirement - named owner for broker on-call and upgrades.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "73d4b365-84cd-4827-8158-c65ff11b9d7c",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Option C: open requirement - passing load test at 1,800 jobs/min; Priya to provide results.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Decision status § text#3",
+          "contentFingerprint": "c1rhibl0tlrz"
+        }
+      }
+    },
+    "doc_mKSA55cupQ6aRIYdS59o": {
+      "id": "doc_mKSA55cupQ6aRIYdS59o",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "bulletListItem",
+          "id": "5245b3ca-0c5f-4dac-a3ef-576066928dea",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The billing service processes approximately 40,000 background jobs daily.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "082a4cae-aefa-4083-8080-08b7a8343a7a",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "These jobs include rendering invoice PDFs, sending receipt emails, and retrying failed webhooks.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "77e89e09-c7d7-4065-aa45-0858934cbea6",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Currently, jobs run in an in-process worker pool.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "6d874b28-77ec-4905-a197-b9b3fa318958",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "A deploy or crash results in the loss of queued but unstarted jobs.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "5ac2c347-dfcf-456f-a5f5-64487e3b116a",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Last quarter, 37 invoice emails were lost due to this issue, requiring customers to re-request them.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        },
+        {
+          "type": "bulletListItem",
+          "id": "7265f367-2a89-47a9-b51a-4f8b5b53675f",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Peak load reaches 600 jobs per minute during the month-end billing run.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Context § text#0",
+          "contentFingerprint": "crdk2u694un"
+        }
+      }
+    },
+    "doc_ob1ahIg9s6SLMKU4CDIa": {
+      "id": "doc_ob1ahIg9s6SLMKU4CDIa",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "heading",
+          "props": {
+            "level": 3
+          },
+          "content": "Also in the source"
+        },
+        {
+          "type": "paragraph",
+          "id": "a612f179-3880-49b8-a167-996ea6772b5a",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Today they run in an in-process worker pool, so a deploy or a crash loses any job that was queued but not yet started.",
+              "styles": {}
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Context § text#1",
+          "contentFingerprint": "ch2zpboublr"
+        }
+      }
+    },
+    "doc_YVnQDyKIpDJGC9uPxnzb": {
+      "id": "doc_YVnQDyKIpDJGC9uPxnzb",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "bulletListItem",
+          "id": "f1be8f14-f4f8-47e5-af69-6bcd4b3970f8",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Option C Load Test Results:",
+              "styles": {
+                "bold": true
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "c66f0484-3fd6-4ee7-abfa-eaec4deefbda",
+              "type": "bulletListItem",
+              "props": {
+                "backgroundColor": "default",
+                "textColor": "default",
+                "textAlignment": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Sustained 1,200 jobs per minute with a p95 claim latency of 18 ms on a staging database copy with synthetic jobs.",
+                  "styles": {}
+                }
+              ],
+              "children": []
+            },
+            {
+              "id": "d2b6b16a-45ec-473e-bf72-ca3109cd7767",
+              "type": "bulletListItem",
+              "props": {
+                "backgroundColor": "default",
+                "textColor": "default",
+                "textAlignment": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "At 2,000 jobs per minute, primary CPU reached 85% and p95 latency rose to 240 ms.",
+                  "styles": {}
+                }
+              ],
+              "children": []
+            },
+            {
+              "id": "cbf48615-9a92-4356-88ff-71025a059729",
+              "type": "bulletListItem",
+              "props": {
+                "backgroundColor": "default",
+                "textColor": "default",
+                "textAlignment": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "1,800 jobs per minute was not tested.",
+                  "styles": {}
+                }
+              ],
+              "children": []
+            },
+            {
+              "id": "eec3a945-ee12-4287-b77f-e7669de1f4e8",
+              "type": "bulletListItem",
+              "props": {
+                "backgroundColor": "default",
+                "textColor": "default",
+                "textAlignment": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Staging copy is approximately a quarter of production size, so results may not be directly transferable.",
+                  "styles": {}
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Evidence § text#0",
+          "contentFingerprint": "c26q1fexma6z"
+        }
+      }
+    },
+    "doc_Um5Kyq8qj6PSgXMufRwW": {
+      "id": "doc_Um5Kyq8qj6PSgXMufRwW",
+      "workspaceId": "default",
+      "canvasId": "cv_OY0vQ2pOBXGFh1fGJ6J3",
+      "kind": "block",
+      "title": "Untitled",
+      "snapshot": [
+        {
+          "type": "bulletListItem",
+          "id": "91a46547-6da3-4ee1-bc1e-a1068f13ee7b",
+          "props": {
+            "backgroundColor": "default",
+            "textColor": "default",
+            "textAlignment": "left"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Options A and B Load Test Status:",
+              "styles": {
+                "bold": true
+              }
+            }
+          ],
+          "children": [
+            {
+              "id": "a3e34b98-1328-46fd-bdac-753f6542fe10",
+              "type": "bulletListItem",
+              "props": {
+                "backgroundColor": "default",
+                "textColor": "default",
+                "textAlignment": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Not load-tested.",
+                  "styles": {}
+                }
+              ],
+              "children": []
+            },
+            {
+              "id": "9afcc89a-67c0-402b-a5aa-a7dfdf6898a1",
+              "type": "bulletListItem",
+              "props": {
+                "backgroundColor": "default",
+                "textColor": "default",
+                "textAlignment": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Provider documentation for Option A indicates throughput far above our peak, but this is a third-party figure.",
+                  "styles": {}
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createdAt": 1792436729070,
+      "updatedAt": 1792436729070,
+      "metadata": {
+        "ai": {
+          "createdBy": "ai",
+          "operationId": "op_y2tc7fYaCmeV4zNCVhbU",
+          "task": "generate_visual_plan",
+          "provider": "openrouter",
+          "model": "google/gemini-2.5-flash",
+          "authType": "api_key",
+          "contentSourceId": "src_mnjhb62PiOc5mOX7UqjJ",
+          "contentSourceVersion": 1,
+          "stableNodeKey": "Choosing a queue for background jobs › Evidence § text#1",
+          "contentFingerprint": "c1i4lc6u2kl5"
+        }
+      }
+    }
+  }
+}

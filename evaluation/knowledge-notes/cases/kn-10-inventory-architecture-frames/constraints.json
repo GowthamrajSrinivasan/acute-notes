@@ -1,0 +1,246 @@
+{
+  "id": "kn-10-inventory-architecture-frames",
+  "kind": "codebase_description",
+  "source": "# Shelfwise inventory service: a tour of the codebase\n\n## Overview\n\nShelfwise is the service that keeps track of how much stock each warehouse holds and reserves stock for incoming orders. It is one deployable TypeScript service with a small admin front end. At peak it handles about 3,000 reservations per hour. This tour walks through the code by responsibility: what each group of modules owns, which files to open first, and how the groups depend on each other. The groups are presentation, API and orchestration, domain services, supplier integration, persistence and external systems, and observability and error handling.\n\n## Client and presentation\n\nThe admin web UI lives in `web/admin/`. Warehouse staff use it to look up stock levels, place manual holds and review failed supplier imports. It holds no stock logic of its own: every screen calls the service's REST API, and the UI never talks to the database directly.\n\n## API and orchestration\n\nThe HTTP handlers in `src/api/routes.ts` are the only entry point for requests. They validate the request body, attach a correlation ID and pass the work on; they contain no business rules. A `POST /reservations` request goes to the reservation orchestrator in `src/orders/reserve.ts`.\n\nThe reservation orchestrator coordinates a reservation from start to finish. It asks the stock ledger to reserve the requested quantity, asks the pricing rules for the order's price, and, once both succeed, publishes a StockReserved event to the message broker. If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order; it never makes a partial reservation. A reservation that is not confirmed within 15 minutes is released by the ledger and the stock becomes available again.\n\n## Domain services\n\nThe stock ledger in `src/ledger/ledger.ts` owns stock levels. It records every change as an append-only ledger entry (reserve, release, restock) and writes those entries to Postgres. The ledger is the only module allowed to write to the stock tables; other modules ask it to make changes.\n\nThe pricing rules in `src/pricing/rules.ts` work out the price of an order from the supplier price lists and any active discounts. They read price lists from Redis, where they are cached for 300 seconds, and they never change stock.\n\nNeither domain module imports anything from `src/api/` or `src/orders/`. Dependencies point inwards: the API layer calls the orchestrator, the orchestrator calls the domain modules, and the domain modules depend only on persistence and the platform helpers.\n\n## Supplier integration\n\nThe supplier feed adapter in `src/suppliers/feedAdapter.ts` brings in restocks from suppliers. Every 10 minutes it calls the supplier API for new deliveries, converts each delivery into a restock and asks the stock ledger to record it. The adapter is the only module that knows the supplier's data format, so a change on the supplier's side stays inside this one file. A delivery the adapter cannot parse is logged and skipped; it is not retried, because sending the same bad data again would fail the same way.\n\n## Persistence and external systems\n\nPostgres holds the ledger entries and the current stock level per warehouse and product; it is the source of truth for stock. Redis holds cached price lists and nothing that cannot be rebuilt from the supplier feed. The message broker carries StockReserved events to other services, such as fulfilment, and also hosts the dead-letter queue described below. Postgres schema changes live in `db/migrations/` and run on every deploy. The supplier API is run by the suppliers, outside our control, and is the only external system Shelfwise calls.\n\n## Observability and error handling\n\nEvery module logs through the structured logger in `src/platform/log.ts`, which writes one JSON line per event and always includes the correlation ID that the HTTP handlers attached. The handlers log each request, and the retry helper logs each failed attempt.\n\nCalls to the supplier API can fail, so the feed adapter wraps them in the retry helper in `src/platform/retry.ts`. The retry policy is:\n\n- at most 5 attempts per delivery;\n- exponential backoff that starts at 2 seconds, doubles after each failure and is capped at 60 seconds;\n- after the 5th failed attempt, the delivery is published to the dead-letter queue `inventory.dlq` on the message broker, and staff review it in the admin UI.\n\nRetries apply only to supplier calls. Reservations are never retried automatically: a failed reservation is returned to the caller as an error.\n\n## Where to start reading\n\nNew contributors usually start with `src/orders/reserve.ts`, because it shows a whole reservation in about 120 lines and names every module it depends on. After that, `src/ledger/ledger.ts` explains how stock is counted. Each module keeps its tests next to its code.\n\n## Dependency rules\n\nThree rules keep the structure readable. First, nothing in the domain modules may depend on the HTTP layer; the ledger and the pricing rules must stay usable from a script or a test without a web server. Second, only the ledger writes stock to Postgres; the orchestrator and the adapter go through it. Third, only the supplier feed adapter calls the supplier API.\n\n## Known gaps\n\nThe admin UI has no automated tests yet. The reservation orchestrator and the feed adapter can both change the same product's stock at once, and the ledger currently relies on a database row lock to keep them consistent; whether that holds under peak load has not been measured. Dead-lettered deliveries are only found when someone opens the admin UI; nothing alerts the team when `inventory.dlq` starts to fill up.\n",
+  "critical": [
+    {
+      "quote": "The groups are presentation, API and orchestration, domain services, supplier integration, persistence and external systems, and observability and error handling.",
+      "why": "The six responsibility groups that should become frames."
+    },
+    {
+      "quote": "It holds no stock logic of its own: every screen calls the service's REST API, and the UI never talks to the database directly.",
+      "why": "The UI's only dependency is the REST API."
+    },
+    {
+      "quote": "It asks the stock ledger to reserve the requested quantity, asks the pricing rules for the order's price, and, once both succeed, publishes a StockReserved event to the message broker.",
+      "why": "The orchestrator's three outgoing dependencies and their direction."
+    },
+    {
+      "quote": "If the ledger cannot reserve the full quantity, the orchestrator rejects the whole order; it never makes a partial reservation.",
+      "why": "All-or-nothing reservation."
+    },
+    {
+      "quote": "A reservation that is not confirmed within 15 minutes is released by the ledger and the stock becomes available again.",
+      "why": "Hold expiry, owned by the ledger."
+    },
+    {
+      "quote": "The ledger is the only module allowed to write to the stock tables; other modules ask it to make changes.",
+      "why": "Sole writer of stock."
+    },
+    {
+      "quote": "Neither domain module imports anything from `src/api/` or `src/orders/`.",
+      "why": "Dependency direction: domain never depends on the API or orchestration layers."
+    },
+    {
+      "quote": "A delivery the adapter cannot parse is logged and skipped; it is not retried, because sending the same bad data again would fail the same way.",
+      "why": "Parse failures are not retried; only call failures are."
+    },
+    {
+      "quote": "Postgres holds the ledger entries and the current stock level per warehouse and product; it is the source of truth for stock.",
+      "why": "Source of truth for stock."
+    },
+    {
+      "quote": "The supplier API is run by the suppliers, outside our control, and is the only external system Shelfwise calls.",
+      "why": "System boundary: the only external dependency."
+    },
+    {
+      "quote": "at most 5 attempts per delivery;",
+      "why": "Exact retry limit."
+    },
+    {
+      "quote": "exponential backoff that starts at 2 seconds, doubles after each failure and is capped at 60 seconds;",
+      "why": "Exact backoff values."
+    },
+    {
+      "quote": "after the 5th failed attempt, the delivery is published to the dead-letter queue `inventory.dlq` on the message broker, and staff review it in the admin UI.",
+      "why": "Dead-letter destination."
+    },
+    {
+      "quote": "Retries apply only to supplier calls.",
+      "why": "Scope of the retry policy."
+    },
+    {
+      "quote": "Reservations are never retried automatically: a failed reservation is returned to the caller as an error.",
+      "why": "Reservations fail fast."
+    },
+    {
+      "quote": "First, nothing in the domain modules may depend on the HTTP layer; the ledger and the pricing rules must stay usable from a script or a test without a web server.",
+      "why": "No reversed dependency from domain to HTTP."
+    },
+    {
+      "quote": "Second, only the ledger writes stock to Postgres; the orchestrator and the adapter go through it.",
+      "why": "Repeats u18 as a rule; kept because it names the two modules that must not write directly."
+    },
+    {
+      "quote": "Third, only the supplier feed adapter calls the supplier API.",
+      "why": "Single integration point."
+    },
+    {
+      "quote": "The reservation orchestrator and the feed adapter can both change the same product's stock at once, and the ledger currently relies on a database row lock to keep them consistent; whether that holds under peak load has not been measured.",
+      "why": "Unverified concurrency assumption."
+    }
+  ],
+  "exact": [
+    "3,000 reservations per hour",
+    "web/admin/",
+    "src/api/routes.ts",
+    "POST /reservations",
+    "src/orders/reserve.ts",
+    "StockReserved",
+    "15 minutes",
+    "src/ledger/ledger.ts",
+    "src/pricing/rules.ts",
+    "300 seconds",
+    "src/api/",
+    "src/orders/",
+    "src/suppliers/feedAdapter.ts",
+    "10 minutes",
+    "db/migrations/",
+    "src/platform/log.ts",
+    "src/platform/retry.ts",
+    "5 attempts",
+    "2 seconds",
+    "60 seconds",
+    "inventory.dlq"
+  ],
+  "groups": {
+    "together": [
+      [
+        "HTTP handlers (src/api/routes.ts): only entry point, validate + correlation ID, no business rules",
+        "Reservation orchestrator (src/orders/reserve.ts): reserve, price, publish StockReserved; rejects the whole order if stock is short"
+      ],
+      [
+        "Stock ledger (src/ledger/ledger.ts): owns stock, append-only entries, sole writer; releases unconfirmed holds after 15 minutes",
+        "Pricing rules (src/pricing/rules.ts): price lists and discounts, cached 300 seconds, never change stock"
+      ],
+      [
+        "Retry helper (src/platform/retry.ts): wraps supplier calls",
+        "Retry policy: 5 attempts; backoff 2 s doubling, capped at 60 s; then inventory.dlq; supplier calls only, reservations never retried"
+      ]
+    ],
+    "apart": [
+      [
+        "Structured logger (src/platform/log.ts): one JSON line per event with correlation ID",
+        "Stock ledger (src/ledger/ledger.ts): owns stock, append-only entries, sole writer; releases unconfirmed holds after 15 minutes"
+      ],
+      [
+        "HTTP handlers (src/api/routes.ts): only entry point, validate + correlation ID, no business rules",
+        "Stock ledger (src/ledger/ledger.ts): owns stock, append-only entries, sole writer; releases unconfirmed holds after 15 minutes"
+      ],
+      [
+        "Supplier feed adapter (src/suppliers/feedAdapter.ts): every 10 minutes, deliveries → restocks; unparseable deliveries logged and skipped, not retried",
+        "Supplier API (external, run by suppliers)"
+      ]
+    ]
+  },
+  "hierarchy": [
+    {
+      "main": "Retry helper (src/platform/retry.ts): wraps supplier calls",
+      "supporting": [
+        "Retry policy: 5 attempts; backoff 2 s doubling, capped at 60 s; then inventory.dlq; supplier calls only, reservations never retried"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "Admin web UI (web/admin/): stock lookup, manual holds, failed-import review; calls only the REST API",
+      "to": "HTTP handlers (src/api/routes.ts): only entry point, validate + correlation ID, no business rules",
+      "type": "calls"
+    },
+    {
+      "from": "HTTP handlers (src/api/routes.ts): only entry point, validate + correlation ID, no business rules",
+      "to": "Reservation orchestrator (src/orders/reserve.ts): reserve, price, publish StockReserved; rejects the whole order if stock is short",
+      "type": "calls"
+    },
+    {
+      "from": "Reservation orchestrator (src/orders/reserve.ts): reserve, price, publish StockReserved; rejects the whole order if stock is short",
+      "to": "Stock ledger (src/ledger/ledger.ts): owns stock, append-only entries, sole writer; releases unconfirmed holds after 15 minutes",
+      "type": "calls"
+    },
+    {
+      "from": "Reservation orchestrator (src/orders/reserve.ts): reserve, price, publish StockReserved; rejects the whole order if stock is short",
+      "to": "Pricing rules (src/pricing/rules.ts): price lists and discounts, cached 300 seconds, never change stock",
+      "type": "calls"
+    },
+    {
+      "from": "Reservation orchestrator (src/orders/reserve.ts): reserve, price, publish StockReserved; rejects the whole order if stock is short",
+      "to": "Message broker: StockReserved events; hosts the dead-letter queue",
+      "type": "publishes"
+    },
+    {
+      "from": "Stock ledger (src/ledger/ledger.ts): owns stock, append-only entries, sole writer; releases unconfirmed holds after 15 minutes",
+      "to": "Postgres: ledger entries and stock levels; source of truth; migrations in db/migrations/",
+      "type": "writes"
+    },
+    {
+      "from": "Pricing rules (src/pricing/rules.ts): price lists and discounts, cached 300 seconds, never change stock",
+      "to": "Redis: cached price lists, all rebuildable",
+      "type": "reads"
+    },
+    {
+      "from": "Supplier feed adapter (src/suppliers/feedAdapter.ts): every 10 minutes, deliveries → restocks; unparseable deliveries logged and skipped, not retried",
+      "to": "Supplier API (external, run by suppliers)",
+      "type": "calls"
+    },
+    {
+      "from": "Supplier feed adapter (src/suppliers/feedAdapter.ts): every 10 minutes, deliveries → restocks; unparseable deliveries logged and skipped, not retried",
+      "to": "Stock ledger (src/ledger/ledger.ts): owns stock, append-only entries, sole writer; releases unconfirmed holds after 15 minutes",
+      "type": "calls"
+    },
+    {
+      "from": "Supplier feed adapter (src/suppliers/feedAdapter.ts): every 10 minutes, deliveries → restocks; unparseable deliveries logged and skipped, not retried",
+      "to": "Retry helper (src/platform/retry.ts): wraps supplier calls",
+      "type": "depends_on"
+    },
+    {
+      "from": "Retry helper (src/platform/retry.ts): wraps supplier calls",
+      "to": "Message broker: StockReserved events; hosts the dead-letter queue",
+      "type": "publishes"
+    },
+    {
+      "from": "HTTP handlers (src/api/routes.ts): only entry point, validate + correlation ID, no business rules",
+      "to": "Structured logger (src/platform/log.ts): one JSON line per event with correlation ID",
+      "type": "depends_on"
+    },
+    {
+      "from": "Retry helper (src/platform/retry.ts): wraps supplier calls",
+      "to": "Structured logger (src/platform/log.ts): one JSON line per event with correlation ID",
+      "type": "depends_on"
+    },
+    {
+      "from": "Retry helper (src/platform/retry.ts): wraps supplier calls",
+      "to": "Retry policy: 5 attempts; backoff 2 s doubling, capped at 60 s; then inventory.dlq; supplier calls only, reservations never retried",
+      "type": "explained_by"
+    }
+  ],
+  "mustNotSay": [
+    {
+      "text": "The stock ledger (or pricing rules) depends on, calls or imports the HTTP handlers or the orchestrator.",
+      "why": "Dependencies point inwards; domain modules import nothing from src/api/ or src/orders/."
+    },
+    {
+      "text": "The orchestrator or the feed adapter writes stock to Postgres directly.",
+      "why": "Only the ledger writes stock; the others go through it."
+    },
+    {
+      "text": "Failed reservations are retried automatically.",
+      "why": "Retries apply only to supplier calls; reservations fail fast."
+    },
+    {
+      "text": "Unparseable deliveries are retried.",
+      "why": "They are logged and skipped."
+    },
+    {
+      "text": "The orchestrator makes partial reservations when stock is short.",
+      "why": "It rejects the whole order."
+    },
+    {
+      "text": "Any file path or module the source does not name (for example src/services/, src/db/, a StockRepository class).",
+      "why": "Only the paths written in the source exist in this case."
+    },
+    {
+      "text": "The row lock is proven to hold under peak load.",
+      "why": "It has not been measured."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-free-text-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "Half of the privacy rule (u25, critical) is lost: the card no longer forbids free-text input, only email addresses.",
+  "mutations": [
+    { "op": "replace_text", "node": "t2", "find": "Events must not contain email addresses or free-text input from users.", "replace": "Events must not contain email addresses." },
+    { "op": "replace_text", "node": "t2", "find": "no emails or free text, IPs truncated", "replace": "no emails, IPs truncated" }
+  ],
+  "expectFailing": ["a.privacy-exact"]
+}

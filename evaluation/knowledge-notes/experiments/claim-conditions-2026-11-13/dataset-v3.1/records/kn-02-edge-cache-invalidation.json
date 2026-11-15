@@ -1,0 +1,1544 @@
+{
+  "caseId": "kn-02-edge-cache-invalidation",
+  "schema": "ClauseRecordV31 (review-v3/attachmentSchema.ts)",
+  "dataset": "v3.1-pre",
+  "records": [
+    {
+      "id": "k1",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u9"
+      ],
+      "clause": "if the origin sent an `ETag`",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u9"
+          ],
+          "claimQuote": "the edge can ask whether the copy changed and receive a short `304 Not Modified` answer",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without an ETag (validator) conditional revalidation is unavailable; unconditional statement is false in that case.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k1 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k1",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u9"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k2",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u9"
+      ],
+      "clause": "when it has not",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u9"
+          ],
+          "claimQuote": "receive a short `304 Not Modified` answer",
+          "evidence": "migrated: needs evidence",
+          "justification": "A real condition (304 only when unchanged), but the name 'Not Modified' already conveys it, so the takeaway is materially unchanged without the clause: set, not claim. Found by X only; accepted.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k2 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k2",
+            "verdict": "set",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u9"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k3",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u10"
+      ],
+      "clause": "the TTL is a guess made in advance",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u8"
+          ],
+          "claimQuote": "TTL expiry needs no coordination between the origin and the edge, which is why every CDN uses it as the default.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: a general weakness, secondary to the u8 takeaway; its concrete consequences are separate records (k4, k5).",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k3 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k3",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u8"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k4",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u11"
+      ],
+      "clause": "for up to the remaining 240 seconds",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u11"
+          ],
+          "claimQuote": "readers can keep seeing the old headline",
+          "evidence": "migrated: needs evidence",
+          "justification": "General test: 'readers can keep seeing the old headline' stays true without the bound; the bound quantifies the worked example (remaining TTL) rather than reversing it. Set.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k4 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k4",
+            "verdict": "set",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u11"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k5",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u11"
+      ],
+      "clause": "nothing the origin does will shorten that wait",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u8"
+          ],
+          "claimQuote": "TTL expiry needs no coordination between the origin and the edge, which is why every CDN uses it as the default.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both annotators say claim; links disjoint. R4: u6 (edge discards after TTL) is not falsified; the 'no coordination' benefit in u8 is exactly what leaves the origin unable to recall a copy, so a reader taking u8 as free would act wrongly. u7 ('origin sets the TTL') was also a candidate; noted, not chosen.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k5 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k5",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u8"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k6",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u12"
+      ],
+      "clause": "but sends more requests back to the origin",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u12"
+          ],
+          "claimQuote": "Shortening the TTL narrows the window",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: the source's point is the trade-off (eightfold origin traffic); without it shortening the TTL looks free.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k6 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k6",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u12"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k7",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u16"
+      ],
+      "clause": "but it is not applied everywhere at the same moment",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u16"
+          ],
+          "claimQuote": "A purge request is accepted quickly",
+          "evidence": "migrated: needs evidence",
+          "justification": "R4: most specific claim misled is the intra-sentence 'accepted quickly' (reader infers fast effect). u14's misreading is covered by the separate u17 and u18 records (k8, k9), so no second link.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k7 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k7",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u16"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k8",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u17"
+      ],
+      "clause": "for a short time some locations serve the new version while others still serve the old one",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "The purge removes the cached copy, so the next request for that URL is fetched fresh from the origin.",
+          "evidence": "migrated: needs evidence",
+          "justification": "u14 is false at not-yet-purged locations during propagation.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k8 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k8",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k9",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u18"
+      ],
+      "clause": "eventually consistent, not instant",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "The purge removes the cached copy, so the next request for that URL is fetched fresh from the origin.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Summary limit on u14; separate clause from k8.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k9 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k9",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k10",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u19"
+      ],
+      "clause": "it removes only the exact URL you name",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "The purge removes the cached copy",
+          "evidence": "migrated: needs evidence",
+          "justification": "A reader would purge the article URL and believe the correction is everywhere; wrong for other pages.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k10 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k10",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k11",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u20"
+      ],
+      "clause": "until it is purged separately or expires",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u20"
+          ],
+          "claimQuote": "each of those cached pages keeps the old headline",
+          "evidence": "migrated: needs evidence",
+          "justification": "Verdict agreed (set); links disjoint. Y's span also covered 'each of those cached pages keeps the old headline', which is an elaboration of the u19 limit (k10), not a separate limiting clause, so not split out. The limiting words bound u20's own claim (R4, intra-sentence).",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k11 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k11",
+            "verdict": "set",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u20"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k12",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u21"
+      ],
+      "clause": "`/story/417?ref=social` is a different cache entry from `/story/417` and is not removed by purging it",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u14"
+          ],
+          "claimQuote": "The purge removes the cached copy, so the next request for that URL is fetched fresh from the origin.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Query-string variants stay stale after a purge of the bare URL.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k12 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k12",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u14"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k13",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u22"
+      ],
+      "clause": "Purge APIs are also rate limited",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u13"
+          ],
+          "claimQuote": "When content must change now, the origin can ask the CDN to purge a specific URL.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Y's deciding question is answered by the source itself: u22 names the case (a bulk correction across the archive) in which relying on purges fails, and u15 has purges fired on every save. A reader following u13 in that case would act wrongly, so claim. Y's span adds the 1,000/min figure and the exhaustion case, which elaborate this one clause; not split.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k13 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k13",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u13"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k14",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u26"
+      ],
+      "clause": "the slowest location took 20 seconds",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u18"
+          ],
+          "claimQuote": "Purging is eventually consistent, not instant.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both say set; links differ. R4: the figure quantifies 'eventually', so u18 is the most specific claim it bounds.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k14 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k14",
+            "verdict": "set",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u18"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k15",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u32"
+      ],
+      "clause": "The responsibility moves to the origin.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u28"
+          ],
+          "claimQuote": "Surrogate keys solve the listing problem by letting the origin label each response with tags.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both say set (R3: a cost secondary to the takeaway; the concrete failure is k16/k17). Links differ; R4: the cost attaches to the origin-labelling claim in u28.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k15 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k15",
+            "verdict": "set",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u28"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k16",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u33"
+      ],
+      "clause": "A page is only purged by a key if the origin tagged it with that key",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u30"
+          ],
+          "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+          "evidence": "migrated: needs evidence",
+          "justification": "'every cached page that included that story' is false for untagged pages. v2:g26 says 'removes all cached pages tagged with that key', which states the tagging condition (carried); v1:g6's 'associated with a specific key, such as an article appearing on multiple pages' reads as content-based and does not.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k16 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k16",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u30"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k17",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u33"
+      ],
+      "clause": "a missing tag produces a stale page with no error anywhere",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u30"
+          ],
+          "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+          "evidence": "migrated: needs evidence",
+          "justification": "The silent-failure mode; a reader would not monitor for it.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k17 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k17",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u30"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k18",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u35"
+      ],
+      "clause": "Tag purges can also be large.",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u30"
+          ],
+          "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: secondary cost.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k18 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k18",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u30"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k19",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u36"
+      ],
+      "clause": "the origin has to absorb the burst of cache misses that follows",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u30"
+          ],
+          "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: secondary cost.",
+          "binding": "set",
+          "levelDerived": "section",
+          "source": "v3 k19 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k19",
+            "verdict": "set",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u30"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k20",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u40"
+      ],
+      "clause": "where a minute of staleness is acceptable",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u37"
+          ],
+          "claimQuote": "Stale-while-revalidate turns expiry from a wait into a background task.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both say claim. R4: 'Larkspur uses it on article pages' is not misleading without the clause; the technique claim u37 is, because a reader would apply SWR where staleness is unacceptable. Link u37.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k20 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k20",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u37"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k21",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u40"
+      ],
+      "clause": "but not on live election results",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u40"
+          ],
+          "claimQuote": "Larkspur uses it on article pages, where a minute of staleness is acceptable, but not on live election results.",
+          "evidence": "migrated: needs evidence",
+          "justification": "Human reviewers (item H17) both gave set. A: A scope limit on where stale-while-revalidate is used; 'uses it on article pages' stays true without it, but the exclusion should be in the notes. Claim is defensible if a reader would generalise it to live data. | B: Exclusion of election results is a real scope limit but 'used on article pages' stays true without it.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "both humans gave link u40 (v3 reference u37); claimQuote is the full text of u40"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "human_adjudicated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k21",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u37"
+            ],
+            "confidence": "medium"
+          }
+        ],
+        "human": {
+          "item": "H17",
+          "verdictA": "set",
+          "verdictB": "set",
+          "linksA": [
+            "u40"
+          ],
+          "linksB": [
+            "u40"
+          ],
+          "answersA": {
+            "file": "review-v3/human-review/answers-A.json",
+            "sha256": "7ab024f0895b1ed83a93d384370da120bc50076570e9bc949a31866d97d3a39a"
+          },
+          "answersB": {
+            "file": "review-v3/human-review/answers-B.json",
+            "sha256": "0aec354c468b59d74ee6d490f4f9419bd34cfea1055f05072f5ecf6c8df5c4e0"
+          },
+          "sampleKey": {
+            "file": "review-v3/human-review/SAMPLE-KEY.json",
+            "sha256": "e7426e794225dec07c5ee21c1af226e01c3ffa600e0cfdb38cfc4290877b9a31"
+          },
+          "selector": "review-v3/human-review/discrepancies-2.json rows with pattern humans_agree_model_differs, re-checked against both answer files"
+        },
+        "migration": "Verdict set to the two humans' shared verdict; confidence is the lower of theirs. v3 readings kept above only as provenance."
+      }
+    },
+    {
+      "id": "k22",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u41"
+      ],
+      "clause": "an expired copy is served for at most 60 seconds past its TTL",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u38"
+          ],
+          "claimQuote": "returns the expired copy immediately and fetches a fresh one from the origin in the background",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without the bound, expired copies appear to be served indefinitely.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k22 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k22",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u38"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k23",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u41"
+      ],
+      "clause": "after that the edge waits for the origin as it would on an ordinary miss",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u39"
+          ],
+          "claimQuote": "The reader gets a fast response",
+          "evidence": "migrated: needs evidence",
+          "justification": "General test on u39: 'the reader gets a fast response' is false for a request after TTL+60 s, which is the case this clause describes. Most specific link is u39 (R4).",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k23 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k23",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u39"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k24",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u42"
+      ],
+      "clause": "while the origin is returning errors",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u42"
+          ],
+          "claimQuote": "lets the edge keep serving the expired copy for up to 86,400 seconds, or one day",
+          "evidence": "migrated: needs evidence",
+          "justification": "Without the trigger, stale-if-error reads as serving day-old copies routinely. Phase 3's ambiguity came from merging this with the 86,400-second bound (now k25).",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k24 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k24",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u42"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k25",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u42"
+      ],
+      "clause": "for up to 86,400 seconds, or one day",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u42"
+          ],
+          "claimQuote": "lets the edge keep serving the expired copy",
+          "evidence": "migrated: needs evidence",
+          "justification": "Quantitative bound; takeaway unchanged. v1:g9 'for an extended period' does not make the one-day limit recognisable.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k25 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k25",
+            "verdict": "set",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u42"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k26",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u43"
+      ],
+      "clause": "not a way to make content fresher",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u37"
+          ],
+          "claimQuote": "Stale-while-revalidate turns expiry from a wait into a background task.",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: explicit 'not a guarantee'-style correction of the benefit.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k26 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k26",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u37"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k27",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u44"
+      ],
+      "clause": "but it also means some readers see a copy that is older than the TTL alone would suggest",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u44"
+          ],
+          "claimQuote": "It hides a slow origin from readers",
+          "evidence": "migrated: needs evidence",
+          "justification": "R3: the benefit is presented as weighed against this cost.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k27 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R3",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k27",
+            "verdict": "claim",
+            "rule": "R3",
+            "status": "agreed",
+            "claimUnits": [
+              "u44"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k28",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u49"
+      ],
+      "clause": "Versioning does not help for HTML entry pages.",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u46"
+          ],
+          "claimQuote": "a changed file gets a new URL and the old cached copy is simply never requested again",
+          "evidence": "migrated: needs evidence",
+          "justification": "R4: u45 is already scoped 'For static assets'; u46's 'each file' is the claim a reader would over-apply to HTML.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k28 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k28",
+            "verdict": "claim",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u46"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k29",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u50"
+      ],
+      "clause": "so they still need a TTL, a purge or both",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u46"
+          ],
+          "claimQuote": "a changed file gets a new URL and the old cached copy is simply never requested again",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: omitting TTL/purge for HTML would leave entry pages stale. Link as k28 (R4). v2:g41 states HTML is not covered but not this remedy, so it is not a carrier.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k29 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k29",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u46"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k30",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u51"
+      ],
+      "clause": "If an HTML page stays cached longer than the origin keeps the old asset files",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "section",
+          "units": [
+            "u46"
+          ],
+          "claimQuote": "the old cached copy is simply never requested again",
+          "evidence": "migrated: needs evidence",
+          "justification": "Old asset names are still requested by cached HTML; u46 false in that case.",
+          "binding": "claim",
+          "levelDerived": "section",
+          "source": "v3 k30 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k30",
+            "verdict": "claim",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u46"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k31",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u52"
+      ],
+      "clause": "for at least as long as the longest HTML TTL",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u52"
+          ],
+          "claimQuote": "Old asset versions should therefore stay available",
+          "evidence": "migrated: needs evidence",
+          "justification": "R1: without the duration the instruction has no safe retention period.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k31 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "high",
+      "rule": "R1",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k31",
+            "verdict": "claim",
+            "rule": "R1",
+            "status": "agreed",
+            "claimUnits": [
+              "u52"
+            ],
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k32",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u55"
+      ],
+      "clause": "Cannot be shortened after the fact",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u55"
+          ],
+          "claimQuote": "TTL expiry | Up to the full TTL (300 seconds at Larkspur)",
+          "evidence": "migrated: needs evidence",
+          "justification": "Table restatement of k5. At its most specific link (the row's own freshness cell, 'Up to the full TTL') the takeaway already implies the bound, so set. No card in either set conveys 'cannot be shortened'.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k32 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "low",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k32",
+            "verdict": "set",
+            "rule": "general",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u55"
+            ],
+            "confidence": "low"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k33",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u55"
+      ],
+      "clause": "More origin traffic as the TTL shrinks",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u55"
+          ],
+          "claimQuote": "TTL expiry | Up to the full TTL (300 seconds at Larkspur)",
+          "evidence": "migrated: needs evidence",
+          "justification": "Both set; links differ. R4: the table cell qualifies its own row. The prose version is k6.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k33 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R4",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k33",
+            "verdict": "set",
+            "rule": "R4",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u55"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k34",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u62"
+      ],
+      "clause": "static",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u62"
+          ],
+          "claimQuote": "versioned names take static assets out of the problem entirely",
+          "evidence": "migrated: needs evidence",
+          "justification": "R5: the adjective excludes HTML entry pages (u49); without it a reader would version HTML and expect it solved.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k34 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k34",
+            "verdict": "claim",
+            "rule": "R5",
+            "status": "agreed",
+            "claimUnits": [
+              "u62"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k35",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u62"
+      ],
+      "clause": "when the origin struggles",
+      "verdict": "set",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u62"
+          ],
+          "claimQuote": "stale serving keeps the site fast",
+          "evidence": "migrated: needs evidence",
+          "justification": "Scope of the summary benefit; takeaway unchanged.",
+          "binding": "set",
+          "levelDerived": "local",
+          "source": "v3 k35 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "low",
+      "rule": "general",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k35",
+            "verdict": "set",
+            "rule": "general",
+            "status": "agreed",
+            "claimUnits": [
+              "u62"
+            ],
+            "confidence": "low"
+          }
+        ]
+      }
+    },
+    {
+      "id": "k36",
+      "case": "kn-02-edge-cache-invalidation",
+      "units": [
+        "u45"
+      ],
+      "clause": "For static assets",
+      "verdict": "claim",
+      "links": [
+        {
+          "level": "local",
+          "units": [
+            "u45"
+          ],
+          "claimQuote": "the cleanest invalidation is a new name",
+          "evidence": "migrated: needs evidence",
+          "justification": "R5: scope excluding HTML entry pages, consistent with k34. Found by Y only; accepted.",
+          "binding": "claim",
+          "levelDerived": "local",
+          "source": "v3 k36 (claimQuote and rationale copied)"
+        }
+      ],
+      "presentation": "one_carrier",
+      "confidence": "medium",
+      "rule": "R5",
+      "status": "migrated",
+      "flags": [],
+      "provenance": {
+        "v3": [
+          {
+            "id": "k36",
+            "verdict": "claim",
+            "rule": "R5",
+            "status": "adjudicated",
+            "claimUnits": [
+              "u45"
+            ],
+            "confidence": "medium"
+          }
+        ]
+      }
+    }
+  ]
+}

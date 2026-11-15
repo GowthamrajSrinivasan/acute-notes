@@ -1,0 +1,160 @@
+root = IdeaCard("Content-heavy site CDN series", "This is the third article in a series about running a \"content-heavy\" site behind a CDN, using Larkspur Media as an example.", "medium", [c1, c5])
+c1 = CitationChip("u1")
+c5 = CitationChip("u5")
+---
+root = IdeaCard("Caching challenges", "Caching at the edge improves page speed, but cached copies can become outdated, and the main challenge is managing their replacement efficiently.", "high", [c2, c3])
+c2 = CitationChip("u2")
+c3 = CitationChip("u3")
+---
+root = IdeaCard("Layered invalidation techniques", "No single invalidation technique is sufficient; a dependable CDN setup requires layering several methods to ensure content freshness.", "medium", [c4, c61])
+c4 = CitationChip("u4")
+c61 = CitationChip("u61")
+---
+root = IdeaCard("TTL expiry for caching", "The simplest invalidation method is using a time to live (TTL), where each cached object has a set expiry time after which the edge discards or rechecks its copy.", "medium", [c6])
+c6 = CitationChip("u6")
+---
+root = IdeaCard("Setting TTL with Cache-Control", "The origin server sets the TTL using the `Cache-Control` header; for instance, `Cache-Control: max-age=300` allows an edge location to cache a copy for \"300 seconds\".", "medium", [c7])
+c7 = CitationChip("u7")
+---
+root = IdeaCard("TTL expiry as CDN default", "TTL expiry is the default for all CDNs because it requires no coordination between the origin and the edge.", "low", [c8])
+c8 = CitationChip("u8")
+---
+root = IdeaCard("Conditional revalidation with ETag", "When a TTL expires, the edge can use an `ETag` to ask the origin if the copy has changed, receiving a \"304 Not Modified\" response if it hasn't, avoiding a full download.", "medium", [c9])
+c9 = CitationChip("u9")
+---
+root = IdeaCard("Weakness of TTL: fixed guess", "The primary weakness of TTL is that it's a predetermined guess, which can lead to stale content if updates occur before the TTL expires.", "high", [c10])
+---
+root = IdeaCard("Stale content with TTL", "If content is updated, like a headline corrected \"60 seconds\" after publishing, readers might see the old version for up to the remaining \"240 seconds\" of a \"300-second\" TTL.", "high", [c11])
+c11 = CitationChip("u11")
+---
+root = IdeaCard("Shortening TTL increases origin traffic", "Reducing the TTL narrows the window for stale content but significantly increases requests to the origin; Larkspur's origin traffic rose \"eightfold\" when its article TTL dropped from \"300\" to \"30 seconds\".", "high", [c12])
+c12 = CitationChip("u12")
+---
+root = IdeaCard("Purging by URL for immediate changes", "When content requires immediate changes, the origin can request the CDN to purge a specific URL, removing its cached copy.", "medium", [c13])
+c13 = CitationChip("u13")
+---
+root = IdeaCard("Effect of URL purge", "A URL purge removes the cached copy, forcing the next request for that URL to fetch fresh content directly from the origin.", "low", [c14])
+---
+root = IdeaCard("Larkspur's purge implementation", "Larkspur's publishing system automatically sends a purge request for an article's URL whenever an editor saves a correction.", "low", [c15])
+c15 = CitationChip("u15")
+---
+root = IdeaCard("Purge consistency and timing", "Purge requests are accepted quickly but are not applied simultaneously across all edge locations, leading to a brief period where some locations serve new content while others serve old.", "high", [c16, c17])
+c16 = CitationChip("u16")
+c17 = CitationChip("u17")
+---
+root = IdeaCard("Purging is eventually consistent", "Purging is an eventually consistent process, meaning it takes time to propagate across the CDN, rather than being instantaneous.", "medium", [c18])
+---
+root = IdeaCard("Limitation of URL purging: exact match", "Purging by URL only removes the exact URL specified, failing to update other cached pages that display the same content.", "high", [c19])
+---
+root = IdeaCard("URL purging misses related content", "A corrected headline on an article page will remain stale on the home page, section page, and RSS feed until those pages are separately purged or expire.", "medium", [c20])
+---
+root = IdeaCard("Query strings and URL purging", "Query strings complicate URL purging because `/story/417?ref=social` is treated as a distinct cache entry from `/story/417` and won't be removed by purging the latter.", "high", [c21])
+c21 = CitationChip("u21")
+---
+root = IdeaCard("Purge API rate limits", "Purge APIs are rate-limited; Larkspur's plan allows \"1,000\" purge calls per minute, which can be quickly exhausted by bulk corrections.", "high", [c22])
+c22 = CitationChip("u22")
+---
+root = IdeaCard("Purge request queuing", "The origin calls the purge API, which responds within about \"150 milliseconds\", but this response only confirms the request has been queued, not applied.", "medium", [c23])
+c23 = CitationChip("u23")
+---
+root = IdeaCard("Purge propagation to edge locations", "The CDN's control plane distributes the purge request to all \"90\" edge locations.", "low", [c24])
+c24 = CitationChip("u24")
+---
+root = IdeaCard("Edge location purge action", "Each edge location marks its cached copy as invalid, causing the next request for that content to be a cache miss and fetch from the origin.", "low", [c25])
+---
+root = IdeaCard("Purge application timing", "Larkspur's measurements show that \"half\" of the locations applied a purge within \"2 seconds\", with the slowest taking \"20 seconds\".", "medium", [c26])
+c26 = CitationChip("u26")
+---
+root = IdeaCard("Temporary inconsistency with purging", "Until the purge is applied at every edge location, readers routed to slower-updating locations will still receive the old content.", "medium", [c27])
+---
+root = IdeaCard("Surrogate keys for related content invalidation", "Surrogate keys address the problem of invalidating related content by allowing the origin to tag responses with keys like `Surrogate-Key: story-417 section-politics`.", "medium", [c28, c29])
+c28 = CitationChip("u28")
+c29 = CitationChip("u29")
+---
+root = IdeaCard("Broad invalidation with surrogate keys", "A single purge of a surrogate key, such as `story-417`, removes all cached pages tagged with that key, including the article, home page, section page, and feed.", "medium", [c30])
+c30 = CitationChip("u30")
+---
+root = IdeaCard("Surrogate key granularity and limits", "Surrogate keys offer flexible granularity, but adding more keys lengthens the header; Larkspur limits responses to under \"50\" keys.", "medium", [c31])
+c31 = CitationChip("u31")
+---
+root = IdeaCard("Origin's responsibility for surrogate keys", "Using surrogate keys shifts the responsibility for accurate tagging to the origin; a missing tag will result in a stale page without any error notification.", "high", [c32, c33])
+c32 = CitationChip("u32")
+c33 = CitationChip("u33")
+---
+root = IdeaCard("Surrogate key purge consistency", "Similar to URL purging, tag purges are delivered to each edge location separately, causing a brief period of inconsistency where some locations serve updated pages and others serve old ones.", "medium", [c34])
+---
+root = IdeaCard("Large-scale tag purges", "Tag purges can be extensive; purging `section-politics` at Larkspur invalidates approximately \"12,000\" cached objects, leading to a burst of cache misses at the origin.", "medium", [c35, c36])
+c35 = CitationChip("u35")
+c36 = CitationChip("u36")
+---
+root = IdeaCard("Stale-while-revalidate for background updates", "`Stale-while-revalidate` transforms TTL expiry into a background task, allowing an edge location to immediately serve an expired copy while fetching a fresh one.", "medium", [c37, c38])
+c37 = CitationChip("u37")
+c38 = CitationChip("u38")
+---
+root = IdeaCard("Reader experience with stale-while-revalidate", "With `stale-while-revalidate`, the initial reader gets a fast response from the expired copy, and subsequent readers receive the refreshed content.", "low", [c39])
+---
+root = IdeaCard("Acceptable staleness with stale-while-revalidate", "Larkspur uses `stale-while-revalidate` on article pages where a minute of staleness is acceptable, but not for time-sensitive content like live election results.", "medium", [c40])
+c40 = CitationChip("u40")
+---
+root = IdeaCard("Stale-while-revalidate time bound", "An expired copy is served for a maximum of \"60 seconds\" past its TTL with `stale-while-revalidate`; after this, the edge waits for the origin like a regular cache miss.", "medium", [c41])
+c41 = CitationChip("u41")
+---
+root = IdeaCard("Stale-if-error directive", "The `stale-if-error=86400` directive allows the edge to continue serving an expired copy for up to \"86,400 seconds\" (one day) if the origin is returning errors.", "medium", [c42])
+c42 = CitationChip("u42")
+---
+root = IdeaCard("Stale serving as tolerance, not freshness", "Serving stale content is a choice about tolerance for older content, not a method to make content fresher.", "medium", [c43])
+---
+root = IdeaCard("Trade-offs of stale serving", "While stale serving hides a slow origin from readers, it also means some readers might see content older than the TTL alone would suggest.", "medium", [c44])
+c44 = CitationChip("u44")
+---
+root = IdeaCard("Versioning for static asset invalidation", "For static assets, the most effective invalidation method is to give them a new name, typically by including a hash of their contents in the filename, like `app.3f9c2e.js`.", "medium", [c45, c46])
+c45 = CitationChip("u45")
+c46 = CitationChip("u46")
+---
+root = IdeaCard("Long caching for versioned URLs", "Versioned URLs, whose content never changes, can be cached for extended periods; Larkspur serves its versioned assets with `max-age=31536000`, equivalent to one year.", "medium", [c47])
+c47 = CitationChip("u47")
+---
+root = IdeaCard("Automating versioning with build tools", "Most build tools can automatically add content hashes to filenames, making the cost a \"one-time\" change to the build configuration.", "low", [c48])
+c48 = CitationChip("u48")
+---
+root = IdeaCard("Versioning limitations for HTML entry pages", "Versioning does not apply to HTML entry pages, such as the home page or article pages like `/story/417`, which are requested at fixed addresses.", "high", [c49, c50])
+c49 = CitationChip("u49")
+c50 = CitationChip("u50")
+---
+root = IdeaCard("HTML TTL and asset availability", "If an HTML page remains cached longer than the origin retains old asset files, it can direct readers to non-existent files.", "high", [c51])
+c51 = CitationChip("u51")
+---
+root = IdeaCard("Retaining old asset versions", "To prevent broken links, old asset versions should remain available for at least as long as the longest HTML TTL.", "medium", [c52])
+c52 = CitationChip("u52")
+---
+root = IdeaCard("Invalidation techniques comparison", "The table below summarizes the comparison of different invalidation techniques.", "medium", [c53, c54, c55, c56, c57, c58, c59])
+c53 = CitationChip("u53")
+c54 = CitationChip("u54")
+c55 = CitationChip("u55")
+c56 = CitationChip("u56")
+c57 = CitationChip("u57")
+c58 = CitationChip("u58")
+c59 = CitationChip("u59")
+---
+root = ComparisonTable(
+    columns=["Technique", "Freshness after a change", "Main cost", "Main caveat"],
+    rows=[
+        ["TTL expiry", "Up to the full TTL (\"300 seconds\" at Larkspur)", "More origin traffic as the TTL shrinks", "Cannot be shortened after the fact"],
+        ["Purge by URL", "Seconds (\"20 seconds\" worst case measured)", "One purge call per URL", "Misses other pages that show the same content"],
+        ["Surrogate-key purge", "Seconds, for every tagged page", "Tagging discipline at the origin", "Untagged pages stay stale"],
+        ["Stale-while-revalidate", "Up to the TTL plus \"60 seconds\"", "Nothing at request time", "Readers knowingly get expired copies"],
+        ["Versioned URLs", "Immediate for pages that reference the new name", "A build step", "Does not cover HTML entry pages"]
+    ]
+)
+---
+root = IdeaCard("Invalidation is a set of trade-offs", "Invalidation at the edge involves a series of \"trade-offs\" rather than a single solution.", "high", [c60])
+c60 = CitationChip("u60")
+---
+root = IdeaCard("Combining invalidation techniques", "A robust invalidation strategy combines short TTLs, explicit purges, deliberate stale serving, and versioned filenames to cover each other's weaknesses.", "high", [c62])
+c62 = CitationChip("u62")
+---
+root = IdeaCard("Planning for purge propagation delay", "Regardless of the invalidation mix, anticipate a window of several seconds during which some readers may still see old content due to purge propagation delays.", "high", [c63])
+c63 = CitationChip("u63")
+---
+root = IdeaCard("Next article: cache keys and personalization", "The next article in this series will cover cache keys and personalization.", "low", [c64])
+c64 = CitationChip("u64")

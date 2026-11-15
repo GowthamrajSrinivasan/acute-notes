@@ -14,13 +14,16 @@
  * change set, never a write: `prepareProposal` splits a large one into reviewable sections, and the caller proposes it
  * (the dialog to its review bar, the MCP tools through `proposeChangeSet`).
  */
+import { currentUpdatePolicy, type UpdatePolicy } from "@/ai/reconcile/updatePolicy";
 import type { ChangeSet } from "@/ai/changes/changeSet";
+import type { NoteModel } from "@/ai/fidelity/contracts";
 import { splitIntoSectionParts } from "@/ai/changes/sectionParts";
 import { loadLatest } from "@/ai/content/sources";
 import { mergeIntoSource, type MergeInput } from "@/ai/merge/merge";
 import type { ExistingObject } from "@/ai/reconcile/classify";
 import { existingConnections, existingObjects } from "@/ai/reconcile/existing";
 import { updateFromNewContent, type UpdateInput } from "@/ai/reconcile/update";
+import { discoverImpact, withImpact } from "@/ai/reconcile/impact";
 import type { AIRuntime } from "@/ai/runtime";
 import type { ParseMarkdown } from "@/ai/renderer/mapNode";
 import type { RenderContext } from "@/ai/renderer/render";
@@ -54,6 +57,11 @@ export interface IngestPorts {
   renderContext(): RenderContext;
   /** One source's objects and connectors on the canvas (`sceneSourceObjects` reads them from the live scene). */
   sourceObjects(sourceId: string): SourceObjects;
+  /**
+   * The whole canvas, for impact discovery (Stage 3): cards elsewhere that repeat a fact an update changes. Absent, an
+   * update proposes the source's own cards only.
+   */
+  scene?(): { elements: readonly SceneElement[]; getDocument: (id: string) => DocumentRecord | null | undefined };
 }
 
 /** `sourceObjects` for a live scene: the elements in z-order and a way to read a block's or page's document. */
@@ -65,7 +73,15 @@ export function sceneSourceObjects(elements: () => readonly SceneElement[], getD
 }
 
 export type IngestRequest =
-  | { mode: "new"; text: string; template?: VisualTemplate; forceLocalOnly?: boolean; title?: string }
+  | {
+      mode: "new";
+      text: string;
+      template?: VisualTemplate;
+      forceLocalOnly?: boolean;
+      title?: string;
+      /** This run's note model (WP2.8: the dialog's "Keep full detail" choice, shown from R1). Omitted: `FIDELITY_CONFIG.noteModel`. */
+      noteModel?: NoteModel;
+    }
   | { mode: "update"; sourceId: string; text: string; title?: string; /** Section keys to analyse again with AI from their own text ("Re-visualize"); all others are left as they are. */ regenerate?: readonly string[] }
   | { mode: "merge"; sourceId: string; text: string; economy?: boolean; title?: string };
 
@@ -74,6 +90,8 @@ export interface IngestOptions {
   onProgress?: (progress: VisualizeProgress) => void;
   /** Markdown parsing for the renderer; the app's default when absent (tests give their own). */
   parseMarkdown?: ParseMarkdown;
+  /** How an update or merge treats locked and edited cards (Stage 1e); AI settings → Update behaviour when absent. */
+  updatePolicy?: UpdatePolicy;
 }
 
 export interface IngestResult {
@@ -112,10 +130,18 @@ export async function sourceInput(ports: IngestPorts, sourceId: string, text: st
 
 export async function ingestContent(request: IngestRequest, ports: IngestPorts, options: IngestOptions = {}): Promise<IngestResult> {
   const { signal, onProgress, parseMarkdown } = options;
-  const passed = { signal, onProgress, ...(parseMarkdown ? { parseMarkdown } : {}) };
+  const policy = options.updatePolicy ?? currentUpdatePolicy();
+  const passed = { signal, onProgress, ...(parseMarkdown ? { parseMarkdown } : {}), preserveLockedSections: policy.preserveLockedSections, preserveEditedCards: policy.preserveEditedCards };
   if (request.mode === "update") {
     const result = await updateFromNewContent(await sourceInput(ports, request.sourceId, request.text, request.title ?? "Update from new content"), ports.runtime, request.regenerate?.length ? { ...passed, regenerate: request.regenerate } : passed);
-    return { changeSet: result.changeSet, notices: result.notices, choices: [] };
+    // Stage 3: the same changed facts, where else the canvas says them — offered as decisions, never applied by "Accept all".
+    // Not for "Re-visualize" on a selection, which must touch only its own sections.
+    const scene = policy.suggestElsewhere !== false && !request.regenerate?.length && result.changeSet ? ports.scene?.() : undefined;
+    const changeSet =
+      scene && result.changeSet
+        ? withImpact(result.changeSet, discoverImpact({ set: result.changeSet, sourceId: request.sourceId, ...scene, preserveLockedSections: policy.preserveLockedSections }))
+        : result.changeSet;
+    return { changeSet, notices: result.notices, choices: [] };
   }
   if (request.mode === "merge") {
     const input = withEconomy(await sourceInput(ports, request.sourceId, request.text, request.title ?? "Merge into existing notes"), !!request.economy);
@@ -127,6 +153,7 @@ export async function ingestContent(request: IngestRequest, ports: IngestPorts, 
       text: request.text,
       template: request.template,
       forceLocalOnly: request.forceLocalOnly ?? false,
+      ...(request.noteModel ? { noteModel: request.noteModel } : {}),
       operationId: newId("op"),
       title: request.title ?? "Visualize",
       context: ports.renderContext(),

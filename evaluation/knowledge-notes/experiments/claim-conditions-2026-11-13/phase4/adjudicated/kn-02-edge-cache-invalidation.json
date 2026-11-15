@@ -1,0 +1,618 @@
+{
+  "caseId": "kn-02-edge-cache-invalidation",
+  "adjudicator": "phase4-adjudicator-A (Claude, evidence-led; source-only binding, then visibility)",
+  "records": [
+    {
+      "id": "k1", "units": ["u9"], "clause": "if the origin sent an `ETag`", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u9"], "claimQuote": "the edge can ask whether the copy changed and receive a short `304 Not Modified` answer",
+      "status": "agreed", "from": { "X": "x1", "Y": "y1" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without an ETag (validator) conditional revalidation is unavailable; unconditional statement is false in that case.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g2"], "carriers": ["v1:g2"], "perClaimCard": { "v1:g2": "carried" } },
+        "openui-v2": { "claimCards": ["v2:g7"], "carriers": ["v2:g7"], "perClaimCard": { "v2:g7": "carried" } }
+      }
+    },
+    {
+      "id": "k2", "units": ["u9"], "clause": "when it has not", "verdict": "set", "rule": "general",
+      "claimUnits": ["u9"], "claimQuote": "receive a short `304 Not Modified` answer",
+      "status": "adjudicated", "from": { "X": "x2" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A real condition (304 only when unchanged), but the name 'Not Modified' already conveys it, so the takeaway is materially unchanged without the clause: set, not claim. Found by X only; accepted.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g2"], "carriers": [], "perClaimCard": { "v1:g2": "absent" } },
+        "openui-v2": { "claimCards": ["v2:g7"], "carriers": ["v2:g7"], "perClaimCard": { "v2:g7": "carried" } }
+      }
+    },
+    {
+      "id": "k3", "units": ["u10"], "clause": "the TTL is a guess made in advance", "verdict": "set", "rule": "R3",
+      "claimUnits": ["u8"], "claimQuote": "TTL expiry needs no coordination between the origin and the edge, which is why every CDN uses it as the default.",
+      "status": "agreed", "from": { "X": "x3", "Y": "y2" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u6"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: a general weakness, secondary to the u8 takeaway; its concrete consequences are separate records (k4, k5).",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": [], "carriers": ["v1:g3"], "perClaimCard": {} },
+        "openui-v2": { "claimCards": ["v2:g6"], "carriers": ["v2:g8"], "perClaimCard": { "v2:g6": "separated" } }
+      }
+    },
+    {
+      "id": "k4", "units": ["u11"], "clause": "for up to the remaining 240 seconds", "verdict": "set", "rule": "general",
+      "claimUnits": ["u11"], "claimQuote": "readers can keep seeing the old headline",
+      "status": "adjudicated", "from": { "X": "x4", "Y": "y3" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u11"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u11"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u6"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "General test: 'readers can keep seeing the old headline' stays true without the bound; the bound quantifies the worked example (remaining TTL) rather than reversing it. Set.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g3"], "carriers": ["v1:g3"], "perClaimCard": { "v1:g3": "carried" } },
+        "openui-v2": { "claimCards": ["v2:g8", "v2:g9"], "carriers": ["v2:g9"], "perClaimCard": { "v2:g8": "separated", "v2:g9": "carried" } }
+      }
+    },
+    {
+      "id": "k5", "units": ["u11"], "clause": "nothing the origin does will shorten that wait", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u8"], "claimQuote": "TTL expiry needs no coordination between the origin and the edge, which is why every CDN uses it as the default.",
+      "status": "adjudicated", "from": { "X": "x5", "Y": "y4" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u6"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u8"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u6"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both annotators say claim; links disjoint. R4: u6 (edge discards after TTL) is not falsified; the 'no coordination' benefit in u8 is exactly what leaves the origin unable to recall a copy, so a reader taking u8 as free would act wrongly. u7 ('origin sets the TTL') was also a candidate; noted, not chosen.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": [], "carriers": [], "perClaimCard": {} },
+        "openui-v2": { "claimCards": ["v2:g6"], "carriers": [], "perClaimCard": { "v2:g6": "absent" } }
+      }
+    },
+    {
+      "id": "k6", "units": ["u12"], "clause": "but sends more requests back to the origin", "verdict": "claim", "rule": "R3",
+      "claimUnits": ["u12"], "claimQuote": "Shortening the TTL narrows the window",
+      "status": "agreed", "from": { "X": "x6", "Y": "y5" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u12"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u12"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u62"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u12"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: the source's point is the trade-off (eightfold origin traffic); without it shortening the TTL looks free.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g3"], "carriers": ["v1:g3"], "perClaimCard": { "v1:g3": "carried" } },
+        "openui-v2": { "claimCards": ["v2:g10"], "carriers": ["v2:g10"], "perClaimCard": { "v2:g10": "carried" } }
+      }
+    },
+    {
+      "id": "k7", "units": ["u16"], "clause": "but it is not applied everywhere at the same moment", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u16"], "claimQuote": "A purge request is accepted quickly",
+      "status": "adjudicated", "from": { "X": "x7", "Y": "y6" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u14"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R4: most specific claim misled is the intra-sentence 'accepted quickly' (reader infers fast effect). u14's misreading is covered by the separate u17 and u18 records (k8, k9), so no second link.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g5"], "carriers": ["v1:g5"], "perClaimCard": { "v1:g5": "carried" } },
+        "openui-v2": { "claimCards": ["v2:g14"], "carriers": ["v2:g14"], "perClaimCard": { "v2:g14": "carried" } }
+      }
+    },
+    {
+      "id": "k8", "units": ["u17"], "clause": "for a short time some locations serve the new version while others still serve the old one", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u14"], "claimQuote": "The purge removes the cached copy, so the next request for that URL is fetched fresh from the origin.",
+      "status": "agreed", "from": { "X": "x8", "Y": "y7" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u14"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "u14 is false at not-yet-purged locations during propagation.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g4"], "carriers": ["v1:g5"], "perClaimCard": { "v1:g4": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g11", "v2:g12"], "carriers": ["v2:g14", "v2:g24", "v2:g48"], "perClaimCard": { "v2:g11": "separated", "v2:g12": "separated" } }
+      }
+    },
+    {
+      "id": "k9", "units": ["u18"], "clause": "eventually consistent, not instant", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u14"], "claimQuote": "The purge removes the cached copy, so the next request for that URL is fetched fresh from the origin.",
+      "status": "agreed", "from": { "X": "x9", "Y": "y8" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u14"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Summary limit on u14; separate clause from k8.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g4"], "carriers": ["v1:g5"], "perClaimCard": { "v1:g4": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g11", "v2:g12"], "carriers": ["v2:g15"], "perClaimCard": { "v2:g11": "separated", "v2:g12": "separated" } }
+      }
+    },
+    {
+      "id": "k10", "units": ["u19"], "clause": "it removes only the exact URL you name", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u14"], "claimQuote": "The purge removes the cached copy",
+      "status": "agreed", "from": { "X": "x10", "Y": "y9" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u13", "u14"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A reader would purge the article URL and believe the correction is everywhere; wrong for other pages.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g4"], "carriers": ["v1:g5"], "perClaimCard": { "v1:g4": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g11", "v2:g12"], "carriers": ["v2:g16"], "perClaimCard": { "v2:g11": "separated", "v2:g12": "separated" } }
+      }
+    },
+    {
+      "id": "k11", "units": ["u20"], "clause": "until it is purged separately or expires", "verdict": "set", "rule": "general",
+      "claimUnits": ["u20"], "claimQuote": "each of those cached pages keeps the old headline",
+      "status": "adjudicated", "from": { "X": "x11", "Y": "y10" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u20"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u15"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u13", "u14"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Verdict agreed (set); links disjoint. Y's span also covered 'each of those cached pages keeps the old headline', which is an elaboration of the u19 limit (k10), not a separate limiting clause, so not split out. The limiting words bound u20's own claim (R4, intra-sentence).",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g5"], "carriers": [], "perClaimCard": { "v1:g5": "absent" } },
+        "openui-v2": { "claimCards": ["v2:g17"], "carriers": ["v2:g17"], "perClaimCard": { "v2:g17": "carried" } }
+      }
+    },
+    {
+      "id": "k12", "units": ["u21"], "clause": "`/story/417?ref=social` is a different cache entry from `/story/417` and is not removed by purging it", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u14"], "claimQuote": "The purge removes the cached copy, so the next request for that URL is fetched fresh from the origin.",
+      "status": "agreed", "from": { "X": "x12", "Y": "y11" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u13", "u14"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Query-string variants stay stale after a purge of the bare URL.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g4"], "carriers": ["v1:g5"], "perClaimCard": { "v1:g4": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g11", "v2:g12"], "carriers": ["v2:g18"], "perClaimCard": { "v2:g11": "separated", "v2:g12": "separated" } }
+      }
+    },
+    {
+      "id": "k13", "units": ["u22"], "clause": "Purge APIs are also rate limited", "verdict": "claim", "rule": "R3",
+      "claimUnits": ["u13"], "claimQuote": "When content must change now, the origin can ask the CDN to purge a specific URL.",
+      "status": "adjudicated", "from": { "X": "x13", "Y": "y12" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "Y", "verdict": "ambiguous", "claimUnits": ["u13"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u13"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Y's deciding question is answered by the source itself: u22 names the case (a bulk correction across the archive) in which relying on purges fails, and u15 has purges fired on every save. A reader following u13 in that case would act wrongly, so claim. Y's span adds the 1,000/min figure and the exhaustion case, which elaborate this one clause; not split.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g4"], "carriers": [], "perClaimCard": { "v1:g4": "absent" } },
+        "openui-v2": { "claimCards": ["v2:g11"], "carriers": ["v2:g19"], "perClaimCard": { "v2:g11": "separated" } }
+      }
+    },
+    {
+      "id": "k14", "units": ["u26"], "clause": "the slowest location took 20 seconds", "verdict": "set", "rule": "R4",
+      "claimUnits": ["u18"], "claimQuote": "Purging is eventually consistent, not instant.",
+      "status": "adjudicated", "from": { "X": "x14", "Y": "y13" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u16"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u18"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u18", "u23", "u27"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both say set; links differ. R4: the figure quantifies 'eventually', so u18 is the most specific claim it bounds.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g5"], "carriers": [], "perClaimCard": { "v1:g5": "absent" } },
+        "openui-v2": { "claimCards": ["v2:g15"], "carriers": ["v2:g23"], "perClaimCard": { "v2:g15": "separated" } }
+      }
+    },
+    {
+      "id": "k15", "units": ["u32"], "clause": "The responsibility moves to the origin.", "verdict": "set", "rule": "R4",
+      "claimUnits": ["u28"], "claimQuote": "Surrogate keys solve the listing problem by letting the origin label each response with tags.",
+      "status": "adjudicated", "from": { "X": "x15", "Y": "y14" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u28"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u30"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both say set (R3: a cost secondary to the takeaway; the concrete failure is k16/k17). Links differ; R4: the cost attaches to the origin-labelling claim in u28.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g6"], "carriers": ["v1:g7"], "perClaimCard": { "v1:g6": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g25"], "carriers": ["v2:g28"], "perClaimCard": { "v2:g25": "separated" } }
+      }
+    },
+    {
+      "id": "k16", "units": ["u33"], "clause": "A page is only purged by a key if the origin tagged it with that key", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u30"], "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+      "status": "agreed", "from": { "X": "x16", "Y": "y15" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u30"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u30"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u30"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "'every cached page that included that story' is false for untagged pages. v2:g26 says 'removes all cached pages tagged with that key', which states the tagging condition (carried); v1:g6's 'associated with a specific key, such as an article appearing on multiple pages' reads as content-based and does not.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g6"], "carriers": ["v1:g7"], "perClaimCard": { "v1:g6": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g26"], "carriers": ["v2:g26", "v2:g28"], "perClaimCard": { "v2:g26": "carried" } }
+      }
+    },
+    {
+      "id": "k17", "units": ["u33"], "clause": "a missing tag produces a stale page with no error anywhere", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u30"], "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+      "status": "agreed", "from": { "X": "x17", "Y": "y16" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u30"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u30"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u30"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The silent-failure mode; a reader would not monitor for it.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g6"], "carriers": ["v1:g7"], "perClaimCard": { "v1:g6": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g26"], "carriers": ["v2:g28"], "perClaimCard": { "v2:g26": "separated" } }
+      }
+    },
+    {
+      "id": "k18", "units": ["u35"], "clause": "Tag purges can also be large.", "verdict": "set", "rule": "R3",
+      "claimUnits": ["u30"], "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+      "status": "agreed", "from": { "X": "x18", "Y": "y17" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u30"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: secondary cost.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g6"], "carriers": ["v1:g7"], "perClaimCard": { "v1:g6": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g26"], "carriers": ["v2:g30"], "perClaimCard": { "v2:g26": "separated" } }
+      }
+    },
+    {
+      "id": "k19", "units": ["u36"], "clause": "the origin has to absorb the burst of cache misses that follows", "verdict": "set", "rule": "R3",
+      "claimUnits": ["u30"], "claimQuote": "A single purge of the key `story-417` then removes every cached page that included that story",
+      "status": "agreed", "from": { "X": "x19", "Y": "y18" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u30"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u30"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: secondary cost.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g6"], "carriers": ["v1:g7"], "perClaimCard": { "v1:g6": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g26"], "carriers": ["v2:g30"], "perClaimCard": { "v2:g26": "separated" } }
+      }
+    },
+    {
+      "id": "k20", "units": ["u40"], "clause": "where a minute of staleness is acceptable", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u37"], "claimQuote": "Stale-while-revalidate turns expiry from a wait into a background task.",
+      "status": "adjudicated", "from": { "X": "x20", "Y": "y19" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u40"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u37"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u37", "u38", "u39"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both say claim. R4: 'Larkspur uses it on article pages' is not misleading without the clause; the technique claim u37 is, because a reader would apply SWR where staleness is unacceptable. Link u37.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g8"], "carriers": [], "perClaimCard": { "v1:g8": "absent" } },
+        "openui-v2": { "claimCards": ["v2:g31"], "carriers": ["v2:g33"], "perClaimCard": { "v2:g31": "separated" } }
+      }
+    },
+    {
+      "id": "k21", "units": ["u40"], "clause": "but not on live election results", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u37"], "claimQuote": "Stale-while-revalidate turns expiry from a wait into a background task.",
+      "status": "adjudicated", "from": { "X": "x21", "Y": "y20" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u40"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u40"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u37", "u38", "u39"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Annotators agree claim on u40, but under R4 the article-pages statement is not falsified by omitting the exclusion; the technique claim u37 is (time-critical content). Re-linked to u37 for consistency with k20.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g8"], "carriers": [], "perClaimCard": { "v1:g8": "absent" } },
+        "openui-v2": { "claimCards": ["v2:g31"], "carriers": ["v2:g33"], "perClaimCard": { "v2:g31": "separated" } }
+      }
+    },
+    {
+      "id": "k22", "units": ["u41"], "clause": "an expired copy is served for at most 60 seconds past its TTL", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u38"], "claimQuote": "returns the expired copy immediately and fetches a fresh one from the origin in the background",
+      "status": "agreed", "from": { "X": "x22", "Y": "y21" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u38"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without the bound, expired copies appear to be served indefinitely.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g8"], "carriers": [], "perClaimCard": { "v1:g8": "absent" } },
+        "openui-v2": { "claimCards": ["v2:g31"], "carriers": ["v2:g34"], "perClaimCard": { "v2:g31": "separated" } }
+      }
+    },
+    {
+      "id": "k23", "units": ["u41"], "clause": "after that the edge waits for the origin as it would on an ordinary miss", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u39"], "claimQuote": "The reader gets a fast response",
+      "status": "adjudicated", "from": { "X": "x23", "Y": "y22" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u38"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u39"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u38"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "General test on u39: 'the reader gets a fast response' is false for a request after TTL+60 s, which is the case this clause describes. Most specific link is u39 (R4).",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g8"], "carriers": [], "perClaimCard": { "v1:g8": "absent" } },
+        "openui-v2": { "claimCards": ["v2:g32"], "carriers": ["v2:g34"], "perClaimCard": { "v2:g32": "separated" } }
+      }
+    },
+    {
+      "id": "k24", "units": ["u42"], "clause": "while the origin is returning errors", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u42"], "claimQuote": "lets the edge keep serving the expired copy for up to 86,400 seconds, or one day",
+      "status": "agreed", "from": { "X": "x24", "Y": "y23" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u42"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u42"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u41"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without the trigger, stale-if-error reads as serving day-old copies routinely. Phase 3's ambiguity came from merging this with the 86,400-second bound (now k25).",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g9"], "carriers": ["v1:g9"], "perClaimCard": { "v1:g9": "carried" } },
+        "openui-v2": { "claimCards": ["v2:g35"], "carriers": ["v2:g35"], "perClaimCard": { "v2:g35": "carried" } }
+      }
+    },
+    {
+      "id": "k25", "units": ["u42"], "clause": "for up to 86,400 seconds, or one day", "verdict": "set", "rule": "general",
+      "claimUnits": ["u42"], "claimQuote": "lets the edge keep serving the expired copy",
+      "status": "agreed", "from": { "X": "x25", "Y": "y24" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u42"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u42"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u41"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Quantitative bound; takeaway unchanged. v1:g9 'for an extended period' does not make the one-day limit recognisable.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g9"], "carriers": [], "perClaimCard": { "v1:g9": "absent" } },
+        "openui-v2": { "claimCards": ["v2:g35"], "carriers": ["v2:g35"], "perClaimCard": { "v2:g35": "carried" } }
+      }
+    },
+    {
+      "id": "k26", "units": ["u43"], "clause": "not a way to make content fresher", "verdict": "claim", "rule": "R3",
+      "claimUnits": ["u37"], "claimQuote": "Stale-while-revalidate turns expiry from a wait into a background task.",
+      "status": "agreed", "from": { "X": "x26", "Y": "y25" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u37"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u37"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u39"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: explicit 'not a guarantee'-style correction of the benefit.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g8"], "carriers": ["v1:g10"], "perClaimCard": { "v1:g8": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g31"], "carriers": ["v2:g36"], "perClaimCard": { "v2:g31": "separated" } }
+      }
+    },
+    {
+      "id": "k27", "units": ["u44"], "clause": "but it also means some readers see a copy that is older than the TTL alone would suggest", "verdict": "claim", "rule": "R3",
+      "claimUnits": ["u44"], "claimQuote": "It hides a slow origin from readers",
+      "status": "agreed", "from": { "X": "x27", "Y": "y26" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u44"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u44"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u39"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: the benefit is presented as weighed against this cost.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g10"], "carriers": ["v1:g10"], "perClaimCard": { "v1:g10": "carried" } },
+        "openui-v2": { "claimCards": ["v2:g37"], "carriers": ["v2:g37"], "perClaimCard": { "v2:g37": "carried" } }
+      }
+    },
+    {
+      "id": "k28", "units": ["u49"], "clause": "Versioning does not help for HTML entry pages.", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u46"], "claimQuote": "a changed file gets a new URL and the old cached copy is simply never requested again",
+      "status": "adjudicated", "from": { "X": "x28", "Y": "y27" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u46"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u45"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u45"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R4: u45 is already scoped 'For static assets'; u46's 'each file' is the claim a reader would over-apply to HTML.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g11"], "carriers": ["v1:g12"], "perClaimCard": { "v1:g11": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g38"], "carriers": ["v2:g41"], "perClaimCard": { "v2:g38": "separated" } }
+      }
+    },
+    {
+      "id": "k29", "units": ["u50"], "clause": "so they still need a TTL, a purge or both", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u46"], "claimQuote": "a changed file gets a new URL and the old cached copy is simply never requested again",
+      "status": "adjudicated", "from": { "X": "x29", "Y": "y28" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u46"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u45"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u45"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: omitting TTL/purge for HTML would leave entry pages stale. Link as k28 (R4). v2:g41 states HTML is not covered but not this remedy, so it is not a carrier.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g11"], "carriers": ["v1:g12"], "perClaimCard": { "v1:g11": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g38"], "carriers": [], "perClaimCard": { "v2:g38": "absent" } }
+      }
+    },
+    {
+      "id": "k30", "units": ["u51"], "clause": "If an HTML page stays cached longer than the origin keeps the old asset files", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u46"], "claimQuote": "the old cached copy is simply never requested again",
+      "status": "agreed", "from": { "X": "x30", "Y": "y29" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u46"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u46"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u46"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Old asset names are still requested by cached HTML; u46 false in that case.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g11"], "carriers": ["v1:g12"], "perClaimCard": { "v1:g11": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g38"], "carriers": ["v2:g42"], "perClaimCard": { "v2:g38": "separated" } }
+      }
+    },
+    {
+      "id": "k31", "units": ["u52"], "clause": "for at least as long as the longest HTML TTL", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u52"], "claimQuote": "Old asset versions should therefore stay available",
+      "status": "agreed", "from": { "X": "x31", "Y": "y30" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u52"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u52"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u46"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: without the duration the instruction has no safe retention period.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g12"], "carriers": ["v1:g12"], "perClaimCard": { "v1:g12": "carried" } },
+        "openui-v2": { "claimCards": ["v2:g43"], "carriers": ["v2:g43"], "perClaimCard": { "v2:g43": "carried" } }
+      }
+    },
+    {
+      "id": "k32", "units": ["u55"], "clause": "Cannot be shortened after the fact", "verdict": "set", "rule": "general",
+      "claimUnits": ["u55"], "claimQuote": "TTL expiry | Up to the full TTL (300 seconds at Larkspur)",
+      "status": "adjudicated", "from": { "X": "x32", "Y": "y32" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u55"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u6"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Table restatement of k5. At its most specific link (the row's own freshness cell, 'Up to the full TTL') the takeaway already implies the bound, so set. No card in either set conveys 'cannot be shortened'.",
+      "confidence": "low",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g13"], "carriers": [], "perClaimCard": { "v1:g13": "absent" } },
+        "openui-v2": { "claimCards": ["v2:g44"], "carriers": [], "perClaimCard": { "v2:g44": "absent" } }
+      }
+    },
+    {
+      "id": "k33", "units": ["u55"], "clause": "More origin traffic as the TTL shrinks", "verdict": "set", "rule": "R4",
+      "claimUnits": ["u55"], "claimQuote": "TTL expiry | Up to the full TTL (300 seconds at Larkspur)",
+      "status": "adjudicated", "from": { "X": "x33", "Y": "y31" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u55"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u8"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u6"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both set; links differ. R4: the table cell qualifies its own row. The prose version is k6.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g13"], "carriers": ["v1:g3"], "perClaimCard": { "v1:g13": "separated" } },
+        "openui-v2": { "claimCards": ["v2:g44"], "carriers": ["v2:g10"], "perClaimCard": { "v2:g44": "separated" } }
+      }
+    },
+    {
+      "id": "k34", "units": ["u62"], "clause": "static", "verdict": "claim", "rule": "R5",
+      "claimUnits": ["u62"], "claimQuote": "versioned names take static assets out of the problem entirely",
+      "status": "agreed", "from": { "X": "x34", "Y": "y34" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u62"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u62"] },
+        { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R5: the adjective excludes HTML entry pages (u49); without it a reader would version HTML and expect it solved.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g14"], "carriers": ["v1:g11", "v1:g14"], "perClaimCard": { "v1:g14": "carried" } },
+        "openui-v2": { "claimCards": ["v2:g47"], "carriers": ["v2:g38"], "perClaimCard": { "v2:g47": "separated" } }
+      }
+    },
+    {
+      "id": "k35", "units": ["u62"], "clause": "when the origin struggles", "verdict": "set", "rule": "general",
+      "claimUnits": ["u62"], "claimQuote": "stale serving keeps the site fast",
+      "status": "agreed", "from": { "X": "x35", "Y": "y33" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u62"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u62"] },
+        { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Scope of the summary benefit; takeaway unchanged.",
+      "confidence": "low",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g14"], "carriers": ["v1:g14"], "perClaimCard": { "v1:g14": "carried" } },
+        "openui-v2": { "claimCards": ["v2:g47"], "carriers": ["v2:g37"], "perClaimCard": { "v2:g47": "separated" } }
+      }
+    },
+    {
+      "id": "k36", "units": ["u45"], "clause": "For static assets", "verdict": "claim", "rule": "R5",
+      "claimUnits": ["u45"], "claimQuote": "the cleanest invalidation is a new name",
+      "status": "adjudicated", "from": { "Y": "y35" },
+      "readings": [
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u45"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R5: scope excluding HTML entry pages, consistent with k34. Found by Y only; accepted.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": { "claimCards": ["v1:g11"], "carriers": ["v1:g11"], "perClaimCard": { "v1:g11": "carried" } },
+        "openui-v2": { "claimCards": ["v2:g38"], "carriers": ["v2:g38"], "perClaimCard": { "v2:g38": "carried" } }
+      }
+    }
+  ],
+  "rejected": [],
+  "notes": "Clause-level carriers only; citations ignored (e.g. v1:g5 cites u22-u27 but its text conveys none of rate limits, the 20 s figure, or 'until purged separately'). Claim cards for u14 = v1:g4, v2:g11, v2:g12; for u37 = v1:g8, v2:g31. Possible clauses neither annotator recorded (not added, for follow-up): u23 'but the answer only means the request was queued'; u27 'Until the last location has applied the purge'; u34 'for a few seconds some locations serve the updated pages while others still serve the old ones'; u63 'plan for a window of several seconds'."
+}

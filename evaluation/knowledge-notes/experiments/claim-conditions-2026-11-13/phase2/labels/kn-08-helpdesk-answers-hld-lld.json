@@ -1,0 +1,117 @@
+{
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "reviewer": "blind independent reviewer, 2026-11-13",
+  "records": [
+    {
+      "id": "r1",
+      "claimUnits": ["u21"], "claimSummary": "The Rerank client sends the 50 candidates to the Reranker and keeps the top 8.",
+      "conditionUnits": ["u25"], "kind": "exception",
+      "conditionSummary": "If the Reranker does not respond within 800 ms, reranking is skipped, the first 8 candidates in vector-similarity order are kept and rerank_skipped = true is logged.",
+      "mustConvey": "800 ms; skip reranking, keep first 8 by vector similarity; rerank_skipped = true",
+      "binding": "claim", "bindingReason": "When the Reranker exceeds 800 ms the kept 8 are not the reranked top 8, so the claim is false in that case.",
+      "claimCards": ["u3_n8", "u3_a1"], "carriers": ["u3_n9", "u3_a2"],
+      "perClaimCard": { "u3_n8": "separated", "u3_a1": "separated" },
+      "confidence": "high", "notes": "u3_a2 conveys 800 ms and skipping but not the vector-order fallback; u3_n9 conveys all of it. u4_n1 only says 'applies a fallback rule' (not a carrier)."
+    },
+    {
+      "id": "r2",
+      "claimUnits": ["u25"], "claimSummary": "On Reranker timeout the Rerank client skips reranking and keeps the first 8 candidates.",
+      "conditionUnits": ["u26"], "kind": "caveat",
+      "conditionSummary": "Skipping keeps the request fast but the 8 passages may then be less relevant.",
+      "mustConvey": "passages may be less relevant when reranking is skipped",
+      "binding": "set", "bindingReason": "The fallback behaviour stays true; the relevance cost is a caveat that must appear somewhere.",
+      "claimCards": ["u3_n9"], "carriers": ["u3_n10", "u3_a2"],
+      "perClaimCard": { "u3_n9": "separated" },
+      "confidence": "high", "notes": ""
+    },
+    {
+      "id": "r3",
+      "claimUnits": ["u5"], "claimSummary": "The Orchestrator calls the Model Gateway (to reach the external model provider).",
+      "conditionUnits": ["u5"], "kind": "scope",
+      "conditionSummary": "The Model Gateway is the only component allowed to talk to the external model provider.",
+      "mustConvey": "only the Model Gateway may talk to the external model provider",
+      "binding": "set", "bindingReason": "The Orchestrator still calls the Model Gateway without the 'only' constraint; the exclusivity is an architectural rule that must be recorded somewhere.",
+      "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1"],
+      "perClaimCard": { "u2_n1": "carried", "u2_a1": "separated" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r4",
+      "claimUnits": ["u8"], "claimSummary": "The Ingestion worker brings articles from the Help Center CMS into the Vector store.",
+      "conditionUnits": ["u8"], "kind": "bound",
+      "conditionSummary": "It reads only published articles, every 15 minutes (so new articles can lag up to ~15 min).",
+      "mustConvey": "every 15 minutes (published articles)",
+      "binding": "set", "bindingReason": "Ingestion from the CMS stays true without the schedule; the 15-minute interval is a freshness bound that must appear somewhere.",
+      "claimCards": ["u2_n1", "u2_n2", "u2_a1"], "carriers": ["u2_n1", "u2_n2", "u2_a2"],
+      "perClaimCard": { "u2_n1": "carried", "u2_n2": "carried", "u2_a1": "separated" },
+      "confidence": "medium", "notes": "u2_n2 and u2_a2 drop 'published'; only u2_n1 conveys it."
+    },
+    {
+      "id": "r5",
+      "claimUnits": ["u6"], "claimSummary": "The Retrieval service reads from the Vector store, a Postgres database with pgvector.",
+      "conditionUnits": ["u9"], "kind": "caveat",
+      "conditionSummary": "How the Vector store is partitioned has not been decided (and the Ingestion worker's internals are not described).",
+      "mustConvey": "Vector store partitioning undecided",
+      "binding": "set", "bindingReason": "The description of the Vector store stays true; the open decision is a caveat to be recorded somewhere.",
+      "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1", "u2_n2", "u2_a1", "u2_a2", "g1"],
+      "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r6",
+      "claimUnits": ["u27", "u12"], "claimSummary": "composeAnswer builds the prompt from the chosen passages with the Context builder.",
+      "conditionUnits": ["u27"], "kind": "bound",
+      "conditionSummary": "The prompt is limited to 6,000 tokens.",
+      "mustConvey": "6,000 tokens",
+      "binding": "set", "bindingReason": "'Builds the prompt' stays true without the cap; the limit must appear somewhere.",
+      "claimCards": ["u6_n2", "u6_n4", "u4_n1"], "carriers": ["u6_n4"],
+      "perClaimCard": { "u6_n2": "separated", "u6_n4": "carried", "u4_n1": "separated" },
+      "confidence": "medium", "notes": "u6_n2 reaches u6_n4 only via u6_n1 -> u6_n3 -> u6_n4, not directly."
+    },
+    {
+      "id": "r7",
+      "claimUnits": ["u27"], "claimSummary": "composeAnswer calls the Model Gateway to generate the draft.",
+      "conditionUnits": ["u28"], "kind": "bound",
+      "conditionSummary": "The model call has a 20-second timeout.",
+      "mustConvey": "20-second timeout",
+      "binding": "set", "bindingReason": "The call statement stays true without the timeout value; the bound must appear somewhere.",
+      "claimCards": ["u6_n2", "u6_n6"], "carriers": ["u6_n6"],
+      "perClaimCard": { "u6_n2": "separated", "u6_n6": "carried" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r8",
+      "claimUnits": ["u24"], "claimSummary": "The Answers API returns the answer to the Agent Console.",
+      "conditionUnits": ["u29"], "kind": "exception",
+      "conditionSummary": "If the model call times out, composeAnswer returns an error, the API responds HTTP 504, and no partial answer is shown.",
+      "mustConvey": "model timeout -> HTTP 504 error, no partial answer",
+      "binding": "claim", "bindingReason": "On a model timeout no answer is returned (HTTP 504), so 'the API returns the answer' is false in that case.",
+      "claimCards": ["u3_n16", "u3_a1", "u3_a3"], "carriers": ["u6_n7"],
+      "perClaimCard": { "u3_n16": "separated", "u3_a1": "separated", "u3_a3": "separated" },
+      "confidence": "high", "notes": "u6_a1 ('error handling for timeouts is strict') and g5's takeaway ('handling timeouts') hint at it but do not make 504 / no partial answer recognisable, so not counted as carriers. Group arrow g5 -> g2 does not link individual cards."
+    },
+    {
+      "id": "r9",
+      "claimUnits": ["u14", "u27"], "claimSummary": "The Citation checker verifies each citation in the draft answer points to a supplied passage.",
+      "conditionUnits": ["u30"], "kind": "exception",
+      "conditionSummary": "On a non-matching citation, composeAnswer removes the sentence carrying it and marks the answer partial, rather than rejecting the whole answer.",
+      "mustConvey": "sentence removed, answer marked partial, not rejected",
+      "binding": "set", "bindingReason": "The verification statement stays true; the failure handling (partial answer) is a consequence that must be recorded somewhere.",
+      "claimCards": ["u4_n1", "u6_n2", "u6_n9", "u6_a1"], "carriers": ["u6_n9", "u6_a1"],
+      "perClaimCard": { "u4_n1": "separated", "u6_n2": "separated", "u6_n9": "carried", "u6_a1": "carried" },
+      "confidence": "medium", "notes": "Binding could be argued 'claim' against u24/u1 (users may receive a partial answer). g5 takeaway 'partial citations' is too vague to count as frame for u6_n2."
+    },
+    {
+      "id": "r10",
+      "claimUnits": ["u16"], "claimSummary": "The Query embedder turns the question into a vector.",
+      "conditionUnits": ["u16"], "kind": "precondition",
+      "conditionSummary": "It must use the same embedding model as the Ingestion worker.",
+      "mustConvey": "same embedding model as the Ingestion worker",
+      "binding": "set", "bindingReason": "Embedding the question stays true; the same-model requirement is a constraint that must appear somewhere.",
+      "claimCards": ["u5_n4"], "carriers": ["u5_n4"],
+      "perClaimCard": { "u5_n4": "carried" },
+      "confidence": "medium", "notes": ""
+    }
+  ],
+  "notes": "No records for counts that are the claim's content rather than limits (50 candidates u17/u20, top 8 u21/u22), code locations u31-u33, u34 (missing code locations, a scope note on the doc not on a claim), u10/u13/u15 (structure statements), u3/u4/u7 (flow facts). u2_n2 has a garbled lead fragment ('The Answers API') with no claim. Group-to-group arrows (g5 -> g2 etc.) were not counted as linking individual cards. Shape nodes that are just labels (e.g. 'Citation checker', 'Model Gateway', '4 · Rerank client processes candidates') were not treated as claim cards."
+}

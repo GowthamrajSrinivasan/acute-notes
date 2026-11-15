@@ -135,6 +135,40 @@ describe("reconciliation fields (F37)", () => {
     expect(normalizeAIMetadata({ ...raw, contentSourceVersion: -1, excludeFromReconciliation: "yes" }, { reconciliation: true })).not.toHaveProperty("contentSourceVersion");
   });
 
+  it("Knowledge Notes fields (WP1.3): sourceUnits, review and noteModel are reconciliation fields, dropped by default", () => {
+    const kn = { ...raw, sourceUnits: ["u1", "u7"], review: { reasons: ["condition changed"], resolved: "kept" }, noteModel: "distil" };
+    expect(normalizeAIMetadata(kn)).toEqual({ createdBy: "ai", operationId: "op_1" });
+    expect(normalizeObjectMetadata({ ai: kn })).toEqual({ ai: { createdBy: "ai", operationId: "op_1" } });
+    expect(normalizeAIMetadata(kn, { reconciliation: true })).toEqual(kn);
+  });
+
+  it("Knowledge Notes fields are validated and bounded: unknown ids, resolutions and models are dropped", () => {
+    const many = Array.from({ length: 600 }, (_, i) => `u${i + 1}`);
+    const out = normalizeAIMetadata(
+      { ...raw, sourceUnits: ["u1", "u1", "P2.3", 4, "u2", ...many], review: { reasons: ["", 7, "x".repeat(400)], resolved: "verified" }, noteModel: "summary" },
+      { reconciliation: true },
+    )!;
+    expect(out.sourceUnits!.slice(0, 3)).toEqual(["u1", "u2", "u3"]);
+    expect(out.sourceUnits).toHaveLength(500);
+    expect(out.review).toEqual({ reasons: ["x".repeat(300)] });
+    expect(out).not.toHaveProperty("noteModel");
+    // Nothing usable: no field at all.
+    const empty = normalizeAIMetadata({ ...raw, sourceUnits: ["P1"], review: { reasons: [] }, noteModel: null }, { reconciliation: true })!;
+    expect(empty).not.toHaveProperty("sourceUnits");
+    expect(empty).not.toHaveProperty("review");
+    expect(empty).not.toHaveProperty("noteModel");
+    expect(normalizeAIMetadata({ ...raw, review: { resolved: "dismissed" } }, { reconciliation: true })?.review).toEqual({ reasons: [], resolved: "dismissed" });
+  });
+
+  it("a card's review keeps its hints and the model check's verdict (WP1.10), bounded; an unknown verdict is dropped", () => {
+    const review = { reasons: [], hints: ["the card says \"always\""], checked: { by: "ai", verdict: "supported", reason: "" } };
+    expect(normalizeAIMetadata({ ...raw, review }, { reconciliation: true })?.review).toEqual({ reasons: [], hints: ["the card says \"always\""], checked: { by: "ai", verdict: "supported" } });
+    const partly = { reasons: ["checked by AI: partly supported: drops the limit"], checked: { by: "ai", verdict: "partly", reason: "drops the limit" } };
+    expect(normalizeAIMetadata({ ...raw, review: partly }, { reconciliation: true })?.review).toEqual(partly);
+    expect(normalizeAIMetadata({ ...raw, review: { reasons: [], checked: { by: "ai", verdict: "verified" } } }, { reconciliation: true })).not.toHaveProperty("review");
+    expect(normalizeAIMetadata({ ...raw, review: { reasons: ["x"], checked: { by: "someone", verdict: "supported" } } }, { reconciliation: true })?.review).toEqual({ reasons: ["x"] });
+  });
+
   it("reconciliationOf reads a complete link from a block's document or a shape's element, and nothing for manual objects", () => {
     const docs = new Map([["d1", doc("d1", raw)], ["d2", doc("d2", { createdBy: "user" })]]);
     const get = (id: string) => docs.get(id);

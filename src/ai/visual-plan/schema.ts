@@ -12,6 +12,7 @@
  * `validate.ts` does that (lenient, per-item recovery) and is what every
  * producer actually calls.
  */
+import { OMISSION_REASONS } from "@/ai/fidelity/contracts";
 import { LENS_MAX_LEVEL, NODE_KINDS } from "@/domain/canvas/diagram";
 import { confidenceSchema, diagramCardsSchema, explanationSchema, nodeSemanticsFields } from "@/domain/canvas/diagramSchema";
 import { z } from "zod";
@@ -171,6 +172,21 @@ export const visualPlanSchema = z.object({
     .object({ title: z.string().max(TEXT_LIMITS.planTitle).optional(), summary: z.string().max(TEXT_LIMITS.planSummary).optional(), cards: diagramCardsSchema })
     .optional(),
 });
+
+/**
+ * Distil replies (knowledge-notes-plan §4.4, WP1.5): a node's `cites` and a section's `metadata.omitted`, in prompt
+ * labels (`P2.3`, `L1.4`, `T1.r4`, `C1`). Parsed only by `readDistilReply` (`validate.ts`), leniently and from the raw
+ * reply, so they never change what `validateVisualPlan` keeps: a `preserve` plan is exactly what it was.
+ */
+export const DISTIL_LIMITS = { citesPerNode: 200, omitted: 2_000, label: 40 } as const;
+
+const unitLabel = z.string().trim().min(1).max(DISTIL_LIMITS.label);
+
+/** A node's `cites`: labels of the units it represents. */
+export const citesSchema = z.array(unitLabel).max(DISTIL_LIMITS.citesPerNode);
+
+/** One `metadata.omitted` entry: a unit left off the canvas, for one of the fixed reasons. */
+export const omissionSchema = z.object({ unit: unitLabel, reason: z.enum(OMISSION_REASONS), of: unitLabel.optional() });
 
 let cachedJsonSchema: unknown;
 

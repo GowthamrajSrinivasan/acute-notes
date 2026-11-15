@@ -1,0 +1,317 @@
+{
+  "caseId": "kn-03-blue-green-deploy",
+  "adjudicator": "phase4-adjudicator-A (Claude, evidence-led; source-only binding, then visibility)",
+  "records": [
+    {
+      "id": "k1", "units": ["u2"], "clause": "It assumes you already run the service behind a load balancer.", "verdict": "set", "rule": "R5",
+      "claimUnits": ["u1"], "claimQuote": "This tutorial walks through a blue-green release of `orders-api`",
+      "status": "agreed", "from": { "X": "x1", "Y": "y1" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u1"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u1"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u1"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R5 document-level scope note, linked to the summary claim.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u4_n1", "u4_a1"], "carriers": ["u4_n2", "u4_a1"], "perClaimCard": { "u4_n1": "separated", "u4_a1": "carried" } } }
+    },
+    {
+      "id": "k2", "units": ["u6"], "clause": "The cost is running twice the infrastructure during a release", "verdict": "set", "rule": "R3",
+      "claimUnits": ["u3"], "claimQuote": "You keep two identical production environments, called blue and green.",
+      "status": "agreed", "from": { "X": "x2", "Y": "y2" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u3"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u3"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u3", "u4"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: real cost, secondary to the takeaway.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_n1"], "carriers": ["u0_n1"], "perClaimCard": { "u0_n1": "carried" } } }
+    },
+    {
+      "id": "k3", "units": ["u6"], "clause": "the idle environment is scaled down between releases", "verdict": "set", "rule": "general",
+      "claimUnits": ["u3"], "claimQuote": "You keep two identical production environments",
+      "status": "adjudicated", "from": { "Y": "y3" },
+      "readings": [
+        { "who": "Y", "verdict": "set", "claimUnits": ["u3"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u3", "u4"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Limits 'two identical production environments': they are identical only during a release. Real scope, takeaway unchanged: set. Found by Y only; accepted.",
+      "confidence": "low",
+      "notes": { "distil": { "claimCards": ["u0_n1"], "carriers": ["u0_n1", "u0_n2"], "perClaimCard": { "u0_n1": "carried" } } }
+    },
+    {
+      "id": "k4", "units": ["u9"], "clause": "only when the service can reach its database and its queue", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u9"], "claimQuote": "A health endpoint, `GET /healthz`, that returns `200`",
+      "status": "agreed", "from": { "X": "x3", "Y": "y4" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: a shallow health check would pass broken instances in step 3.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u1_n2"], "carriers": ["u1_n2"], "perClaimCard": { "u1_n2": "carried" } } }
+    },
+    {
+      "id": "k5", "units": ["u10"], "clause": "that are backward compatible", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u16"], "claimQuote": "Apply the database migrations from the new release",
+      "status": "adjudicated", "from": { "X": "x4", "Y": "y5" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u10"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u5"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both claim (R1). Links differ: 'Database migrations' in the prerequisite list asserts nothing without its adjective; the step that would do the wrong thing is u16 (R4). Y's extra words 'so the old version keeps working against the new schema' are rationale, not a second clause.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n4"], "carriers": ["u1_n3", "u2_n4", "u3_n3"], "perClaimCard": { "u2_n4": "carried" } } }
+    },
+    {
+      "id": "k6", "units": ["u10"], "clause": "a rollback does not undo a migration", "verdict": "claim", "rule": "R3",
+      "claimUnits": ["u5"], "claimQuote": "Because the old environment is still running, going back is the same one-step switch.",
+      "status": "agreed", "from": { "X": "x5", "Y": "y6" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u5"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u5"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u5"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it, the one-step rollback appears to restore the full prior state.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_n1", "u0_n2"], "carriers": ["u1_n3", "u3_n3"], "perClaimCard": { "u0_n1": "separated", "u0_n2": "separated" } } }
+    },
+    {
+      "id": "k7", "units": ["u13"], "clause": "If any migration is not backward compatible, do not use this procedure", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u4"], "claimQuote": "you deploy the new version to the idle one, test it there, and then move traffic over in one step",
+      "status": "adjudicated", "from": { "X": "x6", "Y": "y7" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u1"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u4"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u4", "u16"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both claim (R1). R4: u1 only announces the tutorial; u4 states the method a reader would apply wrongly with an incompatible migration.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_n1"], "carriers": ["u1_n3"], "perClaimCard": { "u0_n1": "separated" } } }
+    },
+    {
+      "id": "k8", "units": ["u15"], "clause": "using the same build artifact that passed staging rather than a fresh build", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u15"], "claimQuote": "Deploy version `2.8.0` to `orders-green`",
+      "status": "agreed", "from": { "X": "x7", "Y": "y8" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u15"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u15"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u15"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1 settles phase 3's ambiguity: a fresh build ships an untested artifact.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n2"], "carriers": ["u2_n2"], "perClaimCard": { "u2_n2": "carried" } } }
+    },
+    {
+      "id": "k9", "units": ["u16"], "clause": "once, from a single job rather than from every green instance at startup", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u16"], "claimQuote": "Apply the database migrations from the new release",
+      "status": "agreed", "from": { "X": "x8", "Y": "y9" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u16"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: concurrent migrations from every instance break the procedure.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n4"], "carriers": ["u2_n4"], "perClaimCard": { "u2_n4": "carried" } } }
+    },
+    {
+      "id": "k10", "units": ["u17"], "clause": "until all of them return `200`", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u17"], "claimQuote": "Poll the health endpoint on every green instance",
+      "status": "adjudicated", "from": { "X": "x9", "Y": "y10" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u17"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u19"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u17"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both claim (R1). R4: the most specific instruction lacking an exit criterion without the clause is the polling step itself.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n6"], "carriers": ["u2_n6"], "perClaimCard": { "u2_n6": "carried" } } }
+    },
+    {
+      "id": "k11", "units": ["u17"], "clause": "If any instance is still failing health checks after 10 minutes, stop here and roll back", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u17"], "claimQuote": "Poll the health endpoint on every green instance until all of them return `200`.",
+      "status": "agreed", "from": { "X": "x10", "Y": "y11" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u17"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u17"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u17"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: timeout and abort branch.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n6"], "carriers": ["u2_n6"], "perClaimCard": { "u2_n6": "carried" } } }
+    },
+    {
+      "id": "k12", "units": ["u18"], "clause": "If one fails, treat it like a failed health check and stop.", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u18"], "claimQuote": "Send the smoke-test suite to green's internal address.",
+      "status": "adjudicated", "from": { "X": "x11", "Y": "y12" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u18"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u19"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u18"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both claim (R1). R4: linked to its own step, consistent with k10.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n8"], "carriers": ["u2_n8", "u2_a2"], "perClaimCard": { "u2_n8": "carried" } } }
+    },
+    {
+      "id": "k13", "units": ["u22"], "clause": "for 15 minutes after the switch", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u22"], "claimQuote": "Observe the 5xx error rate on green",
+      "status": "agreed", "from": { "X": "x12", "Y": "y13" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u22"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u22"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u22"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: observation window.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n13"], "carriers": ["u2_n13"], "perClaimCard": { "u2_n13": "carried" } } }
+    },
+    {
+      "id": "k14", "units": ["u22"], "clause": "If the error rate rises above 2% at any point in that window, switch back", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u22"], "claimQuote": "Observe the 5xx error rate on green for 15 minutes after the switch.",
+      "status": "agreed", "from": { "X": "x13", "Y": "y14" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u22"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u22"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u22"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: threshold and action.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n13"], "carriers": ["u2_n13", "u2_a2"], "perClaimCard": { "u2_n13": "carried" } } }
+    },
+    {
+      "id": "k15", "units": ["u23"], "clause": "for 24 hours", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u23"], "claimQuote": "Leave blue running, unchanged",
+      "status": "agreed", "from": { "X": "x14", "Y": "y16" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u23"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u23"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u24", "u5"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: standby duration.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n15"], "carriers": ["u2_n15", "u2_n17", "u2_a3", "g2"], "perClaimCard": { "u2_n15": "carried" } } }
+    },
+    {
+      "id": "k16", "units": ["u23"], "clause": "unchanged", "verdict": "claim", "rule": "R5",
+      "claimUnits": ["u23"], "claimQuote": "Leave blue running",
+      "status": "agreed", "from": { "X": "x15", "Y": "y17" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u23"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u23"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u24", "u5"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R5: a reader who changes blue loses the rollback target.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n15"], "carriers": ["u2_n15"], "perClaimCard": { "u2_n15": "carried" } } }
+    },
+    {
+      "id": "k17", "units": ["u24"], "clause": "After 24 hours without a switch-back", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u24"], "claimQuote": "scale blue down",
+      "status": "agreed", "from": { "X": "x16", "Y": "y18" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u24"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u24"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u24", "u5"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: scaling down early removes the rollback target.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n17", "u2_a3"], "carriers": ["u2_n17", "u2_a3", "g2"], "perClaimCard": { "u2_n17": "carried", "u2_a3": "carried" } } }
+    },
+    {
+      "id": "k18", "units": ["u25"], "clause": "before step 5", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u25"], "claimQuote": "A rollback before step 5 is cheap",
+      "status": "agreed", "from": { "X": "x17", "Y": "y19" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u25"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u25"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u25"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "'A rollback is cheap' is false after the switch.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u3_n1"], "carriers": ["u3_n1"], "perClaimCard": { "u3_n1": "carried" } } }
+    },
+    {
+      "id": "k19", "units": ["u26"], "clause": "but requests that were in flight on green during the switch may fail and need a client retry", "verdict": "claim", "rule": "R3",
+      "claimUnits": ["u26"], "claimQuote": "A switch-back after step 5 is also fast",
+      "status": "adjudicated", "from": { "X": "x18", "Y": "y20" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u26"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u26"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u26", "u22"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: 'also fast, but' sets the benefit against the cost, and the contrast with u25 ('cheap, because customers never saw green') is the point: after step 5 customers are affected. Without the clause a reader treats switch-back as free. Claim.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u3_n2"], "carriers": ["u3_n2"], "perClaimCard": { "u3_n2": "carried" } } }
+    },
+    {
+      "id": "k20", "units": ["u27"], "clause": "Neither kind of rollback reverts the database", "verdict": "claim", "rule": "R3",
+      "claimUnits": ["u5"], "claimQuote": "Because the old environment is still running, going back is the same one-step switch.",
+      "status": "agreed", "from": { "X": "x19", "Y": "y21" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u5"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u5"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u5"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Same limit as k6, restated in a separate unit: a separate record.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_n1", "u0_n2"], "carriers": ["u3_n3", "u1_n3"], "perClaimCard": { "u0_n1": "separated", "u0_n2": "separated" } } }
+    },
+    {
+      "id": "k21", "units": ["u29"], "clause": "Do not run the next release's migrations while blue is still on standby.", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u16"], "claimQuote": "Apply the database migrations from the new release",
+      "status": "adjudicated", "from": { "X": "x20", "Y": "y22" },
+      "readings": [
+        { "who": "X", "verdict": "ambiguous", "claimUnits": ["u29", "u16"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u23"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "X's question is settled by R1 and R4. Reading A (linked to u29 itself) only makes a blanket ban out of a scoped ban: over-restrictive, not harmful. Reading B: running step 2 of the next release during standby breaks the rollback target. That is the wrong action, so the claim is u16. Against u16 the limiting words are the whole prohibition, so Y's span is used. X's 'while blue is still on standby' is contained in it.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n4"], "carriers": ["u3_n5", "g3"], "perClaimCard": { "u2_n4": "separated" } } }
+    },
+    {
+      "id": "k22", "units": ["u30"], "clause": "If you do, the standby may no longer work against the schema, and the switch-back stops being a safe option", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u5"], "claimQuote": "Because the old environment is still running, going back is the same one-step switch.",
+      "status": "adjudicated", "from": { "X": "x21", "Y": "y23" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u5"] },
+        { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u23"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Y reads it as rationale for u29. But it also states, independently, that the u5 rollback claim fails in a named case (the standby is still running yet unsafe). k21 links the prohibition to u16, so this is a distinct limit on u5: claim.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_n1", "u0_n2"], "carriers": ["u3_n6"], "perClaimCard": { "u0_n1": "separated", "u0_n2": "separated" } } }
+    }
+  ],
+  "rejected": [
+    { "from": "y15", "clause": "If it stays at or below 2%, continue.", "reason": "The complement of the switch-back condition (k14); continuing is the default flow, and following the procedure without it does nothing wrong. It limits no claim." }
+  ],
+  "notes": "Arrows: g2->g3 'rollback scenarios' and g4->g0 'introduction' are not limiting or dependency labels, so they link nothing. u3_n5->u3_n6 'if violated' joins two carriers, not a claim card. Shape step labels (u2_n1 etc.) are not treated as claim cards. Citations ignored. Not recorded by either annotator: u28 'record what failed before trying again'."
+}

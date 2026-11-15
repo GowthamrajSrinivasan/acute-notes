@@ -50,7 +50,7 @@
       "importance": "high",
       "title": "Purge by URL removes one cached address on demand",
       "content": {
-        "markdown": "The origin asks the CDN to purge a specific URL; the next request for it is fetched fresh. Larkspur purges the article URL on every saved correction.\n\n**Limits**\n- Eventually consistent, not instant: each edge location applies the purge on its own schedule, so for a while some serve the new version and others the old one.\n- Only the exact URL is removed: the home page, section page and RSS feed showing the same headline stay stale, and `/story/417?ref=social` is a different entry from `/story/417`.\n- Purge calls are rate limited (1,000 per minute on Larkspur's plan), which a bulk archive correction can exhaust."
+        "markdown": "The origin asks the CDN to purge a specific URL; the next request for it is fetched fresh. A purge request is accepted quickly but is not applied everywhere instantly. Larkspur purges the article URL on every saved correction.\n\n**Limits**\n- Eventually consistent, not instant: each edge location applies the purge on its own schedule, so for a while some serve the new version and others the old one.\n- Only the exact URL is removed: the home page, section page and RSS feed showing the same headline stay stale, and `/story/417?ref=social` is a different entry from `/story/417`.\n- Purge calls are rate limited (1,000 per minute on Larkspur's plan), which a bulk archive correction can exhaust."
       }
     },
     {
@@ -80,7 +80,7 @@
       "content": {
         "label": "Serving stale on purpose",
         "arrangement": "grid",
-        "takeaway": "Old copies are served for a bounded time to keep responses fast; it trades freshness for speed."
+        "takeaway": "Old copies are served for a bounded time, never indefinitely, to keep responses fast; it trades freshness for speed."
       }
     },
     {
@@ -90,7 +90,7 @@
       "importance": "high",
       "title": "Stale-while-revalidate answers from the old copy while refreshing",
       "content": {
-        "markdown": "With `stale-while-revalidate=60` on a `max-age=300` response, a request arriving after the 300 seconds gets the expired copy immediately while the edge fetches a fresh one in the background; the next reader gets the refreshed copy. Larkspur uses it on article pages but not on live election results.\n\n**Limits**\n- Bounded: an expired copy is served for at most 60 seconds past its TTL; after that the edge waits for the origin as on an ordinary miss.\n- A choice about tolerance, not a way to make content fresher: some readers see a copy older than the TTL alone suggests."
+        "markdown": "With `stale-while-revalidate=60` on a `max-age=300` response, a request arriving after the 300 seconds gets the expired copy instantly while the edge fetches a fresh one in the background; the next reader gets the refreshed copy. Larkspur uses it on article pages but not on live election results.\n\n**Limits**\n- Bounded: an expired copy is served for at most 60 seconds past its TTL; after that the edge waits for the origin as on an ordinary miss.\n- A choice about tolerance, not a way to make content fresher: some readers see a copy older than the TTL alone suggests."
       }
     },
     {
@@ -119,7 +119,7 @@
       "importance": "high",
       "title": "Versioned file names make old copies irrelevant",
       "content": {
-        "markdown": "The build puts a content hash in each asset's name (`app.3f9c2e.js`), so a changed file gets a new URL and the old copy is never requested again. Such files can be cached for a year (`max-age=31536000`); most build tools add the hash automatically.\n\n**Limits**\n- Does not help for HTML entry pages: `/` and `/story/417` keep fixed addresses and point to the new names, so they still need a TTL, a purge or both.\n- Keep old asset versions available at least as long as the longest HTML TTL, or cached pages send readers to missing files."
+        "markdown": "The build puts a content hash in each asset's name (`app.3f9c2e.js`), so a changed file gets a new URL and the old copy is never requested again. Such files can be cached for a year (`max-age=31536000`); most build tools can add the hash automatically.\n\n**Limits**\n- Does not help for HTML entry pages: `/` and `/story/417` keep fixed addresses and point to the new names, so they still need a TTL, a purge or both.\n- Keep old asset versions available at least as long as the longest HTML TTL, or cached pages can send readers to missing files."
       }
     },
     {

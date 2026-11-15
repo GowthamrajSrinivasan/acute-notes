@@ -325,3 +325,25 @@ describe("CopilotHostRuntime.listModels", () => {
     expect(models).toEqual([{ id: "gpt-5", name: "GPT-5" }]);
   });
 });
+
+describe("CopilotHostRuntime — output cap and reasoning effort (§12.25)", () => {
+  it("a BYOK request's maxTokens becomes the provider's maxOutputTokens, and its reasoning effort the session's", async () => {
+    const { session } = createFakeSession({ result: { data: { content: "ok" } } });
+    const { createClient, sessionConfigCalls } = createFakeClient(session);
+    const runtime = createCopilotHostRuntime({ createClient });
+    await runtime.generate({ request: baseRequest({ model: "m", maxTokens: 1_300, reasoningEffort: "low" }), auth: { kind: "logged_in_user" }, provider: { type: "openai", baseUrl: "https://x.test/v1", apiKey: "k" } });
+    expect(sessionConfigCalls[0]?.provider).toMatchObject({ maxOutputTokens: 1_300 });
+    expect(sessionConfigCalls[0]).toMatchObject({ reasoningEffort: "low" });
+  });
+
+  it("no cap and no effort unless a request asks; a subscription session never gets a provider cap", async () => {
+    const { session } = createFakeSession({ result: { data: { content: "ok" } } });
+    const { createClient, sessionConfigCalls } = createFakeClient(session);
+    const runtime = createCopilotHostRuntime({ createClient });
+    await runtime.generate({ request: baseRequest({ model: "m" }), auth: { kind: "logged_in_user" }, provider: { type: "openai", baseUrl: "https://x.test/v1", apiKey: "k" } });
+    await runtime.generate({ request: baseRequest({ maxTokens: 1_300 }), auth: { kind: "logged_in_user" } });
+    expect(sessionConfigCalls[0]?.provider).not.toHaveProperty("maxOutputTokens");
+    expect(sessionConfigCalls[0]).not.toHaveProperty("reasoningEffort");
+    expect(sessionConfigCalls[1]?.provider).toBeUndefined();
+  });
+});

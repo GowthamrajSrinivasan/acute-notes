@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-email-to-customers-deadline",
+  "distortion": "invented_detail",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "An invented deadline on Kenji's item, worded 'the email to customers' rather than 'the customer email', which the old pattern required: 'Kenji: draft the email to customers by Monday, March 17' (no deadline was stated, u79, u80).",
+  "mutations": [
+    { "op": "replace_text", "node": "n10", "find": "Kenji: draft the customer email (no deadline set)", "replace": "Kenji: draft the email to customers by Monday, March 17" }
+  ],
+  "expectFailing": ["a.no-email-deadline"]
+}

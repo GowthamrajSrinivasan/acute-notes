@@ -1,0 +1,13 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-11-warehouse-details-settled",
+  "distortion": "invented_detail",
+  "caseId": "kn-11-ambiguous-analytics-proposal",
+  "target": "plan",
+  "description": "The warehouse shape presents both disputed details as settled facts ('loaded in real time', 'raw events kept 90 days') with no mark that they are contested.",
+  "mutations": [
+    { "op": "replace_text", "node": "s7", "find": "write cadence disputed: hourly batches vs real time", "replace": "loaded in real time" },
+    { "op": "replace_text", "node": "s7", "find": "raw-event retention disputed: 30 vs 90 days", "replace": "raw events kept 90 days" }
+  ],
+  "expectFailing": ["a.no-silent-cadence", "a.no-silent-retention"]
+}

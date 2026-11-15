@@ -13,6 +13,14 @@
  * A canvas export uses the same format with `scope: "canvas"`: one canvas,
  * the blocks it uses and its pages.
  *
+ * Optional `sources` section (schema version 2, knowledge-notes plan §6.4):
+ * the content sources the canvases were made from, with every version, so
+ * citations still resolve after an import. `version` stays 1: it is the
+ * breaking-change number a reader refuses when newer, and the section is
+ * additive, so an older reader (which strips keys it doesn't know) still
+ * imports such a file, without the sources. `schemaVersion` records the
+ * additive revision; absent means 1.
+ *
  * Never included: UI preferences, AI settings, API keys or usage records.
  */
 import { z } from "zod";
@@ -21,6 +29,8 @@ import { BundleError } from "./bundleError";
 
 export const BUNDLE_FORMAT = "acute-notes";
 export const BUNDLE_VERSION = 1;
+/** Additive revisions within `BUNDLE_VERSION`: 2 adds the optional `sources` section. Never refused when newer. */
+export const BUNDLE_SCHEMA_VERSION = 2;
 
 const viewport = z.object({ x: z.number(), y: z.number(), zoom: z.number().positive() });
 
@@ -36,9 +46,40 @@ const contentBlock = z.looseObject({ type: z.string().min(1) });
 
 const metadata = z.looseObject({}).optional();
 
+/**
+ * One content source (`BundledSource` in `ai/fidelity/contracts.ts`). `plan`, `units` and `lineage` pass through as
+ * they are: their readers validate them on use (`validateVisualPlan(plan, { stored: true })`).
+ */
+const bundledSource = z.object({
+  id: z.string().min(1),
+  canvasId: z.string().min(1),
+  origin: z.enum(["paste", "import", "mcp"]),
+  tier: z.enum(["local", "ai"]),
+  template: z.string(),
+  latestVersion: z.number().int().positive(),
+  createdAt: z.number(),
+  updatedAt: z.number(),
+  versions: z
+    .array(
+      z.object({
+        version: z.number().int().positive(),
+        text: z.string(),
+        plan: z.unknown(),
+        pathIds: z.record(z.string(), z.string()).optional(),
+        revisions: z.array(z.object({ unit: z.string(), earlier: z.string(), later: z.string() })).optional(),
+        units: z.unknown().optional(),
+        lineage: z.unknown().optional(),
+        createdAt: z.number(),
+      }),
+    )
+    .min(1),
+});
+
 export const bundleSchema = z.object({
   format: z.literal(BUNDLE_FORMAT),
   version: z.literal(BUNDLE_VERSION),
+  /** Additive schema revision (absent: 1). A newer one still imports; what this reader doesn't know is ignored. */
+  schemaVersion: z.number().int().positive().optional(),
   /** "canvas": one canvas only (a canvas export, not importable as a workspace). Absent: a whole workspace. */
   scope: z.enum(["workspace", "canvas"]).optional(),
   exportedAt: z.number(),
@@ -89,11 +130,14 @@ export const bundleSchema = z.object({
       dataURL: z.string().startsWith("data:"),
     }),
   ),
+  /** The content sources, with every version (schema 2, "Include sources"). Absent: the file carries none. */
+  sources: z.array(bundledSource).optional(),
 });
 
 export type AcuteBundle = z.infer<typeof bundleSchema>;
 export type BundleCanvas = AcuteBundle["canvases"][number];
 export type BundleElement = BundleCanvas["elements"][number];
+export type BundleSource = NonNullable<AcuteBundle["sources"]>[number];
 
 export { BundleError };
 
@@ -124,6 +168,8 @@ export function parseBundle(input: unknown): AcuteBundle {
     ...bundle.documents.map((d) => d.id),
   ]);
   if (duplicate) throw new BundleError(`This workspace file contains the id "${duplicate}" twice.`);
+  const duplicateSource = firstDuplicate(bundle.sources?.map((s) => s.id) ?? []);
+  if (duplicateSource) throw new BundleError(`This workspace file contains the source "${duplicateSource}" twice.`);
   return bundle;
 }
 

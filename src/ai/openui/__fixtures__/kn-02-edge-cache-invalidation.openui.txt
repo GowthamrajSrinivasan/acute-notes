@@ -1,0 +1,100 @@
+root = IdeaCard("CDN Caching Strategies for Content Sites", "Running a content-heavy site behind a CDN requires a combination of caching strategies to balance page speed with content freshness. No single technique is sufficient, and a dependable setup layers several methods.", "high", [c1, c2, c3, c4, c5, c60, c61])
+c1 = CitationChip("u1")
+c2 = CitationChip("u2")
+c3 = CitationChip("u3")
+c4 = CitationChip("u4")
+c5 = CitationChip("u5")
+c60 = CitationChip("u60")
+c61 = CitationChip("u61")
+---
+root = IdeaCard("Time to Live (TTL) Expiry", "TTL expiry is the simplest invalidation method where cached objects are discarded or rechecked after a set time. The origin sets the TTL using the `Cache-Control` header.", "medium", [c6, c7, c8], "When a TTL expires, the edge may revalidate with an ETag instead of re-downloading the entire object.")
+c6 = CitationChip("u6")
+c7 = CitationChip("u7")
+c8 = CitationChip("u8")
+---
+root = IdeaCard("Weakness of TTL Expiry", "The main weakness of TTL expiry is that the TTL is a pre-determined guess. If content changes before the TTL expires, readers may see outdated information for the remaining duration.", "high", [c10, c11, c12], "Shortening the TTL reduces the window for stale content but significantly increases origin traffic.")
+c10 = CitationChip("u10")
+c11 = CitationChip("u11")
+c12 = CitationChip("u12")
+---
+root = IdeaCard("Purging by URL", "To immediately update content, the origin can request the CDN to purge a specific URL, removing the cached copy and forcing the next request to fetch fresh content from the origin.", "medium", [c13, c14, c15])
+c13 = CitationChip("u13")
+c14 = CitationChip("u14")
+c15 = CitationChip("u15")
+---
+root = IdeaCard("Limitations of Purging by URL", "Purging by URL is eventually consistent, not instant, as the purge request needs to be delivered to all edge locations. It also only removes the exact URL specified, missing other pages or URLs with query strings that display the same content.", "high", [c16, c17, c18, c19, c20, c21, c22, c23, c24, c25, c26, c27])
+c16 = CitationChip("u16")
+c17 = CitationChip("u17")
+c18 = CitationChip("u18")
+c19 = CitationChip("u19")
+c20 = CitationChip("u20")
+c21 = CitationChip("u21")
+c22 = CitationChip("u22")
+c23 = CitationChip("u23")
+c24 = CitationChip("u24")
+c25 = CitationChip("u25")
+c26 = CitationChip("u26")
+c27 = CitationChip("u27")
+---
+root = IdeaCard("Surrogate Keys for Purging", "Surrogate keys allow the origin to tag responses with labels, enabling a single purge request to remove all cached pages associated with a specific key, such as an article appearing on multiple pages.", "high", [c28, c29, c30])
+c28 = CitationChip("u28")
+c29 = CitationChip("u29")
+c30 = CitationChip("u30")
+---
+root = IdeaCard("Challenges with Surrogate Keys", "The origin is responsible for accurate tagging; missing tags can lead to stale pages. Like URL purges, tag purges are eventually consistent and can be large, potentially causing a burst of cache misses at the origin.", "medium", [c31, c32, c33, c34, c35, c36])
+c31 = CitationChip("u31")
+c32 = CitationChip("u32")
+c33 = CitationChip("u33")
+c34 = CitationChip("u34")
+c35 = CitationChip("u35")
+c36 = CitationChip("u36")
+---
+root = IdeaCard("Stale-While-Revalidate", "This technique allows an edge location to immediately serve an expired copy of content while fetching a fresh version from the origin in the background, improving reader response time.", "medium", [c37, c38, c39, c40, c41])
+c37 = CitationChip("u37")
+c38 = CitationChip("u38")
+c39 = CitationChip("u39")
+c40 = CitationChip("u40")
+c41 = CitationChip("u41")
+---
+root = IdeaCard("Stale-If-Error Directive", "The `stale-if-error` directive allows the edge to continue serving expired content for an extended period if the origin is returning errors, providing resilience during origin outages.", "low", [c42])
+c42 = CitationChip("u42")
+---
+root = IdeaCard("Considerations for Stale Serving", "Serving stale content is a trade-off for tolerance and hides slow origins, but it means readers might see older content than the TTL alone would suggest. It does not make content fresher.", "medium", [c43, c44])
+c43 = CitationChip("u43")
+c44 = CitationChip("u44")
+---
+root = IdeaCard("Versioning Static Assets with New Names", "For static assets, the most effective invalidation method is to include a hash of the file's content in its name. This creates a new URL for changed files, allowing old cached copies to be permanently cached and never requested again.", "high", [c45, c46, c47, c48])
+c45 = CitationChip("u45")
+c46 = CitationChip("u46")
+c47 = CitationChip("u47")
+c48 = CitationChip("u48")
+---
+root = IdeaCard("Versioning Limitations for HTML Pages", "Versioning does not apply to HTML entry pages, which are requested at fixed addresses. These pages still require TTLs or purges and must point to the correct asset versions, ensuring old asset files remain available as long as the HTML pages are cached.", "medium", [c49, c50, c51, c52])
+c49 = CitationChip("u49")
+c50 = CitationChip("u50")
+c51 = CitationChip("u51")
+c52 = CitationChip("u52")
+---
+root = IdeaCard("Comparison of Invalidation Techniques", "Different caching invalidation techniques offer varying levels of freshness, costs, and caveats, requiring a layered approach for a robust content delivery strategy.", "high", [c53, c54, c55, c56, c57, c58, c59], null, [comparisonTable1])
+c53 = CitationChip("u53")
+c54 = CitationChip("u54")
+c55 = CitationChip("u55")
+c56 = CitationChip("u56")
+c57 = CitationChip("u57")
+c58 = CitationChip("u58")
+c59 = CitationChip("u59")
+comparisonTable1 = ComparisonTable(
+  ["Technique", "Freshness after a change", "Main cost", "Main caveat"],
+  [
+    ["TTL expiry", "Up to the full TTL (300 seconds at Larkspur)", "More origin traffic as the TTL shrinks", "Cannot be shortened after the fact"],
+    ["Purge by URL", "Seconds (20 seconds worst case measured)", "One purge call per URL", "Misses other pages that show the same content"],
+    ["Surrogate-key purge", "Seconds, for every tagged page", "Tagging discipline at the origin", "Untagged pages stay stale"],
+    ["Stale-while-revalidate", "Up to the TTL plus 60 seconds", "Nothing at request time", "Readers knowingly get expired copies"],
+    ["Versioned URLs", "Immediate for pages that reference the new name", "A build step", "Does not cover HTML entry pages"]
+  ]
+)
+---
+root = IdeaCard("Layered Invalidation Strategy", "A reliable CDN setup combines short TTLs as a safety net, explicit purges for urgent corrections, stale serving for origin resilience, and versioned file names for static assets to cover each other's gaps.", "high", [c61, c62, c63])
+c61 = CitationChip("u61")
+c62 = CitationChip("u62")
+c63 = CitationChip("u63")

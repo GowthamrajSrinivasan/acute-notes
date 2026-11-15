@@ -1,0 +1,410 @@
+{
+  "caseId": "kn-05-incident-review-meeting",
+  "adjudicator": "claude-opus-5.5 (phase 4 adjudicator)",
+  "records": [
+    {
+      "id": "k1", "units": ["u22"],
+      "clause": "only fires when the checkout error rate is above 10% for 15 minutes",
+      "verdict": "claim", "rule": "general", "claimUnits": ["u22"],
+      "claimQuote": "The alert only fires when the checkout error rate is above 10% for 15 minutes",
+      "status": "agreed", "from": { "X": "x1", "Y": "y1" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u22"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u22"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u22"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The threshold is the whole explanation for the 22-minute delay; without it the alert claim is empty or misleading.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_u0_n5", "u0_ax3"], "carriers": ["u0_u0_n5", "u0_ax3", "u0_u0_n9"], "perClaimCard": { "u0_u0_n5": "carried", "u0_ax3": "carried" } } }
+    },
+    {
+      "id": "k2", "units": ["u29"],
+      "clause": "for checkout specifically",
+      "verdict": "claim", "rule": "R5", "claimUnits": ["u29"],
+      "claimQuote": "I'd propose 5% over 5 minutes",
+      "status": "agreed", "from": { "X": "x2", "Y": "y2" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u29"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u29"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u33"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without the scope a reader would lower every error-rate alert, acting wrongly.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_u0_n10", "u0_u0_n11", "u0_ax1"], "carriers": ["u0_u0_n10", "u0_u0_n11", "u0_ax1"], "perClaimCard": { "u0_u0_n10": "carried", "u0_u0_n11": "carried", "u0_ax1": "carried" } } }
+    },
+    {
+      "id": "k3", "units": ["u30"],
+      "clause": "that would have paged twice on noise",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u33"],
+      "claimQuote": "Agreed: we'll lower the checkout error-rate alert to 5% over 5 minutes.",
+      "status": "agreed", "from": { "X": "x3", "Y": "y3" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u33"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u33"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u33"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The noise cost is explicitly weighed and accepted (u31) before the decision, so under R3 the trade-off is the point.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u0_n10", "u0_u0_n11", "u0_ax1"], "carriers": ["u0_u0_n10"], "perClaimCard": { "u0_u0_n10": "carried", "u0_u0_n11": "linked", "u0_ax1": "separated" } } }
+    },
+    {
+      "id": "k4", "units": ["u30"],
+      "clause": "I checked the last 30 days",
+      "verdict": "set", "rule": "R2", "claimUnits": ["u30"],
+      "claimQuote": "that would have paged twice on noise",
+      "status": "agreed", "from": { "X": "x4", "Y": "y4" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u30"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u30"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u33"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The evidence window bounds the noise figure but the takeaway (acceptable noise) is unchanged.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u0_n10"], "carriers": ["u0_u0_n10"], "perClaimCard": { "u0_u0_n10": "carried" } } }
+    },
+    {
+      "id": "k5", "units": ["u30"],
+      "clause": "both during the payment provider's own maintenance",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [],
+      "claimQuote": "",
+      "status": "adjudicated", "from": { "X": "x5" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u33"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Explains the noise pages; the claim that it would have paged twice on noise stays true and equally weighted without it.",
+      "confidence": "medium",
+      "notes": {}
+    },
+    {
+      "id": "k6", "units": ["u31"],
+      "clause": "Two noisy pages a month is fine for checkout.",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x6", "Y": "y5" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u33"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A judgement accepting the cost (rationale), not a limit; the cost itself is k3.",
+      "confidence": "medium", "notes": {}
+    },
+    {
+      "id": "k7", "units": ["u55"], "clause": "Yes.",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x7", "Y": "y6" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u59"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Assent only.", "confidence": "high", "notes": {}
+    },
+    {
+      "id": "k8", "units": ["u56"],
+      "clause": "it needs one approval from the payments team",
+      "verdict": "ambiguous", "rule": "R4", "claimUnits": ["u56", "u59"],
+      "claimQuote": "Config lives in the repo, it gets a pull request",
+      "status": "unresolved", "from": { "X": "x8", "Y": "y7" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u56"] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u59"] }],
+      "readingA": "claim (R1): the approval rule is what closes the gap; a PR process without it would not enforce the agreed rule.",
+      "readingB": "not_a_condition: proposal-stage wording that u59 restates as the decision, so its limit is wholly supplied by k12.",
+      "decidingQuestion": "Does a proposal sentence count as a separate claim link when the agreed decision immediately restates the same requirement (R4: do both genuinely mislead)?",
+      "rationale": "Same requirement as k12 at proposal level; the source doesn't settle whether it is a second link.",
+      "confidence": "low",
+      "notes": { "distil": { "claimCards": ["u0_u1_n1"], "carriers": ["u0_u1_n1", "u0_ax1"], "perClaimCard": { "u0_u1_n1": "carried" } } }
+    },
+    {
+      "id": "k9", "units": ["u57"], "clause": "Tomás: I'm fine with that.",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x9", "Y": "y8" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u59"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Assent only.", "confidence": "high", "notes": {}
+    },
+    {
+      "id": "k10", "units": ["u58"], "clause": "Marcus: Same.",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x10", "Y": "y9" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u59"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Assent only.", "confidence": "high", "notes": {}
+    },
+    {
+      "id": "k11", "units": ["u59"], "clause": "to the payments service",
+      "verdict": "claim", "rule": "R5", "claimUnits": ["u59"],
+      "claimQuote": "config changes to the payments service will go through pull-request review",
+      "status": "agreed", "from": { "X": "x11", "Y": "y10" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u59"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u59"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u59"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without the scope a reader would route all config through payments-team review.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_u1_n1", "u0_ax1", "u0_u0_n19"], "carriers": ["u0_u1_n1", "u0_ax1", "u0_u0_n19"], "perClaimCard": { "u0_u1_n1": "carried", "u0_ax1": "carried", "u0_u0_n19": "carried" } } }
+    },
+    {
+      "id": "k12", "units": ["u59"], "clause": "with one payments-team approval",
+      "verdict": "claim", "rule": "R1", "claimUnits": ["u59"],
+      "claimQuote": "config changes to the payments service will go through pull-request review",
+      "status": "adjudicated", "from": { "X": "x12", "Y": "y11" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u59"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u59"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u59"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: implementing PR review without this bar breaks the agreed rule (u54 framed it as 'same review as code', i.e. two approvals of any reviewer), so a reader would set it up wrongly.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n1", "u0_ax1", "u0_u0_n19"], "carriers": ["u0_u1_n1", "u0_ax1"], "perClaimCard": { "u0_u1_n1": "carried", "u0_ax1": "carried", "u0_u0_n19": "separated" } } }
+    },
+    {
+      "id": "k13", "units": ["u60"], "clause": "Leila, can you set that up?",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x13", "Y": "y12" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u59"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Assignment, limits nothing.", "confidence": "high", "notes": {}
+    },
+    {
+      "id": "k14", "units": ["u61"], "clause": "by Friday, March 21",
+      "verdict": "set", "rule": "R1", "claimUnits": ["u61"],
+      "claimQuote": "I'll move the config into the repo and add the approval rule",
+      "status": "agreed", "from": { "X": "x14", "Y": "y13" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u61"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u61"] }, { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A deadline is a real bound on the action but missing it only delays; set under R1.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n2", "u0_ax1"], "carriers": ["u0_u1_n2", "u0_ax1"], "perClaimCard": { "u0_u1_n2": "carried", "u0_ax1": "carried" } } }
+    },
+    {
+      "id": "k15", "units": ["u62"], "clause": "Can I raise something else?",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x15", "Y": "y14" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Discourse marker.", "confidence": "high", "notes": {}
+    },
+    {
+      "id": "k16", "units": ["u63"], "clause": "after 15:00 on Fridays",
+      "verdict": "claim", "rule": "general", "claimUnits": ["u63"],
+      "claimQuote": "I'd like us to stop deploying anything to payments",
+      "status": "agreed", "from": { "X": "x16", "Y": "y15" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u63"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u63"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u63"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without the time window the proposal reads as a total payments deploy stop.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_u1_n3"], "carriers": ["u0_u1_n3"], "perClaimCard": { "u0_u1_n3": "carried" } } }
+    },
+    {
+      "id": "k17", "units": ["u63"], "clause": "to payments",
+      "verdict": "claim", "rule": "R5", "claimUnits": ["u63"],
+      "claimQuote": "I'd like us to stop deploying anything",
+      "status": "agreed", "from": { "X": "x17", "Y": "y16" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u63"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u63"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u63"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without the service scope the freeze reads as company-wide.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_u1_n3"], "carriers": ["u0_u1_n3"], "perClaimCard": { "u0_u1_n3": "carried" } } }
+    },
+    {
+      "id": "k18", "units": ["u71"], "clause": "Being Friday didn't slow that down.",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x18", "Y": "y17" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "An argument (a claim in the debate), not a limit on another claim.", "confidence": "medium", "notes": {}
+    },
+    {
+      "id": "k19", "units": ["u72"], "clause": "That's one incident.",
+      "verdict": "ambiguous", "rule": "R2", "claimUnits": ["u71"],
+      "claimQuote": "Being Friday didn't slow that down.",
+      "status": "unresolved", "from": { "X": "x19", "Y": "y18" },
+      "readings": [{ "who": "X", "verdict": "ambiguous", "claimUnits": ["u71"] }, { "who": "Y", "verdict": "ambiguous", "claimUnits": ["u71"] }, { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }],
+      "readingA": "claim (R2): an explicit reliability warning that u71 rests on a single incident; taken as general it would argue against the freeze.",
+      "readingB": "set or not_a_condition: a counter-speaker's rejoinder in a debate the source leaves undecided (u75), so no decision rests on u71.",
+      "decidingQuestion": "Does an opposing speaker's rebuttal in an unresolved debate count as the source warning about the reliability of the other side's evidence?",
+      "rationale": "Both blind annotators found it ambiguous with differing B readings; the source does not settle it.",
+      "confidence": "low",
+      "notes": { "distil": { "claimCards": ["u0_u1_n4"], "carriers": ["u0_u1_n5"], "perClaimCard": { "u0_u1_n4": "linked" } } }
+    },
+    {
+      "id": "k20", "units": ["u73"], "clause": "I think we'd see a pattern if we looked",
+      "verdict": "claim", "rule": "R2", "claimUnits": ["u73"],
+      "claimQuote": "we'd see a pattern",
+      "status": "adjudicated", "from": { "X": "x20", "Y": "y19" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u69"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u73"] }, { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: the hedge marks the pattern as unverified, and the source acts on that by commissioning the six-month analysis; linked (R4) to the intra-sentence claim it most directly hedges rather than u69.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n5"], "carriers": ["u0_u1_n5"], "perClaimCard": { "u0_u1_n5": "carried" } } }
+    },
+    {
+      "id": "k21", "units": ["u74"], "clause": "I don't think we're going to settle this today.",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x21", "Y": "y20" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u63"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Lead-in to the deferral; the operative limit is u75 (k22).", "confidence": "medium", "notes": {}
+    },
+    {
+      "id": "k22", "units": ["u75"], "clause": "Let's not decide the freeze now.",
+      "verdict": "claim", "rule": "R4", "claimUnits": ["u63"],
+      "claimQuote": "I'd like us to stop deploying anything to payments after 15:00 on Fridays.",
+      "status": "agreed", "from": { "X": "x22", "Y": "y21" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u63"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u63"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u63"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without the deferral the freeze proposal could be read as adopted.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_u1_n3"], "carriers": ["g0", "u0_u1_n6", "u0_ax2"], "perClaimCard": { "u0_u1_n3": "frame" } } }
+    },
+    {
+      "id": "k23", "units": ["u76"], "clause": "from the last six months",
+      "verdict": "set", "rule": "R1", "claimUnits": ["u76"],
+      "claimQuote": "could you pull the incidents",
+      "status": "agreed", "from": { "X": "x23", "Y": "y22" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u76"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u76"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u63"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Scopes the analysis window; another window would be less apt, not wrong.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n6", "u0_ax2"], "carriers": ["u0_u1_n6", "u0_ax2"], "perClaimCard": { "u0_u1_n6": "carried", "u0_ax2": "carried" } } }
+    },
+    {
+      "id": "k24", "units": ["u77"], "clause": "to the next review on April 2",
+      "verdict": "set", "rule": "R1", "claimUnits": ["u76"],
+      "claimQuote": "could you pull the incidents from the last six months",
+      "status": "agreed", "from": { "X": "x37", "Y": "y36" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u76"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u76"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A deadline/venue for the action; set under R1.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n6", "u0_ax2"], "carriers": ["u0_u1_n6"], "perClaimCard": { "u0_u1_n6": "carried", "u0_ax2": "separated" } } }
+    },
+    {
+      "id": "k25", "units": ["u79"], "clause": "if the checkout error rate doubles within 10 minutes of a deploy",
+      "verdict": "claim", "rule": "general", "claimUnits": ["u79"],
+      "claimQuote": "the pipeline rolls back on its own",
+      "status": "agreed", "from": { "X": "x24", "Y": "y23" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u79"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u79"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u79"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The trigger is the proposal; without it rollback reads as unconditional.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_u1_n7"], "carriers": ["u0_u1_n7"], "perClaimCard": { "u0_u1_n7": "carried" } } }
+    },
+    {
+      "id": "k26", "units": ["u80"], "clause": "For config, maybe.",
+      "verdict": "set", "rule": "general", "claimUnits": ["u79"],
+      "claimQuote": "I'd also propose automatic rollback",
+      "status": "adjudicated", "from": { "X": "x25", "Y": "y24" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u79"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u79"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u79"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A tentative scope of support on a proposal the source leaves open (u86); the takeaway 'proposed, undecided' stands without it, but it is a real scope the notes should hold.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n7"], "carriers": [], "perClaimCard": { "u0_u1_n7": "absent" } } }
+    },
+    {
+      "id": "k27", "units": ["u81"], "clause": "For code, I'm nervous.",
+      "verdict": "set", "rule": "general", "claimUnits": ["u79"],
+      "claimQuote": "I'd also propose automatic rollback",
+      "status": "adjudicated", "from": { "X": "x26", "Y": "y25" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u79"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u79"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u79"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The operative danger is the migration condition (k28); this lead-in scope does not by itself change the takeaway of an undecided proposal.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n7"], "carriers": ["u0_u1_n8"], "perClaimCard": { "u0_u1_n7": "linked" } } }
+    },
+    {
+      "id": "k28", "units": ["u82"], "clause": "If a release includes a database migration",
+      "verdict": "claim", "rule": "R3", "claimUnits": ["u79"],
+      "claimQuote": "the pipeline rolls back on its own",
+      "status": "agreed", "from": { "X": "x27", "Y": "y26" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u79"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u79"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u79"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The case in which auto-rollback can leave things worse; without it the benefit reads as free.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_u1_n7"], "carriers": ["u0_u1_n8", "u0_ax2", "u0_u1_n9"], "perClaimCard": { "u0_u1_n7": "linked" } } }
+    },
+    {
+      "id": "k29", "units": ["u83"], "clause": "We could exclude releases with migrations.",
+      "verdict": "set", "rule": "general", "claimUnits": ["u79"],
+      "claimQuote": "I'd also propose automatic rollback",
+      "status": "adjudicated", "from": { "X": "x28", "Y": "y27" },
+      "readings": [{ "who": "X", "verdict": "ambiguous", "claimUnits": ["u79"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u79"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u79"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "An unadopted mitigation ('could', 'Possibly', u85 withholds agreement); the danger itself is k28, so omitting this leaves the takeaway unchanged.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n7"], "carriers": ["u0_u1_n8"], "perClaimCard": { "u0_u1_n7": "linked" } } }
+    },
+    {
+      "id": "k30", "units": ["u86"], "clause": "auto-rollback is an open question",
+      "verdict": "claim", "rule": "R4", "claimUnits": ["u79"],
+      "claimQuote": "I'd also propose automatic rollback",
+      "status": "agreed", "from": { "X": "x29", "Y": "y28" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u79"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u79"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u79"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it the proposal could be read as adopted.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u0_u1_n7"], "carriers": ["g0", "u0_u1_n9", "u0_ax2"], "perClaimCard": { "u0_u1_n7": "frame" } } }
+    },
+    {
+      "id": "k31", "units": ["u87"], "clause": "We don't know how many releases include migrations.",
+      "verdict": "set", "rule": "R2", "claimUnits": ["u86"],
+      "claimQuote": "auto-rollback is an open question",
+      "status": "agreed", "from": { "X": "x30", "Y": "y29" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u86"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u86"] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u79"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "States what blocks the decision; the 'open' takeaway stands without it.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n9", "u0_ax2"], "carriers": ["u0_u1_n9", "u0_ax2"], "perClaimCard": { "u0_u1_n9": "carried", "u0_ax2": "carried" } } }
+    },
+    {
+      "id": "k32", "units": ["u88"], "clause": "Let's leave it open.",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "adjudicated", "from": { "X": "x31", "Y": "y30" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u79"] }, { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "phase3", "verdict": "claim", "claimUnits": ["u79"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Same speaker restating u86 two sentences later; a faithful restatement without it loses nothing, so it limits nothing beyond k30.",
+      "confidence": "medium", "notes": {}
+    },
+    {
+      "id": "k33", "units": ["u90"], "clause": "whether any of the 2,300 failed checkouts were retried successfully",
+      "verdict": "not_a_condition", "rule": "general", "claimUnits": [], "claimQuote": "",
+      "status": "adjudicated", "from": { "X": "x32", "Y": "y31" },
+      "readings": [{ "who": "X", "verdict": "not_a_condition", "claimUnits": [] }, { "who": "Y", "verdict": "set", "claimUnits": ["u19"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u95"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "This is the open question itself (the claim k35/k36 qualify); u19 counts failed checkouts, which stays true whatever the retries were.",
+      "confidence": "medium", "notes": {}
+    },
+    {
+      "id": "k34", "units": ["u91"], "clause": "If most people retried",
+      "verdict": "claim", "rule": "R1", "claimUnits": ["u95"],
+      "claimQuote": "Kenji, can you draft the customer email either way?",
+      "status": "adjudicated", "from": { "X": "x33", "Y": "y32" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u95"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u95"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u95"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: the source says the email's content depends on the retry outcome; drafting one final email without that dependency would produce the wrong email in the case described.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n11", "u0_ax2"], "carriers": ["u0_u1_n10"], "perClaimCard": { "u0_u1_n11": "linked", "u0_ax2": "separated" } } }
+    },
+    {
+      "id": "k35", "units": ["u93"], "clause": "nobody has looked yet",
+      "verdict": "set", "rule": "R2", "claimUnits": ["u94"],
+      "claimQuote": "That's an open question too, then.",
+      "status": "adjudicated", "from": { "X": "x34", "Y": "y33" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u90"] }, { "who": "Y", "verdict": "set", "claimUnits": ["u94"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u95"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Explains why the retry question is open; the open status is stated by u94 (k36), so the takeaway is unchanged without this hedge.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n10"], "carriers": ["u0_u1_n10"], "perClaimCard": { "u0_u1_n10": "carried" } } }
+    },
+    {
+      "id": "k36", "units": ["u94"], "clause": "That's an open question too",
+      "verdict": "claim", "rule": "general", "claimUnits": ["u90"],
+      "claimQuote": "Do we know whether any of the 2,300 failed checkouts were retried successfully?",
+      "status": "agreed", "from": { "X": "x35", "Y": "y34" },
+      "readings": [{ "who": "X", "verdict": "claim", "claimUnits": ["u90"] }, { "who": "Y", "verdict": "claim", "claimUnits": ["u90"] }, { "who": "phase3", "verdict": "set", "claimUnits": ["u95"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it the retry outcome could be read as known.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u1_n10", "u0_ax2"], "carriers": ["u0_u1_n10", "u0_ax2"], "perClaimCard": { "u0_u1_n10": "carried", "u0_ax2": "carried" } } }
+    },
+    {
+      "id": "k37", "units": ["u19"], "clause": "about 2,300",
+      "verdict": "set", "rule": "R2", "claimUnits": ["u19"],
+      "claimQuote": "we counted about 2,300 failed checkouts in that window",
+      "status": "adjudicated", "from": { "X": "x36" },
+      "readings": [{ "who": "X", "verdict": "set", "claimUnits": ["u19"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: the approximation only colours a figure whose takeaway is the same either way.",
+      "confidence": "low",
+      "notes": { "distil": { "claimCards": ["u0_u0_n7"], "carriers": ["u0_u0_n7"], "perClaimCard": { "u0_u0_n7": "carried" } } }
+    },
+    {
+      "id": "k38", "units": ["u35"], "clause": "by Wednesday, March 19",
+      "verdict": "set", "rule": "R1", "claimUnits": ["u33"],
+      "claimQuote": "we'll lower the checkout error-rate alert to 5% over 5 minutes",
+      "status": "adjudicated", "from": { "Y": "y35" },
+      "readings": [{ "who": "Y", "verdict": "set", "claimUnits": ["u33"] }],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R1: a deadline on the action; missing it delays rather than does the wrong thing. Parallel to k14.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u0_u0_n11", "u0_ax1"], "carriers": ["u0_u0_n11", "u0_ax1"], "perClaimCard": { "u0_u0_n11": "carried", "u0_ax1": "carried" } } }
+    }
+  ],
+  "rejected": [],
+  "notes": "Single frame g0, whose takeaway ('auto-rollback and Friday freeze open') gives frame outcomes for k22 and k30. u0_u0_n19 (u54 proposal, 'same review process as code') treated as a claim card for the u59 decision: it carries the payments scope but not the one-approval bar. k19's carrier u0_u1_n5 is a paraphrase ('if more incidents were examined') judged to make the single-incident limit recognisable; low confidence. No carrier for k26 ('For config, maybe')."
+}

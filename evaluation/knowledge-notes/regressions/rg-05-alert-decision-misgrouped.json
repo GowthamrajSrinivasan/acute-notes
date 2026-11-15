@@ -1,0 +1,21 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-05-alert-decision-misgrouped",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-05-incident-review-meeting",
+  "target": "plan",
+  "description": "The alerting decision is moved into the open-questions frame: its link back to the alert gap now crosses another link and runs over a third frame (and through a card).",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n5",
+      "group": "g5"
+    }
+  ],
+  "expectFailing": [
+    "a.links-over-frames",
+    "a.crossings",
+    "a.layout",
+    "a.decision-alert-in-frame"
+  ]
+}

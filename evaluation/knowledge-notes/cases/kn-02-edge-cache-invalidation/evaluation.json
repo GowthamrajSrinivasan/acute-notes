@@ -96,11 +96,11 @@
     {
       "id": "a.takeaway",
       "dimension": "coverage",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "The layer-the-techniques takeaway appears (frame takeaway or card).",
+      "description": "The layer-the-techniques takeaway appears (frame takeaway or card): the article's conclusion (u60, u61, critical).",
       "check": {
         "check": "element_present",
         "element": "e.takeaway"
@@ -214,9 +214,14 @@
             "not instant",
             "not at the same moment",
             "not everywhere at once",
+            "not all at once",
             "propagat",
             "some locations",
-            "own schedule"
+            "own schedule",
+            "different times",
+            "one by one",
+            "location by location",
+            "staggered"
           ]
         ],
         "why": "eventual consistency limits the purge claim (u16–u18)"
@@ -240,7 +245,13 @@
             "only the url",
             "only that url",
             "only the named",
-            "only the exact"
+            "only the exact",
+            "only the specific",
+            "just the url",
+            "just that url",
+            "just the exact",
+            "only removes that",
+            "only removes the exact"
           ],
           [
             "home page",
@@ -297,14 +308,43 @@
           ],
           [
             "2 seconds",
-            "2 s"
+            " 2 s",
+            "2-second"
           ],
           [
             "20 seconds",
-            "20 s"
+            "20 s",
+            "20-second"
           ]
         ],
         "why": "protected numbers (u23, u24, u26)"
+      }
+    },
+    {
+      "id": "a.propagation-bound",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The walkthrough keeps the measured propagation bound: half of the locations within 2 seconds, the slowest 20 seconds (u26, critical).",
+      "regression": "condition_dropped",
+      "check": {
+        "check": "text_present",
+        "element": "e.purge-walkthrough",
+        "all": [
+          [
+            "2 seconds",
+            " 2 s",
+            "2-second"
+          ],
+          [
+            "20 seconds",
+            "20 s",
+            "20-second"
+          ]
+        ],
+        "why": "what 'eventually' means here: the measured bound (u26, protected)"
       }
     },
     {
@@ -332,9 +372,20 @@
           [
             "stale",
             "old"
+          ],
+          [
+            "no error",
+            "silent",
+            "without error",
+            "without an error",
+            "without any error",
+            "unnoticed",
+            "no warning",
+            "no alert",
+            "nothing reports"
           ]
         ],
-        "why": "the tag-discipline caveat limits the surrogate claim (u32, u33)"
+        "why": "the tag-discipline caveat limits the surrogate claim, and the failure is silent (u32, u33)"
       }
     },
     {
@@ -392,11 +443,11 @@
     {
       "id": "a.stale-tolerance",
       "dimension": "source_fidelity",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "The stale card says it trades freshness for tolerance.",
+      "description": "The stale card says it trades freshness for tolerance (u43, critical limitation).",
       "check": {
         "check": "text_present",
         "element": "e.swr",
@@ -426,7 +477,20 @@
         "element": "e.stale-if-error",
         "all": [
           [
-            "error"
+            "while the origin",
+            "when the origin",
+            "if the origin",
+            "origin is returning error",
+            "origin returns error",
+            "origin errors",
+            "origin error",
+            "origin is down",
+            "origin fails",
+            "origin is failing",
+            "during error",
+            "during origin",
+            "returning errors",
+            "returns errors"
           ],
           [
             "86400",
@@ -435,7 +499,7 @@
             "a day"
           ]
         ],
-        "why": "only while the origin returns errors, up to a day (u42)"
+        "why": "only while the origin returns errors, up to a day (u42); the directive's own name ('stale-if-error') must not count as the condition"
       }
     },
     {
@@ -470,11 +534,11 @@
     {
       "id": "a.old-assets",
       "dimension": "source_fidelity",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
-      "description": "The versioning card keeps the old-asset retention rule.",
+      "description": "The versioning card keeps the old-asset retention rule (u52, critical requirement).",
       "check": {
         "check": "text_present",
         "element": "e.versioned",
@@ -533,14 +597,14 @@
       "description": "Nothing says a purge is instant.",
       "check": {
         "check": "text_absent",
-        "pattern": "(?<!not )(?<!isn't )\\binstant(ly|aneous|aneously)?\\b",
-        "why": "the source says purging is eventually consistent, not instant"
+        "pattern": "(?<!(?:\\bnot|n't|\\bnever|\\bno|\\bnor|\\bthan|\\bwithout|\\bneither)(?: [\\w'-]+){0,3} )(?<!\\b(?:expired|background|revalidat\\w*)\\b[^.]*)\\binstant(?:ly|aneous(?:ly)?)?\\b(?![^.]*\\b(?:expired|background|revalidat\\w*))",
+        "why": "the source says purging is eventually consistent, not instant; negated mentions ('not instant', 'not applied everywhere instantly') and stale-while-revalidate's 'returns the expired copy instantly' are faithful"
       }
     },
     {
       "id": "a.no-unbounded-stale",
       "dimension": "source_fidelity",
-      "severity": "major",
+      "severity": "critical",
       "method": "deterministic",
       "target": "plan",
       "support": "implemented",
@@ -548,8 +612,8 @@
       "description": "Nothing says stale content is served without bound.",
       "check": {
         "check": "text_absent",
-        "pattern": "\\b(indefinitely|forever|unbounded|unlimited|without (a )?limit)\\b",
-        "why": "both stale directives carry explicit bounds (u41, u42)"
+        "pattern": "(?<!(?:\\bnot|n't|\\bnever|\\bno|\\bnor|\\bthan|\\bwithout)(?: [\\w'-]+){0,2} )\\b(indefinitely|forever|unbounded|unlimited|without (a )?limit)\\b",
+        "why": "both stale directives carry explicit bounds (u41, u42); negated mentions ('never indefinitely') are faithful"
       }
     },
     {
@@ -993,6 +1057,71 @@
       "description": "Frames don't overlap.",
       "check": {
         "check": "frames_no_overlap"
+      }
+    },
+    {
+      "id": "a.crossings",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No link crossings (today's reference as the gate renders it, organisation v1; organisation-layout plan Q11).",
+      "check": {
+        "check": "layout_crossings_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.reading-order",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames read in the plan's order (top to bottom, each row left to right): no pair out of order as the gate renders today (v1).",
+      "check": {
+        "check": "reading_order_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.fit-screen",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Every frame can be read whole at the readable zoom on the fit screen.",
+      "check": {
+        "check": "frames_fit_screen"
+      }
+    },
+    {
+      "id": "a.links-over-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No card-to-card link passes over a third frame (today's reference rendered by the gate, v1).",
+      "check": {
+        "check": "links_over_frames_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.rendered-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "The frames are drawn as planned: 4–7 frames on the canvas (the layout view of a.frame-count).",
+      "check": {
+        "check": "rendered_frame_count",
+        "min": 4,
+        "max": 7
       }
     },
     {

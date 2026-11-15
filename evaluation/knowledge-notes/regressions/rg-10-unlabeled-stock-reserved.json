@@ -1,0 +1,20 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-unlabeled-stock-reserved",
+  "distortion": "unlabeled_architecture_edge",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The orchestrator → message broker publish arrow loses its 'publishes StockReserved' label.",
+  "mutations": [
+    {
+      "op": "set_label",
+      "from": "n-orch",
+      "to": "n-broker",
+      "label": null
+    }
+  ],
+  "expectFailing": [
+    "a.rel-orch-broker",
+    "a.arch-labeled"
+  ]
+}

@@ -5,7 +5,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { aiFeatureDisabledResponse } from "@/config/features";
-import { errorResponse, getHostMode, getHostRuntime, toErrorResponse } from "../aiHost";
+import { errorResponse, getHostMode, getHostRuntime, refuseNonLocal, toErrorResponse } from "../aiHost";
 
 export async function GET(req: NextRequest): Promise<Response> {
   const disabled = aiFeatureDisabledResponse();
@@ -15,6 +15,11 @@ export async function GET(req: NextRequest): Promise<Response> {
 
   if (!gitHubToken && getHostMode() === "server") {
     return errorResponse(401, "auth", "No per-user credentials were provided.");
+  }
+  // Local mode's logged-in-user fallback only for a request made on this machine (the AI-host fallback gate).
+  if (!gitHubToken) {
+    const refused = refuseNonLocal(req);
+    if (refused) return refused;
   }
 
   try {

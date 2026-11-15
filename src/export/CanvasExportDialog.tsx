@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { CloseIcon } from "@/components/common/icons";
 import type { DocumentHome } from "@/domain/types";
-import { downloadCanvas, type CanvasExportFormat } from "@/portability/canvasExport";
+import { canvasSourcesSizeOf, downloadCanvas, type CanvasExportFormat } from "@/portability/canvasExport";
 import { DEFAULT_MARKDOWN_OPTIONS, MARKDOWN_OPTION_KEYS, type MarkdownOptions } from "@/portability/canvasMarkdown";
-import { DEFAULT_EXPORT_OPTIONS, EXPORT_OPTION_KEYS, type ExportOptions } from "@/portability/exportOptions";
+import { DEFAULT_EXPORT_OPTIONS, EXPORT_OPTION_KEYS, includesSources, type ExportOptions } from "@/portability/exportOptions";
 
 const FORMATS: readonly { id: CanvasExportFormat; label: string }[] = [
   { id: "json", label: "JSON" },
@@ -19,7 +19,27 @@ const OPTIONS: Record<keyof ExportOptions, { label: string; hint: string }> = {
   images: { label: "Images", hint: "Image files, embedded in the export. Turn off for a much smaller file." },
   viewSettings: { label: "View settings", hint: "Where the canvas was scrolled and zoomed, and its background colour." },
   layoutHints: { label: "Layout hints", hint: "Where Acute placed each object, so AI can tell your arrangement from its own." },
+  sources: { label: "Sources", hint: "The original text each note was made from, every version, so its citations can be checked." },
 };
+
+/** Shown when the export won't carry its sources (§6.4). Advice, not a blocker. */
+const NO_SOURCES_WARNING = "This file won't include the original sources. Citations in it can't be checked.";
+
+/** "12 KB", "1.4 MB". */
+function formatSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+/** The Sources row's hint: what it adds and its size, once known. */
+function sourcesHint(size: { count: number; bytes: number } | null, originOn: boolean): string {
+  const base = OPTIONS.sources.hint;
+  if (!originOn) return `${base} Needs Origin, where each object's link to its source is kept.`;
+  if (!size) return base;
+  if (!size.count) return `${base} This canvas has no sources on this device.`;
+  return `${base} ${size.count} source${size.count === 1 ? "" : "s"}, ${formatSize(size.bytes)}.`;
+}
 
 const MARKDOWN_OPTIONS: Record<keyof MarkdownOptions, { label: string; hint: string }> = {
   pageContent: { label: "Page content", hint: "Each page's text under its title. Off: page titles only." },
@@ -85,6 +105,17 @@ export function CanvasExportDialog({ home, canvasTitle, onClose }: { home: Docum
   const [markdownOptions, setMarkdownOptions] = useState<MarkdownOptions>(DEFAULT_MARKDOWN_OPTIONS);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sourcesSize, setSourcesSize] = useState<{ count: number; bytes: number } | null>(null);
+
+  useEffect(() => {
+    let live = true;
+    canvasSourcesSizeOf(home)
+      .then((size) => live && setSourcesSize(size))
+      .catch((err: unknown) => console.warn("[acute-notes] couldn't measure the canvas's sources", err));
+    return () => {
+      live = false;
+    };
+  }, [home]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -147,7 +178,7 @@ export function CanvasExportDialog({ home, canvasTitle, onClose }: { home: Docum
             <IncludeOptions
               key="json"
               keys={EXPORT_OPTION_KEYS}
-              labels={OPTIONS}
+              labels={{ ...OPTIONS, sources: { ...OPTIONS.sources, hint: sourcesHint(sourcesSize, options.origin) } }}
               values={options}
               hint="Text, shapes, pages and arrows are always included"
               onChange={(next) => setOptions(next)}
@@ -161,6 +192,12 @@ export function CanvasExportDialog({ home, canvasTitle, onClose }: { home: Docum
               hint="Blocks, shapes and page titles are always included, as text"
               onChange={(next) => setMarkdownOptions(next)}
             />
+          )}
+
+          {format === "json" && !includesSources(options) && (
+            <p className="acute-ai-settings__footer-hint" role="status">
+              {NO_SOURCES_WARNING}
+            </p>
           )}
 
           {error && (

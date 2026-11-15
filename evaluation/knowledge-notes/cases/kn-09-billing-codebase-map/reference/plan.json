@@ -68,7 +68,7 @@
         "kind": "function",
         "label": "priceUsage(lines, plan)",
         "sublabel": "billing/pricing/priceUsage.ts",
-        "details": ["Loads the plan with loadPlan(planId)", "Quantity × unit price, in integer cents (never floating point)", "Imports discountFor: probably also reads a discount table — unconfirmed, no call site found"]
+        "details": ["Loads the plan with loadPlan(planId)", "Quantity × unit price, in integer cents (never floating point)", "Imports discountFor: unconfirmed whether it reads the discounts table (probably; no call site found)"]
       }
     },
     {
@@ -110,7 +110,7 @@
       "type": "shape",
       "parent": "g1",
       "importance": "medium",
-      "content": { "shape": "cylinder", "kind": "database", "label": "invoices + invoice_lines", "sublabel": "tables, written in one transaction", "details": ["invoices rows are always written with status finalized"] }
+      "content": { "shape": "cylinder", "kind": "database", "label": "invoices + invoice_lines", "sublabel": "tables, written in one transaction", "details": ["invoices rows are written with status finalized; no code path writing another status was found"] }
     },
     {
       "id": "s_pub",
@@ -122,7 +122,7 @@
         "kind": "function",
         "label": "publishInvoiceFinalized(invoice)",
         "sublabel": "billing/events/publish.ts",
-        "details": ["Called only after the transaction commits", "On failure: logs the error and returns, so an invoice can exist without its event", "Re-sending missed events: unknown — no re-send job found"]
+        "details": ["Called only after the transaction commits", "On failure: logs the error and returns, so an invoice can exist without its event", "Re-sending missed events: unknown — found no job that re-sends missed events"]
       }
     },
     {
@@ -172,7 +172,7 @@
       "parent": "g3",
       "importance": "medium",
       "title": "Author's reading: billing/pricing is the pricing boundary",
-      "content": { "markdown": "In effect, no code outside `billing/pricing` was seen reading `price_plans`, so a pricing change should only need edits there.\n\n**Interpretation, not enforced:** nothing in the code stops another module from querying `price_plans` directly." }
+      "content": { "markdown": "In effect, no code outside `billing/pricing` was seen reading `price_plans`, so a pricing change should only need edits there.\n\n**Interpretation, not enforced:** nothing enforces the pricing boundary, and nothing in the code stops another module from querying `price_plans` directly." }
     },
     {
       "id": "t_orch",
@@ -188,7 +188,7 @@
       "parent": "g3",
       "importance": "medium",
       "title": "Open questions (unknown in the source)",
-      "content": { "markdown": "- **Monthly run:** unknown. The admin action is clear, but no scheduler that calls `generateInvoice` for every account was found.\n- **Owner of billing-events:** unknown; none is listed in the repository.\n- **invoices status column:** purpose unknown; every row is written as `finalized` (it may be reserved for drafts)." }
+      "content": { "markdown": "- **Monthly run:** unknown. The admin action is clear, but the scheduler that calls `generateInvoice` for every account could not be found.\n- **Owner of billing-events:** unknown; none is listed in the repository.\n- **invoices status column:** purpose unknown; every row is written as `finalized` (it may be reserved for drafts).\n- **Tax retries:** whether callers or the Taxwell library retry, and whether there is any backoff, is unknown." }
     }
   ],
   "relationships": [

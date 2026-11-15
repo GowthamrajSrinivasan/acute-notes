@@ -1,0 +1,11 @@
+{
+  "builtAt": "2026-11-14T16:37:18.653Z",
+  "snapshot": "phase4/FREEZE-v3.json",
+  "sha256": {
+    "PACKET.md": "5d2cc7cdd86c8fb7e5cd141d1c2a230663639b795df093b77e5931f806ceae74",
+    "answers.template.json": "d9c4949ae27f9ed8c189add1c431ddc90b227ecd5fb639d5af6e1727ecacec52",
+    "SAMPLE-KEY.json": "e7426e794225dec07c5ee21c1af226e01c3ffa600e0cfdb38cfc4290877b9a31",
+    "build.mjs": "77db6c3c549f62ba8276d11a9eb5ec6c24ea415fc0ecedee2ec22e8f2f81b6df",
+    "compare.mjs": "e98a47db63ceb48e6a6b03111e3842a58d6a972e0a45a700df3b0386c74c81fb"
+  }
+}

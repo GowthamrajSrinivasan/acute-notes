@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-preferred-unnegated",
+  "distortion": "unsupported_recommendation",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The negation is dropped and a winner appears: 'There is no preferred choice and no winner yet.' becomes 'The job table is the preferred choice.'. The old pattern didn't know 'preferred choice'; the negation-aware a.no-recommendation must catch it.",
+  "mutations": [
+    { "op": "replace_text", "node": "n10", "find": "There is no preferred choice and no winner yet.", "replace": "The job table is the preferred choice." }
+  ],
+  "expectFailing": ["a.no-recommendation"]
+}

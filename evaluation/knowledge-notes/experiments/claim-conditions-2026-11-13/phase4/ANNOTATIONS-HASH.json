@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-13T16:27:08.372Z",
+  "note": "All 24 blind annotation files as received, before agreement was computed.",
+  "sha256": {
+    "annotations/kn-01-idempotency-keys.X.json": "cebc051629d37efd0d73eb563c1070ebc528f5ed0d442611d300a3083a3225a8",
+    "annotations/kn-01-idempotency-keys.Y.json": "9599547d0db4f6e8b4edf48c9b937cd54f0bd866e39e316dabc21b9c9fe9a8ef",
+    "annotations/kn-02-edge-cache-invalidation.X.json": "2ce2e0a178aa8a401b40871e0723b7f6323e23591b830270bab0506d4a5c1daf",
+    "annotations/kn-02-edge-cache-invalidation.Y.json": "e02ef7ffac0f7c92bce254314415b9be2805d5ca509cead80ec8946e34d447b2",
+    "annotations/kn-03-blue-green-deploy.X.json": "1eedcf8e772e49184f178b5e62cd7121a5a3e5b28835fae32e9aef2a8ce375ec",
+    "annotations/kn-03-blue-green-deploy.Y.json": "ee8e9421afe785dd6cb94c18d1825b4e572b005bad9fd717f8ad595923a7f4b2",
+    "annotations/kn-04-queue-choice.X.json": "53aaa477fc3fa413f6045a7e14c0d3ddfdd2f2f8ff764080bda91c132428d964",
+    "annotations/kn-04-queue-choice.Y.json": "9f050bbdafaf77de85da6d05e2731588faa1cccf6ce0a4fb6650bbc4bbbdf2d9",
+    "annotations/kn-05-incident-review-meeting.X.json": "1d6db5cba591bdf85c879661c3576664570e3391e0ed8d8f8af215e392b4975f",
+    "annotations/kn-05-incident-review-meeting.Y.json": "26ffbecd709dfcf62677169e51ac1d8a25c3666c9f4a0bbbb8470254ebe21db7",
+    "annotations/kn-06-hybrid-search-reranking.X.json": "461c33c4d24de94c6e21c96cea5105fec59f7b881fa8670bd294d7708847d4d3",
+    "annotations/kn-06-hybrid-search-reranking.Y.json": "6d7b6ecb35dd116ae4ebd3bc504cb5092b671f0f9ea124fd2e2727bc3e74fe5d",
+    "annotations/kn-07-photo-sharing-hld.X.json": "2434944fb273bfda93fd4aec0b9b3ce51388ed331ed8ba96e39b236e8d1ccbad",
+    "annotations/kn-07-photo-sharing-hld.Y.json": "81d02077ed04057999cd184c4f244a8185646604fd46ea9b74076bac8321b203",
+    "annotations/kn-08-helpdesk-answers-hld-lld.X.json": "b9542cf73990aa3ec9cef012ece058cb2f082db28f29921e7dcb48edb2d69d6a",
+    "annotations/kn-08-helpdesk-answers-hld-lld.Y.json": "39daee5a2862d5203f7719608229b3f49befa21e7ba9c4f116449f5193515c05",
+    "annotations/kn-09-billing-codebase-map.X.json": "a71bf05b654a2ee38625f6b2f1557c9cc96d80c4fc06cb06be10e612c5e07ca7",
+    "annotations/kn-09-billing-codebase-map.Y.json": "6d51c88ac72b2058d7756dd2ac5bd7a32ae4e19fc6a828d368326288929ac017",
+    "annotations/kn-10-inventory-architecture-frames.X.json": "ad590a07c677b9fd0bda2e255c75d0752528c5df7d8289c6c4f513a9b9a9b12a",
+    "annotations/kn-10-inventory-architecture-frames.Y.json": "a61512885a228dd67f45591142a2626f8ef5ad977c86a31719c7f586c9a3468f",
+    "annotations/kn-11-ambiguous-analytics-proposal.X.json": "519e33daa0e7b18ef239433aa4425d26a41036e1041e7eac6e1c7ec481fd1a74",
+    "annotations/kn-11-ambiguous-analytics-proposal.Y.json": "fdfc8055e378cdecd797db76b179c2f680641f9cce68a0fb091530d1674ddc94",
+    "annotations/kn-12-flag-rollout-update.X.json": "012359b0c45687715497d3138aa408dc8b260fcae1aa443c8e90bc38895fcebd",
+    "annotations/kn-12-flag-rollout-update.Y.json": "d9f1a9d07fec1d2376cea7ffa13b265f68c406abf75efc67a723273a835ae38b"
+  }
+}

@@ -1,0 +1,1767 @@
+{
+  "datasetVersion": "1.0.0",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "assertions": [
+    {
+      "id": "a.frame-presentation",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Client & presentation is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.presentation"
+      }
+    },
+    {
+      "id": "a.frame-api",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for API & orchestration is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.api"
+      }
+    },
+    {
+      "id": "a.frame-domain",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Domain services is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.domain"
+      }
+    },
+    {
+      "id": "a.frame-integration",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Supplier integration is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.integration"
+      }
+    },
+    {
+      "id": "a.frame-persistence",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Persistence & external systems is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.persistence"
+      }
+    },
+    {
+      "id": "a.frame-observability",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Observability & error handling is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.observability"
+      }
+    },
+    {
+      "id": "a.frame-gaps",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "A frame for Known gaps is present.",
+      "check": {
+        "check": "frame_present",
+        "frame": "f.gaps"
+      }
+    },
+    {
+      "id": "a.frame-count",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "One frame per responsibility group (plus at most a gaps/notes frame or an External split), not one per module.",
+      "check": {
+        "check": "frame_count",
+        "min": 6,
+        "max": 9
+      }
+    },
+    {
+      "id": "a.in-admin-ui",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.admin-ui sits in f.presentation.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.admin-ui",
+        "frame": "f.presentation"
+      }
+    },
+    {
+      "id": "a.kind-admin-ui",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.admin-ui is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.admin-ui",
+        "kinds": [
+          "frontend"
+        ]
+      }
+    },
+    {
+      "id": "a.in-http",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.http sits in f.api.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.http",
+        "frame": "f.api"
+      }
+    },
+    {
+      "id": "a.kind-http",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.http is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.http",
+        "kinds": [
+          "backend",
+          "function",
+          "endpoint"
+        ]
+      }
+    },
+    {
+      "id": "a.in-orchestrator",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.orchestrator sits in f.api.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.orchestrator",
+        "frame": "f.api"
+      }
+    },
+    {
+      "id": "a.kind-orchestrator",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.orchestrator is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.orchestrator",
+        "kinds": [
+          "backend",
+          "function",
+          "endpoint"
+        ]
+      }
+    },
+    {
+      "id": "a.in-ledger",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.ledger sits in f.domain.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.ledger",
+        "frame": "f.domain"
+      }
+    },
+    {
+      "id": "a.kind-ledger",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.ledger is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.ledger",
+        "kinds": [
+          "backend",
+          "function",
+          "endpoint"
+        ]
+      }
+    },
+    {
+      "id": "a.in-pricing",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.pricing sits in f.domain.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.pricing",
+        "frame": "f.domain"
+      }
+    },
+    {
+      "id": "a.kind-pricing",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.pricing is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.pricing",
+        "kinds": [
+          "backend",
+          "function",
+          "endpoint"
+        ]
+      }
+    },
+    {
+      "id": "a.in-feed-adapter",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.feed-adapter sits in f.integration.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.feed-adapter",
+        "frame": "f.integration"
+      }
+    },
+    {
+      "id": "a.kind-feed-adapter",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.feed-adapter is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.feed-adapter",
+        "kinds": [
+          "backend",
+          "function",
+          "endpoint"
+        ]
+      }
+    },
+    {
+      "id": "a.in-postgres",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.postgres sits in f.persistence.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.postgres",
+        "frame": "f.persistence"
+      }
+    },
+    {
+      "id": "a.kind-postgres",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.postgres is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.postgres",
+        "kinds": [
+          "database",
+          "store"
+        ]
+      }
+    },
+    {
+      "id": "a.in-redis",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.redis sits in f.persistence.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.redis",
+        "frame": "f.persistence"
+      }
+    },
+    {
+      "id": "a.kind-redis",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.redis is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.redis",
+        "kinds": [
+          "store",
+          "database"
+        ]
+      }
+    },
+    {
+      "id": "a.in-broker",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.broker sits in f.persistence.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.broker",
+        "frame": "f.persistence"
+      }
+    },
+    {
+      "id": "a.kind-broker",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.broker is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.broker",
+        "kinds": [
+          "messagebus",
+          "event"
+        ]
+      }
+    },
+    {
+      "id": "a.in-supplier-api",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.supplier-api sits in f.persistence.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.supplier-api",
+        "frame": "f.persistence"
+      }
+    },
+    {
+      "id": "a.kind-supplier-api",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.supplier-api is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.supplier-api",
+        "kinds": [
+          "external"
+        ]
+      }
+    },
+    {
+      "id": "a.in-logger",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.logger sits in f.observability.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.logger",
+        "frame": "f.observability"
+      }
+    },
+    {
+      "id": "a.kind-logger",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.logger is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.logger",
+        "kinds": [
+          "backend",
+          "function",
+          "endpoint"
+        ]
+      }
+    },
+    {
+      "id": "a.in-retry",
+      "dimension": "grouping",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.retry sits in f.observability.",
+      "check": {
+        "check": "element_in_frame",
+        "element": "e.retry",
+        "frame": "f.observability"
+      }
+    },
+    {
+      "id": "a.kind-retry",
+      "dimension": "element_selection",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.retry is a shape with an architecture kind.",
+      "check": {
+        "check": "element_kind",
+        "element": "e.retry",
+        "kinds": [
+          "backend",
+          "function",
+          "endpoint"
+        ]
+      }
+    },
+    {
+      "id": "a.in-retry-policy",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The retry policy detail sits with the retry helper.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.retry",
+          "e.retry-policy"
+        ],
+        "why": "LLD detail stays next to the module it configures"
+      }
+    },
+    {
+      "id": "a.present-gaps",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The known gaps (unmeasured row lock) are kept.",
+      "check": {
+        "check": "element_present",
+        "element": "e.known-gaps"
+      }
+    },
+    {
+      "id": "a.present-domain-rule",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The domain frame states its ownership and the inward dependency rule.",
+      "check": {
+        "check": "element_present",
+        "element": "e.domain-rule"
+      }
+    },
+    {
+      "id": "a.present-retry-policy",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The retry policy is on the canvas as a detail card.",
+      "check": {
+        "check": "element_present",
+        "element": "e.retry-policy"
+      }
+    },
+    {
+      "id": "a.together-api",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Handlers and orchestrator share the API & orchestration frame.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.http",
+          "e.orchestrator"
+        ],
+        "why": "one responsibility group (u5)"
+      }
+    },
+    {
+      "id": "a.together-domain",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Ledger and pricing share the domain frame.",
+      "check": {
+        "check": "together",
+        "elements": [
+          "e.ledger",
+          "e.pricing"
+        ],
+        "why": "one responsibility group (u5)"
+      }
+    },
+    {
+      "id": "a.apart-logger",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Observability is not mixed into the domain frame.",
+      "check": {
+        "check": "apart",
+        "elements": [
+          "e.logger",
+          "e.ledger"
+        ],
+        "why": "cross-cutting helpers are not domain logic"
+      }
+    },
+    {
+      "id": "a.apart-http-ledger",
+      "dimension": "grouping",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The HTTP layer and the ledger are in different frames.",
+      "check": {
+        "check": "apart",
+        "elements": [
+          "e.http",
+          "e.ledger"
+        ],
+        "why": "separate layers; the dependency rule must be visible"
+      }
+    },
+    {
+      "id": "a.apart-adapter-supplier",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Adapter and supplier API are on different sides of the boundary.",
+      "check": {
+        "check": "apart",
+        "elements": [
+          "e.feed-adapter",
+          "e.supplier-api"
+        ],
+        "why": "the supplier API is external (u31)"
+      }
+    },
+    {
+      "id": "a.hierarchy-retry",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The policy card hangs off the retry helper and is not weighted above it.",
+      "check": {
+        "check": "hierarchy",
+        "main": "e.retry",
+        "supporting": [
+          "e.retry-policy"
+        ],
+        "why": "LLD detail of the helper"
+      }
+    },
+    {
+      "id": "a.rel-ui-http",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Every screen calls the REST API. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.ui-http"
+      }
+    },
+    {
+      "id": "a.rel-http-orch",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "POST /reservations goes to the orchestrator. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.http-orch"
+      }
+    },
+    {
+      "id": "a.rel-orch-ledger",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "The orchestrator asks the ledger to reserve stock. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.orch-ledger"
+      }
+    },
+    {
+      "id": "a.rel-orch-pricing",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The orchestrator asks the pricing rules for the price. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.orch-pricing"
+      }
+    },
+    {
+      "id": "a.rel-orch-broker",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "unlabeled_architecture_edge",
+      "description": "The orchestrator publishes StockReserved. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.orch-broker"
+      }
+    },
+    {
+      "id": "a.rel-ledger-postgres",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "mislabeled_architecture_edge",
+      "description": "The ledger writes its entries to Postgres (sole writer). Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.ledger-postgres"
+      }
+    },
+    {
+      "id": "a.rel-pricing-redis",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Pricing reads cached price lists from Redis. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.pricing-redis"
+      }
+    },
+    {
+      "id": "a.rel-adapter-supplier",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The adapter calls the supplier API every 10 minutes. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.adapter-supplier"
+      }
+    },
+    {
+      "id": "a.rel-adapter-ledger",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The adapter asks the ledger to record restocks. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.adapter-ledger"
+      }
+    },
+    {
+      "id": "a.rel-adapter-retry",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The adapter wraps supplier calls in the retry helper. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.adapter-retry"
+      }
+    },
+    {
+      "id": "a.rel-retry-broker",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "After the 5th failure the delivery is published to inventory.dlq. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.retry-broker"
+      }
+    },
+    {
+      "id": "a.rel-http-logger",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The handlers log each request (with the correlation ID). Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.http-logger"
+      }
+    },
+    {
+      "id": "a.rel-retry-logger",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The retry helper logs each failed attempt. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.retry-logger"
+      }
+    },
+    {
+      "id": "a.rel-retry-policy",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The detail card spells out the helper's policy. Every module on this edge takes part in a relationship (no disconnected critical component).",
+      "check": {
+        "check": "relationship_present",
+        "relationship": "r.retry-policy"
+      }
+    },
+    {
+      "id": "a.arch-labeled",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "unlabeled_architecture_edge",
+      "description": "Every architecture edge says what it does.",
+      "check": {
+        "check": "architecture_edges_labeled",
+        "types": [
+          "calls",
+          "reads",
+          "writes",
+          "publishes",
+          "subscribes",
+          "depends_on"
+        ]
+      }
+    },
+    {
+      "id": "a.no-ledger-to-http",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "The ledger never depends on the HTTP layer.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.ledger",
+        "to": "e.http",
+        "why": "domain modules import nothing from src/api/ (u21, u45)"
+      }
+    },
+    {
+      "id": "a.no-pricing-to-http",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "Pricing never depends on the HTTP layer.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.pricing",
+        "to": "e.http",
+        "why": "domain modules import nothing from src/api/ (u21, u45)"
+      }
+    },
+    {
+      "id": "a.no-ledger-to-orch",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "The ledger never calls or depends on the orchestrator.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.ledger",
+        "to": "e.orchestrator",
+        "types": [
+          "calls",
+          "depends_on",
+          "reads",
+          "writes",
+          "flows_to"
+        ],
+        "why": "domain modules import nothing from src/orders/ (u21)"
+      }
+    },
+    {
+      "id": "a.no-pricing-to-orch",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "dependency_reversed",
+      "description": "The pricing rules never call or depend on the orchestrator.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.pricing",
+        "to": "e.orchestrator",
+        "types": [
+          "calls",
+          "depends_on",
+          "reads",
+          "writes",
+          "flows_to"
+        ],
+        "why": "domain modules import nothing from src/orders/ (u21)"
+      }
+    },
+    {
+      "id": "a.no-orch-writes-postgres",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The orchestrator doesn't write stock to Postgres.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.orchestrator",
+        "to": "e.postgres",
+        "types": [
+          "writes",
+          "calls",
+          "depends_on"
+        ],
+        "why": "only the ledger writes stock (u18, u46)"
+      }
+    },
+    {
+      "id": "a.no-adapter-writes-postgres",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The adapter doesn't write stock to Postgres.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.feed-adapter",
+        "to": "e.postgres",
+        "types": [
+          "writes",
+          "calls",
+          "depends_on"
+        ],
+        "why": "only the ledger writes stock (u18, u46)"
+      }
+    },
+    {
+      "id": "a.no-orch-calls-supplier",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Only the adapter calls the supplier API.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.orchestrator",
+        "to": "e.supplier-api",
+        "why": "only the supplier feed adapter calls the supplier API (u47)"
+      }
+    },
+    {
+      "id": "a.no-ui-to-db",
+      "dimension": "relationships",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The admin UI never talks to the database.",
+      "check": {
+        "check": "relationship_absent",
+        "from": "e.admin-ui",
+        "to": "e.postgres",
+        "why": "the UI calls only the REST API (u8)"
+      }
+    },
+    {
+      "id": "a.path-admin-ui",
+      "dimension": "traceability",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.admin-ui shows its file path exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.admin-ui",
+        "all": [
+          [
+            "web/admin"
+          ]
+        ],
+        "why": "protected path (u6)"
+      }
+    },
+    {
+      "id": "a.path-http",
+      "dimension": "traceability",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.http shows its file path exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.http",
+        "all": [
+          [
+            "src/api/routes.ts"
+          ]
+        ],
+        "why": "protected path (u9)"
+      }
+    },
+    {
+      "id": "a.path-orchestrator",
+      "dimension": "traceability",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.orchestrator shows its file path exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.orchestrator",
+        "all": [
+          [
+            "src/orders/reserve.ts"
+          ]
+        ],
+        "why": "protected path (u11)"
+      }
+    },
+    {
+      "id": "a.path-ledger",
+      "dimension": "traceability",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.ledger shows its file path exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.ledger",
+        "all": [
+          [
+            "src/ledger/ledger.ts"
+          ]
+        ],
+        "why": "protected path (u16)"
+      }
+    },
+    {
+      "id": "a.path-pricing",
+      "dimension": "traceability",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.pricing shows its file path exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.pricing",
+        "all": [
+          [
+            "src/pricing/rules.ts"
+          ]
+        ],
+        "why": "protected path (u19)"
+      }
+    },
+    {
+      "id": "a.path-feed-adapter",
+      "dimension": "traceability",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.feed-adapter shows its file path exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.feed-adapter",
+        "all": [
+          [
+            "src/suppliers/feedadapter.ts"
+          ]
+        ],
+        "why": "protected path (u23)"
+      }
+    },
+    {
+      "id": "a.path-logger",
+      "dimension": "traceability",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.logger shows its file path exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.logger",
+        "all": [
+          [
+            "src/platform/log.ts"
+          ]
+        ],
+        "why": "protected path (u32)"
+      }
+    },
+    {
+      "id": "a.path-retry",
+      "dimension": "traceability",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "e.retry shows its file path exactly.",
+      "check": {
+        "check": "text_present",
+        "element": "e.retry",
+        "all": [
+          [
+            "src/platform/retry.ts"
+          ]
+        ],
+        "why": "protected path (u34)"
+      }
+    },
+    {
+      "id": "a.no-partial-with-orch",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The all-or-nothing condition sits on the orchestrator (a bare mention of 'partial' doesn't count: 'makes partial reservations' is the distortion).",
+      "check": {
+        "check": "text_present",
+        "element": "e.orchestrator",
+        "all": [
+          [
+            "whole order",
+            "entire order",
+            "all-or-nothing",
+            "all or nothing",
+            "no partial",
+            "never partial",
+            "never makes a partial",
+            "never a partial",
+            "not partial",
+            "without partial",
+            "rejects the order",
+            "rejects the full order"
+          ]
+        ],
+        "why": "limits the orchestrator's claim (u14)"
+      }
+    },
+    {
+      "id": "a.hold-with-ledger",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The 15-minute hold expiry sits on the ledger, with its condition (only unconfirmed reservations are released).",
+      "check": {
+        "check": "text_present",
+        "element": "e.ledger",
+        "all": [
+          [
+            "15 min",
+            "15-min",
+            "15 minutes"
+          ],
+          [
+            "confirm"
+          ]
+        ],
+        "why": "limits the ledger's reservations (u15): only a reservation not confirmed within 15 minutes is released"
+      }
+    },
+    {
+      "id": "a.skip-with-adapter",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "critical_exception_omitted",
+      "description": "Unparseable deliveries are skipped, not retried, on the adapter.",
+      "check": {
+        "check": "text_present",
+        "element": "e.feed-adapter",
+        "all": [
+          [
+            "skip",
+            "drop",
+            "discard",
+            "ignore"
+          ],
+          [
+            "not retried",
+            "no retry",
+            "never retried",
+            "without retry",
+            "isn't retried",
+            "aren't retried",
+            "no retries",
+            "not re-tried"
+          ]
+        ],
+        "why": "limits the adapter (u26)"
+      }
+    },
+    {
+      "id": "a.adapter-interval",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The 10-minute poll interval survives.",
+      "check": {
+        "check": "text_present",
+        "all": [
+          [
+            "10 min",
+            "10-min",
+            "every 10"
+          ]
+        ],
+        "why": "protected number (u24)"
+      }
+    },
+    {
+      "id": "a.price-ttl",
+      "dimension": "source_fidelity",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The 300-second price cache survives on the pricing rules.",
+      "check": {
+        "check": "text_present",
+        "element": "e.pricing",
+        "all": [
+          [
+            "300 s",
+            "300 seconds",
+            "300s",
+            "5 min"
+          ]
+        ],
+        "why": "protected number (u20)"
+      }
+    },
+    {
+      "id": "a.retry-values",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "The retry policy keeps its exact values and its doubling (exponential) backoff.",
+      "check": {
+        "check": "text_present",
+        "element": "e.retry-policy",
+        "all": [
+          [
+            "5 attempts",
+            "max 5",
+            "at most 5",
+            "5 tries"
+          ],
+          [
+            "2 s",
+            "2 seconds",
+            "2s"
+          ],
+          [
+            "doubl",
+            "exponential",
+            "x2",
+            "×2"
+          ],
+          [
+            "60 s",
+            "60 seconds",
+            "60s"
+          ],
+          [
+            "inventory.dlq"
+          ]
+        ],
+        "why": "protected values and formula (u36-u38): 5 attempts, backoff from 2 seconds doubling to a 60-second cap, then inventory.dlq"
+      }
+    },
+    {
+      "id": "a.retry-scope",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "The policy card says retries are only for supplier calls and never for reservations.",
+      "check": {
+        "check": "text_present",
+        "element": "e.retry-policy",
+        "all": [
+          [
+            "supplier"
+          ],
+          [
+            "reservation"
+          ],
+          [
+            "never",
+            "not ",
+            "no "
+          ]
+        ],
+        "why": "limits the policy (u39, u40)"
+      }
+    },
+    {
+      "id": "a.gap-lock",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The row lock stays unmeasured, not proven.",
+      "check": {
+        "check": "text_present",
+        "element": "e.known-gaps",
+        "all": [
+          [
+            "not measured",
+            "unmeasured",
+            "not been measured",
+            "untested",
+            "unverified",
+            "unknown",
+            "not yet measured",
+            "never measured",
+            "not been tested",
+            "not tested"
+          ]
+        ],
+        "why": "open question (u49)"
+      }
+    },
+    {
+      "id": "a.gap-dlq",
+      "dimension": "coverage",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The missing DLQ alert is kept.",
+      "check": {
+        "check": "text_present",
+        "element": "e.known-gaps",
+        "all": [
+          [
+            "alert"
+          ],
+          [
+            "dlq",
+            "dead-letter",
+            "dead letter"
+          ]
+        ],
+        "why": "known gap (u50)"
+      }
+    },
+    {
+      "id": "a.gap-tests",
+      "dimension": "coverage",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The missing admin UI tests are kept.",
+      "check": {
+        "check": "text_present",
+        "element": "e.known-gaps",
+        "all": [
+          [
+            "test"
+          ],
+          [
+            "admin",
+            "ui"
+          ]
+        ],
+        "why": "known gap (u48)"
+      }
+    },
+    {
+      "id": "a.domain-rule-text",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "description": "The domain frame's takeaway (or rule card) states the inward dependency rule.",
+      "check": {
+        "check": "text_present",
+        "element": "e.domain-rule",
+        "all": [
+          [
+            "http",
+            "api layer",
+            "web server",
+            "src/api"
+          ],
+          [
+            "never",
+            "not ",
+            "no "
+          ]
+        ],
+        "why": "dependency rule (u21, u45)"
+      }
+    },
+    {
+      "id": "a.no-invented-paths",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "invented_detail",
+      "description": "No file path, directory, SQL file or repository/DAO/controller class the source doesn't name.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "\\bsrc/(?!api/|orders/|ledger/|pricing/|suppliers/|platform/)[\\w.-]+|\\b(?!routes\\.ts|reserve\\.ts|ledger\\.ts|rules\\.ts|feedadapter\\.ts|log\\.ts|retry\\.ts)[a-z][\\w-]*\\.(ts|tsx|js|py|go|java)\\b|\\b(?:db|web)/(?!migrations/|admin/)[\\w.-]+|\\b[a-z]+(?:repository|dao|controller)\\b|\\b[\\w-]+\\.sql\\b",
+        "why": "only paths written in the source exist (provenance note)"
+      }
+    },
+    {
+      "id": "a.no-retried-reservations",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "possibility_to_guarantee",
+      "description": "Reservations are never said to be retried (by the orchestrator, the retry helper or a blanket 'retries apply to all calls'). Negated wordings ('reservations are never retried', 'never retries reservations') pass.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(?<!\\b(?:not|never|no|n't)\\s(?:[\\w-]+\\s)?)\\breservations? (?:are|is|get|gets) (?:automatically )?retried|(?<!\\b(?:not|never|no|n't|without)\\s(?:[\\w-]+\\s){0,2})\\bretr(?:y|ies|ied|ying)(?: the| failed| any)? reservations?\\b|\\bretries apply to (?:all|every|both|any)\\b|\\b(?:orchestrator|reservation (?:calls?|requests?)) (?:also |automatically )?retr(?:y|ies)\\b",
+        "why": "reservations fail fast (u40)"
+      }
+    },
+    {
+      "id": "a.no-partial-reservation",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "condition_dropped",
+      "description": "Nothing says the orchestrator makes (or allows) a partial reservation; 'never makes a partial reservation' and 'no partial reservations' pass.",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(?<!\\b(?:no|not|never|n't|without)\\s(?:[\\w-]+\\s){0,2})(?:\\b(?:makes?|making|allows?|creates?|accepts?|does|takes?) (?:a |any )?partial(?:ly)? (?:reservations?|quantit(?:y|ies)|orders?|holds?)\\b|\\breserves? (?:what|whatever|only what) (?:is|stock is|stock) (?:available|in stock|left)|\\bpartial reservations? (?:are|is) (?:made|allowed|created|accepted|possible)|\\bpartially (?:reserves?|fills?|fulfils?|fulfills?))",
+        "why": "it rejects the whole order and never makes a partial reservation (u14)"
+      }
+    },
+    {
+      "id": "a.no-lock-proven",
+      "dimension": "source_fidelity",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "implemented",
+      "regression": "possibility_to_guarantee",
+      "description": "The row lock is not claimed to be proven or to hold under peak load ('whether the row lock holds under peak load has not been measured' passes).",
+      "check": {
+        "check": "text_absent",
+        "pattern": "(?<!\\bwhether (?:the |a )?(?:database )?)\\brow lock (?:is )?(?:proven|guarantees|always holds|holds under (?:peak )?load|keeps (?:them|stock) consistent under (?:peak )?load|is (?:safe|sufficient|enough) (?:under|at) (?:peak )?load)|(?<!\\b(?:not|never)\\s(?:been\\s|yet\\s){0,2}|\\bun)(?:proven|verified|tested|shown|measured) to hold under (?:peak )?load",
+        "why": "it has not been measured (u49)"
+      }
+    },
+    {
+      "id": "a.layout",
+      "dimension": "visual",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No link runs through a card.",
+      "check": {
+        "check": "layout_no_fatal"
+      }
+    },
+    {
+      "id": "a.no-overlap",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Cards don't overlap.",
+      "check": {
+        "check": "cards_no_overlap"
+      }
+    },
+    {
+      "id": "a.inside-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames are large enough for their cards.",
+      "check": {
+        "check": "children_inside_frames"
+      }
+    },
+    {
+      "id": "a.frames-apart",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames don't overlap.",
+      "check": {
+        "check": "frames_no_overlap"
+      }
+    },
+    {
+      "id": "a.crossings",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v1",
+      "description": "At most 15 link crossings (today's reference as the gate renders it, organisation v1; organisation-layout plan Q11). Decided on today's organisation rules (v1); a.crossings-v2 holds the v2 count.",
+      "check": {
+        "check": "layout_crossings_max",
+        "max": 15
+      }
+    },
+    {
+      "id": "a.crossings-v2",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "At most 8 link crossings with organisation v2 (frame order by links, sub-groups, frame splitting): today's reference rendered in v2.",
+      "check": {
+        "check": "layout_crossings_max",
+        "max": 8
+      }
+    },
+    {
+      "id": "a.reading-order",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v1",
+      "description": "Frames read in the plan's order (top to bottom, each row left to right): no pair out of order as the gate renders today (v1). Decided on today's organisation rules (v1); a.reading-order-v2 holds the v2 count.",
+      "check": {
+        "check": "reading_order_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.reading-order-v2",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "At most 1 pair of frames read out of plan order with organisation v2 (frame order by links, sub-groups, frame splitting): today's reference rendered in v2.",
+      "check": {
+        "check": "reading_order_max",
+        "max": 1
+      }
+    },
+    {
+      "id": "a.fit-screen",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Every frame can be read whole at the readable zoom on the fit screen.",
+      "check": {
+        "check": "frames_fit_screen"
+      }
+    },
+    {
+      "id": "a.links-over-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v1",
+      "description": "At most 1 card-to-card link over a third frame (today's reference rendered by the gate, v1). Decided on today's organisation rules (v1); a.links-over-frames-v2 holds the v2 count.",
+      "check": {
+        "check": "links_over_frames_max",
+        "max": 1
+      }
+    },
+    {
+      "id": "a.links-over-frames-v2",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "organisation": "v2",
+      "description": "At most 2 card-to-card links over a third frame with organisation v2 (frame order by links, sub-groups, frame splitting): today's reference rendered in v2.",
+      "check": {
+        "check": "links_over_frames_max",
+        "max": 2
+      }
+    },
+    {
+      "id": "a.rendered-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "The frames are drawn as planned: 6–9 frames on the canvas (the layout view of a.frame-count).",
+      "check": {
+        "check": "rendered_frame_count",
+        "min": 6,
+        "max": 9
+      }
+    },
+    {
+      "id": "a.subgroup-external",
+      "dimension": "visual",
+      "severity": "minor",
+      "method": "deterministic",
+      "target": "render",
+      "support": "future",
+      "requires": [
+        "canvas.sub-groups",
+        "ai.note-model-distil"
+      ],
+      "organisation": "v2",
+      "description": "The supplier API sits in an External sub-group inside the persistence & external systems frame, drawn on its backdrop (organisation v2, which only the distil note model uses; the reference has no sub-group yet).",
+      "check": {
+        "check": "subgroup_contains",
+        "frame": "f.persistence",
+        "elements": [
+          "e.supplier-api"
+        ],
+        "label": [
+          [
+            "external"
+          ]
+        ],
+        "why": "the source calls the supplier API the only external system, outside Shelfwise's control; a sub-group says so inside the frame the source puts it in"
+      }
+    },
+    {
+      "id": "a.cites",
+      "dimension": "traceability",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "future",
+      "requires": [
+        "ai.cites"
+      ],
+      "description": "Each module box cites the unit stating its path and responsibilities (e.g. ledger u16-u18, u15; retry policy u36-u40); every edge cites its unit (orchestrator→ledger u13; ledger→Postgres u17)."
+    },
+    {
+      "id": "a.accounting",
+      "dimension": "coverage",
+      "severity": "critical",
+      "method": "deterministic",
+      "target": "plan",
+      "support": "future",
+      "requires": [
+        "ai.unit-accounting",
+        "ai.source-unit-ids"
+      ],
+      "description": "All 50 units are Represented or Intentionally omitted (u4 meta, u35 and u44 filler, reading advice u41-u43 optional); none of the critical units is omitted."
+    },
+    {
+      "id": "a.judge-ownership",
+      "dimension": "grouping",
+      "severity": "major",
+      "method": "model_judge",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Frames show ownership.",
+      "judge": {
+        "question": "Does each frame's title and takeaway say what that group owns or is responsible for (not just a topic name), matching the source's groups?",
+        "pass": "E.g. 'Domain services: owns stock and prices; never depends on the HTTP layer'; 'Persistence & external systems: Postgres is the source of truth'.",
+        "fail": "Frames are bare labels or group modules by file type rather than responsibility."
+      }
+    },
+    {
+      "id": "a.judge-detail-level",
+      "dimension": "element_selection",
+      "severity": "critical",
+      "method": "model_judge",
+      "target": "plan",
+      "support": "implemented",
+      "description": "HLD on the boxes, LLD in a detail card.",
+      "judge": {
+        "question": "Do module boxes stay short (name, path, one-line responsibility) while the retry policy's exact values sit in a linked detail card, with nothing invented?",
+        "pass": "Boxes are scannable; the policy card has 5 attempts, 2 s doubling to 60 s, inventory.dlq and the supplier-only scope.",
+        "fail": "Policy values are scattered across boxes or lost, or the canvas invents classes, functions or paths."
+      }
+    },
+    {
+      "id": "a.judge-edges",
+      "dimension": "relationships",
+      "severity": "critical",
+      "method": "human",
+      "target": "plan",
+      "support": "implemented",
+      "description": "Edges read as a correct dependency graph.",
+      "judge": {
+        "question": "Following the arrows, do dependencies point inwards (UI → API → orchestrator → domain → persistence), with each arrow's label saying what it does and none reversed?",
+        "pass": "Every critical module is connected; 'reserves stock', 'publishes StockReserved', 'writes ledger entries' are labelled; no domain → HTTP arrow.",
+        "fail": "A module floats unconnected, a label is missing or generic ('uses'), or an arrow points the wrong way."
+      }
+    }
+  ]
+}

@@ -40,14 +40,25 @@ export function createCopilotHostRuntime(deps: CopilotHostRuntimeDeps = DEFAULT_
     provider: HostByokProvider | undefined,
     systemPrompt: string | undefined,
     streaming: boolean,
+    maxTokens?: number,
+    reasoningEffort?: "low" | "medium" | "high",
   ): SessionConfig {
     const { sessionConfig } = buildHardening();
+    // §12.25: only when a request sets it (the AI consistency check asks for "low"). The SDK accepts it only for models
+    // that support reasoning effort; not verified live against every endpoint.
+    const effort = reasoningEffort ? { reasoningEffort } : {};
+    // A request's output cap reaches the model only on a BYOK connection: the SDK's `ProviderConfig.maxOutputTokens`
+    // ("when hit, the model stops generating and returns a truncated response"). A Copilot-subscription session has no
+    // per-request equivalent, so the cap is dropped there — callers that need one must check `outputCap` first
+    // (intelligent-update-engine-plan §12.25). Only set when a request asks for it; no other task does today.
+    const cap = provider && maxTokens !== undefined && Number.isInteger(maxTokens) && maxTokens > 0 ? { maxOutputTokens: maxTokens } : {};
     return {
       ...sessionConfig,
       model,
+      ...effort,
       // The SDK only emits `assistant.message_delta` when asked to (default false).
       ...(streaming ? { streaming: true } : {}),
-      provider: provider && { type: provider.type, baseUrl: provider.baseUrl, apiKey: provider.apiKey, wireApi: provider.wireApi },
+      provider: provider && { type: provider.type, baseUrl: provider.baseUrl, apiKey: provider.apiKey, wireApi: provider.wireApi, ...cap },
       systemMessage: systemPrompt ? { mode: "append", content: systemPrompt } : undefined,
     };
   }
@@ -60,7 +71,7 @@ export function createCopilotHostRuntime(deps: CopilotHostRuntimeDeps = DEFAULT_
     const client = deps.createClient(buildClientOptions(input.auth, input.provider));
     await client.start();
     try {
-      const session = await client.createSession(buildSessionConfig(input.request.model, input.provider, input.request.systemPrompt, streaming));
+      const session = await client.createSession(buildSessionConfig(input.request.model, input.provider, input.request.systemPrompt, streaming, input.request.maxTokens, input.request.reasoningEffort));
       try {
         return await run(session);
       } finally {

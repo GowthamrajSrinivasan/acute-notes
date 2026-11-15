@@ -1,0 +1,339 @@
+{
+  "caseId": "kn-03-blue-green-deploy",
+  "adjudicator": "phase 3 adjudicator (protocol v2), 2026-11-13",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u2"],
+      "verdict": "set",
+      "claimUnits": ["u1"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u1"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u1"] }
+      ],
+      "conditionQuote": "It assumes you already run the service behind a load balancer.",
+      "claimQuote": "This tutorial walks through a blue-green release of `orders-api`",
+      "rationale": "A prerequisite scoping who can follow the tutorial; the description of the tutorial stays true without it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u4_n1", "u4_a1"],
+          "carriers": ["u4_n2", "u4_a1"],
+          "perClaimCard": { "u4_n1": "separated", "u4_a1": "carried" },
+          "changedFromV1": {
+            "u4_a1": "not a claim card→carried: u4_a1 also restates the tutorial claim and names the load-balancer prerequisite in the same text"
+          }
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u6"],
+      "verdict": "set",
+      "claimUnits": ["u3", "u4"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u3", "u4"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u3", "u4"] }
+      ],
+      "conditionQuote": "The cost is running twice the infrastructure during a release, which is why the idle environment is scaled down between releases.",
+      "claimQuote": "You keep two identical production environments, called blue and green.",
+      "rationale": "A cost of the approach; the description of blue-green stays true.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_n1"],
+          "carriers": ["u0_n1"],
+          "perClaimCard": { "u0_n1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u9"],
+      "verdict": "claim",
+      "claimUnits": ["u9"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u17"] }
+      ],
+      "conditionQuote": "returns `200` only when the service can reach its database and its queue",
+      "claimQuote": "A health endpoint, `GET /healthz`, that returns `200`",
+      "rationale": "Intra-sentence bound (protocol: claim link is the condition's own unit). Without 'only when it can reach DB and queue' the stated prerequisite is met by any endpoint that returns 200, which misstates what is required; R2's u17 link is the downstream use of the same requirement.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u1_n2"],
+          "carriers": ["u1_n2"],
+          "perClaimCard": { "u1_n2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u10", "u27"],
+      "verdict": "claim",
+      "claimUnits": ["u5"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u5"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u5"] }
+      ],
+      "conditionQuote": "Database migrations that are backward compatible, so the old version keeps working against the new schema. This is a hard requirement: both versions share one database, and a rollback does not undo a migration.",
+      "claimQuote": "Because the old environment is still running, going back is the same one-step switch.",
+      "rationale": "With a non-backward-compatible migration, switching back leaves the old version on a schema it cannot use, so the one-step switch-back claim is false.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_n1", "u0_n2"],
+          "carriers": ["u1_n3", "u3_n3"],
+          "perClaimCard": { "u0_n1": "separated", "u0_n2": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u13"],
+      "verdict": "claim",
+      "claimUnits": ["u4", "u16"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u10"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u4", "u5"] }
+      ],
+      "conditionQuote": "If any migration is not backward compatible, do not use this procedure; split the migration into an additive release first and a cleanup release later.",
+      "claimQuote": "you deploy the new version to the idle one, test it there, and then move traffic over in one step",
+      "rationale": "All readings agree on claim; links differ. 'Do not use this procedure' excludes the procedure itself, so the link is to the procedure's statements: the method (u4, R2) and the migration step that would be run (u16, R1). u10 (golden) is the requirement the condition restates, not the claim it falsifies.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_n1", "u2_n4"],
+          "carriers": ["u1_n3"],
+          "perClaimCard": { "u0_n1": "separated", "u2_n4": "separated" },
+          "changedFromV1": {
+            "u0_n1": "not a claim card→separated: added under the u4 link; g0 takeaway silent, only unlabelled/sequence arrows"
+          }
+        }
+      }
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u15"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u15"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u15"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u15"] }
+      ],
+      "conditionQuote": "using the same build artifact that passed staging rather than a fresh build",
+      "claimQuote": "Deploy version `2.8.0` to `orders-green`",
+      "rationale": "Reading claim: deploying a fresh build ships an untested artifact, so the step as stated misleads (u1 even says 'from a fresh build'). Reading set: the step 'deploy 2.8.0 to green' stays true and this is a how-to constraint. The source does not say which.",
+      "confidence": "low",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n2"],
+          "carriers": ["u2_n2"],
+          "perClaimCard": { "u2_n2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u16"],
+      "verdict": "ambiguous",
+      "claimUnits": ["u16"],
+      "status": "unresolved",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u16"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u16"] }
+      ],
+      "conditionQuote": "once, from a single job rather than from every green instance at startup",
+      "claimQuote": "Apply the database migrations from the new release",
+      "rationale": "Reading claim: running migrations from every instance at startup is what the step rules out, so the bare step misleads. Reading set: 'apply the migrations' stays true and this is a constraint on how. The source does not settle it.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n4"],
+          "carriers": ["u2_n4"],
+          "perClaimCard": { "u2_n4": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u17"],
+      "verdict": "claim",
+      "claimUnits": ["u17"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u17"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u17"] }
+      ],
+      "conditionQuote": "If any instance is still failing health checks after 10 minutes, stop here and roll back: tear down green and leave blue serving traffic.",
+      "claimQuote": "Poll the health endpoint on every green instance until all of them return `200`.",
+      "rationale": "Without the 10-minute stop-and-roll-back bound, the step implies polling indefinitely and then proceeding.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n6"],
+          "carriers": ["u2_n6"],
+          "perClaimCard": { "u2_n6": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "conditionUnits": ["u18"],
+      "verdict": "claim",
+      "claimUnits": ["u18"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u18"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u18"] }
+      ],
+      "conditionQuote": "If one fails, treat it like a failed health check and stop.",
+      "claimQuote": "Send the smoke-test suite to green's internal address. Expected result: all smoke tests pass.",
+      "rationale": "Gate on proceeding to the traffic switch; continuing after a failed smoke test is what the source forbids.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n8"],
+          "carriers": ["u2_n8", "u2_a2"],
+          "perClaimCard": { "u2_n8": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "conditionUnits": ["u22"],
+      "verdict": "claim",
+      "claimUnits": ["u22"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u22"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u22"] }
+      ],
+      "conditionQuote": "If the error rate rises above 2% at any point in that window, switch back",
+      "claimQuote": "Observe the 5xx error rate on green for 15 minutes after the switch.",
+      "rationale": "The 2% threshold in the 15-minute window decides switch-back vs continue; continuing above 2% is the opposite of the instruction.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n13"],
+          "carriers": ["u2_n13", "u2_a2"],
+          "perClaimCard": { "u2_n13": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c11",
+      "conditionUnits": ["u23", "u24"],
+      "verdict": "claim",
+      "claimUnits": ["u24", "u5"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u24"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u5"] }
+      ],
+      "conditionQuote": "Leave blue running, unchanged, for 24 hours. It is your rollback target until then.",
+      "claimQuote": "After 24 hours without a switch-back, scale blue down.",
+      "rationale": "Same verdict, non-overlapping links. The source supports both: the 24-hour standby bounds when blue may be retired (u24) and how long the one-step switch-back (u5) is available. Both links kept.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n17", "u2_a3", "u0_n1", "u0_n2"],
+          "carriers": ["u2_n17", "u2_n15", "u2_a3", "g2"],
+          "perClaimCard": { "u2_n17": "carried", "u2_a3": "carried", "u0_n1": "separated", "u0_n2": "separated" },
+          "changedFromV1": {
+            "u0_n1": "not a claim card→separated: added under R2's u5 link; no 24-hour bound in g0 or on any arrow",
+            "u0_n2": "not a claim card→separated: 'easy rollback… rapid recovery' added under the u5 link; same reason"
+          }
+        }
+      }
+    },
+    {
+      "id": "c12",
+      "conditionUnits": ["u25"],
+      "verdict": "claim",
+      "claimUnits": ["u25"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u25"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u25"] }
+      ],
+      "conditionQuote": "before step 5",
+      "claimQuote": "A rollback before step 5 is cheap, because customers never saw green.",
+      "rationale": "Intra-sentence scope; after step 5 customers have seen green, so 'cheap' is false.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n1"],
+          "carriers": ["u3_n1"],
+          "perClaimCard": { "u3_n1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c13",
+      "conditionUnits": ["u26"],
+      "verdict": "set",
+      "claimUnits": ["u26", "u22"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u22"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u26"] }
+      ],
+      "conditionQuote": "requests that were in flight on green during the switch may fail and need a client retry",
+      "claimQuote": "A switch-back after step 5 is also fast",
+      "rationale": "Same verdict, different links. The source states the fast switch-back twice: intra-sentence in u26 and as '~30 seconds' in u22; the in-flight-failure cost limits both. Both links kept.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u3_n2", "u2_n13"],
+          "carriers": ["u3_n2"],
+          "perClaimCard": { "u3_n2": "carried", "u2_n13": "separated" },
+          "changedFromV1": {
+            "u3_n2": "not a claim card→carried: added under R2's intra-sentence u26 link"
+          }
+        }
+      }
+    },
+    {
+      "id": "c14",
+      "conditionUnits": ["u29", "u30"],
+      "verdict": "claim",
+      "claimUnits": ["u23"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u23"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u23"] }
+      ],
+      "conditionQuote": "Do not run the next release's migrations while blue is still on standby. If you do, the standby may no longer work against the schema, and the switch-back stops being a safe option.",
+      "claimQuote": "It is your rollback target until then.",
+      "rationale": "Blue is not a safe rollback target if the next release's migrations run during standby.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u2_n15"],
+          "carriers": ["u3_n5", "u3_n6", "g3"],
+          "perClaimCard": { "u2_n15": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    }
+  ],
+  "notes": "Only cross-frame labelled arrow touching claim frames is g2->g3 'rollback scenarios'; it is a pointer to context, not a limiting/dependency label (PROTOCOL-v2 §2), so c4/c13/c14 stay separated. g4->g0 'introduction' likewise does not count. u3_n5->u3_n6 'if violated' joins two carriers, not a claim card. No outcome of an existing v1 claim card changed; changes are added claim cards where the adjudicated claim link widened (c1, c5, c11, c13). c6/c7 left unresolved (claim vs set on in-step procedural constraints)."
+}

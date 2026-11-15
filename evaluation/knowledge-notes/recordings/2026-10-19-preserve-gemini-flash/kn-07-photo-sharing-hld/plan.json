@@ -1,0 +1,921 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "u0_h1",
+      "role": "title",
+      "stableKey": "Pinhole: high-level design for photo sharing § heading#0",
+      "type": "heading",
+      "content": {
+        "text": "Pinhole: high-level design for photo sharing"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "High-level design for Pinhole photo sharing with 2M daily active users."
+      }
+    },
+    {
+      "id": "g0",
+      "role": "notes",
+      "importance": "high",
+      "stableKey": "Pinhole: high-level design for photo sharing › Purpose and scope § group#0",
+      "type": "group",
+      "content": {
+        "label": "Purpose and scope",
+        "arrangement": "grid",
+        "takeaway": "High-level design for Pinhole, a photo-sharing app, targeting 2M daily active users."
+      }
+    },
+    {
+      "id": "u1_n1",
+      "stableKey": "Pinhole: high-level design for photo sharing › Purpose and scope § purpose",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "Pinhole lets people post photos and see the photos of the accounts they follow in a feed."
+      }
+    },
+    {
+      "id": "u1_n2",
+      "stableKey": "Pinhole: high-level design for photo sharing › Purpose and scope § scope_users",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "The design is sized for about 2 million daily active users at launch."
+      }
+    },
+    {
+      "id": "u1_n3",
+      "stableKey": "Pinhole: high-level design for photo sharing › Purpose and scope § scope_document_high_level",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "This document is the high-level design only: it names the parts of the system, what each part is responsible for, how the parts talk to each other and why we chose this shape."
+      }
+    },
+    {
+      "id": "u1_n4",
+      "stableKey": "Pinhole: high-level design for photo sharing › Purpose and scope § scope_document_low_level_exclusion",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "It does not describe code, internal modules or individual operations; those belong in the low-level designs that each service team will write later."
+      }
+    },
+    {
+      "id": "u1_ax1",
+      "title": "Purpose of Pinhole",
+      "stableKey": "Pinhole: high-level design for photo sharing › Purpose and scope § text#0",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Pinhole is a social media application focused on photo sharing and feed viewing for followers."
+      }
+    },
+    {
+      "id": "u1_ax2",
+      "title": "Design Scope and Scale",
+      "stableKey": "Pinhole: high-level design for photo sharing › Purpose and scope § text#1",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The current design targets 2 million daily active users at launch, indicating a focus on initial scalability."
+      }
+    },
+    {
+      "id": "u1_ax3",
+      "title": "Document Focus",
+      "stableKey": "Pinhole: high-level design for photo sharing › Purpose and scope § text#2",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This document provides a high-level overview of the system architecture, including components, responsibilities, and interactions. It explains the rationale behind the chosen system shape."
+      }
+    },
+    {
+      "id": "u1_ax4",
+      "title": "Exclusions from Document",
+      "stableKey": "Pinhole: high-level design for photo sharing › Purpose and scope § text#3",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This document explicitly excludes detailed code descriptions, internal module specifics, and individual operation details. These will be covered in subsequent low-level designs by respective service teams."
+      }
+    },
+    {
+      "id": "g1",
+      "role": "flow",
+      "importance": "high",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § group#0",
+      "type": "group",
+      "content": {
+        "label": "Main data flow: posting a photo",
+        "arrangement": "chain",
+        "takeaway": "The photo posting flow involves client upload, processing, event publishing, and feed updates."
+      }
+    },
+    {
+      "id": "u2_n1",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § shape#0",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Client requests signed URL"
+      }
+    },
+    {
+      "id": "u2_n2",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § text#0",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "The client asks the upload service for a signed URL and uploads the original straight to object storage."
+      }
+    },
+    {
+      "id": "u2_n3",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § shape#1",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Upload service records photo and publishes event"
+      }
+    },
+    {
+      "id": "u2_n4",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § text#1",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "The upload service records the photo as \"processing\" and publishes PhotoUploaded."
+      }
+    },
+    {
+      "id": "u2_n5",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § shape#2",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · Media processing worker creates thumbnails"
+      }
+    },
+    {
+      "id": "u2_n6",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § text#2",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "A media processing worker picks up the event, creates the thumbnails and marks the photo \"ready\"."
+      }
+    },
+    {
+      "id": "u2_n7",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § shape#3",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Worker publishes PhotoReady and services update feeds"
+      }
+    },
+    {
+      "id": "u2_n8",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § text#3",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "The worker publishes PhotoReady; the feed service adds the photo to the followers' feeds and asks the push-notification provider to alert them."
+      }
+    },
+    {
+      "id": "u2_n9",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § shape#4",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "5 · Followers fetch updated feed and thumbnails"
+      }
+    },
+    {
+      "id": "u2_n10",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § text#4",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Followers' clients fetch the updated feed through the gateway and load the thumbnails from the CDN."
+      }
+    },
+    {
+      "id": "u2_ax1",
+      "title": "Overall Flow",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § text#5",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This sequence describes the end-to-end process of a user posting a photo, from initial client request to followers viewing the updated feed. It involves several services and asynchronous event publishing."
+      }
+    },
+    {
+      "id": "u2_ax2",
+      "title": "Asynchronous Processing",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § text#6",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The flow is largely asynchronous after the initial upload. The upload service publishes an event, and a worker picks it up independently. This allows for decoupled processing and scalability."
+      }
+    },
+    {
+      "id": "u2_ax3",
+      "title": "Key Events",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § text#7",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Two key events drive the flow: 'PhotoUploaded' triggers media processing, and 'PhotoReady' triggers feed updates and notifications."
+      }
+    },
+    {
+      "id": "u2_ax4",
+      "title": "State Management",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § text#8",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The photo's state changes from 'processing' to 'ready' during the flow, indicating its availability."
+      }
+    },
+    {
+      "id": "u2_ax5",
+      "title": "External Dependencies",
+      "stableKey": "Pinhole: high-level design for photo sharing › Main data flow: posting a photo § text#9",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The flow relies on external services like object storage, a CDN for thumbnails, and a push-notification provider."
+      }
+    },
+    {
+      "id": "g2",
+      "role": "cards",
+      "importance": "high",
+      "stableKey": "Pinhole: high-level design for photo sharing › Core services ⨁ Pinhole: high-level design for photo sharing › Asynchronous processing § group#0",
+      "type": "group",
+      "content": {
+        "label": "Core services",
+        "arrangement": "grid",
+        "takeaway": "Core services handle auth, uploads, feeds, and asynchronous media processing."
+      }
+    },
+    {
+      "id": "u3_n1",
+      "title": "Auth service",
+      "stableKey": "Pinhole: high-level design for photo sharing › Core services ⨁ Pinhole: high-level design for photo sharing › Asynchronous processing § text#0",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "- Issues and verifies access tokens\n- Owns accounts and sessions"
+      }
+    },
+    {
+      "id": "u3_n2",
+      "title": "Upload service",
+      "stableKey": "Pinhole: high-level design for photo sharing › Core services ⨁ Pinhole: high-level design for photo sharing › Asynchronous processing § text#1",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "- Hands the client a signed upload URL\n- Records the new photo in the metadata database with the status \"processing\" once the upload completes\n- Publishes a PhotoUploaded event to the message queue"
+      }
+    },
+    {
+      "id": "u3_n3",
+      "title": "Feed service",
+      "stableKey": "Pinhole: high-level design for photo sharing › Core services ⨁ Pinhole: high-level design for photo sharing › Asynchronous processing § text#2",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "- Builds each person's feed from the photos of the accounts they follow\n- Reads photo metadata from the metadata database\n- Keeps ready-made feed pages in the cache\n- Subscribes to PhotoReady events to add the photo to the followers' feeds\n- Asks the push-notification provider to alert followers who have notifications turned on"
+      }
+    },
+    {
+      "id": "u3_n4",
+      "title": "Media processing workers",
+      "stableKey": "Pinhole: high-level design for photo sharing › Core services ⨁ Pinhole: high-level design for photo sharing › Asynchronous processing § text#3",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "- Subscribe to PhotoUploaded events on the message queue\n- For each event:\n - Reads the original from object storage\n - Creates thumbnails in three sizes (150, 640 and 1080 pixels wide)\n - Writes them back to object storage\n - Marks the photo \"ready\" in the metadata database\n - Publishes a PhotoReady event"
+      }
+    },
+    {
+      "id": "u3_n5",
+      "title": "Asynchronous processing details",
+      "stableKey": "Pinhole: high-level design for photo sharing › Core services ⨁ Pinhole: high-level design for photo sharing › Asynchronous processing § text#4",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "- The queue keeps an event for up to 7 days, so a worker outage delays thumbnails but does not lose uploads.\n- A photo whose processing keeps failing stays in the \"processing\" state and is not shown in any feed."
+      }
+    },
+    {
+      "id": "u3_a1",
+      "title": "Core Services Overview",
+      "stableKey": "Pinhole: high-level design for photo sharing › Core services ⨁ Pinhole: high-level design for photo sharing › Asynchronous processing § text#5",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The system is composed of several independent services that communicate asynchronously via a message queue. This design ensures resilience against worker outages and allows for scalable media processing."
+      }
+    },
+    {
+      "id": "g3",
+      "role": "cards",
+      "importance": "high",
+      "stableKey": "Pinhole: high-level design for photo sharing › Storage § group#0",
+      "type": "group",
+      "content": {
+        "label": "Storage",
+        "arrangement": "grid",
+        "takeaway": "Three storage types serve distinct roles: immutable media, relational truth, and ephemeral cache."
+      }
+    },
+    {
+      "id": "u4_n1",
+      "title": "Object storage",
+      "stableKey": "Pinhole: high-level design for photo sharing › Storage § text#0",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "- Holds the original photos and their thumbnails.\n- Originals are kept unchanged and are never overwritten."
+      }
+    },
+    {
+      "id": "u4_n2",
+      "title": "Metadata database",
+      "stableKey": "Pinhole: high-level design for photo sharing › Storage § text#1",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "- Holds follow relationships and photo records with their processing status.\n- It is the source of truth for whether a photo exists."
+      }
+    },
+    {
+      "id": "u4_n3",
+      "title": "Cache",
+      "stableKey": "Pinhole: high-level design for photo sharing › Storage § text#2",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "- Holds ready-made feed pages for 60 seconds.\n- It is only a copy kept for speed: losing it makes feeds slower, never wrong."
+      }
+    },
+    {
+      "id": "u4_a1",
+      "title": "Storage types and roles",
+      "stableKey": "Pinhole: high-level design for photo sharing › Storage § text#3",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The system uses three distinct storage types, each with a specific role: Object storage for immutable media, a Metadata database for relational data and truth, and a Cache for ephemeral speed optimization."
+      }
+    },
+    {
+      "id": "g4",
+      "role": "decision",
+      "importance": "high",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § group#0",
+      "type": "group",
+      "content": {
+        "label": "Design decisions",
+        "arrangement": "grid",
+        "takeaway": "Five key design decisions prioritize scalability, resilience, and efficiency."
+      }
+    },
+    {
+      "id": "u5_n1",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § shape#0",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Queue between upload and processing"
+      }
+    },
+    {
+      "id": "u5_n2",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § text#0",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "A slow or failed thumbnail job must never block or fail an upload, so the upload service and the workers only meet through the message queue. The cost is that a new photo takes a few seconds to appear in feeds."
+      }
+    },
+    {
+      "id": "u5_n3",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § shape#1",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Direct upload with signed URLs"
+      }
+    },
+    {
+      "id": "u5_n4",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § text#1",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "Originals can be up to 25 MB, and routing them through the gateway would make it the bottleneck, so clients send bytes straight to object storage and the upload service only signs the URL and records the result."
+      }
+    },
+    {
+      "id": "u5_n5",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § shape#2",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Metadata apart from bytes"
+      }
+    },
+    {
+      "id": "u5_n6",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § text#2",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "Photo bytes live in object storage and everything we query lives in the metadata database, because the two grow at very different rates and need different backups."
+      }
+    },
+    {
+      "id": "u5_n7",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § shape#3",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Cache is disposable"
+      }
+    },
+    {
+      "id": "u5_n8",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § text#3",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "Feed pages are cached for speed only; the metadata database stays the source of truth, so the cache can be flushed at any time."
+      }
+    },
+    {
+      "id": "u5_n9",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § shape#4",
+      "parent": "g4",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Buy delivery, don't build it"
+      }
+    },
+    {
+      "id": "u5_n10",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § text#4",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "We use a third-party CDN and push-notification provider instead of running our own, and we accept that their outages are outside our control."
+      }
+    },
+    {
+      "id": "u5_a1",
+      "title": "Status",
+      "stableKey": "Pinhole: high-level design for photo sharing › Design decisions § text#5",
+      "parent": "g4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "All decisions are decided and implemented as described."
+      }
+    },
+    {
+      "id": "g5",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Pinhole: high-level design for photo sharing › Clients § group#0",
+      "type": "group",
+      "content": {
+        "label": "Clients",
+        "arrangement": "stack",
+        "takeaway": "Pinhole uses mobile and web clients with a shared API and direct photo uploads."
+      }
+    },
+    {
+      "id": "u6_n1",
+      "stableKey": "Pinhole: high-level design for photo sharing › Clients § text#0",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "People use Pinhole through two clients:\n* A mobile app for iOS and Android\n* A web app that runs in the browser\n\nBoth clients:\n* Speak the same public HTTPS API\n* Hold no business rules of their own beyond simple input checks\n* Upload a photo directly to object storage with a short-lived signed URL, so large files never pass through our own services."
+      }
+    },
+    {
+      "id": "g6",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Pinhole: high-level design for photo sharing › Edge and API § group#0",
+      "type": "group",
+      "content": {
+        "label": "Edge and API",
+        "arrangement": "stack",
+        "takeaway": "The API gateway handles all client requests, performing TLS termination, authentication, rate limiting, and routing."
+      }
+    },
+    {
+      "id": "u7_n1",
+      "stableKey": "Pinhole: high-level design for photo sharing › Edge and API § text#0",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "Every client request enters through the API gateway. The gateway:\n* Terminates TLS\n* Checks the caller's access token with the auth service\n* Applies a rate limit of 120 requests per minute per account\n* Routes the request to the right service\n\nIf the auth service cannot be reached, the gateway rejects the request instead of letting it through unchecked. Photo bytes are served to clients by the CDN, never by the gateway."
+      }
+    },
+    {
+      "id": "g7",
+      "role": "supporting",
+      "importance": "low",
+      "stableKey": "Pinhole: high-level design for photo sharing › External dependencies and system boundary § group#0",
+      "type": "group",
+      "content": {
+        "label": "External dependencies and system boundary",
+        "arrangement": "stack",
+        "takeaway": "CDN and push-notification provider are external dependencies outside Pinhole's control."
+      }
+    },
+    {
+      "id": "u8_n1",
+      "stableKey": "Pinhole: high-level design for photo sharing › External dependencies and system boundary § shape#0",
+      "parent": "g7",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Pinhole System Boundary"
+      }
+    },
+    {
+      "id": "u8_n2",
+      "stableKey": "Pinhole: high-level design for photo sharing › External dependencies and system boundary § shape#1",
+      "parent": "g7",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "CDN"
+      }
+    },
+    {
+      "id": "u8_n3",
+      "stableKey": "Pinhole: high-level design for photo sharing › External dependencies and system boundary § shape#2",
+      "parent": "g7",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Push-notification provider"
+      }
+    },
+    {
+      "id": "u8_n4",
+      "stableKey": "Pinhole: high-level design for photo sharing › External dependencies and system boundary § text#0",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "The CDN and the push-notification provider are run by third parties and sit outside the Pinhole system boundary."
+      }
+    },
+    {
+      "id": "u8_n5",
+      "stableKey": "Pinhole: high-level design for photo sharing › External dependencies and system boundary § text#1",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "The CDN reads photos and thumbnails from object storage and serves them to clients from locations close to the user."
+      }
+    },
+    {
+      "id": "u8_n6",
+      "stableKey": "Pinhole: high-level design for photo sharing › External dependencies and system boundary § text#2",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "The push-notification provider delivers alerts to phones; Pinhole only sends it requests and does not control when an alert arrives."
+      }
+    },
+    {
+      "id": "u8_n7",
+      "stableKey": "Pinhole: high-level design for photo sharing › External dependencies and system boundary § text#3",
+      "parent": "g7",
+      "type": "text",
+      "content": {
+        "markdown": "Everything else in this document (the gateway, the three services, the workers, the queue and the three stores) is inside the boundary and is operated by the Pinhole team."
+      }
+    },
+    {
+      "id": "g8",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Pinhole: high-level design for photo sharing › Open questions § group#0",
+      "type": "group",
+      "content": {
+        "label": "Open questions",
+        "arrangement": "grid",
+        "takeaway": "Two open questions remain regarding failed processing and feed service precomputation."
+      }
+    },
+    {
+      "id": "u9_n1",
+      "stableKey": "Pinhole: high-level design for photo sharing › Open questions § text#0",
+      "parent": "g8",
+      "type": "text",
+      "content": {
+        "markdown": "How failed processing is retried, and when a stuck photo is cleaned up, is not decided yet."
+      }
+    },
+    {
+      "id": "u9_n2",
+      "stableKey": "Pinhole: high-level design for photo sharing › Open questions § text#1",
+      "parent": "g8",
+      "type": "text",
+      "content": {
+        "markdown": "Whether the feed service should precompute feeds for accounts with very many followers is left to the feed service's own low-level design."
+      }
+    },
+    {
+      "id": "u9_ax1",
+      "title": "Open Questions Analysis",
+      "stableKey": "Pinhole: high-level design for photo sharing › Open questions § text#2",
+      "parent": "g8",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The section identifies two key areas requiring further decision-making. The first concerns the handling of failed photo processing and the cleanup of 'stuck' photos, indicating a need for a defined retry mechanism and cleanup policy. The second defers the decision on precomputing feeds for high-follower accounts to the feed service's low-level design, suggesting this is an architectural decision to be made within that service's scope."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u1_n3",
+      "to": "u1_n4",
+      "type": "supersedes",
+      "label": "excludes"
+    },
+    {
+      "from": "u1_ax1",
+      "to": "u1_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u1_ax2",
+      "to": "u1_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u1_ax3",
+      "to": "u1_n3",
+      "type": "relates_to"
+    },
+    {
+      "from": "u1_ax4",
+      "to": "u1_n4",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_n1",
+      "to": "u2_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n3",
+      "to": "u2_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n5",
+      "to": "u2_n7",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_n7",
+      "to": "u2_n9",
+      "type": "flows_to"
+    },
+    {
+      "from": "u2_ax1",
+      "to": "u2_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax2",
+      "to": "u2_n4",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax3",
+      "to": "u2_n4",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax3",
+      "to": "u2_n7",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax4",
+      "to": "u2_n4",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax4",
+      "to": "u2_n6",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax5",
+      "to": "u2_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax5",
+      "to": "u2_n8",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax5",
+      "to": "u2_n10",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_n2",
+      "to": "u3_n4",
+      "type": "publishes",
+      "label": "PhotoUploaded event"
+    },
+    {
+      "from": "u3_n4",
+      "to": "u3_n3",
+      "type": "publishes",
+      "label": "PhotoReady event"
+    },
+    {
+      "from": "u3_n4",
+      "to": "u3_n5",
+      "type": "explained_by"
+    },
+    {
+      "from": "u5_n1",
+      "to": "u5_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u5_n3",
+      "to": "u5_n4",
+      "type": "explained_by"
+    },
+    {
+      "from": "u5_n5",
+      "to": "u5_n6",
+      "type": "explained_by"
+    },
+    {
+      "from": "u5_n7",
+      "to": "u5_n8",
+      "type": "explained_by"
+    },
+    {
+      "from": "u5_n9",
+      "to": "u5_n10",
+      "type": "explained_by"
+    },
+    {
+      "from": "u8_n2",
+      "to": "u8_n1",
+      "type": "deviates_from",
+      "label": "outside boundary"
+    },
+    {
+      "from": "u8_n3",
+      "to": "u8_n1",
+      "type": "deviates_from",
+      "label": "outside boundary"
+    },
+    {
+      "from": "u8_n4",
+      "to": "u8_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u8_n4",
+      "to": "u8_n3",
+      "type": "explained_by"
+    },
+    {
+      "from": "u8_n5",
+      "to": "u8_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u8_n6",
+      "to": "u8_n3",
+      "type": "explained_by"
+    },
+    {
+      "from": "u8_n7",
+      "to": "u8_n1",
+      "type": "explained_by",
+      "label": "inside boundary"
+    },
+    {
+      "from": "u9_ax1",
+      "to": "u9_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u9_ax1",
+      "to": "u9_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "g1",
+      "to": "g2",
+      "type": "calls",
+      "label": "uses"
+    },
+    {
+      "from": "g1",
+      "to": "g3",
+      "type": "reads",
+      "label": "uses"
+    },
+    {
+      "from": "g2",
+      "to": "g3",
+      "type": "reads",
+      "label": "uses"
+    },
+    {
+      "from": "g4",
+      "to": "g2",
+      "type": "supports",
+      "label": "explains"
+    },
+    {
+      "from": "g4",
+      "to": "g3",
+      "type": "supports",
+      "label": "explains"
+    },
+    {
+      "from": "g5",
+      "to": "g6",
+      "type": "calls",
+      "label": "requests"
+    },
+    {
+      "from": "g6",
+      "to": "g2",
+      "type": "calls",
+      "label": "routes to"
+    },
+    {
+      "from": "g7",
+      "to": "g2",
+      "type": "contains",
+      "label": "boundary"
+    },
+    {
+      "from": "g7",
+      "to": "g3",
+      "type": "contains",
+      "label": "boundary"
+    }
+  ],
+  "metadata": {}
+}

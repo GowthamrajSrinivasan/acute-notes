@@ -1,0 +1,139 @@
+{
+  "caseId": "kn-04-queue-choice",
+  "reviewer": "blind independent reviewer, 2026-11-13",
+  "records": [
+    {
+      "id": "r1",
+      "claimUnits": ["u21", "u22", "u23", "u24", "u25"], "claimSummary": "Options are scored by weighted criteria: operational effort 40%, cost 30%, developer experience 20%, portability 10%.",
+      "conditionUnits": ["u18"], "kind": "precondition",
+      "conditionSummary": "Two must-haves gate the scoring: an option failing either is out regardless of its score.",
+      "mustConvey": "must-haves; fail either -> out regardless of score",
+      "binding": "claim", "bindingReason": "A high-scoring option that fails a must-have would wrongly look selectable from the weights alone.",
+      "claimCards": ["u1_n2"], "carriers": ["g1", "u1_a1", "u1_n1"],
+      "perClaimCard": { "u1_n2": "frame" },
+      "confidence": "high", "notes": "g1 takeaway: 'Options must meet mandatory criteria, then are scored by weighted factors.'"
+    },
+    {
+      "id": "r2",
+      "claimUnits": ["u13"], "claimSummary": "Managed cloud queue costs $310/month infrastructure.",
+      "conditionUnits": ["u16", "u17"], "kind": "bound",
+      "conditionSummary": "Figure assumes current volume; at 3x volume it would be roughly $900/month.",
+      "mustConvey": "assumes current volume; ~$900 at three times volume",
+      "binding": "claim", "bindingReason": "At the 3x volume the criteria require, $310 is wrong by about 3x.",
+      "claimCards": ["u5_n1", "u5_n2"], "carriers": ["u5_n3", "u5_a1", "u5_n1"],
+      "perClaimCard": { "u5_n1": "carried", "u5_n2": "separated" },
+      "confidence": "medium", "notes": "u5_n1's Notes cell 'Priced per million requests; grows with volume' conveys volume dependence (not the $900). Chart u5_n2 has no arrows; g5 takeaway 'current and projected volume' is too vague to count as frame."
+    },
+    {
+      "id": "r3",
+      "claimUnits": ["u17"], "claimSummary": "The self-hosted broker's cost stays flat as volume grows.",
+      "conditionUnits": ["u17"], "kind": "bound",
+      "conditionSummary": "Only until the cluster needs a fourth machine.",
+      "mustConvey": "until a fourth machine is needed",
+      "binding": "claim", "bindingReason": "Once a fourth machine is needed the broker's cost rises, so 'stays flat' is false.",
+      "claimCards": ["u5_n3", "u5_a1"], "carriers": ["u5_n3"],
+      "perClaimCard": { "u5_n3": "carried", "u5_a1": "separated" },
+      "confidence": "high", "notes": "intra-sentence. u5_a1 says 'would remain flat' and concludes broker is cheaper at higher volume, without the fourth-machine bound; no arrow to u5_n3."
+    },
+    {
+      "id": "r4",
+      "claimUnits": ["u26"], "claimSummary": "Option A needs almost no operational work.",
+      "conditionUnits": ["u27", "u44"], "kind": "precondition",
+      "conditionSummary": "At-least-once delivery: every job handler must be made idempotent before switching; today only the email handler is.",
+      "mustConvey": "every handler idempotent before switching; only email handler is today",
+      "binding": "set", "bindingReason": "Ongoing operational work stays near zero; the condition is an up-front requirement and cost on adopting A.",
+      "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1", "u2_a1", "u3_n3", "u3_a1"],
+      "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried" },
+      "confidence": "medium", "notes": "Binding debatable: could be 'claim' if read as 'A is the low-effort option'."
+    },
+    {
+      "id": "r5",
+      "claimUnits": ["u26"], "claimSummary": "With Option A, failed messages move to a dead-letter queue automatically.",
+      "conditionUnits": ["u28"], "kind": "scope",
+      "conditionSummary": "Local development's emulator does not support dead-lettering.",
+      "mustConvey": "local emulator does not support dead-lettering",
+      "binding": "set", "bindingReason": "Dead-lettering still works in production; the condition limits local testing (a scored criterion).",
+      "claimCards": ["u2_n1"], "carriers": ["u2_n1"],
+      "perClaimCard": { "u2_n1": "carried" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r6",
+      "claimUnits": ["u14"], "claimSummary": "Self-hosted broker needs about 12 hours a month of team effort.",
+      "conditionUnits": ["u30"], "kind": "caveat",
+      "conditionSummary": "No one on the team has run this broker in production, so 12 hours is an estimate, not a measurement.",
+      "mustConvey": "estimate, not measured / no production experience",
+      "binding": "claim", "bindingReason": "Read as a measured figure, 'about 12 hours' overstates confidence in the effort that carries 40% weight.",
+      "claimCards": ["u5_n1", "u5_n2", "u2_fs1"], "carriers": ["u2_n1", "u2_a1"],
+      "perClaimCard": { "u5_n1": "separated", "u5_n2": "separated", "u2_fs1": "linked" },
+      "confidence": "medium", "notes": "u2_n1 itself ('Estimated 12 hours/month (not measured)') states claim and condition together; u2_fs1 is linked to it by arrow. Cost table and chart in g5 have only the frame-level g2->g5 arrow."
+    },
+    {
+      "id": "r7",
+      "claimUnits": ["u32"], "claimSummary": "Option C writes the job in the same transaction, so a job can never be lost between commit and enqueue.",
+      "conditionUnits": ["u33"], "kind": "scope",
+      "conditionSummary": "Only for jobs created inside the billing database transaction; reporting-service jobs (own database) don't get it.",
+      "mustConvey": "only jobs created inside the billing DB transaction; not reporting-service jobs",
+      "binding": "claim", "bindingReason": "For reporting-service jobs, 'a job can never be lost' is false.",
+      "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1"],
+      "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried" },
+      "confidence": "medium", "notes": "u2_a1 says 'strong transactional guarantees for billing-related jobs': scope is recognisable but reporting-service exclusion not explicit; medium."
+    },
+    {
+      "id": "r8",
+      "claimUnits": ["u15"], "claimSummary": "Database job table costs $0 extra infrastructure, using spare capacity on the existing primary.",
+      "conditionUnits": ["u34"], "kind": "caveat",
+      "conditionSummary": "Polling adds read load to the primary database, the main risk at month-end.",
+      "mustConvey": "read load on primary; main risk at month-end",
+      "binding": "set", "bindingReason": "$0 extra stays true; the condition is a risk/cost of using the primary.",
+      "claimCards": ["u5_n1", "u5_n2"], "carriers": ["u2_n1", "u2_a1"],
+      "perClaimCard": { "u5_n1": "separated", "u5_n2": "separated" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r9",
+      "claimUnits": ["u36", "u37"], "claimSummary": "Option C sustained 1,200 jobs/min at 18 ms p95; at 2,000 jobs/min CPU 85% and p95 240 ms.",
+      "conditionUnits": ["u38"], "kind": "caveat",
+      "conditionSummary": "1,800 jobs/min not tested and staging is about a quarter of production size, so results may not carry over.",
+      "mustConvey": "1,800 not tested; staging ~1/4 production size; may not carry over",
+      "binding": "claim", "bindingReason": "Read as production capacity, the figures could wrongly suggest C meets the 1,800/min must-have.",
+      "claimCards": ["u6_n1"], "carriers": ["u6_n1"],
+      "perClaimCard": { "u6_n1": "carried" },
+      "confidence": "high", "notes": ""
+    },
+    {
+      "id": "r10",
+      "claimUnits": ["u40"], "claimSummary": "Option A's documented throughput is far above our peak.",
+      "conditionUnits": ["u39", "u40"], "kind": "caveat",
+      "conditionSummary": "That is the provider's figure, not ours; Options A and B were not load-tested.",
+      "mustConvey": "provider's figure, not our own test",
+      "binding": "claim", "bindingReason": "Stated as our finding, it would wrongly imply A was verified against the 1,800/min must-have.",
+      "claimCards": ["u6_n2"], "carriers": ["u6_n2", "g6"],
+      "perClaimCard": { "u6_n2": "carried" },
+      "confidence": "medium", "notes": "intra-sentence attribution kept because it decides whether the must-have is evidenced."
+    },
+    {
+      "id": "r11",
+      "claimUnits": ["u41", "u42"], "claimSummary": "The note does not recommend an option; the decision is deferred.",
+      "conditionUnits": ["u42", "u46"], "kind": "precondition",
+      "conditionSummary": "Deferred until Option C is measured at 1,800 jobs per minute on a production-sized database.",
+      "mustConvey": "1,800 jobs per minute on a production-sized database",
+      "binding": "claim", "bindingReason": "Without the specific bar, any further C test (e.g. at lower rate or on staging) would seem to unblock the decision.",
+      "claimCards": ["u3_n1", "u3_a1"], "carriers": ["u3_n7"],
+      "perClaimCard": { "u3_n1": "separated", "u3_a1": "separated" },
+      "confidence": "medium", "notes": "u3_n1 has 'production-sized database' but not 1,800; u3_n1 -> u3_n6 (shape 'Option C') -> u3_n7 is two hops, not a direct link. g3 takeaway lacks the bar. u0_ax1 ('presents the chosen background job queue') contradicts u41 outright."
+    },
+    {
+      "id": "r12",
+      "claimUnits": ["u3"], "claimSummary": "In the in-process worker pool, a deploy or crash loses jobs.",
+      "conditionUnits": ["u3"], "kind": "scope",
+      "conditionSummary": "Only jobs queued but not yet started are lost.",
+      "mustConvey": "queued but not yet started",
+      "binding": "claim", "bindingReason": "'Deploys lose jobs' overstates the loss to in-progress/finished jobs.",
+      "claimCards": ["u4_n3", "u4_a1"], "carriers": ["u4_n3"],
+      "perClaimCard": { "u4_n3": "carried", "u4_a1": "linked" },
+      "confidence": "medium", "notes": "intra-sentence. u4_n3 -> u4_a1 arrow."
+    }
+  ],
+  "notes": "No records for u2/u4/u5 (context facts), u20 itself (it is the must-have, carried by u1_n1), u29/u31 (features/trade-offs without a limiting clause), u45 (Option B open requirement; standalone), u47/u48 (attribution/thanks). Systematic: the cost table and chart in g5 repeat figures whose caveats live only in g2 or within g5 text nodes without arrows. u0_ax1 claims the note 'presents the chosen' queue, contradicting the source's explicit no-recommendation (not a condition record, but a fidelity error)."
+}

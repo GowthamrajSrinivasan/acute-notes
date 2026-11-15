@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-blue-arn-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The switch-back loses its exact command target ($BLUE_TG_ARN, protected in u29) and is paraphrased.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n16",
+      "find": "Run the same command with `$BLUE_TG_ARN`;",
+      "replace": "Point the listener back at blue;"
+    }
+  ],
+  "expectFailing": [
+    "a.switch-back-command"
+  ]
+}

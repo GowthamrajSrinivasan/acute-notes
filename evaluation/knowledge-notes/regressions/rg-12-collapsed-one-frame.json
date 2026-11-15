@@ -1,0 +1,34 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-12-collapsed-one-frame",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-12-flag-rollout-update",
+  "target": "plan",
+  "description": "Every card is put into the safety-nets frame: the rollout stages and flag cleanup lose their own frames.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n1",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n2",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n3",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n6",
+      "group": "g2"
+    }
+  ],
+  "expectFailing": [
+    "a.rendered-frames",
+    "a.frame-count"
+  ]
+}

@@ -13,7 +13,8 @@ import type { PersistenceServices } from "@/persistence/repositories/types";
 import { SceneBinding } from "@/sync/sceneBinding";
 
 /** The repositories MCP reads may use (and nothing else). */
-export type McpReadServices = Pick<PersistenceServices, "workspaces" | "canvases" | "documents" | "yupdates">;
+/** `meta` (optional): the device's meta store, read-only — the consistency conflicts (`get_consistency`, Stage 4e). */
+export type McpReadServices = Pick<PersistenceServices, "workspaces" | "canvases" | "documents" | "yupdates"> & { meta?: Pick<PersistenceServices["meta"], "get"> };
 
 export type VersionedSceneElement = SceneElement & { version: number; index?: string | null };
 

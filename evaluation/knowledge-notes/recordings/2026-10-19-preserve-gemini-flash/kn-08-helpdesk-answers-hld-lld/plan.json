@@ -1,0 +1,1163 @@
+{
+  "version": 1,
+  "template": "sectioned",
+  "nodes": [
+    {
+      "id": "u0_h1",
+      "role": "title",
+      "stableKey": "Helpdesk Answers: design from system to code § heading#0",
+      "type": "heading",
+      "content": {
+        "text": "Helpdesk Answers: design from system to code"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "stableKey": "(outline) § subtitle#0",
+      "type": "heading",
+      "content": {
+        "text": "Helpdesk Answers system design: architecture, components, and question answering flow."
+      }
+    },
+    {
+      "id": "g0",
+      "role": "cards",
+      "importance": "high",
+      "stableKey": "Helpdesk Answers: design from system to code › 1. The system § group#0",
+      "type": "group",
+      "content": {
+        "label": "1. The system",
+        "arrangement": "grid",
+        "takeaway": "Helpdesk Answers relies on two external systems for content and generation."
+      }
+    },
+    {
+      "id": "u1_n1",
+      "title": "Helpdesk Answers",
+      "stableKey": "Helpdesk Answers: design from system to code › 1. The system § text#0",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "- Lets support agents ask a question about a customer's problem\n- Provides a short answer drawn from the company's help articles\n- Includes a citation for every claim"
+      }
+    },
+    {
+      "id": "u1_n2",
+      "title": "Help Center CMS",
+      "stableKey": "Helpdesk Answers: design from system to code › 1. The system § text#1",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "- External system\n- Where the articles are written"
+      }
+    },
+    {
+      "id": "u1_n3",
+      "title": "External Language Model Provider",
+      "stableKey": "Helpdesk Answers: design from system to code › 1. The system § text#2",
+      "parent": "g0",
+      "type": "text",
+      "content": {
+        "markdown": "- External system\n- Generates the answer text"
+      }
+    },
+    {
+      "id": "u1_a1",
+      "title": "System Overview",
+      "stableKey": "Helpdesk Answers: design from system to code › 1. The system § text#3",
+      "parent": "g0",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Helpdesk Answers acts as an intermediary, leveraging external systems to provide agents with information from help articles."
+      }
+    },
+    {
+      "id": "g1",
+      "role": "hierarchy",
+      "importance": "high",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § group#0",
+      "type": "group",
+      "content": {
+        "label": "2. Architecture",
+        "arrangement": "tree",
+        "takeaway": "The architecture describes the flow from agent questions to answers and article ingestion."
+      }
+    },
+    {
+      "id": "u2_n1",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#0",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Agent Console"
+      }
+    },
+    {
+      "id": "u2_n2",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#1",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Answers API"
+      }
+    },
+    {
+      "id": "u2_n3",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#2",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Orchestrator"
+      }
+    },
+    {
+      "id": "u2_n4",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#3",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Retrieval service"
+      }
+    },
+    {
+      "id": "u2_n5",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#4",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Reranker service"
+      }
+    },
+    {
+      "id": "u2_n6",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#5",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Model Gateway"
+      }
+    },
+    {
+      "id": "u2_n7",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#6",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "External Model Provider"
+      }
+    },
+    {
+      "id": "u2_n8",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#7",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Vector store"
+      }
+    },
+    {
+      "id": "u2_n9",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#8",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Answer log table"
+      }
+    },
+    {
+      "id": "u2_n10",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#9",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Ingestion worker"
+      }
+    },
+    {
+      "id": "u2_n11",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § shape#10",
+      "parent": "g1",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "Help Center CMS"
+      }
+    },
+    {
+      "id": "u2_n12",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § text#0",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "A web client."
+      }
+    },
+    {
+      "id": "u2_n13",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § text#1",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Checks the agent's session."
+      }
+    },
+    {
+      "id": "u2_n14",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § text#2",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Owns the answering logic."
+      }
+    },
+    {
+      "id": "u2_n15",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § text#3",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "A Postgres database with the pgvector extension.\n\nHow the Vector store is partitioned has not been decided."
+      }
+    },
+    {
+      "id": "u2_n16",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § text#4",
+      "parent": "g1",
+      "type": "text",
+      "content": {
+        "markdown": "Reads published articles from the Help Center CMS every 15 minutes, splits them into passages and writes their embeddings to the Vector store. Its internals are not described in this document."
+      }
+    },
+    {
+      "id": "u2_ax1",
+      "title": "Core Functionality",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § text#6",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The Agent Console, Answers API, Orchestrator, Retrieval service, Reranker service, Model Gateway, and External Model Provider form the core query-answering pipeline. The Orchestrator is central, coordinating interactions between these services."
+      }
+    },
+    {
+      "id": "u2_ax2",
+      "title": "Data Flow and Storage",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § text#7",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The Vector store, a Postgres database with the pgvector extension, is critical for retrieval. The Ingestion worker populates this store from the Help Center CMS. The Answer log table records all generated answers and citations."
+      }
+    },
+    {
+      "id": "u2_ax3",
+      "title": "Unresolved Decisions",
+      "stableKey": "Helpdesk Answers: design from system to code › 2. Architecture § text#8",
+      "parent": "g1",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The partitioning strategy for the Vector store is an open decision, as is the internal workings of the Ingestion worker. These areas require further design and planning."
+      }
+    },
+    {
+      "id": "g2",
+      "role": "flow",
+      "importance": "high",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § group#0",
+      "type": "group",
+      "content": {
+        "label": "5. Flow: answering a question",
+        "arrangement": "chain",
+        "takeaway": "The system answers questions via a multi-step process, with a reranking timeout fallback."
+      }
+    },
+    {
+      "id": "u3_n1",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § shape#0",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Agent Console posts question"
+      }
+    },
+    {
+      "id": "u3_n2",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#0",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The Agent Console posts the question to `POST /v1/answers` with the ticket id."
+      }
+    },
+    {
+      "id": "u3_n3",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § shape#1",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Answers API checks session & forwards"
+      }
+    },
+    {
+      "id": "u3_n4",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#1",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The Answers API checks the session and forwards the question to the Answer composer."
+      }
+    },
+    {
+      "id": "u3_n5",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § shape#2",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · Answer composer asks Retrieval service"
+      }
+    },
+    {
+      "id": "u3_n6",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#2",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The Answer composer asks the Retrieval service for 50 candidate passages."
+      }
+    },
+    {
+      "id": "u3_n7",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § shape#3",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Rerank client sends to Reranker"
+      }
+    },
+    {
+      "id": "u3_n8",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#3",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The Rerank client sends the 50 candidates to the Reranker and keeps the top 8."
+      }
+    },
+    {
+      "id": "u3_n9",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § shape#4",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "5 · Reranker timeout check"
+      }
+    },
+    {
+      "id": "u3_n10",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#4",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "If the Reranker does not respond within 800 ms, the Rerank client skips reranking, keeps the first 8 candidates in vector-similarity order and records `rerank_skipped = true` in the Answer log. Skipping reranking keeps the request fast, but the 8 passages may then be less relevant."
+      }
+    },
+    {
+      "id": "u3_n11",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § shape#5",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "6 · Answer composer calls composeAnswer"
+      }
+    },
+    {
+      "id": "u3_n12",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#5",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The Answer composer calls `composeAnswer` with the question and the 8 passages."
+      }
+    },
+    {
+      "id": "u3_n13",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § shape#6",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "7 · Orchestrator writes to Answer log"
+      }
+    },
+    {
+      "id": "u3_n14",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#6",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The Orchestrator writes the answer and its citations to the Answer log."
+      }
+    },
+    {
+      "id": "u3_n15",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § shape#7",
+      "parent": "g2",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "8 · Answers API returns answer"
+      }
+    },
+    {
+      "id": "u3_n16",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#7",
+      "parent": "g2",
+      "type": "text",
+      "content": {
+        "markdown": "The Answers API returns the answer to the Agent Console."
+      }
+    },
+    {
+      "id": "u3_ax1",
+      "title": "Overall Flow",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#8",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This sequence describes the end-to-end process of answering a question, from initial query to final response. It involves multiple services working in concert to retrieve, refine, and present an answer."
+      }
+    },
+    {
+      "id": "u3_ax2",
+      "title": "Branching/Failure Point",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#9",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The Reranker introduces a conditional branch based on its response time. If it times out (800 ms), the reranking step is skipped, impacting the quality of the candidate passages. This is a critical decision point balancing speed and relevance."
+      }
+    },
+    {
+      "id": "u3_ax3",
+      "title": "Achieved Outcome",
+      "stableKey": "Helpdesk Answers: design from system to code › 5. Flow: answering a question § text#10",
+      "parent": "g2",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The entire sequence aims to provide an answer to a user's question, potentially with a trade-off between response speed and answer relevance, depending on the Reranker's performance. The Answer log records the outcome, including whether reranking was skipped."
+      }
+    },
+    {
+      "id": "g3",
+      "role": "cards",
+      "importance": "low",
+      "stableKey": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator § group#0",
+      "type": "group",
+      "content": {
+        "label": "3. Inside the Orchestrator",
+        "arrangement": "grid",
+        "takeaway": "The Orchestrator has four sequential parts: Rerank client, Context builder, Answer composer, and Citation checker."
+      }
+    },
+    {
+      "id": "u4_n1",
+      "title": "Rerank client",
+      "stableKey": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator § text#0",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "- Sends candidates to the Reranker\n- Applies its fallback rule"
+      }
+    },
+    {
+      "id": "u4_n2",
+      "title": "Context builder",
+      "stableKey": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator § text#1",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "- Turns the chosen passages into a prompt"
+      }
+    },
+    {
+      "id": "u4_n3",
+      "title": "Answer composer",
+      "stableKey": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator § text#2",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "- Runs the request from start to finish"
+      }
+    },
+    {
+      "id": "u4_n4",
+      "title": "Citation checker",
+      "stableKey": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator § text#3",
+      "parent": "g3",
+      "type": "text",
+      "content": {
+        "markdown": "- Verifies that each citation in a draft answer points to one of the passages that were supplied"
+      }
+    },
+    {
+      "id": "u4_a1",
+      "title": "Orchestrator Components",
+      "stableKey": "Helpdesk Answers: design from system to code › 3. Inside the Orchestrator § text#4",
+      "parent": "g3",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The Orchestrator is composed of four distinct parts, each with a specific role in processing and generating answers. These components work in sequence to refine candidates, build context, compose answers,."
+      }
+    },
+    {
+      "id": "g4",
+      "role": "cards",
+      "importance": "low",
+      "stableKey": "Helpdesk Answers: design from system to code › 4. Inside the Retrieval service § group#0",
+      "type": "group",
+      "content": {
+        "label": "4. Inside the Retrieval service",
+        "arrangement": "grid",
+        "takeaway": "Retrieval service embeds query and searches vector store."
+      }
+    },
+    {
+      "id": "u5_n1",
+      "title": "Query embedder",
+      "stableKey": "Helpdesk Answers: design from system to code › 4. Inside the Retrieval service § text#0",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "- Turns the question into a vector.\n- Uses the same embedding model as the Ingestion worker."
+      }
+    },
+    {
+      "id": "u5_n2",
+      "title": "Vector search",
+      "stableKey": "Helpdesk Answers: design from system to code › 4. Inside the Retrieval service § text#1",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "- Asks the Vector store for the 50 passages closest to the vector generated by the Query embedder."
+      }
+    },
+    {
+      "id": "u5_a1",
+      "title": "Relationship",
+      "stableKey": "Helpdesk Answers: design from system to code › 4. Inside the Retrieval service § text#2",
+      "parent": "g4",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The Query embedder prepares the input for the Vector search, which then retrieves relevant passages."
+      }
+    },
+    {
+      "id": "u5_src~text",
+      "title": "Also in the source",
+      "stableKey": "Helpdesk Answers: design from system to code › 4. Inside the Retrieval service § text#3",
+      "parent": "g4",
+      "type": "text",
+      "content": {
+        "markdown": "The Retrieval service has two parts."
+      }
+    },
+    {
+      "id": "g5",
+      "role": "flow",
+      "importance": "low",
+      "stableKey": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer § group#0",
+      "type": "group",
+      "content": {
+        "label": "6. Operation: composeAnswer",
+        "arrangement": "chain",
+        "takeaway": "composeAnswer builds prompt, calls model, checks citations, handles errors and partial answers."
+      }
+    },
+    {
+      "id": "u6_n1",
+      "stableKey": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer § shape#0",
+      "parent": "g5",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "1 · Build Prompt"
+      }
+    },
+    {
+      "id": "u6_n2",
+      "stableKey": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer § shape#1",
+      "parent": "g5",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "2 · Call Model Gateway"
+      }
+    },
+    {
+      "id": "u6_n3",
+      "stableKey": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer § shape#2",
+      "parent": "g5",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "3 · Pass Draft to Citation Checker"
+      }
+    },
+    {
+      "id": "u6_n4",
+      "stableKey": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer § shape#3",
+      "parent": "g5",
+      "type": "shape",
+      "content": {
+        "shape": "rectangle",
+        "label": "4 · Return Answer/Error"
+      }
+    },
+    {
+      "id": "u6_n5",
+      "stableKey": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer § text#0",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "`composeAnswer(question, passages)` builds the prompt with the Context builder, limited to 6,000 tokens."
+      }
+    },
+    {
+      "id": "u6_n6",
+      "stableKey": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer § text#1",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "The model call has a 20-second timeout. If it times out, `composeAnswer` returns an error and the API responds with HTTP 504; no partial answer is shown."
+      }
+    },
+    {
+      "id": "u6_n7",
+      "stableKey": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer § text#2",
+      "parent": "g5",
+      "type": "text",
+      "content": {
+        "markdown": "If the Citation checker finds a citation that does not match any supplied passage, `composeAnswer` removes the sentence that carries it and marks the answer as partial, rather than rejecting the whole answer."
+      }
+    },
+    {
+      "id": "u6_a1",
+      "title": "Purpose",
+      "stableKey": "Helpdesk Answers: design from system to code › 6. Operation: composeAnswer § text#3",
+      "parent": "g5",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "This flow generates an answer to a question using provided passages."
+      }
+    },
+    {
+      "id": "g6",
+      "role": "notes",
+      "importance": "low",
+      "stableKey": "Helpdesk Answers: design from system to code › 7. Where the code is § group#0",
+      "type": "group",
+      "content": {
+        "label": "7. Where the code is",
+        "arrangement": "grid",
+        "takeaway": "Key code locations are identified for `composeAnswer`, `checkCitations`, and `search`."
+      }
+    },
+    {
+      "id": "u7_n1",
+      "stableKey": "Helpdesk Answers: design from system to code › 7. Where the code is § text#0",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "`composeAnswer` is in `services/orchestrator/src/compose.ts`, lines 40–118."
+      }
+    },
+    {
+      "id": "u7_n2",
+      "stableKey": "Helpdesk Answers: design from system to code › 7. Where the code is § text#1",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "The citation check is `checkCitations` in `services/orchestrator/src/citations.ts`."
+      }
+    },
+    {
+      "id": "u7_n3",
+      "stableKey": "Helpdesk Answers: design from system to code › 7. Where the code is § text#2",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "Vector search is `search` in `services/retrieval/src/search.ts`."
+      }
+    },
+    {
+      "id": "u7_n4",
+      "stableKey": "Helpdesk Answers: design from system to code › 7. Where the code is § text#3",
+      "parent": "g6",
+      "type": "text",
+      "content": {
+        "markdown": "The design does not give code locations for the Ingestion worker or the Reranker."
+      }
+    },
+    {
+      "id": "u7_ax1",
+      "title": "Code Location: composeAnswer",
+      "stableKey": "Helpdesk Answers: design from system to code › 7. Where the code is § text#4",
+      "parent": "g6",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The `composeAnswer` function, central to the orchestrator service, is located in `services/orchestrator/src/compose.ts` between lines 40 and 118. This indicates its role in the answer composition process."
+      }
+    },
+    {
+      "id": "u7_ax2",
+      "title": "Code Location: checkCitations",
+      "stableKey": "Helpdesk Answers: design from system to code › 7. Where the code is § text#5",
+      "parent": "g6",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The `checkCitations` function, responsible for citation verification, resides in `services/orchestrator/src/citations.ts`. This suggests a dedicated module for handling citation-related logic within the orchestrator."
+      }
+    },
+    {
+      "id": "u7_ax3",
+      "title": "Code Location: Vector Search",
+      "stableKey": "Helpdesk Answers: design from system to code › 7. Where the code is § text#6",
+      "parent": "g6",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "The `search` function for vector search is found in `services/retrieval/src/search.ts`. This confirms the separation of retrieval concerns into its own service and file."
+      }
+    },
+    {
+      "id": "u7_ax4",
+      "title": "Missing Code Locations",
+      "stableKey": "Helpdesk Answers: design from system to code › 7. Where the code is § text#7",
+      "parent": "g6",
+      "origin": "analysis",
+      "type": "text",
+      "content": {
+        "markdown": "Code locations for the Ingestion worker and the Reranker are not provided in the current design. This indicates these components' implementation details are either not yet finalized or not documented here."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "u1_n1",
+      "to": "u1_n2",
+      "type": "depends_on"
+    },
+    {
+      "from": "u1_n1",
+      "to": "u1_n3",
+      "type": "depends_on"
+    },
+    {
+      "from": "u1_a1",
+      "to": "u1_n1",
+      "type": "references"
+    },
+    {
+      "from": "u2_n1",
+      "to": "u2_n2",
+      "type": "calls",
+      "label": "sends question over HTTPS"
+    },
+    {
+      "from": "u2_n2",
+      "to": "u2_n13",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_n2",
+      "to": "u2_n3",
+      "type": "calls",
+      "label": "forwards question"
+    },
+    {
+      "from": "u2_n3",
+      "to": "u2_n14",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_n3",
+      "to": "u2_n4",
+      "type": "calls"
+    },
+    {
+      "from": "u2_n3",
+      "to": "u2_n5",
+      "type": "calls"
+    },
+    {
+      "from": "u2_n3",
+      "to": "u2_n6",
+      "type": "calls"
+    },
+    {
+      "from": "u2_n3",
+      "to": "u2_n9",
+      "type": "writes",
+      "label": "every answer with citations"
+    },
+    {
+      "from": "u2_n4",
+      "to": "u2_n8",
+      "type": "reads"
+    },
+    {
+      "from": "u2_n6",
+      "to": "u2_n7",
+      "type": "calls",
+      "label": "only component allowed to talk"
+    },
+    {
+      "from": "u2_n8",
+      "to": "u2_n15",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_n10",
+      "to": "u2_n16",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_n10",
+      "to": "u2_n11",
+      "type": "reads"
+    },
+    {
+      "from": "u2_n10",
+      "to": "u2_n8",
+      "type": "writes"
+    },
+    {
+      "from": "u2_n1",
+      "to": "u2_n12",
+      "type": "explained_by"
+    },
+    {
+      "from": "u2_ax1",
+      "to": "u2_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax1",
+      "to": "u2_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax1",
+      "to": "u2_n3",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax1",
+      "to": "u2_n4",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax1",
+      "to": "u2_n5",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax1",
+      "to": "u2_n6",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax1",
+      "to": "u2_n7",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax2",
+      "to": "u2_n8",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax2",
+      "to": "u2_n9",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax2",
+      "to": "u2_n10",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax2",
+      "to": "u2_n11",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax3",
+      "to": "u2_n15",
+      "type": "relates_to"
+    },
+    {
+      "from": "u2_ax3",
+      "to": "u2_n10",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n2",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n1",
+      "to": "u3_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "u3_n3",
+      "to": "u3_n4",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n3",
+      "to": "u3_n5",
+      "type": "flows_to"
+    },
+    {
+      "from": "u3_n5",
+      "to": "u3_n6",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n5",
+      "to": "u3_n7",
+      "type": "flows_to"
+    },
+    {
+      "from": "u3_n7",
+      "to": "u3_n8",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n7",
+      "to": "u3_n9",
+      "type": "flows_to"
+    },
+    {
+      "from": "u3_n9",
+      "to": "u3_n10",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n9",
+      "to": "u3_n11",
+      "type": "flows_to",
+      "label": "reranking complete or skipped"
+    },
+    {
+      "from": "u3_n11",
+      "to": "u3_n12",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n11",
+      "to": "u3_n13",
+      "type": "flows_to"
+    },
+    {
+      "from": "u3_n13",
+      "to": "u3_n14",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_n13",
+      "to": "u3_n15",
+      "type": "flows_to"
+    },
+    {
+      "from": "u3_n15",
+      "to": "u3_n16",
+      "type": "explained_by"
+    },
+    {
+      "from": "u3_ax1",
+      "to": "u3_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_ax2",
+      "to": "u3_n9",
+      "type": "relates_to"
+    },
+    {
+      "from": "u3_ax3",
+      "to": "u3_n16",
+      "type": "relates_to"
+    },
+    {
+      "from": "u4_n1",
+      "to": "u4_n2",
+      "type": "flows_to",
+      "label": "sends passages"
+    },
+    {
+      "from": "u4_n2",
+      "to": "u4_n3",
+      "type": "flows_to",
+      "label": "sends prompt"
+    },
+    {
+      "from": "u4_n3",
+      "to": "u4_n4",
+      "type": "flows_to",
+      "label": "sends draft answer"
+    },
+    {
+      "from": "u4_n1",
+      "to": "u4_a1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u4_n2",
+      "to": "u4_a1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u4_n3",
+      "to": "u4_a1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u4_n4",
+      "to": "u4_a1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u5_n1",
+      "to": "u5_n2",
+      "type": "flows_to",
+      "label": "provides vector to"
+    },
+    {
+      "from": "u6_n1",
+      "to": "u6_n5",
+      "type": "explained_by"
+    },
+    {
+      "from": "u6_n1",
+      "to": "u6_n2",
+      "type": "flows_to"
+    },
+    {
+      "from": "u6_n2",
+      "to": "u6_n6",
+      "type": "explained_by"
+    },
+    {
+      "from": "u6_n2",
+      "to": "u6_n3",
+      "type": "flows_to"
+    },
+    {
+      "from": "u6_n3",
+      "to": "u6_n7",
+      "type": "explained_by"
+    },
+    {
+      "from": "u6_n3",
+      "to": "u6_n4",
+      "type": "flows_to"
+    },
+    {
+      "from": "u7_ax1",
+      "to": "u7_n1",
+      "type": "relates_to"
+    },
+    {
+      "from": "u7_ax2",
+      "to": "u7_n2",
+      "type": "relates_to"
+    },
+    {
+      "from": "u7_ax3",
+      "to": "u7_n3",
+      "type": "relates_to"
+    },
+    {
+      "from": "u7_ax4",
+      "to": "u7_n4",
+      "type": "relates_to"
+    },
+    {
+      "from": "g1",
+      "to": "g0",
+      "type": "implements",
+      "label": "describes the implementation of"
+    },
+    {
+      "from": "g2",
+      "to": "g1",
+      "type": "references",
+      "label": "uses components from"
+    },
+    {
+      "from": "g3",
+      "to": "g1",
+      "type": "contains",
+      "label": "details a component of"
+    },
+    {
+      "from": "g4",
+      "to": "g1",
+      "type": "contains",
+      "label": "details a component of"
+    },
+    {
+      "from": "g5",
+      "to": "g3",
+      "type": "implements",
+      "label": "details an operation within"
+    },
+    {
+      "from": "g6",
+      "to": "g5",
+      "type": "references",
+      "label": "provides code locations for"
+    },
+    {
+      "from": "g6",
+      "to": "g4",
+      "type": "references",
+      "label": "provides code locations for"
+    }
+  ],
+  "metadata": {
+    "title": "The System"
+  }
+}

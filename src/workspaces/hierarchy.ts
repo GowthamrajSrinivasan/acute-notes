@@ -11,6 +11,8 @@
  * before deleting or moving it; these functions only touch storage.
  */
 import * as Y from "yjs";
+import { deleteContentSource } from "@/ai/study/cleanup";
+import { clearStudy } from "@/ai/study/store";
 import { canvasDocId } from "@/sync/docIds";
 import { getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
 import { newId } from "@/domain/ids";
@@ -98,6 +100,11 @@ export async function deleteWorkspace(services: PersistenceServices, id: string)
   }
   // The agent change log and its sessions (Lens Phase 7A) belong to the workspace too.
   await services.agentState.deleteByWorkspace(id);
+  // Content sources of its canvases, with their device-local `sourceReview:` keys (the leak the handoff noted).
+  for (const canvasId of canvasIds) for (const source of await services.contentSources.listByCanvas(canvasId)) await deleteContentSource(services, source.id);
+  // Device-local study history (study-mode plan issue C): the `study.<id>` index and every shard it lists. After the
+  // sources, so their retired history is wiped too: a workspace delete is an explicit, complete wipe.
+  await clearStudy(services.meta, id);
   return deleted;
 }
 

@@ -34,12 +34,18 @@ const raw = {
 describe("architecture plan semantics", () => {
   it("validates leniently: a bad field is dropped, never its node", () => {
     const { plan } = validateVisualPlan(raw);
-    expect(plan.nodes).toHaveLength(3);
-    const [ui, router, db] = plan.nodes;
+    // The fourth node keeps the over-long sublabel's full wording, linked to its shape (`repairEntry`).
+    expect(plan.nodes).toHaveLength(4);
+    const [ui, router, db, full] = plan.nodes;
+    expect(full).toMatchObject({ id: "db~2", type: "text", content: { markdown: "x".repeat(500) } });
+    expect(plan.relationships).toContainEqual(expect.objectContaining({ from: "db", to: "db~2", type: "explained_by" }));
     expect(ui).toMatchObject({ content: { kind: "frontend", sublabel: "query.py", details: ["Interactive mode"] } });
     expect(router!.type === "shape" && router!.content.kind).toBeUndefined();
     expect(router).toMatchObject({ content: { tag: "free first" } });
-    expect(db!.type === "shape" && db!.content.sublabel).toBeUndefined();
+    // An over-long sublabel is shortened, never dropped (its full wording goes to a linked block during repair).
+    const sublabel = db!.type === "shape" ? db!.content.sublabel : undefined;
+    expect(sublabel).toHaveLength(200);
+    expect(sublabel?.endsWith("…")).toBe(true);
     expect(plan.relationships[0]).toMatchObject({ explanation: "Every turn starts here" });
     // One unusable card drops the list (the frame keeps no half-valid cards).
     expect(plan.metadata?.cards).toBeUndefined();
@@ -50,7 +56,7 @@ describe("architecture plan semantics", () => {
     const wrapped = wrapArchitecturePlan(plan);
     const group = wrapped.nodes.find((n) => n.id === ARCHITECTURE_GROUP_ID);
     expect(group).toMatchObject({ type: "group", content: { label: "KnowFlow RAG", arrangement: "tree", diagram: "architecture", cards: [{ title: "Cost" }] } });
-    expect(wrapped.nodes.filter((n) => n.parent === ARCHITECTURE_GROUP_ID).map((n) => n.id)).toEqual(["ui", "router", "db"]);
+    expect(wrapped.nodes.filter((n) => n.parent === ARCHITECTURE_GROUP_ID).map((n) => n.id)).toEqual(["ui", "router", "db", "db~2"]);
 
     const plain = { ...plan, nodes: plan.nodes.map((n) => (n.type === "shape" ? { ...n, content: { shape: n.content.shape, label: n.content.label } } : n)) };
     expect(wrapArchitecturePlan(plain)).toBe(plain);
@@ -82,7 +88,7 @@ describe("architecture plan semantics", () => {
     expect(shapes.map((c) => c.kind === "create_shape" && c.semantics)).toEqual([
       { kind: "frontend", sublabel: "query.py", details: ["Interactive mode"] },
       { tag: "free first" },
-      { kind: "database" },
+      { kind: "database", sublabel: `${"x".repeat(199)}…` },
     ]);
     const connects = set.changes.filter((c) => c.kind === "connect");
     expect(connects[0]).toMatchObject({ label: "question", explanation: "Every turn starts here" });

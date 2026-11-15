@@ -10,6 +10,13 @@
  * `<case>/summary.md` and `summary.json` with the median/range across all `RUNS`.
  *
  * Run only through `npm run test:e2e:ai -- e2e/ai/fidelity.spec.ts` (asks before running); `--demo` to watch it.
+ *
+ * Knowledge Notes (knowledge-notes-plan §7.3, WP1.12): `ACUTE_NOTE_MODEL=distil` switches the page to distil mode (a
+ * developer setting until R1, through `__acuteDev.setNoteModel`) and adds fixtures 4–10 (`__fixtures__/knowledge/`).
+ * Each run then also writes report v2 (`report-v2.json`: units by outcome, cards in Needs review, critical units silently
+ * omitted, exact details missing) from the run's own output (`__acuteDev.lastKnowledgeRun`), and each case
+ * `summary-v2.md` with the median and worst run; G3 and G4 must hold on every run, G1 on the median (§9). The 70% word
+ * coverage stays as a diagnostic only (§6.3). Live runs need the user's approval, like every `e2e/ai` spec.
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -18,13 +25,28 @@ import { expect, test, type Page, type Request } from "@playwright/test";
 import { aiTaskOf, openApp, recordAIRequests, recordAIUsage, type RecordedUsage } from "../helpers";
 import { AI_PROVIDER, AI_PROVIDER_NAME, connectAI } from "../aiProvider";
 import { AI_TIMEOUT, caption, look, reviewBar, visualizeDialog } from "../aiReview";
-import { fidelityScore, median, multiRunSummaryMarkdown, reportMarkdown, type FidelityRun } from "../fidelityScore";
+import {
+  fidelityScore,
+  gatesMet,
+  knowledgeGates,
+  knowledgeScore,
+  knowledgeSummaryMarkdown,
+  median,
+  multiRunSummaryMarkdown,
+  reportMarkdown,
+  type FidelityRun,
+  type KnowledgeRunLike,
+  type KnowledgeScore,
+} from "../fidelityScore";
 
 // 3x the work per case (Wave F1) — each case's own per-test timeout needs the same headroom.
 test.describe.configure({ mode: "serial", timeout: 2_700_000 });
 
 /** `ACUTE_FIDELITY_RUNS=1` for a single look at one case (with `-g`), e.g. while checking a fix by eye. */
 const RUNS = Math.max(1, Number(process.env.ACUTE_FIDELITY_RUNS) || 3);
+
+/** `ACUTE_NOTE_MODEL=distil`: the run is in distil mode (knowledge-notes-plan §6.3; a developer setting until R1). */
+const NOTE_MODEL: "preserve" | "distil" = process.env.ACUTE_NOTE_MODEL === "distil" ? "distil" : "preserve";
 
 /**
  * INR per 1M tokens, manually checked against the provider's own pricing page on the date noted — there's no
@@ -40,7 +62,8 @@ const PRICING_INR_PER_M: Record<string, { input: number; output: number; checked
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const FIXTURES = join(ROOT, "src", "ai", "fidelity", "__fixtures__");
-const RUN_DIR = join(ROOT, ".ai", "docs", "fidelity-runs", new Date().toISOString().slice(0, 10));
+const RUN_DIR = join(ROOT, ".ai", "docs", "fidelity-runs", `${new Date().toISOString().slice(0, 10)}${NOTE_MODEL === "distil" ? "-distil" : ""}`);
+const KNOWLEDGE_FIXTURES = join(FIXTURES, "knowledge");
 
 const CASES = [
   { id: "cmg-verify-cheatsheet", file: "cmg-verify-cheatsheet.txt", title: "Example 1 — cmg-verify cheat sheet (tables, 8 sections)" },
@@ -51,6 +74,14 @@ const CASES = [
   // A status reply whose "Units" section once came out as a table flattened to one cell per line, and a
   // "Source details" page cut into one bullet per sentence (2026-10-07, from the user's screenshot).
   { id: "unit-checks-reply", file: "unit-checks-reply.md", title: "Example 4 — unit and wording checks status reply" },
+  // Knowledge Notes fixtures 4–10 (§7.3), in distil runs only: original synthetic text, see their manifest.
+  ...(NOTE_MODEL === "distil"
+    ? (JSON.parse(readFileSync(join(KNOWLEDGE_FIXTURES, "manifest.json"), "utf8")) as { fixtures: { id: string; number: number; file: string; title: string }[] }).fixtures.map((f) => ({
+        id: f.id,
+        file: join("knowledge", f.file),
+        title: `Fixture ${f.number} — ${f.title}`,
+      }))
+    : []),
 ];
 
 let page: Page;
@@ -132,6 +163,10 @@ test.beforeAll(async ({ browser }) => {
   });
   await openApp(page);
   await connectAI(page);
+  if (NOTE_MODEL === "distil") {
+    const now = await page.evaluate(() => (window as unknown as { __acuteDev: { setNoteModel(m: string): Promise<string> } }).__acuteDev.setNoteModel("distil"));
+    expect(now, "the page runs in distil mode").toBe("distil");
+  }
 });
 
 test.afterAll(async () => {
@@ -172,13 +207,25 @@ test.afterAll(async () => {
 for (const c of CASES) {
   test(c.title, async () => {
     const source = readFileSync(join(FIXTURES, c.file), "utf8");
-    const runs: FidelityRun[] = [];
+    const runs: (FidelityRun & { knowledge?: KnowledgeScore })[] = [];
     for (let run = 1; run <= RUNS; run++) {
       runs.push(await runOnce(c, run, source));
     }
     const caseDir = join(RUN_DIR, c.id);
     writeFileSync(join(caseDir, "summary.md"), multiRunSummaryMarkdown(c.title, runs));
     writeFileSync(join(caseDir, "summary.json"), JSON.stringify({ case: c.id, runs }, null, 2));
+    if (NOTE_MODEL === "distil") {
+      // Report v2 (§9): G3 and G4 on every run, G1 on the median. The word-coverage guard below is preserve's.
+      const scores = runs.flatMap((r) => (r.knowledge ? [r.knowledge] : []));
+      expect(scores, "every distil run hands over its output (__acuteDev.lastKnowledgeRun)").toHaveLength(runs.length);
+      const report = knowledgeSummaryMarkdown(c.title, scores);
+      writeFileSync(join(caseDir, "summary-v2.md"), report);
+      test.info().annotations.push({ type: "fidelity-v2", description: report.split("\n")[2] ?? "" });
+      // The model check's verdicts (OD5b): reported, not gated.
+      test.info().annotations.push({ type: "model-check", description: JSON.stringify(knowledgeGates(scores).modelCheck) });
+      expect(gatesMet(scores), report).toEqual({ g1CardsInReview: true, g3NoSilentCriticalOmission: true, g4NoExactMissing: true });
+      return;
+    }
     await caption(page, `${c.title} — ${RUNS} runs`, `AI placed median ${median(runs.map((r) => r.aiPlacedPct))}% · visible score median ${median(runs.map((r) => r.visibleScore))}`);
     await look(page);
     // The coverage guard (content fidelity §1 invariant 2: validation never decreases information) — the safety
@@ -191,7 +238,7 @@ for (const c of CASES) {
   });
 }
 
-async function runOnce(c: (typeof CASES)[number], run: number, source: string): Promise<FidelityRun> {
+async function runOnce(c: (typeof CASES)[number], run: number, source: string): Promise<FidelityRun & { knowledge?: KnowledgeScore }> {
     const dir = join(RUN_DIR, c.id, `run-${run}`);
     mkdirSync(dir, { recursive: true });
     await clearCanvas(page);
@@ -294,7 +341,18 @@ async function runOnce(c: (typeof CASES)[number], run: number, source: string): 
     await look(page);
     test.info().annotations.push({ type: "fidelity", description: `run ${run}/${RUNS}: ${all.score}/100 (visible ${visibleOnly.score})` });
 
+    // Distil: report v2 from the run's own output (units, cites, accounting, flags, reviews), read right after Accept.
+    let knowledge: KnowledgeScore | undefined;
+    if (NOTE_MODEL === "distil") {
+      const output = await page.evaluate(() => (window as unknown as { __acuteDev: { lastKnowledgeRun(): Promise<unknown> } }).__acuteDev.lastKnowledgeRun());
+      if (output) {
+        knowledge = knowledgeScore(output as KnowledgeRunLike, { source, canvas: [...text.visible, ...text.pages] });
+        writeFileSync(join(dir, "run.json"), JSON.stringify(output, null, 2));
+        writeFileSync(join(dir, "report-v2.json"), JSON.stringify(knowledge, null, 2));
+      }
+    }
+
     const aiPlacedMatch = /AI placed (\d+)%/.exec(coverageText);
-    if (!aiPlacedMatch) throw new Error(`run ${run}/${RUNS}: no "AI placed N%" in the coverage row (${coverageText || "coverage row not shown"})`);
-    return { aiPlacedPct: Number(aiPlacedMatch[1]), visibleScore: visibleOnly.score, allScore: all.score, seconds, promptTokens, completionTokens };
+    if (!aiPlacedMatch && NOTE_MODEL !== "distil") throw new Error(`run ${run}/${RUNS}: no "AI placed N%" in the coverage row (${coverageText || "coverage row not shown"})`);
+    return { aiPlacedPct: Number(aiPlacedMatch?.[1] ?? 0), visibleScore: visibleOnly.score, allScore: all.score, seconds, promptTokens, completionTokens, ...(knowledge ? { knowledge } : {}) };
 }

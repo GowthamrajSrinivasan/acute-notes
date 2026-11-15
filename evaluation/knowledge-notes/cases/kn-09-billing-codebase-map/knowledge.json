@@ -48,8 +48,9 @@
       "explanation": "The verified call edges and their order. Each becomes a labelled calls arrow from the entry point.",
       "type": "process",
       "importance": "critical",
-      "sourceUnits": ["u15", "u16", "u17", "u18", "u19"],
+      "sourceUnits": ["u15", "u16", "u17", "u18", "u19", "u33"],
       "provenance": "explicit",
+      "exactDetails": ["collectUsage(accountId, period)", "priceUsage(lines, plan)", "TaxClient.quote(draft)"],
       "related": [
         { "to": "ku.collect", "relation": "calls" },
         { "to": "ku.price", "relation": "calls" },
@@ -69,7 +70,7 @@
       "importance": "critical",
       "sourceUnits": ["u20", "u21", "u22", "u23"],
       "provenance": "explicit",
-      "exactDetails": ["billing/usage/collect.ts", "collectUsage(accountId, period)", "usage_events"],
+      "exactDetails": ["billing/usage/collect.ts", "collectUsage(accountId, period)", "usage_events", "occurred_at", "is_test"],
       "paraphrase": { "allowed": true },
       "omission": { "allowed": false }
     },
@@ -95,7 +96,7 @@
       "importance": "critical",
       "sourceUnits": ["u27", "u28", "u29"],
       "provenance": "inferred",
-      "exactDetails": ["discountFor"],
+      "exactDetails": ["discounts", "discountFor"],
       "mustPreserve": ["probably", "unconfirmed"],
       "paraphrase": { "allowed": true, "note": "The hedge must survive any rewording." },
       "omission": { "allowed": false, "reason": "Dropping it hides a possible dependency; asserting it invents one. It must appear, hedged." },
@@ -145,7 +146,7 @@
     {
       "id": "ku.persist",
       "title": "The invoice and its lines are written in one transaction (generate.ts lines 44–52)",
-      "claim": "generateInvoice writes the invoice to the invoices and invoice_lines tables inside one database transaction in billing/invoices/generate.ts, lines 44–52; if either insert fails, neither row is kept, and the invoices row is always written with status finalized.",
+      "claim": "generateInvoice writes the invoice to the invoices and invoice_lines tables inside one database transaction in billing/invoices/generate.ts, lines 44–52; if either insert fails, the transaction rolls back and neither row is kept. The invoices row is written with status finalized; no code path writing any other status was found.",
       "explanation": "A verified write edge with its all-or-nothing condition (LLD detail).",
       "type": "process",
       "importance": "critical",
@@ -165,7 +166,7 @@
       "importance": "critical",
       "sourceUnits": ["u39", "u40"],
       "provenance": "explicit",
-      "exactDetails": ["publishInvoiceFinalized(invoice)", "billing/events/publish.ts", "invoice.finalized"],
+      "exactDetails": ["publishInvoiceFinalized(invoice)", "billing/events/publish.ts", "invoice.finalized", "billing-events"],
       "mustPreserve": ["after the commit"],
       "paraphrase": { "allowed": true },
       "omission": { "allowed": false }

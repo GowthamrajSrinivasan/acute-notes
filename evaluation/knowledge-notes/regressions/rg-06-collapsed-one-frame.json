@@ -1,0 +1,60 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-06-collapsed-one-frame",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-06-hybrid-search-reranking",
+  "target": "plan",
+  "description": "Every card is put into the fusion frame: the five subject areas collapse into one frame too large to read whole on the fit screen.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n1",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n2",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n6",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n7",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n8",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n9",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n10",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n11",
+      "group": "g2"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n12",
+      "group": "g2"
+    }
+  ],
+  "expectFailing": [
+    "a.fit-screen",
+    "a.rendered-frames",
+    "a.frame-count"
+  ]
+}

@@ -46,6 +46,7 @@ const run = (check: Check, p: VisualPlan = plan()) => {
 describe("normalize and match", () => {
   it("ignores case, emphasis, curly quotes, dashes and thousands separators", () => {
     expect(normalize("**Can** “improve” 1,000 – `k`")).toBe('can "improve" 1000 - k');
+    expect(normalize("_emphasis_ keeps rerank_skipped and $GREEN_TG_ARN")).toBe("emphasis keeps rerank_skipped and $green_tg_arn");
     expect(matchesAll("Uses 1,000 tokens", [["1000"], ["token"]])).toBe(true);
     expect(matchesAll("Uses tokens", [["1000"], ["token"]])).toBe(false);
   });
@@ -199,5 +200,58 @@ describe("statuses that are never a pass", () => {
     const r = (severity: "critical" | "minor") => verdict(evaluate([{ id: "a.x", dimension: "coverage", severity, method: "deterministic", target: "plan", support: "implemented", description: "d", check: { check: "element_present", element: "e.claim" } }], { canvas }, { plan: plan({ nodes: [] }) }));
     expect(r("critical").pass).toBe(false);
     expect(r("minor").pass).toBe(true);
+  });
+});
+
+describe("frame checks read through sub-groups (organisation-layout F13)", () => {
+  // n2 sits in a sub-group of g1: it is still in g1's frame.
+  const nested = () =>
+    plan({
+      nodes: [
+        { id: "g1", type: "group", content: { label: "Retrieval", arrangement: "grid" } },
+        { id: "g2", type: "group", content: { label: "Ranking", arrangement: "grid" } },
+        { id: "sub", type: "group", parent: "g1", content: { label: "Examples", arrangement: "grid" } },
+        { id: "n1", type: "text", parent: "g1", importance: "high", content: { markdown: "Hybrid search **can** improve recall when signals are complementary." } },
+        { id: "n2", type: "text", parent: "sub", importance: "low", content: { markdown: "For example, an exact error code." } },
+        { id: "n3", type: "shape", parent: "g2", content: { shape: "rectangle", label: "Reranker", kind: "backend" } },
+      ],
+    } as Partial<VisualPlan>);
+
+  it("element_in_frame, together, apart and hierarchy see the sub-group's card in its section", () => {
+    expect(run({ check: "element_in_frame", element: "e.example", frame: "f.a" }, nested()).status).toBe("pass");
+    expect(run({ check: "together", elements: ["e.claim", "e.example"], why: "w" }, nested()).status).toBe("pass");
+    expect(run({ check: "apart", elements: ["e.example", "e.rerank"], why: "w" }, nested()).status).toBe("pass");
+    expect(run({ check: "apart", elements: ["e.claim", "e.example"], why: "w" }, nested()).status).toBe("fail");
+    expect(run({ check: "hierarchy", main: "e.claim", supporting: ["e.example"], why: "w" }, nested()).status).toBe("pass");
+  });
+});
+
+describe("a numbered flow step never stands for a component element (live 2026-10-20, kn-08/kn-10)", () => {
+  const withKinds: ExpectedCanvas = {
+    ...canvas,
+    elements: [
+      ...canvas.elements,
+      { id: "e.console", element: "shape", planNodeTypes: ["shape"], role: "client", content: "c", knowledge: ["ku.x"], match: { all: [["agent console"]] }, hierarchy: "primary", frame: "f.a", kind: "frontend", requirement: "mandatory", support: "implemented" },
+      { id: "e.step-post", element: "shape", planNodeTypes: ["shape"], role: "flow step", content: "c", knowledge: ["ku.x"], match: { all: [["agent console"], ["posts"]] }, hierarchy: "detail", frame: "f.a", kind: "step", requirement: "mandatory", support: "implemented" },
+      { id: "e.plain", element: "shape", planNodeTypes: ["shape"], role: "untyped", content: "c", knowledge: ["ku.x"], match: { all: [["agent console"]] }, hierarchy: "detail", frame: "f.a", requirement: "mandatory", support: "implemented" },
+    ],
+  };
+  const shape = (id: string, label: string) => ({ id, type: "shape", parent: "g1", content: { shape: "rectangle", label } });
+  const flow = (...nodes: ReturnType<typeof shape>[]) => plan({ nodes: [...plan().nodes, ...nodes] } as Partial<VisualPlan>);
+  const present = (element: string, p: VisualPlan) => {
+    const a: Assertion = { id: "a.t", dimension: "coverage", severity: "critical", method: "deterministic", target: "plan", support: "implemented", description: "t", check: { check: "element_present", element } };
+    return evaluate([a], { canvas: withKinds }, { plan: p })[0]!;
+  };
+
+  it("a component isn't found in a step that names it; the step element and an untyped element still are", () => {
+    const steps = flow(shape("s1", "1 · Agent Console posts question"), shape("s2", "2. Agent Console retries"), shape("s3", "3) Agent Console waits"));
+    expect(present("e.console", steps)).toMatchObject({ status: "fail" });
+    expect(present("e.step-post", steps)).toMatchObject({ status: "pass", detail: "matched s1" });
+    expect(present("e.plain", steps).status).toBe("pass");
+  });
+
+  it("a component shape is found beside the steps, and a label that only starts with a number isn't a step", () => {
+    expect(present("e.console", flow(shape("s1", "1 · Agent Console posts question"), shape("c1", "Agent Console")))).toMatchObject({ status: "pass", detail: "matched c1" });
+    expect(present("e.console", flow(shape("c2", "2.5 GB Agent Console cache")))).toMatchObject({ status: "pass", detail: "matched c2" });
   });
 });

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-04-shown-to-handle-unnegated",
+  "distortion": "invented_detail",
+  "caseId": "kn-04-queue-choice",
+  "target": "plan",
+  "description": "The negation is dropped from the evidence frame's takeaway: 'it has not been shown to handle 1,800 a minute' becomes 'it has been shown to handle 1,800 a minute' (1,800 was never tested, u36).",
+  "mutations": [
+    { "op": "replace_text", "node": "g5", "find": "it has not been shown to handle 1,800 a minute", "replace": "it has been shown to handle 1,800 a minute" }
+  ],
+  "expectFailing": ["a.no-unmeasured-pass"]
+}

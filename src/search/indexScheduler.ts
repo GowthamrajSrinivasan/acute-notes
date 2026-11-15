@@ -79,6 +79,11 @@ export class IndexScheduler {
   private disposed = false;
   /** Work units run so far (observability for tests and the dev perf panel). */
   unitsRun = 0;
+  /**
+   * Told of every failed plan or work unit, by source key (Stage 4b: the index health marks that source's canvas stale
+   * and rebuilds it). Failures are still logged; the scheduler itself carries on with the rest.
+   */
+  onError: ((key: string, err: unknown) => void) | null = null;
 
   constructor(
     private readonly host: SchedulerHost,
@@ -110,7 +115,7 @@ export class IndexScheduler {
     this.planDirty();
     const queue = this.queue;
     this.queue = [];
-    for (const { unit } of queue) this.run(unit);
+    for (const { key, unit } of queue) this.run(key, unit);
   }
 
   dispose(): void {
@@ -141,7 +146,10 @@ export class IndexScheduler {
     const start = this.host.now();
     const hasTime = () => deadline.timeRemaining() > 1 && this.host.now() - start < this.options.sliceMs;
     this.planDirty();
-    while (this.queue.length && hasTime()) this.run(this.queue.shift()!.unit);
+    while (this.queue.length && hasTime()) {
+      const { key, unit } = this.queue.shift()!;
+      this.run(key, unit);
+    }
     if (this.pending) this.idle = this.host.requestIdle(this.onIdle, this.options.idleTimeoutMs);
   };
 
@@ -158,17 +166,19 @@ export class IndexScheduler {
         units = plan();
       } catch (err) {
         console.error(`[acute-notes] Search index planning failed (${key})`, err);
+        this.onError?.(key, err);
       }
       for (const unit of units) this.queue.push({ key, unit });
     }
   }
 
-  private run(unit: WorkUnit): void {
+  private run(key: string, unit: WorkUnit): void {
     this.unitsRun++;
     try {
       unit();
     } catch (err) {
       console.error("[acute-notes] Search index update failed", err);
+      this.onError?.(key, err);
     }
   }
 

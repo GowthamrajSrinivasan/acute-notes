@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-12-removed-rule-kept",
+  "distortion": "removed_content_kept",
+  "caseId": "kn-12-flag-rollout-update",
+  "target": "reconcile",
+  "description": "The cleanup rule that v2 removed is silently kept as unchanged, so the canvas goes on asserting a rule the current source no longer contains.",
+  "mutations": [
+    { "op": "reconcile_set", "item": "flag-cleanup § removal", "state": "unchanged" }
+  ],
+  "expectFailing": ["a.rc-cleanup"]
+}

@@ -1,0 +1,12 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-09-pricing-hedge-dropped",
+  "distortion": "possibility_to_guarantee",
+  "caseId": "kn-09-billing-codebase-map",
+  "target": "plan",
+  "description": "The pricing card loses its hedge: the unconfirmed discounts read becomes 'reads the discounts table through it'.",
+  "mutations": [
+    { "op": "replace_text", "node": "s_price", "find": "Imports discountFor: unconfirmed whether it reads the discounts table (probably; no call site found)", "replace": "Imports discountFor and reads the discounts table through it" }
+  ],
+  "expectFailing": ["a.discount-hedged", "a.no-confident-discount"]
+}

@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-10-ledger-reads-postgres",
+  "distortion": "mislabeled_architecture_edge",
+  "caseId": "kn-10-inventory-architecture-frames",
+  "target": "plan",
+  "description": "The ledger → Postgres arrow is typed 'reads' instead of 'writes', hiding that the ledger is the sole writer of stock.",
+  "mutations": [
+    {
+      "op": "set_relation_type",
+      "from": "n-ledger",
+      "to": "n-postgres",
+      "type": "reads"
+    }
+  ],
+  "expectFailing": [
+    "a.rel-ledger-postgres"
+  ]
+}

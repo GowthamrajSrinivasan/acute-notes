@@ -1,0 +1,25 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-02-stale-if-error-unconditional",
+  "distortion": "condition_dropped",
+  "caseId": "kn-02-edge-cache-invalidation",
+  "target": "plan",
+  "description": "stale-if-error loses its condition: the card says it serves the old copy for a day whatever the origin's state. The directive's own name contains 'error', which used to satisfy the check on its own.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n7",
+      "find": "stale-if-error keeps serving during origin errors",
+      "replace": "stale-if-error keeps serving for a day"
+    },
+    {
+      "op": "replace_text",
+      "node": "n7",
+      "find": ", but only while the origin is returning errors.",
+      "replace": ", whatever the origin's state."
+    }
+  ],
+  "expectFailing": [
+    "a.stale-if-error-condition"
+  ]
+}

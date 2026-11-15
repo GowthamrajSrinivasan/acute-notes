@@ -1,0 +1,882 @@
+{
+  "summary": {
+    "items": 36,
+    "verdictAgreement": 0.6111111111111112,
+    "claimSetAgreement": {
+      "n": 25,
+      "agree": 19
+    },
+    "linkDisjoint": 9,
+    "secondLinksAdded": 1,
+    "byStratum": {
+      "changed-from-phase3": {
+        "n": 5,
+        "verdictAgree": 2,
+        "linkDisjoint": 1
+      },
+      "R2-hedge": {
+        "n": 3,
+        "verdictAgree": 3,
+        "linkDisjoint": 0
+      },
+      "R3-cost": {
+        "n": 3,
+        "verdictAgree": 3,
+        "linkDisjoint": 0
+      },
+      "source-contradiction": {
+        "n": 1,
+        "verdictAgree": 0,
+        "linkDisjoint": 0
+      },
+      "unresolved": {
+        "n": 6,
+        "verdictAgree": 0,
+        "linkDisjoint": 4
+      },
+      "R1-instruction": {
+        "n": 3,
+        "verdictAgree": 2,
+        "linkDisjoint": 1
+      },
+      "clear-set": {
+        "n": 4,
+        "verdictAgree": 3,
+        "linkDisjoint": 0
+      },
+      "two-attachments": {
+        "n": 5,
+        "verdictAgree": 3,
+        "linkDisjoint": 3
+      },
+      "not-a-condition": {
+        "n": 2,
+        "verdictAgree": 2,
+        "linkDisjoint": 0
+      },
+      "clear-claim": {
+        "n": 4,
+        "verdictAgree": 4,
+        "linkDisjoint": 0
+      }
+    }
+  },
+  "rows": [
+    {
+      "item": "H01",
+      "stratum": "changed-from-phase3",
+      "ref": "kn-11-ambiguous-analytics-proposal/k3",
+      "clause": "The enrichment step uses the user service.",
+      "reference": {
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      },
+      "human": {
+        "verdict": "not_a_condition",
+        "claimLinks": [],
+        "confidence": "medium",
+        "note": "States how enrichment gets its data (a mechanism/dependency); it does not limit u10. It matters for u15's load concern, but as a fact, not a condition."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H02",
+      "stratum": "changed-from-phase3",
+      "ref": "kn-12-flag-rollout-update/k4",
+      "clause": "the guide sets no minimum for it",
+      "reference": {
+        "verdict": "set",
+        "claimUnits": [
+          "u8"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u8"
+        ],
+        "confidence": "medium",
+        "note": "'Usually one working day' already reads as non-binding, so the takeaway holds without the clause; the absence of a minimum is still a real caveat (contrast canary's 'at least 30 minutes')."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H03",
+      "stratum": "R2-hedge",
+      "ref": "kn-04-queue-choice/k20",
+      "clause": "We did not test 1,800 jobs per minute",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u36"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u36"
+        ],
+        "confidence": "medium",
+        "note": "R2: the load-test figures feed the option choice and the source warns they may not carry over; without the gap, 'sustained 1,200' reads as covering the untested 1,800 level. Hesitated between u36 and u37 as the link."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H04",
+      "stratum": "R3-cost",
+      "ref": "kn-06-hybrid-search-reranking/k28",
+      "clause": "at some cost in recall",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u47"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u47"
+        ],
+        "confidence": "medium",
+        "note": "R3: the sentence is the trade-off (latency bought with recall), in a section whose point is that every stage has a price; without it the latency saving looks free."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H05",
+      "stratum": "source-contradiction",
+      "ref": "kn-11-ambiguous-analytics-proposal/k12",
+      "clause": "90 days",
+      "reference": {
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u22"
+        ]
+      },
+      "human": {
+        "verdict": "not_a_condition",
+        "claimLinks": [],
+        "confidence": "medium",
+        "note": "The retention value is the content of the table row, not a limit on another claim. Other reading: set, as a look-back limit on the dashboards in u13, but the source never connects the two."
+      },
+      "kinds": [
+        "condition_or_not"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H06",
+      "stratum": "unresolved",
+      "ref": "kn-09-billing-codebase-map/k12",
+      "clause": "what happens to the invoice when a quote times out",
+      "reference": {
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u18"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u31"
+        ],
+        "confidence": "low",
+        "note": "R2: an admitted unknown about the timeout path; the description of the happy path stays true without it, but the gap belongs in the notes. Linked to the timeout in u31; u33 (amount added before saving) is the other candidate."
+      },
+      "kinds": [
+        "ambiguity",
+        "claim_link_disjoint"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H07",
+      "stratum": "R2-hedge",
+      "ref": "kn-04-queue-choice/k4",
+      "clause": "assumes current volume",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u13"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u13"
+        ],
+        "confidence": "high",
+        "note": "The $310 figure is used to compare options and u17 shows it roughly triples with volume; quoting it without the assumption misleads the choice."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H08",
+      "stratum": "changed-from-phase3",
+      "ref": "kn-06-hybrid-search-reranking/k1",
+      "clause": "Its weakness is vocabulary mismatch",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u7"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u7"
+        ],
+        "confidence": "medium",
+        "note": "A real limitation of BM25 that pairs with 'its strength is exact matching'; the strength claim stays true without it, but the notes need the weakness."
+      },
+      "kinds": [
+        "binding"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H09",
+      "stratum": "R1-instruction",
+      "ref": "kn-03-blue-green-deploy/k9",
+      "clause": "once, from a single job rather than from every green instance at startup",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u16"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u16"
+        ],
+        "confidence": "medium",
+        "note": "R1: running migrations from every instance at startup means concurrent runs against one shared database, which can break the step, not just make it untidy. Hesitated because the source does not spell out the consequence."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H10",
+      "stratum": "R1-instruction",
+      "ref": "kn-02-edge-cache-invalidation/k29",
+      "clause": "so they still need a TTL, a purge or both",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u46"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u49"
+        ],
+        "confidence": "medium",
+        "note": "u49 already says versioning does not help HTML pages; this clause is the consequence (they need TTL/purge). Other reading: claim against u46, since stale HTML keeps requesting the old asset names."
+      },
+      "kinds": [
+        "binding",
+        "claim_link_disjoint"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H11",
+      "stratum": "clear-set",
+      "ref": "kn-03-blue-green-deploy/k1",
+      "clause": "It assumes you already run the service behind a load balancer.",
+      "reference": {
+        "verdict": "set",
+        "claimUnits": [
+          "u1"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u1"
+        ],
+        "confidence": "medium",
+        "note": "R5: document-level scope/prerequisite note, linked to the summary claim it scopes; the specific load-balancer needs are restated in u11."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H12",
+      "stratum": "unresolved",
+      "ref": "kn-05-incident-review-meeting/k8",
+      "clause": "it needs one approval from the payments team",
+      "reference": {
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u56",
+          "u59"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u54"
+        ],
+        "confidence": "medium",
+        "note": "Dana's proposal says 'the same review as code', and code needs two approvals (u51); without 'one approval from the payments team' a reader assumes two."
+      },
+      "kinds": [
+        "ambiguity",
+        "claim_link_disjoint"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H13",
+      "stratum": "clear-set",
+      "ref": "kn-10-inventory-architecture-frames/k10",
+      "clause": "capped at 60 seconds",
+      "reference": {
+        "verdict": "set",
+        "claimUnits": [
+          "u37"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u37"
+        ],
+        "confidence": "medium",
+        "note": "A bound on the backoff that belongs in the notes, but with at most 5 attempts the delays (2, 4, 8, 16 s) never reach 60 s, so dropping it changes nothing a reader would do."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H14",
+      "stratum": "two-attachments",
+      "ref": "kn-08-helpdesk-answers-hld-lld/k8",
+      "clause": "If the Reranker does not respond within 800 ms",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u21"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u25"
+        ],
+        "confidence": "high",
+        "note": "The trigger for the fallback; without it the sentence says the Rerank client always skips reranking, which is false."
+      },
+      "kinds": [
+        "claim_link_disjoint"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H15",
+      "stratum": "R3-cost",
+      "ref": "kn-06-hybrid-search-reranking/k20",
+      "clause": "but they do not show whether the passage itself is current",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u36"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u36"
+        ],
+        "confidence": "medium",
+        "note": "R3: the source explicitly says what the benefit does not guarantee; without it a reader treats a cited answer as verified when the passage may be out of date. Hesitated because the first half stays literally true."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H16",
+      "stratum": "changed-from-phase3",
+      "ref": "kn-02-edge-cache-invalidation/k26",
+      "clause": "not a way to make content fresher",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u37"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u43"
+        ],
+        "confidence": "low",
+        "note": "A clarifying contrast that guards against a misreading; the real cost is stated in u44, so the takeaway survives without it. Could also be read as framing with no limiting force (not_a_condition)."
+      },
+      "kinds": [
+        "binding",
+        "claim_link_disjoint"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H17",
+      "stratum": "two-attachments",
+      "ref": "kn-02-edge-cache-invalidation/k21",
+      "clause": "but not on live election results",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u37"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u40"
+        ],
+        "confidence": "medium",
+        "note": "A scope limit on where stale-while-revalidate is used; 'uses it on article pages' stays true without it, but the exclusion should be in the notes. Claim is defensible if a reader would generalise it to live data."
+      },
+      "kinds": [
+        "binding",
+        "claim_link_disjoint"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H18",
+      "stratum": "clear-set",
+      "ref": "kn-10-inventory-architecture-frames/k6",
+      "clause": "Every 10 minutes",
+      "reference": {
+        "verdict": "set",
+        "claimUnits": [
+          "u24"
+        ]
+      },
+      "human": {
+        "verdict": "not_a_condition",
+        "claimLinks": [],
+        "confidence": "high",
+        "note": "A schedule detail of how the adapter runs; it limits nothing."
+      },
+      "kinds": [
+        "condition_or_not"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H19",
+      "stratum": "not-a-condition",
+      "ref": "kn-05-incident-review-meeting/k13",
+      "clause": "Leila, can you set that up?",
+      "reference": {
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      },
+      "human": {
+        "verdict": "not_a_condition",
+        "claimLinks": [],
+        "confidence": "high",
+        "note": "A request assigning the action item; no limiting force."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H20",
+      "stratum": "not-a-condition",
+      "ref": "kn-05-incident-review-meeting/k9",
+      "clause": "Tomás: I'm fine with that.",
+      "reference": {
+        "verdict": "not_a_condition",
+        "claimUnits": []
+      },
+      "human": {
+        "verdict": "not_a_condition",
+        "claimLinks": [],
+        "confidence": "high",
+        "note": "An expression of agreement; no limiting force."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H21",
+      "stratum": "changed-from-phase3",
+      "ref": "kn-10-inventory-architecture-frames/k9",
+      "clause": "at most 5 attempts per delivery",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u34"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u34"
+        ],
+        "confidence": "medium",
+        "note": "A bound on the retry behaviour; 'supplier calls are retried' holds without it, but the cap belongs in the notes (and u38 depends on it)."
+      },
+      "kinds": [
+        "binding"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H22",
+      "stratum": "unresolved",
+      "ref": "kn-10-inventory-architecture-frames/k14",
+      "clause": "The admin UI has no automated tests yet.",
+      "reference": {
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u43"
+        ]
+      },
+      "human": {
+        "verdict": "not_a_condition",
+        "claimLinks": [],
+        "confidence": "low",
+        "note": "A standalone known-gap fact; no claim in the source asserts the admin UI is tested or reliable, so it scopes nothing stated (R5). Other reading: set against u38, where staff rely on the admin UI."
+      },
+      "kinds": [
+        "condition_or_not"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H23",
+      "stratum": "clear-claim",
+      "ref": "kn-01-idempotency-keys/k2",
+      "clause": "while the server still remembers them",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u6"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u6",
+          "u2"
+        ],
+        "confidence": "high",
+        "note": "Without it 'keys protect against duplicates' is false after expiry; it also limits u2's 'returns the stored result', shown by u7 ('treated as a new payment') and u9 ('not a general guarantee')."
+      },
+      "kinds": [
+        "second_link_added"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H24",
+      "stratum": "clear-claim",
+      "ref": "kn-01-idempotency-keys/k3",
+      "clause": "stored results expire after 24 hours, so a retry sent after that window is treated as a new payment",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u2"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u2"
+        ],
+        "confidence": "high",
+        "note": "After 24 hours the server does not return the stored result, so u2 restated without this is false and a late retry charges the customer twice."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H25",
+      "stratum": "clear-set",
+      "ref": "kn-08-helpdesk-answers-hld-lld/k3",
+      "clause": "published",
+      "reference": {
+        "verdict": "set",
+        "claimUnits": [
+          "u8"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u8"
+        ],
+        "confidence": "low",
+        "note": "R5: 'published' scopes what gets ingested (drafts are not searchable); a minor scope limit that leaves the takeaway intact. Could be not_a_condition if no reader would act differently."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H26",
+      "stratum": "unresolved",
+      "ref": "kn-04-queue-choice/k11",
+      "clause": "today only the email handler is",
+      "reference": {
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u26"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u27"
+        ],
+        "confidence": "medium",
+        "note": "R3: the section weighs Option A's low effort against this catch; without 'only the email handler is', the idempotency requirement looks already met and the switching cost disappears."
+      },
+      "kinds": [
+        "ambiguity",
+        "claim_link_disjoint"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H27",
+      "stratum": "unresolved",
+      "ref": "kn-11-ambiguous-analytics-proposal/k13",
+      "clause": "the web app's sign-up and checkout events",
+      "reference": {
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u14"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u37"
+        ],
+        "confidence": "low",
+        "note": "The scope of Phase 1; it bounds what the 6-week/2-engineer estimate covers. Hesitated because the clause is also simply the content of u35 (not_a_condition reading)."
+      },
+      "kinds": [
+        "ambiguity",
+        "claim_link_disjoint"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H28",
+      "stratum": "two-attachments",
+      "ref": "kn-02-edge-cache-invalidation/k20",
+      "clause": "where a minute of staleness is acceptable",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u37"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u40"
+        ],
+        "confidence": "medium",
+        "note": "The applicability condition for the technique, phrased as a reason; the usage statement stays true without it. Claim is defensible because u43 makes tolerance the section's point."
+      },
+      "kinds": [
+        "binding",
+        "claim_link_disjoint"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H29",
+      "stratum": "R2-hedge",
+      "ref": "kn-09-billing-codebase-map/k9",
+      "clause": "How retries work for the tax provider is not documented.",
+      "reference": {
+        "verdict": "set",
+        "claimUnits": [
+          "u30"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u30"
+        ],
+        "confidence": "medium",
+        "note": "R2: an explicit documentation gap about the tax call; the description of what quote() does is unchanged, but the unknown should be recorded."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H30",
+      "stratum": "R1-instruction",
+      "ref": "kn-12-flag-rollout-update/k7",
+      "clause": "does not raise the percentage by hand during this time",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u13"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u13"
+        ],
+        "confidence": "medium",
+        "note": "R1: a manual change restarts the measurement window, so following the 30-minute rule without this yields a canary that did not cover a full window, the failure u15 warns about."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H31",
+      "stratum": "two-attachments",
+      "ref": "kn-06-hybrid-search-reranking/k7",
+      "clause": "whenever the encoder changes",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u15"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u15"
+        ],
+        "confidence": "high",
+        "note": "Without the trigger, the sentence says embeddings must be recomputed (6 hours) with no indication when, which misstates the cost."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H32",
+      "stratum": "clear-claim",
+      "ref": "kn-05-incident-review-meeting/k11",
+      "clause": "to the payments service",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u59"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u59"
+        ],
+        "confidence": "high",
+        "note": "The decision covers payments-service config only; without the scope it reads as a rule for all config changes."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H33",
+      "stratum": "R3-cost",
+      "ref": "kn-04-queue-choice/k15",
+      "clause": "Upgrades need a maintenance window.",
+      "reference": {
+        "verdict": "set",
+        "claimUnits": [
+          "u29"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u29"
+        ],
+        "confidence": "medium",
+        "note": "R3: a real cost of Option B, but the source does not present it as deciding the choice; it sits beside the benefits in u29."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H34",
+      "stratum": "two-attachments",
+      "ref": "kn-03-blue-green-deploy/k10",
+      "clause": "until all of them return `200`",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u17"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u17"
+        ],
+        "confidence": "high",
+        "note": "R1: moving on before every instance returns 200 means switching traffic to unhealthy instances, which breaks the procedure."
+      },
+      "kinds": [],
+      "cause": ""
+    },
+    {
+      "item": "H35",
+      "stratum": "unresolved",
+      "ref": "kn-05-incident-review-meeting/k19",
+      "clause": "That's one incident.",
+      "reference": {
+        "verdict": "ambiguous",
+        "claimUnits": [
+          "u71"
+        ]
+      },
+      "human": {
+        "verdict": "set",
+        "claimLinks": [
+          "u71"
+        ],
+        "confidence": "low",
+        "note": "Reading A: an evidential caveat on Leila's 'Friday didn't slow that down' (one data point), relevant to the deferred freeze decision. Reading B: just a turn in the argument, since u71 is already about this incident only (not_a_condition)."
+      },
+      "kinds": [
+        "ambiguity"
+      ],
+      "cause": ""
+    },
+    {
+      "item": "H36",
+      "stratum": "clear-claim",
+      "ref": "kn-05-incident-review-meeting/k22",
+      "clause": "Let's not decide the freeze now.",
+      "reference": {
+        "verdict": "claim",
+        "claimUnits": [
+          "u63"
+        ]
+      },
+      "human": {
+        "verdict": "claim",
+        "claimLinks": [
+          "u63"
+        ],
+        "confidence": "low",
+        "note": "The freeze proposal restated without this misleads about its status (it was neither adopted nor rejected). Hesitated because it can also be read as an outcome statement rather than a condition."
+      },
+      "kinds": [],
+      "cause": ""
+    }
+  ]
+}

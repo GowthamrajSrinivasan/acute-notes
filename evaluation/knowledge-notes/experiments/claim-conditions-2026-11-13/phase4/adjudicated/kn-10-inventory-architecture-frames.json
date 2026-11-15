@@ -1,0 +1,418 @@
+{
+  "caseId": "kn-10-inventory-architecture-frames",
+  "adjudicator": "claude-opus-5.5 (phase 4 adjudicator)",
+  "records": [
+    {
+      "id": "k1",
+      "units": ["u13"],
+      "clause": "once both succeed",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u13"],
+      "claimQuote": "publishes a StockReserved event to the message broker",
+      "status": "agreed",
+      "from": { "X": "x1", "Y": "y1" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u13"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it, consumers would expect StockReserved for failed reservations too.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u3_n8", "u3_n7"],
+        "carriers": ["u3_n8", "arrow:u3_n5->u3_n7", "arrow:u3_n6->u3_n7"],
+        "perClaimCard": { "u3_n8": "carried", "u3_n7": "arrow_label" }
+      } }
+    },
+    {
+      "id": "k2",
+      "units": ["u14"],
+      "clause": "If the ledger cannot reserve the full quantity",
+      "verdict": "claim",
+      "rule": "R4",
+      "claimUnits": ["u14"],
+      "claimQuote": "the orchestrator rejects the whole order",
+      "status": "adjudicated",
+      "from": { "X": "x2", "Y": "y2" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u13"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R4: the most specific claim this condition falsifies is its own consequent: without it, 'rejects the whole order' reads as unconditional. X's whole-sentence reading (u14 limiting u13) is kept as k3 via Y's y3.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u3_n9", "u3_a1"],
+        "carriers": ["u3_n9", "u3_a1", "arrow:u3_n5->u3_n9"],
+        "perClaimCard": { "u3_n9": "carried", "u3_a1": "carried" }
+      } }
+    },
+    {
+      "id": "k3",
+      "units": ["u14"],
+      "clause": "it never makes a partial reservation",
+      "verdict": "claim",
+      "rule": "R4",
+      "claimUnits": ["u13"],
+      "claimQuote": "It asks the stock ledger to reserve the requested quantity",
+      "status": "adjudicated",
+      "from": { "Y": "y3" },
+      "readings": [
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "X", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u13"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "All-or-nothing limit on the reserve step; without it a reader could assume partial fills. X's x2 linked u14 to u13 with the same meaning (X reading listed).",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u3_n8", "u3_n5"],
+        "carriers": ["u3_n9", "u3_a1", "g2"],
+        "perClaimCard": { "u3_n8": "frame", "u3_n5": "frame" }
+      } }
+    },
+    {
+      "id": "k4",
+      "units": ["u15"],
+      "clause": "not confirmed within 15 minutes",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u15"],
+      "claimQuote": "is released by the ledger and the stock becomes available again",
+      "status": "agreed",
+      "from": { "X": "x3", "Y": "y4" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u15"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u15"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u13"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it, reservations would read as released unconditionally. u3_a1 says 'time-based release' but not the 15-minute limit; its arrows go to non-carriers: separated.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u3_n10", "u3_a1"],
+        "carriers": ["u3_n10"],
+        "perClaimCard": { "u3_n10": "carried", "u3_a1": "separated" }
+      } }
+    },
+    {
+      "id": "k5",
+      "units": ["u20"],
+      "clause": "where they are cached for 300 seconds",
+      "verdict": "set",
+      "rule": "general",
+      "claimUnits": ["u20"],
+      "claimQuote": "They read price lists from Redis",
+      "status": "agreed",
+      "from": { "X": "x4", "Y": "y5" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u20"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u20"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u19", "u20"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A staleness bound; the takeaway stands without it.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u4_n2"],
+        "carriers": ["u4_n2"],
+        "perClaimCard": { "u4_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k6",
+      "units": ["u24"],
+      "clause": "Every 10 minutes",
+      "verdict": "set",
+      "rule": "general",
+      "claimUnits": ["u24"],
+      "claimQuote": "it calls the supplier API for new deliveries, converts each delivery into a restock and asks the stock ledger to record it",
+      "status": "agreed",
+      "from": { "X": "x5", "Y": "y6" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u24"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u24"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u23"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Polling cadence; secondary to the takeaway.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u5_n4", "u5_n6", "u5_n8"],
+        "carriers": ["u5_n4"],
+        "perClaimCard": { "u5_n4": "carried", "u5_n6": "separated", "u5_n8": "separated" }
+      } }
+    },
+    {
+      "id": "k7",
+      "units": ["u26"],
+      "clause": "A delivery the adapter cannot parse is logged and skipped",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u24"],
+      "claimQuote": "converts each delivery into a restock and asks the stock ledger to record it",
+      "status": "agreed",
+      "from": { "X": "x6", "Y": "y7" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u24"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u24"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u24"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "'Each delivery' is false for unparsable deliveries, which are dropped.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u5_n6", "u5_n8", "u5_n5"],
+        "carriers": ["u5_n11", "u5_a1", "u5_a2", "g4", "arrow:u5_n5->u5_n10"],
+        "perClaimCard": { "u5_n6": "frame", "u5_n8": "frame", "u5_n5": "frame" }
+      } }
+    },
+    {
+      "id": "k8",
+      "units": ["u26"],
+      "clause": "it is not retried",
+      "verdict": "claim",
+      "rule": "R4",
+      "claimUnits": ["u38"],
+      "claimQuote": "after the 5th failed attempt, the delivery is published to the dead-letter queue `inventory.dlq` on the message broker, and staff review it in the admin UI",
+      "status": "adjudicated",
+      "from": { "X": "x7", "Y": "y8" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u34"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u24"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R4: u34 already scopes retries to failed supplier calls, so a parse failure does not falsify it. The per-delivery policy ending in the DLQ for staff review (u36-u38) is what misleads: a reader would expect unparsable deliveries to be retried and then show up in the DLQ. Linked to u38.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u7_n3"],
+        "carriers": ["u5_n11", "u5_a1", "u5_a2"],
+        "perClaimCard": { "u7_n3": "separated" }
+      } }
+    },
+    {
+      "id": "k9",
+      "units": ["u36"],
+      "clause": "at most 5 attempts per delivery",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u34"],
+      "claimQuote": "the feed adapter wraps them in the retry helper in `src/platform/retry.ts`",
+      "status": "agreed",
+      "from": { "X": "x8", "Y": "y9" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u34"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u34"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u34"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Retry bound; without it retries read as unbounded.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u7_n3"],
+        "carriers": ["u7_n3"],
+        "perClaimCard": { "u7_n3": "carried" }
+      } }
+    },
+    {
+      "id": "k10",
+      "units": ["u37"],
+      "clause": "capped at 60 seconds",
+      "verdict": "set",
+      "rule": "general",
+      "claimUnits": ["u37"],
+      "claimQuote": "exponential backoff that starts at 2 seconds, doubles after each failure",
+      "status": "agreed",
+      "from": { "X": "x9", "Y": "y10" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u37"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u37"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u34"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "With 5 attempts the cap barely matters to the takeaway.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u7_n3"],
+        "carriers": ["u7_n3"],
+        "perClaimCard": { "u7_n3": "carried" }
+      } }
+    },
+    {
+      "id": "k11",
+      "units": ["u38"],
+      "clause": "after the 5th failed attempt",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u38"],
+      "claimQuote": "the delivery is published to the dead-letter queue `inventory.dlq` on the message broker",
+      "status": "agreed",
+      "from": { "X": "x10", "Y": "y11" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u34"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The trigger for dead-lettering; without it every delivery would read as dead-lettered.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u7_n3"],
+        "carriers": ["u7_n3"],
+        "perClaimCard": { "u7_n3": "carried" }
+      } }
+    },
+    {
+      "id": "k12",
+      "units": ["u39"],
+      "clause": "Retries apply only to supplier calls.",
+      "verdict": "claim",
+      "rule": "R4",
+      "claimUnits": ["u35"],
+      "claimQuote": "The retry policy is:",
+      "status": "adjudicated",
+      "from": { "X": "x11", "Y": "y12" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u35"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u34"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u34", "u35"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R4: u34 is already scoped to supplier calls, so the clause adds nothing there; it scopes the general retry policy (u35), which a reader could otherwise apply to reservations. u7_n3 places the policy next to supplier calls but does not say 'only'; u7_n4 has no arrow: separated.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u7_n3"],
+        "carriers": ["u7_n4"],
+        "perClaimCard": { "u7_n3": "separated" }
+      } }
+    },
+    {
+      "id": "k13",
+      "units": ["u40"],
+      "clause": "Reservations are never retried automatically",
+      "verdict": "claim",
+      "rule": "R4",
+      "claimUnits": ["u12"],
+      "claimQuote": "The reservation orchestrator coordinates a reservation from start to finish.",
+      "status": "adjudicated",
+      "from": { "X": "x12", "Y": "y13" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u12"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u34", "u35"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R4: 'from start to finish' is the claim a reader would extend to 'handles failures through to completion'. u13 describes the happy-path steps, and u14 already covers its failure. Callers must handle their own retry.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u3_n4", "u3_n3"],
+        "carriers": ["u7_n4"],
+        "perClaimCard": { "u3_n4": "separated", "u3_n3": "separated" }
+      } }
+    },
+    {
+      "id": "k14",
+      "units": ["u48"],
+      "clause": "The admin UI has no automated tests yet.",
+      "verdict": "ambiguous",
+      "rule": "R4",
+      "claimUnits": ["u43"],
+      "claimQuote": "Each module keeps its tests next to its code.",
+      "status": "unresolved",
+      "from": { "X": "x13", "Y": "y14" },
+      "readings": [
+        { "who": "X", "verdict": "ambiguous", "claimUnits": ["u43"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u43"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u43"] }
+      ],
+      "readingA": "claim: u43 presupposes every module has tests; false for the admin UI, and a reader would assume admin changes are test-covered.",
+      "readingB": "set: u43 is about where tests live, not whether every part has them; the gap is a real caveat that changes no stated takeaway.",
+      "decidingQuestion": "Does u43 assert that every part of the codebase, including the admin front end, has automated tests?",
+      "rationale": "The source doesn't settle whether the admin UI counts as a 'module' with tests. Not forced.",
+      "confidence": "low",
+      "notes": { "distil": {
+        "claimCards": ["u9_n5", "u9_a1"],
+        "carriers": ["u10_n1", "u10_a1", "g9"],
+        "perClaimCard": { "u9_n5": "separated", "u9_a1": "separated" }
+      } }
+    },
+    {
+      "id": "k15",
+      "units": ["u49"],
+      "clause": "whether that holds under peak load has not been measured",
+      "verdict": "claim",
+      "rule": "R2",
+      "claimUnits": ["u49"],
+      "claimQuote": "the ledger currently relies on a database row lock to keep them consistent",
+      "status": "agreed",
+      "from": { "X": "x14", "Y": "y15" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u49"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u49"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u3", "u18", "u27", "u46"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: an explicit reliability warning on the consistency mechanism; without it a reader would assume stock stays consistent at peak.",
+      "confidence": "high",
+      "notes": { "distil": {
+        "claimCards": ["u10_n2"],
+        "carriers": ["u10_n2", "u10_a1"],
+        "perClaimCard": { "u10_n2": "carried" }
+      } }
+    },
+    {
+      "id": "k16",
+      "units": ["u50"],
+      "clause": "only found when someone opens the admin UI",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u38"],
+      "claimQuote": "staff review it in the admin UI",
+      "status": "agreed",
+      "from": { "X": "x15", "Y": "y16" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u38"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without it, 'staff review it' reads as a dependable process; the review is ad hoc.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u7_n3"],
+        "carriers": ["u10_n3"],
+        "perClaimCard": { "u7_n3": "separated" }
+      } }
+    },
+    {
+      "id": "k17",
+      "units": ["u50"],
+      "clause": "nothing alerts the team when `inventory.dlq` starts to fill up",
+      "verdict": "claim",
+      "rule": "general",
+      "claimUnits": ["u38"],
+      "claimQuote": "staff review it in the admin UI",
+      "status": "agreed",
+      "from": { "X": "x16", "Y": "y17" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u38"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u38"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A reader would otherwise assume the DLQ is monitored.",
+      "confidence": "medium",
+      "notes": { "distil": {
+        "claimCards": ["u7_n3"],
+        "carriers": ["u10_n3", "u10_a1", "g9"],
+        "perClaimCard": { "u7_n3": "separated" }
+      } }
+    }
+  ],
+  "rejected": [],
+  "notes": "17 records (13 claim, 3 set, 1 ambiguous). u14 yields two records: the intra-sentence condition (k2) and the all-or-nothing limit on u13 (k3). Claim cards are nodes whose visible text states the claim at claimUnits; citations ignored."
+}

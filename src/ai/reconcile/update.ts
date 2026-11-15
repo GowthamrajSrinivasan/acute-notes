@@ -54,6 +54,9 @@ import { everyAddedNodeFolds, planIsFull, type CapacityCheck } from "./capacity"
 import { appendedParagraphs, paragraphChanges, splitExpansions } from "./paragraphs";
 import { expandUnchanged, representationOf, typeExplanations, withCurrentKept, type UnitRepresentation } from "./preserve";
 import { nodeFingerprint, nodeKind, updateChange } from "./nodes";
+import { shapeBaseline } from "@/ai/changes/staleTarget";
+import { claimLevelUpdate, editedCardUpdate } from "./claimPlanner";
+import { lockedNotice } from "./updatePolicy";
 import { sectionOfNode } from "./sections";
 import { analysisUnits, headingOnlyReply, normalizeUnitText, type AnalysisUnit } from "./units";
 import { nextPathIds, rekey, rekeyPlan, type PathIds } from "./topicIds";
@@ -64,6 +67,15 @@ import { detectRevisions, withoutRevised, type Revision } from "@/ai/history/rev
 import { verbatim } from "@/ai/merge/assign";
 import { choicesInText, withChoiceNodes } from "@/ai/history/choiceNodes";
 import type { ParsedContent } from "@/ai/content/types";
+import { FIDELITY_CONFIG, organisationFor } from "@/config/fidelity";
+import type { Organisation } from "@/ai/visual-plan/grouping";
+import type { ChangeSetKnowledge } from "@/ai/changes/changeSet";
+import type { UnitSet } from "@/ai/fidelity/contracts";
+import { finishKnowledgeRun, rememberKnowledgeRun, unitOutcomesOf } from "@/ai/fidelity/knowledgeRun";
+import type { OutlinedResult } from "@/ai/visualize/outlined";
+import { prefixKnowledge } from "@/ai/fidelity/knowledgeCheck";
+import { CITATION_UPDATE_CONFIG } from "./citations";
+import { citationCardsUpdate, nextIdentity, type CardsUpdateResult, type NextIdentity } from "./citationUpdate";
 
 export interface UpdateInput {
   source: ContentSource;
@@ -107,6 +119,27 @@ export interface UpdateOptions {
    * a first run does — with no earlier representation to keep. Every other section is reused as it is, so the update can only touch these.
    */
   regenerate?: readonly string[];
+  /**
+   * Citation-driven updates (knowledge-notes-plan §6.1, `citationUpdate.ts`): overrides `CITATION_UPDATE_CONFIG.enabled` (off until R2) for tests
+   * and the developer setting. Off, the update takes the section path exactly as before.
+   */
+  citationUpdates?: boolean;
+  /**
+   * Claim-level patches (intelligent-update-engine-plan Stage 1): a clean update that changes words inside a card's sentences is proposed as a
+   * `patch_block` that edits only those words, and one that contradicts the card is escalated for a decision. On by default; false keeps
+   * whole-block updates (a developer override; contradictions still escalate).
+   */
+  claimPatches?: boolean;
+  /**
+   * AI settings → Update behaviour, "Preserve locked sections" (Stage 1e): locked cards and cards in locked sections are left alone, and a
+   * locked section gets no new cards. On by default; false makes locks markers only.
+   */
+  preserveLockedSections?: boolean;
+  /**
+   * AI settings → Update behaviour, "Preserve edited cards" (Stage 1e): every card changed since AI wrote it gets the Apply / Keep mine
+   * conflict, as before Stage 1e. Off by default: the source's new facts are merged into the card's current wording as a reviewed patch.
+   */
+  preserveEditedCards?: boolean;
 }
 
 export interface UpdateResult {
@@ -177,6 +210,8 @@ export interface UpdateResult {
   warnings: string[];
   /** Shown to the user as is: blocks they split (F42 Phase 4) that the source has changed since; the split was kept. */
   notices: string[];
+  /** A citation-driven update (§6.1, switch on): what was decided per card. Absent when the update took the section path. */
+  citations?: CardsUpdateResult["plan"]["counts"];
 }
 
 function throwIfAborted(signal: AbortSignal | undefined): void {
@@ -206,9 +241,19 @@ export async function updateFromNewContent(original: UpdateInput, runtime: AIRun
     previous: input.previous.pathIds,
     next: nextPathIds(input.previous.pathIds, previousParsed, input.previous.text, parsed, input.text),
   };
+  // The organisation rules the source was laid out with (organisation-layout plan §3.0): its objects' note model (distil → "v2").
+  const organisation = sourceOrganisation(input.existing);
+  const v2 = organisation === "v2" ? { organisation } : {};
   // Sections (F42) are reconciled by their title objects: plans are compared flat, each group as its title heading.
-  const previousGrouped = validateVisualPlan(input.previous.plan, { stored: true }).plan;
+  const previousGrouped = validateVisualPlan(input.previous.plan, { stored: true, ...v2 }).plan;
   const previousPlan = ungroup(previousGrouped);
+  // Knowledge Notes: the units the next version stores and their lineage (as the recording computes them), when the update runs in distil mode
+  // (its cards are labelled with them, WP1.10) or with citation-driven updates on (§6.1). Neither on: nothing is computed, as before.
+  const distil = FIDELITY_CONFIG.noteModel === "distil";
+  const citationsOn = options.citationUpdates ?? CITATION_UPDATE_CONFIG.enabled;
+  const identity: NextIdentity | null = ai && !options.appendOnly && (distil || citationsOn) ? await nextIdentity(original.previous, original.text, ids.next) : null;
+  let cardsMode: CardsUpdateResult | null = null;
+  let knowledgeRun: OutlinedUpdate["knowledge"];
 
   let raw: unknown;
   let reanalyzedUnits: string[] = [];
@@ -230,68 +275,41 @@ export async function updateFromNewContent(original: UpdateInput, runtime: AIRun
     raw = splitExpansions(ungroup(grouped), previousPlan);
   } else if (input.source.template === "sectioned") {
     // An outlined document (F42 Phase 2): sections, not units, are what gets reused or regenerated.
-    ({ raw, reanalyzedUnits, plainCards: plainCardKeys, plainMissed, economy, planSkips, capacity, reusedUnits, provenance, sections: outlinedSections } = await updateOutlined(input, runtime, parsed, previousParsed, ids, previousGrouped, previousPlan, { ...options, plainSpans: input.text === original.text ? options.plainSpans : undefined }));
-  } else {
-    const template = input.source.template as VisualTemplate;
-    const { before, units } = keyedUnits(previousParsed, parsed, input, ids);
-    const forced = new Set(options.regenerate ?? []);
-    // A selection's re-run analyses only its own units, whatever else differs in the text.
-    const changed = units.filter((u) => (forced.size ? forced.has(u.key) : before.get(u.key) !== normalizeUnitText(u.text)));
-    const unchangedKeys = new Set(units.filter((u) => !changed.includes(u)).map((u) => u.key));
-    reanalyzedUnits = changed.map((u) => u.key);
-    reusedUnits = [...unchangedKeys];
-
-    // Unchanged units: the previous plan's own nodes (and relationships among them), no model call.
-    const reused = previousPlan.nodes.filter((n) => n.stableKey && unchangedKeys.has(unitOfKey(n.stableKey) ?? ""));
-    const reusedIds = new Set(reused.map((n) => n.id));
-    const reusedRelationships = previousPlan.relationships.filter((r) => reusedIds.has(r.from) && reusedIds.has(r.to));
-
-    let fresh: { nodes?: unknown[]; relationships?: unknown[] } = {};
-    if (changed.length) {
-      onProgress?.({ stage: "analyzing", label: "Analyzing changes…" });
-      try {
-        // A section that was already there is re-analysed against what it shows now (F38b); a new one from scratch.
-        const shown = withoutUnitSections(previousPlan);
-        const reps = changed.map((u) => (before.has(u.key) && !forced.has(u.key) ? representationOf(shown, u.key) : null));
-        // A heading-only unit (e.g. a retitled document) is answered locally, never by a model (`headingOnlyReply`).
-        // A plain card (a merge's unplaced part) is shown as it is, also without a model call.
-        const plainTexts = options.plainUnits?.size ? [...options.plainUnits] : [];
-        const spans = input.text === original.text ? (options.plainSpans ?? []) : [];
-        const isPlain = (u: AnalysisUnit) => spans.some((sp) => u.span.start >= sp.start && u.span.start < sp.end) || plainTexts.some((t) => t.includes(normalizeUnitText(u.text)));
-        const replies = await Promise.all(
-          changed.map((u, i) =>
-            headingOnlyReply(u, template) || isPlain(u)
-              ? null
-              : runtime.run<GenerateVisualPlanInput, unknown>(
-                  "generate_visual_plan",
-                  // With the section's current representation, the facts of how its text changed (edited vs added paragraphs).
-                  { template, ...changedInput(before.get(u.key) ?? "", u.text, reps[i]!) },
-                  { signal },
-                ),
-          ),
-        );
-        throwIfAborted(signal);
-        const prefix = `v${input.previous.version + 1}_`;
-        const merged = mergeUnitPlans(
-          template,
-          replies.map((r, i) => ({ unitKey: changed[i]!.key, raw: r ? keptReply(r.data, reps[i]!, before.get(changed[i]!.key) ?? "", changed[i]!.text) : isPlain(changed[i]!) ? plainReply(changed[i]!, template) : headingOnlyReply(changed[i]!, template) })),
-          prefix,
-        );
-        // The section titles a first run framed (F42), as the flat headings the previous plan is compared as.
-        const unitInfo = units.map((u) => ({ key: u.key, headingOnly: !!headingOnlyReply(u, template) }));
-        fresh = groupByUnit(merged, template, unitInfo, { idPrefix: prefix, flat: true }) as typeof fresh;
-        const last = replies.filter((r) => r !== null).at(-1);
-        if (last) provenance = { providerId: last.providerId, role: last.role, model: last.usage.model };
-      } catch (err) {
-        if (err instanceof AIError && err.kind === "model_unavailable" && err.message === NO_PROVIDER_CONFIGURED_MESSAGE) throw new NoProviderConfiguredError(false);
-        throw err;
-      }
+    // Citation-driven (§6.1, behind its switch): card by card when the citations can decide; else the section path below.
+    if (citationsOn && identity && !options.regenerate?.length) {
+      cardsMode = await citationCardsUpdate({
+        runtime,
+        signal,
+        onProgress: (label) => onProgress?.({ stage: "analyzing", label }),
+        previous: original.previous,
+        identity,
+        existing: input.existing,
+        previousGrouped,
+        previousPlan,
+        prefix: `v${input.previous.version + 1}_`,
+        enabled: true,
+      });
     }
-    raw = { version: 1, template, nodes: [...reused, ...(fresh.nodes ?? [])], relationships: [...reusedRelationships, ...(fresh.relationships ?? [])] };
+    if (cardsMode) ({ raw, reanalyzedUnits, reusedUnits, provenance, sections: outlinedSections } = cardsMode);
+    else
+      ({ raw, reanalyzedUnits, plainCards: plainCardKeys, plainMissed, economy, planSkips, capacity, reusedUnits, provenance, sections: outlinedSections, knowledge: knowledgeRun } = await updateOutlined(
+        input,
+        runtime,
+        parsed,
+        previousParsed,
+        ids,
+        previousGrouped,
+        previousPlan,
+        { ...options, plainSpans: input.text === original.text ? options.plainSpans : undefined },
+        organisation,
+        distil && identity ? identity.units : undefined,
+      ));
+  } else {
+    ({ raw, reanalyzedUnits, reusedUnits, provenance } = await updateUnitKeyedTier(input, original, runtime, parsed, previousParsed, ids, previousPlan, options));
   }
 
   onProgress?.({ stage: "planning_layout", label: "Comparing with the canvas…" });
-  const validated = validateVisualPlan(raw, options.appendOnly ? { existing: new Set(previousPlan.nodes.flatMap((n) => (n.stableKey ? [n.stableKey] : []))) } : {});
+  const validated = validateVisualPlan(raw, { ...(options.appendOnly ? { existing: new Set(previousPlan.nodes.flatMap((n) => (n.stableKey ? [n.stableKey] : []))) } : {}), ...v2 });
   // AI tier: new detail linked generically to an existing concept is its explanation (F38b, `typeExplanations`).
   // (The local tier types its own splits already, and its relates_to links are structural.)
   const keyed = ensureStableKeys(validated.plan);
@@ -311,22 +329,146 @@ export async function updateFromNewContent(original: UpdateInput, runtime: AIRun
     const ids = new Set(nodes.map((n) => n.id));
     return { ...p, nodes, relationships: p.relationships.filter((r) => ids.has(r.from) && ids.has(r.to)) };
   };
-  const reconciliation = reconcile({
+  // Locks (Stage 1e): a locked card, or a card in a locked section, is skipped like an opted-out one — unless "Preserve locked
+  // sections" is off, when a lock is only a marker.
+  const preserveLocked = options.preserveLockedSections !== false;
+  const existing = preserveLocked ? input.existing.map((o) => (o.locked && !o.excluded ? { ...o, excluded: true } : o)) : input.existing;
+  const reconciled = reconcile({
     previous: scoped(previousPlan),
     previousVersion: input.previous.version,
     next: scoped(plan),
-    existing: input.existing.filter((o) => inScope(o.stableNodeKey)),
+    existing: existing.filter((o) => inScope(o.stableNodeKey)),
     fingerprint: (n) => nodeFingerprint(n, parseMarkdown),
     objectKind: nodeKind,
   });
+  const { reconciliation, skippedLocked } = preserveLocked ? withoutLockedSections(reconciled, existing, plan, grouped, previousPlan, (n) => nodeFingerprint(n, parseMarkdown)) : { reconciliation: reconciled, skippedLocked: 0 };
   // Connectors may be rewired only where the plan was actually re-derived: the whole plan on the local tier, re-analysed sections on the AI tier.
   const rewirable = input.source.tier === "local" ? null : new Set(reanalyzedUnits);
   const stored = outlinedSections ? regroupSections(plan, outlinedSections, previousGrouped) : plan;
-  const changeSet = await buildChangeSet(original, plan, grouped, reconciliation, parseMarkdown, provenance, rewirable, ids.next, stored, revisions);
+  // Distil (WP1.10): the cards this update generated cite the next version's units; their citations, review and the report v2 ride on the set.
+  const knowledge = knowledgeOfUpdate(identity, knowledgeRun, plan, original.source.id, cardsMode);
+  const changeSet = await buildChangeSet({ ...original, existing }, plan, grouped, reconciliation, parseMarkdown, provenance, rewirable, ids.next, stored, revisions, organisation, {
+    extra: cardsMode?.extra ?? [],
+    ...(knowledge ? { knowledge } : {}),
+    ...(identity && (knowledge || cardsMode) ? { identity } : {}),
+    ...(knowledge || (cardsMode && organisation === "v2") ? { noteModel: "distil" as const } : {}),
+  }, {
+    claimPatches: options.claimPatches !== false,
+    preserveEditedCards: options.preserveEditedCards === true,
+    previous: previousPlan,
+    skippedLocked,
+  });
   // Objects the review proposes to remove, each with whether its key comes back as another kind of object (a replacement, not a loss).
   const addedKeys = new Set(reconciliation.items.flatMap((i) => (i.state === "add" && i.node.stableKey ? [i.node.stableKey] : [])));
   const removals = reconciliation.items.flatMap((i) => (i.state === "remove" ? [{ key: i.object.stableNodeKey, replacedBy: addedKeys.has(i.object.stableNodeKey) }] : []));
-  return { changeSet, reconciliation, reanalyzedUnits, plainCards: plainCardKeys, plainMissed, economy, planSkips, ...(capacity ? { capacity: { ...capacity, actualCounted: validated.existingCounted } } : {}), overflow: validated.overflow, removals, reusedUnits, warnings: validated.warnings, notices: splitNotices(reconciliation) };
+  return { changeSet, reconciliation, reanalyzedUnits, plainCards: plainCardKeys, plainMissed, economy, planSkips, ...(capacity ? { capacity: { ...capacity, actualCounted: validated.existingCounted } } : {}), overflow: validated.overflow, removals, reusedUnits, warnings: validated.warnings, notices: [...splitNotices(reconciliation), ...(!changeSet && skippedLocked ? [lockedNotice(skippedLocked)] : [])], ...(cardsMode ? { citations: cardsMode.plan.counts } : {}) };
+}
+
+/**
+ * The default (unit-keyed) tier: re-analyses only the units whose text changed and reuses the previous plan's
+ * own nodes (and the relationships among them) for the rest, with no model call. Heading-only and plain units are
+ * answered locally. Returns the raw next plan plus which units were re-analysed/reused and the provenance of the
+ * last model reply, matching the shape the sectioned/local tiers produce.
+ */
+async function updateUnitKeyedTier(
+  input: UpdateInput,
+  original: UpdateInput,
+  runtime: AIRuntime,
+  parsed: ParsedContent,
+  previousParsed: ParsedContent,
+  ids: TopicIds,
+  previousPlan: VisualPlan,
+  options: UpdateOptions,
+): Promise<{ raw: unknown; reanalyzedUnits: string[]; reusedUnits: string[]; provenance?: { providerId: string; role: ProviderRole; model: string } }> {
+  const { signal, onProgress } = options;
+  const template = input.source.template as VisualTemplate;
+  const { before, units } = keyedUnits(previousParsed, parsed, input, ids);
+  const forced = new Set(options.regenerate ?? []);
+  // A selection's re-run analyses only its own units, whatever else differs in the text.
+  const changed = units.filter((u) => (forced.size ? forced.has(u.key) : before.get(u.key) !== normalizeUnitText(u.text)));
+  const unchangedKeys = new Set(units.filter((u) => !changed.includes(u)).map((u) => u.key));
+  const reanalyzedUnits = changed.map((u) => u.key);
+  const reusedUnits = [...unchangedKeys];
+
+  // Unchanged units: the previous plan's own nodes (and relationships among them), no model call.
+  const reused = previousPlan.nodes.filter((n) => n.stableKey && unchangedKeys.has(unitOfKey(n.stableKey) ?? ""));
+  const reusedIds = new Set(reused.map((n) => n.id));
+  const reusedRelationships = previousPlan.relationships.filter((r) => reusedIds.has(r.from) && reusedIds.has(r.to));
+
+  let provenance: { providerId: string; role: ProviderRole; model: string } | undefined;
+  let fresh: { nodes?: unknown[]; relationships?: unknown[] } = {};
+  if (changed.length) {
+    onProgress?.({ stage: "analyzing", label: "Analyzing changes…" });
+    try {
+      // A section that was already there is re-analysed against what it shows now (F38b); a new one from scratch.
+      const shown = withoutUnitSections(previousPlan);
+      const reps = changed.map((u) => (before.has(u.key) && !forced.has(u.key) ? representationOf(shown, u.key) : null));
+      // A heading-only unit (e.g. a retitled document) is answered locally, never by a model (`headingOnlyReply`).
+      // A plain card (a merge's unplaced part) is shown as it is, also without a model call.
+      const plainTexts = options.plainUnits?.size ? [...options.plainUnits] : [];
+      const spans = input.text === original.text ? (options.plainSpans ?? []) : [];
+      const isPlain = (u: AnalysisUnit) => spans.some((sp) => u.span.start >= sp.start && u.span.start < sp.end) || plainTexts.some((t) => t.includes(normalizeUnitText(u.text)));
+      const replies = await Promise.all(
+        changed.map((u, i) =>
+          headingOnlyReply(u, template) || isPlain(u)
+            ? null
+            : runtime.run<GenerateVisualPlanInput, unknown>(
+                "generate_visual_plan",
+                // With the section's current representation, the facts of how its text changed (edited vs added paragraphs).
+                { template, ...changedInput(before.get(u.key) ?? "", u.text, reps[i]!) },
+                { signal },
+              ),
+        ),
+      );
+      throwIfAborted(signal);
+      const prefix = `v${input.previous.version + 1}_`;
+      const merged = mergeUnitPlans(
+        template,
+        replies.map((r, i) => ({ unitKey: changed[i]!.key, raw: r ? keptReply(r.data, reps[i]!, before.get(changed[i]!.key) ?? "", changed[i]!.text) : isPlain(changed[i]!) ? plainReply(changed[i]!, template) : headingOnlyReply(changed[i]!, template) })),
+        prefix,
+      );
+      // The section titles a first run framed (F42), as the flat headings the previous plan is compared as.
+      const unitInfo = units.map((u) => ({ key: u.key, headingOnly: !!headingOnlyReply(u, template) }));
+      fresh = groupByUnit(merged, template, unitInfo, { idPrefix: prefix, flat: true }) as typeof fresh;
+      const last = replies.filter((r) => r !== null).at(-1);
+      if (last) provenance = { providerId: last.providerId, role: last.role, model: last.usage.model };
+    } catch (err) {
+      if (err instanceof AIError && err.kind === "model_unavailable" && err.message === NO_PROVIDER_CONFIGURED_MESSAGE) throw new NoProviderConfiguredError(false);
+      throw err;
+    }
+  }
+  const raw = { version: 1, template, nodes: [...reused, ...(fresh.nodes ?? [])], relationships: [...reusedRelationships, ...(fresh.relationships ?? [])] };
+  return { raw, reanalyzedUnits, reusedUnits, provenance };
+}
+
+/**
+ * `ChangeSet.knowledge` for an update (knowledge-notes-plan WP1.10, lanes request): a distil run's cards (`finishKnowledgeRun` over the next
+ * version's units, with the lineage for the report v2), and a citation-driven update's rewritten cards. A run over only some sections (new
+ * ones) is accounted over the units those sections hold, so the rest of the document isn't read as unaccounted. Null when neither applies.
+ */
+function knowledgeOfUpdate(identity: NextIdentity | null, run: OutlinedUpdate["knowledge"], plan: VisualPlan, sourceId: string, cardsMode: CardsUpdateResult | null): ChangeSetKnowledge | null {
+  const cards: ChangeSetKnowledge["cards"] = { ...(cardsMode?.cards ?? {}) };
+  let report: ChangeSetKnowledge["report"];
+  let outcomes: ChangeSetKnowledge["units"];
+  if (identity && run?.sections.length) {
+    const held = new Set(run.sections.flatMap((s) => s.units));
+    const units: UnitSet = run.partial ? { units: identity.units.units.filter((u) => held.has(u.id)), nextId: identity.units.nextId } : identity.units;
+    const finished = finishKnowledgeRun({ units, plan, sections: run.sections, ...(identity.lineage ? { lineage: identity.lineage } : {}) });
+    Object.assign(cards, finished.cards);
+    report = finished.report;
+    outcomes = unitOutcomesOf(finished.run);
+    rememberKnowledgeRun(sourceId, finished.run);
+  }
+  if (!Object.keys(cards).length && !report) return null;
+  return { cards, ...(report ? { report } : {}), ...(outcomes ? { units: outcomes } : {}) };
+}
+
+/**
+ * The organisation rules a source's objects were laid out with (organisation-layout plan §3.0): "v2" when any of them was made under the
+ * distil note model (`AIMetadata.noteModel`, §6.2), else "v1", today's rules.
+ */
+export function sourceOrganisation(existing: readonly Pick<ExistingObject, "noteModel">[]): Organisation {
+  return organisationFor(existing.some((o) => o.noteModel === "distil") ? "distil" : "preserve");
 }
 
 /** The units an earlier section's unit `key` is now: itself, its numbered parts once it grew past `MAX_UNIT_CHARS`, or the whole unit again. */
@@ -387,6 +529,38 @@ function keyedUnits(previousParsed: ParsedContent, parsed: ParsedContent, input:
 }
 
 /** A split block (F42 Phase 4) whose content the source changed is kept as the user split it, and said so. */
+/**
+ * Locked sections (Stage 1e): new nodes of a section whose frame is locked are not added (the section is left as it is), and the
+ * locked cards the source changed — or no longer has — are counted, so the review can say what it left alone.
+ */
+function withoutLockedSections(
+  reconciliation: ReconciliationPlan,
+  existing: readonly ExistingObject[],
+  plan: VisualPlan,
+  grouped: VisualPlan | null,
+  previous: VisualPlan,
+  fingerprint: (n: VisualNode) => string,
+): { reconciliation: ReconciliationPlan; skippedLocked: number } {
+  const next = new Map(plan.nodes.flatMap((n) => (n.stableKey ? [[n.stableKey, n] as const] : [])));
+  const before = new Map(previous.nodes.flatMap((n) => (n.stableKey ? [[n.stableKey, n] as const] : [])));
+  const changed = reconciliation.skipped.filter((o) => {
+    if (!o.locked) return false;
+    const now = next.get(o.stableNodeKey);
+    const was = before.get(o.stableNodeKey);
+    return !now || !was || fingerprint(now) !== fingerprint(was);
+  }).length;
+  const sectionOf = sectionOfNode(plan, grouped);
+  const lockedSections = new Set(
+    existing.flatMap((o) => {
+      const node = o.locked === "section" ? next.get(o.stableNodeKey) : undefined;
+      return node ? [sectionOf.get(node.id) ?? node.id] : [];
+    }),
+  );
+  if (!lockedSections.size) return { reconciliation, skippedLocked: changed };
+  const items = reconciliation.items.filter((i) => i.state !== "add" || !(lockedSections.has(i.node.id) || lockedSections.has(sectionOf.get(i.node.id) ?? "")));
+  return { reconciliation: { ...reconciliation, items }, skippedLocked: changed + reconciliation.items.length - items.length };
+}
+
 export function splitNotices(reconciliation: ReconciliationPlan): string[] {
   const changed = reconciliation.splits.filter((s) => s.changed);
   if (!changed.length) return [];
@@ -414,6 +588,8 @@ interface OutlinedUpdate {
   provenance: { providerId: string; role: ProviderRole; model: string } | undefined;
   /** The document's sections after this update, for storing its plan grouped again (`regroupSections`). */
   sections: OutlineSection[];
+  /** Distil mode: the knowledge of the sections this update generated through `visualizeOutlined`; `partial` when not the whole document. */
+  knowledge?: { sections: NonNullable<OutlinedResult["knowledge"]>["sections"]; partial: boolean };
 }
 
 /**
@@ -432,6 +608,9 @@ async function updateOutlined(
   previousGrouped: VisualPlan,
   previousPlan: VisualPlan,
   options: UpdateOptions,
+  organisation: Organisation = "v1",
+  /** Distil mode: the next version's units, so the sections generated here cite them (WP1.10). */
+  sourceUnits?: UnitSet,
 ): Promise<OutlinedUpdate> {
   const { signal, onProgress } = options;
   const prefix = `v${input.previous.version + 1}_`;
@@ -470,9 +649,20 @@ async function updateOutlined(
   const sameParts = (keptAll && !added.length) || forced.size > 0;
   try {
     if (!sameParts && !added.length) {
-      const r = await visualizeOutlined(units, runtime, { signal, idPrefix: prefix, flat: true, onProgress: (label) => onProgress?.({ stage: "analyzing", label }) });
+      const r = await visualizeOutlined(units, runtime, { signal, idPrefix: prefix, flat: true, onProgress: (label) => onProgress?.({ stage: "analyzing", label }), ...(sourceUnits ? { sourceUnits } : {}) });
       failIfIncomplete(r.failed, options);
-      return { raw: r.raw, reanalyzedUnits: r.sections.map((s) => s.key), plainCards: [], plainMissed: [], economy: [], planSkips: [], reusedUnits: [], provenance: r.provenance, sections: r.sections };
+      return {
+        raw: r.raw,
+        reanalyzedUnits: r.sections.map((s) => s.key),
+        plainCards: [],
+        plainMissed: [],
+        economy: [],
+        planSkips: [],
+        reusedUnits: [],
+        provenance: r.provenance,
+        sections: r.sections,
+        ...(r.knowledge ? { knowledge: { sections: r.knowledge.sections, partial: false } } : {}),
+      };
     }
     const byKey = new Map(units.map((u) => [u.key, u] as const));
     const changedSections = sections.filter((s) => (forced.size ? forced.has(s.key) : s.units.join(SECTION_KEY_JOINER) !== s.was.join(SECTION_KEY_JOINER) || s.units.some((k) => !unchanged(byKey.get(k)!))));
@@ -523,6 +713,7 @@ async function updateOutlined(
         changedTitles: previousPlan.nodes.filter((n) => n.stableKey?.endsWith(UNIT_SECTION_SUFFIX) && changedKeys.has(unitOfKey(n.stableKey) ?? "")).length,
       };
     }
+    let editedSectionsKnowledge: NonNullable<OutlinedResult["knowledge"]>["sections"] = [];
     if (changedSections.length || titleChanged) {
       onProgress?.({ stage: "analyzing", label: "Analyzing changes…" });
       const failures: string[] = [];
@@ -538,6 +729,9 @@ async function updateOutlined(
       const expectation = capacity?.counted !== undefined ? capacity.counted + regeneratedNodes : undefined;
       const held = changedSections.map((_s, i) => !!capacity && !noRoom && orphan[i] && pure[i] && regenerated.some(Boolean) && expectation !== undefined && expectation >= capacity.cap);
       const facts: (NonNullable<OutlinedUpdate["capacity"]>["orphans"][number] | undefined)[] = changedSections.map(() => undefined);
+      /** Distil: each edited section's knowledge from its labelled generation, with the reply's own node ids (prefixed once assembled). */
+      const editedKnowledge: (NonNullable<OutlinedResult["knowledge"]>["sections"][number] | undefined)[] = changedSections.map(() => undefined);
+      let editedProvenance: OutlinedUpdate["provenance"];
       const settle = async (i: number, skipOrphan: boolean, afterHold: boolean) => {
         const s = changedSections[i]!;
         // Economy mode: text only appended to a section that is already drawn becomes verbatim cards, without a model call. So does a grown
@@ -555,6 +749,21 @@ async function updateOutlined(
           return { data: cards as unknown, result: null };
         }
         const asked = changedInput(beforeText(s), sectionText(s, units), reps[i]!);
+        if (sourceUnits && !asked.appended) {
+          // Distil (WP1.10, Study Mode's report 2026-11-15): an edited (or orphan) section is generated as a new section is — its source
+          // labelled with the next version's units, under the distil note model, with the distil checks — so its cards cite what they say.
+          // No outline call: the section is given (`reuse`, nothing kept). The preserve prompt (`changedInput`) is never used here.
+          const r = await visualizeOutlined(
+            units.filter((u) => s.units.includes(u.key)),
+            runtime,
+            { signal, flat: true, noteModel: "distil", sourceUnits, reuse: { outline: { sections: [s], links: [] }, replies: new Map(), retry: new Map() } },
+          );
+          for (const f of r.failed) failures.push(`Section "${f.label}" couldn't be analysed (${f.cause}), so its own structure is shown.`);
+          const reply = r.replies.get(s.key);
+          if (reply?.knowledge) editedKnowledge[i] = { ...reply.knowledge, key: s.key, label: s.label };
+          if (r.provenance) editedProvenance = r.provenance;
+          return { data: reply?.raw, result: null };
+        }
         // Only appended paragraphs are numbered, so a block that is a new concept can be placed by reference (`appendedRefs.ts`).
         const refs = asked.appended ? await numberAppended(asked.text) : null;
         const r = await generateSection(
@@ -588,7 +797,7 @@ async function updateOutlined(
             prefix,
           ),
           idx.map((i) => changedSections[i]!),
-          { idPrefix: prefix, flat: true, titleKey: titleChanged ? title!.key : null },
+          { idPrefix: prefix, flat: true, titleKey: titleChanged ? title!.key : null, ...(organisation === "v2" ? { organisation } : {}) },
         ) as typeof fresh;
       const startedAt = Date.now();
       const heldIdx = changedSections.flatMap((_s, i) => (held[i] ? [i] : []));
@@ -623,9 +832,13 @@ async function updateOutlined(
       );
       const last = replies.flatMap((r) => (r?.result ? [r.result] : [])).at(-1);
       if (last) provenance = { providerId: last.providerId, role: last.role, model: last.usage.model };
+      else if (editedProvenance) provenance = editedProvenance;
+      // Node ids as `assemble` merged them (`mergeUnitPlans`: `<prefix>u<i>_<id>`, the changed title first).
+      editedSectionsKnowledge = editedKnowledge.flatMap((k, i) => (k ? [{ ...prefixKnowledge(k, `${prefix}u${i + (titleChanged ? 1 : 0)}_`), key: k.key, label: k.label }] : []));
     }
     // The new parts' own sections (G2.3), without that run's document-level nodes (the notes keep their own subtitle).
     let addedSections: OutlineSection[] = [];
+    let addedKnowledge: OutlinedUpdate["knowledge"];
     let plainSections: OutlineSection[] = [];
     let plainMissed: UpdateResult["plainMissed"] = [];
     if (added.length) {
@@ -661,8 +874,9 @@ async function updateOutlined(
         addedSections = cards.sections;
         for (const sec of cards.sections) planSkips.push({ section: sec.key, path: "added", units: sec.units.length, cards: 1 });
       } else if (generated.length) {
-        const r = await visualizeOutlined(generated, runtime, { signal, idPrefix: `${prefix}n_`, flat: true, onProgress: (label) => onProgress?.({ stage: "analyzing", label }) });
+        const r = await visualizeOutlined(generated, runtime, { signal, idPrefix: `${prefix}n_`, flat: true, onProgress: (label) => onProgress?.({ stage: "analyzing", label }), ...(sourceUnits ? { sourceUnits } : {}) });
         failIfIncomplete(r.failed, options);
+        if (r.knowledge) addedKnowledge = { sections: r.knowledge.sections, partial: true };
         const own = r.raw as { nodes?: VisualNode[]; relationships?: VisualPlan["relationships"] };
         const nodes = (own.nodes ?? []).filter((n) => !n.stableKey || unitOfKey(n.stableKey) !== OUTLINE_UNIT);
         const ids = new Set(nodes.map((n) => n.id));
@@ -687,6 +901,8 @@ async function updateOutlined(
       reusedUnits: sections.filter((s) => !changedSections.includes(s)).map((s) => s.key),
       provenance,
       sections: [...sections, ...addedSections, ...plainSections],
+      // Distil: the edited sections' knowledge and the new sections', over the units those sections hold (`partial`).
+      ...(editedSectionsKnowledge.length || addedKnowledge ? { knowledge: { sections: [...editedSectionsKnowledge, ...(addedKnowledge?.sections ?? [])], partial: true } } : {}),
     };
   } catch (err) {
     if (err instanceof AIError && err.kind === "model_unavailable" && err.message === NO_PROVIDER_CONFIGURED_MESSAGE) throw new NoProviderConfiguredError(false);
@@ -707,9 +923,20 @@ async function buildChangeSet(
   stored: VisualPlan,
   /** Where the new text changes its mind (G3.3), kept with its version. */
   revisions: readonly Revision[] = [],
+  organisation: Organisation = "v1",
+  /**
+   * Knowledge Notes: changes the plan can't express (a citation-driven update's review marks and moves between sections), the cards'
+   * citations and review, the next version's units and lineage, and the note model the set's objects are made under.
+   */
+  knowledgeParts: { extra: ProposedChange[]; knowledge?: ChangeSetKnowledge; identity?: NextIdentity; noteModel?: "distil" } = { extra: [] },
+  /**
+   * The update policy (Stage 1c, 1e): claim-level patches on or off; whether cards changed since AI wrote them keep the conflict card;
+   * the previous version's plan (what AI last wrote for each card); and how many locked cards were skipped, for the review bar.
+   */
+  policy: { claimPatches?: boolean; preserveEditedCards?: boolean; previous?: VisualPlan; skippedLocked?: number } = {},
 ): Promise<ChangeSet | null> {
   const items = reviewItems(reconciliation);
-  const metadata = provenanceMetadata(input.operationId, provenance);
+  const metadata: ChangeSet["metadata"] = { ...provenanceMetadata(input.operationId, provenance), ...(knowledgeParts.noteModel ? { noteModel: knowledgeParts.noteModel } : {}) };
   const changes: ProposedChange[] = [];
   const conflicts: ConflictItem[] = [];
 
@@ -718,7 +945,7 @@ async function buildChangeSet(
   const added: VisualNode[] = items.flatMap((i) => (i.state === "add" ? [i.node] : []));
   const ids = new Set(added.map((n) => n.id));
 
-  if (added.length) changes.push(...(await placeAdds(input, plan, grouped, added, matched, metadata, parseMarkdown)));
+  if (added.length) changes.push(...(await placeAdds(input, plan, grouped, added, matched, metadata, parseMarkdown, organisation)));
 
   // Connectors. A link to or from a new node is added; between two existing objects, this source's own arrows are rewired to match
   // the plan — a missing link is added, one the plan no longer has is proposed for removal. The user's own arrows are never touched.
@@ -750,18 +977,40 @@ async function buildChangeSet(
     changes.push({ kind: "remove", target: c.arrowId });
   }
 
+  // What AI last wrote for each card: the previous version's node (Stage 1e), to tell the source's change from the user's.
+  const previousNodes = new Map((policy.previous?.nodes ?? []).flatMap((n) => (n.stableKey ? [[n.stableKey, n] as const] : [])));
+  const edited = (object: ExistingObject, update: ReturnType<typeof updateChange>) => {
+    const before = previousNodes.get(object.stableNodeKey);
+    const base = before ? updateChange(before, object.objectId, parseMarkdown) : null;
+    return editedCardUpdate(update, object, base?.kind === "update_block" ? { content: base.content, ...(base.title ? { title: base.title } : {}) } : null, policy);
+  };
   for (const item of items) {
-    if (item.state === "update_clean") changes.push(updateChange(item.node, item.object.objectId, parseMarkdown));
-    else if (item.state === "remove") changes.push({ kind: "remove", target: item.object.objectId });
+    if (item.state === "update_clean") {
+      // A shape's relabel carries the label it was planned against (stale-target protection, `staleTarget.ts`).
+      const update = shapeBaseline(updateChange(item.node, item.object.objectId, parseMarkdown), item.object.current);
+      // Untouched since it was last written — but a card whose last write was a merge into the user's wording (or "Keep mine") still reads
+      // in the user's words (`userWording`, stamped by the writer), and is updated as an edited one.
+      const aiWording = !item.object.userWording;
+      let planned = aiWording ? claimLevelUpdate(update, item.object) : edited(item.object, update);
+      if (aiWording && policy.claimPatches === false && "change" in planned && planned.change.kind === "patch_block") planned = { change: update };
+      // A change that contradicts the card (or is too unclear to apply) needs a decision, like an edit of the user's (Stage 1a).
+      if ("conflict" in planned) conflicts.push(planned.conflict);
+      else changes.push(planned.change);
+    } else if (item.state === "remove") changes.push({ kind: "remove", target: item.object.objectId });
     else if (item.state === "update_conflict") {
-      conflicts.push({
-        target: item.object.objectId,
-        stableNodeKey: item.object.stableNodeKey,
-        apply: updateChange(item.node, item.object.objectId, parseMarkdown),
-        keep: { kind: "rebaseline", target: item.object.objectId, stableNodeKey: item.object.stableNodeKey },
-      });
+      const planned = edited(item.object, shapeBaseline(updateChange(item.node, item.object.objectId, parseMarkdown), item.object.current));
+      if ("conflict" in planned) conflicts.push(planned.conflict);
+      else changes.push(planned.change);
     }
   }
+  // A move between sections replaces any make-room move of the same card; a card being removed gets no review mark or move.
+  const moving = new Set(knowledgeParts.extra.flatMap((c) => (c.kind === "move" ? [c.target] : [])));
+  const removing = new Set(changes.flatMap((c) => (c.kind === "remove" ? [c.target] : [])));
+  for (let i = changes.length - 1; i >= 0; i--) {
+    const c = changes[i]!;
+    if (c.kind === "move" && moving.has(c.target)) changes.splice(i, 1);
+  }
+  changes.push(...knowledgeParts.extra.filter((c) => !("target" in c) || !removing.has(c.target)));
   if (!changes.length && !conflicts.length) return null;
 
   return {
@@ -770,6 +1019,8 @@ async function buildChangeSet(
     metadata,
     changes,
     ...(conflicts.length ? { conflicts } : {}),
+    ...(knowledgeParts.knowledge ? { knowledge: knowledgeParts.knowledge } : {}),
+    ...(policy.skippedLocked ? { skipped: { locked: policy.skippedLocked } } : {}),
     contentSource: {
       sourceId: input.source.id,
       version: input.previous.version + 1,
@@ -780,6 +1031,8 @@ async function buildChangeSet(
       plan: stored,
       ...(revisions.length ? { revisions: [...revisions] } : {}),
       ...(pathIds ? { pathIds: { ...pathIds } } : {}),
+      // The units the cards cite are the version's own (recorded with it on Accept).
+      ...(knowledgeParts.identity ? { units: knowledgeParts.identity.units, ...(knowledgeParts.identity.lineage ? { lineage: knowledgeParts.identity.lineage } : {}) } : {}),
     },
   };
 }
@@ -817,6 +1070,7 @@ async function placeAdds(
   matched: ReadonlyMap<string, ExistingObject>,
   metadata: ChangeSet["metadata"],
   parseMarkdown: ParseMarkdown,
+  organisation: Organisation = "v1",
 ): Promise<ProposedChange[]> {
   const ids = new Set(added.map((n) => n.id));
   const parentOf = new Map(plan.relationships.flatMap((r) => (r.type === "explained_by" && ids.has(r.to) && matched.get(r.from)?.box ? [[r.to, r.from] as const] : [])));
@@ -877,8 +1131,8 @@ async function placeAdds(
     const sectionId = key.startsWith("section:") ? key.slice("section:".length) : null;
     const sub: VisualPlan = sectionId ? sectionPlan(plan, grouped, sectionId, nodes, internal) : { ...plan, nodes, relationships: internal };
     // The existing section frame these objects join, if any.
-    const joins = sectionId ? null : frameToJoin(nodes, sectionOf, matched, plan);
     let anchored = groupAnchor(key, plan, groupIds, matched, boxNow);
+    const joins = sectionId ? null : frameToJoin(nodes, sectionOf, matched, plan, anchored.anchorIds?.[0]);
     if (joins && !anchored.anchor) {
       const bottom = (o: ExistingObject) => boxNow(o).y + boxNow(o).height;
       const lowest = [...matched.values()]
@@ -890,7 +1144,7 @@ async function placeAdds(
     const context: RenderContext = anchored.anchor
       ? { ...anchored, viewport: input.context.viewport, existing, ...(objects ? { objects } : {}) }
       : { viewport: input.context.viewport, existing, ...(input.context.anchor ? { anchor: input.context.anchor } : {}) };
-    const rendered = await renderVisualPlan(sub, { operationId: input.operationId, title: input.title, metadata, context, parseMarkdown });
+    const rendered = await renderVisualPlan(sub, { operationId: input.operationId, title: input.title, metadata, context, parseMarkdown, ...(organisation === "v2" ? { organisation } : {}) });
     const createdKeys: string[] = [];
     for (const c of rendered.changes) {
       if (c.kind === "move") {
@@ -938,19 +1192,29 @@ function oneJoinPerFrame(changes: ProposedChange[]): ProposedChange[] {
   return out;
 }
 
-/** The frame of the first node's section whose title object is on the canvas in one, with that section's title. */
+/**
+ * The frame of the first node's section whose title object is on the canvas in one, with that section's title. A
+ * section split into parts (organisation v2, F6: part 1 holds the title, later parts are `<group>::part<i>` frames) is
+ * several frames: the adds join the part holding their anchor (`anchorId`, the object they are placed beside) when it is
+ * one of the section's frames — a frame holding one of the section's objects — else part 1, the title's frame.
+ */
 function frameToJoin(
   nodes: readonly VisualNode[],
   sectionOf: ReadonlyMap<string, string>,
   matched: ReadonlyMap<string, ExistingObject>,
   plan: VisualPlan,
+  anchorId?: string,
 ): { frameId: string; section: string | undefined } | null {
+  const anchorFrame = anchorId ? [...matched.values()].find((o) => o.objectId === anchorId)?.frameId : undefined;
   for (const n of nodes) {
     const title = sectionOf.get(n.id);
-    const frameId = title ? matched.get(title)?.frameId : undefined;
-    if (!frameId) continue;
+    const titleFrame = title ? matched.get(title)?.frameId : undefined;
+    if (!title || !titleFrame) continue;
     const heading = plan.nodes.find((t) => t.id === title);
-    return { frameId, section: heading?.type === "heading" ? heading.content.text : undefined };
+    const section = heading?.type === "heading" ? heading.content.text : undefined;
+    const ofSection = (frameId: string) => [...matched].some(([id, o]) => o.frameId === frameId && (id === title || sectionOf.get(id) === title));
+    const frameId = anchorFrame && anchorFrame !== titleFrame && ofSection(anchorFrame) ? anchorFrame : titleFrame;
+    return { frameId, section };
   }
   return null;
 }

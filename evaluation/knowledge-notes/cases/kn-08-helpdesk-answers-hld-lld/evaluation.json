@@ -1355,7 +1355,10 @@
         "element": "e.gateway",
         "all": [
           [
-            "only"
+            "only",
+            "sole",
+            "exclusive",
+            "no other component"
           ]
         ],
         "why": "the Model Gateway is the only component allowed to call the provider (u5)"
@@ -1404,7 +1407,8 @@
           [
             "may",
             "might",
-            "can be"
+            "can be",
+            "could"
           ],
           [
             "less relevant"
@@ -1470,7 +1474,12 @@
             "504"
           ],
           [
-            "no partial"
+            "no partial",
+            "never a partial",
+            "never partial",
+            "not a partial",
+            "without a partial",
+            "nothing partial"
           ]
         ],
         "why": "u28, u29"
@@ -1509,8 +1518,8 @@
       "description": "No card claims a timed-out request returns a partial answer.",
       "check": {
         "check": "text_absent",
-        "pattern": "(?<!no )partial answer (is )?(returned|shown) (on|after|when)[^.]{0,20}time",
-        "why": "a timeout shows no partial answer (u29)"
+        "pattern": "time[sd]? ?out[^.;\\n]{0,40}(?:return|show|send|give)s? (?:a |the )?partial|(?<!\\b(?:no|never|not) )partial (?:answer|result)s? (?:is |are )?(?:returned|shown|sent)[^.;\\n]{0,30}time",
+        "why": "a timeout shows no partial answer (u29); only the unmatched-citation path marks an answer partial (u30)"
       }
     },
     {
@@ -2199,6 +2208,71 @@
       "description": "Level frames don't overlap.",
       "check": {
         "check": "frames_no_overlap"
+      }
+    },
+    {
+      "id": "a.crossings",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No link crossings (today's reference as the gate renders it, organisation v1; organisation-layout plan Q11).",
+      "check": {
+        "check": "layout_crossings_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.reading-order",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Frames read in the plan's order (top to bottom, each row left to right): no pair out of order as the gate renders today (v1).",
+      "check": {
+        "check": "reading_order_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.fit-screen",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "Every frame can be read whole at the readable zoom on the fit screen.",
+      "check": {
+        "check": "frames_fit_screen"
+      }
+    },
+    {
+      "id": "a.links-over-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "No card-to-card link passes over a third frame (today's reference rendered by the gate, v1).",
+      "check": {
+        "check": "links_over_frames_max",
+        "max": 0
+      }
+    },
+    {
+      "id": "a.rendered-frames",
+      "dimension": "visual",
+      "severity": "major",
+      "method": "deterministic",
+      "target": "render",
+      "support": "implemented",
+      "description": "The frames are drawn as planned: 7 frames on the canvas (the layout view of a.frame-count).",
+      "check": {
+        "check": "rendered_frame_count",
+        "min": 7,
+        "max": 7
       }
     },
     {

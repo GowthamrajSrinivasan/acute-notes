@@ -1,0 +1,95 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-collapsed-one-frame",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "Every card is put into the Core services frame: clients, edge, storage, async processing, external services and open questions collapse into one frame too large to read whole on the fit screen.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "n-mobile",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-web",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-gateway",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-objstore",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-metadata",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-cache",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-dec-meta",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-dec-cache",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-queue",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-workers",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-dec-queue",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-cdn",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-push",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-dec-buy",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-open-retry",
+      "group": "g-core"
+    },
+    {
+      "op": "move_to_group",
+      "node": "n-open-precompute",
+      "group": "g-core"
+    }
+  ],
+  "expectFailing": [
+    "a.fit-screen",
+    "a.rendered-frames",
+    "a.frame-count"
+  ]
+}

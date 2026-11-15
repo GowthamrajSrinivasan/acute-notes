@@ -1,0 +1,17 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-dashboard-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The per-environment 5xx dashboard prerequisite (u12, critical) is dropped.",
+  "mutations": [
+    {
+      "op": "remove_node",
+      "node": "n17"
+    }
+  ],
+  "expectFailing": [
+    "a.prereq-dashboard"
+  ]
+}

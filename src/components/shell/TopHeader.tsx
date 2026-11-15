@@ -3,6 +3,7 @@
 import { memo, useEffect, useState } from "react";
 import { aiPanel, OPEN_AI_SETTINGS_EVENT, useAIMode } from "@/components/ai/askAI";
 import { visualizeDialog } from "@/components/ai/visualizeStore";
+import { placeDialog } from "@/components/ai/placeContent";
 import { isAIFeatureEnabled, isMcpUiEnabled } from "@/config/features";
 import { PanelLeftIcon } from "@/components/common/icons";
 import { RenameInput } from "@/components/common/RenameInput";
@@ -99,6 +100,7 @@ export const TopHeader = memo(function TopHeader({
                       { label: "AI conversations", onSelect: () => aiPanel.openHistory("all") },
                       { label: "Agent log", onSelect: () => aiPanel.openAgentHistory() },
                       { label: "Visualize content…", onSelect: () => visualizeDialog.open() },
+                      { label: "Place text in notes…", onSelect: () => placeDialog.open() },
                     ]
                   : []),
                 ...(onCreateDemoCanvas

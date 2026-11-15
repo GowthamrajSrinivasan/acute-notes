@@ -130,3 +130,21 @@ describe("copilotProvider misc", () => {
     expect(createCopilotProvider().capabilities.structuredOutput).toBe("json_mode");
   });
 });
+
+describe("copilotProvider — output cap and reasoning effort (§12.25)", () => {
+  it("declares outputCap 'passed' only for a BYOK connection", () => {
+    expect(createCopilotProvider({ byok: { type: "openai", baseUrl: "https://x.test/v1", apiKey: "k" } }).capabilities.outputCap).toBe("passed");
+    expect(createCopilotProvider({ gitHubToken: "gho" }).capabilities.outputCap).toBe("ignored");
+  });
+
+  it("sends maxTokens and reasoningEffort on the wire when a request sets them, and nothing extra otherwise", async () => {
+    const fetchMock = vi.fn(async () => jsonResponse({ text: "", model: "m", finishReason: "stop", usage: { provider: "copilot", model: "m" } }));
+    vi.stubGlobal("fetch", fetchMock);
+    const provider = createCopilotProvider({ byok: { type: "openai", baseUrl: "https://x.test/v1", apiKey: "k" } });
+    await provider.generate(baseRequest({ maxTokens: 1_300, reasoningEffort: "low" }));
+    await provider.generate(baseRequest());
+    const bodies = fetchMock.mock.calls.map((c) => JSON.parse((c as unknown as [string, RequestInit])[1].body as string).request);
+    expect(bodies[0]).toMatchObject({ maxTokens: 1_300, reasoningEffort: "low" });
+    expect(bodies[1]).not.toHaveProperty("reasoningEffort");
+  });
+});

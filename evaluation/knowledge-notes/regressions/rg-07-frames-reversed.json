@@ -1,0 +1,15 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-07-frames-reversed",
+  "distortion": "frame_order_breaks_layout",
+  "caseId": "kn-07-photo-sharing-hld",
+  "target": "plan",
+  "description": "The same frames and cards with the frames in reverse order, as another outline might give them: the layout draws links through cards and crosses more links than the cap.",
+  "mutations": [
+    {
+      "op": "shuffle_groups",
+      "order": ["g-open", "g-external", "g-async", "g-storage", "g-core", "g-edge", "g-clients"]
+    }
+  ],
+  "expectFailing": ["a.layout", "a.crossings"]
+}

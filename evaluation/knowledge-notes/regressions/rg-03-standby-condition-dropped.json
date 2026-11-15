@@ -1,0 +1,19 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-03-standby-condition-dropped",
+  "distortion": "critical_exception_omitted",
+  "caseId": "kn-03-blue-green-deploy",
+  "target": "plan",
+  "description": "The standby step loses its condition (u39): no next-release migrations while blue is on standby.",
+  "mutations": [
+    {
+      "op": "replace_text",
+      "node": "n13",
+      "find": "Do not run the next release's migrations while blue is on standby, or switching back stops being safe",
+      "replace": "Blue stays unchanged"
+    }
+  ],
+  "expectFailing": [
+    "a.standby-condition"
+  ]
+}

@@ -1,0 +1,788 @@
+{
+  "snapshotFilesVerified": 41,
+  "records": 270,
+  "linked": 250,
+  "xyBoth": 235,
+  "xy": {
+    "exact": 194,
+    "disjoint": 39,
+    "overlap": 2
+  },
+  "disjointKinds": {
+    "section+section": 8,
+    "local+section": 13,
+    "elsewhere+local": 9,
+    "elsewhere+section": 4,
+    "local+local": 2,
+    "elsewhere+elsewhere": 3
+  },
+  "candidates": [
+    {
+      "case": "kn-01-idempotency-keys",
+      "id": "k2",
+      "units": [
+        "u6"
+      ],
+      "clause": "while the server still remembers them",
+      "verdict": "claim",
+      "status": "agreed",
+      "rule": "general",
+      "adjudicatedLink": [
+        "u6"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u2"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-01-idempotency-keys",
+      "id": "k4",
+      "units": [
+        "u7"
+      ],
+      "clause": "In this design",
+      "verdict": "set",
+      "status": "adjudicated",
+      "rule": "R5",
+      "adjudicatedLink": [
+        "u7"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u2"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k4",
+      "units": [
+        "u11"
+      ],
+      "clause": "for up to the remaining 240 seconds",
+      "verdict": "set",
+      "status": "adjudicated",
+      "rule": "general",
+      "adjudicatedLink": [
+        "u11"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u6"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k7",
+      "units": [
+        "u16"
+      ],
+      "clause": "but it is not applied everywhere at the same moment",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "R4",
+      "adjudicatedLink": [
+        "u16"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u14"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k11",
+      "units": [
+        "u20"
+      ],
+      "clause": "until it is purged separately or expires",
+      "verdict": "set",
+      "status": "adjudicated",
+      "rule": "general",
+      "adjudicatedLink": [
+        "u20"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u15"
+      ],
+      "proposedBy": "Y"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k11",
+      "units": [
+        "u20"
+      ],
+      "clause": "until it is purged separately or expires",
+      "verdict": "set",
+      "status": "adjudicated",
+      "rule": "general",
+      "adjudicatedLink": [
+        "u20"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u13",
+        "u14"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k20",
+      "units": [
+        "u40"
+      ],
+      "clause": "where a minute of staleness is acceptable",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "R4",
+      "adjudicatedLink": [
+        "u37"
+      ],
+      "adjudicatedLevel": "section",
+      "secondLink": [
+        "u40"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k21",
+      "units": [
+        "u40"
+      ],
+      "clause": "but not on live election results",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "R4",
+      "adjudicatedLink": [
+        "u37"
+      ],
+      "adjudicatedLevel": "section",
+      "secondLink": [
+        "u40"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k27",
+      "units": [
+        "u44"
+      ],
+      "clause": "but it also means some readers see a copy that is older than the TTL alone would suggest",
+      "verdict": "claim",
+      "status": "agreed",
+      "rule": "R3",
+      "adjudicatedLink": [
+        "u44"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u39"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-02-edge-cache-invalidation",
+      "id": "k31",
+      "units": [
+        "u52"
+      ],
+      "clause": "for at least as long as the longest HTML TTL",
+      "verdict": "claim",
+      "status": "agreed",
+      "rule": "R1",
+      "adjudicatedLink": [
+        "u52"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u46"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-03-blue-green-deploy",
+      "id": "k10",
+      "units": [
+        "u17"
+      ],
+      "clause": "until all of them return `200`",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "R4",
+      "adjudicatedLink": [
+        "u17"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u19"
+      ],
+      "proposedBy": "Y"
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k2",
+      "units": [
+        "u29"
+      ],
+      "clause": "for checkout specifically",
+      "verdict": "claim",
+      "status": "agreed",
+      "rule": "R5",
+      "adjudicatedLink": [
+        "u29"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u33"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k4",
+      "units": [
+        "u30"
+      ],
+      "clause": "I checked the last 30 days",
+      "verdict": "set",
+      "status": "agreed",
+      "rule": "R2",
+      "adjudicatedLink": [
+        "u30"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u33"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k20",
+      "units": [
+        "u73"
+      ],
+      "clause": "I think we'd see a pattern if we looked",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "R2",
+      "adjudicatedLink": [
+        "u73"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u69"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k23",
+      "units": [
+        "u76"
+      ],
+      "clause": "from the last six months",
+      "verdict": "set",
+      "status": "agreed",
+      "rule": "R1",
+      "adjudicatedLink": [
+        "u76"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u63"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k31",
+      "units": [
+        "u87"
+      ],
+      "clause": "We don't know how many releases include migrations.",
+      "verdict": "set",
+      "status": "agreed",
+      "rule": "R2",
+      "adjudicatedLink": [
+        "u86"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u79"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k35",
+      "units": [
+        "u93"
+      ],
+      "clause": "nobody has looked yet",
+      "verdict": "set",
+      "status": "adjudicated",
+      "rule": "R2",
+      "adjudicatedLink": [
+        "u94"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u90"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k35",
+      "units": [
+        "u93"
+      ],
+      "clause": "nobody has looked yet",
+      "verdict": "set",
+      "status": "adjudicated",
+      "rule": "R2",
+      "adjudicatedLink": [
+        "u94"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u95"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k36",
+      "units": [
+        "u94"
+      ],
+      "clause": "That's an open question too",
+      "verdict": "claim",
+      "status": "agreed",
+      "rule": "general",
+      "adjudicatedLink": [
+        "u90"
+      ],
+      "adjudicatedLevel": "section",
+      "secondLink": [
+        "u95"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k7",
+      "units": [
+        "u15"
+      ],
+      "clause": "whenever the encoder changes",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "general",
+      "adjudicatedLink": [
+        "u15"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u10"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k8",
+      "units": [
+        "u15"
+      ],
+      "clause": "for this collection takes about 6 hours",
+      "verdict": "set",
+      "status": "adjudicated",
+      "rule": "R4",
+      "adjudicatedLink": [
+        "u15"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u10"
+      ],
+      "proposedBy": "Y"
+    },
+    {
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k13",
+      "units": [
+        "u25"
+      ],
+      "clause": "but it roughly doubled the time spent reranking",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "R3",
+      "adjudicatedLink": [
+        "u25"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u23"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-06-hybrid-search-reranking",
+      "id": "k27",
+      "units": [
+        "u46"
+      ],
+      "clause": "a different reranker will have a different latency",
+      "verdict": "set",
+      "status": "agreed",
+      "rule": "R2",
+      "adjudicatedLink": [
+        "u45"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u41",
+        "u42",
+        "u43",
+        "u44"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-07-photo-sharing-hld",
+      "id": "k5",
+      "units": [
+        "u11"
+      ],
+      "clause": "never by the gateway",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "R4",
+      "adjudicatedLink": [
+        "u8"
+      ],
+      "adjudicatedLevel": "section",
+      "secondLink": [
+        "u11"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k7",
+      "units": [
+        "u25"
+      ],
+      "clause": "If the Reranker does not respond within 800 ms",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "R4",
+      "adjudicatedLink": [
+        "u25"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u21"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k8",
+      "units": [
+        "u25"
+      ],
+      "clause": "If the Reranker does not respond within 800 ms",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "R4",
+      "adjudicatedLink": [
+        "u21"
+      ],
+      "adjudicatedLevel": "section",
+      "secondLink": [
+        "u25"
+      ],
+      "proposedBy": "Y"
+    },
+    {
+      "case": "kn-08-helpdesk-answers-hld-lld",
+      "id": "k9",
+      "units": [
+        "u26"
+      ],
+      "clause": "but the 8 passages may then be less relevant",
+      "verdict": "claim",
+      "status": "agreed",
+      "rule": "R3",
+      "adjudicatedLink": [
+        "u26"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u21"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-09-billing-codebase-map",
+      "id": "k7",
+      "units": [
+        "u29"
+      ],
+      "clause": "until someone traces it",
+      "verdict": "set",
+      "status": "adjudicated",
+      "rule": "R1",
+      "adjudicatedLink": [
+        "u29"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u27"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k4",
+      "units": [
+        "u15"
+      ],
+      "clause": "not confirmed within 15 minutes",
+      "verdict": "claim",
+      "status": "agreed",
+      "rule": "general",
+      "adjudicatedLink": [
+        "u15"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u13"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k10",
+      "units": [
+        "u37"
+      ],
+      "clause": "capped at 60 seconds",
+      "verdict": "set",
+      "status": "agreed",
+      "rule": "general",
+      "adjudicatedLink": [
+        "u37"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u34"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k11",
+      "units": [
+        "u38"
+      ],
+      "clause": "after the 5th failed attempt",
+      "verdict": "claim",
+      "status": "agreed",
+      "rule": "general",
+      "adjudicatedLink": [
+        "u38"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u34"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "id": "k4",
+      "units": [
+        "u12"
+      ],
+      "clause": "If an account cannot be found",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "R4",
+      "adjudicatedLink": [
+        "u12"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u10"
+      ],
+      "proposedBy": "X"
+    },
+    {
+      "case": "kn-12-flag-rollout-update",
+      "id": "k9",
+      "units": [
+        "u18"
+      ],
+      "clause": "If the check fails",
+      "verdict": "claim",
+      "status": "agreed",
+      "rule": "R1",
+      "adjudicatedLink": [
+        "u18"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u16"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-12-flag-rollout-update",
+      "id": "k10",
+      "units": [
+        "u18"
+      ],
+      "clause": "the owner investigates before trying again",
+      "verdict": "claim",
+      "status": "agreed",
+      "rule": "R1",
+      "adjudicatedLink": [
+        "u18"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u16"
+      ],
+      "proposedBy": "phase3"
+    },
+    {
+      "case": "kn-12-flag-rollout-update",
+      "id": "k19",
+      "units": [
+        "u30"
+      ],
+      "clause": "that miss the deadline",
+      "verdict": "claim",
+      "status": "adjudicated",
+      "rule": "general",
+      "adjudicatedLink": [
+        "u30"
+      ],
+      "adjudicatedLevel": "local",
+      "secondLink": [
+        "u28"
+      ],
+      "proposedBy": "phase3"
+    }
+  ],
+  "unresolved": [
+    {
+      "case": "kn-04-queue-choice",
+      "id": "k11",
+      "units": [
+        "u27"
+      ],
+      "decidingQuestion": "Does the source use the current idempotency status to weigh Option A's effort or readiness against B and C, or only as background to the requirement in u27/u44?",
+      "readings": [
+        "X:set:u26",
+        "Y:claim:u26",
+        "phase3:ambiguous:u26"
+      ],
+      "isAttachmentQuestion": false
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k8",
+      "units": [
+        "u56"
+      ],
+      "decidingQuestion": "Does a proposal sentence count as a separate claim link when the agreed decision immediately restates the same requirement (R4: do both genuinely mislead)?",
+      "readings": [
+        "X:claim:u56",
+        "Y:not_a_condition:",
+        "phase3:claim:u59"
+      ],
+      "isAttachmentQuestion": true
+    },
+    {
+      "case": "kn-05-incident-review-meeting",
+      "id": "k19",
+      "units": [
+        "u72"
+      ],
+      "decidingQuestion": "Does an opposing speaker's rebuttal in an unresolved debate count as the source warning about the reliability of the other side's evidence?",
+      "readings": [
+        "X:ambiguous:u71",
+        "Y:ambiguous:u71",
+        "phase3:not_a_condition:"
+      ],
+      "isAttachmentQuestion": false
+    },
+    {
+      "case": "kn-09-billing-codebase-map",
+      "id": "k12",
+      "units": [
+        "u35"
+      ],
+      "decidingQuestion": "Does u18 ('to get the tax for the draft invoice') assert that every generated invoice receives its tax from Taxwell, so that an unknown timeout outcome undermines it, or only describe the call order?",
+      "readings": [
+        "X:claim:u18",
+        "Y:ambiguous:u18",
+        "phase3:set:u18,u30,u33"
+      ],
+      "isAttachmentQuestion": false
+    },
+    {
+      "case": "kn-10-inventory-architecture-frames",
+      "id": "k14",
+      "units": [
+        "u48"
+      ],
+      "decidingQuestion": "Does u43 assert that every part of the codebase, including the admin front end, has automated tests?",
+      "readings": [
+        "X:ambiguous:u43",
+        "Y:set:u43",
+        "phase3:ambiguous:u43"
+      ],
+      "isAttachmentQuestion": false
+    },
+    {
+      "case": "kn-11-ambiguous-analytics-proposal",
+      "id": "k13",
+      "units": [
+        "u35"
+      ],
+      "decidingQuestion": "Are the first dashboards promised as a phase 1 deliverable?",
+      "readings": [
+        "X:ambiguous:u14",
+        "Y:claim:u14",
+        "phase3:ambiguous:u4"
+      ],
+      "isAttachmentQuestion": false
+    }
+  ],
+  "candidateRecords": 33,
+  "candidatesByStatus": {
+    "agreed": 15,
+    "adjudicated": 20
+  },
+  "candidatesByProposer": {
+    "phase3": 21,
+    "X": 10,
+    "Y": 4
+  },
+  "candidatesR4": 9,
+  "unresolvedAttachment": 1
+}

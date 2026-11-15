@@ -7,6 +7,8 @@
  * see `AcuteObject`s.
  */
 
+import type { CardReview, Lineage, NoteModel, UnitSet } from "@/ai/fidelity/contracts";
+
 export type ObjectId = string;
 export type PageId = string;
 export type DocumentId = string;
@@ -107,6 +109,20 @@ export interface AIMetadata {
   splitOf?: string;
   /** With `splitOf`: the split node's `contentFingerprint` as the source gave it when it was split. */
   splitFingerprint?: string;
+  // Knowledge Notes (knowledge-notes-plan §4.1, §6.2, WP1.3): reconciliation fields too, dropped by `normalizeAIMetadata`
+  // unless asked, so export (except with "Include sources", §6.4), MCP and search never see them.
+  /** The source units (`ContentSourceVersion.units` ids, at `contentSourceVersion`) this card cites. */
+  sourceUnits?: string[];
+  /** Why the card needs review, and how the user resolved it. */
+  review?: CardReview;
+  /** Which rules the card was made under. Absent: `preserve` (every object made before the field existed). */
+  noteModel?: NoteModel;
+  /**
+   * The content is the user's wording, not AI's (Stage 1e): AI's facts were merged into the user's edit, or the user kept
+   * their edit ("Keep mine"). An update then merges the source's next change into it again instead of rewriting it. Set by
+   * the writer; cleared by any write of AI's own wording.
+   */
+  userWording?: boolean;
 }
 
 export type ContentSourceId = string;
@@ -151,6 +167,13 @@ export interface ContentSourceVersion {
    * statement is left out of what is drawn, and kept on the section's "Changed over time" page. Absent when there are none.
    */
   revisions?: { unit: string; earlier: string; later: string }[];
+  /**
+   * Source units with stable ids (knowledge-notes-plan §3.1, WP1.3): what cards cite. Absent on versions recorded
+   * before unit ids existed; the next accepted version then gets fresh ids (§6.3).
+   */
+  units?: UnitSet;
+  /** How this version's units relate to the previous version's (§3.1). Absent on a first version and after a version without units. */
+  lineage?: Lineage;
   createdAt: number;
 }
 

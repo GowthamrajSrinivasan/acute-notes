@@ -107,17 +107,22 @@ export function McpBridgeHost({ workspaceId }: { workspaceId: string }) {
         if (cancelled) return;
         const services = getPersistence();
         // Proposals a client left under review survive a reload: they come back for the owner to accept or reject.
-        void restorePendingProposals(services.meta);
+        // Already-committed sets are never restored (Stage 4a): the commit journal is loaded first.
+        // (Imported here, like the rest: the commit path loads the canvas writer, which needs the browser.)
+        void Promise.all([import("@/components/ai/commitOnCanvas"), import("@/ai/changes/commit")]).then(([{ ensureCommitJournal }, { getCommitJournal }]) =>
+          ensureCommitJournal().then(() => restorePendingProposals(services.meta, undefined, undefined, (op) => getCommitJournal().committed(op))),
+        );
         stop = startTabBridge({
           workspaceId,
           ownerSecret,
           beforeConnect: () => syncMcpCredentials(workspaceId),
-          createServer: ({ sessionId, remote, scope }) =>
+          createServer: ({ sessionId, remote, scope, profile }) =>
             createAcuteMcpServer({
               services,
               workspaceId,
               sessionId,
               remote,
+              ...(profile ? { remoteProfile: profile } : {}),
               // A client may propose only while the workspace allows writes AND its own credential carries the propose scope.
               toolPolicy: () => ({ allowWrites: getMcpAllowWrites(workspaceId) && scope === "propose" }),
               repoMap: { services: { store: services.repoMaps, contentSources: services.contentSources } },

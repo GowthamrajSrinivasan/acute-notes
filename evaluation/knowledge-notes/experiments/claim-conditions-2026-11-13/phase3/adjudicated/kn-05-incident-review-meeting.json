@@ -1,0 +1,267 @@
+{
+  "caseId": "kn-05-incident-review-meeting",
+  "adjudicator": "phase 3 adjudicator (protocol v2), 2026-11-13",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u22"],
+      "verdict": "claim",
+      "claimUnits": ["u22"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u22"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u22"] }
+      ],
+      "conditionQuote": "only fires when the checkout error rate is above 10% for 15 minutes",
+      "claimQuote": "The alert only fires",
+      "rationale": "Intra-sentence trigger; without the sustained 15-minute window the alert's behaviour and the 22-minute delay are misrepresented.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_u0_n5", "u0_ax3", "u0_u0_n9"],
+          "carriers": ["u0_u0_n5", "u0_ax3", "u0_u0_n9"],
+          "perClaimCard": { "u0_u0_n5": "carried", "u0_ax3": "carried", "u0_u0_n9": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u29"],
+      "verdict": "claim",
+      "claimUnits": ["u33"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u33"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u29", "u33"] }
+      ],
+      "conditionQuote": "for checkout specifically",
+      "claimQuote": "we'll lower the checkout error-rate alert to 5% over 5 minutes",
+      "rationale": "The checkout-only scope bounds the agreed threshold change; as a general alert change it would be false.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_u0_n10", "u0_u0_n11", "u0_ax1"],
+          "carriers": ["u0_u0_n10", "u0_u0_n11", "u0_ax1"],
+          "perClaimCard": { "u0_u0_n10": "carried", "u0_u0_n11": "carried", "u0_ax1": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u30", "u31"],
+      "verdict": "set",
+      "claimUnits": ["u33"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u33"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u33"] }
+      ],
+      "conditionQuote": "that would have paged twice on noise, both during the payment provider's own maintenance",
+      "claimQuote": "Agreed: we'll lower the checkout error-rate alert to 5% over 5 minutes.",
+      "rationale": "An accepted cost of the new threshold; the decision stays true without it.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_u0_n10", "u0_u0_n11", "u0_ax1"],
+          "carriers": ["u0_u0_n10"],
+          "perClaimCard": { "u0_u0_n10": "carried", "u0_u0_n11": "linked", "u0_ax1": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u55", "u56", "u57", "u58", "u59", "u60"],
+      "verdict": "claim",
+      "claimUnits": ["u59"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u53", "u54"] },
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u59"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u59"] }
+      ],
+      "conditionQuote": "config changes to the payments service will go through pull-request review with one payments-team approval",
+      "claimQuote": "Agreed: config changes to the payments service will go through pull-request review",
+      "rationale": "The limiting content in the span is the payments-service-only scope and the single payments-team approval; dropping either misstates the decision. The golden link's text (Leila's freeze objection) is u65–u71; its ids are offset and do not describe this span.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_u1_n1", "u0_ax1", "u0_u0_n19"],
+          "carriers": ["u0_u1_n1", "u0_ax1"],
+          "perClaimCard": { "u0_u1_n1": "carried", "u0_ax1": "carried", "u0_u0_n19": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "conditionUnits": ["u61", "u62"],
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u53", "u54"] },
+        { "who": "R2", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "conditionQuote": "by Friday, March 21",
+      "claimQuote": "",
+      "rationale": "Owner and deadline of an action item plus a conversational transition; R1's notes class owners/dates as elaborations too. The golden link's text ('the freeze is not decided') is u74–u75, covered by c8; offset ids."
+    },
+    {
+      "id": "c6",
+      "conditionUnits": ["u63"],
+      "verdict": "claim",
+      "claimUnits": ["u63"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u63"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u63"] }
+      ],
+      "conditionQuote": "after 15:00 on Fridays",
+      "claimQuote": "I'd like us to stop deploying anything to payments",
+      "rationale": "Intra-sentence time scope; without it the proposal reads as a full payments deploy stop.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_u1_n3"],
+          "carriers": ["u0_u1_n3"],
+          "perClaimCard": { "u0_u1_n3": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "conditionUnits": ["u71", "u72", "u73"],
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "golden", "verdict": "link only (golden gives no binding)", "claimUnits": ["u66", "u67", "u68", "u69", "u70"] },
+        { "who": "R2", "verdict": "ambiguous", "claimUnits": ["u70", "u71"] }
+      ],
+      "conditionQuote": "That's one incident. I think we'd see a pattern if we looked.",
+      "claimQuote": "Being Friday didn't slow that down.",
+      "rationale": "A rebuttal in an undecided debate: u71 is about this incident and stays true, and Tomás does not dispute it, so no claim is limited. R2's own alternatives were set-level caveat vs not_a_condition; R1 classed u64–u73 as debate arguments. The golden link's text (auto-rollback left open) is u86–u88, covered by c11; offset ids.",
+      "confidence": "medium"
+    },
+    {
+      "id": "c8",
+      "conditionUnits": ["u74", "u75", "u76"],
+      "verdict": "claim",
+      "claimUnits": ["u63"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u63"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u63"] }
+      ],
+      "conditionQuote": "Let's not decide the freeze now.",
+      "claimQuote": "I'd like us to stop deploying anything to payments after 15:00 on Fridays.",
+      "rationale": "The freeze is explicitly undecided and deferred pending Tomás's six-month analysis; presenting it as agreed would be false.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_u1_n3", "u0_ax2"],
+          "carriers": ["g0", "u0_u1_n6", "u0_ax2"],
+          "perClaimCard": { "u0_u1_n3": "frame", "u0_ax2": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "conditionUnits": ["u79"],
+      "verdict": "claim",
+      "claimUnits": ["u79"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u79"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u79"] }
+      ],
+      "conditionQuote": "if the checkout error rate doubles within 10 minutes of a deploy",
+      "claimQuote": "the pipeline rolls back on its own",
+      "rationale": "Intra-sentence trigger; without it the proposal reads as rolling back on any error or every deploy.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_u1_n7"],
+          "carriers": ["u0_u1_n7"],
+          "perClaimCard": { "u0_u1_n7": "carried" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "conditionUnits": ["u80", "u81", "u82", "u83"],
+      "verdict": "set",
+      "claimUnits": ["u79"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u79"] },
+        { "who": "R2", "verdict": "ambiguous", "claimUnits": ["u79"] }
+      ],
+      "conditionQuote": "If a release includes a database migration, rolling back the code without the migration can leave us worse off.",
+      "claimQuote": "if the checkout error rate doubles within 10 minutes of a deploy, the pipeline rolls back on its own",
+      "rationale": "u79 is reported as Marcus's proposal and stays an accurate account of what was proposed; the migration objection is a concern attached to it, and what would make presenting it as adopted false is the open status (c11), not this objection. The exclusion idea (u83) was never agreed.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_u1_n7"],
+          "carriers": ["u0_u1_n8", "u0_ax2"],
+          "perClaimCard": { "u0_u1_n7": "linked" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c11",
+      "conditionUnits": ["u86", "u87", "u88"],
+      "verdict": "claim",
+      "claimUnits": ["u79"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "claim", "claimUnits": ["u79"] },
+        { "who": "R2", "verdict": "claim", "claimUnits": ["u79"] }
+      ],
+      "conditionQuote": "auto-rollback is an open question. We don't know how many releases include migrations. Let's leave it open.",
+      "claimQuote": "I'd also propose automatic rollback",
+      "rationale": "Auto-rollback was not agreed; read without this it looks like an adopted action.",
+      "confidence": "high",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_u1_n7"],
+          "carriers": ["u0_u1_n9", "u0_ax2", "g0"],
+          "perClaimCard": { "u0_u1_n7": "frame" },
+          "changedFromV1": {}
+        }
+      }
+    },
+    {
+      "id": "c12",
+      "conditionUnits": ["u90", "u91", "u93", "u94"],
+      "verdict": "set",
+      "claimUnits": ["u95"],
+      "status": "agreed",
+      "readings": [
+        { "who": "R1", "verdict": "set", "claimUnits": ["u95", "u96"] },
+        { "who": "R2", "verdict": "set", "claimUnits": ["u95"] }
+      ],
+      "conditionQuote": "If most people retried, the email we send is different.",
+      "claimQuote": "Kenji, can you draft the customer email either way?",
+      "rationale": "An open question that changes the email's content; the action item (drafted 'either way') stays true.",
+      "confidence": "medium",
+      "notes": {
+        "distil": {
+          "claimCards": ["u0_u1_n11", "u0_ax2"],
+          "carriers": ["u0_u1_n10"],
+          "perClaimCard": { "u0_u1_n11": "linked", "u0_ax2": "separated" },
+          "changedFromV1": {}
+        }
+      }
+    }
+  ],
+  "notes": "Single frame g0; no cross-frame arrows, so the v2 amendment changes nothing here. Labelled card-to-card arrows ('concerns', 'action', 'proposed change', 'dependency') were checked for arrow_label: none states the specific limit, so card-to-card links stay 'linked' as in v1. Golden link ids in this packet are offset (c4, c5, c7 carry golden texts belonging to u65–71, u74–75, u86–88); judged on the listed units."
+}

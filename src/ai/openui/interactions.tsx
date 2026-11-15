@@ -13,7 +13,7 @@
  * This module cannot import `library.tsx` (it imports us), so citations here are plain unit ids rendered as chips.
  */
 import { defineComponent, reactive, useStateField, type DefinedComponent, type ElementNode } from "@openuidev/react-lang";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { z } from "zod/v4";
 import { useNotesHost } from "./hostContext";
 
@@ -272,7 +272,16 @@ function QuizCardView({ question, choices, answer, explanation, unit, binding }:
   const field = useStateField<number | null>("selected", binding as number | null | undefined);
   const [local, setLocal] = useState<number | null>(null);
   const picked = field.isReactive ? (typeof field.value === "number" ? field.value : null) : local;
-  const pick = (i: number | null) => (field.isReactive ? field.setValue(i) : setLocal(i));
+  const set = (i: number | null) => (field.isReactive ? field.setValue(i) : setLocal(i));
+  // Study history: only the first pick of this mount counts; "Try again" picks are practice, never recorded.
+  const recorded = useRef(false);
+  const pick = (i: number) => {
+    if (!recorded.current && host.recordStudy) {
+      recorded.current = true;
+      host.recordStudy({ kind: "quiz", correct: i === answer });
+    }
+    set(i);
+  };
   const answered = picked !== null;
   const correct = answered && picked === answer;
   const passage = unit ? host.unitText?.(unit) : undefined;
@@ -299,7 +308,7 @@ function QuizCardView({ question, choices, answer, explanation, unit, binding }:
           <p className="openui-quiz__verdict">{correct ? "Correct." : `Not quite — the answer is “${choices[answer] ?? ""}”.`}</p>
           {explanation && <p className="openui-quiz__explanation">{explanation}</p>}
           {passage && <blockquote className="openui-idea-card__passage">{passage}</blockquote>}
-          <button type="button" className="openui-quiz__retry" onClick={() => pick(null)}>
+          <button type="button" className="openui-quiz__retry" onClick={() => set(null)}>
             Try again
           </button>
         </div>
@@ -328,14 +337,44 @@ const QuizCard = defineComponent({
 // ── Flashcard ───────────────────────────────────────────────────────────────
 
 function FlashcardView({ front, back, unit }: { front: string; back: string; unit?: string }) {
+  const host = useNotesHost();
   const [flipped, setFlipped] = useState(false);
+  // Issue B: a flip alone records nothing; after each reveal the reader may grade it once ("Got it" / "Missed it").
+  const [graded, setGraded] = useState<boolean | null>(null);
+  const flip = () => {
+    setFlipped((f) => !f);
+    setGraded(null);
+  };
+  const grade = (correct: boolean) => {
+    if (graded !== null || !host.recordStudy) return;
+    setGraded(correct);
+    host.recordStudy({ kind: "flashcard", correct });
+  };
   return (
     <article className="openui-flashcard" data-flipped={flipped || undefined}>
-      <button type="button" className="openui-flashcard__face" aria-pressed={flipped} aria-label={flipped ? "Show front" : "Show answer"} onClick={() => setFlipped((f) => !f)}>
+      <button type="button" className="openui-flashcard__face" aria-pressed={flipped} aria-label={flipped ? "Show front" : "Show answer"} onClick={flip}>
         <span className="openui-flashcard__side">{flipped ? "Answer" : "Prompt"}</span>
         <span className="openui-flashcard__text">{flipped ? back : front}</span>
       </button>
       {flipped && unit && <UnitChips units={[unit]} />}
+      {flipped && host.recordStudy && (
+        <div className="openui-flashcard__grade" role="group" aria-label="Did you recall it?">
+          {graded === null ? (
+            <>
+              <button type="button" className="openui-quiz__retry openui-flashcard__got" onClick={() => grade(true)}>
+                Got it
+              </button>
+              <button type="button" className="openui-quiz__retry openui-flashcard__missed" onClick={() => grade(false)}>
+                Missed it
+              </button>
+            </>
+          ) : (
+            <span className="openui-flashcard__graded" role="status">
+              {graded ? "Recorded: got it" : "Recorded: missed it"}
+            </span>
+          )}
+        </div>
+      )}
     </article>
   );
 }

@@ -4,6 +4,7 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { afterEach, describe, expect, it } from "vitest";
 import * as Y from "yjs";
 import { parseChangeSet, type ChangeSet } from "@/ai/changes/changeSet";
+import { fingerprintContent } from "@/ai/content/fingerprint";
 import { canvasDocId } from "@/sync/docIds";
 import type { SceneElement } from "@/domain/canvas/adapter";
 import type { DocumentRecord, RichContent } from "@/domain/types";
@@ -202,7 +203,9 @@ describe("MCP tool surface (F21): listing", () => {
     expect(tools.map((t) => t.name).sort()).toEqual([...READ_TOOL_NAMES, ...WRITE_TOOL_NAMES, ...PROJECT_READ_TOOLS, ...PROJECT_WRITE_TOOLS, ...OBJECT_READ_TOOLS, ...OBJECT_WRITE_TOOLS, ...LENS_READ_TOOLS, ...LENS_WRITE_TOOLS].sort());
     for (const t of tools) {
       const isRead = ([...READ_TOOL_NAMES, ...PROJECT_READ_TOOLS, ...OBJECT_READ_TOOLS, ...LENS_READ_TOOLS] as readonly string[]).includes(t.name);
-      expect(t.annotations, t.name).toMatchObject({ readOnlyHint: isRead, destructiveHint: t.name === "delete_object" || t.name === "delete_connection", openWorldHint: false });
+      // Destructive: accepting can remove, restore or replace existing content (audit 2026-11-15 §4.8).
+      const destructive = ["delete_object", "delete_connection", "revert_agent_changes", "update_block", "update_connection", "update_knowledge"].includes(t.name);
+      expect(t.annotations, t.name).toMatchObject({ readOnlyHint: isRead, destructiveHint: destructive, openWorldHint: false });
       expect(t.inputSchema.type, t.name).toBe("object");
       expect(t.description, t.name).toBeTruthy();
       if (!isRead) {
@@ -476,6 +479,17 @@ describe("MCP tool surface (F21): write tools propose, never write", () => {
     const page = await proposeWith("update_block", { objectId: "p_prev", markdown: "New notes", title: "Design v2" });
     expect(page.set.changes).toEqual([{ kind: "update_block", target: "p_prev", content: [{ type: "paragraph", content: "New notes" }], title: "Design v2" }]);
     expect(page.set.title).toBe("Test Client: Update page");
+  });
+
+  it("update_block carries the target's baseline as the call saw it (stale-target protection)", async () => {
+    const docs = new Map(DOCS.map((d) => [d.id, d] as const));
+    const fake = fakeLive({ getDocument: (id) => docs.get(id) ?? null });
+    const client = await connect(await seed(), { getLiveCanvas: () => fake.live });
+    await ok(client, "update_block", { objectId: "todo_1", markdown: "- [ ] Ship it" });
+    const change = fake.proposed[0]!.changes[0]!;
+    // The same fingerprint Accept reads (`fingerprintOf` of the block's content now), so an untouched block matches.
+    expect(change).toMatchObject({ kind: "update_block", target: "todo_1", expectedFingerprint: fingerprintContent(docs.get("d_todo")!.snapshot) });
+    expect(parseChangeSet(fake.proposed[0]!)).toEqual(fake.proposed[0]);
   });
 
   it("update_block refuses other kinds, missing targets, a block title and a canvas mismatch", async () => {

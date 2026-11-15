@@ -20,6 +20,8 @@ export const analysisPatchInput = z.object({
   /** The nodes the plan already has, for the analysis to link to. */
   nodes: z.array(z.object({ id: z.string(), type: z.string(), label: z.string() })),
   takeaway: z.string().optional(),
+  /** Knowledge Notes (§4.4): `distil` drops "in its own words, nothing left out" from the analysis rule. Absent: today's prompt. */
+  noteModel: z.enum(["preserve", "distil"]).optional(),
 });
 export type AnalysisPatchInput = z.infer<typeof analysisPatchInput>;
 

@@ -1,0 +1,388 @@
+{
+  "caseId": "kn-04-queue-choice",
+  "adjudicator": "phase4-adjudicator-A (Claude, evidence-led; source-only binding, then visibility)",
+  "records": [
+    {
+      "id": "k1", "units": ["u3"], "clause": "queued but not yet started", "verdict": "set", "rule": "R5",
+      "claimUnits": ["u3"], "claimQuote": "a deploy or a crash loses any job",
+      "status": "agreed", "from": { "X": "x1", "Y": "y1" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u3"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u3"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u3"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Narrows which jobs are lost; the takeaway (the current pool loses jobs) stands. Set.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u4_n3", "u4_a1"], "carriers": ["u4_n3"], "perClaimCard": { "u4_n3": "carried", "u4_a1": "linked" } } }
+    },
+    {
+      "id": "k2", "units": ["u14"], "clause": "Three VMs plus upgrades and on-call", "verdict": "not_a_condition", "rule": "general",
+      "claimUnits": [], "claimQuote": "",
+      "status": "adjudicated", "from": { "X": "x2" },
+      "readings": [
+        { "who": "X", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u15"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "It explains what the cost is made of and limits nothing. Kept as a visible not_a_condition decision.",
+      "confidence": "medium",
+      "notes": {}
+    },
+    {
+      "id": "k3", "units": ["u15"], "clause": "Uses spare capacity on the existing primary", "verdict": "claim", "rule": "R3",
+      "claimUnits": ["u15"], "claimQuote": "Database job table | $0 extra",
+      "status": "agreed", "from": { "X": "x3", "Y": "y3" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u15"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u15"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u15"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: '$0 extra' is weighed against load on the primary, which the source calls the main month-end risk (u34). Without the clause, Option C looks free.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u5_n1", "u5_n2"], "carriers": ["u5_n1"], "perClaimCard": { "u5_n1": "carried", "u5_n2": "separated" } } }
+    },
+    {
+      "id": "k4", "units": ["u16"], "clause": "assumes current volume", "verdict": "claim", "rule": "R2",
+      "claimUnits": ["u13"], "claimQuote": "Managed cloud queue | $310",
+      "status": "agreed", "from": { "X": "x4", "Y": "y4" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u13", "u17"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: the figure feeds the cost criterion and the must-have is 3x volume. Uses Y's minimal span, which X's full sentence contains.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u5_n1", "u5_n2"], "carriers": ["u5_n1", "u5_n3", "u5_a1"], "perClaimCard": { "u5_n1": "carried", "u5_n2": "separated" } } }
+    },
+    {
+      "id": "k5", "units": ["u17"], "clause": "At three times today's volume it would be roughly $900 a month", "verdict": "claim", "rule": "R3",
+      "claimUnits": ["u13"], "claimQuote": "Managed cloud queue | $310",
+      "status": "agreed", "from": { "X": "x5", "Y": "y5" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u13"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u13", "u17"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The projected cost at the must-have volume can reverse the cost comparison. The row's 'grows with volume' does not make the $900 at 3x figure recognisable.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u5_n1", "u5_n2"], "carriers": ["u5_a1"], "perClaimCard": { "u5_n1": "separated", "u5_n2": "separated" } } }
+    },
+    {
+      "id": "k6", "units": ["u17"], "clause": "until the cluster needs a fourth machine", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u17"], "claimQuote": "the broker's cost would stay flat",
+      "status": "adjudicated", "from": { "X": "x6", "Y": "y6" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u17"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u17"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u13", "u17"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The flat-cost claim is used directly in the 3x-volume cost comparison against $900. Without the bound, a reader would take B's cost as fixed at any volume, and could choose wrongly on the 30% cost criterion. Claim.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u5_n3", "u5_a1"], "carriers": ["u5_n3"], "perClaimCard": { "u5_n3": "carried", "u5_a1": "separated" } } }
+    },
+    {
+      "id": "k7", "units": ["u18"], "clause": "an option that fails either is out regardless of its score", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u21"], "claimQuote": "The remaining criteria are weighted for scoring",
+      "status": "agreed", "from": { "X": "x7", "Y": "y7" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u21"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u21"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u21", "u22", "u23", "u24", "u25"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Without the gate, a high-scoring option that fails a must-have could be chosen.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u1_n2", "u1_a1"], "carriers": ["g1", "u1_a1", "u1_n1"], "perClaimCard": { "u1_n2": "frame", "u1_a1": "carried" } } }
+    },
+    {
+      "id": "k8", "units": ["u25"], "clause": "Portability away from our cloud provider: 10%", "verdict": "not_a_condition", "rule": "general",
+      "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x8", "Y": "y8" },
+      "readings": [
+        { "who": "X", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A criterion weight; limits no claim.",
+      "confidence": "medium",
+      "notes": {}
+    },
+    {
+      "id": "k9", "units": ["u27"], "clause": "the service delivers each message at least once", "verdict": "set", "rule": "R3",
+      "claimUnits": ["u26"], "claimQuote": "Option A needs almost no operational work",
+      "status": "adjudicated", "from": { "X": "x9" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u26"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u26"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A real limit on A (duplicate delivery), introduced by 'The catch'. But the action-relevant limit that decides the trade-off is the idempotency requirement (k10). The delivery semantics are a cause the notes must contain, without changing the takeaway on their own: set. Found by X only; accepted with a different verdict.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1"], "perClaimCard": { "u2_n1": "carried", "u2_a1": "separated" } } }
+    },
+    {
+      "id": "k10", "units": ["u27"], "clause": "every job handler must be made idempotent before we switch", "verdict": "claim", "rule": "R3",
+      "claimUnits": ["u26"], "claimQuote": "Option A needs almost no operational work",
+      "status": "agreed", "from": { "X": "x10", "Y": "y9" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u26"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u26"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u26"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: the source presents A's benefit as weighed against this catch.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1", "u2_a1", "u3_n3", "u3_a1"], "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried" } } }
+    },
+    {
+      "id": "k11", "units": ["u27"], "clause": "today only the email handler is", "verdict": "ambiguous", "rule": "R3",
+      "claimUnits": ["u26"], "claimQuote": "Option A needs almost no operational work",
+      "status": "unresolved", "from": { "X": "x11", "Y": "y10" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u26"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u26"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u26"] }
+      ],
+      "readingA": "claim: the current status shows how much work stands between A and the switch (all but one handler), so a reader without it would underestimate A's cost and readiness.",
+      "readingB": "set: the requirement 'every job handler must be made idempotent' (k10) already conveys the work; the current status is colour on that requirement.",
+      "decidingQuestion": "Does the source use the current idempotency status to weigh Option A's effort or readiness against B and C, or only as background to the requirement in u27/u44?",
+      "rationale": "The source does not settle it: the status sits inside 'the catch', but no later sentence uses it in a comparison.",
+      "confidence": "low",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1"], "perClaimCard": { "u2_n1": "carried", "u2_a1": "separated" } } }
+    },
+    {
+      "id": "k12", "units": ["u28"], "clause": "It also ties us to one provider's API", "verdict": "set", "rule": "R3",
+      "claimUnits": ["u26"], "claimQuote": "Option A needs almost no operational work",
+      "status": "agreed", "from": { "X": "x12", "Y": "y11" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u26"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u26"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u26"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: a secondary cost (portability is weighted at 10%).",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1", "u2_a1"], "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried" } } }
+    },
+    {
+      "id": "k13", "units": ["u28"], "clause": "local development needs an emulator that does not support dead-lettering", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u26"], "claimQuote": "failed messages move to a dead-letter queue automatically",
+      "status": "agreed", "from": { "X": "x13", "Y": "y12" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u26"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u26"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u26"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The automatic DLQ claim is false in local development. Only u2_n1 states the DLQ claim.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n1"], "carriers": ["u2_n1"], "perClaimCard": { "u2_n1": "carried" } } }
+    },
+    {
+      "id": "k14", "units": ["u30"], "clause": "the 12 hours a month is an estimate, not a measurement", "verdict": "claim", "rule": "R2",
+      "claimUnits": ["u14"], "claimQuote": "Self-hosted broker | $540 | about 12 hours",
+      "status": "agreed", "from": { "X": "x14", "Y": "y13" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u14"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u14"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: the figure feeds the 40% operational-effort criterion and the source explicitly warns about its reliability.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u5_n1", "u5_n2", "u2_fs1", "u2_n1"], "carriers": ["u2_n1", "u2_a1"], "perClaimCard": { "u5_n1": "separated", "u5_n2": "separated", "u2_fs1": "linked", "u2_n1": "carried" } } }
+    },
+    {
+      "id": "k15", "units": ["u31"], "clause": "Upgrades need a maintenance window.", "verdict": "set", "rule": "R3",
+      "claimUnits": ["u29"], "claimQuote": "Option B gives us priority queues and delayed delivery",
+      "status": "agreed", "from": { "X": "x15", "Y": "y14" },
+      "readings": [
+        { "who": "X", "verdict": "set", "claimUnits": ["u29"] },
+        { "who": "Y", "verdict": "set", "claimUnits": ["u29"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u8"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R3: a secondary operational cost.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1"], "perClaimCard": { "u2_n1": "carried", "u2_a1": "separated" } } }
+    },
+    {
+      "id": "k16", "units": ["u33"], "clause": "only covers jobs created inside the billing database transaction", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u32"], "claimQuote": "a job can never be lost between the commit and the enqueue",
+      "status": "agreed", "from": { "X": "x16", "Y": "y15" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u32"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u32"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u32"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "'never be lost' is false outside the transaction. u2_a1's 'for billing-related jobs' conveys this scope.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1", "u2_a1"], "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried" } } }
+    },
+    {
+      "id": "k17", "units": ["u33"], "clause": "jobs enqueued by the reporting service, which has its own database, would not get it", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u32"], "claimQuote": "a job can never be lost between the commit and the enqueue",
+      "status": "agreed", "from": { "X": "x17", "Y": "y16" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u32"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u32"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u32"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Names the concrete excluded producer. u2_a1 does not make the reporting-service exclusion recognisable.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u2_n1"], "perClaimCard": { "u2_n1": "carried", "u2_a1": "separated" } } }
+    },
+    {
+      "id": "k18", "units": ["u34"], "clause": "Polling also adds read load to the primary database, which is the main risk at month-end", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u15"], "claimQuote": "Database job table | $0 extra",
+      "status": "adjudicated", "from": { "X": "x18", "Y": "y17" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u32"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u15"] },
+        { "who": "phase3", "verdict": "set", "claimUnits": ["u15"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both claim (R3: the source calls it the main risk). Links differ. R4: the transactional guarantee in u32 is not falsified by read load; the '$0 extra' cost claim is what misleads. 'which is the main risk at month-end' qualifies the same clause and is not split.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u5_n1", "u5_n2"], "carriers": ["u2_n1", "u2_a1"], "perClaimCard": { "u5_n1": "separated", "u5_n2": "separated" } } }
+    },
+    {
+      "id": "k19", "units": ["u36"], "clause": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.", "verdict": "not_a_condition", "rule": "general",
+      "claimUnits": [], "claimQuote": "",
+      "status": "agreed", "from": { "X": "x19", "Y": "y18" },
+      "readings": [
+        { "who": "X", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "Y", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "phase3", "verdict": "not_a_condition", "claimUnits": [] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "A result statement; limited by u38, limits nothing itself.",
+      "confidence": "medium",
+      "notes": {}
+    },
+    {
+      "id": "k20", "units": ["u38"], "clause": "We did not test 1,800 jobs per minute", "verdict": "claim", "rule": "R2",
+      "claimUnits": ["u36"], "claimQuote": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+      "status": "agreed", "from": { "X": "x20", "Y": "y19" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u36"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u36"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u36", "u37"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: explicit reliability warning on evidence for a must-have.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u6_n1"], "carriers": ["u6_n1"], "perClaimCard": { "u6_n1": "carried" } } }
+    },
+    {
+      "id": "k21", "units": ["u38"], "clause": "the staging copy is about a quarter of production size, so these results may not carry over", "verdict": "claim", "rule": "R2",
+      "claimUnits": ["u36"], "claimQuote": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
+      "status": "agreed", "from": { "X": "x21", "Y": "y20" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u36"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u36"] },
+        { "who": "phase3", "verdict": "claim", "claimUnits": ["u36", "u37"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: explicit reliability warning.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u6_n1"], "carriers": ["u6_n1"], "perClaimCard": { "u6_n1": "carried" } } }
+    },
+    {
+      "id": "k22", "units": ["u39"], "clause": "We have not load-tested Options A or B.", "verdict": "claim", "rule": "R2",
+      "claimUnits": ["u7"], "claimQuote": "the provider handles storage, scaling and redelivery",
+      "status": "adjudicated", "from": { "X": "x22", "Y": "y21" },
+      "readings": [
+        { "who": "X", "verdict": "ambiguous", "claimUnits": ["u40"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u7"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u40"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "X asked whether any source claim treats A's throughput as established. u7 does: 'the provider handles ... scaling'. A reader taking that as verified would pass A on the 1,800/min must-have. So R2 gives claim, linked to u7, the most specific claim (R4). B has no throughput claim, so for B the clause limits nothing further.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n1"], "carriers": ["u6_n2", "g6"], "perClaimCard": { "u2_n1": "separated" } } }
+    },
+    {
+      "id": "k23", "units": ["u40"], "clause": "but that is the provider's figure, not ours", "verdict": "claim", "rule": "R2",
+      "claimUnits": ["u40"], "claimQuote": "The provider documents throughput far above our peak for Option A",
+      "status": "agreed", "from": { "X": "x23", "Y": "y22" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u40"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u40"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u40"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "R2: an explicit provenance hedge on decision evidence.",
+      "confidence": "high",
+      "notes": { "distil": { "claimCards": ["u6_n2"], "carriers": ["u6_n2"], "perClaimCard": { "u6_n2": "carried" } } }
+    },
+    {
+      "id": "k24", "units": ["u42"], "clause": "until Option C has been measured at 1,800 jobs per minute on a production-sized database", "verdict": "claim", "rule": "general",
+      "claimUnits": ["u42"], "claimQuote": "The decision is deferred",
+      "status": "agreed", "from": { "X": "x24", "Y": "y23" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u42"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u42"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u41", "u42"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The unblocking condition. u3_n1 and u3_a1 omit the 1,800/min threshold, so any measurement would seem to settle it; the limit is not recognisable there. The u3_n1->u3_n6 'deferred until' arrow reaches only the 'Option C' shape, not a carrier, and chains do not count.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u3_n1", "u3_a1"], "carriers": ["u3_n7"], "perClaimCard": { "u3_n1": "separated", "u3_a1": "separated" } } }
+    },
+    {
+      "id": "k25", "units": ["u44"], "clause": "every job handler made idempotent", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u26"], "claimQuote": "Option A needs almost no operational work",
+      "status": "agreed", "from": { "X": "x25", "Y": "y24" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u26"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u26"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u26"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "The open requirement restated in its own unit; separate from k10.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u3_n3", "u3_a1", "u2_n1", "u2_a1"], "perClaimCard": { "u2_n1": "carried", "u2_a1": "carried" } } }
+    },
+    {
+      "id": "k26", "units": ["u45"], "clause": "a named owner for broker on-call and upgrades", "verdict": "claim", "rule": "R4",
+      "claimUnits": ["u29"], "claimQuote": "Option B gives us priority queues and delayed delivery",
+      "status": "adjudicated", "from": { "X": "x26", "Y": "y25" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u8"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u29"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u29"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Both claim (R1: choosing B without an owner leaves no on-call). R4: u8 already says 'we install, patch and monitor ourselves', so it is not misled. The benefit claim u29 is, parallel to u44 -> u26 and u46 -> u32.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u3_n5", "u3_a1"], "perClaimCard": { "u2_n1": "linked", "u2_a1": "linked" } } }
+    },
+    {
+      "id": "k27", "units": ["u46"], "clause": "a passing load test at 1,800 jobs per minute", "verdict": "claim", "rule": "R1",
+      "claimUnits": ["u32"], "claimQuote": "Option C writes a job in the same transaction as the billing change that causes it",
+      "status": "agreed", "from": { "X": "x27", "Y": "y26" },
+      "readings": [
+        { "who": "X", "verdict": "claim", "claimUnits": ["u32"] },
+        { "who": "Y", "verdict": "claim", "claimUnits": ["u32"] },
+        { "who": "phase3", "verdict": "ambiguous", "claimUnits": ["u41", "u42"] }
+      ],
+      "readingA": "", "readingB": "", "decidingQuestion": "",
+      "rationale": "Open requirement gating Option C's benefit claim.",
+      "confidence": "medium",
+      "notes": { "distil": { "claimCards": ["u2_n1", "u2_a1"], "carriers": ["u3_n7"], "perClaimCard": { "u2_n1": "linked", "u2_a1": "linked" } } }
+    }
+  ],
+  "rejected": [
+    { "from": "y2", "clause": "about 12 hours", "reason": "Ordinary approximation, used the same way for all three effort figures (about 2/12/4 hours). It does not limit or hedge the takeaway. The substantive hedge on the 12-hour figure is u30 (k14)." }
+  ],
+  "notes": "Arrow labels: g3->g2 'defers decision on' is a dependency label, so cards in g2 are linked to carriers in g3 (k26, k27). g2->g5 'cost details', g2->g6 'tested by' and g2->g1 'evaluated by' are not limiting or dependency labels, so they link nothing (k14, k18, k22). The u4_n3->u4_a1 and u2_n1->u2_fs1 card-to-card arrows give 'linked'. The u5_n2 chart counts as a claim card for the cost and effort figures. Citations ignored."
+}

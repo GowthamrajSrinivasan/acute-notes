@@ -29,6 +29,7 @@ import { reconcile, type ExistingObject } from "./classify";
 import { currentText } from "./conflicts";
 import { existingConnections, existingObjects } from "./existing";
 import { cachedNodeFingerprint, nodeKind, updateChange } from "./nodes";
+import { shapeBaseline } from "@/ai/changes/staleTarget";
 import { fingerprintOf, labelsByContainer, objectContent } from "./objects";
 
 type GetDocument = (id: string) => DocumentRecord | null | undefined;
@@ -195,13 +196,14 @@ export async function reconcileMapSection(input: MapSectionInput): Promise<MapSe
       if (item.state === "unchanged") outcomes.set(key, "unchanged");
       else if (item.state === "update_clean") {
         outcomes.set(key, "updated");
-        changes.push(withRefs(updateChange(item.node, item.object.objectId, parse)));
+        // A shape's relabel carries the label it was planned against (stale-target protection, `staleTarget.ts`).
+        changes.push(withRefs(shapeBaseline(updateChange(item.node, item.object.objectId, parse), item.object.current)));
       } else {
         outcomes.set(key, "conflict");
         conflicts.push({
           target: item.object.objectId,
           stableNodeKey: item.object.stableNodeKey,
-          apply: withRefs(updateChange(item.node, item.object.objectId, parse)),
+          apply: withRefs(shapeBaseline(updateChange(item.node, item.object.objectId, parse), item.object.current)),
           keep: { kind: "rebaseline", target: item.object.objectId, stableNodeKey: item.object.stableNodeKey },
         });
       }

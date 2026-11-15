@@ -8,6 +8,7 @@
 import type { SceneElement } from "@/domain/canvas/adapter";
 import { getArrowRelation, getEmbedRef } from "@/domain/canvas/adapter";
 import { connectorSourceOf, reconciliationOf } from "@/domain/provenance";
+import { isLocked } from "@/domain/canvas/lock";
 import type { DocumentRecord, RelationType } from "@/domain/types";
 import type { ExistingObject } from "./classify";
 import { unitOfKey } from "./keys";
@@ -15,6 +16,7 @@ import { fingerprintOf, labelsByContainer, objectContent } from "./objects";
 
 export function existingObjects(elements: readonly SceneElement[], getDocument: (id: string) => DocumentRecord | null | undefined, sourceId: string): ExistingObject[] {
   const labels = labelsByContainer(elements);
+  const lockedFrames = new Set(elements.flatMap((el) => (!el.isDeleted && el.type === "frame" && isLocked(el) ? [el.id] : [])));
   const out: ExistingObject[] = [];
   for (const el of elements) {
     if (el.isDeleted || (el.type === "text" && el.containerId)) continue;
@@ -23,18 +25,26 @@ export function existingObjects(elements: readonly SceneElement[], getDocument: 
     const content = objectContent(el, labels, getDocument);
     if (!content) continue;
     const ref = getEmbedRef(el);
+    // A card's own lock (Stage 1e) also sets `excludeFromReconciliation`; it is reported as `locked`, so the update decides whether to honour it.
+    const locked = isLocked(el) ? "card" : el.frameId && lockedFrames.has(el.frameId) ? "section" : undefined;
     out.push({
       objectId: el.id,
       stableNodeKey: link.stableNodeKey,
       baseline: link.contentFingerprint,
       current: fingerprintOf(content),
-      excluded: link.excludeFromReconciliation,
+      excluded: link.excludeFromReconciliation && !isLocked(el),
+      ...(locked ? { locked } : {}),
+      ...(link.userWording ? { userWording: true } : {}),
       ...(link.splitOf ? { splitOf: link.splitOf } : {}),
       version: link.contentSourceVersion,
       shape: content.kind,
       ...(ref?.kind === "rich-block" ? { blockType: ref.blockType } : {}),
       box: { x: el.x, y: el.y, width: el.width, height: el.height },
       ...(el.frameId ? { frameId: el.frameId } : {}),
+      ...(link.sourceUnits ? { sourceUnits: link.sourceUnits } : {}),
+      ...(link.review ? { review: link.review } : {}),
+      ...(link.noteModel ? { noteModel: link.noteModel } : {}),
+      ...(content.kind === "block" ? { rich: { content: content.content } } : content.kind === "page" ? { rich: { content: content.content, title: content.title } } : {}),
     });
   }
   return out;

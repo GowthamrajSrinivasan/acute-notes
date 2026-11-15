@@ -186,6 +186,59 @@ describe("Flashcard", () => {
   });
 });
 
+describe("Study recording (study-mode plan Phase 3, issue B)", () => {
+  it("QuizCard reports its first pick per mount only; Try again picks are not recorded", () => {
+    const recordStudy = vi.fn();
+    renderLang(QUIZ, { recordStudy });
+    click($$(".openui-quiz__choice")[0]);
+    expect(recordStudy.mock.calls).toEqual([[{ kind: "quiz", correct: false }]]);
+    click($(".openui-quiz__retry"));
+    click($$(".openui-quiz__choice")[1]);
+    expect($(".openui-quiz")?.dataset.state).toBe("correct");
+    expect(recordStudy).toHaveBeenCalledTimes(1);
+  });
+
+  it("QuizCard records a correct first pick as correct, and a bound $variable pick once", () => {
+    const recordStudy = vi.fn();
+    renderLang(`$pick = null\nroot = QuizCard("Q?", ["A", "B"], 1, null, null, $pick)`, { recordStudy });
+    click($$(".openui-quiz__choice")[1]);
+    click($(".openui-quiz__retry"));
+    click($$(".openui-quiz__choice")[0]);
+    expect(recordStudy.mock.calls).toEqual([[{ kind: "quiz", correct: true }]]);
+  });
+
+  it("Flashcard: a flip records nothing; Got it / Missed it appear only after the reveal; one grade per reveal", () => {
+    const recordStudy = vi.fn();
+    renderLang(FLASH, { recordStudy });
+    expect(host.textContent).not.toContain("Got it");
+    click($(".openui-flashcard__face"));
+    click($(".openui-flashcard__face"));
+    click($(".openui-flashcard__face"));
+    expect(recordStudy).not.toHaveBeenCalled();
+    const got = $$("button").find((b) => b.textContent === "Got it");
+    click(got);
+    expect(recordStudy.mock.calls).toEqual([[{ kind: "flashcard", correct: true }]]);
+    // Graded: the buttons are gone for this reveal.
+    expect($$("button").find((b) => b.textContent === "Missed it")).toBeUndefined();
+    expect($(".openui-flashcard__graded")?.textContent).toBe("Recorded: got it");
+    // Flip back and reveal again: a new reveal, one more grade allowed.
+    click($(".openui-flashcard__face"));
+    expect($(".openui-flashcard__grade")).toBeNull();
+    click($(".openui-flashcard__face"));
+    click($$("button").find((b) => b.textContent === "Missed it"));
+    expect(recordStudy.mock.calls).toEqual([[{ kind: "flashcard", correct: true }], [{ kind: "flashcard", correct: false }]]);
+  });
+
+  it("without a host's recordStudy nothing is reported and the Flashcard has no grade buttons (static demo unchanged)", () => {
+    renderLang(FLASH);
+    click($(".openui-flashcard__face"));
+    expect($(".openui-flashcard__grade")).toBeNull();
+    renderLang(QUIZ);
+    click($$(".openui-quiz__choice")[1]);
+    expect($(".openui-quiz")?.dataset.state).toBe("correct");
+  });
+});
+
 describe("NoteLink", () => {
   it("navigates through the host, labelled with the target note's title", () => {
     const navigate = vi.fn();

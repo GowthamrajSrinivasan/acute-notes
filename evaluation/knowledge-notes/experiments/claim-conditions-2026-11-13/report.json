@@ -1,0 +1,652 @@
+{
+  "at": "2026-11-13",
+  "truth": "provisional; session labels re-reviewed blind by an independent reviewer",
+  "cost": "$0 (no model call)",
+  "kn-01-idempotency-keys": {
+    "cards": 9,
+    "records": [
+      {
+        "id": "kn01.replay.window",
+        "binding": "claim",
+        "covered": true,
+        "carriers": [
+          "g6",
+          "g7",
+          "g9"
+        ],
+        "carriersUncited": [
+          "g9"
+        ],
+        "perCard": {
+          "g2": "separated"
+        }
+      },
+      {
+        "id": "kn01.replay.reuse",
+        "binding": "claim",
+        "covered": true,
+        "carriers": [
+          "g8"
+        ],
+        "carriersUncited": [],
+        "perCard": {
+          "g2": "separated"
+        }
+      },
+      {
+        "id": "kn01.replay.completed",
+        "binding": "claim",
+        "covered": true,
+        "carriers": [
+          "g2"
+        ],
+        "carriersUncited": [],
+        "perCard": {
+          "g2": "carried"
+        }
+      },
+      {
+        "id": "kn01.takeaway.bounded",
+        "binding": "claim",
+        "covered": true,
+        "carriers": [
+          "g9"
+        ],
+        "carriersUncited": [],
+        "perCard": {
+          "g9": "carried"
+        }
+      }
+    ],
+    "integrityFlags": {
+      "g2": [
+        {
+          "record": "kn01.replay.window",
+          "outcome": "separated"
+        },
+        {
+          "record": "kn01.replay.reuse",
+          "outcome": "separated"
+        }
+      ]
+    },
+    "coverageGaps": [],
+    "citeOnly": {
+      "integrityFlags": {
+        "g2": [
+          {
+            "record": "kn01.replay.window",
+            "outcome": "separated"
+          },
+          {
+            "record": "kn01.replay.reuse",
+            "outcome": "separated"
+          }
+        ]
+      },
+      "coverageGaps": []
+    },
+    "anchored": {
+      "integrityFlags": {
+        "g2": [
+          {
+            "record": "kn01.replay.window",
+            "outcome": "separated"
+          },
+          {
+            "record": "kn01.replay.reuse",
+            "outcome": "separated"
+          }
+        ]
+      },
+      "coverageGaps": [],
+      "carriers": {
+        "kn01.replay.window": [
+          "g6",
+          "g7"
+        ],
+        "kn01.replay.reuse": [
+          "g8"
+        ],
+        "kn01.replay.completed": [
+          "g2"
+        ],
+        "kn01.takeaway.bounded": [
+          "g9"
+        ]
+      }
+    },
+    "integrityFlagsOutsideLabelled": [],
+    "rulesFlaggedLabelled": [
+      "g8"
+    ]
+  },
+  "kn-02-edge-cache-invalidation": {
+    "cards": 48,
+    "records": [
+      {
+        "id": "kn02.ttl.guess",
+        "binding": "set",
+        "covered": true,
+        "carriers": [
+          "g8"
+        ],
+        "carriersUncited": [
+          "g8"
+        ],
+        "perCard": {
+          "g4": "separated"
+        }
+      },
+      {
+        "id": "kn02.ttl.cannot-shorten",
+        "binding": "set",
+        "covered": false,
+        "carriers": [],
+        "carriersUncited": [],
+        "perCard": {
+          "g9": "absent"
+        }
+      },
+      {
+        "id": "kn02.purge.eventual",
+        "binding": "claim",
+        "covered": true,
+        "carriers": [
+          "g14",
+          "g15",
+          "g21",
+          "g29",
+          "g48"
+        ],
+        "carriersUncited": [
+          "g15",
+          "g21",
+          "g29",
+          "g48"
+        ],
+        "perCard": {
+          "g11": "separated"
+        }
+      },
+      {
+        "id": "kn02.purge.scope",
+        "binding": "set",
+        "covered": false,
+        "carriers": [],
+        "carriersUncited": [],
+        "perCard": {
+          "g11": "absent"
+        }
+      },
+      {
+        "id": "kn02.purge.rate",
+        "binding": "set",
+        "covered": true,
+        "carriers": [
+          "g19"
+        ],
+        "carriersUncited": [],
+        "perCard": {
+          "g11": "separated"
+        }
+      },
+      {
+        "id": "kn02.walkthrough.bound",
+        "binding": "set",
+        "covered": true,
+        "carriers": [
+          "g23"
+        ],
+        "carriersUncited": [],
+        "perCard": {}
+      },
+      {
+        "id": "kn02.surrogate.tagged",
+        "binding": "claim",
+        "covered": true,
+        "carriers": [
+          "g26"
+        ],
+        "carriersUncited": [
+          "g26"
+        ],
+        "perCard": {
+          "g26": "carried"
+        }
+      },
+      {
+        "id": "kn02.surrogate.silent",
+        "binding": "set",
+        "covered": true,
+        "carriers": [
+          "g28"
+        ],
+        "carriersUncited": [],
+        "perCard": {
+          "g26": "separated"
+        }
+      },
+      {
+        "id": "kn02.surrogate.burst",
+        "binding": "set",
+        "covered": true,
+        "carriers": [
+          "g30"
+        ],
+        "carriersUncited": [],
+        "perCard": {
+          "g26": "separated"
+        }
+      },
+      {
+        "id": "kn02.swr.bound",
+        "binding": "claim",
+        "covered": true,
+        "carriers": [
+          "g9"
+        ],
+        "carriersUncited": [
+          "g9"
+        ],
+        "perCard": {
+          "g31": "separated"
+        }
+      },
+      {
+        "id": "kn02.swr.tolerance",
+        "binding": "set",
+        "covered": true,
+        "carriers": [
+          "g36",
+          "g37"
+        ],
+        "carriersUncited": [
+          "g36"
+        ],
+        "perCard": {
+          "g31": "separated"
+        }
+      },
+      {
+        "id": "kn02.sie.condition",
+        "binding": "claim",
+        "covered": true,
+        "carriers": [
+          "g35"
+        ],
+        "carriersUncited": [],
+        "perCard": {
+          "g35": "carried"
+        }
+      },
+      {
+        "id": "kn02.versioned.html",
+        "binding": "set",
+        "covered": false,
+        "carriers": [],
+        "carriersUncited": [],
+        "perCard": {
+          "g38": "absent"
+        }
+      },
+      {
+        "id": "kn02.versioned.still-need",
+        "binding": "set",
+        "covered": false,
+        "carriers": [],
+        "carriersUncited": [],
+        "perCard": {
+          "g41": "absent"
+        }
+      },
+      {
+        "id": "kn02.versioned.old-assets",
+        "binding": "set",
+        "covered": true,
+        "carriers": [
+          "g43"
+        ],
+        "carriersUncited": [],
+        "perCard": {
+          "g38": "separated",
+          "g39": "separated"
+        }
+      },
+      {
+        "id": "kn02.takeaway.struggles",
+        "binding": "set",
+        "covered": true,
+        "carriers": [
+          "g37"
+        ],
+        "carriersUncited": [
+          "g37"
+        ],
+        "perCard": {
+          "g47": "separated"
+        }
+      }
+    ],
+    "integrityFlags": {
+      "g11": [
+        {
+          "record": "kn02.purge.eventual",
+          "outcome": "separated"
+        }
+      ],
+      "g31": [
+        {
+          "record": "kn02.swr.bound",
+          "outcome": "separated"
+        }
+      ]
+    },
+    "coverageGaps": [
+      "kn02.ttl.cannot-shorten",
+      "kn02.purge.scope",
+      "kn02.versioned.html",
+      "kn02.versioned.still-need"
+    ],
+    "citeOnly": {
+      "integrityFlags": {
+        "g11": [
+          {
+            "record": "kn02.purge.eventual",
+            "outcome": "separated"
+          }
+        ],
+        "g26": [
+          {
+            "record": "kn02.surrogate.tagged",
+            "outcome": "separated"
+          }
+        ],
+        "g31": [
+          {
+            "record": "kn02.swr.bound",
+            "outcome": "separated"
+          }
+        ]
+      },
+      "coverageGaps": [
+        "kn02.ttl.guess"
+      ]
+    },
+    "anchored": {
+      "integrityFlags": {
+        "g11": [
+          {
+            "record": "kn02.purge.eventual",
+            "outcome": "separated"
+          }
+        ],
+        "g31": [
+          {
+            "record": "kn02.swr.bound",
+            "outcome": "absent"
+          }
+        ]
+      },
+      "coverageGaps": [
+        "kn02.ttl.guess",
+        "kn02.ttl.cannot-shorten",
+        "kn02.purge.scope",
+        "kn02.swr.bound",
+        "kn02.versioned.html",
+        "kn02.versioned.still-need",
+        "kn02.takeaway.struggles"
+      ],
+      "carriers": {
+        "kn02.ttl.guess": [],
+        "kn02.ttl.cannot-shorten": [],
+        "kn02.purge.eventual": [
+          "g14"
+        ],
+        "kn02.purge.scope": [],
+        "kn02.purge.rate": [
+          "g19"
+        ],
+        "kn02.walkthrough.bound": [
+          "g23"
+        ],
+        "kn02.surrogate.tagged": [
+          "g26"
+        ],
+        "kn02.surrogate.silent": [
+          "g28"
+        ],
+        "kn02.surrogate.burst": [
+          "g30"
+        ],
+        "kn02.swr.bound": [],
+        "kn02.swr.tolerance": [
+          "g37"
+        ],
+        "kn02.sie.condition": [
+          "g35"
+        ],
+        "kn02.versioned.html": [],
+        "kn02.versioned.still-need": [],
+        "kn02.versioned.old-assets": [
+          "g43"
+        ],
+        "kn02.takeaway.struggles": []
+      }
+    },
+    "integrityFlagsOutsideLabelled": [
+      "g11"
+    ],
+    "rulesFlaggedLabelled": [
+      "g7",
+      "g14",
+      "g27",
+      "g31",
+      "g47"
+    ]
+  },
+  "scores": {
+    "integrity": {
+      "note": "per card, over the 24 labelled cards",
+      "strict_g2_positive": {
+        "prototype": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 22,
+          "precision": 1,
+          "recall": 1
+        },
+        "anchored": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 22,
+          "precision": 1,
+          "recall": 1
+        },
+        "citeOnly": {
+          "tp": 2,
+          "fp": 1,
+          "fn": 0,
+          "tn": 21,
+          "precision": 0.67,
+          "recall": 1
+        },
+        "rules": {
+          "tp": 1,
+          "fp": 5,
+          "fn": 1,
+          "tn": 17,
+          "precision": 0.17,
+          "recall": 0.5
+        }
+      },
+      "lenient_g2_excluded": {
+        "prototype": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "tn": 22,
+          "precision": 1,
+          "recall": 1
+        },
+        "anchored": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "tn": 22,
+          "precision": 1,
+          "recall": 1
+        },
+        "citeOnly": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 0,
+          "tn": 21,
+          "precision": 0.5,
+          "recall": 1
+        },
+        "rules": {
+          "tp": 1,
+          "fp": 5,
+          "fn": 0,
+          "tn": 17,
+          "precision": 0.17,
+          "recall": 1
+        }
+      }
+    },
+    "coverage": {
+      "note": "per record (condition), over all records of both cases; rules count as flagging a record when a card citing one of its condition units is Needs review",
+      "prototype": {
+        "tp": 2,
+        "fp": 2,
+        "fn": 0,
+        "tn": 16,
+        "precision": 0.5,
+        "recall": 1
+      },
+      "anchored": {
+        "tp": 2,
+        "fp": 5,
+        "fn": 0,
+        "tn": 13,
+        "precision": 0.29,
+        "recall": 1
+      },
+      "citeOnly": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 2,
+        "tn": 17,
+        "precision": 0,
+        "recall": 0
+      },
+      "citeOnlyMissedGaps": [
+        "kn02.ttl.cannot-shorten",
+        "kn02.versioned.still-need"
+      ],
+      "prototypeFalseGaps": [
+        "kn02.purge.scope",
+        "kn02.versioned.html"
+      ],
+      "anchoredFalseGaps": [
+        "kn02.ttl.guess",
+        "kn02.purge.scope",
+        "kn02.swr.bound",
+        "kn02.versioned.html",
+        "kn02.takeaway.struggles"
+      ],
+      "rules": {
+        "tp": 1,
+        "fp": 3,
+        "fn": 1,
+        "tn": 15,
+        "precision": 0.25,
+        "recall": 0.5
+      }
+    },
+    "wording_out_of_scope": {
+      "note": "the prototype should NOT flag these for integrity (they're the distortion checks' job)",
+      "cards": [
+        "kn-01:g1",
+        "kn-01:g4",
+        "kn-02:g10",
+        "kn-02:g33",
+        "kn-02:g47"
+      ],
+      "prototypeFlagged": [],
+      "anchoredFlagged": [],
+      "citeOnlyFlagged": [],
+      "rulesFlagged": [
+        "kn-02:g47"
+      ]
+    }
+  },
+  "firstLabelsReconciled": [
+    {
+      "card": "kn-01:g1",
+      "integrity": "no",
+      "wording": true,
+      "prototype": [],
+      "rules": false
+    },
+    {
+      "card": "kn-01:g2",
+      "integrity": "arguable",
+      "wording": false,
+      "prototype": [
+        {
+          "record": "kn01.replay.window",
+          "outcome": "separated"
+        },
+        {
+          "record": "kn01.replay.reuse",
+          "outcome": "separated"
+        }
+      ],
+      "rules": false
+    },
+    {
+      "card": "kn-01:g4",
+      "integrity": "no",
+      "wording": true,
+      "prototype": [],
+      "rules": false
+    },
+    {
+      "card": "kn-02:g9",
+      "integrity": "no",
+      "wording": false,
+      "prototype": [],
+      "rules": false
+    },
+    {
+      "card": "kn-02:g31",
+      "integrity": "definite",
+      "wording": false,
+      "prototype": [
+        {
+          "record": "kn02.swr.bound",
+          "outcome": "separated"
+        }
+      ],
+      "rules": true
+    },
+    {
+      "card": "kn-02:g41",
+      "integrity": "no",
+      "wording": false,
+      "prototype": [],
+      "rules": false
+    },
+    {
+      "card": "kn-02:g47",
+      "integrity": "no",
+      "wording": true,
+      "prototype": [],
+      "rules": true
+    }
+  ]
+}

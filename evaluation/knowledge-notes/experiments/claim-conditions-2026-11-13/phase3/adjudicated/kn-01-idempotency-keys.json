@@ -1,0 +1,109 @@
+{
+  "caseId": "kn-01-idempotency-keys",
+  "adjudicator": "phase3-adjudicator (Claude Opus 5.5, 2026-11-13)",
+  "records": [
+    {
+      "id": "c1",
+      "conditionUnits": ["u2"],
+      "verdict": "not_a_condition",
+      "claimUnits": ["u2"],
+      "status": "adjudicated",
+      "readings": [
+        { "who": "phase1", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "A", "verdict": "not_a_condition", "claimUnits": [] },
+        { "who": "B", "verdict": "ambiguous", "claimUnits": ["u2"] }
+      ],
+      "conditionQuote": "If the server has already completed a request with that key",
+      "claimQuote": "it returns the stored result instead of performing the operation again",
+      "rationale": "The if-clause is the trigger of the u2 mechanism claim itself, not a limit on a separately stated claim; the source never describes an unfinished-request case in which u2 would fail, so B's second reading has no source support.",
+      "confidence": "medium"
+    },
+    {
+      "id": "c2",
+      "conditionUnits": ["u6", "u7"],
+      "verdict": "claim",
+      "claimUnits": ["u2"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u2"] },
+        { "who": "phase1", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "A", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "B", "verdict": "claim", "claimUnits": ["u2"] }
+      ],
+      "conditionQuote": "Keys only protect against duplicates while the server still remembers them. In this design, stored results expire after 24 hours, so a retry sent after that window is treated as a new payment.",
+      "claimQuote": "If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.",
+      "rationale": "A retry after 24 hours is performed again, so u2 stated alone is false for late retries.",
+      "confidence": "high",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g1", "v1:g2"],
+          "carriers": ["v1:g3", "v1:g5"],
+          "perClaimCard": { "v1:g1": "separated", "v1:g2": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g1", "v2:g2", "v2:g4"],
+          "carriers": ["v2:g6", "v2:g7", "v2:g9"],
+          "perClaimCard": { "v2:g1": "separated", "v2:g2": "separated", "v2:g4": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "conditionUnits": ["u8"],
+      "verdict": "claim",
+      "claimUnits": ["u2"],
+      "status": "agreed",
+      "readings": [
+        { "who": "golden", "verdict": "link", "claimUnits": ["u2"] },
+        { "who": "phase1", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "A", "verdict": "claim", "claimUnits": ["u2"] },
+        { "who": "B", "verdict": "claim", "claimUnits": ["u2"] }
+      ],
+      "conditionQuote": "if a client reuses a key with a different amount, the server must reject the request rather than return the old result",
+      "claimQuote": "If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.",
+      "rationale": "A same-key request with a different amount is rejected, not answered with the stored result, so an unqualified u2 is misleading.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g2"],
+          "carriers": ["v1:g4"],
+          "perClaimCard": { "v1:g2": "separated" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g2"],
+          "carriers": ["v2:g8"],
+          "perClaimCard": { "v2:g2": "separated" }
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "conditionUnits": ["u9"],
+      "verdict": "claim",
+      "claimUnits": ["u9"],
+      "status": "agreed",
+      "readings": [
+        { "who": "phase1", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "A", "verdict": "claim", "claimUnits": ["u9"] },
+        { "who": "B", "verdict": "claim", "claimUnits": ["u9"] }
+      ],
+      "conditionQuote": "within a bounded window; they are not a general guarantee against duplicate operations",
+      "claimQuote": "idempotency keys make retries safe",
+      "rationale": "Intra-sentence summary condition; without the bound 'make retries safe' is false for late or altered requests.",
+      "confidence": "medium",
+      "notes": {
+        "openui-v1": {
+          "claimCards": ["v1:g5"],
+          "carriers": ["v1:g5"],
+          "perClaimCard": { "v1:g5": "carried" }
+        },
+        "openui-v2": {
+          "claimCards": ["v2:g9"],
+          "carriers": ["v2:g9"],
+          "perClaimCard": { "v2:g9": "carried" }
+        }
+      }
+    }
+  ],
+  "notes": "Claim cards are cards whose visible text states the limited claim generally; example-bound cards tied to key 7f3c-91ab (v2:g3, v2:g5) are treated as illustration, not claim cards. For c3 only cards saying the server returns the stored/original result for a seen key count (v1:g2, v2:g2); 'prevent duplicate operations' is not falsified by rejecting a different-amount request. v1:g5 / v2:g9 ('specific timeframe' / 'defined time window') are listed as partial c2 carriers alongside the 24-hour cards. Citations ignored throughout."
+}

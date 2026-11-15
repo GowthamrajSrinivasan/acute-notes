@@ -1,0 +1,41 @@
+{
+  "frozenAt": "2026-11-13T15:20:42.729Z",
+  "note": "Labels, packets and protocol frozen before the extractor and clause detector were tuned. Final cases (kn-05..kn-12) are scored once; phase2.test.ts refuses to score them if a hash differs.",
+  "dev": [
+    "kn-03-blue-green-deploy",
+    "kn-04-queue-choice"
+  ],
+  "final": [
+    "kn-05-incident-review-meeting",
+    "kn-06-hybrid-search-reranking",
+    "kn-07-photo-sharing-hld",
+    "kn-08-helpdesk-answers-hld-lld",
+    "kn-09-billing-codebase-map",
+    "kn-10-inventory-architecture-frames",
+    "kn-11-ambiguous-analytics-proposal",
+    "kn-12-flag-rollout-update"
+  ],
+  "sha256": {
+    "labels/kn-03-blue-green-deploy.json": "b5da756d17d7bef90343d33209446f2162ffea1f35a2b8cae9311565934f031d",
+    "packets/kn-03-blue-green-deploy.md": "ff15d3afb4feaa63796e3509f419d3f751034a46bcfce1a230dd033a5720b350",
+    "labels/kn-04-queue-choice.json": "cf00515ce6ffe81c41d997882397dfbf99f0762287fb570c1bd0a6d7022bc9ee",
+    "packets/kn-04-queue-choice.md": "ae308a7fb80c6c83de1b15edf2e57ba3d07b5af4a17a8c4d709721bca67b2a06",
+    "labels/kn-05-incident-review-meeting.json": "38c142c3b9c5982e6f3016444689a38bb230b605e0a7b0a9ee62015e7a715a40",
+    "packets/kn-05-incident-review-meeting.md": "621473406700c8079c0e7756a474d8768331f2542263e960e01a76fa715528a4",
+    "labels/kn-06-hybrid-search-reranking.json": "a45ff04e09fbf71e31b3dfe50f3b3cdd821ed67390e7249086e9bdf62cee7410",
+    "packets/kn-06-hybrid-search-reranking.md": "19f6c094a95dff5575a44b14a2a7ff5c32896cb9e835421f7b48aefee27b9457",
+    "labels/kn-07-photo-sharing-hld.json": "bd420876e3c3ce559d3a14fe2c257f09823622739e0e2ee3d43058733ccac881",
+    "packets/kn-07-photo-sharing-hld.md": "70e31f8c2b397ed90c5cbedde2e5b8dffc89d4f63b2fb656596f85224755faed",
+    "labels/kn-08-helpdesk-answers-hld-lld.json": "ac030676429452125e32e52a70dee8bdba5655c97f5b8a70092699b5f70a74af",
+    "packets/kn-08-helpdesk-answers-hld-lld.md": "28d747977bfaf439070eaaae59901ec1c4d2374ecf3910ff01268f0d0da54d86",
+    "labels/kn-09-billing-codebase-map.json": "6b063b095fc4379a4bf742d50326aba3fa9f538b0dfe68fdc2ae7a08eb36ca39",
+    "packets/kn-09-billing-codebase-map.md": "e78bd83a18281dda207cab4705ce07f47fb125caf0066ca8f237a7a56b7763d4",
+    "labels/kn-10-inventory-architecture-frames.json": "5902d79c249416c10aff442f111dd5cbadf164623fed9c525e1d5653e87969b5",
+    "packets/kn-10-inventory-architecture-frames.md": "bc5f4b853f5beea85d3f928791f477a818c9b986bd27dafc0007f8c5e998720f",
+    "labels/kn-11-ambiguous-analytics-proposal.json": "dbdbab68b65382c33230af0c0a1af54863b672ad071311eefb0838474866755f",
+    "packets/kn-11-ambiguous-analytics-proposal.md": "10ba07f250ae9c245d53fceb9e16d44fbeead1a467612db095e18a2ec5a2cf0e",
+    "labels/kn-12-flag-rollout-update.json": "adad5a20aaa3a74988a6dd83d3b11177e52eaef94bb3e1b21c27f9ed78b651b4",
+    "packets/kn-12-flag-rollout-update.md": "eda7d517e19c14ac5d0d1f53dc1aa667b6119adc2d8e4d62960872a399b73d9a",
+    "PROTOCOL.md": "3291f3a11afb8d96bea42c8913fca54c53379cdc0f0da0d3c1eaf299fea34b5d"
+  }
+}

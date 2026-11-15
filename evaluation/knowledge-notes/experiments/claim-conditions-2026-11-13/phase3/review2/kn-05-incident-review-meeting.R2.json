@@ -1,0 +1,115 @@
+{
+  "caseId": "kn-05-incident-review-meeting",
+  "reviewer": "R2",
+  "verdicts": [
+    {
+      "candidate": "c1",
+      "verdict": "claim",
+      "claimUnits": ["u22"],
+      "conditionQuote": "only fires when the checkout error rate is above 10% for 15 minutes",
+      "claimQuote": "The alert only fires",
+      "confidence": "high",
+      "note": "Intra-sentence trigger condition of the existing alert; without the threshold and duration, the alert's behaviour (and the 22-minute delay in u16) is misrepresented."
+    },
+    {
+      "candidate": "c2",
+      "verdict": "claim",
+      "claimUnits": ["u29", "u33"],
+      "conditionQuote": "for checkout specifically",
+      "claimQuote": "we'll lower the checkout error-rate alert to 5% over 5 minutes",
+      "confidence": "medium",
+      "note": "The checkout-only scope bounds the agreed threshold change; stating it as a general alert change would mislead (the 5%/5-minute numbers are the decision's content, not a limit)."
+    },
+    {
+      "candidate": "c3",
+      "verdict": "set",
+      "claimUnits": ["u33"],
+      "conditionQuote": "that would have paged twice on noise, both during the payment provider's own maintenance",
+      "claimQuote": "Agreed: we'll lower the checkout error-rate alert to 5% over 5 minutes.",
+      "confidence": "medium",
+      "note": "An accepted cost (about two noisy pages a month) of the new threshold; the decision stays true without it but the trade-off should be recorded."
+    },
+    {
+      "candidate": "c4",
+      "verdict": "claim",
+      "claimUnits": ["u59"],
+      "conditionQuote": "config changes to the payments service will go through pull-request review with one payments-team approval",
+      "claimQuote": "Agreed: config changes to the payments service will go through pull-request review",
+      "confidence": "medium",
+      "note": "Most of the span is assent and elaboration; the limiting content is the payments-service-only scope and the single payments-team approval, and dropping the scope would wrongly imply all config is now reviewed."
+    },
+    {
+      "candidate": "c5",
+      "verdict": "not_a_condition",
+      "claimUnits": [],
+      "conditionQuote": "by Friday, March 21",
+      "claimQuote": "I'll move the config into the repo and add the approval rule",
+      "confidence": "medium",
+      "note": "Owner and deadline of an action item (chronology), plus a conversational transition in u62; it does not limit the decision's truth."
+    },
+    {
+      "candidate": "c6",
+      "verdict": "claim",
+      "claimUnits": ["u63"],
+      "conditionQuote": "after 15:00 on Fridays",
+      "claimQuote": "I'd like us to stop deploying anything to payments",
+      "confidence": "medium",
+      "note": "Intra-sentence time scope of Tomás's freeze proposal; without it the proposal reads as a full payments deploy stop."
+    },
+    {
+      "candidate": "c7",
+      "verdict": "ambiguous",
+      "claimUnits": ["u70", "u71"],
+      "conditionQuote": "That's one incident. I think we'd see a pattern if we looked.",
+      "claimQuote": "Being Friday didn't slow that down.",
+      "confidence": "low",
+      "note": "Reading A: a set-level caveat that Leila's single-incident evidence does not generalise; reading B: not_a_condition, just a back-and-forth rebuttal in an undecided debate (u71 itself remains true for this incident)."
+    },
+    {
+      "candidate": "c8",
+      "verdict": "claim",
+      "claimUnits": ["u63"],
+      "conditionQuote": "Let's not decide the freeze now.",
+      "claimQuote": "I'd like us to stop deploying anything to payments after 15:00 on Fridays.",
+      "confidence": "high",
+      "note": "The freeze is explicitly undecided and deferred pending Tomás's six-month incident analysis; presenting the freeze as agreed would be false."
+    },
+    {
+      "candidate": "c9",
+      "verdict": "claim",
+      "claimUnits": ["u79"],
+      "conditionQuote": "if the checkout error rate doubles within 10 minutes of a deploy",
+      "claimQuote": "the pipeline rolls back on its own",
+      "confidence": "high",
+      "note": "Intra-sentence trigger of the proposed automatic rollback."
+    },
+    {
+      "candidate": "c10",
+      "verdict": "ambiguous",
+      "claimUnits": ["u79"],
+      "conditionQuote": "If a release includes a database migration, rolling back the code without the migration can leave us worse off.",
+      "claimQuote": "if the checkout error rate doubles within 10 minutes of a deploy, the pipeline rolls back on its own",
+      "confidence": "low",
+      "note": "Reading A (claim): the migration risk and config-vs-code split scope where auto-rollback is safe, so stating the proposal without it misleads; reading B (set): it is the objection/reason behind the open status, while the proposal sentence itself stays an accurate description of what was proposed."
+    },
+    {
+      "candidate": "c11",
+      "verdict": "claim",
+      "claimUnits": ["u79"],
+      "conditionQuote": "auto-rollback is an open question. We don't know how many releases include migrations. Let's leave it open.",
+      "claimQuote": "I'd also propose automatic rollback",
+      "confidence": "high",
+      "note": "Status condition: auto-rollback was not agreed; it stays open until migration frequency is known."
+    },
+    {
+      "candidate": "c12",
+      "verdict": "set",
+      "claimUnits": ["u95"],
+      "conditionQuote": "If most people retried, the email we send is different.",
+      "claimQuote": "Kenji, can you draft the customer email either way?",
+      "confidence": "medium",
+      "note": "Open question whose answer changes the customer email's content; the email action (drafted 'either way') and the 2,300 figure in u19 both stay true without it."
+    }
+  ],
+  "additional": []
+}

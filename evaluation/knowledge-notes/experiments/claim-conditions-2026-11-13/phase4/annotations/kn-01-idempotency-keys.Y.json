@@ -1,0 +1,13 @@
+{
+  "caseId": "kn-01-idempotency-keys",
+  "annotator": "Y",
+  "records": [
+    { "id": "y1", "units": ["u2"], "clause": "If the server has already completed a request with that key", "verdict": "claim", "rule": "general", "claimUnits": ["u2"], "claimQuote": "it returns the stored result instead of performing the operation again", "readingA": "", "readingB": "", "decidingQuestion": "", "confidence": "high", "additional": false },
+    { "id": "y2", "units": ["u6"], "clause": "only protect against duplicates while the server still remembers them", "verdict": "claim", "rule": "general", "claimUnits": ["u6"], "claimQuote": "Keys only protect against duplicates", "readingA": "", "readingB": "", "decidingQuestion": "", "confidence": "high", "additional": false },
+    { "id": "y3", "units": ["u7"], "clause": "stored results expire after 24 hours, so a retry sent after that window is treated as a new payment", "verdict": "claim", "rule": "general", "claimUnits": ["u2"], "claimQuote": "If the server has already completed a request with that key, it returns the stored result instead of performing the operation again.", "readingA": "", "readingB": "", "decidingQuestion": "", "confidence": "medium", "additional": false },
+    { "id": "y4", "units": ["u8"], "clause": "Keys also do not make two different requests safe", "verdict": "claim", "rule": "R3", "claimUnits": ["u2"], "claimQuote": "it returns the stored result instead of performing the operation again", "readingA": "", "readingB": "", "decidingQuestion": "", "confidence": "high", "additional": false },
+    { "id": "y5", "units": ["u8"], "clause": "if a client reuses a key with a different amount, the server must reject the request rather than return the old result", "verdict": "claim", "rule": "R1", "claimUnits": ["u2"], "claimQuote": "it returns the stored result instead of performing the operation again", "readingA": "", "readingB": "", "decidingQuestion": "", "confidence": "medium", "additional": false },
+    { "id": "y6", "units": ["u9"], "clause": "within a bounded window", "verdict": "claim", "rule": "general", "claimUnits": ["u9"], "claimQuote": "idempotency keys make retries safe", "readingA": "", "readingB": "", "decidingQuestion": "", "confidence": "high", "additional": false },
+    { "id": "y7", "units": ["u9"], "clause": "they are not a general guarantee against duplicate operations", "verdict": "claim", "rule": "R3", "claimUnits": ["u9"], "claimQuote": "idempotency keys make retries safe", "readingA": "", "readingB": "", "decidingQuestion": "", "confidence": "high", "additional": false }
+  ]
+}

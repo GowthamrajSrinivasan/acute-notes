@@ -1,0 +1,120 @@
+{
+  "datasetVersion": "1.0.0",
+  "id": "rg-08-collapsed-one-frame",
+  "distortion": "misgrouped_element",
+  "caseId": "kn-08-helpdesk-answers-hld-lld",
+  "target": "plan",
+  "description": "Every card is put into the L1 architecture frame: the seven Lens levels collapse into one frame too large to read whole on the fit screen.",
+  "mutations": [
+    {
+      "op": "move_to_group",
+      "node": "s-sys",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "s-cms",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "s-llm",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "o-rc",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "o-cb",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "o-ac",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "o-cc",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "r-qe",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "r-vsearch",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "f1",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "f2",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "f3",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "f4",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "f5",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "f6",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "f7",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "c-fn",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "c-timeout",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "c-mismatch",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "src-compose",
+      "group": "gL1"
+    },
+    {
+      "op": "move_to_group",
+      "node": "src-citations",
+      "group": "gL1"
+    }
+  ],
+  "expectFailing": [
+    "a.fit-screen",
+    "a.rendered-frames",
+    "a.frame-count"
+  ]
+}

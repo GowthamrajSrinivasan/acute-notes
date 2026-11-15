@@ -1,0 +1,1539 @@
+{
+  "r1VsR2": {
+    "items": 112,
+    "r2Verdicts": {
+      "set": 55,
+      "claim": 48,
+      "not_a_condition": 3,
+      "ambiguous": 6
+    },
+    "binding": {
+      "confusionR1toR2": {
+        "set→set": 38,
+        "claim→set": 17,
+        "claim→claim": 42,
+        "claim→not_a_condition": 2,
+        "claim→ambiguous": 3,
+        "set→claim": 6,
+        "set→ambiguous": 3,
+        "set→not_a_condition": 1
+      },
+      "claimSetItems": 103,
+      "agreementOnClaimSet": 0.78,
+      "kappaOnClaimSet": 0.56
+    },
+    "claimLink": {
+      "exact": 75,
+      "disjoint": 14,
+      "n/a": 3,
+      "overlap": 20
+    },
+    "claimLinkWhenBothCondition": {
+      "n": 109,
+      "exact": 75,
+      "overlap": 20,
+      "disjoint": 14
+    },
+    "perCase": {
+      "kn-03-blue-green-deploy": {
+        "items": 14,
+        "bindingSame": 11,
+        "linkExact": 10,
+        "notACondition": 0,
+        "ambiguous": 0
+      },
+      "kn-04-queue-choice": {
+        "items": 12,
+        "bindingSame": 6,
+        "linkExact": 7,
+        "notACondition": 1,
+        "ambiguous": 2
+      },
+      "kn-05-incident-review-meeting": {
+        "items": 10,
+        "bindingSame": 9,
+        "linkExact": 8,
+        "notACondition": 0,
+        "ambiguous": 1
+      },
+      "kn-06-hybrid-search-reranking": {
+        "items": 12,
+        "bindingSame": 4,
+        "linkExact": 5,
+        "notACondition": 1,
+        "ambiguous": 0
+      },
+      "kn-07-photo-sharing-hld": {
+        "items": 13,
+        "bindingSame": 10,
+        "linkExact": 8,
+        "notACondition": 1,
+        "ambiguous": 0
+      },
+      "kn-08-helpdesk-answers-hld-lld": {
+        "items": 10,
+        "bindingSame": 8,
+        "linkExact": 6,
+        "notACondition": 0,
+        "ambiguous": 1
+      },
+      "kn-09-billing-codebase-map": {
+        "items": 8,
+        "bindingSame": 7,
+        "linkExact": 7,
+        "notACondition": 0,
+        "ambiguous": 1
+      },
+      "kn-10-inventory-architecture-frames": {
+        "items": 10,
+        "bindingSame": 9,
+        "linkExact": 6,
+        "notACondition": 0,
+        "ambiguous": 1
+      },
+      "kn-11-ambiguous-analytics-proposal": {
+        "items": 11,
+        "bindingSame": 8,
+        "linkExact": 8,
+        "notACondition": 0,
+        "ambiguous": 0
+      },
+      "kn-12-flag-rollout-update": {
+        "items": 12,
+        "bindingSame": 8,
+        "linkExact": 10,
+        "notACondition": 0,
+        "ambiguous": 0
+      }
+    },
+    "rows": [
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c1",
+        "r1": "r14",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c2",
+        "r1": "r13",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c3",
+        "r1": "r3",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c4",
+        "r1": "r1",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c5",
+        "r1": "r2",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c6",
+        "r1": "r4",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c7",
+        "r1": "r5",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c8",
+        "r1": "r6",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c9",
+        "r1": "r7",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c10",
+        "r1": "r8",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c11",
+        "r1": "r9",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c12",
+        "r1": "r12",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c13",
+        "r1": "r11",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c14",
+        "r1": "r10",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c1",
+        "r1": "r12",
+        "r1Binding": "claim",
+        "r2Verdict": "not_a_condition",
+        "link": "n/a"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c3",
+        "r1": "r2",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c3",
+        "r1": "r3",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c4",
+        "r1": "r1",
+        "r1Binding": "claim",
+        "r2Verdict": "ambiguous",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c6",
+        "r1": "r4",
+        "r1Binding": "set",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c7",
+        "r1": "r5",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c8",
+        "r1": "r6",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c10",
+        "r1": "r7",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c11",
+        "r1": "r8",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c13",
+        "r1": "r9",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c14",
+        "r1": "r10",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c15",
+        "r1": "r11",
+        "r1Binding": "claim",
+        "r2Verdict": "ambiguous",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c1",
+        "r1": "r1",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c2",
+        "r1": "r2",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c3",
+        "r1": "r3",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c4",
+        "r1": "r4",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c6",
+        "r1": "r5",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c8",
+        "r1": "r6",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c9",
+        "r1": "r7",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c10",
+        "r1": "r8",
+        "r1Binding": "set",
+        "r2Verdict": "ambiguous",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c11",
+        "r1": "r9",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c12",
+        "r1": "r10",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c2",
+        "r1": "r11",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c3",
+        "r1": "r12",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c4",
+        "r1": "r1",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c5",
+        "r1": "r2",
+        "r1Binding": "claim",
+        "r2Verdict": "not_a_condition",
+        "link": "n/a"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c6",
+        "r1": "r3",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c7",
+        "r1": "r4",
+        "r1Binding": "set",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c7",
+        "r1": "r5",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c7",
+        "r1": "r6",
+        "r1Binding": "set",
+        "r2Verdict": "claim",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c8",
+        "r1": "r7",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c9",
+        "r1": "r8",
+        "r1Binding": "set",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c10",
+        "r1": "r9",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c12",
+        "r1": "r10",
+        "r1Binding": "set",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c1",
+        "r1": "r4",
+        "r1Binding": "set",
+        "r2Verdict": "not_a_condition",
+        "link": "n/a"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c2",
+        "r1": "r2",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c3",
+        "r1": "r1",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c4",
+        "r1": "r3",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c5",
+        "r1": "r12",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c6",
+        "r1": "r6",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c7",
+        "r1": "r7",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c8",
+        "r1": "r8",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c9",
+        "r1": "r11",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c10",
+        "r1": "r5",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c11",
+        "r1": "r9",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c12",
+        "r1": "r10",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c13",
+        "r1": "r13",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c1",
+        "r1": "r3",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c2",
+        "r1": "r4",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c3",
+        "r1": "r5",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c4",
+        "r1": "r10",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c5",
+        "r1": "r1",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c5",
+        "r1": "r2",
+        "r1Binding": "set",
+        "r2Verdict": "claim",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c6",
+        "r1": "r6",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c7",
+        "r1": "r7",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c8",
+        "r1": "r8",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c9",
+        "r1": "r9",
+        "r1Binding": "set",
+        "r2Verdict": "ambiguous",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "candidate": "c1",
+        "r1": "r1",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "candidate": "c2",
+        "r1": "r2",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "candidate": "c3",
+        "r1": "r3",
+        "r1Binding": "claim",
+        "r2Verdict": "ambiguous",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "candidate": "c4",
+        "r1": "r4",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "candidate": "c5",
+        "r1": "r5",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "candidate": "c6",
+        "r1": "r6",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "candidate": "c7",
+        "r1": "r7",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "candidate": "c8",
+        "r1": "r8",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c1",
+        "r1": "r1",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c2",
+        "r1": "r2",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c3",
+        "r1": "r3",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c4",
+        "r1": "r9",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c5",
+        "r1": "r10",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c6",
+        "r1": "r6",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c7",
+        "r1": "r4",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c8",
+        "r1": "r5",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c9",
+        "r1": "r8",
+        "r1Binding": "set",
+        "r2Verdict": "ambiguous",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c10",
+        "r1": "r7",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c1",
+        "r1": "r1",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c2",
+        "r1": "r2",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c4",
+        "r1": "r4",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c5",
+        "r1": "r5",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c6",
+        "r1": "r6",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c7",
+        "r1": "r3",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c8",
+        "r1": "r11",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c9",
+        "r1": "r8",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c10",
+        "r1": "r7",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c11",
+        "r1": "r9",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c12",
+        "r1": "r10",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c1",
+        "r1": "r12",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c2",
+        "r1": "r1",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c3",
+        "r1": "r2",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c4",
+        "r1": "r3",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c5",
+        "r1": "r4",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c6",
+        "r1": "r5",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c7",
+        "r1": "r6",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c8",
+        "r1": "r7",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c9",
+        "r1": "r8",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c10",
+        "r1": "r9",
+        "r1Binding": "set",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c11",
+        "r1": "r10",
+        "r1Binding": "claim",
+        "r2Verdict": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-12-flag-rollout-update",
+        "candidate": "c12",
+        "r1": "r11",
+        "r1Binding": "claim",
+        "r2Verdict": "claim",
+        "link": "exact"
+      }
+    ]
+  },
+  "aVsB": {
+    "items": 17,
+    "verdictAgreement4way": 0.82,
+    "kappa4way": 0.73,
+    "confusionAtoB": {
+      "not_a_condition→ambiguous": 1,
+      "claim→claim": 7,
+      "set→set": 5,
+      "ambiguous→set": 1,
+      "ambiguous→ambiguous": 1,
+      "claim→set": 1,
+      "not_a_condition→not_a_condition": 1
+    },
+    "claimLink": {
+      "n/a": 2,
+      "exact": 13,
+      "disjoint": 1,
+      "overlap": 1
+    },
+    "rows": [
+      {
+        "caseId": "kn-01-idempotency-keys",
+        "candidate": "c1",
+        "a": "not_a_condition",
+        "b": "ambiguous",
+        "link": "n/a"
+      },
+      {
+        "caseId": "kn-01-idempotency-keys",
+        "candidate": "c2",
+        "a": "claim",
+        "b": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-01-idempotency-keys",
+        "candidate": "c3",
+        "a": "claim",
+        "b": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-01-idempotency-keys",
+        "candidate": "c4",
+        "a": "claim",
+        "b": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c1",
+        "a": "set",
+        "b": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c2",
+        "a": "claim",
+        "b": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c3",
+        "a": "ambiguous",
+        "b": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c4",
+        "a": "set",
+        "b": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c5",
+        "a": "set",
+        "b": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c6",
+        "a": "claim",
+        "b": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c7",
+        "a": "set",
+        "b": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c8",
+        "a": "claim",
+        "b": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c9",
+        "a": "ambiguous",
+        "b": "ambiguous",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c10",
+        "a": "set",
+        "b": "set",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c11",
+        "a": "claim",
+        "b": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c12",
+        "a": "claim",
+        "b": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c13",
+        "a": "not_a_condition",
+        "b": "not_a_condition",
+        "link": "n/a"
+      }
+    ]
+  },
+  "vsGolden": {
+    "items": 51,
+    "verdicts": {
+      "claim": 23,
+      "set": 22,
+      "ambiguous": 2,
+      "not_a_condition": 4
+    },
+    "claimLink": {
+      "exact": 7,
+      "overlap": 29,
+      "disjoint": 11,
+      "n/a": 4
+    },
+    "rows": [
+      {
+        "caseId": "kn-01-idempotency-keys",
+        "candidate": "c2",
+        "reviewer": "A",
+        "verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-01-idempotency-keys",
+        "candidate": "c2",
+        "reviewer": "B",
+        "verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-01-idempotency-keys",
+        "candidate": "c3",
+        "reviewer": "A",
+        "verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-01-idempotency-keys",
+        "candidate": "c3",
+        "reviewer": "B",
+        "verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c1",
+        "reviewer": "A",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c1",
+        "reviewer": "B",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c2",
+        "reviewer": "A",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c2",
+        "reviewer": "B",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c3",
+        "reviewer": "A",
+        "verdict": "ambiguous",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c3",
+        "reviewer": "B",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c4",
+        "reviewer": "A",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c4",
+        "reviewer": "B",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c6",
+        "reviewer": "A",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c6",
+        "reviewer": "B",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c7",
+        "reviewer": "A",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c7",
+        "reviewer": "B",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c8",
+        "reviewer": "A",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c8",
+        "reviewer": "B",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c10",
+        "reviewer": "A",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c10",
+        "reviewer": "B",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c11",
+        "reviewer": "A",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c11",
+        "reviewer": "B",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c12",
+        "reviewer": "A",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-02-edge-cache-invalidation",
+        "candidate": "c12",
+        "reviewer": "B",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-03-blue-green-deploy",
+        "candidate": "c5",
+        "reviewer": "R2",
+        "verdict": "claim",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c2",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c5",
+        "reviewer": "R2",
+        "verdict": "not_a_condition",
+        "link": "n/a"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c7",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c9",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-04-queue-choice",
+        "candidate": "c12",
+        "reviewer": "R2",
+        "verdict": "not_a_condition",
+        "link": "n/a"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c4",
+        "reviewer": "R2",
+        "verdict": "claim",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c5",
+        "reviewer": "R2",
+        "verdict": "not_a_condition",
+        "link": "n/a"
+      },
+      {
+        "caseId": "kn-05-incident-review-meeting",
+        "candidate": "c7",
+        "reviewer": "R2",
+        "verdict": "ambiguous",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c1",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c2",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c4",
+        "reviewer": "R2",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c7",
+        "reviewer": "R2",
+        "verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c9",
+        "reviewer": "R2",
+        "verdict": "claim",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-06-hybrid-search-reranking",
+        "candidate": "c11",
+        "reviewer": "R2",
+        "verdict": "not_a_condition",
+        "link": "n/a"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c3",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c6",
+        "reviewer": "R2",
+        "verdict": "claim",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-07-photo-sharing-hld",
+        "candidate": "c7",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-08-helpdesk-answers-hld-lld",
+        "candidate": "c5",
+        "reviewer": "R2",
+        "verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "candidate": "c5",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-09-billing-codebase-map",
+        "candidate": "c6",
+        "reviewer": "R2",
+        "verdict": "claim",
+        "link": "exact"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c2",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c3",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c6",
+        "reviewer": "R2",
+        "verdict": "claim",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-10-inventory-architecture-frames",
+        "candidate": "c8",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "disjoint"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c3",
+        "reviewer": "R2",
+        "verdict": "set",
+        "link": "overlap"
+      },
+      {
+        "caseId": "kn-11-ambiguous-analytics-proposal",
+        "candidate": "c5",
+        "reviewer": "R2",
+        "verdict": "claim",
+        "link": "disjoint"
+      }
+    ]
+  },
+  "additionalConditions": {
+    "kn-01-idempotency-keys.A": 0,
+    "kn-01-idempotency-keys.B": 0,
+    "kn-02-edge-cache-invalidation.A": 3,
+    "kn-02-edge-cache-invalidation.B": 3,
+    "kn-03-blue-green-deploy.R2": 0,
+    "kn-04-queue-choice.R2": 1,
+    "kn-05-incident-review-meeting.R2": 0,
+    "kn-06-hybrid-search-reranking.R2": 2,
+    "kn-07-photo-sharing-hld.R2": 2,
+    "kn-08-helpdesk-answers-hld-lld.R2": 1,
+    "kn-09-billing-codebase-map.R2": 3,
+    "kn-10-inventory-architecture-frames.R2": 1,
+    "kn-11-ambiguous-analytics-proposal.R2": 2,
+    "kn-12-flag-rollout-update.R2": 1
+  }
+}

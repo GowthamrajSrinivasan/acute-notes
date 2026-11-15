@@ -44,6 +44,10 @@
       "why": "The transactional guarantee has an exception: the reporting service."
     },
     {
+      "quote": "Polling also adds read load to the primary database, which is the main risk at month-end.",
+      "why": "The source calls it the job table's main risk."
+    },
+    {
       "quote": "It sustained 1,200 jobs per minute with a p95 claim latency of 18 ms.",
       "why": "The measured result."
     },

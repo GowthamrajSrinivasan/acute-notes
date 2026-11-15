@@ -41,7 +41,7 @@
 
     { "id": "gL4", "type": "group", "content": { "label": "L4 Operation: composeAnswer", "arrangement": "tree", "takeaway": "A timeout fails the request; an unmatched citation only trims the answer.", "diagram": "architecture", "level": 4 } },
     { "id": "c-fn", "type": "shape", "parent": "gL4", "importance": "high", "stableKey": "op.compose", "content": { "shape": "rectangle", "label": "composeAnswer(question, passages)", "kind": "function", "details": ["Prompt via the Context builder, at most 6,000 tokens", "Calls the Model Gateway", "Draft goes to the Citation checker"] } },
-    { "id": "c-timeout", "type": "shape", "parent": "gL4", "stableKey": "op.timeout", "content": { "shape": "rectangle", "label": "Model call timeout (20 s)", "kind": "event", "sublabel": "error → HTTP 504; no partial answer" } },
+    { "id": "c-timeout", "type": "shape", "parent": "gL4", "stableKey": "op.timeout", "content": { "shape": "rectangle", "label": "Model call timeout (20 s)", "kind": "event", "sublabel": "error → HTTP 504; never a partial answer" } },
     { "id": "c-mismatch", "type": "shape", "parent": "gL4", "stableKey": "op.citation-mismatch", "content": { "shape": "rectangle", "label": "Citation matches no passage", "kind": "step", "sublabel": "remove that sentence; mark the answer partial" } },
 
     { "id": "gL5", "type": "group", "content": { "label": "L5 Source: composeAnswer code", "arrangement": "grid", "takeaway": "Locations only; the design gives no code.", "diagram": "architecture", "level": 5 } },

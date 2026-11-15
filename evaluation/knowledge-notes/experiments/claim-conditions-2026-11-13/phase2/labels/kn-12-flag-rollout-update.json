@@ -1,0 +1,139 @@
+{
+  "caseId": "kn-12-flag-rollout-update",
+  "reviewer": "blind independent reviewer, 2026-11-13",
+  "records": [
+    {
+      "id": "r1",
+      "claimUnits": ["u7"], "claimSummary": "In the internal stage the flag is on",
+      "conditionUnits": ["u7"], "kind": "scope",
+      "conditionSummary": "only for staff accounts",
+      "mustConvey": "only staff accounts",
+      "binding": "claim", "bindingReason": "For customer accounts the flag is off in the internal stage, so an unscoped 'flag is on' is false.",
+      "claimCards": ["u1_n2"], "carriers": ["u1_n2"],
+      "perClaimCard": { "u1_n2": "carried" },
+      "confidence": "high", "notes": "Intra-sentence."
+    },
+    {
+      "id": "r2",
+      "claimUnits": ["u8"], "claimSummary": "The internal stage lasts one working day",
+      "conditionUnits": ["u8"], "kind": "caveat",
+      "conditionSummary": "usually; the guide sets no minimum",
+      "mustConvey": "typical, not a minimum (no minimum set)",
+      "binding": "claim", "bindingReason": "Read without 'usually / no minimum', it becomes a required one-day minimum, which the guide explicitly does not set.",
+      "claimCards": ["u1_n2"], "carriers": ["u1_n2"],
+      "perClaimCard": { "u1_n2": "carried" },
+      "confidence": "high", "notes": "Intra-sentence."
+    },
+    {
+      "id": "r3",
+      "claimUnits": ["u12"], "claimSummary": "During canary the flag is on for 5% of traffic",
+      "conditionUnits": ["u12"], "kind": "scope",
+      "conditionSummary": "5% of requests chosen at random per request, not per user",
+      "mustConvey": "per request (not per user)",
+      "binding": "claim", "bindingReason": "Read as 5% of users, it misdescribes who sees the change (any user can hit flagged requests).",
+      "claimCards": ["u1_n4"], "carriers": ["u1_n4"],
+      "perClaimCard": { "u1_n4": "carried" },
+      "confidence": "medium", "notes": "u1_n4 says 'chosen randomly per request' but drops 'rather than per user'; judged recognisable."
+    },
+    {
+      "id": "r4",
+      "claimUnits": ["u12", "u13"], "claimSummary": "The flag stays in canary at 5%",
+      "conditionUnits": ["u13"], "kind": "bound",
+      "conditionSummary": "for at least 30 minutes",
+      "mustConvey": "at least 30 minutes",
+      "binding": "claim", "bindingReason": "A canary shorter than 30 minutes violates the rule, so the canary step without the bound misleads on when it may end.",
+      "claimCards": ["u1_n4"], "carriers": ["u1_n4"],
+      "perClaimCard": { "u1_n4": "carried" },
+      "confidence": "high", "notes": "Intra-sentence bound."
+    },
+    {
+      "id": "r5",
+      "claimUnits": ["u13"], "claimSummary": "Canary must stay at 5% for at least 30 minutes",
+      "conditionUnits": ["u14"], "kind": "caveat",
+      "conditionSummary": "raising the percentage by hand restarts the measurement window",
+      "mustConvey": "manual change restarts the window",
+      "binding": "set", "bindingReason": "The 30-minute rule stays true; the restart is an added consequence to know.",
+      "claimCards": ["u1_n4"], "carriers": ["u1_n4"],
+      "perClaimCard": { "u1_n4": "carried" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r6",
+      "claimUnits": ["u16"], "claimSummary": "A flag advances from canary to general availability",
+      "conditionUnits": ["u16", "u18"], "kind": "precondition",
+      "conditionSummary": "only when the automated metrics check passes; if it fails the flag stays in canary",
+      "mustConvey": "only if automated metrics check passes",
+      "binding": "claim", "bindingReason": "A flag whose check fails does not advance, so an unconditioned 'advances to GA' is false for it.",
+      "claimCards": ["u1_n6", "u1_a1"], "carriers": ["u1_n6", "u1_a1"],
+      "perClaimCard": { "u1_n6": "carried", "u1_a1": "carried" },
+      "confidence": "high", "notes": "The arrow u1_n5->u1_n7 is labelled 'if check passes'; arrow labels are not nodes, so not counted as a carrier. u1_n7/u1_n8 describe GA itself, not the advance, so are not claim cards."
+    },
+    {
+      "id": "r7",
+      "claimUnits": ["u20"], "claimSummary": "Every flag must have a kill switch that turns it off",
+      "conditionUnits": ["u20"], "kind": "bound",
+      "conditionSummary": "within 1 minute",
+      "mustConvey": "within 1 minute",
+      "binding": "claim", "bindingReason": "A kill switch slower than 1 minute does not meet the requirement, so dropping the bound makes the rule misleading.",
+      "claimCards": ["u2_n1"], "carriers": ["u2_n1"],
+      "perClaimCard": { "u2_n1": "carried" },
+      "confidence": "high", "notes": "g2 takeaway and u2_a1 say 'rapid' only; not counted as carriers."
+    },
+    {
+      "id": "r8",
+      "claimUnits": ["u9"], "claimSummary": "After internal, the rollout enters canary, exposing a small share of real traffic",
+      "conditionUnits": ["u21", "u22"], "kind": "precondition",
+      "conditionSummary": "a flag cannot enter canary without a kill switch tested in staging and recorded in the rollout tool",
+      "mustConvey": "tested kill switch required before canary",
+      "binding": "claim", "bindingReason": "A flag without a tested kill switch cannot enter canary, so the stage sequence as stated is false for it.",
+      "claimCards": ["u1_n4", "u1_a1"], "carriers": ["u2_n2", "u2_n3", "u2_a2"],
+      "perClaimCard": { "u1_n4": "separated", "u1_a1": "separated" },
+      "confidence": "medium", "notes": "The frame-to-frame arrow g1->g2 is labelled 'kill switch tested before canary', which conveys the link at group level but does not join the cards to a carrier directly and is not g1's label/takeaway; judged separated. A scorer that credits group arrow labels would call this linked."
+    },
+    {
+      "id": "r9",
+      "claimUnits": ["u24"], "claimSummary": "Turning a flag off is always safe",
+      "conditionUnits": ["u24"], "kind": "caveat",
+      "conditionSummary": "turning it back on restarts the rollout from the internal stage",
+      "mustConvey": "re-enabling restarts from internal stage",
+      "binding": "set", "bindingReason": "Turning off remains safe; the restart is a cost of re-enabling.",
+      "claimCards": ["u2_n5"], "carriers": ["u2_n5"],
+      "perClaimCard": { "u2_n5": "carried" },
+      "confidence": "medium", "notes": "Intra-sentence."
+    },
+    {
+      "id": "r10",
+      "claimUnits": ["u25"], "claimSummary": "While the flag ramps up, the owner watches the error dashboard",
+      "conditionUnits": ["u27"], "kind": "bound",
+      "conditionSummary": "keeps watching until the flag has been at 100% for one hour",
+      "mustConvey": "until 100% for one hour",
+      "binding": "claim", "bindingReason": "Read alone, watching stops when ramp-up ends at 100%; the rule requires another hour, so the claim misleads on the end point.",
+      "claimCards": ["u1_n8"], "carriers": ["u1_n8"],
+      "perClaimCard": { "u1_n8": "carried" },
+      "confidence": "medium", "notes": ""
+    },
+    {
+      "id": "r11",
+      "claimUnits": ["u28"], "claimSummary": "A flag is removed from the code",
+      "conditionUnits": ["u28"], "kind": "bound",
+      "conditionSummary": "after it has been fully on for 30 days",
+      "mustConvey": "fully on for 30 days",
+      "binding": "claim", "bindingReason": "A flag fully on for fewer than 30 days is not yet removed, so the bare claim is false for it.",
+      "claimCards": ["u3_n2", "u3_n1", "u3_n5", "g3"], "carriers": ["u3_n1", "u3_n2", "u3_a2", "g3"],
+      "perClaimCard": { "u3_n2": "carried", "u3_n1": "carried", "u3_n5": "frame", "g3": "carried" },
+      "confidence": "high", "notes": "u3_n5 ('Flag removed from code') states the claim without the bound; it is not directly linked to u3_n1/u3_n2, but frame g3 takeaway conveys 30 days."
+    },
+    {
+      "id": "r12",
+      "claimUnits": ["u2"], "claimSummary": "The guide explains how a flag goes from off to fully on",
+      "conditionUnits": ["u3"], "kind": "scope",
+      "conditionSummary": "does not cover experiments, which follow their own process",
+      "mustConvey": "experiments excluded",
+      "binding": "set", "bindingReason": "The guide still explains flag rollout; excluding experiments is a scope note that must appear somewhere.",
+      "claimCards": ["u0_n2", "u0_ax1"], "carriers": ["u0_n3", "u0_ax2"],
+      "perClaimCard": { "u0_n2": "separated", "u0_ax1": "separated" },
+      "confidence": "medium", "notes": "All in frame g0, whose takeaway doesn't mention experiments; no arrow joins claim cards and carriers."
+    }
+  ],
+  "notes": "Labelled against source v1 (packet units). No records for causes/rationale (u15 short canaries, u26 dashboard side-by-side, u31 old flags), chronology/records (u11, u19, u29), or examples. u17 comparison window (previous 7 days) treated as a detail of the check, not a limit on a claim. u23 (anyone may use kill switch) judged unconditioned. GA steps 25/50/100 (u10) are content, not a condition."
+}

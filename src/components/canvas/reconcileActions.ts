@@ -21,7 +21,9 @@ import { validateVisualPlan } from "@/ai/visual-plan/validate";
 import type { VisualPlan } from "@/ai/visual-plan/types";
 import { getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
 import { reconciliationOf } from "@/domain/provenance";
+import { isLocked, withLock } from "@/domain/canvas/lock";
 import type { AIMetadata, DocumentHome, ObjectMetadata } from "@/domain/types";
+import type { CardReview } from "@/ai/fidelity/contracts";
 import { getPersistence } from "@/persistence";
 import { getDocumentStore } from "@/state/documents";
 import { replaceElement } from "./richBlocks";
@@ -52,15 +54,70 @@ function patchAI(api: ExcalidrawImperativeAPI, elementId: string, patch: Partial
   );
 }
 
-/** Whether an object is linked to a content source, and whether it opted out; null when it isn't linked. */
-export function reconcileStatus(api: ExcalidrawImperativeAPI, elementId: string): { excluded: boolean } | null {
+/** Whether an object is linked to a content source, whether it opted out, and whether the user locked it (Stage 1e); null when it isn't linked. */
+export function reconcileStatus(api: ExcalidrawImperativeAPI, elementId: string): { excluded: boolean; locked: boolean } | null {
   const el = (api.getSceneElements() as unknown as readonly SceneElement[]).find((e) => e.id === elementId);
   const link = el && reconciliationOf(el, getDocument);
-  return link ? { excluded: link.excludeFromReconciliation } : null;
+  return link ? { excluded: link.excludeFromReconciliation, locked: isLocked(el) } : null;
+}
+
+/**
+ * Lock / Unlock a card (Stage 1e): the element's lock flag (its lock icon) and F39's opt-out together, as one undo step.
+ * An update then leaves the card alone while "Preserve locked sections" is on; unlocked, the next update may change it again.
+ */
+export function setCardLocked(api: ExcalidrawImperativeAPI, elementId: string, locked: boolean): void {
+  const el = api.getSceneElements().find((e) => e.id === elementId);
+  if (!el) return;
+  const ref = getEmbedRef(el);
+  const docId = ref?.kind === "rich-block" ? ref.documentId : ref?.kind === "page-preview" ? ref.pageId : null;
+  const rec = docId ? getDocumentStore().get(docId) : null;
+  if (docId && rec?.metadata?.ai) getDocumentStore().update(docId, { metadata: { ...rec.metadata, ai: { ...rec.metadata.ai, excludeFromReconciliation: locked || undefined } } });
+  replaceElement(
+    api,
+    elementId,
+    (e) => {
+      let customData = withLock(e.customData as Record<string, unknown> | undefined, locked);
+      const meta = customData.acuteMeta as ObjectMetadata | undefined;
+      if (!docId && meta?.ai) customData = { ...customData, acuteMeta: { ...meta, ai: { ...meta.ai, excludeFromReconciliation: locked || undefined } } };
+      return newElementWith(e, { customData });
+    },
+    CaptureUpdateAction.IMMEDIATELY,
+  );
+}
+
+/** Lock / Unlock a section frame (Stage 1e): every card in it — now or later — is left alone by updates while it is locked. */
+export function setFrameLocked(api: ExcalidrawImperativeAPI, frameId: string, locked: boolean): void {
+  replaceElement(api, frameId, (e) => newElementWith(e, { customData: withLock(e.customData as Record<string, unknown> | undefined, locked) }), CaptureUpdateAction.IMMEDIATELY);
 }
 
 export function setExcludedFromReconciliation(api: ExcalidrawImperativeAPI, elementId: string, excluded: boolean): void {
   patchAI(api, elementId, { excludeFromReconciliation: excluded || undefined });
+}
+
+/**
+ * A card's review state, set by the user's own action in the review queue or the Source tab (knowledge-notes-plan §5.3:
+ * Keep, Use source wording, Edit; OD5: only the user's action resolves one). `sourceUnits`, when given, replaces the
+ * card's citations (a pinned passage it didn't cite yet).
+ */
+export function setCardReview(api: ExcalidrawImperativeAPI, elementId: string, review: CardReview, sourceUnits?: readonly string[]): void {
+  patchAI(api, elementId, { review, ...(sourceUnits ? { sourceUnits: [...sourceUnits] } : {}) });
+}
+
+/**
+ * "Pin quote" / "Use source wording" (§5.1, §5.3): the passage, word for word, appended to a block's content as a quote
+ * (`quote`: lines already prefixed or not). The card's content changes, so it reads as the user's own edit to updates.
+ * False when the object isn't a block (a shape has no body to pin on).
+ */
+export function pinQuoteOnBlock(api: ExcalidrawImperativeAPI, elementId: string, passage: string): boolean {
+  const el = api.getSceneElements().find((e) => e.id === elementId);
+  const ref = el ? getEmbedRef(el) : null;
+  const docId = ref?.kind === "rich-block" ? ref.documentId : ref?.kind === "page-preview" ? ref.pageId : null;
+  const rec = docId ? getDocumentStore().get(docId) : null;
+  if (!docId || !rec) return false;
+  const text = passage.trim();
+  if (!text) return false;
+  getDocumentStore().update(docId, { snapshot: [...rec.snapshot, { type: "quote", content: text }] });
+  return true;
 }
 
 export type SourceEditOutcome = "updated" | "unavailable" | "unchanged";
