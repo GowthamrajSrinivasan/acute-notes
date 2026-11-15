@@ -3180,6 +3180,62 @@ The rules-only "expected compatible" lines in routing.md are the frozen recorder
 
 **Suite:** `src/ai` + `src/app` give 2,606 passed. 1 failure (`noVendorLeak`) is another lane's untracked `src/mcp/tools/publishedTools.ts`; repo-wide `tsc` errors only in another lane's mid-edit `src/mcp/tools/repoMap/index.ts`. Neither is in this lane's commits.
 
+### 12.32 Live SDK guard test PASS; unseen5 preflight (B blocked); SDK reservation correction (offline, not wired) (2026-11-15)
+
+**Review decision (2026-11-15, "Stage 4f Decision Review"):**
+- accepted: the byte-exact repair (fresh-clone verification passed: 2 clones, `autocrlf` true and false, 2,086 files byte-identical to their blobs; 3,714 tests passed, 0 failed);
+- approved: the live SDK test at **4,500 tokens for this test only**, 1 request, $0.01;
+- **conditionally approved: unseen5** (9 calls, 21,000 tokens, $0.05, gpt-oss-120b, once, frozen), subject to (A) reconciling 85 vs 86 candidates and (B) verifying transport-specific token accounting;
+- approved offline: including the SDK system prompt in reservations, versioned, without touching frozen artifacts;
+- **4f OFF.**
+
+**Order changed, deliberately:** the reservation correction must edit `judgeCall.ts`/`candidates.ts`, which unseen5's code freeze covers. So the correction is built as a new versioned module and **wired only after the unseen5 recording**. The live SDK test didn't depend on it: its own proxy bounds the complete request before sending.
+
+**1. Live SDK retry-guard test — run once, PASS** (`guard-smoke/runs/2026-11-15-guard-smoke`, pinned; a second run is refused, verified).
+- The code cap was raised 4,000 → 4,500 for this test only and re-frozen before the run (`refrozen` in FREEZE.json). The rehearsal passed at 4,500 first.
+
+| Case | Arrivals at proxy | Forwarded to AICredits | Result |
+|---|---|---|---|
+| injected 429 | 1 | **0** | SDK retries suppressed; call failed (transport); pair failed; reservation 1,424 kept |
+| injected 500 | 1 | **0** | same |
+| genuine | 1 | **1** | `max_tokens` 760 and `temperature` 0 on the request; answered; pair classified; `providerRequests` 1; budget settled 1,424 → **2,201** (reported usage); a late reading for another reservation ignored |
+
+- Every check ✓; 3 arrivals, 1 forwarded, 0 refused.
+- Cost ≤ $0.000374. The request was 9,844 bytes.
+- `retryGuardVerification.json` records the live result, and `sdkPin.test.ts` now also requires it (PASS, forwarded 1, providerRequests 1).
+
+**2. unseen5 preflight.**
+- **A — reconciled.** 86 planned = 85 pipeline forwards + **y19**: the near-miss routing's candidate, which the pipeline excludes (different scope). The frozen recorder plans the union so all three routings are scored on the same answers (since §12.16/§12.21).
+  - No duplicates (86 unique). No extra call: 85 pairs would also need 9 calls (8 × 10 + 5).
+  - The pipeline still scores y19 as excluded.
+  - The 125 pending pairs belong only to the budget simulation (90 changes competing). The recall denominators are the 90 labelled pairs (40 contradictions), **y24 included**.
+- **B — NOT passed (strictly).** The recorder uses the direct HTTP transport (no SDK overhead). But its estimate (characters ÷ 4) excludes the chat template: on the current prompt, the reported prompt tokens exceeded the estimate on every reliability call (+6 to +39).
+  - The worst case if every output hit its cap: 20,930 + 9 × 39 ≈ **21,281 > 21,000**.
+  - Realistic use is about 14–15k (no completion has come within 575 tokens of its cap).
+  - The recorder can't add the margin without a frozen-file edit. **Not run.** Needs either a ceiling of **≤ 21,300 tokens** (dollar ceiling unchanged, $0.05) or the recording run with the 9th call dropped (loses 6 pairs; not recommended).
+
+**3. SDK reservation correction — `src/ai/consistency/requestOverhead.ts` (version 1, new file, NOT wired).**
+- Measured: the SDK request for a one-pair check is 9,844 bytes, against 2,912 for the same check sent directly. That's **6,932 bytes of SDK system prompt**: 2,311 tokens conservatively (bytes ÷ 3), about 1,730 realistically.
+- `REQUEST_OVERHEAD`:
+  - `copilot_sdk_byok` 2,311;
+  - `direct_http` 64 (the chat template, measured up to 39);
+  - `reservationWithOverhead(callTokens, kind)`.
+- Tests pin: the live call would have been fully reserved (1,424 + 2,311 ≥ 2,201).
+
+**Finding:** under the unchanged 2,800-token per-call ceiling, **not even a one-pair check fits the Copilot SDK path** (1,424 + 2,311 = 3,735). The direct path fits.
+
+Options for the SDK path (your decision; nothing done):
+- (a) **`systemMessage` mode `"replace"`** for the consistency-check task only. Our judge prompt becomes the whole system message, so the overhead is about 0. The SDK documents that replace "removes all SDK guardrails including security restrictions". Our hardening (zero tools, deny-all permissions, empty isolated directory, `mode: "empty"`) stays.
+- (b) `"customize"` mode, removing sections (size unmeasured).
+- (c) a transport-specific per-call ceiling of about 5,200 on the SDK path. That contradicts "don't raise the per-call limit globally" unless scoped to it.
+- (d) consistency checking only over direct connections.
+
+Wiring follows the unseen5 recording either way.
+
+**unseen5's frozen files:** unchanged (all 22 verified).
+
+**Tests:** consistency, contract, host and provider tests: 329 passed, 10 skipped (opt-in).
+
 ## 13. Stage 5 — semantic locate and anchor (plan, 2026-11-14)
 
 **Status: planned, nothing built.** Goal: find the card and the exact item a piece of new information belongs to,
