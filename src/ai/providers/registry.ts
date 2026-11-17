@@ -10,6 +10,7 @@
 import { createCopilotProvider } from "./copilot/copilotProvider";
 import type { AIProvider, AITransport } from "@/ai/types";
 import type { DecisionVendor } from "@/ai/decisions/types";
+import type { HostByokProvider } from "@/ai/host/hostRuntime";
 
 export type AIConnectionAccessType = "subscription" | "api_key" | "local";
 
@@ -54,7 +55,22 @@ export interface AIProviderDescriptor {
   suggestedDecisionModel?: string;
   /** Set once F36's contract-test suite records a genuine failure — see `.ai/docs/ai-connection-validation-matrix.md`. Never set for "not yet tested"; only for "tested and failed." */
   hidden?: boolean;
+  /**
+   * Set on connections that are one plain chat-completions endpoint with the user's own key (an "openai"-type BYOK
+   * connection): how to reach it directly. The AI consistency check uses only this path (intelligent-update-engine-plan
+   * §12.33 decision: direct HTTP, never the SDK); `createProvider` builds its BYOK connection from the same function.
+   */
+  chatCompletions?: (resolved: ResolvedConnection) => HostByokProvider;
 }
+
+/** A chat-completions BYOK connection: the endpoint (or the default) and the key, if the connection has one. */
+const chatCompletions =
+  (defaultEndpoint: string) =>
+  (resolved: ResolvedConnection): HostByokProvider => ({
+    type: "openai",
+    baseUrl: resolved.endpoint ?? defaultEndpoint,
+    ...(resolved.secret !== undefined ? { apiKey: resolved.secret } : {}),
+  });
 
 const MODEL_FIELD = (
   required: boolean,
@@ -107,6 +123,7 @@ export const AI_PROVIDER_DESCRIPTORS: readonly AIProviderDescriptor[] = [
   },
   {
     id: "openai",
+    chatCompletions: chatCompletions("https://api.openai.com/v1"),
     name: "OpenAI",
     decision: { vendor: "openai", defaultModel: "gpt-6-luna", label: "OpenAI Decisions" },
     accessType: "api_key",
@@ -123,11 +140,7 @@ export const AI_PROVIDER_DESCRIPTORS: readonly AIProviderDescriptor[] = [
       createCopilotProvider({
         id: "openai",
         name: "OpenAI",
-        byok: {
-          type: "openai",
-          baseUrl: resolved.endpoint ?? "https://api.openai.com/v1",
-          apiKey: resolved.secret,
-        },
+        byok: chatCompletions("https://api.openai.com/v1")(resolved),
         defaultModel: resolved.model,
       }),
   },
@@ -183,6 +196,7 @@ export const AI_PROVIDER_DESCRIPTORS: readonly AIProviderDescriptor[] = [
   },
   {
     id: "ollama",
+    chatCompletions: chatCompletions("http://localhost:11434/v1"),
     name: "Ollama",
     accessType: "local",
     billingWording: "Runs locally. No cloud AI charges.",
@@ -196,15 +210,13 @@ export const AI_PROVIDER_DESCRIPTORS: readonly AIProviderDescriptor[] = [
       createCopilotProvider({
         id: "ollama",
         name: "Ollama",
-        byok: {
-          type: "openai",
-          baseUrl: resolved.endpoint ?? "http://localhost:11434/v1",
-        },
+        byok: chatCompletions("http://localhost:11434/v1")(resolved),
         defaultModel: resolved.model,
       }),
   },
   {
     id: "gemini",
+    chatCompletions: chatCompletions("https://generativelanguage.googleapis.com/v1beta/openai/"),
     name: "Gemini",
     accessType: "api_key",
     billingWording:
@@ -228,18 +240,13 @@ export const AI_PROVIDER_DESCRIPTORS: readonly AIProviderDescriptor[] = [
       createCopilotProvider({
         id: "gemini",
         name: "Gemini",
-        byok: {
-          type: "openai",
-          baseUrl:
-            resolved.endpoint ??
-            "https://generativelanguage.googleapis.com/v1beta/openai/",
-          apiKey: resolved.secret,
-        },
+        byok: chatCompletions("https://generativelanguage.googleapis.com/v1beta/openai/")(resolved),
         defaultModel: resolved.model,
       }),
   },
   {
     id: "openrouter",
+    chatCompletions: chatCompletions("https://openrouter.ai/api/v1"),
     name: "OpenRouter",
     decision: { vendor: "jev", defaultModel: "typesafe/jev-1.13", label: "Jev" },
     // TypeSafe's Jev router (openrouter.ai/typesafe/jev-router): picks a model and reasoning effort per request.
@@ -264,16 +271,13 @@ export const AI_PROVIDER_DESCRIPTORS: readonly AIProviderDescriptor[] = [
       createCopilotProvider({
         id: "openrouter",
         name: "OpenRouter",
-        byok: {
-          type: "openai",
-          baseUrl: resolved.endpoint ?? "https://openrouter.ai/api/v1",
-          apiKey: resolved.secret,
-        },
+        byok: chatCompletions("https://openrouter.ai/api/v1")(resolved),
         defaultModel: resolved.model,
       }),
   },
   {
     id: "aicredits",
+    chatCompletions: chatCompletions("https://api.aicredits.in/v1"),
     name: "AICredits",
     suggestedDecisionModel: "google/gemini-2.5-flash-lite",
     accessType: "api_key",
@@ -295,16 +299,13 @@ export const AI_PROVIDER_DESCRIPTORS: readonly AIProviderDescriptor[] = [
       createCopilotProvider({
         id: "aicredits",
         name: "AICredits",
-        byok: {
-          type: "openai",
-          baseUrl: resolved.endpoint ?? "https://api.aicredits.in/v1",
-          apiKey: resolved.secret,
-        },
+        byok: chatCompletions("https://api.aicredits.in/v1")(resolved),
         defaultModel: resolved.model,
       }),
   },
   {
     id: "neevcloud",
+    chatCompletions: chatCompletions("https://inference.ai.neevcloud.com/v1"),
     name: "NeevCloud",
     accessType: "api_key",
     billingWording:
@@ -326,11 +327,7 @@ export const AI_PROVIDER_DESCRIPTORS: readonly AIProviderDescriptor[] = [
       createCopilotProvider({
         id: "neevcloud",
         name: "NeevCloud",
-        byok: {
-          type: "openai",
-          baseUrl: resolved.endpoint ?? "https://inference.ai.neevcloud.com/v1",
-          apiKey: resolved.secret,
-        },
+        byok: chatCompletions("https://inference.ai.neevcloud.com/v1")(resolved),
         defaultModel: resolved.model,
       }),
   },

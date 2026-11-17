@@ -10,17 +10,24 @@
  *   the normal review. Nothing here edits a card;
  * - a ⚠ marker on each card in a possible or confirmed conflict.
  * A *possible* conflict and a *confirmed* one look different everywhere.
+ *
+ * The AI check (Stage 4f, Phase 1 pilot) appears only when the build offers it (`NEXT_PUBLIC_CONSISTENCY_AI_CHECK`): an
+ * opt-in switch for this device, a "Check with AI" button (one call of at most 10 pairs, started by hand), and every
+ * queued pair's state (not checked yet, with why it waits; checked and shown; checked compatible; failed) and today's
+ * budget. The AI's reading is shown on the record as evidence; only the user's decision changes a record.
  */
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { getCommitJournal } from "@/ai/changes/commit";
+import type { AICheckRun, AICheckStatus } from "@/ai/consistency/aiCheck";
 import type { ConsistencyConflict } from "@/ai/consistency/store";
 import { onCommitted, resumeCheckJobs } from "@/components/ai/commitOnCanvas";
 import type { DocumentHome } from "@/domain/types";
 import { showObjects } from "@/components/review/knowledgeActions";
+import { isConsistencyAICheckUiEnabled } from "@/config/features";
 import { useIndexState } from "@/search/liveIndex";
 import { getDocumentStore } from "@/state/documents";
-import { checkRevision, decideConflict, getConsistencyStore, proposeFix, recheckOpen } from "./consistencyRunner";
+import { checkRevision, decideConflict, getAICheckOptIn, getAICheckStatus, getConsistencyStore, hasAICheckConnection, proposeFix, recheckOpen, runAICheckNow, setAICheckOptIn } from "./consistencyRunner";
 
 const RECHECK_MS = 800;
 
@@ -96,11 +103,28 @@ export function ConsistencyPanel({ api, home }: { api: ExcalidrawImperativeAPI; 
     };
   }, [api, home]);
 
+  // The AI check (pilot): only read when the build offers it.
+  const aiOffered = isConsistencyAICheckUiEnabled();
+  const [ai, setAI] = useState<AIState>({ optedIn: false, connection: false, status: null });
+  useEffect(() => {
+    if (!aiOffered) return;
+    let live = true;
+    void (async () => {
+      const optedIn = await getAICheckOptIn();
+      const [connection, status] = optedIn ? await Promise.all([hasAICheckConnection(), getAICheckStatus(home)]) : [false, null];
+      if (live) setAI({ optedIn, connection, status });
+    })();
+    return () => {
+      live = false;
+    };
+  }, [aiOffered, home, tick, open, conflicts.length]);
+
   const possible = conflicts.filter((c) => c.status === "possible");
   const confirmed = conflicts.filter((c) => c.status === "confirmed");
   const deferred = conflicts.filter((c) => c.status === "deferred");
   const visible = possible.length + confirmed.length;
-  if (!visible && !jobs.failed && !jobs.running && !open) return <ConsistencyMarkers api={api} conflicts={[]} />;
+  const aiWaiting = ai.status ? ai.status.notChecked + ai.status.failed : 0;
+  if (!visible && !jobs.failed && !jobs.running && !open && !aiOffered) return <ConsistencyMarkers api={api} conflicts={[]} />;
 
   const focus = (elementId: string) => showObjects(api, [elementId]);
   const chip = [
@@ -108,6 +132,7 @@ export function ConsistencyPanel({ api, home }: { api: ExcalidrawImperativeAPI; 
     confirmed.length ? `${confirmed.length} confirmed` : "",
     jobs.running ? "checking…" : "",
     jobs.failed ? `${jobs.failed} ${jobs.failed === 1 ? "check" : "checks"} couldn't run` : "",
+    ai.optedIn && aiWaiting ? `${aiWaiting} to check with AI` : "",
   ]
     .filter(Boolean)
     .join(" · ");
@@ -140,6 +165,18 @@ export function ConsistencyPanel({ api, home }: { api: ExcalidrawImperativeAPI; 
               {message}
             </p>
           )}
+          {aiOffered && (
+            <AICheckSection
+              home={home}
+              api={api}
+              state={ai}
+              onOptIn={(on) => setAI((x) => ({ ...x, optedIn: on }))}
+              onChanged={(m) => {
+                if (m !== undefined) setMessage(m);
+                setTick((t) => t + 1);
+              }}
+            />
+          )}
           {!visible && !deferred.length && <p className="acute-review__note">No possible conflicts on this canvas.</p>}
           <ConflictList title="To review" items={possible} api={api} home={home} focus={focus} onMessage={setMessage} />
           <ConflictList title="Confirmed" items={confirmed} api={api} home={home} focus={focus} onMessage={setMessage} />
@@ -160,7 +197,7 @@ function ConflictList(props: { title: string; items: readonly ConsistencyConflic
         {items.map((c) => (
           <li key={c.id} className="acute-consistency__item" data-status={c.status} data-strength={c.strength} aria-label={`${c.status === "confirmed" ? "Confirmed conflict" : "Possible conflict"}: ${c.a.cardName} / ${c.b.cardName}`}>
             <div className="acute-consistency__label">
-              {c.status === "confirmed" ? "Confirmed conflict" : c.strength === "conflict" ? "Rule: can't both be true" : "Possible — needs a look (not checked by AI)"}
+              {labelOf(c)}
             </div>
             <div className="acute-review__compare">
               {(["a", "b"] as const).map((k) => (
@@ -173,6 +210,11 @@ function ConflictList(props: { title: string; items: readonly ConsistencyConflic
               ))}
             </div>
             <p className="acute-review__note">{c.evidence.reason}</p>
+            {c.ai && (
+              <p className="acute-review__note" data-ai-answer={c.ai.answer}>
+                {c.ai.note}
+              </p>
+            )}
             <div className="acute-review__conflict-actions">
               {c.status === "possible" && (
                 <>
@@ -205,6 +247,102 @@ function ConflictList(props: { title: string; items: readonly ConsistencyConflic
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+/** How sure the record is, in words: the rules', the AI check's (evidence only), or the user's. */
+export function labelOf(c: Pick<ConsistencyConflict, "status" | "strength" | "ai">): string {
+  if (c.status === "confirmed") return "Confirmed conflict";
+  if (c.strength === "conflict") return "Rule: can't both be true";
+  if (c.ai?.shown === "likely") return "AI: likely conflict (your call)";
+  if (c.ai?.shown === "hidden") return "Possible: AI reads them as compatible (your call)";
+  if (c.ai) return "Possible: the AI check couldn't settle it";
+  return "Possible — needs a look (not checked by AI)";
+}
+
+type AIState = { optedIn: boolean; connection: boolean; status: AICheckStatus | null };
+
+const RUN_TEXT: Partial<Record<AICheckRun["status"], string>> = {
+  no_connection: "The AI check needs your primary AI connection to be a chat-completions connection with its own API key and a model.",
+  nothing_queued: "Nothing waiting for the AI check.",
+  nothing_to_send: "Nothing could be sent now (see why each pair waits).",
+  no_output_cap: "Not sent: this connection can't limit the answer's length.",
+  no_single_attempt: "Not sent: this connection may retry a request on its own.",
+  ai_off: "The AI check is off.",
+};
+
+/** The backlog, each figure on its own: pairs, checks, days (typical / worst case), and how long the oldest has waited. */
+export function backlogText(b: AICheckStatus["backlog"], now = Date.now()): string {
+  const days = (n: number) => `${n} ${n === 1 ? "day" : "days"}`;
+  const span = b.budgetDays.typical === b.budgetDays.worstCase ? days(b.budgetDays.typical) : `${days(b.budgetDays.typical)} (at most ${days(b.budgetDays.worstCase)})`;
+  const age = b.oldestPendingAt === null ? "" : ` Oldest waiting ${ageText(now - b.oldestPendingAt)}.`;
+  return `Waiting: ${b.pendingPairs} ${b.pendingPairs === 1 ? "pair" : "pairs"} · ${b.requiredCalls} ${b.requiredCalls === 1 ? "check" : "checks"} of up to 10 · within today's and later days' limits: ${span}.${age}`;
+}
+
+function ageText(ms: number): string {
+  const min = Math.max(0, Math.round(ms / 60_000));
+  if (min < 60) return `${min} min`;
+  const h = Math.round(min / 60);
+  return h < 48 ? `${h} h` : `${Math.round(h / 24)} days`;
+}
+
+/** The text shown after a manual check. */
+export function runMessage(r: AICheckRun): string {
+  if (r.status === "answered") return `AI check: ${r.classified} of ${r.sent} pairs answered${r.failed ? `, ${r.failed} failed` : ""}. Its readings are shown on the records; nothing was changed.`;
+  if (r.status === "call_error") return `AI check failed (${r.error ?? "no reply"}). The pairs wait for another try.`;
+  return RUN_TEXT[r.status] ?? `AI check: ${r.status}`;
+}
+
+/** The AI check's controls and state (see module doc). */
+function AICheckSection(props: { api: ExcalidrawImperativeAPI; home: DocumentHome; state: AIState; onOptIn: (on: boolean) => void; onChanged: (message?: string | null) => void }) {
+  const { state } = props;
+  const [busy, setBusy] = useState(false);
+  const s = state.status;
+  const toggle = async (on: boolean) => {
+    // Shown at once; the stored switch follows (the status reloads after it).
+    props.onOptIn(on);
+    await setAICheckOptIn(on);
+    props.onChanged(on ? "AI check on for this device. New changes are queued; nothing is sent until you press Check with AI." : "AI check off. Nothing is queued or sent.");
+  };
+  const run = async () => {
+    setBusy(true);
+    try {
+      props.onChanged(runMessage(await runAICheckNow(props.api, props.home)));
+    } catch (err) {
+      props.onChanged(`AI check failed (${err instanceof Error ? err.message : "error"}).`);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="acute-consistency__ai" aria-label="AI check">
+      <h3 className="acute-consistency__title">AI check (pilot)</h3>
+      <label className="acute-review__note">
+        <input type="checkbox" checked={state.optedIn} onChange={(e) => void toggle(e.target.checked)} /> Use AI to check possible conflicts on this device. Statements from your cards are sent to your primary AI connection, only when you press Check with AI. It can miss conflicts; its answers are evidence for you, never a decision.
+      </label>
+      {state.optedIn && s && (
+        <>
+          <p className="acute-review__note" role="status">
+            {s.notChecked} not checked yet · {s.checkedShown} checked, shown · {s.checkedCompatible} checked, read as compatible · {s.failed} failed
+            {s.gaveUp ? ` · ${s.gaveUp} gave up` : ""}
+            {s.inFlight ? ` · ${s.inFlight} in progress` : ""}
+          </p>
+          {s.waiting.map((w) => (
+            <p key={w.reason} className="acute-review__note">
+              {w.count} waiting: {w.text}
+            </p>
+          ))}
+          <p className="acute-review__note">
+            Today: {s.budget.callsLeft} of {s.budget.dailyCalls} checks, {s.budget.tokensLeft.toLocaleString()} of {s.budget.dailyTokens.toLocaleString()} tokens left.
+          </p>
+          {s.backlog.pendingPairs > 0 && <p className="acute-review__note">{backlogText(s.backlog)}</p>}
+          {!state.connection && <p className="acute-review__note">{RUN_TEXT.no_connection}</p>}
+          <button type="button" className="acute-ask-ai__secondary" disabled={busy || !state.connection || !(s.notChecked + s.failed)} onClick={() => void run()}>
+            {busy ? "Checking…" : "Check with AI (up to 10 pairs)"}
+          </button>
+        </>
+      )}
     </div>
   );
 }

@@ -26,6 +26,24 @@ export function isTopicMergeEnabled(): boolean {
   return process.env.NEXT_PUBLIC_TOPIC_MERGE === "on";
 }
 
+/**
+ * The AI consistency check (intelligent-update-engine-plan Stage 4f, Phase 1 close-out): **off by default**, behind two
+ * switches like MCP's —
+ * - `CONSISTENCY_AI_CHECK` ("on" | "off") — **server-enforced**: `/api/ai/judge` answers 404 unless it is exactly "on".
+ *   Read at request time. Unset is off, so no request can reach a model;
+ * - `NEXT_PUBLIC_CONSISTENCY_AI_CHECK` — a UI hint only (inlined at build): whether the consistency panel offers the
+ *   AI check at all. Even then the user must opt in, and each check is started by hand; nothing runs on its own.
+ * Both need the AI feature itself on.
+ */
+export function isConsistencyAICheckEnabled(): boolean {
+  return isAIFeatureEnabled() && process.env.CONSISTENCY_AI_CHECK === "on";
+}
+
+/** UI hint for the client bundle (the literal `process.env.NEXT_PUBLIC_CONSISTENCY_AI_CHECK` must stay as-is for Next.js to inline it). */
+export function isConsistencyAICheckUiEnabled(): boolean {
+  return isAIFeatureEnabled() && process.env.NEXT_PUBLIC_CONSISTENCY_AI_CHECK === "on";
+}
+
 /** The response an AI route gives when this build has AI turned off: indistinguishable from a route that doesn't exist. */
 export function aiFeatureDisabledResponse(): Response | null {
   return isAIFeatureEnabled() ? null : new Response("Not Found", { status: 404 });

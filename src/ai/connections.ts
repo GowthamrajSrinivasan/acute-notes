@@ -12,6 +12,8 @@ import { AI_PROVIDER_DESCRIPTORS, type AIProviderDescriptor } from "@/ai/provide
 import type { AIAuthType, AIModel, AIProviderConfig } from "@/ai/types";
 import { createHttpDecisionProvider } from "@/ai/decisions/httpDecisionProvider";
 import type { DecisionProvider } from "@/ai/decisions/types";
+import type { DirectJudgeConnection } from "@/ai/consistency/directJudgeTransport";
+import { isDirectJudgeProvider } from "@/ai/host/judge/directJudge";
 
 const PRIMARY_META_KEY = "ai.primaryConnection";
 const FALLBACK_META_KEY = "ai.fallbackConnection";
@@ -271,6 +273,23 @@ export async function setFallback(id: string | null): Promise<void> {
   getAIProviderManager().setFallback(id);
   if (id) await getPersistence().meta.set(FALLBACK_META_KEY, id);
   else await getPersistence().meta.delete(FALLBACK_META_KEY);
+}
+
+/**
+ * The active primary connection as one direct chat-completions endpoint, for the AI consistency check (Stage 4f: direct
+ * HTTP only). `null` when there is no primary, it isn't a chat-completions connection with its own settings, or it has no
+ * model. Never the fallback: the check uses the primary or nothing.
+ */
+export async function getDirectJudgeConnection(): Promise<DirectJudgeConnection | null> {
+  const id = getPrimaryId();
+  const descriptor = id ? getDescriptor(id) : undefined;
+  if (!id || !descriptor?.chatCompletions) return null;
+  const config = await getPersistence().aiConnections.get(id);
+  const model = config?.model?.trim();
+  if (!config || !model) return null;
+  const endpoint = (config.metadata?.endpoint as string | undefined) ?? undefined;
+  const provider = descriptor.chatCompletions({ model, endpoint, secret: await getSecret(id) });
+  return isDirectJudgeProvider(provider) ? { connectionId: id, model, provider } : null;
 }
 
 export function getPrimaryId(): string | null {

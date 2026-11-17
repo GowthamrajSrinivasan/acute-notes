@@ -14,6 +14,7 @@
  * Per canvas, in the device's meta store (`consistency.<canvasId>`), bounded. Pure apart from the injected store and clock.
  */
 import type { MetaRepository } from "@/persistence/repositories/types";
+import type { JudgeAnswer, Shown } from "./judge";
 import type { DisagreementKind } from "./rules";
 
 export type ConflictStatus = "possible" | "confirmed" | "dismissed" | "deferred" | "closed";
@@ -33,8 +34,14 @@ export interface ConsistencyConflict {
   kind: DisagreementKind;
   /** The rules' verdict: `conflict` (they can't both be true) or `possible` (needs judgment). Never a resolution. */
   strength: "conflict" | "possible";
-  /** Who found it: the rules (tier 1), or the AI tier as evidence (Stage 4f, not built). */
+  /** Who found it: the rules (tier 1), or the AI check (Stage 4f) for a near-miss the rules alone don't show. */
   evidence: { by: "rule" | "ai"; reason: string; at: number };
+  /**
+   * The AI check's reading of this exact pair (Stage 4f, opt-in): evidence for the user, **never a decision** — it
+   * changes no status. `shown` is what rules + AI would show (`combine`); a record the rules found stays listed even
+   * when the AI reads it as compatible (the user decides).
+   */
+  ai?: { answer: JudgeAnswer; why?: string; shown: Shown; note: string; at: number };
   status: ConflictStatus;
   /** The revision whose check found it. */
   raisedBy: string;
@@ -176,6 +183,50 @@ export class ConsistencyStore {
     return c;
   }
 
+  /**
+   * The AI check's readings (Stage 4f, opt-in, review-only). For each pair: an open record gets the reading as evidence
+   * (status unchanged); a dismissed one stays dismissed; a pair with no open record is added as `possible` only when
+   * rules + AI show it (`likely` or `possible`) — found `by: "ai"`. A pair read as compatible with no record adds
+   * nothing (the reading stays in the AI check's ledger). Returns the records added or annotated.
+   */
+  recordAI(canvasId: string, raisedBy: string, readings: readonly { detection: Detection; ai: { answer: JudgeAnswer; why?: string }; shown: Shown; note: string }[]): ConsistencyConflict[] {
+    const map = this.map(canvasId);
+    const at = this.now();
+    const changed: ConsistencyConflict[] = [];
+    for (const r of readings) {
+      const id = pairId(r.detection.a, r.detection.b);
+      const prev = map.get(id);
+      const ai = { answer: r.ai.answer, ...(r.ai.why ? { why: r.ai.why.slice(0, 400) } : {}), shown: r.shown, note: r.note.slice(0, 500), at };
+      if (prev?.status === "dismissed") continue;
+      if (prev && isOpen(prev)) {
+        prev.ai = ai;
+        prev.updatedAt = at;
+        changed.push(prev);
+        continue;
+      }
+      if (r.shown !== "likely" && r.shown !== "possible" && r.shown !== "conflict") continue;
+      const c: ConsistencyConflict = {
+        id,
+        canvasId,
+        a: side(r.detection.a),
+        b: side(r.detection.b),
+        kind: r.detection.kind,
+        strength: "possible",
+        evidence: { by: "ai", reason: r.detection.reason, at },
+        ai,
+        status: "possible",
+        raisedBy,
+        createdAt: prev?.createdAt ?? at,
+        updatedAt: at,
+        history: [...(prev?.history ?? []), { at, status: "possible" as const, note: "raised by the AI check" }].slice(-MAX_HISTORY),
+      };
+      map.set(id, c);
+      changed.push(c);
+    }
+    if (changed.length) this.persist(canvasId);
+    return changed;
+  }
+
   /** A pair the user already decided elsewhere (Stage 3 "Leave as is"): recorded dismissed, exact pair, never shown. */
   dismissPair(canvasId: string, raisedBy: string, d: Detection, note: string): void {
     const id = pairId(d.a, d.b);
@@ -211,7 +262,12 @@ export class ConsistencyStore {
    */
   reevaluate(
     canvasId: string,
-    look: { sentencesOf(elementId: string): readonly string[] | null; fingerprintOf(elementId: string): string | null; stillDisagree(a: string, b: string): boolean },
+    look: {
+      sentencesOf(elementId: string): readonly string[] | null;
+      fingerprintOf(elementId: string): string | null;
+      /** Do the two sentences still disagree? Given the record, so a pair the AI check raised can be judged by its own route. */
+      stillDisagree(a: string, b: string, record: ConsistencyConflict): boolean;
+    },
     elementIds?: ReadonlySet<string>,
   ): ConsistencyConflict[] {
     const changed: ConsistencyConflict[] = [];
@@ -227,7 +283,7 @@ export class ConsistencyStore {
         changed.push(c);
         continue;
       }
-      if (!look.stillDisagree(c.a.sentence, c.b.sentence)) {
+      if (!look.stillDisagree(c.a.sentence, c.b.sentence, c)) {
         this.transition(c, "closed", "no longer disagree");
         changed.push(c);
         continue;
