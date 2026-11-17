@@ -1,0 +1,105 @@
+{
+  "run": "2026-11-16-phase1-integration",
+  "at": "2026-11-15T19:35:18.697Z",
+  "model": "openai/gpt-oss-120b",
+  "endpoint": "https://api.aicredits.in/v1",
+  "routeCalls": 1,
+  "ms": 22801,
+  "run_result": {
+    "status": "answered",
+    "sent": 2,
+    "classified": 2,
+    "failed": 0,
+    "recorded": 2,
+    "usedTokens": 1055,
+    "providerRequests": 1
+  },
+  "pairs": [
+    {
+      "key": "n:11oajnt|x:1s05yve",
+      "a": "Backups run every night at 2 a.m.",
+      "b": "Backups run once a week on Sunday.",
+      "ledger": {
+        "key": "n:11oajnt|x:1s05yve",
+        "state": "classified",
+        "attempts": 1,
+        "revision": "ai-check:1794771318705",
+        "reservation": "2026-11-15#1",
+        "context": "237pos3sv5n",
+        "answer": "contradicts",
+        "why": "Both statements describe the backup frequency for the same system with no contextual distinction; one says nightly, the other weekly, which cannot both be true simultaneously.",
+        "suggestion": "Verify the current backup schedule and update the notes to reflect the correct frequency.",
+        "updatedAt": 1794771341495
+      }
+    },
+    {
+      "key": "n:1bu41wf|y:vo46by",
+      "a": "Customers can request a refund within 14 days.",
+      "b": "The refund window is 30 days from delivery.",
+      "ledger": {
+        "key": "n:1bu41wf|y:vo46by",
+        "state": "classified",
+        "attempts": 1,
+        "revision": "ai-check:1794771318705",
+        "reservation": "2026-11-15#1",
+        "context": "1thjot0wwqq",
+        "answer": "unclear",
+        "why": "The statements give different refund periods but do not specify the reference point (e.g., from purchase vs from delivery), so it’s unclear if they refer to distinct contexts.",
+        "suggestion": "Clarify the basis for each refund window (e.g., purchase date vs delivery date) to determine if both can coexist.",
+        "updatedAt": 1794771341495
+      }
+    }
+  ],
+  "records": [
+    {
+      "a": "Backups run every night at 2 a.m.",
+      "b": "Backups run once a week on Sunday.",
+      "status": "possible",
+      "by": "ai",
+      "ai": {
+        "answer": "contradicts",
+        "why": "Both statements describe the backup frequency for the same system with no contextual distinction; one says nightly, the other weekly, which cannot both be true simultaneously.",
+        "shown": "likely",
+        "note": "AI: likely conflict: Both statements describe the backup frequency for the same system with no contextual distinction; one says nightly, the other weekly, which cannot both be true simultaneously.",
+        "at": 1794771341497
+      }
+    },
+    {
+      "a": "Customers can request a refund within 14 days.",
+      "b": "The refund window is 30 days from delivery.",
+      "status": "possible",
+      "by": "ai",
+      "ai": {
+        "answer": "unclear",
+        "why": "The statements give different refund periods but do not specify the reference point (e.g., from purchase vs from delivery), so it’s unclear if they refer to distinct contexts.",
+        "shown": "possible",
+        "note": "“14 days” here, “30 days” there, about the same subject — may be the same claim; AI couldn't tell: The statements give different refund periods but do not specify the reference point (e.g., from purchase vs from delivery), so it’s unclear if they refer to distinct contexts.",
+        "at": 1794771341497
+      }
+    }
+  ],
+  "status": {
+    "notChecked": 0,
+    "waiting": [],
+    "inFlight": 0,
+    "checkedShown": 2,
+    "checkedCompatible": 0,
+    "failed": 0,
+    "gaveUp": 0,
+    "budget": {
+      "callsLeft": 49,
+      "tokensLeft": 88945,
+      "dailyCalls": 50,
+      "dailyTokens": 90000
+    },
+    "backlog": {
+      "pendingPairs": 0,
+      "requiredCalls": 0,
+      "budgetDays": {
+        "typical": 0,
+        "worstCase": 0
+      },
+      "oldestPendingAt": null
+    }
+  }
+}

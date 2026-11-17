@@ -1,0 +1,35 @@
+{
+  "limits": {
+    "maxRequests": 1,
+    "maxTokens": 3000,
+    "maxUsd": 0.01,
+    "price": {
+      "input": 3.7e-8,
+      "output": 1.7000000000000001e-7
+    },
+    "templateMargin": 64
+  },
+  "totals": {
+    "sent": 1,
+    "refused": 0,
+    "spentTokens": 1055,
+    "spentUsdUpperBound": 0.00017935000000000002
+  },
+  "log": [
+    {
+      "n": 1,
+      "at": "2026-11-15T19:35:18.727Z",
+      "decision": "sent",
+      "spentBefore": 0,
+      "maxTokens": 820,
+      "estimatedInput": 761,
+      "worstCase": 1581,
+      "status": 200,
+      "usage": {
+        "promptTokens": 696,
+        "completionTokens": 359
+      },
+      "charged": 1055
+    }
+  ]
+}
