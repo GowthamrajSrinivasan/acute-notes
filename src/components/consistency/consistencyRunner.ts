@@ -18,7 +18,7 @@ import { getCommitJournal, type CommittedRevision } from "@/ai/changes/commit";
 import { getPendingChanges } from "@/ai/changes/pendingChanges";
 import { cardReader, detect, fixFor, MAX_CANDIDATES, type Claim } from "@/ai/consistency/check";
 import { aiCheckStatus, AICheckQueue, discoverForAI, isOptedIn, runAICheck, setOptIn, type AICheckRun, type AICheckStatus } from "@/ai/consistency/aiCheck";
-import { directJudgeTransport } from "@/ai/consistency/directJudgeTransport";
+import { directJudgeTransport, judgeServerReady } from "@/ai/consistency/directJudgeTransport";
 import { JudgeLedger } from "@/ai/consistency/judgeLedger";
 import { judgePair } from "@/ai/consistency/rules";
 import { screenPair } from "@/ai/consistency/screen";
@@ -113,6 +113,7 @@ export async function runAICheckNow(api: ExcalidrawImperativeAPI, home: Document
     ledger: ledgerOf(),
     store: s,
     transport: connection ? directJudgeTransport(connection) : null,
+    serverReady: () => judgeServerReady(),
     stillSaid: (q) => !!read(q.a.elementId)?.sentences.includes(q.a.sentence) && !!read(q.b.elementId)?.sentences.includes(q.b.sentence),
     ...(signal ? { signal } : {}),
   });
@@ -121,7 +122,7 @@ export async function runAICheckNow(api: ExcalidrawImperativeAPI, home: Document
 
 /** The AI check's state for the panel (queued, waiting, checked, failed; today's budget). */
 export function getAICheckStatus(home: DocumentHome): Promise<AICheckStatus> {
-  return aiCheckStatus({ canvasId: home.canvasId, meta: getPersistence().meta, queue: queueOf(), ledger: ledgerOf() });
+  return aiCheckStatus({ canvasId: home.canvasId, meta: getPersistence().meta, queue: queueOf(), ledger: ledgerOf(), store: getConsistencyStore() });
 }
 
 /** The device's opt-in (the panel's switch). Turning it off stops queueing and checking at once. */
@@ -129,6 +130,8 @@ export const getAICheckOptIn = () => isOptedIn(getPersistence().meta);
 export const setAICheckOptIn = (on: boolean) => setOptIn(getPersistence().meta, on);
 /** Is there a connection the AI check can use (the primary, a chat-completions connection with a model)? */
 export const hasAICheckConnection = async () => !!(await getDirectJudgeConnection());
+/** The model the AI check would use (the primary connection's), or null without a usable connection. */
+export const getAICheckModel = async () => (await getDirectJudgeConnection())?.model ?? null;
 
 /** After a manual edit, undo or redo: re-checks the open records only (no new ones in v1). */
 export async function recheckOpen(api: ExcalidrawImperativeAPI, home: DocumentHome): Promise<ConsistencyConflict[]> {

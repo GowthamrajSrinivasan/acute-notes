@@ -44,6 +44,8 @@ test("opt in → queue a near-miss → one manual check → the reading is evide
     await route.fulfill({ json: { text: "OK", finishReason: "stop", usage: {} } });
   });
   await page.route("**/api/ai/judge", async (route) => {
+    // The readiness check (GET, no body) goes to the real server: its switch is on, so it answers 204.
+    if (route.request().method() === "GET") return route.continue();
     const body = route.request().postDataJSON() as Record<string, unknown> & { prompt: string };
     judgeBodies.push(body);
     const refs = [...body.prompt.matchAll(/^p(\d+)$/gm)].map((m) => `p${m[1]}`);

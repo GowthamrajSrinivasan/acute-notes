@@ -1,5 +1,5 @@
 /**
- * Opt-in (UNSEEN5_PROBE=1), read-only diagnosis of the unseen5 recording (plan §12.34): for the contradictions the
+ * Opt-in (UNSEEN5_PROBE=1), read-only diagnosis of the unseen5 recording (plan §16.2): for the contradictions the
  * pipeline did not show as definite conflicts, and the ambiguous pairs shown as conflicts, print both statements, the
  * reference label's reason, the AI's answer and reason, and which guard decided. unseen5 is development evidence from
  * now on (review 2026-11-16); nothing here is fresh-generalisation evidence. Writes nothing.

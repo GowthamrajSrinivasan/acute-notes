@@ -3972,3 +3972,51 @@ Unit suite 371 files / 3,861 tests passed; typecheck and lint clean; mocked test
 | 31 | The queue holds at most 200 pairs per canvas (oldest dropped); no UI to see or clear individual queued pairs | Offline, if the pilot needs it |
 | 32 | The in-app test needs a flags-on dev server (Next allows one per folder; Turbopack rejects a linked `node_modules`, so a copy runs with `--webpack`) | Test infrastructure |
 | 33 | Windows: vitest fails every file ("reading 'config'") when started from a lower-case `c:` working directory — run from `C:` | Recorded |
+
+## 16. Stage 4f limited pilot — independent review and approval (2026-11-17)
+
+Phase 1 engineering closed with commits `6e20b41`, `9e7a831`, `6143d99` (pushed 2026-11-17). Proposal: `.ai/docs/stage4f-pilot-gate-proposal-2026-11-16.md`. Pilot notes: `.ai/docs/stage4f-pilot-notes-2026-11-17.md`.
+
+### 16.1 Independent review
+An agent that had not written the proposal reviewed it (read-only; no AI calls, no sealed sets). **Verdict: APPROVE WITH CONDITIONS.** It recomputed the figures offline from `unseen5/pairs.json`, `labels.json` and the recorded `judgments.json`, through the current app code (`screenPair` → `judgementForCombine` → `combine`), and they match: recall 36/40 (90.0%), strict 31/40 (77.5%), precision 31/31 (conservative 31/33, 93.9%), compatible pairs shown 0/45 (also 0/45 as "possible"); budget-constrained recall 35/40 (87.5%, §12.33; was missing from the proposal). It confirmed in code that the AI cannot change a status, write a card, send without a press, or make more than one provider request per check.
+
+| # | Finding | Severity | Resolution |
+|---|---|---|---|
+| D1 | Proposal cited "§12.34", which never existed | must-fix | Fixed: the diagnosis is recorded in §16.2; references now point there |
+| D2 | Guard-held contradictions labelled "couldn't settle it", with reason "no disagreement found" — invites dismissal | must-fix | Fixed: label "Possible: AI reads a conflict, held back for you to judge (your call)"; AI-raised records say "Found by the AI check…"; the note leads with the AI's reading (`aiCheck.ts` `AI_FOUND_REASON`, `noteForUser`; `ConsistencyPanel.tsx` `labelOf`) |
+| D3 | "Context false positives" defined two ways; pilot thresholds chosen after the results | should-fix | Proposal names one definition and says the thresholds were set after the results |
+| D4 | The 200-pair queue dropped pairs silently | must-fix | Fixed: counted, persisted (`AICheckQueue.dropped`), shown in the panel |
+| D5 | Only accepted change sets are checked: manual edits, content present at opt-in, old-vs-old pairs are never queued | must-disclose | Disclosed in the proposal and pilot notes; §16.4 #34 |
+| D6 | y12 is a numeric-cap misread, not exception/subgroup | should-fix | Proposal corrected |
+| D7 | A route 404 (server switch off) kept the whole reservation and counted an attempt | should-fix | Fixed: the client asks `GET /api/ai/judge` (204/404, no body, no model) before reserving; off → `server_off`, nothing used (`judgeServerReady`) |
+| D8 | No tests for `recordAI` on confirmed / deferred / closed / dismissed records | should-fix | Added (`aiCheckPilot.test.ts`) |
+| D9 | The route forwards to a caller-supplied endpoint: an open proxy if exposed publicly | note | Fixed: the route answers 404 under `ACUTE_HTTP_EXPOSURE=public`; pilot local/desktop only |
+| D10 | Only gpt-oss-120b measured; nothing restricts the model | note | The panel warns when the model isn't gpt-oss-120b; pilot users run gpt-oss-120b |
+
+### 16.2 unseen5 diagnosis (the record the proposal should have cited)
+From the probe `unseen5Diagnosis.probe.test.ts` over the recorded answers (development evidence, no new call):
+- **Model misses (not shown at all), 4:** y31, y61, y86 read as an exception, subgroup or narrower scope; y12 a numeric-cap misread (the AI read "28 max" as within "cap 30"). On the live canvas the rules flag y12 anyway, for an unrelated reason.
+- **Guard downgrades (shown as "possible", not "likely"), 5:** y05, y24, y49, y65, y83 — the AI answered "contradicts"; the `contextDiffers` guard (date markers) held them at possible. Shown to the user, now labelled as an AI-read conflict held back (D2).
+- **Ambiguous pairs shown as conflict, 2:** y20, y45 (reference labels ambiguous) — the conservative precision counts them wrong.
+The guard fix, prompt work and y20/y45 are Phase 2, never tuned on unseen5.
+
+### 16.3 Decision (product owner, 2026-11-17)
+**Limited activation APPROVED; strict recall deferred to Phase 2.** Approved on the independent review, with its conditions:
+1. D1, D2, D4 fixed before any pilot user is enabled — **done** (§16.1).
+2. Pilot notes written before enabling — **done**.
+3. Local or desktop builds only; never `CONSISTENCY_AI_CHECK=on` with `ACUTE_HTTP_EXPOSURE=public` or on App Hosting — **enforced** by the route (D9); `.env.production` stays off.
+4. Pilot users run gpt-oss-120b as the primary connection, recorded per user; other models are outside the pilot (panel warns).
+5. Stop-condition data: each pilot user reports the panel's "Pilot feedback" line weekly (AI-"likely" records confirmed / dismissed / open; same for "possible"). A dismissed "likely" is an AI false positive; stop if dismissed / (confirmed + dismissed) of "likely" exceeds 10% over at least 10 decided records.
+6. Ends at 4 weeks or when Phase 2 measures the guard fix on a fresh sealed set (unseen6), whichever first. **Strict recall ≥ 85% stays a release gate**: no wider rollout until Phase 2 meets it.
+
+**How it is switched on:** per pilot machine, never in committed defaults — both switches `on` in the git-ignored `.env.development.local` (or the shell) for that user's local dev server or desktop build. Committed `.env.development` / `.env.production` keep both `off` (so the shared dev server, the standard local e2e suite and hosted builds are unchanged). Each device still opts in; each check is still one press. No paid calls are made by this work; the pilot's calls are the pilot users' own, on their own keys, within the per-device budget.
+
+### 16.4 Verification and new pending items
+Consistency + route + panel tests: 28 files, 253 passed (new `aiCheckPilot.test.ts` 11; route GET/public; `judgeServerReady`); typecheck and lint clean; in-app Playwright test passed on a flags-on server using the real readiness check (GET 204, then exactly one judge request); a running server with the switch off answers the readiness GET with 404.
+
+| # | Item | Needs |
+|---|---|---|
+| 34 | Manual edits, content present at opt-in, and old-vs-old card pairs are never queued (D5) | Phase 2 design |
+| 35 | No server-side daily cap; clearing site data resets the device budget (review, condition 7) | Phase 2, if the pilot shows a need |
+| 36 | The server caps a request at `maxTokens` ≤ 1,300 + prompt ≤ 8,000 chars (~3,800 tokens), looser than the client's 2,800 reservation | Offline hardening |
+| 37 | With the UI switch on, the consistency chip is always shown; `consistency.local.spec.ts` assumes the switch off | Test infrastructure |

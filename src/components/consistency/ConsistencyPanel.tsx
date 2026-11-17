@@ -19,7 +19,7 @@
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { getCommitJournal } from "@/ai/changes/commit";
-import type { AICheckRun, AICheckStatus } from "@/ai/consistency/aiCheck";
+import { MAX_QUEUED, type AICheckRun, type AICheckStatus } from "@/ai/consistency/aiCheck";
 import type { ConsistencyConflict } from "@/ai/consistency/store";
 import { onCommitted, resumeCheckJobs } from "@/components/ai/commitOnCanvas";
 import type { DocumentHome } from "@/domain/types";
@@ -27,7 +27,7 @@ import { showObjects } from "@/components/review/knowledgeActions";
 import { isConsistencyAICheckUiEnabled } from "@/config/features";
 import { useIndexState } from "@/search/liveIndex";
 import { getDocumentStore } from "@/state/documents";
-import { checkRevision, decideConflict, getAICheckOptIn, getAICheckStatus, getConsistencyStore, hasAICheckConnection, proposeFix, recheckOpen, runAICheckNow, setAICheckOptIn } from "./consistencyRunner";
+import { checkRevision, decideConflict, getAICheckModel, getAICheckOptIn, getAICheckStatus, getConsistencyStore, proposeFix, recheckOpen, runAICheckNow, setAICheckOptIn } from "./consistencyRunner";
 
 const RECHECK_MS = 800;
 
@@ -105,14 +105,14 @@ export function ConsistencyPanel({ api, home }: { api: ExcalidrawImperativeAPI; 
 
   // The AI check (pilot): only read when the build offers it.
   const aiOffered = isConsistencyAICheckUiEnabled();
-  const [ai, setAI] = useState<AIState>({ optedIn: false, connection: false, status: null });
+  const [ai, setAI] = useState<AIState>({ optedIn: false, connection: false, model: null, status: null });
   useEffect(() => {
     if (!aiOffered) return;
     let live = true;
     void (async () => {
       const optedIn = await getAICheckOptIn();
-      const [connection, status] = optedIn ? await Promise.all([hasAICheckConnection(), getAICheckStatus(home)]) : [false, null];
-      if (live) setAI({ optedIn, connection, status });
+      const [model, status] = optedIn ? await Promise.all([getAICheckModel(), getAICheckStatus(home)]) : [null, null];
+      if (live) setAI({ optedIn, connection: !!model, model, status });
     })();
     return () => {
       live = false;
@@ -257,11 +257,25 @@ export function labelOf(c: Pick<ConsistencyConflict, "status" | "strength" | "ai
   if (c.strength === "conflict") return "Rule: can't both be true";
   if (c.ai?.shown === "likely") return "AI: likely conflict (your call)";
   if (c.ai?.shown === "hidden") return "Possible: AI reads them as compatible (your call)";
-  if (c.ai) return "Possible: the AI check couldn't settle it";
+  // The AI read a contradiction the guards hold back (different times or scopes, too little said, nothing saying only
+  // one can hold): still a real lead, never "couldn't settle" (pilot review D2).
+  if (c.ai?.answer === "contradicts") return "Possible: AI reads a conflict, held back for you to judge (your call)";
+  if (c.ai) return "Possible: the AI check couldn't tell (your call)";
   return "Possible — needs a look (not checked by AI)";
 }
 
-type AIState = { optedIn: boolean; connection: boolean; status: AICheckStatus | null };
+type AIState = { optedIn: boolean; connection: boolean; model: string | null; status: AICheckStatus | null };
+
+/** The one model the pilot measured (unseen5, 2026-11-15). Others work, but are outside the pilot's evidence. */
+export const isMeasuredModel = (model: string) => /(^|\/)gpt-oss-120b$/i.test(model.trim());
+
+/** The pilot's precision signal, in words (pilot review condition 5). Empty when the AI check has shown nothing yet. */
+export function pilotText(p: AICheckStatus["pilot"]): string {
+  const part = (b: AICheckStatus["pilot"]["likely"]) => `${b.confirmed} confirmed · ${b.dismissed} dismissed · ${b.open} open`;
+  const any = (b: AICheckStatus["pilot"]["likely"]) => b.confirmed + b.dismissed + b.open > 0;
+  if (!any(p.likely) && !any(p.possible)) return "";
+  return `Pilot feedback — AI “likely”: ${part(p.likely)}; AI “possible”: ${part(p.possible)}.`;
+}
 
 const RUN_TEXT: Partial<Record<AICheckRun["status"], string>> = {
   no_connection: "The AI check needs your primary AI connection to be a chat-completions connection with its own API key and a model.",
@@ -270,6 +284,7 @@ const RUN_TEXT: Partial<Record<AICheckRun["status"], string>> = {
   no_output_cap: "Not sent: this connection can't limit the answer's length.",
   no_single_attempt: "Not sent: this connection may retry a request on its own.",
   ai_off: "The AI check is off.",
+  server_off: "Not sent: the AI check is switched off on this server. Nothing was used from today's budget.",
 };
 
 /** The backlog, each figure on its own: pairs, checks, days (typical / worst case), and how long the oldest has waited. */
@@ -337,6 +352,15 @@ function AICheckSection(props: { api: ExcalidrawImperativeAPI; home: DocumentHom
             Today: {s.budget.callsLeft} of {s.budget.dailyCalls} checks, {s.budget.tokensLeft.toLocaleString()} of {s.budget.dailyTokens.toLocaleString()} tokens left.
           </p>
           {s.backlog.pendingPairs > 0 && <p className="acute-review__note">{backlogText(s.backlog)}</p>}
+          {s.droppedPairs > 0 && (
+            <p className="acute-review__note">
+              {s.droppedPairs} older {s.droppedPairs === 1 ? "pair was" : "pairs were"} dropped unchecked: the queue holds at most {MAX_QUEUED}.
+            </p>
+          )}
+          {pilotText(s.pilot) && <p className="acute-review__note">{pilotText(s.pilot)}</p>}
+          {state.model && !isMeasuredModel(state.model) && (
+            <p className="acute-review__note">This pilot was measured with gpt-oss-120b only; answers from {state.model} are unmeasured.</p>
+          )}
           {!state.connection && <p className="acute-review__note">{RUN_TEXT.no_connection}</p>}
           <button type="button" className="acute-ask-ai__secondary" disabled={busy || !state.connection || !(s.notChecked + s.failed)} onClick={() => void run()}>
             {busy ? "Checking…" : "Check with AI (up to 10 pairs)"}

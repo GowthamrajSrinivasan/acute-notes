@@ -20,7 +20,7 @@ import { combine, JUDGE_CALL_CEILING } from "./judge";
 import { runJudgeCheck, webLockSection, type BudgetStore, type CriticalSection, type JudgeCheckResult, type JudgeTransport } from "./judgeCall";
 import { JudgeLedger, pairContext } from "./judgeLedger";
 import { judgementForCombine, screenPair } from "./screen";
-import { pairId, sentenceHash, type ConsistencyStore, type Detection } from "./store";
+import { pairId, sentenceHash, type ConsistencyConflict, type ConsistencyStore, type Detection } from "./store";
 
 type Meta = Pick<MetaRepository, "get" | "set">;
 
@@ -36,6 +36,7 @@ export interface QueuedPair {
 
 export const MAX_QUEUED = 200;
 export const queueKey = (canvasId: string) => `consistency.aiQueue.${canvasId}`;
+export const droppedKey = (canvasId: string) => `consistency.aiQueue.${canvasId}.dropped`;
 export const OPT_IN_KEY = "consistency.aiCheck.optIn";
 export const BUDGET_KEY = "consistency.judge.budget";
 
@@ -114,9 +115,23 @@ export class AICheckQueue {
     const m = this.byCanvas.get(canvasId) ?? new Map<string, QueuedPair>();
     for (const q of add) if (!m.has(q.key)) m.set(q.key, q);
     for (const [k, q] of m) if (!keep(q)) m.delete(k);
-    const kept = [...m.values()].sort((x, y) => x.at - y.at).slice(-MAX_QUEUED);
+    const sorted = [...m.values()].sort((x, y) => x.at - y.at);
+    const kept = sorted.slice(-MAX_QUEUED);
     this.byCanvas.set(canvasId, new Map(kept.map((q) => [q.key, q])));
     await this.meta?.set(queueKey(canvasId), kept);
+    // A full queue drops its oldest pairs — counted, never silent (pilot review D4).
+    const over = sorted.length - kept.length;
+    if (over > 0) await this.meta?.set(droppedKey(canvasId), (await this.dropped(canvasId)) + over);
+  }
+
+  /** Pairs dropped because the queue was full (oldest first), since the device opted in on this canvas. */
+  async dropped(canvasId: string): Promise<number> {
+    try {
+      const n = await this.meta?.get<number>(droppedKey(canvasId));
+      return typeof n === "number" && Number.isFinite(n) && n > 0 ? n : 0;
+    } catch {
+      return 0;
+    }
   }
 }
 
@@ -124,6 +139,16 @@ function isQueued(q: unknown): q is QueuedPair {
   const x = q as QueuedPair | null;
   const sideOk = (s: unknown) => !!s && typeof (s as QueuedPair["a"]).elementId === "string" && typeof (s as QueuedPair["a"]).sentence === "string" && typeof (s as QueuedPair["a"]).cardName === "string";
   return !!x && typeof x.key === "string" && sideOk(x.a) && sideOk(x.b) && typeof x.revision === "string" && Number.isFinite(x.at);
+}
+
+/** The reason on a record the AI check raised: who found it — the rules alone saw no clear disagreement. */
+export const AI_FOUND_REASON = "Found by the AI check: the rules alone don't show a disagreement here.";
+
+/** `combine`'s note without the screen's reason in front ("no disagreement found; AI reads…" → "AI reads…"). */
+export function noteForUser(note: string, screenReason: string): string {
+  const prefix = `${screenReason}; `;
+  const rest = note.startsWith(prefix) ? note.slice(prefix.length) : note;
+  return rest.charAt(0).toUpperCase() + rest.slice(1);
 }
 
 /** A queued pair as the check's candidate: ranked by the screen, the card names as context. */
@@ -148,10 +173,15 @@ export interface AICheckDeps {
   section?: CriticalSection;
   now?: () => number;
   signal?: AbortSignal;
+  /**
+   * Is the server's switch on? Asked before anything is reserved: with it off, nothing is sent, no budget is kept and
+   * no attempt is counted (pilot review D7). Omitted: assumed on.
+   */
+  serverReady?: () => Promise<boolean>;
 }
 
 export interface AICheckRun {
-  status: JudgeCheckResult["status"] | "no_connection" | "nothing_queued";
+  status: JudgeCheckResult["status"] | "no_connection" | "nothing_queued" | "server_off";
   sent: number;
   classified: number;
   failed: number;
@@ -174,6 +204,7 @@ export async function runAICheck(d: AICheckDeps): Promise<AICheckRun> {
   if (!d.transport) return { status: "no_connection", sent: 0, classified: 0, failed: 0, recorded: 0 };
   const fresh = candidates.filter((c) => !d.ledger.blocksResend(d.canvasId, c.key, pairContext(c)));
   if (!fresh.length) return { status: "nothing_queued", sent: 0, classified: 0, failed: 0, recorded: 0 };
+  if (d.serverReady && !(await d.serverReady().catch(() => false))) return { status: "server_off", sent: 0, classified: 0, failed: 0, recorded: 0 };
   const result = await runJudgeCheck({
     canvasId: d.canvasId,
     revision: `ai-check:${now()}`,
@@ -199,8 +230,10 @@ export async function runAICheck(d: AICheckDeps): Promise<AICheckRun> {
     classified++;
     const ai = { answer: p.answer, ...(p.why ? { why: p.why } : {}) };
     const combined = combine(c.judgement, ai);
-    const detection: Detection = { a: q.a, b: q.b, kind: c.judgement.kind ?? "differs", strength: "possible", reason: c.judgement.reason };
-    readings.push({ detection, ai, shown: combined.shown, note: combined.note });
+    // The screen's own reason ("no disagreement found") describes the rules, not the finding: an AI-raised record says
+    // who found it, and the note leads with the AI's reading (pilot review D2).
+    const detection: Detection = { a: q.a, b: q.b, kind: c.judgement.kind ?? "differs", strength: "possible", reason: AI_FOUND_REASON };
+    readings.push({ detection, ai, shown: combined.shown, note: noteForUser(combined.note, c.judgement.reason) });
   }
   const recorded = readings.length ? d.store.recordAI(d.canvasId, `ai-check:${now()}`, readings).length : 0;
   return {
@@ -231,6 +264,28 @@ export interface AICheckStatus {
   budget: { callsLeft: number; tokensLeft: number; dailyCalls: number; dailyTokens: number };
   /** The backlog, each figure separately (Phase 1 close-out decision): never one merged number. */
   backlog: Backlog;
+  /** Pairs dropped unchecked because the queue was full (`MAX_QUEUED`, oldest first) — shown, never silent. */
+  droppedPairs: number;
+  /**
+   * The pilot's precision signal (pilot review condition 5): records the AI check showed (likely or possible), by the
+   * user's decision. A dismissed "likely" is the AI's false positive. Local; shared only if the user reports it.
+   */
+  pilot: { likely: { open: number; confirmed: number; dismissed: number }; possible: { open: number; confirmed: number; dismissed: number } };
+}
+
+/** The pilot feedback counts over a canvas's records (see `AICheckStatus.pilot`). */
+export function pilotFeedback(records: readonly Pick<ConsistencyConflict, "status" | "ai">[]): AICheckStatus["pilot"] {
+  const zero = () => ({ open: 0, confirmed: 0, dismissed: 0 });
+  const out = { likely: zero(), possible: zero() };
+  for (const r of records) {
+    const shown = r.ai?.shown;
+    if (shown !== "likely" && shown !== "possible") continue;
+    const bucket = out[shown];
+    if (r.status === "confirmed") bucket.confirmed++;
+    else if (r.status === "dismissed") bucket.dismissed++;
+    else bucket.open++;
+  }
+  return out;
 }
 
 /**
@@ -282,10 +337,22 @@ export function backlogOf(pendingPairs: number, oldestPendingAt: number | null, 
   };
 }
 
-export async function aiCheckStatus(d: Pick<AICheckDeps, "canvasId" | "meta" | "queue" | "ledger" | "now">): Promise<AICheckStatus> {
+export async function aiCheckStatus(d: Pick<AICheckDeps, "canvasId" | "meta" | "queue" | "ledger" | "now"> & { store?: ConsistencyStore }): Promise<AICheckStatus> {
   const queued = await d.queue.load(d.canvasId);
   await d.ledger.load(d.canvasId);
-  const s: AICheckStatus = { notChecked: 0, waiting: [], inFlight: 0, checkedShown: 0, checkedCompatible: 0, failed: 0, gaveUp: 0, budget: { callsLeft: 0, tokensLeft: 0, dailyCalls: DAILY_CALL_CAP, dailyTokens: DAILY_TOKEN_CAP }, backlog: backlogOf(0, null, { callsLeft: 0, tokensLeft: 0 }) };
+  const s: AICheckStatus = {
+    notChecked: 0,
+    waiting: [],
+    inFlight: 0,
+    checkedShown: 0,
+    checkedCompatible: 0,
+    failed: 0,
+    gaveUp: 0,
+    budget: { callsLeft: 0, tokensLeft: 0, dailyCalls: DAILY_CALL_CAP, dailyTokens: DAILY_TOKEN_CAP },
+    backlog: backlogOf(0, null, { callsLeft: 0, tokensLeft: 0 }),
+    droppedPairs: await d.queue.dropped(d.canvasId),
+    pilot: pilotFeedback(d.store?.list(d.canvasId) ?? []),
+  };
   const waiting = new Map<PendingReason, number>();
   let oldest: number | null = null;
   const pendingSince = (q: QueuedPair) => (oldest = oldest === null ? q.at : Math.min(oldest, q.at));

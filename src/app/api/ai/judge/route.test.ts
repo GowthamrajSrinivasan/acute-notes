@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { AIError } from "@/ai/errors";
 import { hostDirectJudge } from "@/ai/host/judge/directJudge";
-import { POST } from "./route";
+import { GET, POST } from "./route";
 
 vi.mock("@/ai/host/judge/directJudge", async (orig) => ({ ...(await orig<typeof import("@/ai/host/judge/directJudge")>()), hostDirectJudge: vi.fn() }));
 
@@ -57,5 +57,25 @@ describe("POST /api/ai/judge — switched on", () => {
     const res = await POST(post(body));
     expect(res.status).toBe(429);
     expect(JSON.stringify(await res.json())).not.toContain("sk-test-secret");
+  });
+});
+
+describe("pilot review fixes (plan §16)", () => {
+  it("GET answers 204 only when the switch is on, else 404 — no body, no model request (D7)", async () => {
+    vi.stubEnv("CONSISTENCY_AI_CHECK", "off");
+    expect(GET().status).toBe(404);
+    vi.stubEnv("CONSISTENCY_AI_CHECK", "on");
+    expect(GET().status).toBe(204);
+    vi.stubEnv("NEXT_PUBLIC_AI_FEATURE", "off");
+    expect(GET().status).toBe(404);
+    expect(hostDirectJudge).not.toHaveBeenCalled();
+  });
+
+  it("404 on a deliberately public deployment even with the switch on: the pilot is local/desktop only (D9)", async () => {
+    vi.stubEnv("CONSISTENCY_AI_CHECK", "on");
+    vi.stubEnv("ACUTE_HTTP_EXPOSURE", "public");
+    expect((await POST(post(body))).status).toBe(404);
+    expect(GET().status).toBe(404);
+    expect(hostDirectJudge).not.toHaveBeenCalled();
   });
 });

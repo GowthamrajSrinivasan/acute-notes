@@ -1,8 +1,8 @@
 # Intelligent update engine — Phase 1 close-out report
 
 Date: 2026-11-16/17 · Plan: `.ai/docs/intelligent-update-engine-plan.md` §14 (decision, backlog), §15 (this work).
-Milestone reached: **Phase 1 engineering complete** (integrated, flag off, tests pass, committed).
-Milestone pending: **Phase 1 limited pilot ready** — needs the reviewer's decision on `stage4f-pilot-gate-proposal-2026-11-16.md`.
+Milestone reached: **Phase 1 engineering complete** (integrated, flag off, tests pass; committed `6e20b41`, `9e7a831`, `6143d99`, pushed 2026-11-17).
+Milestone reached 2026-11-17: **Phase 1 limited pilot ready**. An independent review found APPROVE WITH CONDITIONS; its must-fix items are done, and the product owner approved limited activation with strict recall deferred to Phase 2 (plan §16, `stage4f-pilot-notes-2026-11-17.md`). Committed defaults stay off; the pilot is switched on per pilot machine only.
 
 ## 1. What Phase 1 delivers for day-to-day use
 
@@ -62,7 +62,7 @@ See the proposal: recall ≥ 85% (90%), precision ≥ 90% (100%; 93.9% conservat
 
 ## 7. How to pilot (when approved)
 
-1. Set `CONSISTENCY_AI_CHECK=on` and `NEXT_PUBLIC_CONSISTENCY_AI_CHECK=on` (`.env.local` or the shell) and restart/rebuild.
+1. On the pilot machine only, set `CONSISTENCY_AI_CHECK=on` and `NEXT_PUBLIC_CONSISTENCY_AI_CHECK=on` (git-ignored `.env.development.local` or the shell) and restart/rebuild. Never on App Hosting or with `ACUTE_HTTP_EXPOSURE=public` (the route refuses).
 2. Make an API-key chat-completions connection primary (AICredits with `openai/gpt-oss-120b` is the measured setup).
 3. Consistency chip → "AI check (pilot)" → tick the opt-in → work as usual → press "Check with AI" when pairs are waiting.
 4. Off: untick (device), or set either switch to `off`.

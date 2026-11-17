@@ -17,6 +17,21 @@ export interface DirectJudgeConnection {
   provider: HostByokProvider;
 }
 
+/**
+ * Is the server's AI-check switch on? A GET to `/api/ai/judge` (no body, no key, never reaches a model): 204 when on,
+ * 404 when off. Asked before a check reserves anything, so an off server costs no budget and no attempt (pilot review
+ * D7). Any other answer or a network error reads as off.
+ */
+export async function judgeServerReady(options: { baseUrl?: string; fetchImpl?: typeof fetch } = {}): Promise<boolean> {
+  const doFetch = options.fetchImpl ?? ((...a: Parameters<typeof fetch>) => fetch(...a));
+  try {
+    const res = await doFetch(`${options.baseUrl ?? ""}/api/ai/judge`, { method: "GET", redirect: "error", cache: "no-store" });
+    return res.status === 204;
+  } catch {
+    return false;
+  }
+}
+
 export function directJudgeTransport(connection: DirectJudgeConnection, options: { baseUrl?: string; fetchImpl?: typeof fetch } = {}): JudgeTransport {
   const doFetch = options.fetchImpl ?? ((...a: Parameters<typeof fetch>) => fetch(...a));
   return {
@@ -41,6 +56,7 @@ export function directJudgeTransport(connection: DirectJudgeConnection, options:
         ...(request.signal ? { signal: request.signal } : {}),
       });
       if (!res.ok) {
+        // Not D7's path any more in the app (it asks `judgeServerReady` first); kept for a switch turned off mid-check.
         const body = (await res.json().catch(() => ({}))) as { kind?: unknown; message?: unknown };
         throw new Error(res.status === 404 ? "the AI check is switched off on this server" : typeof body.message === "string" ? body.message.slice(0, 160) : `http ${res.status}`);
       }

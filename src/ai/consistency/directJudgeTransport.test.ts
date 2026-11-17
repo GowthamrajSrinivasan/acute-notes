@@ -1,10 +1,10 @@
-import { describe, expect, it, vi } from "vitest";
-import { directJudgeTransport } from "./directJudgeTransport";
+﻿import { describe, expect, it, vi } from "vitest";
+import { directJudgeTransport, judgeServerReady } from "./directJudgeTransport";
 
 const connection = { connectionId: "aicredits", model: "m", provider: { type: "openai" as const, baseUrl: "https://x.test/v1", apiKey: "sk-test-123456789" } };
 const request = { systemPrompt: "s", prompt: "p", maxTokens: 760, reasoningEffort: "low" as const, timeoutMs: 90_000 };
 
-describe("directJudgeTransport — the app's one-request path to /api/ai/judge", () => {
+describe("directJudgeTransport â€” the app's one-request path to /api/ai/judge", () => {
   it("declares a real cap and one attempt; posts once to the judge route (never the SDK's /api/ai/run), redirects refused", async () => {
     const fetchImpl = vi.fn(async () => new Response(JSON.stringify({ text: "{}", finishReason: "stop", usage: { promptTokens: 5, completionTokens: 6 }, providerRequests: 1 })));
     const onProviderRequest = vi.fn();
@@ -27,5 +27,17 @@ describe("directJudgeTransport — the app's one-request path to /api/ai/judge",
     await expect(directJudgeTransport(connection, { fetchImpl: limited as unknown as typeof fetch }).send(request)).rejects.toThrow(/rate limited/);
     expect(off).toHaveBeenCalledTimes(1);
     expect(limited).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("judgeServerReady (pilot review D7)", () => {
+  it("true only on 204; 404, other statuses and network errors read as off; a GET with no body", async () => {
+    const seen: RequestInit[] = [];
+    const answer = (status: number) => (async (_u: unknown, init?: RequestInit) => (seen.push(init ?? {}), new Response(null, { status }))) as unknown as typeof fetch;
+    expect(await judgeServerReady({ fetchImpl: answer(204) })).toBe(true);
+    expect(await judgeServerReady({ fetchImpl: answer(404) })).toBe(false);
+    expect(await judgeServerReady({ fetchImpl: answer(500) })).toBe(false);
+    expect(await judgeServerReady({ fetchImpl: (async () => { throw new Error("offline"); }) as unknown as typeof fetch })).toBe(false);
+    expect(seen.every((i) => i.method === "GET" && i.body === undefined)).toBe(true);
   });
 });
