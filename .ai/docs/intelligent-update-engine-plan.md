@@ -3875,3 +3875,100 @@ Built as descent step 5a: `nowhereSectionGap` / `nowhereCard` / `nowhereItem` in
   offered**, not a silent new section. The 5e relate call keeps "none of these" as an answer.
 
 **Tests:** the router tests pass (`descent.test.ts` unchanged and green with the step on by default).
+
+---
+
+## 14. Pending work for later (backlog, recorded 2026-11-16)
+
+Work that is open but **not part of the Phase 1 close-out** and can be picked up later. Each item says where it is
+documented and what it needs before it can start (offline / an approval / a paid run).
+
+**Phase 1 close-out decision (2026-11-16), recorded here so the exclusions below are clear:**
+- **Approved:** the direct HTTP integration of Stage 4f behind a default-OFF flag, review-only and manually triggered; the backlog and budget recalculation on the real 90,000-token day; a written gate-relaxation proposal (a limited Phase 1 pilot exception, for the reviewer).
+- **Deferred to Phase 2:** the time-overlap guard fix, prompt and guard semantic tuning, the ambiguous-reference false alarms (y20, y45), and unseen6.
+- **Not approved:** paid calls; Stage 4f limited activation, which needs the integration evidence and a separate reviewer decision.
+- **Milestones:** "Phase 1 engineering complete" (integrated, flag off, tests pass, committed) and "Phase 1 limited pilot ready" (reviewer-approved gate exception and a bounded rollout).
+- Those items are tracked by that decision and are **not repeated** in the list below.
+
+### 14.1 Stage 4f — execution and operations
+
+| # | Item | Why it is pending | Where | Needs |
+|---|---|---|---|---|
+| 1 | **Add the chat-template margin to direct-path reservations** | `callTokens` (characters ÷ 4) under-counts the provider's prompt tokens by 6–39 a call on the current prompt; overruns are charged and flagged, but the reservation isn't a true upper bound. `REQUEST_OVERHEAD.direct_http` (64) exists, unwired | §12.32, §12.33; `requestOverhead.ts` | Offline (edits `judgeCall.ts`/`candidates.ts`; re-pin the reliability/guard-smoke freeze tests to byte copies first) |
+| 2 | Long-term execution reliability | One 6-call day measured. The p95 rests on 6 samples; queue time can't be separated from latency (non-streaming) | §12.28, §12.29 | Pilot telemetry, or a separately approved run |
+| 3 | Dynamic batching (other than 10 pairs a call) | Deferred until queue time, latency distributions and real workloads are measured | §12.28 | Data from item 2 |
+| 4 | Raising the 90,000-token daily cap | Kept by every review; about 39 full calls a day | §12.23–12.28 | The user's decision |
+| 5 | Intermittent parallel test-run timeouts | 5-second timeouts and performance budgets fail under full parallel load, outside this lane; serial runs are clean. Documented, not fixed | §12.24 | Offline (test infrastructure) |
+| 6 | Recorder clean-up for future sets | The frozen recorder prints a placeholder "expected compatible" in rules-only `routing.md` lines (meaningless), and its reservation lacks the template margin (item 1). Fix only in a new recorder version, never in a frozen one | §12.22, §12.33 | Offline, before the next set's code freeze |
+
+### 14.2 Copilot SDK path (only if the SDK route is reconsidered)
+
+Stage 4f uses direct HTTP (decision 2026-11-16). These matter for **other** AI tasks, or if the SDK route returns:
+
+| # | Item | Why it is pending | Where | Needs |
+|---|---|---|---|---|
+| 7 | **Output cap and temperature for all other BYOK tasks** | Measured on the wire: the SDK sends no `max_tokens` and `temperature: 1` for BYOK requests. Only `singleAttempt` calls get the guard's overrides. Every other AI task through Copilot BYOK (Visualize, Ask AI, updates) is uncapped and not at the caller's temperature | §12.30; `copilotWireFields.spike.test.ts` | Offline design, then a decision (e.g. apply the overrides to all BYOK requests) |
+| 8 | SDK internal retries for other tasks | Unguarded calls are retried up to 5 times on 429/5xx (6 billable requests). Acceptable for interactive tasks? Not decided | §12.29 | A decision |
+| 9 | SDK reservation for the consistency check | `requestOverhead.ts` (6,932 B ≈ 2,311 tokens) is an unused prototype; under 2,800 a call, no check fits the SDK path. Options: "customize" mode (unmeasured), an SDK-only budget; "replace" is not approved | §12.32, §12.33 | A decision + offline measurement |
+| 10 | WebSocket model transports | The guard refuses them. Only unit-tested: the SDK builds those handlers internally, so not exercised end to end | §12.29 | Offline, if a WebSocket provider is used |
+| 11 | SDK upgrades | The guard uses the experimental `requestHandler` hook. `sdkPin.test.ts` fails on any version change until the retry, wire-field and live checks are rerun and `retryGuardVerification.json` is updated | §12.30–12.32 | On every upgrade; the live part is paid |
+| 12 | Copilot subscription connections | No output cap is possible, so the consistency check never runs there (`output_cap_unavailable`). The user-facing wording should say so plainly | §12.25 | Offline (UI copy) |
+
+### 14.3 Stages 1–3
+
+| # | Item | Why it is pending | Where | Needs |
+|---|---|---|---|---|
+| 13 | `classify.ts` rule 2: a spurious conflict on user-worded cards after two source moves | A safe failure, but noise; `test.fail` "known gap" in `stage1Gate.local.spec.ts` | Stage 1 gate note (2026-11-15) | Offline |
+| 14 | Impact discovery is lexical only | False matches such as "timeouts" vs "retries five times" (≥ 0.5 word overlap). The semantic version waits for Stage 5 embeddings. Also review the gating once used on real canvases | §11, §6 | Stage 5 (5a/5b) |
+| 15 | Router weight tuning | Deferred until real canvases and the locate set (5f) exist. `route_content` is non-deterministic, so it stays a preselect the user confirms | §10, §13.11 | Real-canvas data + 5f |
+| 16 | Router destinations | Scene elements only. An off-canvas documents bug was found live in Stage 2; re-verify it is closed | §10 | Offline check |
+
+### 14.4 Stage 5 — semantic locate and anchor (integration deferred)
+
+| # | Item | Why it is pending | Where | Needs |
+|---|---|---|---|---|
+| 17 | 5a wiring: the local embedding model | MiniLM-L6 is recommended, behind `EmbeddingProvider` (default still hashed). Untested: the `sharp` advisory, a worker, Next/Electron bundling. Web build: model or hashed embedder (Q2 open); multilingual later (MiniLM-L12, 364 MB RAM) | §13.2, §13.8, §13.9 | Offline + a bundling decision |
+| 18 | 5b item-level index, 5c router descent | Prototypes only (`itemIndex.ts`, `descent.ts`), not wired. Dev: placed 13 % → 25–32 %; the "nowhere" thresholds were read off dev (optimistic) | §13.3, §13.4, §13.13, §13.14 | Offline wiring |
+| 19 | 5d anchor actions | Append / after-item / table-row as `patch_block`: the gap behind into-card 2 % | §13.5 | Offline |
+| 20 | 5e "relate" call | Picks typed operations + target item + evidence; never edits content. Needed for duplicates (no deterministic signal) and update actions | §13.6, §13.12, §13.14 | A paid proposal + approval |
+| 21 | 5f held-out | 4 label differences await a **separate** reviewer (never read by this lane). Score held-out once per decision and record the use | §13.11, §13.12 | The reviewer |
+| 22 | Latency/UX rules R1–R22 | Proposed, not built or measured. "Learn to skip" (R21) is deferred: it changes routing weights and has a feedback-loop risk | §13.10 | Offline, with 5a–5e |
+| 23 | §13.8 Q4 | Does consistency checking eventually move into the relate call? | §13.8 | A decision, after Phase 2 |
+| 24 | "Nowhere" product framing | The dialog's first suggestion, with the top card still offered; never a silent new section | §13.14 | With 5c wiring |
+
+### 14.5 Repository and process
+
+| # | Item | Why it is pending | Where | Needs |
+|---|---|---|---|---|
+| 25 | Long paths | The longest tracked path is 133 characters (`evaluation/knowledge-notes/experiments/claim-conditions-…`). Clones under deep Windows folders need `core.longpaths=true`. Consider shorter experiment paths (knowledge-notes lane) | §12.30 | The other lane's decision |
+| 26 | Intermediate commits may not build | The first all-lanes commit sequence (2026-11-15) was split by lane; only the final tree was verified. Documented; history not rewritten (review) | §12.29 | Nothing (recorded) |
+| 27 | Another lane's whole-file line-ending change | `src/ai/reconcile/update.ts` is LF in its worktree, CRLF in git (byte-exact policy since `5d68cb1`); its owner's next commit shows a whole-file diff | §12.31 | That lane, on commit |
+| 28 | Lanes file | `knowledge-notes-lanes.md` update-engine rows are stale since §12.29 (another session was editing it) | `knowledge-notes-lanes.md` | Offline, when the file is free |
+
+---
+
+## 15. Phase 1 close-out (2026-11-16/17)
+
+Milestone **"Phase 1 engineering complete"** reached: Stage 4f is integrated over direct HTTP, **off by default**, opt-in, started by hand, review-only, tested and committed. **"Phase 1 limited pilot ready"** waits for the reviewer's decision on `.ai/docs/stage4f-pilot-gate-proposal-2026-11-16.md`. Full report: `.ai/docs/phase1-closeout-report-2026-11-16.md`.
+
+### 15.1 Integration (approved scope)
+- **Direct HTTP only:** `src/ai/host/judge/directJudge.ts` (one POST to `<base>/chat/completions`, `max_tokens`, temperature 0, effort low, redirects refused, no retry/fallback) behind `src/app/api/ai/judge/route.ts` (404 unless `CONSISTENCY_AI_CHECK=on`); client `directJudgeTransport.ts`; the primary connection via `getDirectJudgeConnection` (registry `chatCompletions`, never the fallback, never the SDK).
+- **Switches:** `CONSISTENCY_AI_CHECK` (server-enforced) and `NEXT_PUBLIC_CONSISTENCY_AI_CHECK` (UI), both `off` in `.env.development` / `.env.production`; plus a per-device opt-in (default off).
+- **Discovery through the screen, not the rules alone.** Found during integration (offline, unseen5 recorded answers, `liveDiscovery.probe.test.ts`): the live canvas's rules-only source reaches 3/40 contradictions; the screen route 36/40. Opted in, each commit queues the screen-forwarded pairs locally (`aiCheck.ts` `discoverForAI`, `AICheckQueue`); identical statements on two elements are skipped (found by the in-app test: a frame title and its block).
+- **Review-only recording:** `ConsistencyStore.recordAI` attaches the reading (`ai`) and never changes a status; an AI-raised near-miss is re-checked by the screen's route (`stillDisagree`), a rule-raised one by the rules.
+- **Observable:** per pair not checked / waiting (reason) / in flight / checked shown / checked compatible / failed / gave up; today's budget; the backlog.
+
+### 15.2 Backlog and budget on the 90,000-token day
+Measured per full call (unseen5): reserve 2,365–2,441, use 1,739–2,152 (mean 1,920). Per device per day: **46 checks typical** (~460 pairs; the token cap binds before the 50-check cap), **32 worst case** (every reservation kept at 2,800; 320 pairs). Reported separately in the panel: pending pairs, checks needed (10 pairs each), days (typical / at most, today's remainder first), oldest pending age (`aiCheck.ts` `backlogOf`, `PLANNING`).
+
+### 15.3 Verification
+Unit suite 371 files / 3,861 tests passed; typecheck and lint clean; mocked tests for every piece and for default-off (no queueing, no request, no connection lookup); running server with the switch off: the route's own 404; flags-on server: in-app Playwright test passed (model calls answered in the browser). **One live call** (approved "if needed"), integrated path under the execution envelope (1 request / 3,000 tokens / $0.01): 1 provider request, 1,055 tokens, ≤ $0.00018, both pairs answered and recorded `possible` — `evaluation/update-engine/consistency/phase1-integration/2026-11-16-phase1-integration/`, pinned by `phase1Integration.test.ts`, never rerun.
+
+### 15.4 New pending items (add to §14)
+| # | Item | Needs |
+|---|---|---|
+| 29 | Live recall on **real canvases**: retrieval (top-20 cards per claim) and the 10-pairs-per-press budget are unmeasured on real notes | Pilot data |
+| 30 | Only gpt-oss-120b measured; other chat-completions connections (some may reject `reasoning_effort`) are untested on the direct path | A decision + paid checks |
+| 31 | The queue holds at most 200 pairs per canvas (oldest dropped); no UI to see or clear individual queued pairs | Offline, if the pilot needs it |
+| 32 | The in-app test needs a flags-on dev server (Next allows one per folder; Turbopack rejects a linked `node_modules`, so a copy runs with `--webpack`) | Test infrastructure |
+| 33 | Windows: vitest fails every file ("reading 'config'") when started from a lower-case `c:` working directory — run from `C:` | Recorded |
