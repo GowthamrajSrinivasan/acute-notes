@@ -2,6 +2,7 @@
 
 import { lazy, memo, Suspense, useEffect, useRef, useState } from "react";
 import { useCanvasBridge } from "@/components/canvas/CanvasBridge";
+import { useCanvasCard } from "@/components/openui/canvas/canvasCardsStore";
 import { toPlainText } from "@/domain/content/richContent";
 import type { BlockFontId, BlockFrame, BlockTextAlign } from "@/domain/content/blockStyle";
 import type { RichBlockType } from "@/domain/types";
@@ -69,13 +70,19 @@ export const RichBlockHost = memo(function RichBlockHost({
 }: RichBlockHostProps) {
   const record = useDocumentRecord(documentId);
   const display = useUiPref("blockDisplay");
+  // "Cards" view: a source-citing AI text card's citations and review, as plain data (null for any other block).
+  const canvasCard = useCanvasCard(elementId);
   const bridge = useCanvasBridge();
   const ref = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const frameless = frame === "none";
 
+  // "Cards" view: this block is drawn as an OpenUI card. It keeps the box it has: a view must not move or resize anything
+  // (sizes are stored in the scene, and a taller card would overlap its neighbours), so the card fits itself to the box.
+  const openUiCard = !active && display === "cards" && blockType === "text" && !!canvasCard && !!record;
+
   // Frameless text sizes itself to its content (height always, width while autoWidth); so does an auto-height card's height.
-  const fitsContent = frameless || autoHeight;
+  const fitsContent = (frameless || autoHeight) && !openUiCard;
   useEffect(() => {
     const el = contentRef.current;
     if (!fitsContent || !el) return;
@@ -121,7 +128,8 @@ export const RichBlockHost = memo(function RichBlockHost({
       data-theme={theme}
       data-frame={frame}
       data-autowidth={(frameless && autoWidth) || undefined}
-      data-autoheight={(!frameless && autoHeight) || undefined}
+      data-autoheight={(!frameless && autoHeight && !openUiCard) || undefined}
+      data-openui={openUiCard || undefined}
       style={
         {
           "--acute-block-bg": background,
@@ -161,6 +169,7 @@ export const RichBlockHost = memo(function RichBlockHost({
             placeholder={record === null ? "Content unavailable" : frameless ? "" : PLACEHOLDER[blockType]}
             display={display}
             theme={theme}
+            card={openUiCard ? { elementId, title: record!.title, data: canvasCard! } : null}
           />
         )}
       </div>

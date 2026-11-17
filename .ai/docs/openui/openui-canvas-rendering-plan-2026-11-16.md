@@ -1,6 +1,6 @@
 # OpenUI on the canvas: build and switch-on instructions (2026-11-16)
 
-**Status: PENDING.** Not started; waiting for the go-ahead to build.
+**Status: BUILT and committed (2026-11-17).** On in development only; see Status below.
 
 **Goal (user, 2026-11-16):** cards on the canvas itself render through OpenUI. Phases 4–5 are parked.
 
@@ -11,6 +11,37 @@
   - **While being edited:** a BlockNote editor.
 - `OPENUI_CONFIG.noteRender` (`src/config/openui.ts`) exists, but **nothing reads it**.
 - `OpenUiCardRenderer` is never mounted on the canvas.
+
+## Status (2026-11-17): built offline, committed
+
+All 8 build steps are done, with no AI calls. On in development only (`.env.development`); production stays off.
+
+- **Flag and View.** `isOpenUiCanvasEnabled()` (`src/config/openui.ts`) replaces the never-read `OPENUI_CONFIG.noteRender`.
+  `BlockDisplay` gains `cards`; `blockDisplayOf` turns a stored `cards` into Compact while the flag is off. The header
+  toggle shows Compact | Editor | Cards.
+- **One Lang builder.** `src/ai/openui/cardLang.ts` (`noteLang`, `splitBody`, `cardTextOf`, `cardLangOf`). The Notes view
+  re-exports it, and a test checks both views give the same Lang for the same card.
+- **No new provenance reader.** `CanvasCardsPublisher` builds from `buildNotes` (already a reviewed reader) and publishes
+  plain `{cites, needsReview, passages}` by element id (`canvasCardsStore.ts`). `components/blocks/**` reads only that.
+  `provenanceGuard.test.ts` is green with no allowlist change.
+- **Which cards.** Text blocks whose distil link cites a source: Visualize cards and pinned notes. Everything else, and
+  any card whose Lang doesn't parse, draws as Compact.
+- **Changed from step 6: cards keep their size.** Growing a card through auto-height made it overlap the card below
+  (sibling cards don't move), and it would have stored new heights in the scene. So in Cards view a card fits the box it
+  has: title, at least one line of text (faded), and the chips. Opening a chip shows the passage in place of the text,
+  with "Open in source" under it. "More" isn't shown; double-click shows everything. On a short card the passage gets
+  about a line and scrolls.
+- **Verified.**
+  - Unit tests: `cardLang.test.ts`, `uiPrefs.test.ts`, `canvasCards.test.tsx`; related suites 460/460.
+  - `tsc` and ESLint clean.
+  - `e2e/local/openuiCanvas.local.spec.ts` 4/4 on several runs. Switching views changes no document, no undo step and no
+    element box. Screenshots are in `test-results/openui-canvas/`.
+  - With `openuiNotesFlow` (10/10) and `updateOwnPassage`: all pass.
+- **Found, not caused by this work** (both reproduce with this work backed out):
+  1. `stage1Gate.local.spec.ts` "gate 4c — a skipped fact survives a page reload" fails (expected 1, got 0) on today's
+     working tree. Probably the uncommitted reconcile work (`update.ts`, `cardMatch.ts`); for its owner.
+  2. Under Playwright, Escape with the caret in a block's editor didn't leave the editor in this flow, in Compact too. The
+     spec leaves the editor the way the app's `deactivateEmbeddable` does. Not yet checked by hand.
 
 ## The approach (recommended)
 

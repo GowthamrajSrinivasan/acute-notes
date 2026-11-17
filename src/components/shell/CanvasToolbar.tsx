@@ -14,7 +14,8 @@ import { useDocumentTheme } from "@/components/common/useDocumentTheme";
 import { useSelectedBlock } from "@/components/properties/selectedBlockStore";
 import { downloadMarkdown } from "@/portability/markdownExport";
 import { usePagePanel } from "@/state/pagePanel";
-import { setUiPref, useUiPref } from "@/state/uiPrefs";
+import { isOpenUiCanvasEnabled } from "@/config/openui";
+import { setUiPref, useUiPref, type BlockDisplay } from "@/state/uiPrefs";
 import { SaveIndicator } from "./SaveIndicator";
 import { useActionRunner } from "./useActionRunner";
 
@@ -128,11 +129,9 @@ export function CanvasToolbar() {
   const blockDisplay = useUiPref("blockDisplay");
   const noCanvas = canvas ? undefined : "open a canvas first";
 
-  const editorView = blockDisplay === "editor";
-
   return (
     <div className="acute-toolbar" role="toolbar" aria-label="Canvas tools">
-      <ViewToggle editorView={editorView} />
+      <ViewToggle value={blockDisplay} />
       <ToolButton
         label={theme === "dark" ? "Light mode" : "Dark mode"}
         shortcut="Shift+Alt+D"
@@ -246,21 +245,24 @@ function BackgroundPicker({ canvas }: { canvas: CanvasCommands | null }) {
   );
 }
 
-const VIEW_OPTIONS = [
+const VIEW_OPTIONS: readonly { value: BlockDisplay; label: string; tooltip: string }[] = [
   { value: "compact", label: "Compact", tooltip: "Compact — blocks show lightweight previews (faster)" },
   { value: "editor", label: "Editor", tooltip: "Editor — blocks look exactly as while editing" },
-] as const;
+  // Only while the build flag is on (`isOpenUiCanvasEnabled`); nothing is stored differently, editing is unchanged.
+  ...(isOpenUiCanvasEnabled()
+    ? [{ value: "cards" as const, label: "Cards", tooltip: "Cards — AI cards that cite a source show as idea cards with their citations (double-click still edits)" }]
+    : []),
+];
 
-/** How inactive blocks are drawn on the canvas: a "View" segmented toggle (Compact | Editor). */
-function ViewToggle({ editorView }: { editorView: boolean }) {
+/** How inactive blocks are drawn on the canvas: a "View" segmented toggle (Compact | Editor, and Cards when enabled). */
+function ViewToggle({ value }: { value: BlockDisplay }) {
   const labelId = useId();
-  const value = editorView ? "editor" : "compact";
   return (
     <div className="acute-view-toggle" title="How blocks look on the canvas when you are not editing them">
       <span id={labelId} className="acute-view-toggle__label">
         View
       </span>
-      <div className="acute-segmented" role="radiogroup" aria-labelledby={labelId} data-value={value}>
+      <div className="acute-segmented" role="radiogroup" aria-labelledby={labelId} data-value={value} data-count={VIEW_OPTIONS.length}>
         {VIEW_OPTIONS.map((o) => (
           <button
             key={o.value}

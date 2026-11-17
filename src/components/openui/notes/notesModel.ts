@@ -8,14 +8,13 @@
  */
 import type { CardReview } from "@/ai/fidelity/contracts";
 import { getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
-import { inlineText, isTableContent, toPlainText } from "@/domain/content/richContent";
-import type { DocumentRecord, RichContent } from "@/domain/types";
+import { cardTextOf, splitBody, type CardTable } from "@/ai/openui/cardLang";
+import type { DocumentRecord } from "@/domain/types";
 import { isOpenReview } from "@/components/review/wording";
 
-export interface NoteTable {
-  columns: string[];
-  rows: string[][];
-}
+// The Lang builder and the card text shaping are shared with the canvas's "Cards" view (`ai/openui/cardLang.ts`).
+export { BODY_LIMIT, noteLang, splitBody } from "@/ai/openui/cardLang";
+export type NoteTable = CardTable;
 
 export interface Note {
   /** The canvas object id for a note on the canvas; a generated note's key otherwise. */
@@ -53,8 +52,6 @@ export interface NoteKnowledge {
 
 type GetDocument = (id: string) => DocumentRecord | null | undefined;
 
-/** A body longer than this is split: its first paragraph (or first sentences up to this) stays, the rest is detail. */
-export const BODY_LIMIT = 280;
 const UNTITLED_SECTION = "Notes outside sections";
 
 interface Box {
@@ -76,47 +73,6 @@ export function readingOrder<T extends Box>(items: readonly T[]): T[] {
     else rows.push([item]);
   }
   return rows.flatMap((row) => row.sort((a, b) => a.x - b.x));
-}
-
-/** First paragraph as body; when that is itself too long, as many whole sentences as fit (at least one). */
-export function splitBody(text: string, limit = BODY_LIMIT): { body: string; detail?: string } {
-  const trimmed = text.trim();
-  if (trimmed.length <= limit) return { body: trimmed };
-  const paragraphs = trimmed.split(/\n\s*\n|\n/).map((p) => p.trim()).filter(Boolean);
-  let body = paragraphs[0] ?? "";
-  let rest = paragraphs.slice(1).join("\n\n");
-  if (body.length > limit) {
-    const sentences = body.match(/[^.!?]+[.!?]+(?:\s+|$)|[^.!?]+$/g) ?? [body];
-    let kept = "";
-    let i = 0;
-    while (i < sentences.length && (kept.length === 0 || kept.length + sentences[i]!.length <= limit)) kept += sentences[i++];
-    const leftover = sentences.slice(i).join("").trim();
-    body = kept.trim();
-    rest = [leftover, rest].filter(Boolean).join("\n\n");
-  }
-  return rest ? { body, detail: rest } : { body };
-}
-
-function tableOf(snapshot: RichContent): NoteTable | undefined {
-  const block = snapshot.find((b) => isTableContent(b.content));
-  if (!block || !isTableContent(block.content)) return undefined;
-  const rows = block.content.rows.map((r) => r.cells.map((c) => inlineText(c).trim()));
-  if (!rows.length) return undefined;
-  const [columns, ...rest] = rows;
-  return { columns: columns!, rows: rest };
-}
-
-/** A card's title and the text after it. The document's own title wins; else its first line. */
-function textOf(rec: DocumentRecord): { title: string; text: string; table?: NoteTable } {
-  const table = tableOf(rec.snapshot);
-  const prose = toPlainText(rec.snapshot.filter((b) => !isTableContent(b.content))).trim();
-  const hasTitle = rec.title && rec.title !== "Untitled";
-  if (hasTitle) {
-    const text = prose.startsWith(rec.title) ? prose.slice(rec.title.length).trim() : prose;
-    return { title: rec.title, text, ...(table ? { table } : {}) };
-  }
-  const [first = "", ...rest] = prose.split("\n");
-  return { title: first.trim(), text: rest.join("\n").trim(), ...(table ? { table } : {}) };
 }
 
 function documentIdOf(el: SceneElement): string | null {
@@ -154,7 +110,7 @@ export function buildNotes(elements: readonly SceneElement[], getDocument: GetDo
     if (!docId) continue;
     const rec = getDocument(docId);
     if (!rec) continue;
-    const { title, text, table } = textOf(rec);
+    const { title, text, table } = cardTextOf(rec);
     if (!title && !text && !table) continue;
     const sectionId = el.frameId && frameIds.has(el.frameId) ? el.frameId : "";
     let section = sections.get(sectionId);
@@ -199,34 +155,4 @@ function linkRelated(elements: readonly SceneElement[], sections: NoteSection[])
     const ids = related.get(n.id);
     if (ids) n.related = [...ids].sort((x, y) => order.get(x)! - order.get(y)!);
   }
-}
-
-const lit = (s: string) => JSON.stringify(s);
-
-/** One note as OpenUI Lang: an `IdeaCard` with its citations, detail, table and review callout. */
-export function noteLang(note: Pick<Note, "title" | "body" | "detail" | "cites" | "needsReview" | "table" | "related">): string {
-  const lines: string[] = [];
-  const cites = note.cites.map((u, i) => {
-    lines.push(`c${i + 1} = CitationChip(${lit(u)})`);
-    return `c${i + 1}`;
-  });
-  const extras: string[] = [];
-  if (note.needsReview) {
-    lines.push(`x1 = Callout("warning", ${lit(`Needs review: ${note.needsReview}`)})`);
-    extras.push("x1");
-  }
-  if (note.table) {
-    const columns = `[${note.table.columns.map(lit).join(", ")}]`;
-    const rows = `[${note.table.rows.map((r) => `[${r.map(lit).join(", ")}]`).join(", ")}]`;
-    lines.push(`x2 = ComparisonTable(${columns}, ${rows})`);
-    extras.push("x2");
-  }
-  (note.related ?? []).forEach((id, i) => {
-    lines.push(`l${i + 1} = NoteLink(${lit(id)})`);
-    extras.push(`l${i + 1}`);
-  });
-  const args = [lit(note.title), lit(note.body), "null", `[${cites.join(", ")}]`, note.detail ? lit(note.detail) : "null", `[${extras.join(", ")}]`];
-  // Trailing nulls/empties are dropped so the Lang stays as short as a hand-written card.
-  while (args.length > 2 && (args.at(-1) === "null" || args.at(-1) === "[]")) args.pop();
-  return [`root = IdeaCard(${args.join(", ")})`, ...lines].join("\n");
 }

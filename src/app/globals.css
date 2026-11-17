@@ -544,6 +544,90 @@ html {
 .acute-block[data-autoheight] .acute-block__content {
   height: auto;
 }
+/* "Cards" view (OpenUI canvas cards). A view never moves or resizes a block, so the card fits the box it has: the text
+   is clipped with a fade, the citation chips and actions stay pinned at the bottom, and an expanded passage scrolls
+   inside the card. Only the card's buttons (and the passage, to scroll) take pointer events; the rest lets them through
+   to the canvas, so select, drag and double-click to edit work as on any block. */
+.acute-block[data-openui] .acute-block__content {
+  height: 100%;
+  overflow: hidden;
+}
+.acute-block .acute-openui-card,
+/* OpenUI's Renderer wraps the card in elements of its own: they fill the box too, so the card's column layout (text
+   shrinking, chips and actions pinned) works, and nothing scrolls inside the block. */
+.acute-block .acute-openui-card :has(.openui-idea-card) {
+  height: 100%;
+  overflow: hidden;
+}
+.acute-block .acute-openui-card .openui-idea-card {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-left: 3px solid var(--acute-border, #e4e4e8);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-family: var(--acute-block-font, inherit);
+}
+.acute-block .acute-openui-card .openui-idea-card[data-importance="high"] {
+  border-left-color: var(--acute-accent, #4b47d6);
+}
+.acute-block .acute-openui-card .openui-idea-card__title {
+  flex: none;
+  font-size: calc(var(--acute-block-size, 16px) * 1.05);
+}
+.acute-block .acute-openui-card .openui-idea-card__body {
+  flex: 1 1 auto;
+  /* The text comes first: it keeps at least a line however short the card. */
+  min-height: 1.6em;
+  overflow: hidden;
+  font-size: var(--acute-block-size, 16px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 0.8em), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 0.8em), transparent);
+}
+/* "More" can't grow the box; the full text is one double-click away. */
+.acute-block .acute-openui-card .openui-idea-card__detail,
+.acute-block .acute-openui-card .openui-idea-card__more {
+  display: none;
+}
+/* The Needs review callout and a table stay, shrinking before the chips and actions do. */
+.acute-block .acute-openui-card .openui-idea-card__extras {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+.acute-block .acute-openui-card .openui-idea-card__citations {
+  flex: none;
+  margin-top: 4px;
+}
+/* An opened chip: its passage takes the text's place in the card, with "Open in source" under it (the actions row is
+   shown only then, so a short card keeps its text). Clicking the chip again brings the text back. */
+.acute-block .acute-openui-card .openui-idea-card__actions {
+  display: none;
+}
+.acute-block .acute-openui-card .openui-idea-card:has(.openui-idea-card__passage) .openui-idea-card__body {
+  display: none;
+}
+.acute-block .acute-openui-card .openui-idea-card:has(.openui-idea-card__passage) .openui-idea-card__actions {
+  display: flex;
+  flex: none;
+  margin-top: 6px;
+  padding-top: 6px;
+}
+.acute-block .acute-openui-card .openui-idea-card__passage {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 6px 0 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;
+}
+.acute-block .acute-openui-card button {
+  pointer-events: auto;
+}
 
 /* Auto-width: grow with the longest line, then wrap. */
 .acute-block[data-autowidth] .acute-block__content {
@@ -1704,6 +1788,16 @@ html {
 .acute-segmented[data-value="editor"]::before,
 .acute-segmented[data-selected="second"]::before {
   transform: translateX(100%);
+}
+/* Three options (View: Compact | Editor | Cards). */
+.acute-segmented[data-count="3"] {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.acute-segmented[data-count="3"]::before {
+  width: calc((100% - 4px) / 3);
+}
+.acute-segmented[data-count="3"][data-value="cards"]::before {
+  transform: translateX(200%);
 }
 .acute-segmented button {
   position: relative;

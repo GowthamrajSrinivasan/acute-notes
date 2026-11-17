@@ -8,14 +8,24 @@ import { useSyncExternalStore } from "react";
 import { DEFAULT_RESPONSE_STYLE, setResponseStyleSource, type ResponseStyle } from "@/ai/changes/responseStyle";
 import { DEFAULT_CLEANUP, type CleanupOptions } from "@/ai/content/cleanup";
 import { DEFAULT_UPDATE_POLICY, setUpdatePolicySource, type UpdatePolicy } from "@/ai/reconcile/updatePolicy";
+import { isOpenUiCanvasEnabled } from "@/config/openui";
 import { getPersistence } from "@/persistence";
 
 /**
  * How inactive rich blocks are displayed on the canvas:
  * - `compact`: lightweight Acute preview renderer (smallest DOM, fastest)
  * - `editor`: BlockNote's own static HTML + styles, identical to edit mode
+ * - `cards`: source-citing AI cards drawn as OpenUI cards, the rest as `compact` (only while `isOpenUiCanvasEnabled`;
+ *   otherwise a stored `cards` reads as `compact`, see `blockDisplayOf`)
  */
-export type BlockDisplay = "compact" | "editor";
+export type BlockDisplay = "compact" | "editor" | "cards";
+
+/** A stored or requested display, as this build can show it: `cards` falls back to `compact` while the Cards flag is off. */
+export function blockDisplayOf(value: unknown, cardsAvailable: boolean = isOpenUiCanvasEnabled()): BlockDisplay {
+  if (value === "editor") return "editor";
+  if (value === "cards" && cardsAvailable) return "cards";
+  return "compact";
+}
 
 /**
  * How objects an accepted AI change adds are pointed out on the canvas (a
@@ -69,7 +79,7 @@ function ensureLoaded() {
     .meta.get<Partial<UiPrefs>>(KEY)
     .then((stored) => {
       if (stored) {
-        prefs = { ...DEFAULTS, ...stored, aiStyle: { ...DEFAULTS.aiStyle, ...stored.aiStyle }, aiCleanup: { ...DEFAULTS.aiCleanup, ...stored.aiCleanup }, aiUpdate: { ...DEFAULTS.aiUpdate, ...stored.aiUpdate } };
+        prefs = { ...DEFAULTS, ...stored, blockDisplay: blockDisplayOf(stored.blockDisplay ?? DEFAULTS.blockDisplay), aiStyle: { ...DEFAULTS.aiStyle, ...stored.aiStyle }, aiCleanup: { ...DEFAULTS.aiCleanup, ...stored.aiCleanup }, aiUpdate: { ...DEFAULTS.aiUpdate, ...stored.aiUpdate } };
         emit();
       }
     });
@@ -80,7 +90,8 @@ export function getUiPref<K extends keyof UiPrefs>(key: K): UiPrefs[K] {
   return prefs[key];
 }
 
-export function setUiPref<K extends keyof UiPrefs>(key: K, value: UiPrefs[K]): void {
+export function setUiPref<K extends keyof UiPrefs>(key: K, requested: UiPrefs[K]): void {
+  const value = (key === "blockDisplay" ? blockDisplayOf(requested) : requested) as UiPrefs[K];
   if (prefs[key] === value) return;
   prefs = { ...prefs, [key]: value };
   emit();

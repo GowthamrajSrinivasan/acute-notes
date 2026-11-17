@@ -59,7 +59,8 @@ import { diagramArrowInfo, diagramSelectionTarget, selectedDiagramObject } from 
 import { DiagramOverlay } from "@/components/diagram/DiagramOverlay";
 import { LensPanelHost } from "@/components/lens/LensPanelHost";
 import { NotesViewHost } from "@/components/openui/notes/NotesView";
-import { isOpenUiNotesEnabled } from "@/config/openui";
+import { CanvasCardsPublisher } from "@/components/openui/canvas/CanvasCardsPublisher";
+import { isOpenUiCanvasEnabled, isOpenUiNotesEnabled } from "@/config/openui";
 import { FlashOverlay } from "./FlashOverlay";
 import { getImportedHtml, isWebLink, withImportedHtml } from "@/domain/canvas/webEmbed";
 import type { CanvasDocument, DocumentHome } from "@/domain/types";
@@ -956,6 +957,8 @@ function SessionCanvas({ session, workspaceId, canvasId }: { session: CanvasSess
       {api && <LensPanelHost api={api} home={home} />}
       {/* OpenUI Notes view (openui-integration-plan Phases 2–3): reads the canvas; writes only when a note is pinned. */}
       {api && isOpenUiNotesEnabled() && <NotesViewHost api={api} home={home} history={history} />}
+      {/* OpenUI canvas cards ("View → Cards"): feeds the source-citing AI cards' citations to their blocks; renders nothing. */}
+      {api && isOpenUiCanvasEnabled() && <CanvasCardsPublisher api={api} home={home} history={history} />}
       {api && <FlashOverlay api={api} />}
       {/* Everything AI (built-in and MCP review), absent from a build with the AI feature off. */}
       {api && isAIFeatureEnabled() && (
