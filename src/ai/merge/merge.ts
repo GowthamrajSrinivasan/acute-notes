@@ -283,8 +283,24 @@ export async function mergeIntoSource(input: MergeInput, given: AIRuntime, optio
   }
 
   // Which statement of its topic each statement of a filed part repeats, replaces or adds to (§17): the topic is then edited in place.
+  // Every merge does this (U1, 2026-11-22): shared-ChatGPT-chat notes and economy imports too. An economy import matches by wording
+  // only (no model call: economy promises no AI analysis of the new content); a shared chat's quoted questions are never cut (not
+  // statement-shaped), its answers are.
   let revise: Map<string, StatementPlan[]> | undefined;
-  if (!input.economy && !SHARED_CHAT.test(input.text) && !SHARED_CHAT.test(input.previous.text)) {
+  // What a part says that a later part of the same content restates the other way is left out, not applied (see `restatedLater`).
+  const leaveOut = new Map<string, string[]>();
+  const partByKey = new Map(parts.map((p) => [p.key, p] as const));
+  for (const [key, list] of conflicts) {
+    const part = partByKey.get(key);
+    if (!part) continue;
+    const stale = list.filter((c) => restatedLater(input.text, part.span.end, c.topicSays));
+    if (!stale.length) continue;
+    leaveOut.set(key, stale.map((c) => c.partSays));
+    const rest = list.filter((c) => !stale.includes(c));
+    if (rest.length) conflicts.set(key, rest);
+    else conflicts.delete(key);
+  }
+  {
     const unitByKey = new Map(units.map((u) => [u.key, u] as const));
     const items: MatchInput["items"] = parts.flatMap((p) => {
       const topic = assignment.get(p.key);
@@ -300,19 +316,25 @@ export async function mergeIntoSource(input: MergeInput, given: AIRuntime, optio
     });
     if (items.length) {
       options.onProgress?.({ stage: "analyzing", label: "Finding which notes the new content updates…" });
-      const matched = await matchStatements(input.source.tier === "ai" ? runtime : null, { items }, signal);
+      const matched = await matchStatements(input.source.tier === "ai" && !input.economy ? runtime : null, { items }, signal);
       if (matched.failed) notices.push("AI couldn't match the new statements to your notes, so they were matched by wording instead.");
       // Only a part that revises or adds to statements already there is edited in place; one that only brings new statements (and
       // repeats) keeps the append path, whose plan call sees just the new paragraphs — the cheaper call, and the same cards as before.
       // A contradiction the assignment quoted (both sentences word for word) is that statement's answer: the newer one replaces the old.
-      for (const [key, plans] of matched.plans) matched.plans.set(key, withQuotedConflicts(plans, conflicts.get(key) ?? []));
+      for (const [key, plans] of matched.plans) {
+        const end = partByKey.get(key)?.span.end ?? input.text.length;
+        const quoted = withQuotedConflicts(plans, conflicts.get(key) ?? []);
+        const stale = quoted.filter((p) => p.action === "replaces" && !!p.target && restatedLater(input.text, end, p.target));
+        if (stale.length) leaveOut.set(key, [...(leaveOut.get(key) ?? []), ...stale.map((p) => p.statement)]);
+        matched.plans.set(key, quoted.map((p) => (stale.includes(p) ? { ...p, action: "repeats" as const } : p)));
+      }
       revise = new Map([...matched.plans].filter(([, plans]) => plans.some((p) => p.action === "replaces" || p.action === "adds")));
       if (!revise.size) revise = undefined;
     }
   }
 
   const from = input.from ?? { label: contentLabel(input.text), date: new Date().toISOString().slice(0, 10) };
-  const composed = composeMerged({ text: input.previous.text, parsed, units, incoming: input.text, incomingParsed, parts, assignment, conflicts, from, attach, unplaced, ...(revise ? { revise } : {}) });
+  const composed = composeMerged({ text: input.previous.text, parsed, units, incoming: input.text, incomingParsed, parts, assignment, conflicts, from, attach, unplaced, ...(revise ? { revise } : {}), ...(leaveOut.size ? { leaveOut } : {}) });
   // The parts left out up front count as skipped, with all their blocks.
   const repeatedBlocks = allParts.filter((p) => repeated.has(p.key)).reduce((n, p) => n + partBlocks(input.text, incomingParsed, p).length, 0);
   const report: MergeReport = {
@@ -478,8 +500,15 @@ function withQuotedConflicts(plans: StatementPlan[], quoted: readonly Conflict[]
   });
 }
 
-/** Notes made from a shared ChatGPT chat keep the topic merge as it was (chat-share import plan): answers are passages, not statements. */
-const SHARED_CHAT = /^Source: https:\/\/chatgpt\.com\/share\//m;
+/**
+ * Whether `statement` (a statement of the notes) is said again, word for word, after `from` in the incoming content: content that brings both
+ * an older and a newer version of a matter — a chat and its branch, imported together — restates the newer one later, so an earlier part
+ * saying the older version must not replace it (U1: a chat imported again never brings an old value back over its branch's newer one).
+ */
+function restatedLater(text: string, from: number, statement: string): boolean {
+  const words = statement.trim().split(/\s+/).filter(Boolean);
+  return words.length > 0 && new RegExp(words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+")).test(text.slice(from));
+}
 
 /** A part made only of paragraphs and lists (and its own heading): what can be matched statement by statement without losing anything. */
 function statementShaped(parsed: Awaited<ReturnType<typeof analyzeContent>>["parsed"], part: AnalysisUnit): boolean {

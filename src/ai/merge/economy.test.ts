@@ -81,6 +81,30 @@ describe("economy import", () => {
     expect(on.merged.notices.some((n) => n.startsWith("AI couldn't place one passage"))).toBe(true);
   });
 
+  it("ON, U1 (2026-11-22): a revised statement updates its topic in place — matched by wording, no statement-match model call", async () => {
+    const tasks: string[] = [];
+    const { runtime } = runtimeWith((req: AIRequest) => {
+      tasks.push(req.task);
+      if (req.task === "assign_to_topics") return response(JSON.stringify({ assignments: [{ part: "p1", topic: "t4" }] }));
+      if (req.task === "outline_document") return response(JSON.stringify({ summary: "S", sections: Array.from({ length: 11 }, (_, i) => ({ id: `s${i + 1}`, label: i === 0 ? "Intro" : `Part ${i - 1}`, kind: "notes", parts: [`u${i + 1}`] })) }));
+      if (req.task === "generate_section_analysis") return response(JSON.stringify({ takeaway: "T", analysis: [] }));
+      const body = req.prompt.split("Content to visualize:\n\n")[1] ?? "";
+      return response(JSON.stringify({ version: 1, template: "sectioned", nodes: [{ id: "n1", type: "text", content: { markdown: body.slice(0, 200) } }], relationships: [], metadata: { takeaway: "T" } }));
+    });
+    const a = accepted(await firstRun(PROSE, runtime));
+    tasks.length = 0;
+    const old = "Afterwards it records the outcome so that later steps can rely on it, and it reports any problems to the operator.";
+    const now = "Afterwards it records the outcome so that later steps can rely on it, and it reports any problems to the on-call channel.";
+    const merged = await mergeIntoSource({ ...a, text: `## Part 2\n\n${now}\n`, operationId: "op_u1", title: "Merge", context, economy: true }, runtime, { parseMarkdown: parse });
+    expect(tasks).not.toContain("match_statements");
+    const text = merged.changeSet!.contentSource!.text;
+    const part2 = text.slice(text.indexOf("## Part 2"), text.indexOf("## Part 3"));
+    expect(part2).toContain(now);
+    expect(part2).not.toContain(old);
+    expect(text.split(now).length - 1).toBe(1);
+    expect(merged.report.replaced).toEqual([{ topic: "Part 2", was: old, now }]);
+  });
+
   it("ON: a later update of the same source reuses the cards (nothing planned, nothing added again)", async () => {
     const on = await run(true);
     const a2 = acceptUpdate(on.a, on.merged.changeSet!);

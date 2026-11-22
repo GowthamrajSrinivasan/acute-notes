@@ -132,6 +132,8 @@ contradicting an earlier choice shows a box again. Optionally, decisions become 
 
 ### 5.4 Options box on the canvas (user decision, 2026-10-08)
 
+> **Superseded for new merges (2026-11-22, intelligent-update-engine-plan §17.6, U1):** a merge no longer writes a new "Needs your call" box. The newer statement replaces the one it contradicts where it stands; within one import a later part (a branch) wins over an earlier one (its parent). Boxes already on a canvas still work as below.
+
 Visualize **never stops to ask**. A conflict between conversations is rendered into the generated content and decided
 on the canvas whenever the user likes.
 

@@ -145,6 +145,16 @@ export function mockJev(): DecisionProvider {
         return marker ? state.topics?.find((t) => t.label.includes(marker)) : undefined;
       };
       for (const [name, q] of Object.entries(request.questions)) {
+        // Statement matching (`match_statements`, plan §17): which statement of the notes a newer one is about, and what it does to it.
+        if (/^i\d+_n_s\d+_(target|action)$/.test(name) && q.type === "choice") {
+          const statement = /“([^”]+)”/.exec(q.instructions)?.[1] ?? "";
+          const notes = (request.state as { notes?: string }).notes ?? "";
+          if (name.endsWith("_target")) {
+            const hit = q.choices.find((c) => c.description && (contradicts(statement, c.description) || c.description.trim() === statement.trim()));
+            answers[name] = choice(hit?.value ?? "none");
+          } else answers[name] = choice(contradicts(statement, notes) ? "replaces" : sentences(notes).includes(statement.trim()) ? "repeats" : "new");
+          continue;
+        }
         const part = /^(p\d+)_/.exec(name)![1]!;
         if (name.endsWith("_topic")) {
           answers[name] = choice(topicFor()?.id ?? "new");
@@ -328,15 +338,19 @@ export function checkChatUpdate(plan: Plan, run: ChatUpdateRun, options: { guara
   const set = merged.changeSet!;
   const text = set.contentSource!.text;
 
-  // Nothing lost: every earlier passage is still in the notes, and in what the canvas will show; nothing is removed.
-  for (const p of earlier) expect(text, `lost: ${p.slice(0, 60)}`).toContain(p);
+  // Nothing lost: every earlier passage is still in the notes, and in what the canvas will show; nothing is removed. A passage the branch
+  // revised (its price) is there as revised (§17, U1) — or, for a real model that didn't find the contradiction, as it was.
+  const revisedForms = (p: string) => [p, added.contradict.reduce((x, c) => x.replace(c.old, c.now), p)];
+  const has = (hay: string, p: string) => revisedForms(p).some((f) => hay.includes(f));
+  for (const p of earlier) expect(has(text, p), `lost: ${p.slice(0, 60)}`).toBe(true);
   expect(set.changes.filter((c) => c.kind === "remove")).toEqual([]);
   const shown = strings((set.contentSource!.plan as VisualPlan).nodes).join("\n\n");
-  for (const p of earlier) expect(shown, `not on the canvas: ${p.slice(0, 60)}`).toContain(p);
+  for (const p of earlier) expect(has(shown, p), `not on the canvas: ${p.slice(0, 60)}`).toBe(true);
 
   // Nothing duplicated: a repeated passage once, a new one once.
   const prose = withoutChoices(text);
-  for (const p of earlier) expect(count(prose, p), `repeated: ${p.slice(0, 60)}`).toBe(1);
+  const once = (hay: string, p: string) => new Set(revisedForms(p)).size === 1 ? count(hay, p) : revisedForms(p).reduce((n, f) => n + count(hay, f), 0);
+  for (const p of earlier) expect(once(prose, p), `repeated: ${p.slice(0, 60)}`).toBe(1);
   for (const f of [...added.extend, ...added.fresh, ...added.newFacts]) expect(count(prose, f), `new fact: ${f.slice(0, 60)}`).toBe(1);
 
   // New facts join their own topic; a new subject is a section of its own.
@@ -364,27 +378,29 @@ export function checkChatUpdate(plan: Plan, run: ChatUpdateRun, options: { guara
     const t2 = run.again.changeSet.contentSource!.text;
     expect(run.again.changeSet.changes.filter((c) => c.kind === "remove")).toEqual([]);
     const prose2 = withoutChoices(t2);
-    for (const p of earlier) expect(count(prose2, p), `again: ${p.slice(0, 60)}`).toBe(1);
+    for (const p of earlier) expect(once(prose2, p), `again: ${p.slice(0, 60)}`).toBe(1);
     for (const f of [...added.extend, ...added.fresh, ...added.newFacts]) expect(count(prose2, f), `again: ${f.slice(0, 60)}`).toBe(1);
   }
 }
 
-/** What depends on the decision model's judgement: contradictions are found and left for the user, and the model answered the assignments. */
+/**
+ * What depends on the decision model's judgement: contradictions are found and applied in place, and the model answered the assignments.
+ * Update engine plan §17 / U1 (2026-11-22): the branch's newer price replaces the old one where it stands — no "Needs your call" choice; the
+ * earlier value stays in the source's history.
+ */
 function checkConflicts(plan: Plan, run: ChatUpdateRun, text: string, prose: string): void {
   const { added } = run.conversations;
   const { merged } = run;
-  // A contradiction is not applied: the old price stays, the new one is only an option, and the user is asked.
-  expect(merged.choices.length).toBe(plan.contradict.length);
+  expect(merged.choices).toEqual([]);
   for (const { old, now } of added.contradict) {
-    expect(count(text, old), `the notes' own statement stays: ${old}`).toBeGreaterThanOrEqual(1);
-    expect(count(text, now), `${now} only as an option`).toBe(1);
-    expect(count(prose, now), `${now} not filed as a fact`).toBe(0);
-    const block = text.split("\n\n").find((b) => b.includes("[!choice]") && b.includes(now));
-    expect(block, `a choice holds ${now}`).toBeDefined();
-    expect(block).toContain(old);
+    expect(count(text, old), `the old statement is replaced: ${old}`).toBe(0);
+    expect(count(prose, now), `${now} replaces it, once`).toBe(1);
   }
-  expect(merged.notices.join(" ")).toContain("Needs your call");
-  expect(text.match(/\[!choice\]/g)?.length ?? 0).toBe(plan.contradict.length);
+  expect(merged.notices.join(" ")).not.toContain("Needs your call");
+  expect(merged.notices.join(" ")).toContain(`${plan.contradict.length} statement${plan.contradict.length === 1 ? "" : "s"} replaced`);
+  expect(text).not.toContain("[!choice]");
+  // The same chats again: the parent chat still says the old price, but the branch (later in the import) says the new one — it stays.
+  if (run.again.changeSet) for (const { old } of added.contradict) expect(count(run.again.changeSet.contentSource!.text, old), `again: ${old} not back`).toBe(0);
 
   // The decision model answered the assignments: the chat fallback was never asked.
   expect(run.decisionRequests).toBeGreaterThan(0);

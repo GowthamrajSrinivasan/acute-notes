@@ -7,7 +7,8 @@
  *  - nothing the notes already had is lost: every earlier passage is still there, and nothing is proposed for removal;
  *  - nothing is duplicated: a passage the chat repeats is left out, a new one is added once;
  *  - new facts about a topic join that topic, and stay with their question; a new subject is a new section;
- *  - a statement that contradicts the notes is NOT applied: it waits as a "Needs your call" choice for the user (both versions, once each);
+ *  - a statement that contradicts the notes replaces the old one where it stands (update engine plan §17, U1 2026-11-22: no "Needs your call"
+ *    choice); importing the parent chat again doesn't bring the old value back, because the branch, later in the same import, restates the new one;
  *  - the same import again changes nothing;
  *  - the decision model answered the assignments (the chat fallback was never needed).
  *

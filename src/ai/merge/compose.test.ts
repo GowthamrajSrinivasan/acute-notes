@@ -226,11 +226,15 @@ describe("composeMerged — a contradiction about a statement that already has a
     expect(mergeNotices(report)).toContain("This content disagrees with your earlier choice in “Storage engine”, so it is open again: your choice is marked, and nothing was changed until you choose.");
   });
 
-  it("a contradiction about another statement still opens its own box", async () => {
+  it("a contradiction about another statement replaces it where it stands — no new box (U1, 2026-11-22); the open box is untouched", async () => {
     const { findChoices } = await import("@/ai/history/choices");
     const { text, report } = run(NOTES_OPEN, "Cloud backup is dropped.\n", conflict("Firestore is planned for cloud backup later.", "Cloud backup is dropped."));
-    expect(findChoices(text)).toHaveLength(2);
-    expect(report).toMatchObject({ choices: ["Storage: engine"], extended: [], reopened: [] });
+    expect(findChoices(text)).toHaveLength(1);
+    expect(findChoices(text)[0]!.options).toEqual(findChoices(NOTES_OPEN)[0]!.options);
+    expect(text).not.toContain("Firestore is planned for cloud backup later.");
+    expect(text.split("Cloud backup is dropped.").length - 1).toBe(1);
+    expect(text.replace("Cloud backup is dropped.", "Firestore is planned for cloud backup later.")).toBe(NOTES_OPEN);
+    expect(report).toMatchObject({ choices: [], extended: [], reopened: [], replaced: [{ was: "Firestore is planned for cloud backup later.", now: "Cloud backup is dropped." }] });
   });
 });
 

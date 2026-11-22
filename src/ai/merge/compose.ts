@@ -18,6 +18,9 @@
  *   replaces takes the old one's place, one that adds to a statement goes right after it, and one about something new
  *   goes at the end of the topic's last paragraph. No block is appended and no choice is written, so the update that
  *   follows updates the objects already on the canvas instead of adding new ones.
+ * - **A quoted contradiction replaces** the statement it contradicts, where it stands (U1, 2026-11-22) — also for a part
+ *   that wasn't matched statement by statement. No new "Needs your call" box is written; a box the notes already hold
+ *   about that statement still gains the new view as an option (or is reopened when the user had chosen).
  *
  * Pure: texts and parsed content in, text and a report out.
  */
@@ -91,6 +94,8 @@ export interface ComposeInput {
   attach?: ReadonlyMap<string, string>;
   /** Per part filed under a topic, what each of its statements does to that topic (`statementMatch.ts`): such a part updates the topic in place. */
   revise?: ReadonlyMap<string, readonly StatementPlan[]>;
+  /** Per part, statements left out of what is filed: an older version of a matter that a later part of the same content restates (`merge.ts`). */
+  leaveOut?: ReadonlyMap<string, readonly string[]>;
   /** Parts kept unplaced (themselves, or joined to one): each is a section of its own at the end of the notes, reported as unplaced, not as a new topic. */
   unplaced?: ReadonlySet<string>;
 }
@@ -160,12 +165,15 @@ export function composeMerged(input: ComposeInput): { text: string; report: Merg
     // A topic that is a section's own text above its subsections must not gain a bold line the parser reads as a heading (`titleLikeAsItalic`).
     const blocks = (incomingBlocks.get(part.key) ?? []).map((b) => (target && ownTextUnits.has(target.key) ? titleLikeAsItalic(b) : b));
     if (target) {
-      // What the part says that its topic contradicts (G3) isn't filed as a fact: it becomes a choice the user makes.
+      // What the part says that its topic contradicts (G3) isn't appended as a second fact beside the old one: it replaces it (§17, U1).
       const conflicts = input.conflicts?.get(part.key) ?? [];
-      const own = conflicts.length ? blocks.map((b) => conflicts.reduce((x, c) => x.replace(c.partSays, ""), b).replace(/[ \t]{2,}/g, " ").trim()).filter((b) => /[\p{L}\p{N}]/u.test(b)) : blocks;
+      const strip = [...conflicts.map((c) => c.partSays), ...(input.leaveOut?.get(part.key) ?? [])];
+      const own = strip.length ? blocks.map((b) => strip.reduce((x, said) => x.replace(said, ""), b).replace(/[ \t]{2,}/g, " ").trim()).filter((b) => /[\p{L}\p{N}]/u.test(b)) : blocks;
       const kept = (keptOf[part.key] = own.filter((b) => keep(b, target.key)));
-      // Each contradiction: another option in the box already open about that statement, a choice the user made reopened, or a new box.
-      const choices: string[] = [];
+      // Each contradiction: another option in a box the notes already hold about that statement (an open one, or a choice the user
+      // made, reopened — the user decided that one, so newer content never overrides it silently); otherwise the newer statement
+      // replaces the old one where it stands — no new "Needs your call" box (U1, 2026-11-22). Both sentences were quoted word for word.
+      const replacements: StatementPlan[] = [];
       for (const c of conflicts) {
         const option: ChoiceOption = { statement: c.partSays, from: input.from ? `from “${input.from.label}”, ${input.from.date}` : "from the merged content", inNotes: false, state: "open" };
         const here = existingChoices.filter((ch) => ch.span.start >= target.span.start && ch.span.start < target.span.end);
@@ -180,15 +188,18 @@ export function composeMerged(input: ComposeInput): { text: string; report: Merg
           (open ? report.extended : report.reopened).push(existing.title);
           continue;
         }
-        choices.push(formatChoice({ title: c.about, resolved: false, options: [{ statement: c.topicSays, from: IN_NOTES, inNotes: true, state: "open" }, option] }));
-        report.choices.push(c.about);
+        replacements.push({ statement: c.partSays.trim(), action: "replaces", target: c.topicSays.trim() });
       }
-      if (!kept.length && !conflicts.length) {
+      const revised = replacements.length ? reviseInPlace(input.text, target, replacements, { revisions, replacedAt, report, topic: topicLabel(target.key) }) : false;
+      for (const r of replacements) keep(r.statement, target.key);
+      if (!kept.length && !revised && !conflicts.length) {
         report.skippedParts.push(part.key);
         continue;
       }
-      const at = beforeNextQuestion(input.text, target.span.start, endOfText(input.text, target.span.end));
-      inserts.set(at, [...(inserts.get(at) ?? []), ...kept, ...choices]);
+      if (kept.length) {
+        const at = beforeNextQuestion(input.text, target.span.start, endOfText(input.text, target.span.end));
+        inserts.set(at, [...(inserts.get(at) ?? []), ...kept]);
+      }
       (report.mergedInto[target.key] ??= []).push(part.key);
     } else {
       // A part joining another part's new topic (`unsure.ts`: a fragment kept with its section) goes there, under its own label.
