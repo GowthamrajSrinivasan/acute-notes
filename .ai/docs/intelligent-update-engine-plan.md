@@ -4096,7 +4096,7 @@ notes):
 | # | Item | Needs |
 |---|---|---|
 | U1 | ~~Shared-ChatGPT-chat imports and economy imports still append and still open "Needs your call" choices~~ **Done 2026-11-22, §17.6** | — |
-| U2 | Code, tables and quotes in new content are filed whole (appended), not matched statement by statement | Table-row and list-aware matching |
+| U2 | ~~Code, tables and quotes in new content are filed whole (appended), not matched statement by statement~~ **Tables and lists done 2026-11-23, §17.7**; code and quotes stay filed whole (by design) | — |
 | U3 | The section kind (cards vs table) is the outline model's choice; the update keeps whatever the first Visualize drew | — |
 | U4 | `match_statements` adds one decision call per merge that relates to existing notes; no typed (Jev) recording yet | Measure on the chat-import cost benchmark |
 | U5 | A pair the AI check couldn't send (no connection, budget) waits for the next accepted change or panel open | — |
@@ -4185,3 +4185,65 @@ failures, 7 skipped). Re-run by the main thread: router, embed route, changes, m
 
 **Accuracy is unchanged:** §13.13–13.14's dev figures stand (placed 25–32 %; the action choice is the bottleneck); the held-out set is unscored
 (#21); duplicates and paraphrased updates wait for the 5e relate call (#20, paid proposal + approval).
+
+### 17.7 U2 — tables update in place (2026-11-23, offline, no AI call)
+
+**Before:** new content with a table about a table the topic already held was appended whole — a second table under the first, the
+old values still there. **After:** its rows are merged into the existing table; there is one table.
+
+    notes:     | Setting | Value | Notes |        new:  | Setting | Value |        merged: | Setting | Value | Notes |
+               | Timeout | 30 s  | per call |           | Timeout | 120 s |                | Timeout | 120 s | per call |
+               | Sessions | 4    | concurrent |         | Sessions | 4    |                | Sessions | 4 | concurrent |
+                                                         | Rate limit | 100/min |          | Rate limit | 100/min |  |
+
+**Rules** (`src/ai/merge/tableMerge.ts`, deterministic — no model is asked about rows):
+- **Which table:** a table of the topic (outside code fences) whose header shares at least half its columns with the new one (the most
+  overlap wins). None → the new table is filed whole, as before.
+- **Key column:** the new table's first column when the existing table has it, else the shared column whose values overlap most. Its
+  values must be unique in the existing table, else nothing is merged (filed whole).
+- **Rows:** same key, a cell different → those cells replaced, the row where it stands; same key, nothing different → a repeat, left
+  out; a new key → a new row at the end of the existing table. An empty new cell never blanks an existing one.
+- **Columns the new table adds** are added at the end of the existing table, empty in rows that say nothing about them (chosen over
+  appending a second table: one table stays the single place for the matter). A column the new table lacks is left as it is.
+- Unchanged rows keep their exact text; each table is rewritten once per merge, with every part's rows.
+- **Mixed parts:** a part of paragraphs/lists **with tables** is now statement-matched without its tables (`statementShaped`), and its
+  tables are merged as above (a table about nothing the topic holds goes below the topic's text). Code and quotes are still filed whole.
+- **Lists** already worked through statement matching (§17): a revised item replaces the item, a new one joins the end of the same list —
+  now covered by a test.
+
+**The update that follows** regenerates the edited topic with its current representation, so the existing table card is updated
+(`update_block`/`update_shape`), not duplicated — asserted by a pipeline test.
+
+**Verification:** new `tableMerge.test.ts` (10): parsing and fences, row merge (replace / repeat / add / new column / key choice /
+non-unique key), compose (one table in place, a repeat changes nothing, an unrelated table filed whole, paragraph + table both in
+place), lists, and `mergeIntoSource` proposing no `create_block`/`create_frame`/`remove`. Merge, ingest, import, history, reconcile:
+59 files, 666 passed (3 failed under full parallel load only, all pass alone: `layoutDReuse`, `citationUpdate`, `updateOwnPassage`).
+tsc and eslint clean.
+
+**Left:** a table whose header was renamed (no shared column names) is filed whole; row order changes aren't applied (rows stay where
+they are); Stage 5 `table_row`/`cell` anchors (§18) serve the placement dialog, not merges — the two could share the row code later.
+
+### 18.1 In-app check with the switches on (2026-11-23, local model only, no AI call)
+
+`e2e/local/semanticPlacement.local.spec.ts` (new; skipped unless `ACUTE_SEMANTIC_URL` points at a server with `ACUTE_EMBEDDINGS` and
+`NEXT_PUBLIC_SEMANTIC_PLACEMENT` on). Run against a separate dev server (a git worktree of HEAD on :3107, webpack — Next 16 allows one dev
+server per folder, and Turbopack refuses a linked `node_modules`). The route served MiniLM-L6 through Next's server bundle
+(`@huggingface/transformers` and `onnxruntime-node` are in Next's default `serverExternalPackages`, so Turbopack is covered too).
+
+**Three defects found and fixed:**
+1. **A sentence offered as a table row** — "Add a row to the table: “Restart the cache workers”". `rowCells` put any text in the first column;
+   a row now needs an explicit row shape ("a | b", or "Header: value"). Otherwise the table card is offered as "a new card beside it".
+2. **A sibling list item proposed as a rewrite** — "Back up the staging database before each release" was to replace "Back up the production
+   database" (Stage 1's intent rules read the shared shape as SUPERSEDES). In a list or todo card, a reworded item is now a new item after its
+   closest sibling; only a changed value or a contradiction replaces one, and only a word-level duplicate is "already said" (`descent.ts`).
+3. **"No card is close" beside a 62 % card** — the descent's "new card in Security" was shown as no match. The dialog now says
+   "Suggested: a new card in “Security” — no card there can take it inside".
+
+**Then all 6 passed:** the model is served; a paraphrase ("Credentials get replaced once a month") ranks the API-keys card first; a checklist
+step goes into the list after its sibling (the production step kept); "Scheduler | 45 s" becomes a row of the existing table; "The Worker
+timeout is now 60 s" changes only that cell (30 s → 60 s, the other rows untouched); unrelated content suggests a new card first, nothing
+picked. **No new card in any of them** (object count unchanged). Router + components: 144 tests pass; merge/ingest/import/history/router/changes:
+607 pass.
+
+**Seen, not changed:** the paraphrase's top card is prose, which can't take new information inside, so the suggestion is a new card in that
+section — right by the rules; whether it restates the card (a duplicate) is the 5e relate call's judgement (#20).

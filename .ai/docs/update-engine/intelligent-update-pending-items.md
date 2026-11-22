@@ -21,7 +21,7 @@ The intelligent update engine makes new content update the notes and cards alrea
 | # | Item | Needs | Status |
 |---|---|---|---|
 | U1 | Shared-ChatGPT-chat imports and economy imports still append new content and still open "Needs your call" choices. They should update in place like "Merge into existing notes". | Decision (made) + offline | **Done 2026-11-22** (plan §17.6). The real-Jev chat-update recording (paid, opt-in) was never made; it will include the new requests when it is |
-| U2 | Code blocks, tables and quotes in new content are filed whole (appended), not matched statement by statement. Needs table-row and list-aware matching. | Offline | Open |
+| U2 | Code blocks, tables and quotes in new content are filed whole (appended), not matched statement by statement. Needs table-row and list-aware matching. | Offline | **Done 2026-11-23** (plan §17.7): tables merge into the existing table by key column; lists covered by a test; code and quotes stay whole by design |
 | U3 | Whether a section is drawn as cards or a table is the outline model's choice on the first Visualize; later updates keep that choice and never revisit it. | Decision (whether to change it at all) | Open (no action planned in the plan) |
 | U4 | `match_statements` adds one decision-model call per merge that touches existing notes, and has no typed (Jev) recording yet. Its cost is unmeasured. | Paid (measure on the chat-import cost benchmark) | Open |
 | 13 | `classify.ts` rule 2 raises a spurious conflict on user-worded cards after two source moves. Safe, but noise; tracked as a `test.fail` "known gap" in `stage1Gate.local.spec.ts`. | Offline | Open |
@@ -92,8 +92,8 @@ Stage 4f uses direct HTTP, so most of these matter for the other AI tasks or if 
 
 ## Suggested order
 
-1. **Turn Stage 5 on and check it in the app** (both switches, a dev server with the cached weights), then its leftovers: selection/open-frame context, IndexedDB vectors, Electron weights. Land #27 (line endings) with the session's `update.ts` commit.
+1. **Stage 5 leftovers** (in-app check done 2026-11-23, plan §18.1 — 6/6 after three fixes): selection/open-frame context, IndexedDB vectors, Electron weights. Land #27 (line endings) with the session's `update.ts` commit.
 2. **#7, output cap and temperature on BYOK:** offline design and a decision. It affects every Copilot BYOK task now, including update and merge calls.
 3. **U4, cost of `match_statements`:** one approved paid run on the chat-import cost benchmark, after U1, since U1 sends more merges through statement matching.
-4. **U2, table-row and list-aware matching:** shares work with #19 (anchor actions such as add a table row).
+4. ~~U2, table-row and list-aware matching~~ — done 2026-11-23 (plan §17.7).
 5. **Quick clean-ups:** #28 (lanes file) and #16 (confirm the off-canvas fix). Leave the dormant consistency items until the panel is turned back on, and if it is, start with U6.

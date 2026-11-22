@@ -236,10 +236,14 @@ function actionFor(card: CardItems, items: readonly IndexedItem[], best: number,
     } else {
       const v = classifyClaimChange(item.text, text);
       if (v.intent === "DUPLICATE") return { action: "duplicate", item: item.index, column: null, relation: "DUPLICATE", update: 1 };
-      if (v.intent === "SUPERSEDES" || v.intent === "EXTENDS" || v.intent === "CONTRADICTS")
+      // A list's items are siblings that share their shape ("Back up the production database" / "Back up the staging database"): there a
+      // reworded item is a new item beside it, never a replacement — only a changed value or a contradiction replaces one, and only a
+      // word-level duplicate is "already said" (live check 2026-11-23: the staging step replaced the production one).
+      const sibling = (card.kind === "list" || card.kind === "todo") && v.intent !== "CONTRADICTS" && !quantityConflict(item.text, text);
+      if (!sibling && (v.intent === "SUPERSEDES" || v.intent === "EXTENDS" || v.intent === "CONTRADICTS"))
         return { action: "replace_item", item: item.index, column: null, relation: v.intent, update: v.intent === "CONTRADICTS" ? 0.15 : 0.5 + 0.5 * sim };
       if (quantityConflict(item.text, text)) return { action: "replace_item", item: item.index, column: null, relation: "SUPERSEDES", update: 0.5 * sim };
-      if (sim >= o.duplicate) return { action: "duplicate", item: item.index, column: null, relation: "DUPLICATE", update: sim };
+      if (!sibling && sim >= o.duplicate) return { action: "duplicate", item: item.index, column: null, relation: "DUPLICATE", update: sim };
     }
   }
   // New information.

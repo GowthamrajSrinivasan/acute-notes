@@ -129,6 +129,7 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
   const banner = useMemo(() => {
     if (!result) return null;
     if (result.semantic?.nowhere) return "Nothing on this canvas is about this: a new card on its own is suggested (listed first). The closest cards are still offered.";
+    if (result.decision === "NEW" && result.semantic && result.candidates.length) return `Suggested: ${result.reason}. Choose where it goes — a new card on its own, one of these, or keep the notes as they are.`;
     if (result.decision === "NEW") return "No confident match: no card is close to this. Choose where it goes — a new card on its own, one of these, or keep the notes as they are.";
     if (result.decision === "NEEDS_CLARIFICATION") return `It could go in more than one place — choose. ${result.model?.question ?? ""}`.trim();
     const best = `Best fit: ${result.reason.replace(/^best fit: /, "")}`;

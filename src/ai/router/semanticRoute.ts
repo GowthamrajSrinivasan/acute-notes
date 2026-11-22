@@ -80,7 +80,7 @@ export function semanticRoute(input: SemanticRouteInput): RouteResult {
       reason: nowhere
         ? "belongs nowhere on this canvas: a new card is suggested"
         : p.action === "new_block" && p.section
-          ? `no card is close enough: a new card in “${sectionName.get(p.section) ?? "its section"}”`
+          ? `a new card in “${sectionName.get(p.section) ?? "its section"}” — no card there can take it inside`
           : "no card is close enough: it becomes a new card",
       candidates,
       sections,

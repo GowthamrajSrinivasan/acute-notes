@@ -124,7 +124,10 @@ function changedQuantity(cell: string, text: string): { start: number; end: numb
   return null;
 }
 
-/** A new row's cells: "a | b | c", else "Header: value" pairs (the rest of the text in the first column), else the text in the first column. */
+/**
+ * A new row's cells: "a | b | c", else "Header: value" pairs (the rest of the text in the first column). Anything else is not a row: a
+ * sentence offered to a table goes in a new card beside it (live check 2026-11-23 — "Restart the cache workers" was offered as a row).
+ */
 export function rowCells(text: string, header: readonly string[]): string[] | null {
   const width = Math.max(1, header.length);
   if (text.includes("|")) {
@@ -145,7 +148,7 @@ export function rowCells(text: string, header: readonly string[]): string[] | nu
     firstPair = Math.min(firstPair, m.index);
     found++;
   });
-  cells[0] = (found ? text.slice(0, firstPair) : text).trim().replace(/[,;:\-–]+$/, "").trim();
-  if (!cells[0] && !found) return null;
+  if (!found) return null;
+  cells[0] = text.slice(0, firstPair).trim().replace(/[,;:\-–]+$/, "").trim();
   return cells;
 }

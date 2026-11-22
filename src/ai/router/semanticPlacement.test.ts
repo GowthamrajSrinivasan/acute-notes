@@ -95,7 +95,8 @@ describe("planAnchor (5d)", () => {
     const live = liveOf(baseScene, "services");
     expect(planAnchor({ action: "table_row", item: null, column: null }, itemsOf("services"), live, "Queue | 45 seconds")).toMatchObject({ inserts: [{ kind: "row", blockIndex: 0, blockId: "t1", after: 2, cells: ["Queue", "45 seconds"] }] });
     expect(rowCells("Queue, timeout: 45 seconds", ["Service", "Timeout"])).toEqual(["Queue", "45 seconds"]);
-    expect(rowCells("Queue reader", ["Service", "Timeout"])).toEqual(["Queue reader", ""]);
+    expect(rowCells("Queue reader", ["Service", "Timeout"])).toBeNull(); // not row-shaped: a new card beside the table
+    expect(rowCells("Restart the cache workers", ["Service", "Timeout"])).toBeNull();
     expect(rowCells("a | b | c", ["Service", "Timeout"])).toBeNull();
   });
 
@@ -148,7 +149,8 @@ describe("semanticRoute (5c) and placement", () => {
     expect(r).toMatchObject({ decision: "route", semantic: { embedder: "fake-dense-v1", nowhere: false } });
     expect(r.candidates.map((c) => [c.id, c.action])).toEqual([
       ["retries", "anchor"],
-      ["services", "anchor"],
+      // A sentence is not a row: the table card is offered as "a new card beside it", never a row holding a sentence.
+      ["services", "insert_near"],
     ]);
     expect(r.candidates[0]!.anchor!.label).toBe("Add it at the end of the list");
     const picks = defaultPicks(r);
