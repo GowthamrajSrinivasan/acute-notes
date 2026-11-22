@@ -97,8 +97,8 @@ function lookOf(read: ReturnType<typeof cardReader>) {
 }
 
 /**
- * "Check with AI" (Stage 4f, opt-in, started by hand): one call of at most 10 queued pairs over the active primary
- * connection's direct chat-completions path. Review-only: the readings become evidence on the records.
+ * One AI check (Stage 4f, opt-in): one call of at most 10 queued pairs over the active primary connection's direct
+ * chat-completions path. Started automatically (`autoCheckAI`) or by "Check now". Review-only: the readings become evidence on the records.
  */
 export async function runAICheckNow(api: ExcalidrawImperativeAPI, home: DocumentHome, signal?: AbortSignal): Promise<AICheckRun> {
   if (!(await isAICheckActive())) return { status: "ai_off", sent: 0, classified: 0, failed: 0, recorded: 0 };
@@ -118,6 +118,43 @@ export async function runAICheckNow(api: ExcalidrawImperativeAPI, home: Document
     ...(signal ? { signal } : {}),
   });
   return run;
+}
+
+/** Checks one automatic run may make in a row (each at most 10 pairs) before it waits for the next trigger. */
+export const AUTO_CHECKS_PER_RUN = 3;
+const autoRunning = new Set<string>();
+const autoListeners = new Set<(canvasId: string, run: AICheckRun) => void>();
+/** Told after each automatic check (the panel shows its result and reloads its status). */
+export function onAutoAICheck(listener: (canvasId: string, run: AICheckRun) => void): () => void {
+  autoListeners.add(listener);
+  return () => autoListeners.delete(listener);
+}
+
+/**
+ * The AI check without a press (plan §17): after accepted AI changes queue pairs, and when the panel opens with pairs waiting.
+ * Same guarantees as the button: opt-in, review-only, one request per check, the server switch asked first, the daily budget.
+ * One run per canvas at a time; it stops at the first check that isn't answered (no connection, server off, budget, a failure)
+ * and after `AUTO_CHECKS_PER_RUN` checks, so a large backlog is worked through over later triggers, never in a burst.
+ */
+export async function autoCheckAI(api: ExcalidrawImperativeAPI, home: DocumentHome): Promise<AICheckRun[]> {
+  if (autoRunning.has(home.canvasId) || !(await isAICheckActive())) return [];
+  autoRunning.add(home.canvasId);
+  const runs: AICheckRun[] = [];
+  try {
+    for (let i = 0; i < AUTO_CHECKS_PER_RUN; i++) {
+      const status = await getAICheckStatus(home);
+      if (!status.notChecked) break;
+      const run = await runAICheckNow(api, home);
+      runs.push(run);
+      for (const l of autoListeners) l(home.canvasId, run);
+      if (run.status !== "answered") break;
+    }
+  } catch (err) {
+    console.warn("[acute-notes] The automatic AI check failed", err);
+  } finally {
+    autoRunning.delete(home.canvasId);
+  }
+  return runs;
 }
 
 /** The AI check's state for the panel (queued, waiting, checked, failed; today's budget). */

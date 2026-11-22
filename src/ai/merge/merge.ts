@@ -12,6 +12,12 @@
  *   call, grown topics re-analysed with their current representation, new topics added as sections; objects the
  *   user edited are conflicts, as in any update.
  *
+ * **Updated in place** (update engine plan §17): before composing, each part filed under an existing topic has its
+ * statements matched to the topic's (`statementMatch.ts`, answered by the decision model): what it repeats is left out,
+ * what it revises replaces the old statement where it stands, what it adds goes beside the statement it adds to. The
+ * topic's text is edited, not grown, so the update changes the objects already on the canvas instead of adding new ones,
+ * and a newer statement wins over the one it replaces — no "Needs your call" box. Economy imports keep appending.
+ *
  * Everything stays one source, so no object ever belongs to two (and an update of one can't look like a user edit
  * of the other). The merged text is the source's next version.
  */
@@ -25,6 +31,7 @@ import { assignLocally, assignToTopicsDecision, topicLabel, UNSURE, validateAssi
 import { parentOf, settleUnsure, type SettledHow } from "./unsure";
 import { composeMerged, partBlocks, type MergeReport } from "./compose";
 import { subsectionParts } from "./refine";
+import { matchStatements, relatesTo, type MatchInput, type StatementPlan } from "./statementMatch";
 import { SECTION_KEY_JOINER } from "@/ai/visualize/outline";
 
 /** `text` is the new content; everything else is the target source, as for an update. */
@@ -275,8 +282,37 @@ export async function mergeIntoSource(input: MergeInput, given: AIRuntime, optio
     answeredBy = answered.length ? (answered.every((a) => a.role === answered[0]!.role) ? answered[0]! : { ...answered[0]!, role: "mixed" }) : null;
   }
 
+  // Which statement of its topic each statement of a filed part repeats, replaces or adds to (§17): the topic is then edited in place.
+  let revise: Map<string, StatementPlan[]> | undefined;
+  if (!input.economy && !SHARED_CHAT.test(input.text) && !SHARED_CHAT.test(input.previous.text)) {
+    const unitByKey = new Map(units.map((u) => [u.key, u] as const));
+    const items: MatchInput["items"] = parts.flatMap((p) => {
+      const topic = assignment.get(p.key);
+      const unit = topic && !attach.has(p.key) && !unplaced.has(p.key) ? unitByKey.get(topic) : undefined;
+      // Statement-shaped parts only (paragraphs and lists): code, tables and quotes are never cut into statements, so such a part is filed whole.
+      if (!unit || !statementShaped(incomingParsed, p)) return [];
+      // The part's own statements: its blocks, without the bold lines its inner headings became (labels, not statements).
+      const text = partBlocks(input.text, incomingParsed, p).filter((b) => !/^\*\*[^*\n]+\*\*$/.test(b.trim())).join("\n\n");
+      const topicText = input.previous.text.slice(unit.span.start, unit.span.end);
+      // Free gate: a part none of whose statements is about one of the topic's is new content, filed as before (no model call) —
+      // unless the assignment said it contradicts its topic: then it is matched, so the newer statement replaces the old one.
+      return text.trim() && (conflicts.has(p.key) || relatesTo(topicText, text)) ? [{ key: p.key, topic: topicText, part: text }] : [];
+    });
+    if (items.length) {
+      options.onProgress?.({ stage: "analyzing", label: "Finding which notes the new content updates…" });
+      const matched = await matchStatements(input.source.tier === "ai" ? runtime : null, { items }, signal);
+      if (matched.failed) notices.push("AI couldn't match the new statements to your notes, so they were matched by wording instead.");
+      // Only a part that revises or adds to statements already there is edited in place; one that only brings new statements (and
+      // repeats) keeps the append path, whose plan call sees just the new paragraphs — the cheaper call, and the same cards as before.
+      // A contradiction the assignment quoted (both sentences word for word) is that statement's answer: the newer one replaces the old.
+      for (const [key, plans] of matched.plans) matched.plans.set(key, withQuotedConflicts(plans, conflicts.get(key) ?? []));
+      revise = new Map([...matched.plans].filter(([, plans]) => plans.some((p) => p.action === "replaces" || p.action === "adds")));
+      if (!revise.size) revise = undefined;
+    }
+  }
+
   const from = input.from ?? { label: contentLabel(input.text), date: new Date().toISOString().slice(0, 10) };
-  const composed = composeMerged({ text: input.previous.text, parsed, units, incoming: input.text, incomingParsed, parts, assignment, conflicts, from, attach, unplaced });
+  const composed = composeMerged({ text: input.previous.text, parsed, units, incoming: input.text, incomingParsed, parts, assignment, conflicts, from, attach, unplaced, ...(revise ? { revise } : {}) });
   // The parts left out up front count as skipped, with all their blocks.
   const repeatedBlocks = allParts.filter((p) => repeated.has(p.key)).reduce((n, p) => n + partBlocks(input.text, incomingParsed, p).length, 0);
   const report: MergeReport = {
@@ -324,8 +360,12 @@ export async function mergeIntoSource(input: MergeInput, given: AIRuntime, optio
 export function mergeNotices(report: MergeReport, changed = true): string[] {
   const into = Object.keys(report.mergedInto).length;
   const elsewhere = report.repeatedElsewhere ? ` (${report.repeatedElsewhere} of them under another topic)` : "";
+  const replaced = report.replaced?.length ?? 0;
+  const added = report.added?.length ?? 0;
+  const inPlace = replaced + added > 0;
   const parts = [
-    into ? `added to ${into} existing ${into === 1 ? "topic" : "topics"}` : "",
+    inPlace ? `updated ${into} existing ${into === 1 ? "topic" : "topics"} in place (${[replaced ? `${replaced} ${replaced === 1 ? "statement" : "statements"} replaced` : "", added ? `${added} added` : ""].filter(Boolean).join(", ")})` : into ? `added to ${into} existing ${into === 1 ? "topic" : "topics"}` : "",
+    report.repeated ? `${report.repeated} already in your notes left out` : "",
     report.newTopics.length ? `${report.newTopics.length} new ${report.newTopics.length === 1 ? "topic" : "topics"}` : "",
     report.unplaced.length ? `${report.unplaced.length} ${report.unplaced.length === 1 ? "passage" : "passages"} left unplaced` : "",
     report.skippedBlocks ? `${report.skippedBlocks} ${report.skippedBlocks === 1 ? "passage" : "passages"} already in your notes left out${elsewhere}` : "",
@@ -423,6 +463,30 @@ function overlapNotices(report: MergeReport): string[] {
 }
 
 /** A part's own heading line, if it starts with one: kept above its new blocks so the model still sees what it's about. */
+/**
+ * `plans` with each quoted contradiction applied: the plan for the statement holding the part's quote replaces the topic's quoted
+ * sentence (the assignment judged them the same matter; the review shows the change). A quote in no planned statement is ignored.
+ */
+function withQuotedConflicts(plans: StatementPlan[], quoted: readonly Conflict[]): StatementPlan[] {
+  if (!quoted.length) return plans;
+  const used = new Set<string>();
+  return plans.map((p) => {
+    const c = quoted.find((q) => !used.has(q.topicSays) && p.statement.includes(q.partSays.trim().replace(/\s+/g, " ")));
+    if (!c) return p;
+    used.add(c.topicSays);
+    return { statement: p.statement, action: "replaces", target: c.topicSays };
+  });
+}
+
+/** Notes made from a shared ChatGPT chat keep the topic merge as it was (chat-share import plan): answers are passages, not statements. */
+const SHARED_CHAT = /^Source: https:\/\/chatgpt\.com\/share\//m;
+
+/** A part made only of paragraphs and lists (and its own heading): what can be matched statement by statement without losing anything. */
+function statementShaped(parsed: Awaited<ReturnType<typeof analyzeContent>>["parsed"], part: AnalysisUnit): boolean {
+  const inside = parsed.blocks.filter((b) => b.span.start >= part.span.start && b.span.end <= part.span.end);
+  return inside.length > 0 && inside.every((b) => b.type === "paragraph" || b.type === "list" || b.type === "heading");
+}
+
 function headingOf(part: AnalysisUnit): string[] {
   const first = part.text.split("\n", 1)[0] ?? "";
   return /^#{1,6}\s/.test(first) ? [first] : [];

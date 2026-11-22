@@ -49,6 +49,7 @@ const STAGES: Record<string, string> = {
   generate_section_analysis: "analysis_patch",
   find_revisions: "revisions",
   assign_to_topics: "assignment",
+  match_statements: "statement match",
 };
 
 /** The pipeline stage a call served, with its note (`plan:piece`); a decision-model call is named for the chat task it replaces, with a `(decision)` suffix. */

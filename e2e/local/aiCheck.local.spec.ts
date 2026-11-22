@@ -36,7 +36,7 @@ async function visualizeLocal(p: Page, text: string) {
 
 test.describe.configure({ mode: "serial" });
 
-test("opt in → queue a near-miss → one manual check → the reading is evidence, the user decides; opt out", async ({ page }) => {
+test("opt in → queue a near-miss → checked automatically, no press → the reading is evidence, the user decides; opt out", async ({ page }) => {
   const judgeBodies: Record<string, unknown>[] = [];
   const runCalls: string[] = [];
   await page.route("**/api/ai/run", async (route) => {
@@ -58,7 +58,7 @@ test("opt in → queue a near-miss → one manual check → the reading is evide
   await expect(section(page)).toBeVisible();
   const optIn = section(page).getByRole("checkbox");
   await expect(optIn).not.toBeChecked();
-  await expect(section(page).getByRole("button", { name: /Check with AI/ })).toHaveCount(0);
+  await expect(section(page).getByRole("button", { name: /Check now/ })).toHaveCount(0);
   await optIn.check();
   await expect(panel(page).getByText(/AI check on for this device/)).toBeVisible();
   await expect(section(page).getByRole("status")).toContainText("0 not checked yet");
@@ -73,7 +73,7 @@ test("opt in → queue a near-miss → one manual check → the reading is evide
   await expect(section(page).getByRole("status")).toContainText("1 not checked yet · 0 checked, shown · 0 checked, read as compatible · 0 failed");
   await expect(section(page).getByText(/Waiting: 1 pair · 1 check of up to 10/)).toBeVisible();
   // No connection yet: the button can't send.
-  await expect(section(page).getByRole("button", { name: /Check with AI/ })).toBeDisabled();
+  await expect(section(page).getByRole("button", { name: /Check now/ })).toBeDisabled();
   await panel(page).getByRole("button", { name: "Close" }).click();
 
   // Connect an API-key chat-completions connection (fake key; the connection test is answered by the browser).
@@ -88,10 +88,9 @@ test("opt in → queue a near-miss → one manual check → the reading is evide
   await expect(connect).toBeHidden({ timeout: 60_000 });
   await settings.getByRole("button", { name: "Close" }).click();
 
+  // No press: opening the panel with a pair waiting (it was queued before there was a connection) runs the check on its own.
   await chip(page).click();
-  const run = section(page).getByRole("button", { name: /Check with AI/ });
-  await expect(run).toBeEnabled();
-  await run.click();
+  const run = section(page).getByRole("button", { name: /Check now/ });
   await expect(panel(page).getByText("AI check: 1 of 1 pairs answered. Its readings are shown on the records; nothing was changed.")).toBeVisible();
   // Exactly one request, with the check's cap, effort and the primary connection's model.
   expect(judgeBodies).toHaveLength(1);
@@ -109,6 +108,6 @@ test("opt in → queue a near-miss → one manual check → the reading is evide
   // Easy off switch.
   await section(page).getByRole("checkbox").uncheck();
   await expect(panel(page).getByText("AI check off. Nothing is queued or sent.")).toBeVisible();
-  await expect(section(page).getByRole("button", { name: /Check with AI/ })).toHaveCount(0);
+  await expect(section(page).getByRole("button", { name: /Check now/ })).toHaveCount(0);
   expect(judgeBodies).toHaveLength(1);
 });

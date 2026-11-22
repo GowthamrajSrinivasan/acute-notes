@@ -12,7 +12,7 @@
  * A *possible* conflict and a *confirmed* one look different everywhere.
  *
  * The AI check (Stage 4f, Phase 1 pilot) appears only when the build offers it (`NEXT_PUBLIC_CONSISTENCY_AI_CHECK`): an
- * opt-in switch for this device, a "Check with AI" button (one call of at most 10 pairs, started by hand), and every
+ * opt-in switch for this device, checks that run automatically after accepted changes (`autoCheckAI`; "Check now" for a pair left waiting), and every
  * queued pair's state (not checked yet, with why it waits; checked and shown; checked compatible; failed) and today's
  * budget. The AI's reading is shown on the record as evidence; only the user's decision changes a record.
  */
@@ -27,7 +27,7 @@ import { showObjects } from "@/components/review/knowledgeActions";
 import { isConsistencyAICheckUiEnabled } from "@/config/features";
 import { useIndexState } from "@/search/liveIndex";
 import { getDocumentStore } from "@/state/documents";
-import { checkRevision, decideConflict, getAICheckModel, getAICheckOptIn, getAICheckStatus, getConsistencyStore, proposeFix, recheckOpen, runAICheckNow, setAICheckOptIn } from "./consistencyRunner";
+import { autoCheckAI, checkRevision, decideConflict, getAICheckModel, getAICheckOptIn, getAICheckStatus, getConsistencyStore, onAutoAICheck, proposeFix, recheckOpen, runAICheckNow, setAICheckOptIn } from "./consistencyRunner";
 
 const RECHECK_MS = 800;
 
@@ -68,12 +68,28 @@ export function ConsistencyPanel({ api, home }: { api: ExcalidrawImperativeAPI; 
         if (at.canvasId !== home.canvasId) return;
         try {
           await checkRevision(api, home, revision);
+          // The AI check (opted in) runs on its own once the change has queued its pairs: no press needed.
+          void autoCheckAI(api, home).finally(() => setTick((t) => t + 1));
         } finally {
           setTick((t) => t + 1);
         }
       }),
     [api, home],
   );
+  // An automatic AI check's result is said in the panel (an answer or a failure; "nothing waiting" isn't news).
+  useEffect(
+    () =>
+      onAutoAICheck((canvasId, run) => {
+        if (canvasId !== home.canvasId) return;
+        if (run.status === "answered" || run.status === "call_error") setMessage(runMessage(run));
+        setTick((t) => t + 1);
+      }),
+    [home.canvasId],
+  );
+  // Pairs queued while the check couldn't run (no connection yet, budget spent): picked up when the panel opens.
+  useEffect(() => {
+    if (open && isConsistencyAICheckUiEnabled()) void autoCheckAI(api, home).finally(() => setTick((t) => t + 1));
+  }, [open, api, home]);
   // Waiting or failed checks: resumed when the canvas opens and whenever its index is fresh again.
   useEffect(() => {
     if (index.state !== "fresh") return;
@@ -318,7 +334,8 @@ function AICheckSection(props: { api: ExcalidrawImperativeAPI; home: DocumentHom
     // Shown at once; the stored switch follows (the status reloads after it).
     props.onOptIn(on);
     await setAICheckOptIn(on);
-    props.onChanged(on ? "AI check on for this device. New changes are queued; nothing is sent until you press Check with AI." : "AI check off. Nothing is queued or sent.");
+    props.onChanged(on ? "AI check on for this device. New changes are checked automatically after you accept them." : "AI check off. Nothing is queued or sent.");
+    if (on) void autoCheckAI(props.api, props.home).finally(() => props.onChanged());
   };
   const run = async () => {
     setBusy(true);
@@ -334,7 +351,7 @@ function AICheckSection(props: { api: ExcalidrawImperativeAPI; home: DocumentHom
     <div className="acute-consistency__ai" aria-label="AI check">
       <h3 className="acute-consistency__title">AI check (pilot)</h3>
       <label className="acute-review__note">
-        <input type="checkbox" checked={state.optedIn} onChange={(e) => void toggle(e.target.checked)} /> Use AI to check possible conflicts on this device. Statements from your cards are sent to your primary AI connection, only when you press Check with AI. It can miss conflicts; its answers are evidence for you, never a decision.
+        <input type="checkbox" checked={state.optedIn} onChange={(e) => void toggle(e.target.checked)} /> Use AI to check possible conflicts on this device. After you accept AI changes, statements from your cards are sent to your primary AI connection automatically (at most 10 pairs per request, within today&apos;s limit). It can miss conflicts; its answers are evidence for you, never a decision.
       </label>
       {state.optedIn && s && (
         <>
@@ -363,7 +380,7 @@ function AICheckSection(props: { api: ExcalidrawImperativeAPI; home: DocumentHom
           )}
           {!state.connection && <p className="acute-review__note">{RUN_TEXT.no_connection}</p>}
           <button type="button" className="acute-ask-ai__secondary" disabled={busy || !state.connection || !(s.notChecked + s.failed)} onClick={() => void run()}>
-            {busy ? "Checking…" : "Check with AI (up to 10 pairs)"}
+            {busy ? "Checking…" : "Check now (up to 10 pairs)"}
           </button>
         </>
       )}

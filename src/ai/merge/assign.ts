@@ -17,7 +17,9 @@ import { getTaskRegistry, type TaskDefinition, type TaskRegistry } from "@/ai/ta
 import { labelOfUnit } from "@/ai/visual-plan/groups";
 import { withoutChoices } from "@/ai/history/choices";
 import { statementsOf, type Statement } from "./statements";
+import { wordOverlap } from "@/ai/fidelity/sourceUnits";
 import { shortlistFor, type Shortlist } from "./topicIndex";
+import { registerStatementMatchTask } from "./statementMatch";
 
 /** An existing topic: its unit key in the notes' text, its label, and its text. */
 export interface Topic {
@@ -56,7 +58,11 @@ export const topicLabel = (key: string): string => (key === LEAD_UNIT ? "Overvie
 
 const norm = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
 
-/** The deterministic assignment: the topic with the same heading, else the one holding most of the part's words. */
+/**
+ * The deterministic assignment: the topic with the same heading, else the one holding most of the part's words, else (update engine
+ * plan §17) the topic most of whose statements the part's statements are about — a revision under another heading ("MCP client
+ * runbook" revising "MCP server operations guide") changes many words but keeps each statement's subject.
+ */
 export function assignLocally(topics: readonly Topic[], parts: readonly AnalysisUnit[]): Assignment {
   const out: Assignment = new Map();
   const vocab = topics.map((t) => new Set(significant(t.text)));
@@ -75,9 +81,27 @@ export function assignLocally(topics: readonly Topic[], parts: readonly Analysis
         if (score >= SAME_TOPIC && (!best || score > best.score)) best = { key: t.key, score };
       });
     }
-    out.set(part.key, (best as { key: string } | null)?.key ?? null);
+    out.set(part.key, (best as { key: string } | null)?.key ?? bySameStatements(topics, part.text));
   }
   return out;
+}
+
+/** A part's statement is about a topic's when they share at least this much (`statementMatch.ts` uses the same bar locally). */
+const SAME_MATTER = 0.34;
+/** At least this share of a part's statements (and two of them) about one topic's statements files it there. */
+const STATEMENTS_ABOUT_TOPIC = 0.5;
+
+function bySameStatements(topics: readonly Topic[], partText: string): string | null {
+  const own = statementsOf(partText, "p").map((s) => s.text);
+  if (own.length < 2) return null;
+  let best: { key: string; share: number } | null = null;
+  for (const t of topics) {
+    const theirs = statementsOf(t.text, "t").map((s) => s.text);
+    const about = own.filter((s) => theirs.some((x) => wordOverlap(x, s) >= SAME_MATTER)).length;
+    const share = about / own.length;
+    if (about >= 2 && share >= STATEMENTS_ABOUT_TOPIC && (!best || share > best.share)) best = { key: t.key, share };
+  }
+  return best?.key ?? null;
 }
 
 export const assignInput = z.object({
@@ -446,6 +470,8 @@ export function verbatim(text: string, quote: string): string | null {
 
 export function registerMergeTasks(registry: TaskRegistry): void {
   if (!registry.has(assignToTopicsTask.task)) registry.register(assignToTopicsTask as TaskDefinition<never, unknown>);
+  // The merge's second question (update engine plan §17): which statement of its topic each new statement updates.
+  registerStatementMatchTask(registry);
 }
 
 registerMergeTasks(getTaskRegistry());

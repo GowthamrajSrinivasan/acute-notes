@@ -74,8 +74,9 @@ describe("mergeIntoSource — local tier (no AI)", () => {
     const { runtime } = runtimeWith(() => response("never"));
     const a = accepted(await firstRun(LOCAL, runtime));
     const m = await merge(a, "## Owners\n\nPayments team owns rollback too.\n", runtime);
-    // The merged paragraph is a new explanation of the Owners text (F38b): added, joined to the frame, linked.
-    expect(kinds(m)).toEqual(["create_block", "update_frame", "connect"]);
+    // Update engine §17: the newer statement extends "Payments team." where it stands — the Owners card is updated, nothing is added.
+    expect(kinds(m)).toEqual(["update_block"]);
+    expect(m.changeSet!.contentSource!.text).toContain("## Owners\n\nPayments team owns rollback too.\n");
     const a2 = acceptUpdate(a, m.changeSet!);
     const r = await update(a2, m.changeSet!.contentSource!.text.replace("The gateway may time out.", "The gateway times out under load."), runtime);
     expect(r.changeSet!.conflicts ?? []).toEqual([]);
@@ -185,7 +186,7 @@ describe("mergeIntoSource — AI tier", () => {
     expect(r.report.nothingNew).toEqual([]);
   });
 
-  it("a contradiction becomes a choice in its topic (G3): the part's sentence isn't filed as a fact, the rest is, and the review says so", async () => {
+  it("a contradiction the model quotes is applied in place (§17, was a G3 choice): the newer sentence replaces the old one, the rest is added beside it, no choice", async () => {
     const reply = { assignments: [{ part: "p1", topic: "t5", conflicts: [{ about: "How part 3 reads", topicSays: "Body of part 3.", partSays: "Part 3 now says something else entirely." }] }] };
     const { runtime } = scripted(() => JSON.stringify(reply));
     const a = accepted(await firstRun(TEN, runtime, "architecture"));
@@ -195,16 +196,17 @@ describe("mergeIntoSource — AI tier", () => {
       { parseMarkdown: parse },
     );
     const text = r.changeSet!.contentSource!.text;
-    expect(text).toContain("## Part 3\n\nBody of part 3.\n\nIt also gains a reviewer.\n\n> [!choice] How part 3 reads\n> - Body of part 3. _(in your notes)_\n> - Part 3 now says something else entirely. _(from “Review notes”, 2026-10-09)_");
-    expect(text.match(/Part 3 now says something else entirely/g)).toHaveLength(1); // only as an option
-    expect(r.report.choices).toEqual(["How part 3 reads"]);
-    // Who answered and what reached the review (development diagnostics): the chat task here, one conflict, one choice.
-    expect(r.diagnostics).toMatchObject({ answeredBy: { role: "primary" }, conflictsPicked: 1, choicesShown: 1 });
+    expect(text).toContain("## Part 3\n\nPart 3 now says something else entirely.\nIt also gains a reviewer.\n\n## Part 4");
+    expect(text).not.toContain("Body of part 3.");
+    expect(text).not.toContain("[!choice]");
+    expect(r.report.choices).toEqual([]);
+    expect(r.report.replaced).toEqual([{ topic: "Part 3", was: "Body of part 3.", now: "Part 3 now says something else entirely." }]);
+    // Who answered and what reached the review (development diagnostics): the chat task here, one conflict, no choice.
+    expect(r.diagnostics).toMatchObject({ answeredBy: { role: "primary" }, conflictsPicked: 1, choicesShown: 0 });
     expect(lastMergeDiagnostics()).toEqual(r.diagnostics);
-    expect(r.notices).toContain("One thing this content and your notes disagree about is shown as “Needs your call”: “How part 3 reads”. Select an option and choose “Use this option”.");
-    // Drawn by code: the box and its two options, linked.
-    const keys = r.changeSet!.changes.flatMap((c) => (c.kind === "create_block" ? [c.stableNodeKey] : []));
-    expect(keys).toEqual(expect.arrayContaining(["Part 3 § choice:how-part-3-reads", "Part 3 § choice:how-part-3-reads:option0", "Part 3 § choice:how-part-3-reads:option1"]));
+    expect(r.notices[0]).toBe("Merged: updated 1 existing topic in place (1 statement replaced, 1 added).");
+    // No choice box and no new object: the topic's own object is updated.
+    expect(r.changeSet!.changes.some((c) => c.kind === "create_block")).toBe(false);
   });
 
   it("a contradiction quoted wrongly (not in the topic word for word) is dropped: the part is filed as usual", async () => {

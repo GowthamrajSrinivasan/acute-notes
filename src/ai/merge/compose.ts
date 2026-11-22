@@ -13,6 +13,11 @@
  *   would make a new sentence built from familiar words look said. Each skipped block is counted in the report.
  * - Passages the notes **already** repeat across two topics are reported (`overlaps`), never removed: they are the
  *   user's notes, and which topic should keep them is the user's call.
+ * - **Updated in place** (update engine plan §17, `revise`): a part whose statements were matched to its topic's
+ *   (`statementMatch.ts`) edits the topic's own text instead of growing it — a statement it repeats is left out, one it
+ *   replaces takes the old one's place, one that adds to a statement goes right after it, and one about something new
+ *   goes at the end of the topic's last paragraph. No block is appended and no choice is written, so the update that
+ *   follows updates the objects already on the canvas instead of adding new ones.
  *
  * Pure: texts and parsed content in, text and a report out.
  */
@@ -21,6 +26,7 @@ import { coverageOf, keyTerms, significant } from "@/ai/fidelity/information";
 import { normalizeUnitText, type AnalysisUnit } from "@/ai/reconcile/units";
 import { findChoices, formatChoice, IN_NOTES, type Choice, type ChoiceOption } from "@/ai/history/choices";
 import { topicLabel, type Assignment, type Conflict } from "./assign";
+import type { StatementPlan } from "./statementMatch";
 
 /** A block already this covered by what one topic says is a repeat. */
 const REPEAT = 0.85;
@@ -59,6 +65,12 @@ export interface MergeReport {
   economy: string[];
   /** Economy mode: the sections AI planning was skipped for because the plan had no room (`reconcile/capacity.ts`), as topic or section keys (set by the merge). */
   planSkipped?: string[];
+  /** Updated in place (`revise`): statements of the notes the new content replaced, each with what replaced it. */
+  replaced?: { topic: string; was: string; now: string }[];
+  /** Updated in place: statements added beside the one they add to, or at the end of their topic. */
+  added?: { topic: string; statement: string }[];
+  /** Updated in place: statements the notes already said (in any words), left out. */
+  repeated?: number;
 }
 
 export interface ComposeInput {
@@ -77,6 +89,8 @@ export interface ComposeInput {
   from?: { label: string; date: string };
   /** Part → the new-topic part it joins (its content goes into that topic, under its own label); see `unsure.ts`. */
   attach?: ReadonlyMap<string, string>;
+  /** Per part filed under a topic, what each of its statements does to that topic (`statementMatch.ts`): such a part updates the topic in place. */
+  revise?: ReadonlyMap<string, readonly StatementPlan[]>;
   /** Parts kept unplaced (themselves, or joined to one): each is a section of its own at the end of the notes, reported as unplaced, not as a new topic. */
   unplaced?: ReadonlySet<string>;
 }
@@ -126,10 +140,23 @@ export function composeMerged(input: ComposeInput): { text: string; report: Merg
     return true;
   };
 
+  /** In-place edits of the notes' text (`revise`): a span replaced, or text inserted at an offset (start === end), in the order planned. */
+  const revisions: Revision[] = [];
+  /** Statements already replaced, by their offset: a second statement about the same one goes after it instead. */
+  const replacedAt = new Set<number>();
   const incomingBlocks = questionsWithTheirAnswers(input.incoming, input.incomingParsed, input.parts);
   for (const part of input.parts) {
     const topic = input.assignment.get(part.key) ?? null;
     const target = topic ? unitByKey.get(topic) : undefined;
+    const plans = target ? input.revise?.get(part.key) : undefined;
+    if (target && plans) {
+      const changed = reviseInPlace(input.text, target, plans, { revisions, replacedAt, report, topic: topicLabel(target.key) });
+      keptOf[part.key] = plans.filter((p) => p.action !== "repeats").map((p) => p.statement);
+      if (changed) (report.mergedInto[target.key] ??= []).push(part.key);
+      else report.skippedParts.push(part.key);
+      for (const p of plans) if (p.action !== "repeats") keep(p.statement, target.key);
+      continue;
+    }
     // A topic that is a section's own text above its subsections must not gain a bold line the parser reads as a heading (`titleLikeAsItalic`).
     const blocks = (incomingBlocks.get(part.key) ?? []).map((b) => (target && ownTextUnits.has(target.key) ? titleLikeAsItalic(b) : b));
     if (target) {
@@ -187,9 +214,18 @@ export function composeMerged(input: ComposeInput): { text: string; report: Merg
   }
 
   // Insertions, and choices rewritten in place (an option added, a choice reopened), applied from the end so no offset moves.
+  // In-place edits at one offset are joined in the order they were planned (two statements added after the same one stay in order).
+  const joined = new Map<string, Revision>();
+  for (const r of revisions) {
+    const at = `${r.start}:${r.end}`;
+    const same = joined.get(at);
+    if (same && r.start === r.end) same.text += r.text;
+    else joined.set(at, { ...r });
+  }
   const ops = [
     ...[...inserts].map(([at, blocks]) => ({ start: at, end: at, text: `\n\n${blocks.join("\n\n")}` })),
     ...[...edits.values()].map(({ choice, options }) => ({ start: choice.span.start, end: choice.span.end, text: formatChoice({ title: choice.title, resolved: false, options }) })),
+    ...joined.values(),
   ].sort((a, b) => b.start - a.start || b.end - a.end);
   let text = input.text;
   for (const op of ops) text = `${text.slice(0, op.start)}${op.text}${text.slice(op.end)}`;
@@ -332,6 +368,86 @@ function newTopicLevel(parsed: ParsedContent): number {
   if (headed.length === 1 && parsed.sections.length <= 2 && headed[0]!.subsections.length) return Math.min(6, headed[0]!.heading!.level + 1);
   if (headed.length) return Math.min(...headed.map((s) => s.heading!.level));
   return 2;
+}
+
+/** An in-place edit of the notes' text: `start..end` replaced by `text` (an insertion when they are equal). */
+interface Revision {
+  start: number;
+  end: number;
+  text: string;
+  seq: number;
+}
+
+/**
+ * The span of `statement` in `text` between `from` and `to` (spacing and line breaks inside it may differ, as `statementsOf`
+ * joins a paragraph's lines), or null when it isn't there exactly once.
+ */
+export function findStatement(text: string, from: number, to: number, statement: string): { start: number; end: number } | null {
+  const words = statement.trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return null;
+  const re = new RegExp(words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+"), "g");
+  const hits = [...text.slice(from, to).matchAll(re)];
+  if (hits.length !== 1) return null;
+  const start = from + hits[0]!.index!;
+  return { start, end: start + hits[0]![0].length };
+}
+
+/** The list marker (with its indent) of the line `at` is on, or null for a prose line. */
+function listMarkerAt(text: string, at: number): string | null {
+  const lineStart = text.lastIndexOf("\n", at - 1) + 1;
+  return /^(\s*(?:[-*+]|\d+[.)])\s+)/.exec(text.slice(lineStart, Math.max(lineStart, at)))?.[1] ?? null;
+}
+
+/** Whether the line `at` is on is a table row, or inside a fenced block (a statement is never written into one). */
+function inTableOrCode(text: string, at: number): boolean {
+  const lineStart = text.lastIndexOf("\n", at - 1) + 1;
+  if (/^\s*\|/.test(text.slice(lineStart, Math.max(lineStart, at) + 1))) return true;
+  return (text.slice(0, at).match(/^\s*(```|~~~)/gm) ?? []).length % 2 === 1;
+}
+
+/** Text that puts `statement` right after the statement ending at `end`: on its own line in the same paragraph, or as the next list item. */
+function besideText(text: string, end: number, statement: string): string {
+  const marker = listMarkerAt(text, end);
+  if (marker) return `\n${marker}${statement}`;
+  return text[end] === "\n" || end >= text.length ? `\n${statement}` : ` ${statement}`;
+}
+
+/**
+ * Plans the in-place edits of one topic for one part's statements (see the module doc); returns whether anything changes.
+ * A statement whose target can't be found exactly once in the topic, or sits in a table or code, is added at the end instead.
+ */
+function reviseInPlace(
+  text: string,
+  target: AnalysisUnit,
+  plans: readonly StatementPlan[],
+  out: { revisions: Revision[]; replacedAt: Set<number>; report: MergeReport; topic: string },
+): boolean {
+  const lastText = endOfText(text, target.span.end);
+  let changed = false;
+  for (const plan of plans) {
+    if (plan.action === "repeats") {
+      out.report.repeated = (out.report.repeated ?? 0) + 1;
+      continue;
+    }
+    const at = plan.target ? findStatement(text, target.span.start, lastText, plan.target) : null;
+    const usable = !!at && !inTableOrCode(text, at.start);
+    const seq = out.revisions.length;
+    if (at && usable && plan.action === "replaces" && !out.replacedAt.has(at.start)) {
+      out.replacedAt.add(at.start);
+      out.revisions.push({ start: at.start, end: at.end, text: plan.statement, seq });
+      (out.report.replaced ??= []).push({ topic: out.topic, was: plan.target!, now: plan.statement });
+    } else if (at && usable) {
+      out.revisions.push({ start: at.end, end: at.end, text: besideText(text, at.end, plan.statement), seq });
+      (out.report.added ??= []).push({ topic: out.topic, statement: plan.statement });
+    } else {
+      // At the end of the topic's own text: in its last paragraph or list, or as a paragraph of its own after a table or code.
+      const tail = inTableOrCode(text, Math.max(target.span.start, lastText - 1)) ? `\n\n${plan.statement}` : besideText(text, lastText, plan.statement);
+      out.revisions.push({ start: lastText, end: lastText, text: tail, seq });
+      (out.report.added ??= []).push({ topic: out.topic, statement: plan.statement });
+    }
+    changed = true;
+  }
+  return changed;
 }
 
 /** Two statements are the same when only spacing and a final full stop differ. */

@@ -360,7 +360,7 @@ export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; h
             </label>
             {mode === "merge" && (
               <p className="acute-visualize-dialog__destination">
-                Each part goes under the topic it&apos;s about, and new topics become new sections. What your notes already say is left out; anything you edited by hand is shown for your decision.
+                Your notes are updated where they stand: a changed statement replaces the old one, an exception goes beside its rule, and new topics become new sections. What your notes already say is left out; anything you edited by hand is shown for your decision.
               </p>
             )}
             {mode === "merge" && (

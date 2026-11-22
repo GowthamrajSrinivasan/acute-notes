@@ -30,6 +30,8 @@ export type AITask =
   | "assign_to_topics"
   // Topic merge G3.3: where a document revises itself (a later statement replacing an earlier one in the same section).
   | "find_revisions"
+  // Update engine §17: per statement of new content filed under a topic, which statement of the topic it repeats, replaces or adds to.
+  | "match_statements"
   // OpenUI Notes view (openui-integration-plan Phase 2): a source distilled into OpenUI Lang idea cards, streamed into the reading view.
   | "generate_openui_notes"
   // Update engine Stage 2d: where content with no source belongs, among the router's candidate cards — or a question back.

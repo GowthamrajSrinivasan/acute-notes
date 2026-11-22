@@ -27,6 +27,8 @@ export const response = (text: string): AIResponse => ({ text, model: "m", finis
 
 /** A mock model: one shape per unit, labelled with the unit's own text — so changed text gives a changed node. */
 export function modelReply(req: AIRequest): AIResponse {
+  // Statement matching (merge §17): no answers, so every statement gets the deterministic local match.
+  if (req.task === "match_statements") return response(JSON.stringify({ matches: [] }));
   const body = req.prompt.split("Content to visualize:\n\n")[1] ?? "";
   return response(JSON.stringify({ version: 1, template: "architecture", nodes: [{ id: "n1", type: "shape", content: { shape: "rectangle", label: body.slice(0, 250) } }], relationships: [] }));
 }
