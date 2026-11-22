@@ -1,6 +1,6 @@
 # Stage 4f — limited pilot gate exception
 
-Date: 2026-11-16 (amended 2026-11-17) · Status: **APPROVED 2026-11-17 — limited pilot, strict recall deferred to Phase 2**, after an independent review (APPROVE WITH CONDITIONS; plan §16). Committed defaults stay off; the pilot is switched on per pilot machine only (§6).
+Date: 2026-11-16 (amended 2026-11-17) · Status: **APPROVED 2026-11-17 — limited pilot, strict recall deferred to Phase 2**, after an independent review (APPROVE WITH CONDITIONS; plan §16). **Update 2026-11-17 (plan §16.5): strict recall 77.5% is accepted; 85% is a pending enhancement, no longer a release gate.** Committed defaults stay off; the pilot is switched on per pilot machine only (§6).
 Context: intelligent-update-engine-plan §12.33 (unseen5 recording; strict-recall gate FAILED), §16.2 (unseen5 diagnosis), §14 (Phase 1 close-out decision), §15 (integration evidence), §16 (review and decision). Pilot notes: `stage4f-pilot-notes-2026-11-17.md`.
 
 ## 1. What is asked
@@ -34,7 +34,7 @@ Live-path evidence (§15): the discovery the canvas uses follows the evaluated s
 
 1. **Mandatory review** — the AI's reading is evidence on a record; it never confirms, dismisses or closes one. A rule-found record the AI reads as compatible stays listed ("your call"). Confirmed, deferred and dismissed records keep their status whatever the AI says (tested).
 2. **No automated editing** — the check never writes a card; fixes go only through the normal review, by the user.
-3. **Explicit opt-in** — off for every device until the user ticks "Use AI to check possible conflicts"; each check is started by hand ("Check with AI", ≤ 10 pairs).
+3. **Explicit opt-in** — off for every device until the user ticks "Use AI to check possible conflicts"; each check is started by hand ("Check with AI", ≤ 10 pairs). *Amended 2026-11-22 (plan §17): once opted in, checks run automatically after accepted changes (one request each, at most 3 in a row, the same budget, server switch and review-only rules); "Check now" remains.*
 4. **Misses disclosed** — the opt-in text says "It can miss conflicts"; the pilot notes state strict recall 77.5% (87.5% within the day's budget for all shown), the miss classes, the scope limits and the single measured model.
 5. **Observable states** — per pair: not checked yet (with why it waits), checked and shown, checked and read as compatible, failed, gave up. Also: today's budget; the backlog (pairs, checks, days, oldest age); pairs dropped because the queue was full (200); and the pilot feedback counts. "Not yet checked" is never presented as "checked compatible".
 6. **Easy off switch** — the device switch (one click, immediate). The operator switches are `CONSISTENCY_AI_CHECK` (server; the route answers 404, and a check asks first, so an off server costs no budget) and `NEXT_PUBLIC_CONSISTENCY_AI_CHECK` (UI, rebuild). Both are off by default everywhere, and the route also refuses on a public deployment (`ACUTE_HTTP_EXPOSURE=public`).

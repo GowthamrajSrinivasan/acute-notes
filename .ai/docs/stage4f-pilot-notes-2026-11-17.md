@@ -4,7 +4,7 @@ For pilot users of the AI consistency check (Stage 4f, limited pilot approved 20
 
 ## What it does
 
-When you accept AI changes on a canvas, Acute looks for statements that may disagree with what your other cards already say. The rules catch clear conflicts on their own. With the AI check on, Acute also queues *near-misses* — pairs the rules can't settle (two schedules, two limits, two dates). When you press **Check with AI**, up to 10 queued pairs go to your own AI connection in one request. Its reading appears on the record. **You decide** every record: "It's a conflict", "Not a conflict", or "Later". The AI never changes a record's status and never edits a card.
+When you accept AI changes on a canvas, Acute looks for statements that may disagree with what your other cards already say. The rules catch clear conflicts on their own. With the AI check on, Acute also queues *near-misses* — pairs the rules can't settle (two schedules, two limits, two dates). After you accept the change, the check runs **on its own** (no button to press): up to 10 queued pairs go to your own AI connection in one request, at most 3 requests in a row, within today's limit. Its reading appears on the record. **You decide** every record: "It's a conflict", "Not a conflict", or "Later". The AI never changes a record's status and never edits a card.
 
 ## What it can miss
 
@@ -21,7 +21,7 @@ Measured on a set of 40 known contradictions (development evidence, one model):
 
 - **Edits you make by hand.** Only accepted AI change sets (Visualize, Ask AI, updates) are checked.
 - **Content already on the canvas** when you opt in, and pairs between two older cards.
-- **More than 20 related cards per statement**, and at most 10 pairs per press.
+- **More than 20 related cards per statement**, and at most 10 pairs per request.
 
 A clean panel does not mean your canvas has no conflicts.
 
@@ -30,11 +30,11 @@ A clean panel does not mean your canvas has no conflicts.
 1. **Switches (your machine only).** Add `CONSISTENCY_AI_CHECK=on` and `NEXT_PUBLIC_CONSISTENCY_AI_CHECK=on` to `.env.development.local`, then restart the dev server. Never on a hosted or public deployment.
 2. **Model.** Make **gpt-oss-120b** your primary AI connection, for example AICredits with `openai/gpt-oss-120b`. It is the only model measured; the panel warns if you use another one.
 3. **Opt in.** Click the **Consistency** chip, open **AI check (pilot)**, and tick **Use AI to check possible conflicts on this device**.
-4. **Check.** Work as usual. When pairs are waiting, press **Check with AI**.
+4. **Work as usual.** Pairs are checked automatically after each accepted change, and when you open the panel with pairs waiting. **Check now** is there for a pair left waiting.
 
 ## What it costs
 
-Each press sends **one request** of at most 10 pairs, about 1,900 tokens (under $0.001 on gpt-oss-120b). It is never retried. Each device has a daily limit of **50 checks or 90,000 tokens**, roughly 46 checks (460 pairs) on a typical day. The panel shows what's left today, how many pairs are waiting, how many checks and days they need, and how long the oldest has waited. If the queue fills up (200 pairs), the oldest are dropped and the panel says how many.
+Each check sends **one request** of at most 10 pairs, about 1,900 tokens (under $0.001 on gpt-oss-120b). It is never retried. Each device has a daily limit of **50 checks or 90,000 tokens**, roughly 46 checks (460 pairs) on a typical day. The panel shows what's left today, how many pairs are waiting, how many checks and days they need, and how long the oldest has waited. If the queue fills up (200 pairs), the oldest are dropped and the panel says how many.
 
 ## What to report (weekly)
 
@@ -47,4 +47,4 @@ Copy the panel's **Pilot feedback** line (AI "likely": confirmed / dismissed / o
 
 ## Pilot length
 
-The pilot runs 4 weeks, or ends earlier once Phase 2 has measured its improvements on a fresh test set. Before a wider release, the share called "likely" must reach 85%.
+There is no fixed end date. Today 77.5% of known conflicts are called "likely"; the target is 85%. That improvement is planned (plan §16.5, E1) but does not hold up use. The pilot stops only on the stop condition above.

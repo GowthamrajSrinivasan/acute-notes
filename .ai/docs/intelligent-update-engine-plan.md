@@ -4007,7 +4007,7 @@ The guard fix, prompt work and y20/y45 are Phase 2, never tuned on unseen5.
 3. Local or desktop builds only; never `CONSISTENCY_AI_CHECK=on` with `ACUTE_HTTP_EXPOSURE=public` or on App Hosting — **enforced** by the route (D9); `.env.production` stays off.
 4. Pilot users run gpt-oss-120b as the primary connection, recorded per user; other models are outside the pilot (panel warns).
 5. Stop-condition data: each pilot user reports the panel's "Pilot feedback" line weekly (AI-"likely" records confirmed / dismissed / open; same for "possible"). A dismissed "likely" is an AI false positive; stop if dismissed / (confirmed + dismissed) of "likely" exceeds 10% over at least 10 decided records.
-6. Ends at 4 weeks or when Phase 2 measures the guard fix on a fresh sealed set (unseen6), whichever first. **Strict recall ≥ 85% stays a release gate**: no wider rollout until Phase 2 meets it.
+6. Ends at 4 weeks or when Phase 2 measures the guard fix on a fresh sealed set (unseen6), whichever first. *(Superseded by §16.5: strict recall 77.5% is accepted; 85% is a pending enhancement, not a gate.)*
 
 **How it is switched on:** per pilot machine, never in committed defaults — both switches `on` in the git-ignored `.env.development.local` (or the shell) for that user's local dev server or desktop build. Committed `.env.development` / `.env.production` keep both `off` (so the shared dev server, the standard local e2e suite and hosted builds are unchanged). Each device still opts in; each check is still one press. No paid calls are made by this work; the pilot's calls are the pilot users' own, on their own keys, within the per-device budget.
 
@@ -4020,3 +4020,83 @@ Consistency + route + panel tests: 28 files, 253 passed (new `aiCheckPilot.test.
 | 35 | No server-side daily cap; clearing site data resets the device budget (review, condition 7) | Phase 2, if the pilot shows a need |
 | 36 | The server caps a request at `maxTokens` ≤ 1,300 + prompt ≤ 8,000 chars (~3,800 tokens), looser than the client's 2,800 reservation | Offline hardening |
 | 37 | With the UI switch on, the consistency chip is always shown; `consistency.local.spec.ts` assumes the switch off | Test infrastructure |
+
+### 16.5 Accuracy accepted; pilot on the main dev machine (product owner, 2026-11-17)
+**Decision:** current accuracy is accepted for use. Strict recall is **77.5%** (31/40 called "likely"); the target is **85%**. Reaching it is a **pending enhancement**, not a gate: it no longer blocks the pilot, Phase 2, or wider use. Recall shown to the user stays 90% (36/40), precision 100% (93.9% conservative), compatible pairs shown as conflicts 0%. The safety rules are unchanged: review-only, opt-in, manual press, bounded spend, and the false-positive stop condition (dismissed "likely" > 10% over ≥ 10 decided).
+
+**Pilot here:** both switches `on` in this machine's git-ignored `.env.development.local` (2026-11-17). The running dev server reloaded the file (readiness GET → 204); its page render worker then crashed (every page 500), so the server needs a restart before the UI switch shows. Committed defaults stay `off`.
+
+**Pending enhancements (revisit later; none blocks use):**
+
+| # | Enhancement | Detail | Measure on |
+|---|---|---|---|
+| E1 | Strict recall 77.5% → 85% | 5 date-context guard downgrades (y05, y24, y49, y65, y83: the AI said "contradicts", the guard held them at possible) — a time-overlap guard; 3 exception/subgroup/narrower-scope misses (y31, y61, y86) — prompt work; 1 numeric-cap misread (y12) | A fresh sealed set (unseen6); never tuned on unseen5 |
+| E2 | Ambiguous labels y20, y45 | Decide the reference labels | — |
+| E3 | Wider coverage | Manual edits, content present at opt-in, old-vs-old pairs (#34) | Phase 2 design |
+| E4 | More models | Only gpt-oss-120b measured; the panel warns on others | One bounded paid run per model, when approved |
+| E5 | Server-side caps | Daily cap (#35); tighten the route's token cap to the 2,800 reservation (#36) | Offline |
+| E6 | Test fit | `consistency.local.spec.ts` fails with the UI switch on (#37) | Offline |
+
+## 17. Updates land on the existing cards; the AI check runs on its own (2026-11-22)
+
+**Asked (product owner):** new content about notes already on the canvas must update the existing cards — identify the correct
+statement and update it — never add a second copy beside it; the fix must be generic; a decision model identifies the card; the
+AI consistency check must need no manual press. Tested with the MCP example (Source A: an MCP server operations guide; Source B: a
+runbook revising five of its statements, repeating one, adding an exception and a new fact).
+
+### 17.1 Root cause (measured live on today's code first)
+Baseline, real model (AICredits gpt-oss-120b, `e2e/ai/mcpSupersede.spec.ts`): after Source B, **"Added 16 blocks · 10 connections"**,
+27 possible conflicts, "port 3001" twice in the notes. Three causes, all in "Merge into existing notes" (the default on a canvas with
+notes):
+1. **Append-only composition** (`merge/compose.ts`): a part filed under a topic was appended below the topic's text, block by block,
+   and only a word-for-word or near-total repeat was left out. Markdown reads consecutive lines as one paragraph, so Source B was one
+   block: appended whole, "port 3001" included. The update then saw "paragraphs appended" and planned **new nodes** for them
+   (`withCurrentKept`), keeping every old node — so "30 seconds" and "120 seconds" both stayed, on separate cards.
+2. **Contradictions became choice boxes** (G3): a contradiction the assignment quoted was written as a "Needs your call" callout,
+   drawn as new box and option cards — more new objects, and the old statement stayed.
+3. **Local assignment by vocabulary only** (`assignLocally`): when AI couldn't assign, a revision under another heading ("MCP client
+   runbook") shared < 60% of its words with its topic and was filed as a **new topic** (its own frame).
+
+### 17.2 Fix (generic)
+- **Statement matching** (`merge/statementMatch.ts`, new task `match_statements`): for each part filed under a topic, each of its
+  statements is matched to the topic statement it is about — `repeats` (left out), `replaces` (takes the old one's place), `adds`
+  (goes right after the statement it adds to, same paragraph or list), `new` (end of the topic's last paragraph). A closed choice over
+  numbered statements, so the target is exact by construction.
+- **Decision model**: asked through `runtime.decide` — the typed decision model when enabled, else the chat task with
+  `preferDecisionModel` (the configured decision model, its own connection/key/model, first; the primary only if it fails). No AI or a
+  failed call: a deterministic match (word overlap + Stage 1a intent rules), and the review says so.
+- **Guards** (`guarded`): a doubtful answer can only keep text — a "repeats" carrying a new number or a negation is not a repeat; a
+  "replaces" sharing too little with its target, or an **exception** (contradicts with a narrower subject, < 0.6 overlap: "the
+  health-check tool … without an API key" vs "every tool requires an API key") is added beside its rule, never in its place. A
+  same-subject flip ("disabled" → "enabled", 0.75) replaces.
+- **Compose edits in place** (`compose.ts` `revise`): no appended block, no choice. A contradiction the assignment quoted is applied as
+  that statement's replacement. The update then regenerates the edited topic **with its current representation**, so the existing
+  objects are updated (claim-level patches where possible).
+- **Local assignment** gains statement evidence (`bySameStatements`): ≥ half of a part's statements (≥ 2) about one topic's → that topic.
+- **Scope gates** (cost and safety): only statement-shaped parts (paragraphs, lists; never code, tables or quotes — they would be cut);
+  only parts that relate to the topic (free word-overlap gate, or a quoted contradiction) — a purely new part keeps the cheaper append
+  path; only when the match finds a replace/add; economy imports and shared-ChatGPT-chat notes keep the topic merge as it was.
+- **AI consistency check runs on its own** (`consistencyRunner.ts` `autoCheckAI`): after each accepted change, and when the panel
+  opens with pairs waiting; one request per check, at most 3 in a row per trigger, one run per canvas, the same opt-in, budget, server
+  switch and review-only rules; stops at the first check that isn't answered. "Check now" stays for a pair left waiting. Amends pilot
+  condition 3 ("started by hand").
+- Visualize keeps "Add as new notes" as the explicit separate copy; "Merge into existing notes" (default) describes the in-place update.
+
+### 17.3 Verification
+- Real model, same spec, fixed code: **passed** — no new object, same object count, no "Needs your call", 120 s / weekly / 8 sessions /
+  enabled replace the old values, the exception kept, "port 3001" once. Two paid AICredits runs in all (baseline + fixed), cents.
+- New `statementMatch.test.ts` (12): local match on the example, exception vs flip, guards, model answers resolved by id, decision-model
+  fallback, compose's exact in-place text, list items, the pipeline proposing one update and nothing else.
+- Old tests updated to the new behaviour (`merge.test.ts`: the quoted contradiction is now a replacement, no choice; a merged extension
+  updates the Owners card). Merge/ingest/history 297 passed; consistency 253 passed; `aiCheck.local.spec.ts` passed (the check ran with
+  no press); full suite 3,883 passed, 8 failed under full parallel load only (all 8 pass alone: timing).
+- `tsc` and eslint clean on the changed files.
+
+### 17.4 Pending (not blocking)
+| # | Item | Needs |
+|---|---|---|
+| U1 | Shared-ChatGPT-chat imports and economy imports still append and still open "Needs your call" choices | Product decision, then the chat-share fixtures re-recorded |
+| U2 | Code, tables and quotes in new content are filed whole (appended), not matched statement by statement | Table-row and list-aware matching |
+| U3 | The section kind (cards vs table) is the outline model's choice; the update keeps whatever the first Visualize drew | — |
+| U4 | `match_statements` adds one decision call per merge that relates to existing notes; no typed (Jev) recording yet | Measure on the chat-import cost benchmark |
+| U5 | A pair the AI check couldn't send (no connection, budget) waits for the next accepted change or panel open | — |
