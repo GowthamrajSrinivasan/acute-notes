@@ -12,7 +12,7 @@
  * A *possible* conflict and a *confirmed* one look different everywhere.
  *
  * The AI check (Stage 4f, Phase 1 pilot) appears only when the build offers it (`NEXT_PUBLIC_CONSISTENCY_AI_CHECK`): an
- * opt-in switch for this device, checks that run automatically after accepted changes (`autoCheckAI`; "Check now" for a pair left waiting), and every
+ * opt-in switch for this device, checks that run automatically after accepted changes (`autoCheckAI`; no manual button), and every
  * queued pair's state (not checked yet, with why it waits; checked and shown; checked compatible; failed) and today's
  * budget. The AI's reading is shown on the record as evidence; only the user's decision changes a record.
  */
@@ -24,10 +24,10 @@ import type { ConsistencyConflict } from "@/ai/consistency/store";
 import { onCommitted, resumeCheckJobs } from "@/components/ai/commitOnCanvas";
 import type { DocumentHome } from "@/domain/types";
 import { showObjects } from "@/components/review/knowledgeActions";
-import { isConsistencyAICheckUiEnabled } from "@/config/features";
+import { isConsistencyAICheckUiEnabled, isConsistencyPanelEnabled } from "@/config/features";
 import { useIndexState } from "@/search/liveIndex";
 import { getDocumentStore } from "@/state/documents";
-import { autoCheckAI, checkRevision, decideConflict, getAICheckModel, getAICheckOptIn, getAICheckStatus, getConsistencyStore, onAutoAICheck, proposeFix, recheckOpen, runAICheckNow, setAICheckOptIn } from "./consistencyRunner";
+import { autoCheckAI, checkRevision, decideConflict, getAICheckModel, getAICheckOptIn, getAICheckStatus, getConsistencyStore, onAutoAICheck, proposeFix, recheckOpen, setAICheckOptIn } from "./consistencyRunner";
 
 const RECHECK_MS = 800;
 
@@ -51,7 +51,12 @@ function useJobs(canvasId: string, tick: number) {
   };
 }
 
-export function ConsistencyPanel({ api, home }: { api: ExcalidrawImperativeAPI; home: DocumentHome }) {
+/** Off by default (`isConsistencyPanelEnabled`, plan §17.5): nothing is shown, and no check runs after a commit. */
+export function ConsistencyPanel(props: { api: ExcalidrawImperativeAPI; home: DocumentHome }) {
+  return isConsistencyPanelEnabled() ? <ConsistencyPanelView {...props} /> : null;
+}
+
+function ConsistencyPanelView({ api, home }: { api: ExcalidrawImperativeAPI; home: DocumentHome }) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
@@ -328,7 +333,6 @@ export function runMessage(r: AICheckRun): string {
 /** The AI check's controls and state (see module doc). */
 function AICheckSection(props: { api: ExcalidrawImperativeAPI; home: DocumentHome; state: AIState; onOptIn: (on: boolean) => void; onChanged: (message?: string | null) => void }) {
   const { state } = props;
-  const [busy, setBusy] = useState(false);
   const s = state.status;
   const toggle = async (on: boolean) => {
     // Shown at once; the stored switch follows (the status reloads after it).
@@ -336,16 +340,6 @@ function AICheckSection(props: { api: ExcalidrawImperativeAPI; home: DocumentHom
     await setAICheckOptIn(on);
     props.onChanged(on ? "AI check on for this device. New changes are checked automatically after you accept them." : "AI check off. Nothing is queued or sent.");
     if (on) void autoCheckAI(props.api, props.home).finally(() => props.onChanged());
-  };
-  const run = async () => {
-    setBusy(true);
-    try {
-      props.onChanged(runMessage(await runAICheckNow(props.api, props.home)));
-    } catch (err) {
-      props.onChanged(`AI check failed (${err instanceof Error ? err.message : "error"}).`);
-    } finally {
-      setBusy(false);
-    }
   };
   return (
     <div className="acute-consistency__ai" aria-label="AI check">
@@ -379,9 +373,6 @@ function AICheckSection(props: { api: ExcalidrawImperativeAPI; home: DocumentHom
             <p className="acute-review__note">This pilot was measured with gpt-oss-120b only; answers from {state.model} are unmeasured.</p>
           )}
           {!state.connection && <p className="acute-review__note">{RUN_TEXT.no_connection}</p>}
-          <button type="button" className="acute-ask-ai__secondary" disabled={busy || !state.connection || !(s.notChecked + s.failed)} onClick={() => void run()}>
-            {busy ? "Checking…" : "Check now (up to 10 pairs)"}
-          </button>
         </>
       )}
     </div>

@@ -1,9 +1,18 @@
 /**
  * Stage 4e in the real app, local tier only (no AI connection; the AI tier, 4f, isn't built): after each accepted change
  * the rule check finds where the new statements disagree with cards elsewhere, and the user — never the system — decides.
+ *
+ * The panel is off by default (plan §17.5). Needs a dev server with `NEXT_PUBLIC_CONSISTENCY_PANEL=on` at ACUTE_CONSISTENCY_URL, e.g.
+ *   NEXT_PUBLIC_CONSISTENCY_PANEL=on npx next dev -p 3107
+ *   ACUTE_CONSISTENCY_URL=http://localhost:3107 npx playwright test e2e/local/consistency.local.spec.ts
+ * Skipped otherwise.
  */
 import { expect, test, type Page } from "@playwright/test";
 import { action, openApp, openAskAI, undo } from "../helpers";
+
+const CONSISTENCY_URL = process.env.ACUTE_CONSISTENCY_URL;
+test.skip(!CONSISTENCY_URL, "needs a dev server with the consistency panel switched on (ACUTE_CONSISTENCY_URL)");
+if (CONSISTENCY_URL) test.use({ baseURL: CONSISTENCY_URL });
 
 const GATEWAY = ["# Gateway", "", "## Limits", "", "Retries happen five times. Timeouts last ten seconds.", "", "## Owners", "", "The payments team owns the gateway.", ""].join("\n");
 

@@ -4100,3 +4100,14 @@ notes):
 | U3 | The section kind (cards vs table) is the outline model's choice; the update keeps whatever the first Visualize drew | — |
 | U4 | `match_statements` adds one decision call per merge that relates to existing notes; no typed (Jev) recording yet | Measure on the chat-import cost benchmark |
 | U5 | A pair the AI check couldn't send (no connection, budget) waits for the next accepted change or panel open | — |
+
+### 17.5 Conflicts list removed from the canvas; no manual check (product owner, 2026-11-22)
+**Decision:** the consistency chip and panel are no longer shown, and there is no manual "Check now". Changes are reviewed where they
+are proposed (the review bar), and since §17 an update lands on the card it revises, so a separate conflicts list was mostly noise
+(the user's screenshot: three "couldn't tell" records pairing cards with a frame title, "MCP server operations guide").
+- `isConsistencyPanelEnabled()` (`NEXT_PUBLIC_CONSISTENCY_PANEL`, default **off**): while off the panel renders nothing, no check runs
+  after a commit, and the AI check sends nothing. The code is kept; `=on` brings it back.
+- "Check now" removed; with the panel on, AI checks run only automatically (§17.2).
+- `consistency.local.spec.ts` and `aiCheck.local.spec.ts` now need a server with the panel switched on (`ACUTE_CONSISTENCY_URL`,
+  `ACUTE_AI_CHECK_URL`); skipped otherwise.
+- Pending U6: if the panel comes back, frame titles must never be paired as statements (the "only a document title" records).

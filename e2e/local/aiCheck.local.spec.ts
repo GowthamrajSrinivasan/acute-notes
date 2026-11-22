@@ -2,8 +2,8 @@
  * The AI consistency check (Stage 4f, Phase 1 pilot) in the real app — no model call: the connection test and the judge
  * route are answered by the browser (`page.route`), so nothing leaves the machine.
  *
- * Needs a dev server with BOTH switches on (the default build has them off), at ACUTE_AI_CHECK_URL, e.g.
- *   NEXT_PUBLIC_CONSISTENCY_AI_CHECK=on CONSISTENCY_AI_CHECK=on npx next dev -p 3107
+ * Needs a dev server with the panel and BOTH AI-check switches on (the default build has them off), at ACUTE_AI_CHECK_URL, e.g.
+ *   NEXT_PUBLIC_CONSISTENCY_PANEL=on NEXT_PUBLIC_CONSISTENCY_AI_CHECK=on CONSISTENCY_AI_CHECK=on npx next dev -p 3107
  *   ACUTE_AI_CHECK_URL=http://localhost:3107 npx playwright test e2e/local/aiCheck.local.spec.ts
  * Skipped otherwise.
  */
@@ -58,7 +58,7 @@ test("opt in → queue a near-miss → checked automatically, no press → the r
   await expect(section(page)).toBeVisible();
   const optIn = section(page).getByRole("checkbox");
   await expect(optIn).not.toBeChecked();
-  await expect(section(page).getByRole("button", { name: /Check now/ })).toHaveCount(0);
+  await expect(section(page).getByRole("button", { name: /Check/ })).toHaveCount(0);
   await optIn.check();
   await expect(panel(page).getByText(/AI check on for this device/)).toBeVisible();
   await expect(section(page).getByRole("status")).toContainText("0 not checked yet");
@@ -73,7 +73,8 @@ test("opt in → queue a near-miss → checked automatically, no press → the r
   await expect(section(page).getByRole("status")).toContainText("1 not checked yet · 0 checked, shown · 0 checked, read as compatible · 0 failed");
   await expect(section(page).getByText(/Waiting: 1 pair · 1 check of up to 10/)).toBeVisible();
   // No connection yet: the button can't send.
-  await expect(section(page).getByRole("button", { name: /Check now/ })).toBeDisabled();
+  // No manual button at all (plan §17.5): the pair waits for a connection.
+  await expect(section(page).getByRole("button", { name: /Check/ })).toHaveCount(0);
   await panel(page).getByRole("button", { name: "Close" }).click();
 
   // Connect an API-key chat-completions connection (fake key; the connection test is answered by the browser).
@@ -90,7 +91,6 @@ test("opt in → queue a near-miss → checked automatically, no press → the r
 
   // No press: opening the panel with a pair waiting (it was queued before there was a connection) runs the check on its own.
   await chip(page).click();
-  const run = section(page).getByRole("button", { name: /Check now/ });
   await expect(panel(page).getByText("AI check: 1 of 1 pairs answered. Its readings are shown on the records; nothing was changed.")).toBeVisible();
   // Exactly one request, with the check's cap, effort and the primary connection's model.
   expect(judgeBodies).toHaveLength(1);
@@ -102,12 +102,12 @@ test("opt in → queue a near-miss → checked automatically, no press → the r
   await expect(item).toContainText("nightly vs weekly");
   await expect(item.getByRole("button", { name: "It's a conflict" })).toBeVisible();
   await expect(chip(page)).toContainText("1 possible conflict");
-  // Nothing more to send: the button is disabled, a second press can't spend.
-  await expect(run).toBeDisabled();
+  // Nothing more to send, and no button to press: a second check cannot spend.
+  await expect(section(page).getByRole("button", { name: /Check/ })).toHaveCount(0);
 
   // Easy off switch.
   await section(page).getByRole("checkbox").uncheck();
   await expect(panel(page).getByText("AI check off. Nothing is queued or sent.")).toBeVisible();
-  await expect(section(page).getByRole("button", { name: /Check now/ })).toHaveCount(0);
+  await expect(section(page).getByRole("button", { name: /Check/ })).toHaveCount(0);
   expect(judgeBodies).toHaveLength(1);
 });

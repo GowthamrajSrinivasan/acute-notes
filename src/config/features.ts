@@ -32,11 +32,21 @@ export function isTopicMergeEnabled(): boolean {
  * - `CONSISTENCY_AI_CHECK` ("on" | "off") — **server-enforced**: `/api/ai/judge` answers 404 unless it is exactly "on".
  *   Read at request time. Unset is off, so no request can reach a model;
  * - `NEXT_PUBLIC_CONSISTENCY_AI_CHECK` — a UI hint only (inlined at build): whether the consistency panel offers the
- *   AI check at all. Even then the user must opt in, and each check is started by hand; nothing runs on its own.
+ *   AI check at all. Even then the user must opt in; checks then run after accepted changes (plan §17), and only while the
+ *   consistency panel itself is on (`isConsistencyPanelEnabled`).
  * Both need the AI feature itself on.
  */
 export function isConsistencyAICheckEnabled(): boolean {
   return isAIFeatureEnabled() && process.env.CONSISTENCY_AI_CHECK === "on";
+}
+
+/**
+ * The consistency panel and its chip (Stage 4d–4f): **off by default** (product owner, 2026-11-22, plan §17.5). Changes are reviewed
+ * where they are proposed (the review bar), and an update now lands on the card it revises, so a separate conflicts list is not shown.
+ * While off, nothing is checked after a commit and the AI check sends nothing. `NEXT_PUBLIC_CONSISTENCY_PANEL=on` brings it back.
+ */
+export function isConsistencyPanelEnabled(): boolean {
+  return process.env.NEXT_PUBLIC_CONSISTENCY_PANEL === "on";
 }
 
 /** UI hint for the client bundle (the literal `process.env.NEXT_PUBLIC_CONSISTENCY_AI_CHECK` must stay as-is for Next.js to inline it). */
