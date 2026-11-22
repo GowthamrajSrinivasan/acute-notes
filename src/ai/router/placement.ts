@@ -11,10 +11,13 @@
  *   below the card when it has no section.
  * - `new`: a new card at the place given.
  * - `none`: the card already says it — nothing.
- * An `update` whose edit can't be placed exactly falls back to `insert_near`, and says so.
+ * - `anchor` (Stage 5d, semantic placement): inside the card — a list item after another or at the list's end, a table
+ *   row or a changed cell — the exact `patch_block` its plan holds (`anchors.ts`), proposed only if the card is still as
+ *   planned.
+ * An `update` or `anchor` whose edit can't be placed exactly falls back to `insert_near`, and says so.
  */
 import type { Box, ChangeSet, ProposedChange } from "@/ai/changes/changeSet";
-import { applyClaimEdits, blockPlainText, type ClaimEdit } from "@/ai/changes/claimPatch";
+import { applyClaimEdits, blockPlainText, resolvePatch, type ClaimEdit } from "@/ai/changes/claimPatch";
 import { wordHunk } from "@/ai/reconcile/claimPlanner";
 import { fingerprintOf, labelsByContainer, objectContent } from "@/ai/reconcile/objects";
 import { measureNode } from "@/ai/renderer/measure";
@@ -28,7 +31,7 @@ export interface PlacementChoice {
   /** The card (element id) chosen, or null for a new card at `at`. */
   target: string | null;
   /** What to do there: the candidate's own action, or `insert_near` when the user prefers a new card beside it. */
-  action: "update" | "insert_near" | "new" | "none";
+  action: "update" | "insert_near" | "new" | "none" | "anchor";
   /** The router's candidate for `target` (its claim, for an update). */
   candidate?: RouteCandidate;
 }
@@ -96,6 +99,14 @@ export function placeContent(input: PlacementInput): PlacementResult {
       }
       notes.push(`“${choice.candidate?.descriptor.title ?? "The card"}” couldn't be edited exactly, so the content is added as a new card beside it.`);
     }
+    if (choice.action === "anchor") {
+      const patch = anchorPatch(choice, byId.get(choice.target), labels, input.getDocument);
+      if (patch) {
+        changes.push(patch);
+        continue;
+      }
+      notes.push(`“${choice.candidate?.descriptor.title ?? "The card"}” changed since it was found, so the content is added as a new card beside it.`);
+    }
     const place = beside(choice.target);
     if (place) newCard(place.box, place.frameId);
   }
@@ -145,6 +156,23 @@ function claimPatch(
   if (block.id) edit.blockId = block.id;
   if (!applyClaimEdits(live.content, [edit]).ok) return null;
   return { kind: "patch_block", target: el.id, expectedFingerprint: fingerprintOf(live), edits: [edit] };
+}
+
+/** The anchor's patch (`anchors.ts`), if the card is still exactly as it was planned on; null otherwise. */
+function anchorPatch(
+  choice: PlacementChoice,
+  el: SceneElement | undefined,
+  labels: ReadonlyMap<string, string>,
+  getDocument: PlacementInput["getDocument"],
+): Extract<ProposedChange, { kind: "patch_block" }> | null {
+  const plan = choice.candidate?.anchor;
+  if (!el || !plan) return null;
+  const live = objectContent(el, labels, getDocument);
+  if (!live || live.kind === "shape") return null;
+  const fingerprint = fingerprintOf(live);
+  if (fingerprint !== plan.fingerprint) return null;
+  if (!resolvePatch({ expectedFingerprint: fingerprint, edits: plan.edits, inserts: plan.inserts }, { content: live.content, fingerprint }).ok) return null;
+  return { kind: "patch_block", target: el.id, expectedFingerprint: fingerprint, edits: plan.edits, ...(plan.inserts.length ? { inserts: plan.inserts } : {}) };
 }
 
 // ---------------------------------------------------------------------------

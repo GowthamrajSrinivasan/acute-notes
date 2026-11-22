@@ -27,6 +27,7 @@ import type { IndexKindFilter } from "@/search/workspaceIndex";
 import { DescriptorCache, sectionsOf, type CardDescriptor, type SectionInfo } from "./descriptors";
 import { centroid, cosine, embeddedText, type SparseVector, type VectorTier } from "./embedding";
 import type { RoutingSignals } from "./signals";
+import type { AnchorPlan } from "./anchors";
 
 /**
  * The router's three modes (plan §3). `routeContent` runs `unanchored`; `impact_discovery` (Stage 3) runs on an update's
@@ -46,7 +47,8 @@ export class RouterModeUnavailableError extends Error {
   }
 }
 
-export type RouteAction = "update" | "insert_near" | "none";
+/** `anchor` (Stage 5d, semantic placement only): the content goes inside the card — a list item, a table row or cell (`anchor`). */
+export type RouteAction = "update" | "insert_near" | "none" | "anchor";
 export type RouteDecision = "route" | "NEEDS_CLARIFICATION" | "NEW";
 
 export interface RouteCandidate {
@@ -61,6 +63,8 @@ export interface RouteCandidate {
   scores: { semantic: number; lexical: number; section: number; graph: number; signal: number };
   /** `update` / `none`: the card's sentence that holds the claim, and what the new content means for it. */
   claim?: { sentence: string; newSentence: string; intent: UpdateIntent; detail: string; escalate: boolean };
+  /** `anchor`: where inside the card, and the exact patch (`anchors.ts`). */
+  anchor?: AnchorPlan;
   /** Why, in short lines a person can check. */
   evidence: string[];
 }
@@ -74,6 +78,12 @@ export interface RouteResult {
   sections: { section: SectionInfo; score: number }[];
   /** Why the decision, in a line. */
   reason: string;
+  /**
+   * Set when semantic placement (Stage 5, `semanticRoute.ts`) ranked the cards instead of the router: the embedder that
+   * did, and whether the note belongs nowhere on this canvas (§13.14: a new card is the first suggestion, the closest
+   * cards still offered).
+   */
+  semantic?: { embedder: string; nowhere: boolean; section: string | null };
 }
 
 export interface RouteInput {

@@ -12,9 +12,14 @@
  * Only a confident route to a card whose edit needs no decision is preselected (user decisions 2026-11-15): "no card is
  * close" (NEW), "more than one place fits" and an update that contradicts or rewrites the card start with nothing picked,
  * and Propose waits for the user's choice (`defaultPicks`, `ai/router/placement.ts`).
+ *
+ * Semantic placement (Stage 5, §18, behind `NEXT_PUBLIC_SEMANTIC_PLACEMENT` and the server's local model): the cards are
+ * ranked by meaning instead (`semanticPlacement.ts`), and a card can take the content inside it — after a list item, at a
+ * list's end, as a table row or a changed cell. When the note belongs nowhere, "A new card on its own" is listed first as
+ * the suggestion, the closest cards still offered; nothing is preselected for it.
  */
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { getPendingChanges } from "@/ai/changes/pendingChanges";
 import { AIRuntime } from "@/ai/runtime";
@@ -27,6 +32,9 @@ import type { DocumentHome } from "@/domain/types";
 import { getDocumentStore } from "@/state/documents";
 import { useAIMode } from "./askAI";
 import { placeDialog, recordPlacement, routerFor, usePlaceDialog } from "./placeContent";
+import { onCommitted } from "./commitOnCanvas";
+import { semanticFind, warmSemanticIndex } from "./semanticPlacement";
+import { isSemanticPlacementUiEnabled } from "@/config/features";
 
 const pct = (n: number) => `${Math.round(n * 100)}%`;
 const NEW = NEW_CARD;
@@ -34,12 +42,21 @@ const NEW = NEW_CARD;
 function actionLabel(c: RouteCandidate, asNew: boolean): string {
   if (asNew || c.action === "insert_near") return "Add a new card beside it";
   if (c.action === "none") return "Already says this — nothing to add";
+  if (c.action === "anchor") return c.anchor!.label;
   const claim = c.claim!;
   return claim.escalate ? `Update it — but this ${claim.intent === "CONTRADICTS" ? "contradicts" : "rewrites"} what it says` : `Update the card (${claim.intent.toLowerCase()})`;
 }
 
 export function PlaceContentDialog({ api, home }: { api: ExcalidrawImperativeAPI; home: DocumentHome }) {
   const store = usePlaceDialog();
+  // Semantic placement: the canvas's item index follows every accepted change, in the background (Stage 5b, §18).
+  useEffect(() => {
+    if (!isSemanticPlacementUiEnabled()) return;
+    return onCommitted((_revision, at) => {
+      if (at.canvasId !== home.canvasId) return;
+      warmSemanticIndex(home.canvasId, api.getSceneElements() as unknown as readonly SceneElement[], (id) => getDocumentStore().get(id));
+    });
+  }, [api, home.canvasId]);
   // Keyed by the open request: every open starts from its own text, with nothing found or picked yet.
   return store.open ? <PlaceContentBody key={store.seq} api={api} home={home} initialText={store.text} /> : null;
 }
@@ -57,7 +74,9 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
 
   const find = async () => {
     const { tier, descriptors, signals } = await routerFor(home.workspaceId, home.canvasId, scene(), getDocument);
-    const r = routeContent({ text, canvasId: home.canvasId, tier, scene: scene(), descriptors, signals });
+    const routed = routeContent({ text, canvasId: home.canvasId, tier, scene: scene(), descriptors, signals });
+    // By meaning, when the local model is there (Stage 5); else the router's answer stands.
+    const r = (await semanticFind({ canvasId: home.canvasId, text, scene: scene(), getDocument, tier, descriptors })) ?? routed;
     setResult(r);
     // The router's own pick is preselected only when it is sure and its edit needs no decision; otherwise the user chooses.
     setPicked(defaultPicks(r));
@@ -97,8 +116,19 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
 
   const toggle = (id: string) => setPicked((p) => togglePick(p, id));
 
+  // "Belongs nowhere" (semantic placement, §13.14): listed first and marked as the suggestion, never picked for the user.
+  const newCardItem = (suggested: boolean) => (
+    <li className="acute-place-dialog__item" data-suggested={suggested || undefined}>
+      <label className="acute-place-dialog__choice">
+        <input type="checkbox" checked={picked.has(NEW)} onChange={() => toggle(NEW)} />
+        <span className="acute-place-dialog__title">A new card on its own{suggested ? " (suggested)" : ""}</span>
+      </label>
+    </li>
+  );
+
   const banner = useMemo(() => {
     if (!result) return null;
+    if (result.semantic?.nowhere) return "Nothing on this canvas is about this: a new card on its own is suggested (listed first). The closest cards are still offered.";
     if (result.decision === "NEW") return "No confident match: no card is close to this. Choose where it goes — a new card on its own, one of these, or keep the notes as they are.";
     if (result.decision === "NEEDS_CLARIFICATION") return `It could go in more than one place — choose. ${result.model?.question ?? ""}`.trim();
     const best = `Best fit: ${result.reason.replace(/^best fit: /, "")}`;
@@ -129,6 +159,7 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
               {banner}
             </p>
             <ul className="acute-place-dialog__list" aria-label="Places it could go">
+              {result.semantic?.nowhere && newCardItem(true)}
               {result.candidates.map((c) => (
                 <li key={c.id} className="acute-place-dialog__item" data-action={c.action} data-escalated={isEscalated(c) || undefined}>
                   <label className="acute-place-dialog__choice">
@@ -143,7 +174,7 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
                       <span title="Does the change take the new information in correctly? (update confidence)">Edit {pct(c.update)}</span>
                     </span>
                   </div>
-                  {c.action === "update" && (
+                  {(c.action === "update" || c.action === "anchor") && (
                     <label className="acute-place-dialog__alt">
                       <input
                         type="checkbox"
@@ -167,12 +198,7 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
                   </ul>
                 </li>
               ))}
-              <li className="acute-place-dialog__item">
-                <label className="acute-place-dialog__choice">
-                  <input type="checkbox" checked={picked.has(NEW)} onChange={() => toggle(NEW)} />
-                  <span className="acute-place-dialog__title">A new card on its own</span>
-                </label>
-              </li>
+              {!result.semantic?.nowhere && newCardItem(false)}
               <li className="acute-place-dialog__item">
                 <label className="acute-place-dialog__choice">
                   <input type="checkbox" checked={picked.has(KEEP_EXISTING)} onChange={() => toggle(KEEP_EXISTING)} />

@@ -28,7 +28,7 @@ import { REVIEW_RESOLUTIONS, type CardReview, type Lineage, type ReviewFlag, typ
 import { PLAN_SHAPES } from "@/ai/visual-plan/types";
 import { fingerprintContent, fingerprintShape } from "@/ai/content/fingerprint";
 import { baselineHolds, staleConflict, type LiveShape } from "./staleTarget";
-import { MAX_CLAIM_EDITS, MAX_CLAIM_TEXT, UPDATE_INTENTS, resolvePatch, type ClaimEdit, type PatchRejection, type PatchTarget, type UpdateIntent } from "./claimPatch";
+import { INSERT_BLOCK_TYPES, MAX_CLAIM_EDITS, MAX_CLAIM_TEXT, UPDATE_INTENTS, resolvePatch, type BlockInsert, type ClaimEdit, type PatchRejection, type PatchTarget, type UpdateIntent } from "./claimPatch";
 import { RELATION_TYPES, type AIMetadata, type ContentBlockType, type ObjectId, type RelationType, type RichBlockType, type RichContent, type ShapeKind, type SourceRef } from "@/domain/types";
 
 export interface Box {
@@ -163,8 +163,9 @@ export type ProposedChange =
    * content, or is dropped whole and reported (`patch_rejected`) — never a best-guess write. `expectedFingerprint`:
    * the object's `fingerprintOf` when the patch was planned (the plan's `expectedVersion`). `onEditedCard`: the card was
    * changed since AI wrote it, and the edits merge the source's new facts into its current wording (Stage 1e).
+   * `inserts` (Stage 5d anchors): new list items or table rows put inside the card, after the edits; `edits` may then be empty.
    */
-  | { kind: "patch_block"; target: ObjectId; expectedFingerprint: string; edits: ClaimEdit[]; stableNodeKey?: string; sourceRefs?: SourceRef[]; onEditedCard?: true }
+  | { kind: "patch_block"; target: ObjectId; expectedFingerprint: string; edits: ClaimEdit[]; inserts?: BlockInsert[]; stableNodeKey?: string; sourceRefs?: SourceRef[]; onEditedCard?: true }
   /**
    * A new label for an existing shape. `expectedFingerprint`: the shape's `fingerprintOf` (kind and label) when this was
    * proposed — stale-target protection exactly as for `update_block` (`staleTarget.ts`).
@@ -454,15 +455,21 @@ const claimEditSchema = z.object({
   replacement: claimText,
   intent: z.enum(UPDATE_INTENTS).optional(),
 }).refine((e) => !(e.cell && e.caption), { message: "an edit targets a cell or a caption, not both" });
+const blockInsertSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("block"), after: z.number().int().min(-1).max(10_000), afterBlockId: z.string().min(1).max(200).optional(), blockType: z.enum(INSERT_BLOCK_TYPES), text: claimText.min(1) }).strict(),
+  z.object({ kind: z.literal("row"), blockIndex: z.number().int().nonnegative().max(10_000), blockId: z.string().min(1).max(200).optional(), after: z.number().int().min(-1).max(10_000), cells: z.array(claimText).min(1).max(1_000) }).strict(),
+]);
 const patchBlockSchema = z.object({
   kind: z.literal("patch_block"),
   target: z.string().min(1),
   expectedFingerprint: z.string().min(1).max(100),
-  edits: z.array(claimEditSchema).min(1).max(MAX_CLAIM_EDITS),
+  // At least one edit, or at least one insert (refined below): an empty patch is also refused at accept (`resolvePatch`).
+  edits: z.array(claimEditSchema).max(MAX_CLAIM_EDITS),
+  inserts: z.array(blockInsertSchema).min(1).max(MAX_CLAIM_EDITS).optional(),
   stableNodeKey: stableKey.optional(),
   sourceRefs: sourceRefs.optional(),
   onEditedCard: z.literal(true).optional(),
-});
+}).refine((c) => c.edits.length > 0 || (c.inserts?.length ?? 0) > 0, { message: "a patch has at least one edit or insert" });
 const updateShapeSchema = z.object({
   kind: z.literal("update_shape"),
   target: z.string().min(1),

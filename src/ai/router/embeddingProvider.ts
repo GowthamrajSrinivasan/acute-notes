@@ -4,8 +4,9 @@
  * The seam is the deliverable; each embedder is one implementation of `EmbeddingProvider`:
  * - `hashedProvider` — the Stage 2a hashed embedder (`embedding.ts`, unchanged and frozen for the third unseen set),
  *   adapted to this interface. Always available; the fallback.
- * - `LocalModelProvider` (`localModelEmbedding.ts`) — a small sentence-embedding model run on the device. The default
- *   once it passes its gate (§13.2); until then nothing is wired to it.
+ * - `LocalModelProvider` (`localModelEmbedding.ts`) — a small sentence-embedding model run on the device. Wired for
+ *   semantic placement behind a switch (§18: the app's own server runs it, `serverEmbedding.ts`; the browser reaches it
+ *   through `routeEmbedding.ts`). Not the default anywhere else: the router and the consistency screen keep the hashed one.
  * - a provider embeddings API, if ever needed — a third implementation with `kind: "remote"`, passed in through
  *   `EmbeddingFactoryDeps.remote`. Not built: it also needs the AI-spend guards, the user's opt-in (text leaves the
  *   device) and the "AI off" switch (§13.2).

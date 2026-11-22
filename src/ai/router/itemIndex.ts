@@ -1,5 +1,6 @@
 /**
- * Stage 5b (intelligent-update-engine-plan §13.3; design §13.13) — **PROTOTYPE, not wired into the app.**
+ * Stage 5b (intelligent-update-engine-plan §13.3; design §13.13). Fed from the live canvas by `semanticIndex.ts` (§18,
+ * behind the semantic-placement switch).
  *
  * The item-level index: one entry per sentence of a text card, list item, todo item and table data row, so a new
  * piece of information can be matched to the exact item it updates or follows — not only to a whole card.

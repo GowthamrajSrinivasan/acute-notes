@@ -1,7 +1,8 @@
 /**
- * Stage 5c (intelligent-update-engine-plan §13.4; design §13.13) — **PROTOTYPE, not wired into the app.** Measured on
- * the dev split of the locate evaluation set only (`locateEvaluation.test.ts`); the held-out split is kept for one
- * final evaluation.
+ * Stage 5c (intelligent-update-engine-plan §13.4; design §13.13). Measured on the dev split of the locate evaluation set
+ * only (`locateEvaluation.test.ts`); the held-out split is kept for one final evaluation. **Wired behind a switch** (§18):
+ * "Where should this go?" uses it when the local model is active (`semanticRoute.ts`, `NEXT_PUBLIC_SEMANTIC_PLACEMENT`);
+ * otherwise the Stage 2 router answers, as before.
  *
  * Router descent, in the order the 2026-11-14 review set:
  * 1. **Selection / open frame** — `context` gives its card or section a prior.
@@ -101,9 +102,16 @@ export interface Placement {
   update: number;
   /** Cards, best destination first. */
   ranked: string[];
+  /** Each ranked card's destination score (`routing` for that card), in `ranked` order. */
+  scores: { card: string; routing: number }[];
+  /** What each of the best `depth` cards could take (the dialog offers these beside the winner); the winner's is first. */
+  options: CardOption[];
   /** Each descent step that decided something, in order. */
   steps: string[];
 }
+
+/** One card's feasible action (step 4), as `Placement` carries it for the winner. */
+export type CardOption = Pick<Placement, "action" | "item" | "column" | "relation" | "update" | "routing"> & { card: string; section: string | null };
 
 export interface DescentSection {
   id: string;
@@ -139,7 +147,7 @@ export class Descent {
     if (same.length) {
       const it = same[0]!;
       steps.push(`exact duplicate of ${it.key}`);
-      return { action: "duplicate", card: it.card, section: it.section, near: null, item: it.index, column: null, relation: "DUPLICATE", routing: 1, update: 1, ranked: [it.card], steps };
+      return { action: "duplicate", card: it.card, section: it.section, near: null, item: it.index, column: null, relation: "DUPLICATE", routing: 1, update: 1, ranked: [it.card], scores: [{ card: it.card, routing: 1 }], options: [{ action: "duplicate", card: it.card, section: it.section, item: it.index, column: null, relation: "DUPLICATE", update: 1, routing: 1 }], steps };
     }
 
     const key = `${this.index.provider.id}:${text}`;
@@ -172,16 +180,18 @@ export class Descent {
     });
     scored.sort((a, b) => b.dest - a.dest || (a.c.card < b.c.card ? -1 : 1));
     const ranked = scored.map((s) => s.c.card);
+    const scores = scored.map((s) => ({ card: s.c.card, routing: s.dest }));
     const topSection = [...sectionScore].sort((a, b) => b[1] - a[1])[0];
 
     // 4. Destination and action together: the first of the best cards that can take the content.
-    const feasible: (Omit<Placement, "ranked" | "steps"> & { own: number })[] = [];
+    const feasible: (Omit<Placement, "ranked" | "steps" | "scores" | "options"> & { own: number })[] = [];
     for (const s of scored.slice(0, o.depth)) {
       const opt = actionFor(s.c, s.items, s.best, s.bestSim, text, o);
       if (opt) feasible.push({ ...opt, card: s.c.card, section: s.c.section, near: null, routing: s.dest, own: s.own });
       else steps.push(`${s.c.card} (${s.c.kind}) can't take new information — next card`);
     }
     const best = feasible[0];
+    const cardOptions: CardOption[] = feasible.map(({ own: _own, near: _near, card, ...o }) => ({ ...o, card: card! }));
 
     // 5a. Belongs nowhere: no section stands out and nothing on the canvas is close (§13.14).
     const sectionScores = [...sectionScore.values()].sort((x, y) => y - x);
@@ -190,7 +200,7 @@ export class Descent {
     const topItem = Math.max(0, ...scored.map((s) => s.bestSim));
     if (o.nowhereSectionGap > 0 && !context.card && !context.section && topCard && sectionGap <= o.nowhereSectionGap && topCard.own < o.nowhereCard && topItem < o.nowhereItem) {
       steps.push(`belongs nowhere: sections within ${sectionGap.toFixed(2)}, best card ${topCard.own.toFixed(2)}, best item ${topItem.toFixed(2)}`);
-      return { action: "new_section", card: null, section: null, near: ranked[0] ?? null, item: null, column: null, relation: "NEW", routing: sectionScores[0] ?? 0, update: 0.9, ranked, steps };
+      return { action: "new_section", card: null, section: null, near: ranked[0] ?? null, item: null, column: null, relation: "NEW", routing: sectionScores[0] ?? 0, update: 0.9, ranked, scores, options: cardOptions, steps };
     }
 
     // 5b. Proposal, new card, new section, or a question.
@@ -198,19 +208,19 @@ export class Descent {
       const near = ranked[0] ?? null;
       if (topSection && topSection[1] >= o.sectionFloor) {
         steps.push(`no card close enough (${best ? best.own.toFixed(2) : "none"} < ${o.cardFloor}); section ${topSection[0]} fits (${topSection[1].toFixed(2)})`);
-        return { action: "new_block", card: null, section: topSection[0], near, item: null, column: null, relation: "NEW", routing: topSection[1], update: 0.9, ranked, steps };
+        return { action: "new_block", card: null, section: topSection[0], near, item: null, column: null, relation: "NEW", routing: topSection[1], update: 0.9, ranked, scores, options: cardOptions, steps };
       }
       steps.push("no section fits");
-      return { action: "new_section", card: null, section: null, near, item: null, column: null, relation: "NEW", routing: topSection?.[1] ?? 0, update: 0.9, ranked, steps };
+      return { action: "new_section", card: null, section: null, near, item: null, column: null, relation: "NEW", routing: topSection?.[1] ?? 0, update: 0.9, ranked, scores, options: cardOptions, steps };
     }
     const rival = feasible.find((x) => x.card !== best.card && x.section !== best.section);
     if (o.margin > 0 && rival && best.routing - rival.routing < o.margin) {
       steps.push(`${best.card} and ${rival.card} (another section) are within ${o.margin}`);
-      return { action: "clarify", card: null, section: best.section, near: best.card, item: null, column: null, relation: null, routing: best.routing, update: 0, ranked, steps };
+      return { action: "clarify", card: null, section: best.section, near: best.card, item: null, column: null, relation: null, routing: best.routing, update: 0, ranked, scores, options: cardOptions, steps };
     }
     steps.push(`${best.action} on ${best.card}${best.item !== null ? ` item ${best.item}` : ""}${best.column ? ` column ${best.column}` : ""}`);
     const { own: _own, ...placement } = best;
-    return { ...placement, ranked, steps };
+    return { ...placement, ranked, scores, options: cardOptions, steps };
   }
 }
 

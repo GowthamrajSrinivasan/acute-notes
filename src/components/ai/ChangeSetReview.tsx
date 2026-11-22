@@ -46,7 +46,7 @@ import { checkProposal } from "@/ai/changes/proposalGeometry";
 import { routeConnectors } from "@/ai/changes/routing";
 import { APP_SESSION, getPendingChanges } from "@/ai/changes/pendingChanges";
 import { conflictName, currentText, proposedText, type ConflictDecision } from "@/ai/reconcile/conflicts";
-import { describeClaimEdit } from "@/ai/changes/claimPatch";
+import { describeBlockInsert, describeClaimEdit } from "@/ai/changes/claimPatch";
 import { skippedNote } from "@/ai/reconcile/updatePolicy";
 import { lineDiff } from "@/ai/reconcile/diff";
 import { getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
@@ -138,8 +138,9 @@ function itemLabel(change: ProposedChange, byKey: Map<string, ProposedChange>, i
       return `Update: ${deriveTitle(change.content, change.title ?? "Block")}`;
     case "patch_block": {
       // A claim-level patch (Stage 1b): each edit as "“five” → “three”", with what it means when the planner said.
-      const shown = change.edits.slice(0, 2).map(describeClaimEdit);
-      const more = change.edits.length > shown.length ? ` (+${change.edits.length - shown.length} more)` : "";
+      const all = [...change.edits.map(describeClaimEdit), ...(change.inserts ?? []).map(describeBlockInsert)];
+      const shown = all.slice(0, 2);
+      const more = all.length > shown.length ? ` (+${all.length - shown.length} more)` : "";
       // Stage 1e: the new facts merged into a card the user changed, their wording kept.
       if (change.onEditedCard) return `Updates your edited card${nameOf?.(change.target) ? ` ${nameOf(change.target)}` : ""}: ${shown.join("; ")}${more}`;
       return `Edit ${nameOf?.(change.target) || "a card"}: ${shown.join("; ")}${more}`;

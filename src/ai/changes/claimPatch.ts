@@ -69,11 +69,91 @@ export interface PatchTarget {
   title?: string;
 }
 
-/** Resolves a patch against the object's content as it is now (rule 1, then `applyClaimEdits`). */
-export function resolvePatch(patch: { expectedFingerprint: string; edits: readonly ClaimEdit[] }, live: PatchTarget | null | undefined): PatchOutcome {
+/** Resolves a patch against the object's content as it is now (rule 1, then `applyClaimEdits`, then `applyBlockInserts`). */
+export function resolvePatch(patch: { expectedFingerprint: string; edits: readonly ClaimEdit[]; inserts?: readonly BlockInsert[] }, live: PatchTarget | null | undefined): PatchOutcome {
   if (!live) return { ok: false, reason: "stale", detail: "the object's content isn't loaded" };
   if (live.fingerprint !== patch.expectedFingerprint) return { ok: false, reason: "stale", detail: "the object changed after the update was planned" };
-  return applyClaimEdits(live.content, patch.edits);
+  const inserts = patch.inserts ?? [];
+  if (!inserts.length) return applyClaimEdits(live.content, patch.edits);
+  let content = live.content;
+  if (patch.edits.length) {
+    const edited = applyClaimEdits(content, patch.edits);
+    if (!edited.ok) return edited;
+    content = edited.content;
+  }
+  return applyBlockInserts(content, inserts);
+}
+
+// ---------------------------------------------------------------------------
+// Anchor inserts (intelligent-update-engine-plan Stage 5d, §13.5): a new item put *inside* a card — a list item after
+// another one or at the list's end, a table row — beside the patch's edits. Structural only: nothing existing is
+// reworded, and every existing block keeps its id, props and content. Same all-or-nothing contract as the edits.
+
+/** The block types an insert may add: a list or todo item like its neighbours, or a paragraph. */
+export const INSERT_BLOCK_TYPES = ["paragraph", "bulletListItem", "numberedListItem", "checkListItem"] as const;
+export type InsertBlockType = (typeof INSERT_BLOCK_TYPES)[number];
+
+/**
+ * - `block`: a new block of `blockType` holding `text`, placed right after the top-level block at `after` (-1: first).
+ *   `afterBlockId`, when given, is checked against the live block as an edit's `blockId` is.
+ * - `row`: a new row in the table block at `blockIndex`, right after row `after` (header rows count), one plain-text cell
+ *   per column; fewer cells are padded with empty ones, more reject the patch.
+ * Positions refer to the content as the patch's edits leave it (edits never add or remove blocks). Inserts at one
+ * position keep their order.
+ */
+export type BlockInsert =
+  | { kind: "block"; after: number; afterBlockId?: string; blockType: InsertBlockType; text: string }
+  | { kind: "row"; blockIndex: number; blockId?: string; after: number; cells: string[] };
+
+/** Applies every insert, or none (see `BlockInsert`). */
+export function applyBlockInserts(content: RichContent, inserts: readonly BlockInsert[]): PatchOutcome {
+  if (!inserts.length) return { ok: false, reason: "not_found", detail: "the patch has no inserts" };
+  if (inserts.length > MAX_CLAIM_EDITS) return { ok: false, reason: "unsupported", detail: "too many inserts" };
+  const blocks = [...content];
+  // Rows first: they change a block in place, never the block count.
+  for (const ins of inserts) {
+    if (ins.kind !== "row") continue;
+    const block = blocks[ins.blockIndex];
+    if (!block) return { ok: false, reason: "stale", detail: `block ${ins.blockIndex + 1} is gone` };
+    if (ins.blockId && block.id && ins.blockId !== block.id) return { ok: false, reason: "stale", detail: `block ${ins.blockIndex + 1} is a different block now` };
+    if (block.type !== "table" || !isTable(block.content)) return { ok: false, reason: "unsupported", detail: `a ${block.type} block has no rows` };
+    const table = block.content;
+    if (ins.after < -1 || ins.after >= table.rows.length) return { ok: false, reason: "stale", detail: `row ${ins.after + 1} is gone` };
+    const width = Math.max(0, ...table.rows.map((r) => r.cells.length));
+    if (!width || ins.cells.length > width) return { ok: false, reason: "unsupported", detail: `the row has ${ins.cells.length} cells, the table ${width} columns` };
+    if (ins.cells.some((c) => c.length > MAX_CLAIM_TEXT) || ins.cells.every((c) => !c.trim())) return { ok: false, reason: "unsupported", detail: "the row is empty or too long" };
+    // Each cell in the form the table's own cells use (BlockNote's object form, or plain strings).
+    const sample = table.rows.find((r) => r.cells.length)?.cells[0];
+    const objectForm = typeof sample === "object" && sample !== null && !Array.isArray(sample);
+    const cells: TableCell[] = Array.from({ length: width }, (_v, i) => {
+      const text = ins.cells[i] ?? "";
+      return objectForm ? { type: "tableCell" as const, content: text ? [{ type: "text" as const, text, styles: {} }] : [] } : text;
+    });
+    const rows = [...table.rows.slice(0, ins.after + 1), { cells }, ...table.rows.slice(ins.after + 1)];
+    blocks[ins.blockIndex] = { ...block, content: { ...table, rows } };
+  }
+  const after = new Map<number, ContentBlock[]>();
+  for (const ins of inserts) {
+    if (ins.kind !== "block") continue;
+    if (ins.after < -1 || ins.after >= blocks.length) return { ok: false, reason: "stale", detail: `block ${ins.after + 1} is gone` };
+    const anchor = blocks[ins.after];
+    if (ins.afterBlockId && anchor?.id && ins.afterBlockId !== anchor.id) return { ok: false, reason: "stale", detail: `block ${ins.after + 1} is a different block now` };
+    const text = ins.text.trim();
+    if (!text || text.length > MAX_CLAIM_TEXT) return { ok: false, reason: "unsupported", detail: "the inserted text is empty or too long" };
+    if (!(INSERT_BLOCK_TYPES as readonly string[]).includes(ins.blockType)) return { ok: false, reason: "unsupported", detail: `a ${ins.blockType} block can't be inserted` };
+    const block: ContentBlock = { type: ins.blockType, content: [{ type: "text", text, styles: {} }], ...(ins.blockType === "checkListItem" ? { props: { checked: false } } : {}) };
+    after.set(ins.after, [...(after.get(ins.after) ?? []), block]);
+  }
+  const out: ContentBlock[] = [...(after.get(-1) ?? [])];
+  blocks.forEach((b, i) => out.push(b, ...(after.get(i) ?? [])));
+  return { ok: true, content: out };
+}
+
+/** An insert as the review shows it: "adds “…”", "adds a row “a · b”". */
+export function describeBlockInsert(ins: BlockInsert): string {
+  const clip = (s: string) => (s.length > 60 ? `${s.slice(0, 57)}…` : s);
+  if (ins.kind === "row") return `adds a row “${clip(ins.cells.filter((c) => c.trim()).join(" · "))}”`;
+  return `adds “${clip(ins.text.trim())}”`;
 }
 
 /** A block's own text, as an edit's offsets count it. Null for a block whose content isn't inline text (a table, code). */

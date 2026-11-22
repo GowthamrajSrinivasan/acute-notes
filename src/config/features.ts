@@ -49,6 +49,26 @@ export function isConsistencyPanelEnabled(): boolean {
   return process.env.NEXT_PUBLIC_CONSISTENCY_PANEL === "on";
 }
 
+/**
+ * Semantic placement (intelligent-update-engine-plan Stage 5, §18): "Where should this go?" ranks cards by meaning with a local
+ * sentence-embedding model and proposes the exact anchor (after a list item, at a list's end, a table row or cell). **Off by
+ * default**, behind two switches like the AI check's —
+ * - `ACUTE_EMBEDDINGS` — **server-enforced**: `/api/ai/embed` answers 404 unless it names a local model
+ *   (`local-model:minilm-l6`), the AI feature is on and the server isn't publicly exposed (text never leaves the user's own
+ *   machine). Weights are read from `ACUTE_EMBEDDING_MODELS_DIR` (default: the spike's cache under `node_modules/.cache`);
+ *   downloading them needs `ACUTE_EMBEDDINGS_DOWNLOAD=on` as well.
+ * - `NEXT_PUBLIC_SEMANTIC_PLACEMENT` — a UI hint only (inlined at build): whether the dialog asks the route at all. With the
+ *   route unavailable it falls back to today's router, silently.
+ */
+export function isLocalEmbeddingsEnabled(): boolean {
+  return isAIFeatureEnabled() && (process.env.ACUTE_EMBEDDINGS ?? "").startsWith("local-model:");
+}
+
+/** UI hint for the client bundle (the literal `process.env.NEXT_PUBLIC_SEMANTIC_PLACEMENT` must stay as-is for Next.js to inline it). */
+export function isSemanticPlacementUiEnabled(): boolean {
+  return isAIFeatureEnabled() && process.env.NEXT_PUBLIC_SEMANTIC_PLACEMENT === "on";
+}
+
 /** UI hint for the client bundle (the literal `process.env.NEXT_PUBLIC_CONSISTENCY_AI_CHECK` must stay as-is for Next.js to inline it). */
 export function isConsistencyAICheckUiEnabled(): boolean {
   return isAIFeatureEnabled() && process.env.NEXT_PUBLIC_CONSISTENCY_AI_CHECK === "on";
