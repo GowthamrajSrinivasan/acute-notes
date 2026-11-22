@@ -32,6 +32,7 @@ import { parentOf, settleUnsure, type SettledHow } from "./unsure";
 import { composeMerged, partBlocks, type MergeReport } from "./compose";
 import { subsectionParts } from "./refine";
 import { matchStatements, relatesTo, type MatchInput, type StatementPlan } from "./statementMatch";
+import { parseTable } from "./tableMerge";
 import { SECTION_KEY_JOINER } from "@/ai/visualize/outline";
 
 /** `text` is the new content; everything else is the target source, as for an update. */
@@ -305,10 +306,11 @@ export async function mergeIntoSource(input: MergeInput, given: AIRuntime, optio
     const items: MatchInput["items"] = parts.flatMap((p) => {
       const topic = assignment.get(p.key);
       const unit = topic && !attach.has(p.key) && !unplaced.has(p.key) ? unitByKey.get(topic) : undefined;
-      // Statement-shaped parts only (paragraphs and lists): code, tables and quotes are never cut into statements, so such a part is filed whole.
+      // Statement-shaped parts only (paragraphs and lists, and tables beside them): code and quotes are never cut into statements, so such
+      // a part is filed whole. A table is never cut either: its rows are merged into the topic's table by `compose.ts` (U2).
       if (!unit || !statementShaped(incomingParsed, p)) return [];
-      // The part's own statements: its blocks, without the bold lines its inner headings became (labels, not statements).
-      const text = partBlocks(input.text, incomingParsed, p).filter((b) => !/^\*\*[^*\n]+\*\*$/.test(b.trim())).join("\n\n");
+      // The part's own statements: its blocks, without its tables and without the bold lines its inner headings became (labels, not statements).
+      const text = partBlocks(input.text, incomingParsed, p).filter((b) => !/^\*\*[^*\n]+\*\*$/.test(b.trim()) && !parseTable(b)).join("\n\n");
       const topicText = input.previous.text.slice(unit.span.start, unit.span.end);
       // Free gate: a part none of whose statements is about one of the topic's is new content, filed as before (no model call) —
       // unless the assignment said it contradicts its topic: then it is matched, so the newer statement replaces the old one.
@@ -510,10 +512,13 @@ function restatedLater(text: string, from: number, statement: string): boolean {
   return words.length > 0 && new RegExp(words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+")).test(text.slice(from));
 }
 
-/** A part made only of paragraphs and lists (and its own heading): what can be matched statement by statement without losing anything. */
+/**
+ * A part made only of paragraphs and lists (and its own heading), with tables beside them: what can be matched statement by statement
+ * without losing anything — its tables are merged row by row instead (U2). A part with code or a quote is filed whole.
+ */
 function statementShaped(parsed: Awaited<ReturnType<typeof analyzeContent>>["parsed"], part: AnalysisUnit): boolean {
   const inside = parsed.blocks.filter((b) => b.span.start >= part.span.start && b.span.end <= part.span.end);
-  return inside.length > 0 && inside.every((b) => b.type === "paragraph" || b.type === "list" || b.type === "heading");
+  return inside.some((b) => b.type === "paragraph" || b.type === "list") && inside.every((b) => b.type === "paragraph" || b.type === "list" || b.type === "heading" || b.type === "table");
 }
 
 function headingOf(part: AnalysisUnit): string[] {

@@ -18,6 +18,9 @@
  *   replaces takes the old one's place, one that adds to a statement goes right after it, and one about something new
  *   goes at the end of the topic's last paragraph. No block is appended and no choice is written, so the update that
  *   follows updates the objects already on the canvas instead of adding new ones.
+ * - **Tables update in place** (U2, `tableMerge.ts`): a table about a table the topic already holds (overlapping header) is
+ *   merged into it by key column — changed cells replaced, repeated rows left out, new rows added to that table — never written
+ *   as a second table. A table about nothing the topic holds is filed whole, as before; code and quotes are always filed whole.
  * - **A quoted contradiction replaces** the statement it contradicts, where it stands (U1, 2026-11-22) — also for a part
  *   that wasn't matched statement by statement. No new "Needs your call" box is written; a box the notes already hold
  *   about that statement still gains the new view as an option (or is reopened when the user had chosen).
@@ -30,6 +33,7 @@ import { normalizeUnitText, type AnalysisUnit } from "@/ai/reconcile/units";
 import { findChoices, formatChoice, IN_NOTES, type Choice, type ChoiceOption } from "@/ai/history/choices";
 import { topicLabel, type Assignment, type Conflict } from "./assign";
 import type { StatementPlan } from "./statementMatch";
+import { mergeTables, parseTable, tableFor, tablesIn, tableText, type MdTable, type PlacedTable } from "./tableMerge";
 
 /** A block already this covered by what one topic says is a repeat. */
 const REPEAT = 0.85;
@@ -150,20 +154,64 @@ export function composeMerged(input: ComposeInput): { text: string; report: Merg
   /** Statements already replaced, by their offset: a second statement about the same one goes after it instead. */
   const replacedAt = new Set<number>();
   const incomingBlocks = questionsWithTheirAnswers(input.incoming, input.incomingParsed, input.parts);
+  /** Tables of the notes merged into (U2, `tableMerge.ts`), by their start: each is rewritten once, with every part's rows. */
+  const tableEdits = new Map<number, { placed: PlacedTable; table: MdTable }>();
+  /**
+   * A table block filed under `target` that is about a table the topic already holds: its rows are merged into that table — "merged",
+   * or "repeat" when it changes nothing. Null when it isn't a table, or no table of the topic is about the same thing (filed whole).
+   */
+  const mergeTable = (block: string, target: AnalysisUnit): "merged" | "repeat" | null => {
+    const incoming = parseTable(block);
+    const placed = incoming ? tableFor(tablesIn(input.text, target.span.start, endOfText(input.text, target.span.end)), incoming) : null;
+    if (!incoming || !placed) return null;
+    const merged = mergeTables(tableEdits.get(placed.start)?.table ?? placed, incoming);
+    if (!merged) return null;
+    report.repeated = (report.repeated ?? 0) + merged.repeated;
+    if (!merged.changed) {
+      report.skippedBlocks++;
+      return "repeat";
+    }
+    tableEdits.set(placed.start, { placed, table: merged.table });
+    const topic = topicLabel(target.key);
+    for (const r of merged.replaced) (report.replaced ??= []).push({ topic, ...r });
+    for (const row of merged.added) (report.added ??= []).push({ topic, statement: row });
+    return "merged";
+  };
   for (const part of input.parts) {
     const topic = input.assignment.get(part.key) ?? null;
     const target = topic ? unitByKey.get(topic) : undefined;
     const plans = target ? input.revise?.get(part.key) : undefined;
     if (target && plans) {
-      const changed = reviseInPlace(input.text, target, plans, { revisions, replacedAt, report, topic: topicLabel(target.key) });
+      let changed = reviseInPlace(input.text, target, plans, { revisions, replacedAt, report, topic: topicLabel(target.key) });
       keptOf[part.key] = plans.filter((p) => p.action !== "repeats").map((p) => p.statement);
+      // The part's tables (its statements were matched without them): merged into the topic's table, else filed below the topic's text.
+      const tables = (incomingBlocks.get(part.key) ?? []).filter((b) => parseTable(b));
+      for (const t of tables) {
+        const merged = mergeTable(t, target);
+        if (merged === "merged") changed = true;
+        else if (merged === null && keep(t, target.key)) {
+          const at = beforeNextQuestion(input.text, target.span.start, endOfText(input.text, target.span.end));
+          inserts.set(at, [...(inserts.get(at) ?? []), t]);
+          keptOf[part.key]!.push(t);
+          changed = true;
+        }
+      }
       if (changed) (report.mergedInto[target.key] ??= []).push(part.key);
       else report.skippedParts.push(part.key);
       for (const p of plans) if (p.action !== "repeats") keep(p.statement, target.key);
       continue;
     }
     // A topic that is a section's own text above its subsections must not gain a bold line the parser reads as a heading (`titleLikeAsItalic`).
-    const blocks = (incomingBlocks.get(part.key) ?? []).map((b) => (target && ownTextUnits.has(target.key) ? titleLikeAsItalic(b) : b));
+    const all = (incomingBlocks.get(part.key) ?? []).map((b) => (target && ownTextUnits.has(target.key) ? titleLikeAsItalic(b) : b));
+    // A table about a table the topic already holds updates that table in place (U2); any other block is filed as before.
+    let tablesMerged = false;
+    const blocks = target
+      ? all.filter((b) => {
+          const merged = mergeTable(b, target);
+          if (merged === "merged") tablesMerged = true;
+          return merged === null;
+        })
+      : all;
     if (target) {
       // What the part says that its topic contradicts (G3) isn't appended as a second fact beside the old one: it replaces it (§17, U1).
       const conflicts = input.conflicts?.get(part.key) ?? [];
@@ -192,7 +240,7 @@ export function composeMerged(input: ComposeInput): { text: string; report: Merg
       }
       const revised = replacements.length ? reviseInPlace(input.text, target, replacements, { revisions, replacedAt, report, topic: topicLabel(target.key) }) : false;
       for (const r of replacements) keep(r.statement, target.key);
-      if (!kept.length && !revised && !conflicts.length) {
+      if (!kept.length && !revised && !tablesMerged && !conflicts.length) {
         report.skippedParts.push(part.key);
         continue;
       }
@@ -226,6 +274,8 @@ export function composeMerged(input: ComposeInput): { text: string; report: Merg
 
   // Insertions, and choices rewritten in place (an option added, a choice reopened), applied from the end so no offset moves.
   // In-place edits at one offset are joined in the order they were planned (two statements added after the same one stay in order).
+  // Each merged table is one edit: its whole text, rewritten once (rows that didn't change keep their exact text).
+  for (const { placed, table } of tableEdits.values()) revisions.push({ start: placed.start, end: placed.end, text: tableText(table), seq: revisions.length });
   const joined = new Map<string, Revision>();
   for (const r of revisions) {
     const at = `${r.start}:${r.end}`;
