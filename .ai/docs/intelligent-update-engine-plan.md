@@ -4303,5 +4303,9 @@ failure); 7.4 h. No failure carries a direct-path error message except one:
   timed out); `visualize` (no `outline_document` step — the uncommitted performance change, one-part notes skip the outline); `choices` (expects a
   new choice; U1 updates in place instead); `sections` (frame label "1 · Structure (2 of 2)"); `askAI` cancel (Esc left the panel open);
   `fidelity` (coverage row without "AI placed N%").
-- **To separate #7 from the rest:** rerun the four "could be" specs with `ACUTE_BYOK_DIRECT=off` on a second server (a worktree, `--webpack`)
-  and compare — paid, not run.
+- **A/B rerun (approved and run 2026-11-23; HEAD `ed0fc24` in two worktrees, `next dev --webpack`, both at once on AICredits, one run
+  each):** the four "could be" specs (8 tests). **Direct path on (:3107): 8/8 passed, 6.8 min. `ACUTE_BYOK_DIRECT=off` (:3108): 7/8, 12.5 min**
+  — `semanticUpdate` failed there (an added org-membership check came back as ~1 updated, not +N new). **#7 is cleared:** the four failures
+  of the full run don't reproduce on committed code with #7 on. They came from that run's working tree (other sessions' uncommitted
+  changes) or from provider flakiness over 7.4 h; `semanticUpdate`'s update-vs-new judgement is unstable on either path. One run per arm
+  is a pointer, not a rate; the direct path was also about 45 % faster on these specs.
