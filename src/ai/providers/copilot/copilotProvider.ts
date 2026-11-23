@@ -94,10 +94,10 @@ export function createCopilotProvider(config: CopilotProviderConfig = {}): AIPro
     name: config.name ?? "GitHub Copilot",
     authTypes: ["subscription", "api_key", "local"],
     transport: "ai_host_local",
-    // §12.25/§12.30: on a BYOK connection the cap reaches the model: a plain chat-completions connection is sent directly with
-    // `max_tokens` (#7, `host/byok/directChat.ts`), and a `singleAttempt` request through the host's guard, which writes it into
-    // the request (the SDK's `ProviderConfig.maxOutputTokens` never reaches the wire). Anthropic, Azure and responses-API BYOK
-    // connections other than `singleAttempt` still go through the SDK uncapped. A Copilot subscription session drops the cap.
+    // §12.25/§12.30: on a BYOK connection the cap reaches the model: a chat-completions, responses-API or Anthropic connection
+    // is sent directly with it (#7 and §19.1, `host/byok/directChat.ts`), and a `singleAttempt` request through the host's
+    // guard, which writes it into the request (the SDK's `ProviderConfig.maxOutputTokens` never reaches the wire). Azure BYOK
+    // calls other than `singleAttempt` still go through the SDK uncapped. A Copilot subscription session drops the cap.
     // §12.29: `singleAttempt` is enforced by the host's request-handler guard (one model request sent, repeats refused).
     capabilities: { ...CAPABILITIES, outputCap: config.byok ? "passed" : "ignored", providerAttempts: "single" },
 

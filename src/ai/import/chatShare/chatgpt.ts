@@ -1,4 +1,5 @@
 import { turnHash } from "./hash";
+import { readOctane, type OctaneConversation } from "./octane";
 import type { ShareLink } from "./providers";
 import type { ChatTranscript, ChatTurn } from "./types";
 import { decodeTurboChunk, streamChunks } from "./turboStream";
@@ -73,10 +74,32 @@ function visibleText(message: RawMessage): string | null {
   return text || null;
 }
 
+/** The page ChatGPT serves to link-preview fetchers: title and preview tags only, no conversation. */
+const PREVIEW_ONLY = /<meta\s+property="og:title"\s+content="Check out this chat"/;
+
+/** A transcript from the newer ("octane") share page (`octane.ts`). It carries no conversation id and no branch metadata. */
+function fromOctane(o: OctaneConversation, link: ShareLink): ChatTranscript {
+  if (!o.turns.length) throw new ChatShareError("empty", "The shared conversation has no readable messages.");
+  return {
+    provider: "chatgpt",
+    url: link.url,
+    shareId: link.shareId,
+    title: o.title ?? "Shared chat",
+    ...(o.sharedAt !== undefined ? { sharedAt: o.sharedAt } : {}),
+    turns: o.turns.map((t, index) => ({ ...t, index, hash: turnHash(t.role, t.markdown) })),
+  };
+}
+
 /** The transcript of a ChatGPT share page's HTML. Throws `ChatShareError` when the page holds no readable conversation. */
 export function extractChatGpt(html: string, link: ShareLink): ChatTranscript {
+  const octane = readOctane(html);
+  if (octane) return fromOctane(octane, link);
   const chunks = streamChunks(html);
-  if (!chunks.length) throw new ChatShareError("unreadable", "The page doesn't contain a shared conversation.");
+  if (!chunks.length) {
+    throw PREVIEW_ONLY.test(html)
+      ? new ChatShareError("unreadable", "ChatGPT sent only a link preview of this chat, not the conversation. Paste the chat's text instead.")
+      : new ChatShareError("unreadable", "The page doesn't contain a shared conversation.");
+  }
 
   let conversation: Record<string, unknown> | null = null;
   let errored = false;

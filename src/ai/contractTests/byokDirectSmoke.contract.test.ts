@@ -74,8 +74,8 @@ describe.skipIf(!live)("#7 live smoke — chat-completions BYOK goes direct with
     const res = await provider().generate({ task: "decide", prompt: 'Reply with exactly this JSON and nothing else: {"ok":true}' });
     results.decide = { text: res.text, finishReason: res.finishReason, usage: res.usage, providerRequests: res.providerRequests };
     expect(sent.length - before).toBe(1);
-    const body = sent[before].body;
-    expect(sent[before].url).toBe("https://api.aicredits.in/v1/chat/completions");
+    const body = sent[before]!.body;
+    expect(sent[before]!.url).toBe("https://api.aicredits.in/v1/chat/completions");
     expect(body.max_tokens ?? body.max_completion_tokens).toBe(4_096);
     expect(body.temperature).toBe(0);
     expect(body.stream).toBeUndefined();
@@ -93,7 +93,7 @@ describe.skipIf(!live)("#7 live smoke — chat-completions BYOK goes direct with
     }
     results.chat = { text, done };
     expect(sent.length - before).toBe(1);
-    const body = sent[before].body;
+    const body = sent[before]!.body;
     expect(body.stream).toBe(true);
     expect(body.max_tokens ?? body.max_completion_tokens).toBe(16_384);
     expect(body.temperature).toBe(0.7);
@@ -106,7 +106,7 @@ describe.skipIf(!live)("#7 live smoke — chat-completions BYOK goes direct with
     const res = await provider().generate({ task: "summarize", prompt: "Write a 400-word essay about rivers.", maxTokens: 64 });
     results.capped = { textChars: res.text.length, finishReason: res.finishReason, usage: res.usage };
     expect(sent.length - before).toBe(1);
-    const body = sent[before].body;
+    const body = sent[before]!.body;
     expect(body.max_tokens ?? body.max_completion_tokens).toBe(64);
     expect(body.temperature).toBe(0.3);
     expect(res.finishReason).toBe("length");

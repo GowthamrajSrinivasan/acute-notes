@@ -3907,8 +3907,8 @@ Stage 4f uses direct HTTP (decision 2026-11-16). These matter for **other** AI t
 
 | # | Item | Why it is pending | Where | Needs |
 |---|---|---|---|---|
-| 7 | ~~Output cap and temperature for all other BYOK tasks~~ **Done 2026-11-23 for chat-completions BYOK (§19)**; Anthropic / Azure / responses-API BYOK still uncapped through the SDK | §19 | — |
-| 8 | SDK internal retries for other tasks | Unguarded calls are retried up to 5 times on 429/5xx (6 billable requests). Acceptable for interactive tasks? Not decided | §12.29 | A decision — *2026-11-23: a chat-completions BYOK call now goes direct, at most 2 requests (§19); other connection kinds unchanged* |
+| 7 | ~~Output cap and temperature for all other BYOK tasks~~ **Done 2026-11-23 for chat-completions BYOK (§19), Anthropic and responses-API BYOK (§19.1)**; Azure BYOK still uncapped through the SDK | §19 | — |
+| 8 | SDK internal retries for other tasks | Unguarded calls are retried up to 5 times on 429/5xx (6 billable requests). Acceptable for interactive tasks? Not decided | §12.29 | A decision — *2026-11-23: chat-completions, responses-API and Anthropic BYOK calls now go direct, at most 2 requests (§19, §19.1); Azure and Copilot subscription calls unchanged* |
 | 9 | SDK reservation for the consistency check | `requestOverhead.ts` (6,932 B ≈ 2,311 tokens) is an unused prototype; under 2,800 a call, no check fits the SDK path. Options: "customize" mode (unmeasured), an SDK-only budget; "replace" is not approved | §12.32, §12.33 | A decision + offline measurement |
 | 10 | WebSocket model transports | The guard refuses them. Only unit-tested: the SDK builds those handlers internally, so not exercised end to end | §12.29 | Offline, if a WebSocket provider is used |
 | 11 | SDK upgrades | The guard uses the experimental `requestHandler` hook. `sdkPin.test.ts` fails on any version change until the retry, wire-field and live checks are rerun and `retryGuardVerification.json` is updated | §12.30–12.32 | On every upgrade; the live part is paid |
@@ -4309,3 +4309,51 @@ failure); 7.4 h. No failure carries a direct-path error message except one:
   of the full run don't reproduce on committed code with #7 on. They came from that run's working tree (other sessions' uncommitted
   changes) or from provider flakiness over 7.4 h; `semanticUpdate`'s update-vs-new judgement is unstable on either path. One run per arm
   is a pointer, not a rate; the direct path was also about 45 % faster on these specs.
+
+### 19.1 Anthropic and the responses API sent direct too (2026-11-23, offline, no AI call)
+
+**Asked (product owner, 2026-11-23):** "go ahead with 1, then 2" — item 2 was a direct path for the BYOK connections #7 left on the SDK.
+
+**Built** (`host/byok/directChat.ts`, one file, three wire formats behind the same rules — ≤ 2 requests, fixed error text, redirects
+refused, parameter refusals learnt once per endpoint and model):
+- **Anthropic Messages:** `POST <base>/v1/messages` (`/messages` when the base already ends in `/v1`), `x-api-key` and
+  `anthropic-version: 2023-06-01`; `max_tokens` always (Anthropic requires one: the request's, else 16,384), `temperature`, `system`,
+  one user message; streaming reads `content_block_delta` text until `message_stop`, an `error` event fails. A cap above an older
+  model's own output limit ("max_tokens: 16384 > 8192") is lowered to that limit once and remembered. A 529 (overloaded) is retried once
+  like any 5xx. A reasoning effort has no Messages equivalent and is not sent.
+- **OpenAI responses API** (`wireApi: "responses"`): `POST <base>/responses` with `max_output_tokens`, `temperature`,
+  `reasoning.effort`, `instructions`, `input`, `store: false`; the reply's `output_text` parts are the text, `status: "incomplete"` at
+  `max_output_tokens` is a cut reply; streaming reads `response.output_text.delta` until `response.completed`. A reasoning model that
+  refuses `temperature` is sent once more without it.
+- **Azure stays on the SDK:** its route depends on how the endpoint and API version were entered, which the SDK resolves inside its
+  compiled runtime; guessing it could break working connections. **Still uncapped there.** No built-in connection uses the responses
+  API today (it serves custom OpenAI connections that set it).
+
+**Verification (offline):** `directChat.test.ts` 27 (+10: URLs and headers, bodies, a cut reply, the learnt output limit, 529 retry,
+both streams, a refused temperature; Anthropic and responses calls now go direct, Azure doesn't). Host, providers, API routes,
+chat-share: 296 passed. tsc and eslint clean. **Not run:** a live Anthropic or responses-API call (no such key in `.env.local` was
+used; paid, needs approval).
+
+### 19.2 The full run's other failures, followed up (2026-11-23, offline)
+
+- **`chatShare` — real bug, fixed in the parser:** chatgpt.com now serves share pages in a new shape: the conversation is a JSON island
+  (`<script id="__WEB_MOBILE_DATA__">`, `conversation.messages`, title, share time) instead of the turbo-stream tree. New reader
+  `import/chatShare/octane.ts`, tried first, the old format kept as the fallback. An assistant reply's citations (` ([Site](url))`), image
+  galleries and the trailing suggested follow-ups (a label line and a list) are removed by their `references` offsets (UTF-16). The new
+  page has no branch metadata or conversation id: overlapping branches are still skipped by turn content. Read from one live page (fetched
+  once, not stored in the repo); `octane.test.ts` 7 on a synthetic page of the same shape. **Still open — a decision for the product
+  owner:** with the importer's own user agent chatgpt.com returns only the link-preview page (title and preview tags, no conversation);
+  a browser user agent gets the full page. The importer keeps its honest user agent and now says "ChatGPT sent only a link preview of this
+  chat … paste the chat's text instead"; sending a browser-like user agent is not done without approval.
+- **`askAI` cancel — test environment, fixed in the e2e helper:** under `next dev`, `@openuidev/react-lang` auto-mounts its "OpenUI
+  Inspect" widget, whose help overlay starts open in a fresh browser profile and swallows Esc on `document` in the capture phase, so no
+  Esc handler of the app ran. Production builds never include it. `openApp` (e2e helpers) now sets the package's own
+  `Symbol.for("openui.devtools.autoMount")` flag before any page script; new `e2e/local/askAICancel.local.spec.ts` (held AI requests, no
+  AI call) passes, with `askAI.local.spec.ts` 7/7.
+- **`choices` — out of date since U1:** rewritten for §17.6: merged content that contradicts the notes replaces their statement in place
+  (soft: the model's judgement), and no "Needs your call" box is written in the source or on the canvas (hard). The "Use this option" step
+  is gone from the AI spec; `e2e/local/choices.local.spec.ts` still covers that UI without AI.
+- **`visualize`, `fidelity`, `sections` — left to their owners:** they fail on the run's working tree, not on committed code: the
+  uncommitted one-part outline skip (performance session) removes `outline_document`; the coverage row and the extra
+  `check_card_meaning` calls are the distil note model's. Their tests should change with that work.
+- **`latency`** (browser launch timed out) and the 7.4 h run time: the machine, not the app.

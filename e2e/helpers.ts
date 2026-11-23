@@ -25,7 +25,25 @@ export interface ElementInfo {
   acute?: { kind: string; blockType?: string; documentId?: string; pageId?: string; preview?: boolean; frame?: string };
 }
 
+const devtoolsOff = new WeakSet<object>();
+
+/**
+ * `@openuidev/react-lang` auto-mounts its "OpenUI Inspect" widget under `next dev` (never in a production build). In a fresh
+ * browser profile its help overlay starts open and swallows Esc on `document` in the capture phase, so no Esc handler of the
+ * app runs (found 2026-11-23: the AI suite's Ask AI cancel test). The tests turn the auto-mount off, by the flag the
+ * package itself checks, before any page script runs.
+ */
+async function turnOffOpenUiDevtools(page: Page): Promise<void> {
+  const context = page.context();
+  if (devtoolsOff.has(context)) return;
+  devtoolsOff.add(context);
+  await context.addInitScript(() => {
+    (globalThis as Record<symbol, unknown>)[Symbol.for("openui.devtools.autoMount")] = true;
+  });
+}
+
 export async function openApp(page: Page, path = "/"): Promise<void> {
+  await turnOffOpenUiDevtools(page);
   await page.goto(path);
   await waitForCanvas(page);
 }

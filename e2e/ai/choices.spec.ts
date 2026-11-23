@@ -1,15 +1,16 @@
 /**
- * Choices (G3) against a real model: content merged into notes the model outlined says the opposite of the notes on
- * one point. The model should report it; the app then draws a "Needs your call" box with the two options, never
- * decides, and "Use this option" makes the choice through a reviewed update. Run it with:
+ * A contradiction from merged content, against a real model: content merged into notes the model outlined says the
+ * opposite of the notes on two points. Since U1 (intelligent-update-engine-plan §17.6, 2026-11-22) a merge never writes a
+ * new "Needs your call" box: the newer statement replaces the notes' own where it stands, and the old value stays in the
+ * source's history. (Before U1 this spec checked the choice box and "Use this option"; that UI is still covered, without
+ * AI, by `e2e/local/choices.local.spec.ts`.) Run it with:
  *
  *   npm run test:e2e:ai -- --yes --provider=aicredits --trace off --output <dir> e2e/ai/choices.spec.ts
  *
- * Whether the model reports the contradiction is its judgement (soft). Everything after that is the app's (hard): the
- * merged sentence is only an option, the notes' own statement stays until chosen, and choosing replaces it.
+ * Whether the model reports the contradiction is its judgement (soft). That no choice box is written is the app's (hard).
  */
 import { expect, test, type Page, type Request } from "@playwright/test";
-import { aiTaskOf, openApp, promptOf, recordAIRequests, select } from "../helpers";
+import { aiTaskOf, openApp, promptOf, recordAIRequests } from "../helpers";
 import { connectAI } from "../aiProvider";
 import { caption, look, reviewBar } from "../aiReview";
 
@@ -33,7 +34,6 @@ Every workspace is stored in SQLite on the user's device, not in IndexedDB. The 
 `;
 
 const visualizeDialog = (p: Page) => p.getByRole("dialog", { name: "Visualize" });
-const origin = (p: Page) => p.getByRole("group", { name: "Origin" });
 
 type Dev = {
   contentSource(id: string): Promise<{ version: { text: string } } | null>;
@@ -131,7 +131,7 @@ async function attachAI(requests: Request[], label: string) {
   }
 }
 
-test("a contradiction from merged content becomes a choice; 'Use this option' makes it", async ({ browser }) => {
+test("a contradiction from merged content replaces the notes' statement in place; no 'Needs your call' box (U1)", async ({ browser }) => {
   test.setTimeout(1_200_000);
   const page = await browser.newPage();
   const requests: Request[] = recordAIRequests(page);
@@ -151,8 +151,7 @@ test("a contradiction from merged content becomes a choice; 'Use this option' ma
     sourceId = (await linked(page))[0]!.source;
   });
 
-  let open = false;
-  await test.step("merged content that says the opposite: a 'Needs your call' box, nothing decided", async () => {
+  await test.step("merged content that says the opposite: the notes' statement is replaced in place, no choice box", async () => {
     await caption(page, "merged content that says the opposite", "“stored in SQLite, not in IndexedDB”");
     await page.getByRole("button", { name: "More", exact: true }).click();
     await page.getByRole("menuitem", { name: "Visualize content…" }).click();
@@ -171,57 +170,23 @@ test("a contradiction from merged content becomes a choice; 'Use this option' ma
     if (TYPED) {
       expect(d?.answeredBy?.role, "Jev (the typed decision model) answered, not the chat fallback").toBe("decision");
       expect(d?.conflictsPicked ?? 0, "Jev picked the contradictions").toBeGreaterThanOrEqual(1);
-      expect(d?.choicesShown, "every conflict Jev picked reached the review").toBe(d?.conflictsPicked);
     }
+    expect(d?.choicesShown ?? 0, "U1: a merge shows no new choice").toBe(0);
     await reviewBar(page).getByRole("button", { name: /^Accept all/ }).click();
     await expect(reviewBar(page)).toBeHidden();
     await look(page);
     const text = await sourceText(page, sourceId);
     test.info().annotations.push({ type: "source after merge", description: text });
-    open = text.includes("> [!choice]");
-    expect.soft(open, "the model reports the contradiction, so the notes hold a choice").toBe(true);
-    if (!open) return;
-    // The app's guarantees once there is a choice: the merged sentence is only an option, the notes' own statement stays.
-    const prose = text.replace(/^>.*$/gm, "");
-    expect(prose, "the notes still say IndexedDB until the user chooses").toContain("stored in IndexedDB");
-    expect(prose, "the merged claim is not filed as a fact").not.toMatch(/stored in SQLite/);
-    expect(prose, "the new detail beside it is filed").toContain("compressed before upload");
-    // Both contradictions in the one paragraph are shown — neither hidden behind the other, neither filed as a fact.
-    expect.soft(text.match(/> \[!choice\]/g)?.length ?? 0, "two choices: where it's stored, and the Firestore backup").toBe(2);
-    const droppedAsOption = /^>.*dropped from the plan/m.test(text);
-    expect.soft(droppedAsOption, "the second contradiction (Firestore backup dropped) is a choice too, not filed as a fact").toBe(true);
-    expect(droppedAsOption && /dropped from the plan/.test(prose), "a contradiction shown as a choice is never also filed as a fact").toBe(false);
+    // The app's guarantees (hard): no choice box is written, in the source or on the canvas.
+    expect(text, "no 'Needs your call' box in the notes").not.toContain("> [!choice]");
     const keys = (await linked(page)).map((o) => o.key);
-    expect(keys.some((k) => /§ choice:[^:]+$/.test(k)), "a 'Needs your call' box").toBe(true);
-    expect(keys.filter((k) => /§ choice:.*:option\d+$/.test(k)).length, "one card per option").toBeGreaterThanOrEqual(2);
-    await page.screenshot({ path: test.info().outputPath("choice-open.png") });
-  });
-
-  await test.step("'Use this option' on the merged option: the notes now say it, and the change is kept in 'Changed over time'", async () => {
-    test.skip(!open, "the model didn't report the contradiction");
-    await caption(page, "Use this option", "choose “stored in SQLite”");
-    const option = (await linked(page)).find((o) => /§ choice:.*:option\d+$/.test(o.key) && o.text.includes("SQLite"))!;
-    expect(option, "an option card saying SQLite").toBeDefined();
-    await select(page, option.id);
-    await origin(page).getByRole("button", { name: "Use this option" }).click();
-    requests.length = 0;
-    await expect(reviewBar(page)).toBeVisible({ timeout: AI_TIMEOUT });
-    await attachAI(requests, "use this option");
-    await reviewBar(page).getByRole("button", { name: /^Accept all/ }).click();
-    await expect(reviewBar(page)).toBeHidden();
-    await look(page);
-    const text = await sourceText(page, sourceId);
-    test.info().annotations.push({ type: "source after choosing", description: text });
-    expect(text, "the choice is recorded").toMatch(/> \[!choice\] .* — chosen/);
-    expect(text.replace(/^>.*$/gm, ""), "the notes now say the chosen option").toMatch(/stored in SQLite/);
-    const keys = (await linked(page)).map((o) => o.key);
-    expect(keys.some((k) => k.endsWith("§ trail")), "a 'Changed over time' page").toBe(true);
-    // The chosen choice's option cards are gone; any other choice (the Firestore backup) is still open, its cards in place.
-    const chosenId = /§ choice:([^:]+):option\d+$/.exec(option.key)![1]!;
-    expect(keys.some((k) => k.includes(`choice:${chosenId}:option`)), "the chosen choice's option cards are gone").toBe(false);
-    const stillOpen = (text.match(/^> \[!choice\] (?!.* — chosen$).*$/gm) ?? []).length;
-    expect(keys.filter((k) => /:option\d+$/.test(k)).length, "each choice still open keeps its two cards").toBe(stillOpen * 2);
-    await page.screenshot({ path: test.info().outputPath("choice-made.png") });
+    expect(keys.some((k) => /§ choice:/.test(k)), "no 'Needs your call' box on the canvas").toBe(false);
+    // The model's judgement (soft): it reports both contradictions, so the newer statements replace the old ones where they stand.
+    expect.soft(text, "the notes now say SQLite").toMatch(/stored in SQLite/);
+    expect.soft(text, "the IndexedDB statement is replaced, not kept beside it").not.toMatch(/stored in IndexedDB on the user's device/);
+    expect.soft(text, "the dropped Firestore backup replaces the planned one").not.toMatch(/Firestore is planned for cloud backup/);
+    expect.soft(text, "the new detail is filed").toContain("compressed before upload");
+    await page.screenshot({ path: test.info().outputPath("replaced-in-place.png") });
   });
 
   await test.step("with Jev: a part too long for Jev's round two (41 statements) falls back to the chat task, and its conflict still reaches the review", async () => {
@@ -241,7 +206,7 @@ test("a contradiction from merged content becomes a choice; 'Use this option' ma
     test.info().annotations.push({ type: "fallback merge — who answered", description: JSON.stringify(d) });
     expect(d?.answeredBy?.role, "the chat task answered: the part is over Jev's round-two limit").not.toBe("decision");
     expect.soft(d?.conflictsPicked ?? 0, "the chat task found the contradiction (ships its own model key)").toBeGreaterThanOrEqual(1);
-    expect(d?.choicesShown, "every conflict it found reached the review").toBe(d?.conflictsPicked);
+    expect(d?.choicesShown ?? 0, "U1: no new choice — the conflict is applied in place").toBe(0);
     await reviewBar(page).getByRole("button", { name: /^Accept all/ }).click();
     await expect(reviewBar(page)).toBeHidden();
   });
