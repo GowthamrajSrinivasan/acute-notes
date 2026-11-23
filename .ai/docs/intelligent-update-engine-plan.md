@@ -3907,8 +3907,8 @@ Stage 4f uses direct HTTP (decision 2026-11-16). These matter for **other** AI t
 
 | # | Item | Why it is pending | Where | Needs |
 |---|---|---|---|---|
-| 7 | **Output cap and temperature for all other BYOK tasks** | Measured on the wire: the SDK sends no `max_tokens` and `temperature: 1` for BYOK requests. Only `singleAttempt` calls get the guard's overrides. Every other AI task through Copilot BYOK (Visualize, Ask AI, updates) is uncapped and not at the caller's temperature | §12.30; `copilotWireFields.spike.test.ts` | Offline design, then a decision (e.g. apply the overrides to all BYOK requests) |
-| 8 | SDK internal retries for other tasks | Unguarded calls are retried up to 5 times on 429/5xx (6 billable requests). Acceptable for interactive tasks? Not decided | §12.29 | A decision |
+| 7 | ~~Output cap and temperature for all other BYOK tasks~~ **Done 2026-11-23 for chat-completions BYOK (§19)**; Anthropic / Azure / responses-API BYOK still uncapped through the SDK | §19 | — |
+| 8 | SDK internal retries for other tasks | Unguarded calls are retried up to 5 times on 429/5xx (6 billable requests). Acceptable for interactive tasks? Not decided | §12.29 | A decision — *2026-11-23: a chat-completions BYOK call now goes direct, at most 2 requests (§19); other connection kinds unchanged* |
 | 9 | SDK reservation for the consistency check | `requestOverhead.ts` (6,932 B ≈ 2,311 tokens) is an unused prototype; under 2,800 a call, no check fits the SDK path. Options: "customize" mode (unmeasured), an SDK-only budget; "replace" is not approved | §12.32, §12.33 | A decision + offline measurement |
 | 10 | WebSocket model transports | The guard refuses them. Only unit-tested: the SDK builds those handlers internally, so not exercised end to end | §12.29 | Offline, if a WebSocket provider is used |
 | 11 | SDK upgrades | The guard uses the experimental `requestHandler` hook. `sdkPin.test.ts` fails on any version change until the retry, wire-field and live checks are rerun and `retryGuardVerification.json` is updated | §12.30–12.32 | On every upgrade; the live part is paid |
@@ -4247,3 +4247,40 @@ picked. **No new card in any of them** (object count unchanged). Router + compon
 
 **Seen, not changed:** the paraphrase's top card is prose, which can't take new information inside, so the suggestion is a new card in that
 section — right by the rules; whether it restates the card (a duplicate) is the 5e relate call's judgement (#20).
+
+## 19. #7 — every chat-completions BYOK call carries its task's output cap and temperature (2026-11-23, offline, no AI call)
+
+**Asked (product owner, 2026-11-23):** "go ahead with #7" — every BYOK request carries its task's own output cap and temperature, as the
+guarded consistency calls already do.
+
+**Found first:** besides the SDK dropping them (§12.30), **no task set a cap or a temperature at all** (only `generate_openui_notes`' one-request
+policy), so passing them through would still have sent none. And the Copilot runtime is frozen for the guard-smoke recording; the warm
+client pool (another session) shares one client across BYOK calls, so a per-request SDK guard can't carry per-call values.
+
+**Built:**
+- `src/ai/host/byok/directChat.ts` — `withDirectByok` wraps the host runtime (frozen code untouched). A plain chat-completions BYOK call with a
+  model (type `openai`, completions wire, http(s) base URL) is sent **directly**: one POST to `<baseUrl>/chat/completions` with the request's
+  `max_tokens`, `temperature`, `reasoning_effort`, its own system prompt and prompt — no Copilot system prompt (~6.9 kB less per call), no
+  client process. **At most two requests:** one retry after a short wait for 429 / 5xx / a network failure (Retry-After honoured up to 5 s);
+  never for 4xx, a timeout or a cancel (#8 for these connections). Redirects refused; a vendor's error text never forwarded. Streaming:
+  server-sent events. Everything else — GitHub Copilot connections, Anthropic, Azure, responses API, no model, `singleAttempt` — goes to the
+  Copilot runtime unchanged. Off switch: `ACUTE_BYOK_DIRECT=off`.
+- **A model that refuses a parameter** (OpenAI reasoning models: `max_tokens` → `max_completion_tokens`; only the default temperature) gets
+  one adjusted request, read from the 400 and remembered per endpoint and model; the cap is kept.
+- `src/ai/taskLimits.ts` — per-task cap and temperature, applied by the adapter (`copilotProvider.ts`) on BYOK connections where the request
+  didn't set its own. **Provisional values:** caps ≈ 2× the largest measured reply (reasoning included; 3,081 gpt-oss-120b calls in
+  `decision-spike/data`), at least 4,096 — `generate_visual_plan` 16,384, `outline_document` 13,312, `generate_section_analysis` 4,096,
+  `decide` / `check_card_meaning` / `find_revisions` 4,096; unmeasured tasks 16,384. Temperature 0 for judgments (assign, match, classify,
+  route, decide…), 0.3 for structured generation (plans, outlines, notes, Lens), 0.7 for chat / suggest / Lens explain.
+- Wired in `getHostRuntime` (`app/api/ai/aiHost.ts`), around the pooled or per-call Copilot runtime alike.
+
+**Verification (offline):** `directChat.test.ts` 17 (who goes direct; the body carries exactly the caller's values; one POST with the key,
+redirects refused; ≤ 2 requests; no retry on 4xx or cancel; fixed error text; SSE parsing; the wrapper delegates everything else; parameter
+refusals adapted and remembered); `copilotProvider.test.ts` (+1: task limits on BYOK only, a request's own values win); `route.test.ts` (+1:
+the real `/api/ai/run` route sends a BYOK call direct with `max_tokens`/`temperature`, never the Copilot runtime). Host, providers, API, OpenUI,
+components: 398 passed (one OpenUI test timed out under parallel load, passes alone — #5). tsc and eslint clean.
+
+**Not run:** a live call (paid; needs approval). **Behaviour change to watch:** BYOK outputs were produced at temperature 1 with the Copilot
+system prompt; they are now at the task's temperature with only Acute's own prompt. Expected to be steadier JSON; the AI e2e suites are the
+check. **Still open:** Anthropic / Azure / responses-API BYOK through the SDK stay uncapped (a direct path per wire format would close them);
+caps for unmeasured tasks should be re-read from the call log once there is data.

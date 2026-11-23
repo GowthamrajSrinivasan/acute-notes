@@ -68,8 +68,8 @@ Stage 4f uses direct HTTP, so most of these matter for the other AI tasks or if 
 
 | # | Item | Needs | Status |
 |---|---|---|---|
-| 7 | **No output cap and temperature 1 on all BYOK tasks.** Measured on the wire: the SDK sends no `max_tokens` and `temperature: 1` for BYOK requests. Only guarded single-attempt calls get overrides; Visualize, Ask AI and update/merge calls over Copilot BYOK run uncapped and not at the caller's temperature. | Offline design, then a decision (e.g. apply the overrides to all BYOK requests) | Open; affects live use |
-| 8 | SDK internal retries: unguarded calls are retried up to 5 times on 429/5xx (up to 6 billable requests). Is that acceptable for interactive tasks? | Decision | Open |
+| 7 | **No output cap and temperature 1 on all BYOK tasks.** Measured on the wire: the SDK sends no `max_tokens` and `temperature: 1` for BYOK requests. Only guarded single-attempt calls get overrides; Visualize, Ask AI and update/merge calls over Copilot BYOK run uncapped and not at the caller's temperature. | Offline design, then a decision (e.g. apply the overrides to all BYOK requests) | **Done 2026-11-23 for chat-completions BYOK** (plan §19): direct call with the task's cap and temperature. Left: Anthropic / Azure / responses-API BYOK; a live check (paid) |
+| 8 | SDK internal retries: unguarded calls are retried up to 5 times on 429/5xx (up to 6 billable requests). Is that acceptable for interactive tasks? | Decision | **Partly done 2026-11-23** (plan §19): chat-completions BYOK now at most 2 requests; other connection kinds still the SDK's |
 | 9 | SDK reservation for the consistency check: `requestOverhead.ts` (~2,311 tokens) is an unused prototype; under 2,800 per call no check fits the SDK path. Options: "customize" mode (unmeasured) or an SDK-only budget; "replace" is not approved. | Decision + offline measurement | Dormant (SDK route not in use) |
 | 10 | WebSocket model transports: the guard refuses them, but this is only unit-tested, not exercised end to end. | Offline, if a WebSocket provider is used | Dormant |
 | 11 | SDK upgrades: the guard uses the experimental `requestHandler` hook; `sdkPin.test.ts` fails on any version change until the retry, wire-field and live checks are rerun and `retryGuardVerification.json` is updated. | Offline + paid (live part), on every upgrade | Recurring |
@@ -93,7 +93,7 @@ Stage 4f uses direct HTTP, so most of these matter for the other AI tasks or if 
 ## Suggested order
 
 1. **Stage 5 leftovers** (in-app check done 2026-11-23, plan §18.1 — 6/6 after three fixes): selection/open-frame context, IndexedDB vectors, Electron weights. Land #27 (line endings) with the session's `update.ts` commit.
-2. **#7, output cap and temperature on BYOK:** offline design and a decision. It affects every Copilot BYOK task now, including update and merge calls.
+2. **#7 done for chat-completions BYOK (plan §19).** Next there: one approved live smoke call, then a direct path for Anthropic / responses-API connections.
 3. **U4, cost of `match_statements`:** one approved paid run on the chat-import cost benchmark, after U1, since U1 sends more merges through statement matching.
 4. ~~U2, table-row and list-aware matching~~ — done 2026-11-23 (plan §17.7).
 5. **Quick clean-ups:** #28 (lanes file) and #16 (confirm the off-canvas fix). Leave the dormant consistency items until the panel is turned back on, and if it is, start with U6.

@@ -7,6 +7,7 @@
  */
 import { AIError, isAIErrorKind } from "@/ai/errors";
 import { oneRequestPolicyOf, sendOneRequest } from "@/ai/requestPolicy";
+import { taskLimitsOf } from "@/ai/taskLimits";
 import type { HostByokProvider } from "@/ai/host/hostRuntime";
 import type { AICapabilities, AIModel, AIProvider, AIRequest, AIResponse, AIStreamChunk, ConnectionTestResult } from "@/ai/types";
 
@@ -64,14 +65,17 @@ export function createCopilotProvider(config: CopilotProviderConfig = {}): AIPro
   }
 
   function toWireRequest(request: AIRequest) {
+    // #7: on a BYOK connection every request carries an output cap and a temperature — the task's own (`taskLimits.ts`) where the
+    // request didn't set them. A Copilot subscription session keeps them as before (it drops the cap anyway).
+    const limits = config.byok ? taskLimitsOf(request.task) : undefined;
     return {
       request: {
         task: request.task,
         prompt: request.prompt,
         systemPrompt: request.systemPrompt,
         model: request.model ?? config.defaultModel,
-        temperature: request.temperature,
-        maxTokens: request.maxTokens,
+        temperature: request.temperature ?? limits?.temperature,
+        maxTokens: request.maxTokens ?? limits?.maxTokens,
         ...(request.reasoningEffort ? { reasoningEffort: request.reasoningEffort } : {}),
         ...(request.singleAttempt ? { singleAttempt: true } : {}),
         timeoutMs: request.timeoutMs,
@@ -90,10 +94,10 @@ export function createCopilotProvider(config: CopilotProviderConfig = {}): AIPro
     name: config.name ?? "GitHub Copilot",
     authTypes: ["subscription", "api_key", "local"],
     transport: "ai_host_local",
-    // §12.25/§12.30: on a BYOK connection the cap reaches the model only on `singleAttempt` requests — the host's guard
-    // writes `max_tokens` into the request itself (measured: the SDK's `ProviderConfig.maxOutputTokens` never reaches the
-    // wire). Other BYOK requests are uncapped; only the consistency check relies on "passed", and it always sets
-    // `singleAttempt`. A Copilot subscription session drops the cap.
+    // §12.25/§12.30: on a BYOK connection the cap reaches the model: a plain chat-completions connection is sent directly with
+    // `max_tokens` (#7, `host/byok/directChat.ts`), and a `singleAttempt` request through the host's guard, which writes it into
+    // the request (the SDK's `ProviderConfig.maxOutputTokens` never reaches the wire). Anthropic, Azure and responses-API BYOK
+    // connections other than `singleAttempt` still go through the SDK uncapped. A Copilot subscription session drops the cap.
     // §12.29: `singleAttempt` is enforced by the host's request-handler guard (one model request sent, repeats refused).
     capabilities: { ...CAPABILITIES, outputCap: config.byok ? "passed" : "ignored", providerAttempts: "single" },
 

@@ -148,6 +148,22 @@ describe("copilotProvider — output cap and reasoning effort (§12.25)", () => 
     expect(bodies[1]).not.toHaveProperty("reasoningEffort");
   });
 
+  it("#7: a BYOK request carries its task's output cap and temperature unless it set its own; a subscription request doesn't", async () => {
+    const fetchMock = vi.fn(async () => jsonResponse({ text: "", model: "m", finishReason: "stop", usage: { provider: "copilot", model: "m" } }));
+    vi.stubGlobal("fetch", fetchMock);
+    const byok = createCopilotProvider({ byok: { type: "openai", baseUrl: "https://x.test/v1", apiKey: "k" }, defaultModel: "m" });
+    await byok.generate(baseRequest({ task: "generate_visual_plan" }));
+    await byok.generate(baseRequest({ task: "assign_to_topics" }));
+    await byok.generate(baseRequest({ task: "chat", maxTokens: 500, temperature: 0 }));
+    await createCopilotProvider({ gitHubToken: "gho" }).generate(baseRequest({ task: "generate_visual_plan" }));
+    const bodies = fetchMock.mock.calls.map((c) => JSON.parse((c as unknown as [string, RequestInit])[1].body as string).request);
+    expect(bodies[0]).toMatchObject({ maxTokens: 16_384, temperature: 0.3 });
+    expect(bodies[1]).toMatchObject({ maxTokens: 16_384, temperature: 0 });
+    expect(bodies[2]).toMatchObject({ maxTokens: 500, temperature: 0 });
+    expect(bodies[3]).not.toHaveProperty("maxTokens");
+    expect(bodies[3]).not.toHaveProperty("temperature");
+  });
+
   it("§12.29: declares providerAttempts 'single' and sends singleAttempt on the wire only when a request sets it", async () => {
     expect(createCopilotProvider({ gitHubToken: "gho" }).capabilities.providerAttempts).toBe("single");
     const fetchMock = vi.fn(async () => jsonResponse({ text: "", model: "m", finishReason: "stop", usage: { provider: "copilot", model: "m" }, providerRequests: 1 }));

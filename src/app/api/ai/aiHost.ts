@@ -8,6 +8,7 @@
  */
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { withDirectByok } from "@/ai/host/byok/directChat";
 import { createCopilotHostRuntime } from "@/ai/host/copilot/CopilotHostRuntime";
 import type { HostAuth, HostByokProvider, HostGenerateInput, HostRuntime } from "@/ai/host/hostRuntime";
 import { AIError } from "@/ai/errors";
@@ -17,7 +18,8 @@ let hostRuntime: HostRuntime | null = null;
 
 /** The one AI host runtime this deployment uses. Becomes a lookup by connection id once a second HostRuntime exists (PRD §13.15.12 point 5). */
 export function getHostRuntime(): HostRuntime {
-  if (!hostRuntime) hostRuntime = createCopilotHostRuntime();
+  // #7 (2026-11-23): a plain chat-completions BYOK call is sent directly, with its own output cap and temperature (`byok/directChat.ts`).
+  if (!hostRuntime) hostRuntime = withDirectByok(createCopilotHostRuntime());
   return hostRuntime;
 }
 

@@ -38,10 +38,36 @@ function getRequest(url: string, token?: string): NextRequest {
 beforeEach(() => {
   vi.resetAllMocks();
   delete process.env.AI_HOST_MODE;
+  // These tests drive the (mocked) Copilot runtime; the direct BYOK path (#7) has its own test below.
+  process.env.ACUTE_BYOK_DIRECT = "off";
 });
 
 afterEach(() => {
   delete process.env.AI_HOST_MODE;
+  delete process.env.ACUTE_BYOK_DIRECT;
+  vi.unstubAllGlobals();
+});
+
+describe("POST /api/ai/run — #7: a plain chat-completions BYOK call goes direct, with its cap and temperature", () => {
+  it("one request to the provider, never the Copilot runtime; a GitHub-token call still uses the runtime", async () => {
+    delete process.env.ACUTE_BYOK_DIRECT;
+    const upstream = vi.fn(async () => new Response(JSON.stringify({ model: "gpt-4", choices: [{ message: { content: "direct" }, finish_reason: "stop" }], usage: { prompt_tokens: 5, completion_tokens: 1 } }), { status: 200 }));
+    vi.stubGlobal("fetch", upstream);
+    const { POST } = await import("./run/route");
+    const res = await POST(
+      postRequest("http://localhost/api/ai/run", {
+        request: { prompt: "hi", model: "gpt-4", maxTokens: 4_096, temperature: 0 },
+        provider: { type: "openai", baseUrl: "https://my-api.example.com/v1", apiKey: "byok-key" },
+      }),
+    );
+    expect(res.status).toBe(200);
+    expect((await res.json()).text).toBe("direct");
+    expect(fakeRuntime.generate).not.toHaveBeenCalled();
+    expect(upstream).toHaveBeenCalledOnce();
+    const [url, init] = upstream.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("https://my-api.example.com/v1/chat/completions");
+    expect(JSON.parse(String(init.body))).toMatchObject({ model: "gpt-4", max_tokens: 4_096, temperature: 0 });
+  });
 });
 
 describe("POST /api/ai/run — server-mode credential gating", () => {
