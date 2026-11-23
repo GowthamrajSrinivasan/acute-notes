@@ -93,7 +93,7 @@ Stage 4f uses direct HTTP, so most of these matter for the other AI tasks or if 
 ## Suggested order
 
 1. **Stage 5 leftovers** (in-app check done 2026-11-23, plan §18.1 — 6/6 after three fixes): selection/open-frame context, IndexedDB vectors, Electron weights. Land #27 (line endings) with the session's `update.ts` commit.
-2. **#7 done for chat-completions BYOK (plan §19).** Next there: one approved live smoke call, then a direct path for Anthropic / responses-API connections.
+2. **#7 done for chat-completions BYOK (plan §19).** Live smoke passed 2026-11-23 (3/3 on AICredits, one request per call, cap and temperature honoured; plan §19). Next there: the AI e2e suites on BYOK, then a direct path for Anthropic / responses-API connections.
 3. **U4, cost of `match_statements`:** one approved paid run on the chat-import cost benchmark, after U1, since U1 sends more merges through statement matching.
 4. ~~U2, table-row and list-aware matching~~ — done 2026-11-23 (plan §17.7).
 5. **Quick clean-ups:** #28 (lanes file) and #16 (confirm the off-canvas fix). Leave the dormant consistency items until the panel is turned back on, and if it is, start with U6.

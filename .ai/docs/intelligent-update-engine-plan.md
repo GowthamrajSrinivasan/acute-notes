@@ -4280,7 +4280,14 @@ refusals adapted and remembered); `copilotProvider.test.ts` (+1: task limits on 
 the real `/api/ai/run` route sends a BYOK call direct with `max_tokens`/`temperature`, never the Copilot runtime). Host, providers, API, OpenUI,
 components: 398 passed (one OpenUI test timed out under parallel load, passes alone — #5). tsc and eslint clean.
 
-**Not run:** a live call (paid; needs approval). **Behaviour change to watch:** BYOK outputs were produced at temperature 1 with the Copilot
+**Live smoke (approved and run 2026-11-23, committed code `2cf3d09`):** `src/ai/contractTests/byokDirectSmoke.contract.test.ts`
+(opt-in `LIVE_BYOK_SMOKE=1`; Copilot runtime replaced by one that fails; ceiling 6 requests, AICredits host only). AICredits
+`openai/gpt-oss-120b`, through the adapter and the real `/api/ai/run` and `/api/ai/stream` routes — **3/3 passed, 3 requests, one per call,
+all 200:** `decide` sent `max_tokens` 4,096 / `temperature` 0, replied `{"ok":true}` (81 in / 71 out, 62 reasoning; 1.7 s); `chat` streamed
+with 16,384 / 0.7 (1.3 s); a request's own cap of 64 with `summarize`'s 0.3 was honoured — cut at exactly 64 tokens, `finishReason: "length"`
+(1.0 s). AICredits accepted `max_tokens` and every temperature, so no parameter adjustment was needed. **Seen:** on gpt-oss the cap includes
+reasoning — the 64-token call spent 61 on reasoning and returned no text — as the caps above already assume. About 230 input and 200 output
+tokens in all. The AI e2e suites are not rerun yet. **Behaviour change to watch:** BYOK outputs were produced at temperature 1 with the Copilot
 system prompt; they are now at the task's temperature with only Acute's own prompt. Expected to be steadier JSON; the AI e2e suites are the
 check. **Still open:** Anthropic / Azure / responses-API BYOK through the SDK stay uncapped (a direct path per wire format would close them);
 caps for unmeasured tasks should be re-read from the call log once there is data.
