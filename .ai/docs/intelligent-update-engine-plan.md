@@ -4287,7 +4287,21 @@ all 200:** `decide` sent `max_tokens` 4,096 / `temperature` 0, replied `{"ok":tr
 with 16,384 / 0.7 (1.3 s); a request's own cap of 64 with `summarize`'s 0.3 was honoured — cut at exactly 64 tokens, `finishReason: "length"`
 (1.0 s). AICredits accepted `max_tokens` and every temperature, so no parameter adjustment was needed. **Seen:** on gpt-oss the cap includes
 reasoning — the 64-token call spent 61 on reasoning and returned no text — as the caps above already assume. About 230 input and 200 output
-tokens in all. The AI e2e suites are not rerun yet. **Behaviour change to watch:** BYOK outputs were produced at temperature 1 with the Copilot
+tokens in all. The AI e2e suite run is below. **Behaviour change to watch:** BYOK outputs were produced at temperature 1 with the Copilot
 system prompt; they are now at the task's temperature with only Acute's own prompt. Expected to be steadier JSON; the AI e2e suites are the
 check. **Still open:** Anthropic / Azure / responses-API BYOK through the SDK stay uncapped (a direct path per wire format would close them);
 caps for unmeasured tasks should be re-read from the call log once there is data.
+
+**AI e2e suite on BYOK (approved and run 2026-11-23, AICredits `openai/gpt-oss-120b`, the dev server already on :3000 — the working tree,
+so other sessions' uncommitted changes were in it too):** 28 passed, 11 failed, 15 skipped, 9 did not run (serial specs stop after a
+failure); 7.4 h. No failure carries a direct-path error message except one:
+- **Could be #7, unproven:** `updatePolicy` 2 — an update ended in "Couldn't reach the AI provider" (a `network` error: the direct path stops
+  after 2 requests where the SDK made up to 6, so a flaky provider now shows); `followUpReplies` (a corrected sentence came back as +2 new / −1
+  removed, not ~1 updated), `semanticUpdate` (a new detail became ~1 updated, not +N new), `mcpSupersede` (a new card added and no revisions
+  found) — model judgements that the new temperatures and the missing Copilot system prompt could move, or U1 / §17's in-place rules.
+- **Not #7:** `chatShare` (chatgpt.com share pages read as "no shared conversation" — the import step, no AI); `latency` (browser launch
+  timed out); `visualize` (no `outline_document` step — the uncommitted performance change, one-part notes skip the outline); `choices` (expects a
+  new choice; U1 updates in place instead); `sections` (frame label "1 · Structure (2 of 2)"); `askAI` cancel (Esc left the panel open);
+  `fidelity` (coverage row without "AI placed N%").
+- **To separate #7 from the rest:** rerun the four "could be" specs with `ACUTE_BYOK_DIRECT=off` on a second server (a worktree, `--webpack`)
+  and compare — paid, not run.
