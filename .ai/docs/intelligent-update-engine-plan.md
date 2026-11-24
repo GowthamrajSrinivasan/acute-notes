@@ -4452,3 +4452,34 @@ gates pass. Cause: canvas and block-document writes are deferred (`documentStore
 accepts. The source and canvas then disagree. **Suggested fix** (not built — `commitOnCanvas.ts` and the save path are partly other
 sessions' uncommitted work): flush the document store and the canvas session right after an accepted change set (an Accept is a
 deliberate commit), and keep the `pagehide` flush for ordinary edits. Gate 4c keeps its immediate reload so it catches this.
+
+### 19.5 #34 fixed: an Accept is saved at once (2026-11-24, offline, no AI call)
+
+**Asked (product owner, 2026-11-24):** "commit and push, then go ahead with #34" (§19.3–19.4 committed first, `49e029d`).
+
+**Fix** (`commitOnCanvas.ts` untouched — another session's uncommitted work):
+- `components/ai/acceptPending.ts`: right after an accepted change set is committed (a whole set, or parts of a merged one),
+  `saveNow()` (new `components/ai/saveAfterAccept.ts`) starts the canvas, card-record and open-document flushes **in the Accept's own
+  task, before the content version is recorded**, instead of after the 400 ms / 120 ms write delays. It covers every caller of
+  `acceptPendingSet` / `acceptPendingParts`: the review bar (Accept, Accept all, Accept section), auto-accept, Lens's Changes drawer,
+  Agent Sync and the MCP accept.
+- `components/canvas/CanvasSession.ts` `flush()`: commits the scene as the API has it now, not as the last `onChange` saw it (once
+  the scene is initialised), so the flush includes the Accept's own scene writes; the tab-close flush benefits too.
+
+**Tried first and dropped:** recording the content version only once the save had finished, so the source could never be ahead of
+the canvas. It broke readers that expect the version as soon as Accept returns: `knowledgeNotes.local.spec.ts` U8 (a card's chip read
+the source before it existed and stayed "unavailable") and U6 (the late record re-created a source the test had just deleted). Kept
+instead: the writes are issued first, in the same task. If a reload still lands in the few milliseconds both are in flight and only
+the version survives, an AI-worded card behind it is offered again by the next update (rule 2); a user-worded one is not (#13), an
+accepted risk at that window.
+
+**Not covered (other lanes):** commits that don't go through `acceptPending` — Promote in the Notes view (`openui/notes/promote.ts`)
+and the knowledge review actions (`review/knowledgeActions.ts`) — can call `saveNow()` the same way. Ordinary edits still rely on the
+tab-close flush (unchanged).
+
+**Verification:** unit — `saveAfterAccept.test.ts` (4: every flush starts before it returns, ahead of the version; resolves once all
+are saved; a failing store doesn't stop the others) and `CanvasSession.test.ts` (2; the first fails without the `flush()` change:
+"six servers" comes back after a reopen); 37 pass with their neighbours; `tsc` and `eslint` clean. Local e2e (no AI, the working
+tree's dev server): `stage1Gate.local.spec.ts` **10/10 on four runs with gate 4c's immediate reload** (it failed every time before);
+the 11 other local specs that accept and reload: 53 passed, 1 skipped, 1 failed — U4's 300 ms panel budget (328 ms) under load,
+3/3 alone (#5).

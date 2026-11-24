@@ -139,6 +139,9 @@ export class CanvasSession {
 
   /** Synchronously commits pending scene changes and starts writing them. */
   flush(): Promise<void> {
+    // The scene as it is now, not as the last onChange saw it: a change written through the API just before (an accepted
+    // change set, #34) may not have reached onChange yet. Only once the scene is initialised (an onChange has run).
+    if (this.api && this.latestElements) this.latestElements = this.api.getSceneElementsIncludingDeleted();
     this.commitScene();
     if (this.viewportTimer) this.saveViewport();
     return this.provider.flush();

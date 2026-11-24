@@ -25,6 +25,7 @@ import { linkGeneratedLevel } from "@/components/lens/lensGenerate";
 import { aiMarkers } from "./aiMarkersStore";
 import { commitPartsOnCanvas, commitSetOnCanvas } from "./commitOnCanvas";
 import { flagDenseBlocks } from "./flagDense";
+import { saveNow } from "./saveAfterAccept";
 import { nothingAppliedMessage, unappliedKeys } from "./unapplied";
 
 type History = Pick<CanvasHistory<ExcalidrawElement>, "record">;
@@ -78,6 +79,8 @@ export function acceptPendingParts(
     const after = api.getSceneElementsIncludingDeleted();
     recordAccepted(home, set, before, after, result.rest ? "partial" : "applied");
     markAgentFrames(home, set, before, after);
+    // Saved now, before the content version below, not after the usual write delays: a reload right after Accept lost the cards (#34).
+    void saveNow();
   }
   // Each accepted section's content version (F37) exists only now — with the cards it left unapplied as they were.
   const unapplied = unappliedKeys(result.dropped);
@@ -178,6 +181,8 @@ export function acceptPendingSet(
   const after = api.getSceneElementsIncludingDeleted();
   recordAccepted(home, set, before, after, undecided ? "conflicts" : "applied");
   markAgentFrames(home, set, before, after);
+  // Saved now, before the content version below, not after the usual write delays: a reload right after Accept lost the cards (#34).
+  void saveNow();
   // The content version this set came from (F37) exists only once accepted. A card the accept left as it was (a patch
   // skipped as stale, a conflict left undecided) keeps the previous version's node, so the next update offers it again.
   if (set.contentSource) {
