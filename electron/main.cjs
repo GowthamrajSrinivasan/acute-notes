@@ -6,6 +6,7 @@
 // changes.
 const { app, BrowserWindow, protocol, shell, dialog, Menu, ipcMain } = require("electron");
 const { utilityProcess } = require("electron");
+const fs = require("node:fs");
 const http = require("node:http");
 const net = require("node:net");
 const path = require("node:path");
@@ -56,6 +57,23 @@ function serverDir() {
     : path.join(__dirname, "..", ".next", "standalone");
 }
 
+// Semantic placement's local embedding model, when the build bundled it (scripts/desktop-models.mjs): the server reads
+// the weights from the app's own files and never downloads. A user's own ACUTE_EMBEDDINGS* settings still win.
+function embeddingEnv(dir) {
+  const folder = path.join(dir, "embedding-models");
+  try {
+    const manifest = JSON.parse(fs.readFileSync(path.join(folder, "acute-model.json"), "utf8"));
+    if (typeof manifest.embeddings !== "string") return {};
+    return {
+      ACUTE_EMBEDDINGS: process.env.ACUTE_EMBEDDINGS ?? manifest.embeddings,
+      ACUTE_EMBEDDING_MODELS_DIR: process.env.ACUTE_EMBEDDING_MODELS_DIR ?? folder,
+      ACUTE_EMBEDDINGS_DOWNLOAD: process.env.ACUTE_EMBEDDINGS_DOWNLOAD ?? "off",
+    };
+  } catch {
+    return {};
+  }
+}
+
 async function waitForServer(port, timeoutMs = 60000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -87,6 +105,7 @@ async function startServer() {
       ...process.env,
       // The desktop app serves MCP to the user's own local agents; the server enforces this flag on every MCP route.
       MCP_FEATURE: process.env.MCP_FEATURE ?? "on",
+      ...embeddingEnv(dir),
       PORT: String(serverPort),
       HOSTNAME: "127.0.0.1",
       NODE_ENV: "production",

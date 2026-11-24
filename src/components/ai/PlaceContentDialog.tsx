@@ -25,6 +25,7 @@ import { getPendingChanges } from "@/ai/changes/pendingChanges";
 import { AIRuntime } from "@/ai/runtime";
 import { choicesFor, defaultPicks, isEscalated, KEEP_EXISTING, modelPicks, NEW_CARD, placeContent, togglePick } from "@/ai/router/placement";
 import { routeContent, type RouteCandidate } from "@/ai/router/router";
+import { placementContextOf } from "@/ai/router/placementContext";
 import { refineRoute, type RefinedRoute } from "@/ai/router/task";
 import type { SceneElement } from "@/domain/canvas/adapter";
 import { newId } from "@/domain/ids";
@@ -71,12 +72,19 @@ function PlaceContentBody({ api, home, initialText }: { api: ExcalidrawImperativ
 
   const scene = () => api.getSceneElements() as unknown as readonly SceneElement[];
   const getDocument = (id: string) => getDocumentStore().get(id);
+  // Where the user was when the dialog opened (the selection, else the frame filling the view): a prior for semantic placement.
+  const [context] = useState(() => {
+    const s = api.getAppState();
+    const selected = Object.entries(s.selectedElementIds ?? {}).flatMap(([id, on]) => (on ? [id] : []));
+    const viewport = { x: -s.scrollX, y: -s.scrollY, width: s.width / s.zoom.value, height: s.height / s.zoom.value };
+    return placementContextOf(scene(), selected, viewport);
+  });
 
   const find = async () => {
     const { tier, descriptors, signals } = await routerFor(home.workspaceId, home.canvasId, scene(), getDocument);
     const routed = routeContent({ text, canvasId: home.canvasId, tier, scene: scene(), descriptors, signals });
     // By meaning, when the local model is there (Stage 5); else the router's answer stands.
-    const r = (await semanticFind({ canvasId: home.canvasId, text, scene: scene(), getDocument, tier, descriptors })) ?? routed;
+    const r = (await semanticFind({ canvasId: home.canvasId, text, scene: scene(), getDocument, tier, descriptors, context })) ?? routed;
     setResult(r);
     // The router's own pick is preselected only when it is sure and its edit needs no decision; otherwise the user chooses.
     setPicked(defaultPicks(r));

@@ -5,11 +5,13 @@
  *
  * - `ready()` asks the route once (GET); a 404 (switched off) or 503 (no weights) is "unavailable", and `semanticEmbedder()`
  *   then falls back to the hashed embedder — whose results the placement dialog doesn't use (it keeps today's router).
- * - Vectors are cached per text for this page's life (bounded), so a canvas's items, sections and notes embed once.
+ * - Vectors are cached per text for this page's life (bounded), so a canvas's items, sections and notes embed once — and,
+ *   in the browser, kept across page loads in IndexedDB (`vectorStore.ts`, 2026-11-24), so they embed once per device.
  * - Batched: one request per `BATCH` texts.
  */
 import { isSemanticPlacementUiEnabled } from "@/config/features";
-import { dequantize, EmbeddingProviderUnavailableError, hashedProvider, withFallback, type EmbeddingProvider, type EmbeddingReadiness, type EmbeddingThresholds, type EmbeddingVector } from "./embeddingProvider";
+import { dequantize, EmbeddingProviderUnavailableError, hashedProvider, withFallback, type EmbeddingProvider, type EmbeddingReadiness, type EmbeddingThresholds, type EmbeddingVector, type QuantizedVector } from "./embeddingProvider";
+import { indexedDbVectorStore, type VectorStore } from "./vectorStore";
 
 const BATCH = 128;
 const CACHE = 20_000;
@@ -33,6 +35,8 @@ export class RouteEmbeddingProvider implements EmbeddingProvider {
   constructor(
     private readonly fetcher: Fetch = (i, init) => fetch(i, init),
     private readonly url = "/api/ai/embed",
+    /** Vectors kept across page loads (`vectorStore.ts`); null keeps them for this page's life only. */
+    private readonly store: VectorStore | null = null,
   ) {}
 
   /** The server's embedder id once known (it names the model); a placeholder before, never used for a vector. */
@@ -67,19 +71,28 @@ export class RouteEmbeddingProvider implements EmbeddingProvider {
     const r = await this.ready();
     if (r.state !== "ready" || !this.info) throw new EmbeddingProviderUnavailableError(this.id, r.state === "unavailable" ? r.reason : "not loaded");
     const out: (EmbeddingVector | undefined)[] = texts.map((t) => this.cache.get(t));
-    const todo = [...new Set(texts.filter((_t, i) => !out[i]))];
+    let todo = [...new Set(texts.filter((_t, i) => !out[i]))];
+    if (todo.length && this.store) {
+      const kept = await this.store.getMany(this.info.embedder, todo);
+      for (const [t, v] of kept) this.remember(t, dequantize(v));
+      todo = todo.filter((t) => !kept.has(t));
+    }
     for (let k = 0; k < todo.length; k += BATCH) {
       const batch = todo.slice(k, k + BATCH);
       const res = await this.fetcher(this.url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ texts: batch }) });
       if (!res.ok) throw new EmbeddingProviderUnavailableError(this.id, `the embedding route answered ${res.status}`);
       const reply = (await res.json()) as { embedder: string; vectors: { q: string; scale: number }[] };
       if (reply.embedder !== this.info.embedder || reply.vectors?.length !== batch.length) throw new EmbeddingProviderUnavailableError(this.id, "the server's embedder changed; reload to re-embed");
-      reply.vectors.forEach((v, i) => {
-        if (this.cache.size >= CACHE) this.cache.delete(this.cache.keys().next().value!);
-        this.cache.set(batch[i]!, dequantize({ embedder: reply.embedder, q: fromBase64(v.q), scale: v.scale }));
-      });
+      const fresh: [string, QuantizedVector][] = reply.vectors.map((v, i) => [batch[i]!, { embedder: reply.embedder, q: fromBase64(v.q), scale: v.scale }]);
+      for (const [t, q] of fresh) this.remember(t, dequantize(q));
+      if (this.store) void this.store.putMany(reply.embedder, fresh);
     }
     return texts.map((t, i) => out[i] ?? this.cache.get(t)!);
+  }
+
+  private remember(text: string, v: EmbeddingVector): void {
+    if (this.cache.size >= CACHE) this.cache.delete(this.cache.keys().next().value!);
+    this.cache.set(text, v);
   }
 }
 
@@ -91,7 +104,7 @@ let shared: (EmbeddingProvider & { active(): EmbeddingProvider }) | null = null;
  */
 export function semanticEmbedder(): EmbeddingProvider & { active(): EmbeddingProvider } {
   if (!isSemanticPlacementUiEnabled()) return withFallback(hashedProvider, hashedProvider);
-  return (shared ??= withFallback(new RouteEmbeddingProvider(), hashedProvider));
+  return (shared ??= withFallback(new RouteEmbeddingProvider(undefined, undefined, indexedDbVectorStore()), hashedProvider));
 }
 
 /** Whether `provider` (after `ready()`) is a real model, not the hashed fallback. Descent with hashed vectors routes worse than today's router (§13.13). */

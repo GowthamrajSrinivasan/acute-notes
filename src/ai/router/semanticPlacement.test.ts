@@ -222,4 +222,27 @@ describe("semanticRoute (5c) and placement", () => {
     expect(["anchor", "update", "none"]).toContain(r.candidates[0]!.action);
     expect((TABLE[0]!.content as TableContent).rows).toHaveLength(3); // nothing was written: placement only proposes
   });
+
+  it("context (the selection or the frame in view, placementContext.ts): a prior for that card or section, and the card says so", async () => {
+    const si = new SemanticIndex(fakeModel);
+    si.sync(baseScene, getDocument);
+    const descent = new Descent(si.index, si.sections(baseScene));
+    await descent.prepare();
+    const text = "The gateway call is retried on timeout.";
+    const scoreOf = (p: Placement, card: string) => p.scores.find((s) => s.card === card)!.routing;
+    const plain = await descent.place(text);
+    const selected = await descent.place(text, {}, { card: "owners", section: "f_team" });
+    expect(scoreOf(selected, "owners")).toBeCloseTo(scoreOf(plain, "owners") + 0.1, 5);
+    expect(scoreOf(selected, "retries")).toBeCloseTo(scoreOf(plain, "retries"), 5);
+    const inView = await descent.place(text, {}, { section: "f_limits" });
+    expect(scoreOf(inView, "retries")).toBeCloseTo(scoreOf(plain, "retries") + 0.1, 5);
+    expect(scoreOf(inView, "services")).toBeCloseTo(scoreOf(plain, "services") + 0.1, 5);
+
+    const evidenceOf = (r: ReturnType<typeof semanticRoute>, id: string) => r.candidates.find((c) => c.id === id)?.evidence ?? [];
+    const route = (p: Placement, context: Parameters<typeof semanticRoute>[0]["context"]) => semanticRoute({ text, placement: p, index: si.index, embedder: fakeModel.id, scene: baseScene, getDocument, context, ...tierAndDescribe(baseScene) });
+    expect(evidenceOf(route(selected, { card: "owners", section: "f_team", source: "selection" }), "owners")).toContain("the card you selected");
+    expect(evidenceOf(route(inView, { section: "f_limits", source: "frame_in_view" }), "retries")).toContain("in the section you're viewing");
+    expect(evidenceOf(route(inView, { section: "f_limits", source: "selection" }), "retries")).toContain("in the section you selected");
+    expect(evidenceOf(route(plain, null), "retries").some((e) => /you selected|you're viewing/.test(e))).toBe(false);
+  });
 });

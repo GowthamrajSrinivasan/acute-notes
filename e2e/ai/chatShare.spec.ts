@@ -86,6 +86,9 @@ async function importLinks(p: Page, links: string[]) {
   await dialog.getByRole("textbox", { name: "Share links" }).fill(links.join("\n"));
   await dialog.getByRole("button", { name: "Add", exact: true }).click();
   await expect(dialog.getByText("Loading…")).toHaveCount(0, { timeout: 90_000 });
+  // Since 2026-11 chatgpt.com sends the importer (honest user agent, decided 2026-11-23) only a link preview: nothing to import.
+  const preview = await dialog.getByRole("alert").filter({ hasText: /only a link preview/ }).count();
+  test.skip(preview > 0, "chatgpt.com sent only a link preview to the importer (chat-share-import-plan §4, update 2026-11-23)");
   await expect(dialog.getByRole("alert")).toHaveCount(0);
 }
 

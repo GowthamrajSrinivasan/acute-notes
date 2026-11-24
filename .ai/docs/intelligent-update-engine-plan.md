@@ -4248,6 +4248,43 @@ picked. **No new card in any of them** (object count unchanged). Router + compon
 **Seen, not changed:** the paraphrase's top card is prose, which can't take new information inside, so the suggestion is a new card in that
 section — right by the rules; whether it restates the card (a duplicate) is the 5e relate call's judgement (#20).
 
+### 18.2 Stage 5 leftovers: selection context, vectors kept on the device, weights in the desktop app (2026-11-24, offline, no AI call)
+
+**Asked (product owner, 2026-11-23):** "go with (b), then go ahead with 2" — 2 being these three leftovers of §18.
+
+**Selection / open-frame context** (`router/placementContext.ts`, wired in `PlaceContentDialog` → `semanticFind` → the descent's existing
+`context` prior, +0.1, which also turns off "belongs nowhere"):
+- Read when the dialog opens. **The selection first:** one card (its label counts as the card) → that card and its frame; a selected frame →
+  that section; several cards in one frame → that section; a selection across sections, or several frames → nothing (it doesn't say where).
+  Arrows and lines are ignored.
+- **Else the frame filling the view** ("the open frame"): it holds the viewport's centre and covers at least half of the visible area
+  (`OPEN_FRAME_SHARE` 0.5, provisional). A canvas seen from afar says nothing.
+- The cards it favoured say so in the dialog: "the card you selected", "in the section you selected", "in the section you're viewing".
+- Stage 2's router (switch off) is unchanged: no context there.
+
+**Vectors kept on the device** (`router/vectorStore.ts`, used by `RouteEmbeddingProvider`):
+- Its own IndexedDB database (`acute-notes-embeddings`) — a cache: no migration of the app's database, never exported or synced, safe to
+  delete. Keyed by the embedder id and the text's SHA-256; **the text itself is not stored**, only the hash and the quantised vector.
+- Order: the page's memory, then IndexedDB, then the route; new vectors are written without waiting. At most 50,000 (~20 MB), the
+  oldest-written removed first. Any IndexedDB failure is a miss.
+
+**Weights in the desktop app** (`scripts/desktop-models.mjs`, `prepare-desktop.mjs`, `electron/main.cjs`):
+- A desktop build **with** `NEXT_PUBLIC_SEMANTIC_PLACEMENT=on` copies MiniLM-L6's four offline files (23 MB) into the server's
+  `embedding-models/` with a manifest; missing weights stop the build with how to fetch them. Without the switch nothing changes.
+- The Electron shell reads the manifest and starts the server with `ACUTE_EMBEDDINGS`, `ACUTE_EMBEDDING_MODELS_DIR` (the bundled
+  folder) and downloads off; a user's own `ACUTE_EMBEDDINGS*` settings still win.
+- **Found and fixed on the way — the desktop server could not start:** the standalone `package.json` is a copy of ours (`"type": "module"`),
+  so Node and Electron's `utilityProcess` load Next's CommonJS `server.js` as an ES module and stop at its first `require`.
+  `prepare-desktop` now marks the standalone server CommonJS.
+- **Checked on a real desktop build** (`ACUTE_DIST_DIR=.next/desktop-check`, `next build --webpack`, then removed): the trace carries
+  transformers.js and the ONNX runtime's native binaries; the built server, given the shell's environment, answered `/api/ai/embed` from
+  the bundled weights with downloads off (GET 200; a paraphrase 0.613 vs an unrelated sentence 0.019). A second build with the CommonJS fix ran the unmodified `server.js`: GET and POST 200.
+- **Not done:** an Electron package run (`desktop:pack`) and an installer test; turning semantic placement on for the desktop app by default
+  (it stays a build switch, as on the web).
+
+**Verification:** `placementContext.test.ts` 7, `vectorStore.test.ts` 6, `desktopModels.test.ts` 3, `semanticPlacement.test.ts` +1
+(context prior +0.1 on exactly the chosen card or section, and the evidence lines). Router 107 tests. tsc and eslint clean.
+
 ## 19. #7 — every chat-completions BYOK call carries its task's output cap and temperature (2026-11-23, offline, no AI call)
 
 **Asked (product owner, 2026-11-23):** "go ahead with #7" — every BYOK request carries its task's own output cap and temperature, as the
@@ -4344,7 +4381,9 @@ used; paid, needs approval).
   once, not stored in the repo); `octane.test.ts` 7 on a synthetic page of the same shape. **Still open — a decision for the product
   owner:** with the importer's own user agent chatgpt.com returns only the link-preview page (title and preview tags, no conversation);
   a browser user agent gets the full page. The importer keeps its honest user agent and now says "ChatGPT sent only a link preview of this
-  chat … paste the chat's text instead"; sending a browser-like user agent is not done without approval.
+  chat … paste the chat's text instead". **Decided (product owner, 2026-11-23): option (b), keep the honest user agent**; pasting
+  the chat's text is the way in (chat-share-import-plan §4 update). `e2e/ai/chatShare.spec.ts` skips, with that reason, when chatgpt.com
+  sends only the preview.
 - **`askAI` cancel — test environment, fixed in the e2e helper:** under `next dev`, `@openuidev/react-lang` auto-mounts its "OpenUI
   Inspect" widget, whose help overlay starts open in a fresh browser profile and swallows Esc on `document` in the capture phase, so no
   Esc handler of the app ran. Production builds never include it. `openApp` (e2e helpers) now sets the package's own

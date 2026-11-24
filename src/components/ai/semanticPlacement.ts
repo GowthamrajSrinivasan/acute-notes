@@ -15,6 +15,7 @@ import { Descent } from "@/ai/router/descent";
 import type { VectorTier } from "@/ai/router/embedding";
 import type { RouteResult } from "@/ai/router/router";
 import { isModel, semanticEmbedder } from "@/ai/router/routeEmbedding";
+import type { PlacementContext } from "@/ai/router/placementContext";
 import { SemanticIndex } from "@/ai/router/semanticIndex";
 import { semanticRoute } from "@/ai/router/semanticRoute";
 import { isSemanticPlacementUiEnabled } from "@/config/features";
@@ -54,6 +55,8 @@ export async function semanticFind(input: {
   getDocument: GetDocument;
   tier: VectorTier;
   descriptors: DescriptorCache;
+  /** Where the user was when they asked (`placementContext.ts`): a prior for that card or section. */
+  context?: PlacementContext | null;
 }): Promise<RouteResult | null> {
   try {
     const index = await activeIndex(input.canvasId);
@@ -61,7 +64,8 @@ export async function semanticFind(input: {
     index.sync(input.scene, input.getDocument);
     const descent = new Descent(index.index, index.sections(input.scene));
     await descent.prepare();
-    const placement = await descent.place(input.text);
+    const context = input.context ? { ...(input.context.card ? { card: input.context.card } : {}), ...(input.context.section ? { section: input.context.section } : {}) } : {};
+    const placement = await descent.place(input.text, {}, context);
     const { frames, frameOf } = sectionsOf(input.scene);
     return semanticRoute({
       text: input.text,
@@ -71,6 +75,7 @@ export async function semanticFind(input: {
       scene: input.scene,
       getDocument: input.getDocument,
       sections: [...frames.values()],
+      context: input.context ?? null,
       describe: (id) => {
         const o = input.tier.get(id);
         const frame = frameOf.get(id);

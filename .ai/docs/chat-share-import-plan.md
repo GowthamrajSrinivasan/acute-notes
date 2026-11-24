@@ -78,6 +78,18 @@ Tested with `chatgpt.com/share/6ac75678-…` ("AI App Builder Ecosystem") and `c
 - The two links supplied as the 2nd and 3rd were identical. **Duplicate links / conversation ids are removed before
   anything else.**
 
+**Update 2026-11-23 — the share page changed (intelligent-update-engine-plan §19.2):**
+- **New page shape.** The conversation is now a JSON island, `<script id="__WEB_MOBILE_DATA__">` → `conversation` (title,
+  `sharedContent.originalCreatedAt`, the visible `messages` in order). No tree, no per-message times, no
+  `backing_conversation_id`, no branch metadata: branch overlap is now found by turn content alone (§6.2's hash rules). An
+  assistant message's `source.markdown` carries citations, image galleries and suggested follow-ups, removed by their
+  `references` offsets. Reader: `src/ai/import/chatShare/octane.ts`; the turbo-stream reader stays as the fallback.
+- **The importer's own user agent now gets only the link-preview page** (title and preview tags, no conversation); a browser
+  user agent gets the full page. **Decided by the product owner 2026-11-23 (option b): the importer keeps its honest user
+  agent** and does not present itself as a browser. When chatgpt.com sends only the preview, the link shows "ChatGPT sent only
+  a link preview of this chat, not the conversation. Paste the chat's text instead." Pasting a chat's text into Visualize
+  works as before. Revisit if ChatGPT offers an export or API meant for this.
+
 ## 5. Core merge (all inputs)
 
 ### 5.1 Topic ledger

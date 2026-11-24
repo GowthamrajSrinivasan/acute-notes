@@ -24,6 +24,7 @@ import type { CardOption, Placement } from "./descent";
 import type { CardDescriptor, SectionInfo } from "./descriptors";
 import { INSERT_CONFIDENCE, type RouteCandidate, type RouteResult } from "./router";
 import type { ItemIndex } from "./itemIndex";
+import type { PlacementContext } from "./placementContext";
 
 const round = (n: number) => Math.round(Math.max(0, Math.min(1, n)) * 100) / 100;
 const quote = (s: string, n = 60) => `“${s.length > n ? `${s.slice(0, n - 1)}…` : s}”`;
@@ -38,7 +39,17 @@ export interface SemanticRouteInput {
   /** A card's descriptor (title, summary, section) for the dialog; null when the card isn't known. */
   describe: (id: string) => CardDescriptor | null;
   sections: readonly SectionInfo[];
+  /** Where the user was (`placementContext.ts`): the descent gave it a prior, and its cards say so. */
+  context?: PlacementContext | null;
   limit?: number;
+}
+
+/** The evidence line for a card the context points at, if any. */
+function contextEvidence(id: string, section: string | null | undefined, context: PlacementContext | null | undefined): string | null {
+  if (!context) return null;
+  if (context.card === id) return "the card you selected";
+  if (context.section && section === context.section) return context.source === "selection" ? "in the section you selected" : "in the section you're viewing";
+  return null;
 }
 
 /** See module doc. */
@@ -64,6 +75,8 @@ export function semanticRoute(input: SemanticRouteInput): RouteResult {
     const routing = round(scoreOf.get(id) ?? 0);
     const evidence = [`similar in meaning (${routing}, local model)`];
     if (items?.section && sectionName.has(items.section)) evidence.push(`in section “${sectionName.get(items.section)}”`);
+    const near = contextEvidence(id, items?.section ?? el.frameId, input.context);
+    if (near) evidence.push(near);
     const base: RouteCandidate = { id, descriptor, action: "insert_near", routing, update: INSERT_CONFIDENCE, scores: { semantic: routing, lexical: 0, section: 0, graph: 0, signal: 0 }, evidence };
     const option = optionOf.get(id);
     const locked = isLocked(el) || (!!el.frameId && lockedFrames.has(el.frameId));
