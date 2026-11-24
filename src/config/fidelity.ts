@@ -9,6 +9,9 @@
 import type { NoteModel } from "@/ai/fidelity/contracts";
 import type { Organisation } from "@/ai/visual-plan/grouping";
 
+/** How the Visualize dialog offers the note model (see `FidelityConfig.noteModelChoice`). */
+export type NoteModelChoice = "hidden" | "opt-in" | "default";
+
 export interface FidelityConfig {
   /**
    * Which rules Visualize writes notes under (knowledge-notes-plan §6.3). `preserve` is today's behaviour, and the only
@@ -17,13 +20,13 @@ export interface FidelityConfig {
    */
   noteModel: NoteModel;
   /**
-   * WP2.8 (knowledge-notes-plan §6.3, OD2): show "Keep full detail" in the Visualize dialog. **Hidden (`false`) until
-   * R1**, and then a new Visualize run uses `noteModel` as it always has. When shown, the dialog chooses each run's note
-   * model itself (passed per run, never by changing `noteModel`): `distil` by default, `preserve` when the user ticks
-   * "Keep full detail" (specs, legal text). At R1 set this to `true` and `noteModel` to `"distil"` (for updates and the
-   * MCP import, which have no dialog choice).
+   * WP2.8 (knowledge-notes-plan §6.3, OD2): the note model choice in the Visualize dialog, passed per run (never by
+   * changing `noteModel`). `hidden`: no choice, a run uses `noteModel`. `opt-in` (early access before R1, approved by the
+   * user 2026-11-17): "Distil into key ideas (early access)", unticked by default, so a run uses `noteModel` unless
+   * the user ticks it. `default` (R1): a run distils, and "Keep full detail" preserves (specs, legal text). At R1 set this to
+   * `"default"` and `noteModel` to `"distil"` (for updates and the MCP import, which have no dialog choice).
    */
-  showNoteModelChoice: boolean;
+  noteModelChoice: NoteModelChoice;
   /**
    * The runtime model check of cards' meaning (knowledge-notes-plan §3.4, `semanticCheck.ts`), **distil mode only**:
    * `preserve` never calls it. **On, for every citing card (OD5b, approved by the user 2026-10-20):** the word rules failed
@@ -64,7 +67,7 @@ export interface FidelityConfig {
 
 export const FIDELITY_CONFIG: FidelityConfig = {
   noteModel: "preserve",
-  showNoteModelChoice: false,
+  noteModelChoice: "opt-in",
   semanticCheck: { enabled: true, cards: "all" },
   showCoverage: true,
   regenerate: {

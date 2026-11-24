@@ -104,7 +104,7 @@ const RECONCILIATION_READERS: Record<string, string> = {
   [rel("ai/visualize/outlined.ts")]: "reads the noteModel switch to send distil section prompts with labelled units; never reads an object's metadata",
   [rel("ai/visualize/types.ts")]: "VisualizeInput.noteModel: the run's own note model (WP2.8 'Keep full detail'); never reads an object's metadata",
   [rel("ai/ingest/ingest.ts")]: "passes the dialog's per-run noteModel through to visualizeContent (WP2.8); never reads an object's metadata",
-  [rel("components/ai/VisualizeDialog.tsx")]: "the 'Keep full detail' choice sets the run's noteModel (WP2.8, hidden until R1); never reads an object's metadata",
+  [rel("components/ai/VisualizeDialog.tsx")]: "the note model choice ('Distil into key ideas' before R1, 'Keep full detail' from R1) sets the run's noteModel (WP2.8); never reads an object's metadata",
   [rel("ai/visualize/analysisPatch.ts")]: "the analysis patch's input noteModel picks the distil analysis wording (§4.4); never reads an object's metadata",
   [rel("ai/visualize/visualize.ts")]: "stamps noteModel on a distil run's change set and its cards' units on the content source it records (WP1.10); never reads an object's metadata",
   [rel("components/canvas/ExcalidrawCanvas.tsx")]: "dev builds only: __acuteDev.setNoteModel switches the noteModel developer setting for the fidelity e2e (§6.3); never reads an object's metadata",
