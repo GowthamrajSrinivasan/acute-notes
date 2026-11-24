@@ -397,13 +397,11 @@ test("gate 5 — EXTENDS adds, SUPERSEDES replaces, CONTRADICTS escalates for a 
   latest = shared;
 });
 
-test("known gap — a card in the user's wording gets a conflict once the source moves on twice without it", async () => {
-  // Found 2026-11-15 while fixing gate 4 (pre-existing, `reconcile/classify.ts` rule 2): a card whose content is the user's
-  // wording (a merge onto an edited card, or Keep mine) and that the source has said nothing new about is "silent" only
-  // while it is at the previous version; once two updates elsewhere are accepted it falls through to a "You edited this;
-  // the new content changes it too" conflict offering the AI wording. Engine-lane decision (it can't be told apart from
-  // an undone merge from the object alone). Remove `test.fail` once fixed.
-  test.fail(true, "a user-worded card behind the source gets a spurious conflict");
+test("a card in the user's wording gets no conflict when the source moves on twice without it (#13)", async () => {
+  // Found 2026-11-15 while fixing gate 4 (`reconcile/classify.ts` rule 2): a card whose content is the user's wording (a merge
+  // onto an edited card, or Keep mine) fell through to a spurious "You edited this; the new content changes it too" conflict
+  // once two updates elsewhere were accepted. Fixed 2026-11-24: a user-worded card counts as edited for "the source said nothing
+  // new about it" (intelligent-update-engine-plan §19.4).
   const retries = await oneBlock(page, "per region, checked");
   let next = latest.replace("from the public internet", "from the public network");
   expect(await propose(page, "public internet", next)).toHaveLength(1);

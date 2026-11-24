@@ -13,9 +13,10 @@
  *    and the object is either edited or already at that version →
  *    `unchanged`: the source said nothing new about it, so whatever the user
  *    did to the object stands (this is what keeps a manual edit, or a "Keep
- *    mine", from being re-flagged on every run over unchanged text). An
- *    untouched object still at an older version — an accepted update that
- *    was then undone — falls through, so the update is proposed again;
+ *    mine", from being re-flagged on every run over unchanged text). A card
+ *    in the user's wording (`userWording`) counts as edited here. An
+ *    untouched AI-worded object still at an older version — an accepted
+ *    update that was then undone — falls through, so the update is proposed again;
  * 3. the object already shows exactly the proposed content → `unchanged`;
  * 4. the object's current content still equals its baseline (untouched since
  *    AI last wrote it) → `update_clean`;
@@ -154,7 +155,10 @@ export function reconcile(input: ReconcileInput): ReconciliationPlan {
     const proposed = input.fingerprint(node);
     const before = key ? previous.get(key) : undefined;
     const edited = object.current === null || object.current !== object.baseline;
-    const sourceSilent = !!before && input.fingerprint(before) === proposed && (edited || (object.version ?? 0) >= (input.previousVersion ?? 0));
+    // A card in the user's wording (a merge onto their edit, or "Keep mine") counts as edited here: their wording stands until the
+    // source changes this node again, however many versions the source moved on elsewhere (#13, 2026-11-24). Only an AI-worded card
+    // behind the previous version is taken for an undone update and proposed again.
+    const sourceSilent = !!before && input.fingerprint(before) === proposed && (edited || object.userWording === true || (object.version ?? 0) >= (input.previousVersion ?? 0));
     if (sourceSilent || object.current === proposed) items.push({ state: "unchanged", node, object });
     else if (object.current !== null && object.current === object.baseline) items.push({ state: "update_clean", node, object });
     else items.push({ state: "update_conflict", node, object });

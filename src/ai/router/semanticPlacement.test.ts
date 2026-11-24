@@ -223,6 +223,27 @@ describe("semanticRoute (5c) and placement", () => {
     expect((TABLE[0]!.content as TableContent).rows).toHaveLength(3); // nothing was written: placement only proposes
   });
 
+  it("#16 on the semantic path: only objects on the canvas are destinations — a deleted card (its document kept for undo) never is", async () => {
+    const OLD: RichContent = [{ id: "o1", type: "bulletListItem", content: "Retry backoff starts at two seconds, retries happen eight times." }];
+    const withOld = lookup([...docs, doc("d_old", OLD)]);
+    const deleted = { ...block("old_retries", "d_old", { frameId: "f_limits", x: 20, y: 300, width: 300, height: 60 }), isDeleted: true };
+    const scene = [...baseScene, deleted];
+    const si = new SemanticIndex(fakeModel);
+    si.sync([...baseScene, { ...deleted, isDeleted: false }], withOld); // indexed while it was on the canvas
+    expect(si.index.card("old_retries")).toBeDefined();
+    si.sync(scene, withOld); // then deleted: dropped from the index
+    expect(si.index.card("old_retries")).toBeUndefined();
+    const descent = new Descent(si.index, si.sections(scene));
+    await descent.prepare();
+    const text = "Retry backoff starts at two seconds.";
+    const placement = await descent.place(text);
+    const r = semanticRoute({ text, placement, index: si.index, embedder: fakeModel.id, scene, getDocument: withOld, ...tierAndDescribe(scene) });
+    expect(r.candidates.map((c) => c.id)).not.toContain("old_retries");
+    // Even a placement naming it (a stale answer) is filtered: candidates are live scene elements only.
+    const stale = semanticRoute({ text, placement: placementOf([{ card: "old_retries", section: "f_limits", action: "append", item: null, column: null, relation: "NEW", update: 0.9, routing: 0.9 }]), index: si.index, embedder: fakeModel.id, scene, getDocument: withOld, ...tierAndDescribe(scene) });
+    expect(stale.candidates.map((c) => c.id)).toEqual([]);
+  });
+
   it("context (the selection or the frame in view, placementContext.ts): a prior for that card or section, and the card says so", async () => {
     const si = new SemanticIndex(fakeModel);
     si.sync(baseScene, getDocument);

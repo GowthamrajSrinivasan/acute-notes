@@ -24,8 +24,9 @@ The intelligent update engine makes new content update the notes and cards alrea
 | U2 | Code blocks, tables and quotes in new content are filed whole (appended), not matched statement by statement. Needs table-row and list-aware matching. | Offline | **Done 2026-11-23** (plan §17.7): tables merge into the existing table by key column; lists covered by a test; code and quotes stay whole by design |
 | U3 | Whether a section is drawn as cards or a table is the outline model's choice on the first Visualize; later updates keep that choice and never revisit it. | Decision (whether to change it at all) | Open (no action planned in the plan) |
 | U4 | `match_statements` adds one decision-model call per merge that touches existing notes, and has no typed (Jev) recording yet. Its cost is unmeasured. | Paid (measure on the chat-import cost benchmark) | Open |
-| 13 | `classify.ts` rule 2 raises a spurious conflict on user-worded cards after two source moves. Safe, but noise; tracked as a `test.fail` "known gap" in `stage1Gate.local.spec.ts`. | Offline | Open |
-| 16 | Router destinations must be canvas elements only. The off-canvas document bug found live in Stage 2 was fixed and tested (§10); §14 asks only to re-verify it stays closed. | Offline check | Fixed in §10; confirm only |
+| 13 | `classify.ts` rule 2 raises a spurious conflict on user-worded cards after two source moves. Safe, but noise; tracked as a `test.fail` "known gap" in `stage1Gate.local.spec.ts`. | Offline | **Fixed 2026-11-24** (plan §19.4): a user-worded card counts as edited for "source silent"; gate spec 10/10 on committed code |
+| 34 | **A reload right after Accept loses the accepted change and the last edits** (found 2026-11-24 by gate 4c, committed code): deferred writes (400 ms debounce, Yjs buffer) aren't awaited on `pagehide`; the source moves on, the canvas doesn't. | Offline (save path; `commitOnCanvas.ts` has other sessions' work) | Open — suggested fix in plan §19.4 |
+| 16 | Router destinations must be canvas elements only. The off-canvas document bug found live in Stage 2 was fixed and tested (§10); §14 asks only to re-verify it stays closed. | Offline check | **Confirmed 2026-11-24** (plan §19.3): Stage 2 test still passes; the semantic path tested too |
 
 ## 2. Stage 5: meaning-based targeting (semantic locate and anchor)
 
@@ -80,7 +81,7 @@ Stage 4f uses direct HTTP, so most of these matter for the other AI tasks or if 
 | # | Item | Needs | Status |
 |---|---|---|---|
 | 27 | `src/ai/reconcile/update.ts` is LF in the worktree but CRLF in git (byte-exact policy since `5d68cb1`), so its owner's next commit shows a whole-file diff. Relevant now: another session has uncommitted changes in `update.ts` / `cardMatch.ts`. | That session, when it commits | Open |
-| 28 | The update-engine rows in `knowledge-notes-lanes.md` are stale (still describe the state before §15–§17). | Offline, when the file is free | Open |
+| 28 | The update-engine rows in `knowledge-notes-lanes.md` are stale (still describe the state before §15–§17). | Offline, when the file is free | **Done 2026-11-24** (plan §19.3) |
 | 5 | Intermittent test timeouts: 5-second timeouts and performance budgets fail under full parallel load; serial runs are clean (§17.3 saw 8 such failures, all passing alone). | Offline (test infrastructure) | Open |
 | 32 | The in-app consistency test needs a flags-on dev server (one Next dev server per folder; Turbopack rejects a linked `node_modules`, so a copy runs with `--webpack`). | Offline (test infrastructure) | Dormant |
 | E6 / 37 | `consistency.local.spec.ts` assumed the UI switch off and failed with it on. Since §17.5 it (and `aiCheck.local.spec.ts`) needs a panel-on server URL and is skipped otherwise. | Offline | Dormant |
@@ -94,6 +95,6 @@ Stage 4f uses direct HTTP, so most of these matter for the other AI tasks or if 
 
 1. ~~**Stage 5 leftovers**~~ **done 2026-11-24 (plan §18.2):** selection/open-frame context, vectors kept in IndexedDB, MiniLM-L6 bundled in a desktop build with semantic placement on (and the desktop server's CommonJS start fixed). Left: an Electron package run; MCP `suggest_placement` (another lane). Land #27 (line endings) with the session's `update.ts` commit.
 2. **#7 done for chat-completions BYOK (plan §19).** Live smoke passed 2026-11-23 (3/3 on AICredits, one request per call, cap and temperature honoured; plan §19). AI e2e suite on BYOK run 2026-11-23: 28 passed / 11 failed; A/B rerun on committed code cleared #7 (direct on 8/8, off 7/8; plan §19). Anthropic and responses-API BYOK now direct too (plan §19.1, offline; Azure stays on the SDK). Next there: one approved live Anthropic call. The full run's other failures are followed up in plan §19.2 (ChatGPT share pages changed shape: parser fixed, the importer's user agent gets only a preview page — a decision).
-3. **U4, cost of `match_statements`:** one approved paid run on the chat-import cost benchmark, after U1, since U1 sends more merges through statement matching.
+3. **U4, cost of `match_statements`:** one approved paid run on the chat-import cost benchmark, after U1, since U1 sends more merges through statement matching. **Prep done 2026-11-24 (plan §19.3):** the spec reads saved transcripts (`CHAT_SHARE_TRANSCRIPTS`); the first pages were saved signed in (rendered only, no conversation data); waiting for the three pages saved from a private, signed-out window.
 4. ~~U2, table-row and list-aware matching~~ — done 2026-11-23 (plan §17.7).
-5. **Quick clean-ups:** #28 (lanes file) and #16 (confirm the off-canvas fix). Leave the dormant consistency items until the panel is turned back on, and if it is, start with U6.
+5. ~~**Quick clean-ups:** #28 (lanes file) and #16 (confirm the off-canvas fix).~~ Done 2026-11-24 (plan §19.3). Leave the dormant consistency items until the panel is turned back on, and if it is, start with U6.

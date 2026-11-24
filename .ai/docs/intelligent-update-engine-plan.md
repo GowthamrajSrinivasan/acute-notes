@@ -4279,8 +4279,12 @@ section — right by the rules; whether it restates the card (a duplicate) is th
 - **Checked on a real desktop build** (`ACUTE_DIST_DIR=.next/desktop-check`, `next build --webpack`, then removed): the trace carries
   transformers.js and the ONNX runtime's native binaries; the built server, given the shell's environment, answered `/api/ai/embed` from
   the bundled weights with downloads off (GET 200; a paraphrase 0.613 vs an unrelated sentence 0.019). A second build with the CommonJS fix ran the unmodified `server.js`: GET and POST 200.
-- **Not done:** an Electron package run (`desktop:pack`) and an installer test; turning semantic placement on for the desktop app by default
-  (it stays a build switch, as on the web).
+- **Packaged and launched (2026-11-24):** `electron-builder --dir` on that build (`after-pack.cjs` now reads `ACUTE_DIST_DIR` too); the
+  packaged `Acute Notes.exe` started its server (`/` → 307 to the workspace) and answered `/api/ai/embed` from the bundled weights through
+  the shell's manifest alone (nothing else set `ACUTE_EMBEDDINGS`): GET and POST 200, the same vectors (0.613 / 0.019). Then closed and the
+  build folder removed.
+- **Not done:** an installer test (NSIS); turning semantic placement on for the desktop app by default (it stays a build switch, as on the
+  web).
 
 **Verification:** `placementContext.test.ts` 7, `vectorStore.test.ts` 6, `desktopModels.test.ts` 3, `semanticPlacement.test.ts` +1
 (context prior +0.1 on exactly the chosen card or section, and the evidence lines). Router 107 tests. tsc and eslint clean.
@@ -4396,3 +4400,55 @@ used; paid, needs approval).
   uncommitted one-part outline skip (performance session) removes `outline_document`; the coverage row and the extra
   `check_card_meaning` calls are the distil note model's. Their tests should change with that work.
 - **`latency`** (browser launch timed out) and the 7.4 h run time: the machine, not the app.
+
+### 19.3 Clean-ups #16 and #28, and U4 prep (2026-11-24, offline, no AI call)
+
+**Asked (product owner, 2026-11-24):** "go ahead with 2 and 3, then the U4 prep".
+
+- **#16 confirmed:** routing destinations are canvas elements only, on both paths. Stage 2's test still passes (an off-canvas document, kept
+  for Undo, is never a candidate); new on the semantic path (`semanticPlacement.test.ts`): a card deleted after it was indexed is dropped
+  from the item index on the next sync, and even a placement naming it yields no candidate (candidates are live scene elements only).
+- **#28 done:** the three stale update-engine rows of `knowledge-notes-lanes.md` (owner row, Stage 5 wiring row, Stage 5 latency rules row)
+  now describe §15–§19.
+- **U4 prep — the benchmark no longer fetches the chats.** `e2e/ai/chatShare.spec.ts` reads the three chats from
+  `CHAT_SHARE_TRANSCRIPTS=<file>` when set, answering the browser's `/api/import/chat-share` calls by share id; branch-skip, compose,
+  visualize and merge run as in the app, so the workload stays the October one. The file is made by
+  `src/ai/import/chatShare/saveTranscripts.tool.test.ts` (opt-in, no network, no AI) from pages **the product owner saves in their own
+  browser** (Ctrl+S on each link), read by the app's own reader and the route's redaction; it holds the chats' text, so it stays outside the
+  repository. Checked on one page already at hand (the branch: 8 turns read).
+- **No saved copy of the full chats existed:** `liveBranchChain.json` is a shortened fixture (about 7,900 of the ~172,000 characters).
+- **Comparability note for U4:** the October baseline read the old page format (citations removed by their private-use markers); the new
+  reader removes citations, image galleries and suggested follow-ups by their offsets. Compare the import size the spec notes against the
+  baseline's before comparing cost.
+- **Still needed for U4:** the three saved pages, then one approved paid run (≤ $0.45, rules in the chat-import cost benchmark).
+- **2026-11-24, first pages supplied (run approved, not started):** the three pages were saved while signed in to ChatGPT ("Webpage,
+  Complete"). That page is ChatGPT's own app, rendered: the conversation is fetched after load and is not in the file (no
+  `__WEB_MOBILE_DATA__`, no message tree; only rendered HTML). Reading it would need an HTML-to-markdown reader the app doesn't use, so the
+  workload would no longer match October's; **not done**. The tool now says so ("saved while signed in … save it from a private window")
+  and takes the link from the browser's "saved from url" note. Pages saved from a private (signed-out) window carry the conversation the
+  app's reader reads (checked on the branch page: 8 turns).
+
+### 19.4 #13 fixed; a reload right after Accept loses canvas changes (#34, found) (2026-11-24, offline, no AI call)
+
+**Asked (product owner, 2026-11-24):** "leave this [U4] for later, move on to other items".
+
+**#13 — no spurious conflict on a card in the user's wording.** Cause: `classify.ts` rule 2 treated a node as "source silent" only
+when the card was edited by hand or already at the previous version. A card in the user's wording (a merge onto their edit, or Keep
+mine) keeps the version it was written at, so once the source moved on twice elsewhere it was taken for an undone update and, being
+user-worded, came back as "You edited this; the new content changes it too". **Fix (engine-lane decision, provisional):** a
+`userWording` card counts as edited for that rule — the user's wording stands until the source changes that node again. Only an
+AI-worded card behind the previous version is still taken for an undone update and proposed again. Trade-off: an accepted update to a
+user-worded card that is then undone is not re-proposed until the source changes that node again (the user's wording wins, as for
+any edit). `update.ts` (another session's uncommitted work) is untouched.
+- Verification: `classify.test.ts` +1 (22 pass: unchanged after two versions; the AI-worded case still re-proposed; a real change is
+  still reviewed, never overwritten). `stage1Gate.local.spec.ts`: the `test.fail` "known gap" is now a normal test; **10/10 on committed
+  code + the fix** (worktree server, no AI), with a 2-second wait before gate 4c's reload — see #34.
+
+**#34 (new) — a reload right after Accept loses the accepted change and the user's last edits.** Gate 4c (accept, then reload at once)
+fails on committed code and on the working tree alike, with or without #13: after the reload the canvas is back to before the Accept
+("six servers", the user's ", checked" missing) while the source's version on record has moved on. With 2 s before the reload all 10
+gates pass. Cause: canvas and block-document writes are deferred (`documentStore` 400 ms debounce, the Yjs provider's buffer) and the
+`pagehide` flush starts them without waiting, so a reload within about a second drops them — more than the ~100 ms the design
+accepts. The source and canvas then disagree. **Suggested fix** (not built — `commitOnCanvas.ts` and the save path are partly other
+sessions' uncommitted work): flush the document store and the canvas session right after an accepted change set (an Accept is a
+deliberate commit), and keep the `pagehide` flush for ordinary edits. Gate 4c keeps its immediate reload so it catches this.

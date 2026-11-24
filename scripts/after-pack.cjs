@@ -5,7 +5,8 @@ const { cpSync, existsSync } = require("node:fs");
 const path = require("node:path");
 
 exports.default = async function afterPack(context) {
-  const src = path.join(context.packager.projectDir, ".next", "standalone");
+  // ACUTE_DIST_DIR: a build kept apart from `next dev`'s .next (as scripts/prepare-desktop.mjs reads it).
+  const src = path.join(context.packager.projectDir, process.env.ACUTE_DIST_DIR || ".next", "standalone");
   if (!existsSync(path.join(src, "server.js"))) throw new Error("Run the desktop build first: .next/standalone is missing.");
   const resources =
     context.electronPlatformName === "darwin"

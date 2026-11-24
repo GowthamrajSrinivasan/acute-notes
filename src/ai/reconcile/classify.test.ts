@@ -69,6 +69,22 @@ describe("reconcile — rules that keep user edits safe", () => {
     expect(states(r)).toEqual(["unchanged:a", "update_clean:b", "unchanged:c"]);
   });
 
+  it("#13: a card in the user's wording stays unchanged while the source moves on elsewhere — however many versions", () => {
+    // Merged onto the user's edit at v2 (baseline = their wording, untouched since); v3 and v4 changed only c.
+    const v3 = plan(node("a", "A"), node("b", "B"), node("c", "C3"));
+    const v4 = plan(node("a", "A"), node("b", "B"), node("c", "C4"));
+    const existing = [obj("a", "A", { version: 1 }), obj("b", "my wording of B", { version: 2, userWording: true }), obj("c", "C3", { version: 3 })];
+    const r = reconcile({ previous: v3, previousVersion: 3, next: v4, existing, fingerprint: fp, objectKind: () => ({ shape: "shape" }) });
+    expect(states(r)).toEqual(["unchanged:a", "unchanged:b", "update_clean:c"]);
+    // The same card without the user-wording mark is taken for an undone update and proposed again (the rule above).
+    const aiWorded = [existing[0]!, obj("b", "my wording of B", { version: 2 }), existing[2]!];
+    expect(states(reconcile({ previous: v3, previousVersion: 3, next: v4, existing: aiWorded, fingerprint: fp, objectKind: () => ({ shape: "shape" }) }))[1]).toBe("update_clean:b");
+    // When the source does change it, the user's wording is a conflict to review, never overwritten.
+    const v5 = plan(node("a", "A"), node("b", "B5"), node("c", "C4"));
+    const after = reconcile({ previous: v4, previousVersion: 4, next: v5, existing, fingerprint: fp, objectKind: () => ({ shape: "shape" }) });
+    expect(states(after)[1]).toMatch(/^update_(clean|conflict):b$/);
+  });
+
   it("a “Keep mine” (baseline = the user's content, stamped at the version) is not overwritten when nothing further changed", () => {
     const v2 = plan(node("a", "A2"), node("b", "B"), node("c", "C"));
     const existing = [obj("a", "mine", { version: 2 }), obj("b", "B", { version: 1 }), obj("c", "C", { version: 1 })];

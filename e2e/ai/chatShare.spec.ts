@@ -11,8 +11,13 @@
  * (the first chat's turns are repeats and are left out before any model call; the branches' new turns are filed by the
  * model, with Jev answering the typed questions). Guarantees are hard assertions; model judgement is soft. Prompts,
  * replies and decision-model traffic are attached to the report.
+ *
+ * **Saved transcripts (U4, 2026-11-24):** since 2026-11 chatgpt.com sends the importer only a link preview (decision (b),
+ * chat-share-import-plan §4). With `CHAT_SHARE_TRANSCRIPTS=<file>` (made from pages the user saved in their browser, see
+ * `src/ai/import/chatShare/saveTranscripts.tool.test.ts`) the browser's calls to `/api/import/chat-share` are answered from
+ * that file, by share id; everything after the route — branch-skip, compose, visualize, merge — runs as in the app.
  */
-import { appendFileSync } from "node:fs";
+import { appendFileSync, readFileSync } from "node:fs";
 import { expect, test, type Page, type Request } from "@playwright/test";
 import { aiTaskOf, openApp, promptOf, recordAIRequests } from "../helpers";
 import { connectAI } from "../aiProvider";
@@ -76,6 +81,23 @@ async function openVisualize(p: Page) {
   await p.getByRole("button", { name: "More", exact: true }).click();
   await p.getByRole("menuitem", { name: "Visualize content…" }).click();
   await expect(visualizeDialog(p)).toBeVisible();
+}
+
+/** The saved transcripts (`CHAT_SHARE_TRANSCRIPTS`), answered in place of the import route's fetch of chatgpt.com. */
+async function answerFromSavedTranscripts(p: Page): Promise<void> {
+  const file = process.env.CHAT_SHARE_TRANSCRIPTS;
+  if (!file) return;
+  const saved = JSON.parse(readFileSync(file, "utf8")) as { shareId: string; turns: { markdown: string }[] }[];
+  note("transcripts", `saved file (${saved.length} chats, ${saved.reduce((n, t) => n + t.turns.reduce((m, x) => m + x.markdown.length, 0), 0).toLocaleString("en-US")} characters), not fetched`);
+  await p.route("**/api/import/chat-share", async (route) => {
+    const { url } = route.request().postDataJSON() as { url: string };
+    const transcript = saved.find((t) => url.includes(t.shareId));
+    await route.fulfill(
+      transcript
+        ? { status: 200, contentType: "application/json", body: JSON.stringify({ transcript }) }
+        : { status: 404, contentType: "application/json", body: JSON.stringify({ error: "Not in the saved transcripts.", code: "not_found" }) },
+    );
+  });
 }
 
 /** Adds links through the real import route and waits until each has either loaded or failed. */
@@ -207,6 +229,7 @@ test("ChatGPT share links: branch-skip on real chats, visualize, then merge the 
     inflight.delete(r);
     live(r, "failed", { error: r.failure()?.errorText });
   });
+  await answerFromSavedTranscripts(page);
   await openApp(page);
   await connectAI(page);
   const usageStart = await credits("start");
