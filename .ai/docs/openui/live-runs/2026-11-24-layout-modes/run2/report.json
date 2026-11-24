@@ -1,0 +1,151 @@
+{
+  "distil": true,
+  "A1.calls": {
+    "calls": 9,
+    "failed": 0,
+    "usd": 0.00633,
+    "models": [
+      "google/gemini-2.5-flash-lite",
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "outline_document": {
+        "calls": 1,
+        "promptTokens": 1069,
+        "completionTokens": 298,
+        "ms": 1310
+      },
+      "generate_visual_plan": {
+        "calls": 4,
+        "promptTokens": 8110,
+        "completionTokens": 6320,
+        "ms": 295681
+      },
+      "check_card_meaning": {
+        "calls": 4,
+        "promptTokens": 2187,
+        "completionTokens": 1095,
+        "ms": 49914
+      }
+    }
+  },
+  "approvedBy": "project owner (chat, 2026-11-24)",
+  "priceInPerM": 0.15,
+  "priceOutPerM": 0.6,
+  "cap": 0.3,
+  "spent.A": 0.01061,
+  "spentUsdEstimate": 0.01316,
+  "A1.newLayoutCardsInReview": 1,
+  "A1.flowCards": [
+    "root = FlowDiagram(\"Release process\", [\"Freeze main branch\", \"Build & test\", \"Approve candidate\", \"Deploy\", \"Monitor\"], [\"Release manager freezes the main branch at 10:00 on Tuesday. From the source: 00\", \"CI builds the release candidate and runs the full test suite (~4,000 tests).\", \"Two reviewers approve the release candidate.\", \"On-call engineer deploys it to production in three waves.\", \"Team watches error rates for 30 minutes before closing the release.\"], [\"u4\", \"u5\", \"u6\", \"u7\", \"u8\"])"
+  ],
+  "A1.nativeShapeTexts": [
+    "parallel",
+    "process",
+    "roles"
+  ],
+  "A2.calls": {
+    "calls": 4,
+    "failed": 0,
+    "usd": 0.00428,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "generate_visual_plan": {
+        "calls": 2,
+        "promptTokens": 4248,
+        "completionTokens": 4791,
+        "ms": 175711
+      },
+      "check_card_meaning": {
+        "calls": 2,
+        "promptTokens": 1352,
+        "completionTokens": 937,
+        "ms": 54412
+      }
+    }
+  },
+  "A2.reviewText": "Update from new content · +4 new · −2 removed · ~1 updated · 2 links changed ⚠ 2 crossings\nReview\nReject\nAccept all\n~ Release process\nReplaces this block's content: +9 −11 lines.\nView changes",
+  "A2.flowCardIds": [
+    "sxszeEmojfmuFs4aoN58"
+  ],
+  "A2.cardStillThere": true,
+  "A2.nativeShapeTexts": [
+    "parallel",
+    "process",
+    "roles"
+  ],
+  "A2.cardText": "[{\"type\":\"heading\",\"props\":{\"level\":3},\"content\":\"Release process\"},{\"type\":\"numberedListItem\",\"id\":\"4d09209d-3177-4c57-a4e5-39543f28eec0\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"Freeze main branch\",\"styles\":{\"bold\":true}}],\"children\":[{\"id\":\"88ac454f-fbc3-49d1-93eb-edf59a879e59\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"First, the release manager freezes the main branch at 10:00 on Tuesday.\",\"styles\":{}}],\"children\":[]}]},{\"type\":\"numberedListItem\",\"id\":\"dda23d4b-7834-4814-8eb8-c977daf2a274\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"Build & test candidate\",\"styles\":{\"bold\":true}}],\"children\":[{\"id\":\"5d93fd30-a31c-4308-a70d-c8337a009c35\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"Then CI builds the release candidate and runs the full test suite, about 4,000 tests.\",\"styles\":{}}],\"children\":[]}]},{\"type\":\"numberedListItem\",\"id\":\"916c2e67-3b1f-4ff5-929f-253a31d19780\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"Review approvals\",\"styles\":{\"bold\":true}}],\"children\":[{\"id\":\"9f3a0f61-8075-4383-bea9-be7e16e8256c\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"After that, three reviewers approve the release candidate.\",\"styles\":{}}],\"children\":[]}]},{\"type\":\"numberedListItem\",\"id\":\"f0f7ae38-23b9-450b-95c8-57d86405ba35\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"Deploy in three waves\",\"styles\":{\"bold\":true}}],\"children\":[{\"id\":\"94d04f88-6c74-48fa-98d5-1d389d5b21a8\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"Once it is approved, the on‑call engineer deploys it to production in three waves.\",\"styles\":{}}],\"children\":[]}]},{\"type\":\"numberedListItem\",\"id\":\"0822190a-c97b-4602-b6ab-504aca6a9b9b\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"Monitor error rates\",\"styles\":{\"bold\":true}}],\"children\":[{\"id\":\"406940f0-8030-4fc5-9fda-249105328ce3\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"Finally, the team watches error rates for 45 minutes before closing the release.\",\"styles\":{}}],\"children\":[]}]}]",
+  "B1-timeline.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00075,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3430,
+        "completionTokens": 395,
+        "ms": 17233
+      }
+    }
+  },
+  "spent.B": 0.00255,
+  "B1-timeline": {
+    "requests": 1,
+    "outcome": "refused",
+    "reply": "<markdown>\nOnboarding a new engineer\n\nOn day one they get a laptop and accounts. In week one they pair with a mentor on a small bug. By the end of month one they own a feature.\n</markdown>\n\n<layout>\nroot = Timeline(\"Onboarding a new engineer\", [e1, e2, e3])\ne1 = TimelineEvent(\"Day 1\", \"Laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"End of Month 1\", \"Own a feature\")\n</layout>",
+    "problems": "Not proposed — the layout didn't match the card:\nShows \"1\", which isn't in the card's text or its cited passages.\nShows \"1\", which isn't in the card's text or its cited passages.\nShows \"1\", which isn't in the card's text or its cited passages."
+  },
+  "B2-callout.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00108,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3424,
+        "completionTokens": 942,
+        "ms": 67035
+      }
+    }
+  },
+  "B2-callout": {
+    "requests": 1,
+    "outcome": "proposed",
+    "reply": "<markdown>\nDatabase migration\n\nMigrate the database.\n\n⚠️ The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\n</markdown>\n\n<layout>\nroot = IdeaCard(\"Database migration\", \"Migrate the database.\", null, null, null, [c1])\nc1 = Callout(\"warning\", \"The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\")\n</layout>",
+    "flagged": "",
+    "stored": "root = IdeaCard(\"Database migration\", \"Migrate the database.\", null, null, null, [c1])\nc1 = Callout(\"warning\", \"The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\")",
+    "drawsStored": true
+  },
+  "B3-table.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00072,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3423,
+        "completionTokens": 336,
+        "ms": 17615
+      }
+    }
+  },
+  "B3-table": {
+    "requests": 1,
+    "outcome": "proposed",
+    "reply": "<markdown>\nPlans\n\n| Plan | Storage | Cost |\n|------|---------|------|\n| Free | 5 GB | $0 |\n| Team | 200 GB | $10 per user per month |\n</markdown>\n<layout>\nroot = ComparisonTable([\"Plan\", \"Storage\", \"Cost\"], [[\"Free\", \"5 GB\", \"$0\"], [\"Team\", \"200 GB\", \"$10 per user per month\"]])\n</layout>",
+    "flagged": "",
+    "stored": "root = ComparisonTable([\"Plan\", \"Storage\", \"Cost\"], [[\"Free\", \"5 GB\", \"$0\"], [\"Team\", \"200 GB\", \"$10 per user per month\"]])",
+    "drawsStored": true
+  }
+}

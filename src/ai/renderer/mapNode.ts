@@ -8,7 +8,9 @@
  * see `render.ts`), the same one Ask AI Insert already uses.
  */
 import { normalizeCodeLanguage } from "@/components/blocks/editor/codeLanguages";
-import type { ContentBlock, InlineContent, RichContent, TableCell } from "@/domain/types";
+import { CARD_LAYOUT_LANG_MAX, type ContentBlock, type InlineContent, type RichContent, type TableCell } from "@/domain/types";
+import { flowLang, flowOfContent } from "@/ai/openui/flowLayout";
+import { FLOW_CARD_ROLE } from "@/ai/visual-plan/flowCards";
 import type { ProposedChange } from "@/ai/changes/changeSet";
 import { getNodeSemantics, type NodeSemantics } from "@/domain/canvas/diagram";
 import type { PlanShape, VisualNode } from "@/ai/visual-plan/types";
@@ -53,6 +55,8 @@ export type BlockNodeChange = {
   stableNodeKey?: string;
   /** A card's architecture kind (Lens Phase 2). */
   semantics?: NodeSemantics;
+  /** How the card is drawn in the Cards view (note-taking-modes Step 6): a flow card's `FlowDiagram`, built from its text. */
+  layout?: { lang: string };
 };
 
 export type MappedChange =
@@ -109,8 +113,14 @@ function mapContent(node: VisualNode, box: Box, parseMarkdown: ParseMarkdown): M
         box,
       };
     }
-    case "text":
-      return { kind: "create_block", key: node.id, blockType: "text", content: [...titleBlock(node), ...parseMarkdown(node.content.markdown)], box };
+    case "text": {
+      const content = [...titleBlock(node), ...parseMarkdown(node.content.markdown)];
+      // A flow card (`flowCards.ts`) is drawn as a FlowDiagram built in code from the text it holds; when the text doesn't
+      // read back as a flow (it always should), it is an ordinary card.
+      const flow = node.role === FLOW_CARD_ROLE ? flowOfContent({ title: "Untitled", snapshot: content }) : null;
+      const lang = flow ? flowLang(flow) : null;
+      return { kind: "create_block", key: node.id, blockType: "text", content, box, ...(lang && lang.length <= CARD_LAYOUT_LANG_MAX ? { layout: { lang } } : {}) };
+    }
     case "todo":
       return {
         kind: "create_block",

@@ -5,6 +5,9 @@
  *   Read   search_workspace, get_canvas, get_page, get_selected_content, get_related_objects
  *   Write  create_block, create_page, create_table, create_todo, create_connection, move_object, update_block, render_visual_plan
  *
+ * Plus, when the app provides them, the intelligent UI tools (`./layoutTools`: get_layout_grammar, create_layout_card,
+ * update_layout_card), off until the user allows them for the workspace, free, and never calling a model.
+ *
  * Plus, when the app provides a repo-map store, F43's repo-map tools and the
  * `map_repo` prompt (`./repoMap`).
  *
@@ -26,6 +29,7 @@ import { getRepoMapHost, REPO_MAP_READ_TOOLS, REPO_MAP_TOOL_NAMES, registerRepoM
 import { WorkspaceScan } from "../resources/workspaceScan";
 import { registerWriteTools, sanitizeClientName, WRITE_TOOL_NAMES } from "./writeTools";
 import { INGEST_TOOL_NAMES, registerIngestTools, type IngestToolOptions } from "./ingestTools";
+import { LAYOUT_READ_TOOLS, LAYOUT_WRITE_TOOLS, registerLayoutTools, type LayoutToolOptions } from "./layoutTools";
 import { PROJECT_READ_TOOLS, PROJECT_WRITE_TOOLS, registerProjectTools } from "./projectTools";
 import { PROJECT_RESOURCE_TEMPLATES, registerProjectResources, SETUP_RESOURCE_TEMPLATE } from "./projectResources";
 import { OBJECT_READ_TOOLS, OBJECT_WRITE_TOOLS, registerObjectTools } from "./objectTools";
@@ -40,6 +44,7 @@ export { getLiveCanvasActions, registerLiveCanvasActions, type LiveCanvasActions
 export { READ_TOOL_NAMES } from "./readTools";
 export { WRITE_TOOL_NAMES } from "./writeTools";
 export { INGEST_TOOL_NAMES, type IngestToolOptions } from "./ingestTools";
+export { LAYOUT_READ_TOOLS, LAYOUT_TOOL_NAMES, LAYOUT_WRITE_TOOLS, type LayoutToolOptions } from "./layoutTools";
 export { PROJECT_READ_TOOLS, PROJECT_TOOL_NAMES, PROJECT_WRITE_TOOLS } from "./projectTools";
 export { OBJECT_READ_TOOLS, OBJECT_WRITE_TOOLS } from "./objectTools";
 export { LENS_READ_TOOLS, LENS_WRITE_TOOLS } from "./lensTools";
@@ -61,6 +66,8 @@ export interface AcuteToolDeps {
   repoMap?: RepoMapToolOptions;
   /** The content-import tools (`find_import_targets`, `import_content`) are served only with the app's AI runtime and sources, to local sessions. */
   ingest?: IngestToolOptions;
+  /** The intelligent UI tools are served only with the app's layout check and grammar (note-taking modes, D6). */
+  layout?: LayoutToolOptions;
   /** This connection's MCP session id; one is made when not given (D40, D32). */
   sessionId?: string;
   /** Agent State (D31): the change log and session records the Phase 7B tools read and `sync_session` writes. */
@@ -108,11 +115,12 @@ export interface RepoMapToolOptions {
 }
 
 /** The tools a client may call under `policy` (for `acute://context/current`'s `availableTools`). */
-export function availableToolNames(policy?: ToolPolicySource, options: { repoMap?: boolean; ingest?: boolean } = {}): string[] {
+export function availableToolNames(policy?: ToolPolicySource, options: { repoMap?: boolean; ingest?: boolean; layout?: boolean } = {}): string[] {
   const writes = resolvePolicy(policy).allowWrites;
   const ingest = options.ingest ? (writes ? [...INGEST_TOOL_NAMES] : [INGEST_TOOL_NAMES[0]]) : [];
+  const layout = options.layout ? [...LAYOUT_READ_TOOLS, ...(writes ? LAYOUT_WRITE_TOOLS : [])] : [];
   const repoMap = options.repoMap ? (writes ? [...REPO_MAP_TOOL_NAMES] : [...REPO_MAP_READ_TOOLS]) : [];
-  return [...READ_TOOL_NAMES, ...(writes ? WRITE_TOOL_NAMES : []), ...repoMap, ...ingest, ...PROJECT_READ_TOOLS, ...(writes ? PROJECT_WRITE_TOOLS : []), ...OBJECT_READ_TOOLS, ...(writes ? OBJECT_WRITE_TOOLS : []), ...LENS_READ_TOOLS, ...(writes ? LENS_WRITE_TOOLS : [])];
+  return [...READ_TOOL_NAMES, ...(writes ? WRITE_TOOL_NAMES : []), ...repoMap, ...ingest, ...PROJECT_READ_TOOLS, ...(writes ? PROJECT_WRITE_TOOLS : []), ...OBJECT_READ_TOOLS, ...(writes ? OBJECT_WRITE_TOOLS : []), ...LENS_READ_TOOLS, ...(writes ? LENS_WRITE_TOOLS : []), ...layout];
 }
 
 export function registerAcuteTools(server: McpServer, deps: AcuteToolDeps): void {
@@ -147,6 +155,17 @@ export function registerAcuteTools(server: McpServer, deps: AcuteToolDeps): void
       clientName: () => server.server.getClientVersion()?.name,
       sessionId: () => sessionId,
       ingest: deps.ingest,
+      ...(deps.parseMarkdown ? { parseMarkdown: deps.parseMarkdown } : {}),
+    });
+  }
+  if (deps.layout) {
+    registerLayoutTools(server, {
+      workspaceId: deps.workspaceId,
+      liveCanvas: deps.liveCanvas,
+      policy: () => resolvePolicy(deps.policy),
+      clientName: () => server.server.getClientVersion()?.name,
+      sessionId: () => sessionId,
+      layout: deps.layout,
       ...(deps.parseMarkdown ? { parseMarkdown: deps.parseMarkdown } : {}),
     });
   }

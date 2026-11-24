@@ -39,6 +39,8 @@ import { splitUnits } from "@/ai/fidelity/sourceUnits";
 import { FIDELITY_CONFIG, organisationFor } from "@/config/fidelity";
 import { ensureStableKeys, mergeUnitPlans } from "@/ai/reconcile/keys";
 import { groupByUnit } from "@/ai/visual-plan/groups";
+import { collapseFlowSections } from "@/ai/visual-plan/flowCards";
+import { withFlowCitations, withRenamedIdeas } from "./flowRun";
 import { stopwatch } from "./timing";
 import { visualizeOutlined, type OutlinedResult } from "./outlined";
 import { analysisUnits, headingOnlyReply } from "@/ai/reconcile/units";
@@ -197,7 +199,11 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
   const organisation = organisationFor(knowledge ? "distil" : "preserve");
   const validated = validateVisualPlan(rawPlan, organisation === "v2" ? { organisation } : {});
   const keyed = ensureStableKeys(validated.plan);
-  const plan = revisions.length ? withChoiceNodes(keyed, [], revisions) : keyed;
+  const native = revisions.length ? withChoiceNodes(keyed, [], revisions) : keyed;
+  // AI-managed canvas (note-taking-modes Step 6): each plain linear flow section is one FlowDiagram card. The stored plan is
+  // the collapsed one, so a later update of the section finds the same card.
+  const flows = input.canvasNoteMode === "ai" ? collapseFlowSections(native) : null;
+  const plan = flows?.plan ?? native;
   const warnings = [...notes, ...validated.warnings];
   // Content the validator could not carry over is said, never only logged (content fidelity: every loss is visible).
   const lostNodes = validated.losses.filter((l) => /^node \d+: dropped/.test(l)).length;
@@ -237,8 +243,10 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
   if (knowledge) {
     // Distil (WP1.10–1.11): each card's citations and review, stamped on its object when written; the report v2; and the
     // run's output for the golden recorder (`__acuteDev.knowledgeRun`).
-    const finished = finishKnowledgeRun({ units: knowledge.units, plan, sections: knowledge.sections, superseded: revisions.map((r) => r.earlier) });
+    const sections = flows ? withRenamedIdeas(knowledge.sections, flows.rename) : knowledge.sections;
+    const finished = finishKnowledgeRun({ units: knowledge.units, plan, sections, superseded: revisions.map((r) => r.earlier) });
     changeSet.knowledge = { cards: finished.cards, report: finished.report, units: unitOutcomesOf(finished.run) };
+    if (flows) withFlowCitations(changeSet, flows.cards, finished.run.cites ?? {});
     rememberKnowledgeRun(contentSource.sourceId, finished.run);
   }
   // Kept so a structure-only result can be run again with AI ("Analyse with AI" / "Retry" in the review).
@@ -254,8 +262,9 @@ export async function visualizeContent(input: VisualizeInput, runtime: AIRuntime
     const regenerated = new Set([...(reuse?.regenerated ?? []), ...(reuse ? reuse.retry.keys() : [])]);
     rememberRun(changeSet.operationId, { input: rest, outline: outlinedRun.outline, replies: outlinedRun.replies, regenerated });
   }
-  // "Keep as text" (D-R2.3): only for AI's own choice of representation (not a forced template, not a regeneration).
-  if (!usedLocalTier && !input.template && !options.reuse && readsFineAsText(plan, input.text)) throw new ReadsFineAsTextError(changeSet);
+  // "Keep as text" (D-R2.3): only for AI's own choice of representation (not a forced template, not a regeneration). Judged on the
+  // plan before flow sections became cards (Step 6): a flow drawn as a FlowDiagram card is still a visual, not text.
+  if (!usedLocalTier && !input.template && !options.reuse && readsFineAsText(native, input.text)) throw new ReadsFineAsTextError(changeSet);
   return { changeSet, usedLocalTier, warnings, notices, analysis, ...(provenance ? { provenance } : {}), ...(fidelityReport ? { fidelity: fidelityReport } : {}) };
 }
 

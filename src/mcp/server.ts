@@ -30,7 +30,7 @@ import { sessionAutoAccept } from "@/ai/changes/autoAccept";
 import { resolvePolicy } from "./tools/common";
 import type { AgentStateRepository } from "@/persistence/repositories/types";
 import { remoteToolAllowed, resolveRemoteProfile, type RemoteProfile } from "./tools/remoteProfile";
-import { availableToolNames, getLiveCanvasActions, registerAcuteTools, type IngestToolOptions, type LensFocusHost, type LiveCanvasActions, type RepoMapToolOptions, type ToolCallUsage, type ToolPolicySource } from "./tools";
+import { availableToolNames, getLiveCanvasActions, registerAcuteTools, type IngestToolOptions, type LayoutToolOptions, type LensFocusHost, type LiveCanvasActions, type RepoMapToolOptions, type ToolCallUsage, type ToolPolicySource } from "./tools";
 
 export const MCP_SERVER_NAME = "acute-notes";
 export const MCP_SERVER_VERSION = "0.1.0";
@@ -58,6 +58,11 @@ export interface AcuteMcpServerDeps {
   repoMap?: RepoMapToolOptions;
   /** Serve the content-import tools (AI imports, guarded by the user's setting); never to a remote session, as the repo-map tools. */
   ingest?: IngestToolOptions;
+  /**
+   * Serve the intelligent UI tools (note-taking modes, D6): gated by the user's setting, free, no model call. Served to
+   * remote sessions too — a remote profile decides whether they're listed (`restricted` doesn't list them).
+   */
+  layout?: LayoutToolOptions;
   /** Agent State (D46): told about every tool call, for the session's usage. */
   onToolCall?: (call: ToolCallUsage) => void;
   /** Agent State (D31): the change log and session records (Phase 7B's history tools, `sync_session`). */
@@ -194,7 +199,7 @@ export function createAcuteMcpServer(deps: AcuteMcpServerDeps): McpServer {
 
   const currentPayload = async (): Promise<CurrentContext | CurrentContextUnavailable> => {
     const ctx = await scopedContext();
-    const names = availableToolNames(deps.toolPolicy, { repoMap: !!repoMap, ingest: !!ingest });
+    const names = availableToolNames(deps.toolPolicy, { repoMap: !!repoMap, ingest: !!ingest, layout: !!deps.layout });
     return ctx
       ? { ...ctx, availableTools: profile ? names.filter((n) => remoteToolAllowed(profile, n)) : names }
       : { uri: CURRENT_CONTEXT_URI, version: CURRENT_CONTEXT_VERSION, available: false };
@@ -233,6 +238,7 @@ export function createAcuteMcpServer(deps: AcuteMcpServerDeps): McpServer {
     ...(deps.parseMarkdown ? { parseMarkdown: deps.parseMarkdown } : {}),
     ...(repoMap ? { repoMap } : {}),
     ...(ingest ? { ingest } : {}),
+    ...(deps.layout ? { layout: deps.layout } : {}),
     ...(deps.sessionId ? { sessionId: deps.sessionId } : {}),
     ...(deps.onToolCall ? { onToolCall: deps.onToolCall } : {}),
     ...(deps.agentState ? { agentState: deps.agentState } : {}),

@@ -17,7 +17,9 @@ import {
 import { RenameInput } from "@/components/common/RenameInput";
 import { MenuButton, RowMenu, type MenuItem, type OpenMenu } from "@/components/common/RowMenu";
 import { UNTITLED_PAGE } from "@/domain/content/richContent";
-import type { CanvasDocument, DocumentRecord } from "@/domain/types";
+import { NOTE_MODE_LABELS, NOTE_MODES } from "@/domain/noteMode";
+import type { CanvasDocument, DocumentRecord, NoteMode } from "@/domain/types";
+import { setUiPref, useUiPref } from "@/state/uiPrefs";
 import { createPage, deletePage, renamePage } from "@/domain/pages/pageCommands";
 import { useDocumentList } from "@/state/documents";
 import { useHierarchy } from "@/state/hierarchy";
@@ -35,9 +37,14 @@ export interface NavigatorCommands {
   createWorkspace(): Promise<string | undefined>;
   renameWorkspace(id: string, name: string): void;
   deleteWorkspace(id: string): Promise<void>;
-  /** Resolves to the new canvas's id (undefined when it failed). */
-  createCanvas(workspaceId: string): Promise<string | undefined>;
+  /**
+   * Resolves to the new canvas's id (undefined when it failed). `noteMode` is the mode picked for it; without one, the
+   * device's last pick (`newCanvasNoteMode`).
+   */
+  createCanvas(workspaceId: string, noteMode?: NoteMode): Promise<string | undefined>;
   renameCanvas(id: string, title: string): void;
+  /** Sets a canvas's note-taking mode (a default only, note-taking-modes plan P1); rewrites no object. */
+  setCanvasNoteMode(id: string, noteMode: NoteMode): void;
   deleteCanvas(id: string): Promise<void>;
   moveCanvas(id: string, targetWorkspaceId: string): Promise<void>;
 }
@@ -102,8 +109,11 @@ export const Navigator = memo(function Navigator({ workspaceId, workspaceName, c
       setRenaming(id);
     }
   };
-  const newCanvas = async (wsId: string) => {
-    const id = await commands.createCanvas(wsId);
+  const newCanvasMode = useUiPref("newCanvasNoteMode");
+  const newCanvas = async (wsId: string, noteMode?: NoteMode) => {
+    // A mode picked here becomes this device's default for the next new canvas (D2).
+    if (noteMode) setUiPref("newCanvasNoteMode", noteMode);
+    const id = await commands.createCanvas(wsId, noteMode);
     if (id) {
       setQuery("");
       setExpanded(wsId, true);
@@ -118,7 +128,12 @@ export const Navigator = memo(function Navigator({ workspaceId, workspaceName, c
     const { workspace, canvases } = node;
     const only = nodes.length === 1;
     return [
-      { label: "New canvas", onSelect: () => void newCanvas(workspace.id) },
+      // The New-canvas picker: the remembered mode first, the other one beside it. Either can be changed later (⋮ menu).
+      { label: "New canvas", hint: NOTE_MODE_LABELS[newCanvasMode].label, onSelect: () => void newCanvas(workspace.id) },
+      ...NOTE_MODES.filter((m) => m !== newCanvasMode).map((m) => ({
+        label: `New canvas: ${NOTE_MODE_LABELS[m].label}`,
+        onSelect: () => void newCanvas(workspace.id, m),
+      })),
       { label: "Rename", hint: "F2", onSelect: () => setRenaming(workspace.id) },
       {
         label: "Delete workspace",

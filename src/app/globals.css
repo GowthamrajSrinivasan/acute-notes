@@ -559,6 +559,133 @@ html {
   height: 100%;
   overflow: hidden;
 }
+/* A stored layout the card's text has moved past (note-taking modes §4.2): a small chip in the card's bottom-right
+   corner, clear of the title; the UI font, not the card's. */
+.acute-block .acute-openui-card {
+  position: relative;
+}
+.acute-block .acute-openui-card__stale {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-family: var(--acute-ui-font, system-ui, sans-serif);
+  font-size: 10px;
+  line-height: 14px;
+  white-space: nowrap;
+  color: var(--acute-text-muted, #5b5b66);
+  background: var(--acute-surface, #fff);
+  border: 1px solid var(--acute-border, #e4e4e8);
+}
+.acute-block .acute-openui-card__stale button {
+  font: inherit;
+  color: var(--acute-accent, #4f46e5);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+/* Opening a layout card asks first (note-taking-modes Step 7): the chooser / "Ask AI" panel fills the block's box. */
+.acute-block .acute-layout-guard {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 120px;
+  overflow: auto;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--acute-ui-font, system-ui, sans-serif);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--acute-text, #1b1b1f);
+  background: var(--acute-surface, #fff);
+}
+.acute-block .acute-layout-guard__title {
+  margin: 0;
+  font-weight: 600;
+}
+.acute-block .acute-layout-guard__hint {
+  margin: 0;
+  font-size: 11px;
+  color: var(--acute-text-muted, #5b5b66);
+}
+.acute-block .acute-layout-guard__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.acute-block .acute-layout-guard button {
+  font: inherit;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--acute-border, #e4e4e8);
+  background: var(--acute-surface, #fff);
+  color: inherit;
+  cursor: pointer;
+}
+.acute-block .acute-layout-guard button[data-primary] {
+  border-color: var(--acute-accent, #4f46e5);
+  background: var(--acute-accent, #4f46e5);
+  color: #fff;
+}
+.acute-block .acute-layout-guard button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.acute-block .acute-layout-guard__check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.acute-block .acute-layout-guard textarea {
+  font: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--acute-border, #e4e4e8);
+  background: var(--acute-surface, #fff);
+  color: inherit;
+}
+.acute-block .acute-layout-guard__problems,
+.acute-block .acute-layout-guard__notes {
+  margin: 0;
+  font-size: 11px;
+  color: var(--acute-warning, #a15c00);
+}
+.acute-block .acute-layout-guard__problems ul,
+.acute-block .acute-layout-guard__notes {
+  padding-left: 16px;
+}
+.acute-block .acute-layout-warning {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  font-family: var(--acute-ui-font, system-ui, sans-serif);
+  font-size: 11px;
+  color: var(--acute-warning, #a15c00);
+  background: var(--acute-surface-muted, #fff8eb);
+  border-bottom: 1px solid var(--acute-border, #e4e4e8);
+}
+.acute-block .acute-layout-warning button {
+  font: inherit;
+  color: var(--acute-accent, #4f46e5);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
 .acute-block .acute-openui-card .openui-idea-card {
   display: flex;
   flex-direction: column;
@@ -6185,3 +6312,42 @@ main:has(.acute-review[aria-label="Dense blocks"]) .acute-review[aria-label="AI 
   opacity: 0.75;
 }
 
+
+/* The review's layout preview (note-taking modes): the card's layout now and as proposed, side by side. */
+.acute-layout-preview {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acute-layout-preview__panes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.acute-layout-preview__pane {
+  flex: 1 1 220px;
+  min-width: 0;
+  margin: 0;
+  max-height: 260px;
+  overflow: auto;
+  padding: 6px;
+  border: 1px solid var(--acute-border, #e4e4e8);
+  border-radius: 8px;
+  background: var(--acute-surface, #fff);
+}
+.acute-layout-preview__pane[data-pane="proposed"] {
+  border-color: var(--acute-accent, #4f46e5);
+}
+.acute-layout-preview__pane figcaption {
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--acute-text-muted, #5b5b66);
+}
+.acute-layout-preview__empty,
+.acute-layout-preview__hint {
+  margin: 0;
+  font-size: 11px;
+  color: var(--acute-text-muted, #5b5b66);
+}

@@ -6,10 +6,14 @@
  */
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { InactiveView } from "@/components/blocks/InactiveView";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { layoutFor } from "@/ai/openui/cardLayout";
+import { InactiveView, type InactiveCard } from "@/components/blocks/InactiveView";
 import type { RichContent } from "@/domain/types";
-import { canvasCards, type CanvasCardInfo } from "./canvasCardsStore";
+import { canvasCards, NO_CARD_INFO, NO_CARDS_HOST, type CanvasCardInfo } from "./canvasCardsStore";
+
+const setLayout = vi.hoisted(() => vi.fn(async () => true));
+vi.mock("@/state/documents", () => ({ getDocumentStore: () => ({ setLayout }) }));
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -93,6 +97,76 @@ describe("InactiveView in the Cards view", () => {
 
     await draw({ card: card(), display: "compact" });
     expect(host.querySelector("[data-testid=acute-openui-card]")).toBeNull();
+  });
+});
+
+describe("stored layouts and modes (note-taking modes Step 3)", () => {
+  const STORED = `root = IdeaCard("Stored layout title", "Drawn from the stored layout.")`;
+  const current = () => layoutFor({ title: "Purge on deploy", snapshot: CONTENT }, STORED);
+  const plain = (extra: Partial<InactiveCard> = {}): InactiveCard => ({
+    elementId: "el1",
+    documentId: "doc1",
+    title: "Purge on deploy",
+    data: { info: NO_CARD_INFO, host: NO_CARDS_HOST },
+    noteMode: "manual",
+    ...extra,
+  });
+  const titleShown = () => host.querySelector(".openui-idea-card__title")?.textContent;
+  const drawn = () => host.querySelector<HTMLElement>("[data-testid=acute-openui-card]");
+
+  it("draws a current stored layout instead of the derived card, in manual mode, with no citations", async () => {
+    await draw({ card: plain({ layout: current() }) });
+    expect(drawn()?.dataset.layout).toBe("stored");
+    expect(titleShown()).toBe("Stored layout title");
+    expect(host.querySelector("[data-testid=acute-layout-stale]")).toBeNull();
+  });
+
+  it("a stale layout: the card is drawn from its text, with the out-of-date chip; Remove layout clears only the layout", async () => {
+    const stale = { ...current(), contentHash: "an-older-text" };
+    await draw({ card: plain({ layout: stale }) });
+    expect(drawn()?.dataset.layout).toBe("derived");
+    expect(titleShown()).toBe("Purge on deploy");
+    const chip = host.querySelector("[data-testid=acute-layout-stale]")!;
+    expect(chip.textContent).toContain("Layout out of date");
+    const button = (name: string) => [...host.querySelectorAll("[data-testid=acute-layout-stale] button")].find((b) => b.textContent === name) as HTMLButtonElement | undefined;
+    // "Ask AI to refresh" (Step 7) only asks first: a confirmation, no AI call; Cancel returns to the chip.
+    expect(button("Ask AI to refresh")).toBeDefined();
+    await act(async () => button("Ask AI to refresh")!.click());
+    expect(host.querySelector("[data-testid=acute-layout-stale]")!.textContent).toContain("Refresh with AI? One request; you review it first.");
+    await act(async () => button("Cancel")!.click());
+    await act(async () => button("Remove layout")!.click());
+    expect(setLayout).toHaveBeenCalledWith("doc1", null);
+  });
+
+  it("a stored layout that doesn't parse falls back to the derived card", async () => {
+    await draw({ card: plain({ layout: { ...current(), lang: `root = NoSuchComponent(` } }) });
+    for (let i = 0; i < 100 && drawn()?.dataset.layout !== "derived"; i++) await act(async () => new Promise((r) => setTimeout(r, 10)));
+    expect(drawn()?.dataset.layout).toBe("derived");
+    expect(titleShown()).toBe("Purge on deploy");
+  });
+
+  it("AI-managed: an uncited card draws as a derived card; manual: it stays Compact (D5)", async () => {
+    await draw({ card: plain({ noteMode: "ai" }) });
+    expect(drawn()?.dataset.layout).toBe("derived");
+    expect(titleShown()).toBe("Purge on deploy");
+
+    // Nothing is drawn here, so render without `draw`'s wait for a card; give the lazy chunk time to resolve anyway.
+    await act(async () => {
+      root.render(<InactiveView content={CONTENT} placeholder="Empty" display="cards" theme="light" card={plain({ noteMode: "manual" })} />);
+    });
+    await act(async () => new Promise((r) => setTimeout(r, 300)));
+    expect(drawn()).toBeNull();
+    expect(host.querySelector(".acute-preview")).not.toBeNull();
+  });
+
+  it("the store keeps the canvas's mode when the Cards view is left, and drops it when the canvas closes", () => {
+    canvasCards.setNoteMode("ai");
+    canvasCards.publish(new Map([["a", INFO]]), cardHost);
+    canvasCards.clearCards();
+    expect(canvasCards.get("a")).toBeNull();
+    expect(canvasCards.noteMode()).toBe("ai");
+    canvasCards.clear();
+    expect(canvasCards.noteMode()).toBe("manual");
   });
 });
 

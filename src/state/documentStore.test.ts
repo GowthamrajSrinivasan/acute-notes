@@ -15,6 +15,42 @@ const record = (id: string): DocumentRecord => ({
 
 afterEach(() => vi.useRealTimers());
 
+describe("DocumentStore layouts (note-taking modes Step 3)", () => {
+  const LAYOUT = { format: "openui-lang" as const, version: 1 as const, lang: `root = IdeaCard("T", "B")`, contentHash: "h", writtenAt: 5 };
+
+  it("sets and removes a layout at once, keeping the text, title and metadata exactly", async () => {
+    const { documents } = createMemoryServices();
+    const base = { ...record("a"), title: "T", snapshot: [{ type: "paragraph" as const, content: "B" }], metadata: { ai: { createdBy: "mcp" as const } } };
+    await documents.put(base);
+    const store = new DocumentStore(documents);
+    await store.load("a");
+    const seen = vi.fn();
+    store.subscribe("a", seen);
+
+    expect(await store.setLayout("a", LAYOUT)).toBe(true);
+    expect(seen).toHaveBeenCalled();
+    const stored = await documents.get("a");
+    expect(stored?.layout).toEqual(LAYOUT);
+    expect({ title: stored?.title, snapshot: stored?.snapshot, metadata: stored?.metadata }).toEqual({ title: base.title, snapshot: base.snapshot, metadata: base.metadata });
+
+    expect(await store.setLayout("a", null)).toBe(true);
+    expect(await documents.get("a")).not.toHaveProperty("layout");
+    expect(store.get("a")).not.toHaveProperty("layout");
+  });
+
+  it("writes a pending text edit together with the layout, and reports a record that isn't loaded", async () => {
+    vi.useFakeTimers();
+    const { documents } = createMemoryServices();
+    await documents.put(record("a"));
+    const store = new DocumentStore(documents);
+    await store.load("a");
+    store.updateSnapshot("a", [{ type: "paragraph", content: "edited" }], "edited");
+    await store.setLayout("a", LAYOUT);
+    expect(await documents.get("a")).toMatchObject({ title: "edited", layout: LAYOUT });
+    expect(await store.setLayout("missing", LAYOUT)).toBe(false);
+  });
+});
+
 describe("DocumentStore", () => {
   it("loads lazily and notifies only the subscribed id", async () => {
     const { documents } = createMemoryServices();

@@ -1,0 +1,103 @@
+{
+  "B1-timeline.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00074,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3492,
+        "completionTokens": 359,
+        "ms": 21234
+      }
+    }
+  },
+  "approvedBy": "project owner (chat, 2026-11-24)",
+  "priceInPerM": 0.15,
+  "priceOutPerM": 0.6,
+  "cap": 0.3,
+  "spent.B": 0.00315,
+  "spentUsdEstimate": 0.00315,
+  "B1-timeline": {
+    "requests": 1,
+    "outcome": "proposed",
+    "reply": "<markdown>\nOnboarding a new engineer\n\nOn day one they get a laptop and accounts. In week one they pair with a mentor on a small bug. By the end of month one they own a feature.\n</markdown>\n\n<layout>\nroot = Timeline(\"Onboarding a new engineer\", [e1, e2, e3])\ne1 = TimelineEvent(\"Day 1\", \"Laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"End of month 1\", \"Own a feature\")\n</layout>",
+    "flagged": "",
+    "stored": "root = Timeline(\"Onboarding a new engineer\", [e1, e2, e3])\ne1 = TimelineEvent(\"Day 1\", \"Laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"End of month 1\", \"Own a feature\")",
+    "drawsStored": true
+  },
+  "B2-callout.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00082,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3489,
+        "completionTokens": 501,
+        "ms": 33807
+      }
+    }
+  },
+  "B2-callout": {
+    "requests": 1,
+    "outcome": "proposed",
+    "reply": "<markdown>\nDatabase migration\n\nMigrate the database before the deadline.\n\n> **Warning:** The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\n</markdown>\n\n<layout>\nroot = IdeaCard(\"Database migration\", \"Migrate the database before the deadline.\", null, null, null, [c1])\nc1 = Callout(\"warning\", \"The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\")\n</layout>",
+    "flagged": "",
+    "stored": "root = IdeaCard(\"Database migration\", \"Migrate the database before the deadline.\", null, null, null, [c1])\nc1 = Callout(\"warning\", \"The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\")",
+    "drawsStored": true
+  },
+  "B3-table.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00079,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3484,
+        "completionTokens": 445,
+        "ms": 45600
+      }
+    }
+  },
+  "B3-table": {
+    "requests": 1,
+    "outcome": "proposed",
+    "reply": "<markdown>\nPlans\n\nThe Free plan has 5 GB of storage and costs $0. The Team plan has 200 GB of storage and costs $10 per user per month.\n</markdown>\n\n<layout>\nroot = ComparisonTable([\"\", \"Free\", \"Team\"], [[\"Storage\", \"5 GB\", \"200 GB\"], [\"Cost\", \"$0\", \"$10 per user per month\"]])\n</layout>",
+    "flagged": "",
+    "stored": "root = ComparisonTable([\"\", \"Free\", \"Team\"], [[\"Storage\", \"5 GB\", \"200 GB\"], [\"Cost\", \"$0\", \"$10 per user per month\"]])",
+    "drawsStored": true
+  },
+  "B4-refresh.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00079,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3565,
+        "completionTokens": 433,
+        "ms": 24526
+      }
+    }
+  },
+  "B4-refresh": {
+    "requests": 1,
+    "chip": "Refresh proposed — review it below\nRemove layout",
+    "reply": "<markdown>\nOnboarding a new engineer\n\nOn day one they get a laptop and accounts. In week one they pair with a mentor on a small bug. By the end of month two they own a feature, and in month three they join the on-call rota.\n</markdown>\n<layout>\nroot = Timeline(\"Onboarding a new engineer\", [e1, e2, e3, e4])\ne1 = TimelineEvent(\"Day 1\", \"Laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"End of month 2\", \"Own a feature\")\ne4 = TimelineEvent(\"Month 3\", \"Join the on-call rota\")\n</layout>",
+    "stored": "root = Timeline(\"Onboarding a new engineer\", [e1, e2, e3, e4])\ne1 = TimelineEvent(\"Day 1\", \"Laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"End of month 2\", \"Own a feature\")\ne4 = TimelineEvent(\"Month 3\", \"Join the on-call rota\")",
+    "staleAfter": 0
+  }
+}

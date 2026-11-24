@@ -1,0 +1,219 @@
+{
+  "mode": "ai",
+  "distil": true,
+  "visualize": {
+    "title": "Visualize",
+    "lines": [
+      "create_frame g0 [] \"1 · Flow\"",
+      "create_block g0::title [Shipping a release › Release process § group#0] [{\"type\":\"paragraph\",\"content\":\"Release process\",\"props\":{\"backgroundColor\":\"orange\"}}]",
+      "create_block g0::takeaway [] [{\"type\":\"paragraph\",\"content\":\"Release follows a fixed linear sequence from freeze to mon",
+      "create_frame g1 [] \"2 · Supporting detail\"",
+      "create_block g1::title [Shipping a release › Why we have a process § group#0] [{\"type\":\"paragraph\",\"content\":\"Why we have a process\",\"props\":{\"backgroundColor\":\"orange\"",
+      "create_block g1::takeaway [] [{\"type\":\"paragraph\",\"content\":\"Past release failures led to a documented single shipping ",
+      "create_frame g2 [] \"3 · Overview\"",
+      "create_block g2::title [Shipping a release › Who to ask § group#0] [{\"type\":\"paragraph\",\"content\":\"Who to ask\",\"props\":{\"backgroundColor\":\"orange\"}}]",
+      "create_block g2::takeaway [] [{\"type\":\"paragraph\",\"content\":\"Direct release questions to manager; route incidents to on",
+      "create_block u0_h1 [Shipping a release § heading#0] [{\"type\":\"paragraph\",\"content\":\"Shipping a release\",\"props\":{\"backgroundColor\":\"orange\"}}]",
+      "create_block subtitle [(outline) § subtitle#0] [{\"type\":\"paragraph\",\"content\":\"A defined release process with steps, roles, and reasons f",
+      "create_block g0::flow [Shipping a release › Release process § flow-card#0] [{\"type\":\"heading\",\"props\":{\"level\":3},\"content\":\"Release process\"},{\"type\":\"numberedListI",
+      "create_block u1_a1 [Shipping a release › Release process § text#5] [{\"type\":\"heading\",\"props\":{\"level\":3,\"backgroundColor\":\"orange\"},\"content\":\"Analysis · Ta",
+      "create_block u1_a2 [Shipping a release › Release process § text#6] [{\"type\":\"heading\",\"props\":{\"level\":3,\"backgroundColor\":\"orange\"},\"content\":\"Analysis · Pr",
+      "create_block u2_n1 [Shipping a release › Why we have a process § text#0] [{\"type\":\"heading\",\"props\":{\"level\":3},\"content\":\"Why we have a process\"},{\"type\":\"bulletL",
+      "create_block u2_a1 [Shipping a release › Why we have a process § text#1] [{\"type\":\"heading\",\"props\":{\"level\":3,\"backgroundColor\":\"orange\"},\"content\":\"Analysis · An",
+      "create_block u3_n1 [Shipping a release › Who to ask § text#0] [{\"type\":\"heading\",\"props\":{\"level\":3},\"content\":\"Who to ask source\"},{\"type\":\"paragraph\",",
+      "create_block u3_n2 [Shipping a release › Who to ask § text#1] [{\"type\":\"heading\",\"props\":{\"level\":3},\"content\":\"Release questions go to release manager\"",
+      "create_block u3_n3 [Shipping a release › Who to ask § text#2] [{\"type\":\"heading\",\"props\":{\"level\":3},\"content\":\"Incidents go to on‑call engineer (can ro",
+      "create_block u3_a1 [Shipping a release › Who to ask § text#3] [{\"type\":\"heading\",\"props\":{\"level\":3,\"backgroundColor\":\"orange\"},\"content\":\"Analysis · Ro",
+      "create_block u3_a2 [Shipping a release › Who to ask § text#4] [{\"type\":\"heading\",\"props\":{\"level\":3,\"backgroundColor\":\"orange\"},\"content\":\"Analysis · Pr",
+      "connect",
+      "connect",
+      "connect",
+      "connect",
+      "connect",
+      "connect",
+      "connect",
+      "connect",
+      "connect"
+    ]
+  },
+  "updateReview": "Update from new content · +4 new · −2 removed · ~1 updated · 2 links changed ⚠ 2 crossings",
+  "update": {
+    "title": "Update from new content",
+    "lines": [
+      "create_block v2_u0_n0 [Shipping a release › Release process § text#0] [{\"type\":\"paragraph\",\"id\":\"b6fa1352-3463-496b-9144-2e83b4ffd55a\",\"props\":{\"backgroundColor",
+      "update_frame LxBeMscX0J33enRY4hSj [null] \"\"",
+      "create_block v2_u0_n11 [Shipping a release › Release process § text#1] [{\"type\":\"paragraph\",\"id\":\"ca7b1485-2ab1-4c2f-8bb6-28872ef58c14\",\"props\":{\"backgroundColor",
+      "create_block v2_u0_a1 [Shipping a release › Release process § text#7] [{\"type\":\"heading\",\"props\":{\"level\":3,\"backgroundColor\":\"orange\"},\"content\":\"Analysis · Ta",
+      "connect",
+      "create_block v2_u0_a2 [Shipping a release › Release process § text#8] [{\"type\":\"heading\",\"props\":{\"level\":3,\"backgroundColor\":\"orange\"},\"content\":\"Analysis · Pr",
+      "move",
+      "move",
+      "move",
+      "move",
+      "move",
+      "move",
+      "move",
+      "move",
+      "connect",
+      "update_block inl1zn9z3UY5wOyLYyp8 [Shipping a release › Release process § flow-card#0] [{\"type\":\"heading\",\"props\":{\"level\":3},\"content\":\"Release process\"},{\"type\":\"numberedListI",
+      "remove DXg0Aa0h2ZkSM2nKEV1Q [Shipping a release › Release process § text#5] \"\"",
+      "remove jnmUF6qLEylcpP6MB2Ws [Shipping a release › Release process § text#6] \"\""
+    ]
+  },
+  "placement": {
+    "frames": [
+      {
+        "id": "LxBeMscX0J33enRY4hSj",
+        "name": "1 · Flow",
+        "box": [
+          -191,
+          -169,
+          3594,
+          950
+        ]
+      },
+      {
+        "id": "l2hnf8N6bjAn5wsJu8Ot",
+        "name": "2 · Supporting detail",
+        "box": [
+          1213,
+          -169,
+          1791,
+          479
+        ]
+      },
+      {
+        "id": "0ncwbeBVRlG9iQ1ZhZyu",
+        "name": "3 · Overview",
+        "box": [
+          -191,
+          974,
+          1365,
+          1453
+        ]
+      }
+    ],
+    "objects": [
+      {
+        "key": "Shipping a release › Release process § group#0",
+        "frame": "1 · Flow",
+        "box": [
+          -151,
+          -129,
+          1077,
+          -75
+        ],
+        "inside": true
+      },
+      {
+        "key": "Shipping a release › Release process § flow-card#0",
+        "frame": "1 · Flow",
+        "box": [
+          -151,
+          -6,
+          569,
+          554
+        ],
+        "inside": true
+      },
+      {
+        "key": "Shipping a release › Release process § text#0",
+        "frame": "1 · Flow",
+        "box": [
+          -151,
+          618,
+          309,
+          910
+        ],
+        "inside": true
+      },
+      {
+        "key": "Shipping a release › Release process § text#1",
+        "frame": "1 · Flow",
+        "box": [
+          2623,
+          -6,
+          2998,
+          54
+        ],
+        "inside": true
+      },
+      {
+        "key": "Shipping a release › Release process § text#7",
+        "frame": "1 · Flow",
+        "box": [
+          3094,
+          -6,
+          3554,
+          104
+        ],
+        "inside": true
+      },
+      {
+        "key": "Shipping a release › Release process § text#8",
+        "frame": "1 · Flow",
+        "box": [
+          633,
+          -6,
+          1093,
+          152
+        ],
+        "inside": true
+      }
+    ]
+  },
+  "calls": [
+    {
+      "task": "outline_document",
+      "matched": "exact"
+    },
+    {
+      "task": "generate_visual_plan",
+      "matched": "exact"
+    },
+    {
+      "task": "generate_visual_plan",
+      "matched": "exact"
+    },
+    {
+      "task": "generate_visual_plan",
+      "matched": "exact"
+    },
+    {
+      "task": "check_card_meaning",
+      "matched": "exact"
+    },
+    {
+      "task": "check_card_meaning",
+      "matched": "exact"
+    },
+    {
+      "task": "check_card_meaning",
+      "matched": "exact"
+    },
+    {
+      "task": "generate_visual_plan",
+      "matched": "exact"
+    },
+    {
+      "task": "check_card_meaning",
+      "matched": "exact"
+    },
+    {
+      "task": "generate_visual_plan",
+      "matched": "exact"
+    },
+    {
+      "task": "check_card_meaning",
+      "matched": "exact"
+    },
+    {
+      "task": "generate_visual_plan",
+      "matched": "exact"
+    },
+    {
+      "task": "check_card_meaning",
+      "matched": "exact"
+    }
+  ]
+}

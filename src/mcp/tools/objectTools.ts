@@ -10,6 +10,7 @@ import type { ChangeSet, ProposedChange } from "@/ai/changes/changeSet";
 import { getArrowRelation, getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
 import { getEdgeSemantics, getNodeLens, getNodeProject, getNodeSemantics } from "@/domain/canvas/diagram";
 import { contentToMarkdown } from "@/domain/content/markdown";
+import { cardContentHash } from "@/ai/openui/cardLayout";
 import { RELATION_TYPES } from "@/domain/types";
 import { cut, isStandalone } from "../context/currentContext";
 import type { WorkspaceScan } from "../resources/workspaceScan";
@@ -182,7 +183,7 @@ export function registerObjectTools(server: McpServer, deps: ObjectToolDeps): vo
   read(
     "get_block",
     "Get block",
-    `One object's content: a block's or page's Markdown (at most ${OBJECT_LIMITS.content} characters, \`truncated\` when cut), a shape's label with its node fields (kind, project fields, Lens key), a note's text; and its connections in and out.`,
+    `One object's content: a block's or page's Markdown (at most ${OBJECT_LIMITS.content} characters, \`truncated\` when cut), a shape's label with its node fields (kind, project fields, Lens key), a note's text; and its connections in and out. A text card also gives its \`contentHash\` and, when it has one, its \`layout\` (whether it is \`current\` for the text).`,
     { id, canvasId: canvasArg },
     async (args) => {
       const { canvasId, elements } = await sceneOf(deps, args.canvasId);
@@ -192,12 +193,18 @@ export function registerObjectTools(server: McpServer, deps: ObjectToolDeps): vo
       const ref = getEmbedRef(el);
       let content: string | undefined;
       let titleText: string | undefined;
+      /** A text card's hash (for update_layout_card's `expectedContentHash`) and its stored layout, if any (note-taking modes). */
+      let card: { contentHash: string; layout?: { lang: string; current: boolean } } | undefined;
       if (ref?.kind === "rich-block" || ref?.kind === "page-preview") {
         const docId = ref.kind === "rich-block" ? ref.documentId : ref.pageId;
         const doc = (await deps.scan.documents([docId])).get(docId);
         if (doc) {
           content = contentToMarkdown(doc.snapshot);
           if (ref.kind === "page-preview") titleText = doc.title;
+          if (ref.kind === "rich-block" && ref.blockType === "text") {
+            const contentHash = cardContentHash(doc);
+            card = { contentHash, ...(doc.layout ? { layout: { lang: doc.layout.lang, current: doc.layout.contentHash === contentHash } } : {}) };
+          }
         }
       } else if (el.type === "text") content = (el.originalText ?? el.text ?? "").trim();
       else titleText = labels.get(el.id);
@@ -213,6 +220,7 @@ export function registerObjectTools(server: McpServer, deps: ObjectToolDeps): vo
         kind: kindOf(el),
         ...(titleText ? { title: titleText } : {}),
         ...(clipped ? { content: clipped.text, truncated: clipped.cut } : {}),
+        ...(card ?? {}),
         ...(key ? { key } : {}),
         ...(semantics ? { node: semantics } : {}),
         ...(project ? { project } : {}),

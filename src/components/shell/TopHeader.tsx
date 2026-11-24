@@ -7,9 +7,10 @@ import { placeDialog } from "@/components/ai/placeContent";
 import { isAIFeatureEnabled, isMcpUiEnabled } from "@/config/features";
 import { PanelLeftIcon } from "@/components/common/icons";
 import { RenameInput } from "@/components/common/RenameInput";
-import { MenuButton, RowMenu, type OpenMenu } from "@/components/common/RowMenu";
+import { MenuButton, RowMenu, type MenuItem, type OpenMenu } from "@/components/common/RowMenu";
+import { NOTE_MODE_LABELS, NOTE_MODES } from "@/domain/noteMode";
 import { getCanvasCommands } from "@/components/canvas/canvasCommands";
-import type { DocumentHome } from "@/domain/types";
+import type { DocumentHome, NoteMode } from "@/domain/types";
 import { CanvasExportDialog } from "@/export/CanvasExportDialog";
 import { AIConnectionsDialog } from "./AIConnectionsDialog";
 import { McpAccessDialog } from "./McpAccessDialog";
@@ -22,10 +23,30 @@ interface TopHeaderProps {
   onToggleSidebar: () => void;
   onRenameWorkspace: (name: string) => void;
   onRenameCanvas: (title: string) => void;
+  /** The open canvas's note-taking mode (null while no canvas is open). A default only: it disables nothing. */
+  noteMode: NoteMode | null;
+  onSetNoteMode: (noteMode: NoteMode) => void;
   /** Dev builds only: create a canvas pre-filled with every object type. */
   onCreateDemoCanvas?: () => void;
   /** The open workspace, for its MCP access settings. */
   workspaceId: string;
+}
+
+/**
+ * ⋮ → "Note-taking mode": a heading and one item per mode, the current one marked. Switching changes only the canvas's
+ * defaults (note-taking-modes plan P1); the hint says so, since nothing visible changes on the canvas at once.
+ */
+export function noteModeMenuItems(current: NoteMode, onSet: (mode: NoteMode) => void): MenuItem[] {
+  return [
+    { label: "Note-taking mode (default only)", heading: true, separatorBefore: true },
+    ...NOTE_MODES.map((mode) => ({
+      label: `${mode === current ? "✓ " : ""}${NOTE_MODE_LABELS[mode].label}`,
+      hint: mode === current ? "Current" : undefined,
+      onSelect: () => {
+        if (mode !== current) onSet(mode);
+      },
+    })),
+  ];
 }
 
 const iconButton =
@@ -39,6 +60,8 @@ export const TopHeader = memo(function TopHeader({
   onToggleSidebar,
   onRenameWorkspace,
   onRenameCanvas,
+  noteMode,
+  onSetNoteMode,
   onCreateDemoCanvas,
   workspaceId,
 }: TopHeaderProps) {
@@ -103,6 +126,7 @@ export const TopHeader = memo(function TopHeader({
                       { label: "Place text in notes…", onSelect: () => placeDialog.open() },
                     ]
                   : []),
+                ...(noteMode ? noteModeMenuItems(noteMode, onSetNoteMode) : []),
                 ...(onCreateDemoCanvas
                   ? [{ label: "Create AI test canvas", hint: "Dev", separatorBefore: true, onSelect: onCreateDemoCanvas }]
                   : []),

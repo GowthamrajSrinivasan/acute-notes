@@ -115,6 +115,7 @@ async function buildBundle(services: PersistenceServices, workspaceId: string, o
       title: canvas.title,
       createdAt: canvas.createdAt,
       updatedAt: canvas.updatedAt,
+      ...(canvas.noteMode ? { noteMode: canvas.noteMode } : {}),
       ...(canvas.viewport ? { viewport: canvas.viewport } : {}),
       ...(typeof background === "string" ? { viewBackgroundColor: background } : {}),
       elements,
@@ -151,6 +152,7 @@ async function buildBundle(services: PersistenceServices, workspaceId: string, o
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
     ...metadataOf(d.metadata, normalize),
+    ...(d.layout ? { layout: d.layout } : {}),
   }));
 
   // …and the images pages and blocks show (stored in the same asset store).
@@ -396,6 +398,8 @@ export async function importWorkspace(services: PersistenceServices, input: unkn
       createdAt: d.createdAt,
       updatedAt: d.updatedAt,
       ...(metadataOf(d.metadata, normalize) as Pick<DocumentRecord, "metadata">),
+      // Its hash is of the card's text, so a layout stays current exactly when sanitizing left the text as it was.
+      ...(d.layout ? { layout: d.layout } : {}),
     };
     await services.yupdates.clear(richDocKey(d.id));
     await services.documents.put(record);
@@ -425,6 +429,7 @@ export async function importWorkspace(services: PersistenceServices, input: unkn
       title: c.title,
       createdAt: c.createdAt,
       updatedAt: c.updatedAt,
+      ...(c.noteMode ? { noteMode: c.noteMode } : {}),
       ...(c.viewport ? { viewport: c.viewport } : {}),
     };
     await services.canvases.put(canvas);
@@ -482,6 +487,8 @@ export async function importCanvas(services: PersistenceServices, input: unknown
       createdAt: d.createdAt,
       updatedAt: now,
       ...(metadataOf(d.metadata, normalize) as Pick<DocumentRecord, "metadata">),
+      // The Lang names no block id, and its hash is of the card's text: new block ids leave it current.
+      ...(d.layout ? { layout: d.layout } : {}),
     };
     await services.documents.put(record);
   }
@@ -507,7 +514,15 @@ export async function importCanvas(services: PersistenceServices, input: unknown
   });
   await services.yupdates.append(canvasDocId(canvasId), Y.encodeStateAsUpdate(doc));
   doc.destroy();
-  await services.canvases.put({ id: canvasId, workspaceId, title, createdAt: now, updatedAt: now, ...(source.viewport ? { viewport: source.viewport } : {}) });
+  await services.canvases.put({
+    id: canvasId,
+    workspaceId,
+    title,
+    createdAt: now,
+    updatedAt: now,
+    ...(source.noteMode ? { noteMode: source.noteMode } : {}),
+    ...(source.viewport ? { viewport: source.viewport } : {}),
+  });
 
   // The workspace last, so it only ever references content that is written.
   await services.workspaces.put({ ...workspace, canvasIds: [...workspace.canvasIds, canvasId], updatedAt: now });

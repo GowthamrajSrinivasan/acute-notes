@@ -11,6 +11,8 @@
  *            the natural slot, pushing along the other axis. It moves
  *            objects out of the line they are in, so it never competes
  *            with a push along the anchor side.
+ * With `context.within` (the frame the content joins), a candidate that would make that frame grow over something it
+ * doesn't cover now (a neighbouring frame, a loose object) is dropped while another is possible.
  * Each costs the layout's distance from the natural slot (× `DISTANCE_WEIGHT`:
  * content far from where it belongs is the thing a user notices most) plus
  * every moved unit's displacement, × 1 when Acute placed it and it hasn't
@@ -87,7 +89,19 @@ export function placeWithReflow(layoutBounds: Box, context: RenderContext & { an
     break;
   }
 
-  const best = candidates.reduce((a, b) => (b.cost < a.cost ? b : a));
+  // Joining a frame (`within`): only a spot that doesn't make the frame grow over something it didn't cover, while there is one.
+  const within = context.within;
+  const clear = within
+    ? candidates.filter((c) => {
+        const axis = c.strategy === "across" ? otherAxis(side) : side;
+        const after = units.map((u) => {
+          const s = c.shifts.get(u);
+          return s ? { ...u.box, ...shifted(u.box, axis, s) } : u.box;
+        });
+        return !growsOver(within, c.at, after);
+      })
+    : candidates;
+  const best = (clear.length ? clear : candidates).reduce((a, b) => (b.cost < a.cost ? b : a));
   const moves = [...best.shifts]
     .sort(([a], [b]) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0))
     .flatMap(([u, s]) => u.members.map((m) => ({ id: m.id, to: best.strategy === "across" ? shifted(m.box, otherAxis(side), s) : shifted(m.box, side, s) })));
@@ -95,6 +109,15 @@ export function placeWithReflow(layoutBounds: Box, context: RenderContext & { an
 }
 
 const otherAxis = (a: Axis): Axis => (a === "x" ? "y" : "x");
+
+/**
+ * Whether a frame grown to hold `added` would cover any of `others` that it doesn't cover now — another frame, a loose
+ * object. Its own members (inside it) and anything it already overlaps don't count.
+ */
+export function growsOver(frame: Box, added: Box, others: readonly Box[]): boolean {
+  const grown = union([frame, added]);
+  return others.some((o) => !contains(frame, o) && !overlaps(frame, o) && overlaps(grown, o));
+}
 
 function shifted(b: Box, axis: Axis, by: number): { x: number; y: number } {
   return axis === "x" ? { x: b.x + by, y: b.y } : { x: b.x, y: b.y + by };

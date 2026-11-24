@@ -36,4 +36,10 @@ export interface RenderContext {
    * `existing`); without, it only looks for free space.
    */
   objects?: readonly SceneObject[];
+  /**
+   * A section frame the new content joins (an update's adds, F42 Phase 3): its box. Reflow refuses a spot that would make
+   * the frame grow over something it doesn't cover now (a neighbouring frame, a loose object) while another spot is
+   * possible — so the frame grows down, pushing what is below, rather than across its neighbour.
+   */
+  within?: Box;
 }

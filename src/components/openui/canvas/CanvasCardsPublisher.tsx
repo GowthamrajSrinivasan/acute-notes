@@ -13,7 +13,7 @@ import { openSourceOn } from "@/components/review/knowledgeActions";
 import { useKnowledgeUI } from "@/components/review/knowledgeStore";
 import { useKnowledgeObjects } from "@/components/review/useKnowledgeObjects";
 import type { SceneElement } from "@/domain/canvas/adapter";
-import type { DocumentHome } from "@/domain/types";
+import type { DocumentHome, NoteMode } from "@/domain/types";
 import { getPersistence } from "@/persistence";
 import { getDocumentStore } from "@/state/documents";
 import { useUiPref } from "@/state/uiPrefs";
@@ -26,8 +26,16 @@ interface Env {
   history: TransactionHistory;
 }
 
-export function CanvasCardsPublisher(env: Env) {
+export function CanvasCardsPublisher({ noteMode, ...env }: Env & { noteMode: NoteMode }) {
   const display = useUiPref("blockDisplay");
+  // The canvas's mode, for the blocks' draw order (`cardRenderPlan`); a default only — it decides what draws as a card.
+  useEffect(() => {
+    canvasCards.setNoteMode(noteMode);
+  }, [noteMode]);
+  useEffect(() => {
+    canvasCards.setCanvasId(env.home.canvasId);
+  }, [env.home.canvasId]);
+  useEffect(() => () => canvasCards.clear(), []);
   return display === "cards" ? <Publisher {...env} /> : null;
 }
 
@@ -84,6 +92,7 @@ function Publisher({ api, home, history }: Env) {
     canvasCards.publish(next, host);
   }, [cited, units, host]);
 
-  useEffect(() => () => canvasCards.clear(), []);
+  // Leaving the Cards view drops the citation data only; the canvas's mode stays (the outer publisher owns it).
+  useEffect(() => () => canvasCards.clearCards(), []);
   return null;
 }

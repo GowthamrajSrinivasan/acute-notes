@@ -151,6 +151,44 @@ describe("workspace bundle", () => {
     expect({ ...again, exportedAt: 0 }).toEqual({ ...original, exportedAt: 0 });
   });
 
+  it("carries a canvas's note-taking mode; a canvas without one, or with an unknown one, imports as manual", async () => {
+    const source = createMemoryServices();
+    const canvasId = await seed(source);
+    await source.canvases.put({ ...(await source.canvases.get(canvasId))!, noteMode: "ai" });
+    const bundle = JSON.parse(JSON.stringify(await exportWorkspace(source, WS)));
+    expect(bundle.canvases[0].noteMode).toBe("ai");
+
+    const target = createMemoryServices();
+    await importWorkspace(target, parseBundle(bundle));
+    expect((await target.canvases.get(canvasId))?.noteMode).toBe("ai");
+
+    for (const legacy of [undefined, "robots"]) {
+      const again = createMemoryServices();
+      await importWorkspace(again, parseBundle({ ...bundle, canvases: [{ ...bundle.canvases[0], noteMode: legacy }] }));
+      expect(await again.canvases.get(canvasId)).not.toHaveProperty("noteMode");
+    }
+  });
+
+  it("carries a text block's stored layout; a malformed one is dropped on import, not failed", async () => {
+    const source = createMemoryServices();
+    await seed(source);
+    const layout = { format: "openui-lang" as const, version: 1 as const, lang: `root = IdeaCard("Block", "Body")`, contentHash: "abc", writtenAt: 7 };
+    await source.documents.put({ ...(await source.documents.get("doc_1"))!, layout });
+    const bundle = JSON.parse(JSON.stringify(await exportWorkspace(source, WS)));
+    expect(bundle.documents.find((d: { id: string }) => d.id === "doc_1").layout).toEqual(layout);
+
+    const target = createMemoryServices();
+    await importWorkspace(target, parseBundle(bundle));
+    expect((await target.documents.get("doc_1"))?.layout).toEqual(layout);
+
+    for (const bad of [{ ...layout, format: "html" }, { ...layout, lang: "" }, { ...layout, lang: "x".repeat(16_001) }]) {
+      const again = createMemoryServices();
+      const docs = bundle.documents.map((d: { id: string }) => (d.id === "doc_1" ? { ...d, layout: bad } : d));
+      await importWorkspace(again, parseBundle({ ...bundle, documents: docs }));
+      expect(await again.documents.get("doc_1")).not.toHaveProperty("layout");
+    }
+  });
+
   it("replaces the existing workspace: stale documents and their content are removed", async () => {
     const source = createMemoryServices();
     await seed(source);

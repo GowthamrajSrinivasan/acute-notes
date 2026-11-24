@@ -7,6 +7,7 @@ import type { VisualTemplate } from "@/ai/visual-plan/types";
 import type { AnalysisReport } from "@/ai/fidelity/analysis";
 import type { FidelityReport } from "@/ai/fidelity/report";
 import type { NoteModel } from "@/ai/fidelity/contracts";
+import type { NoteMode } from "@/domain/types";
 import type { OutlinedReuse } from "./outlined";
 
 /** PRD §6.7's own three labels — the only stages the UI ever shows. */
@@ -31,6 +32,11 @@ export interface VisualizeInput {
    * run uses `FIDELITY_CONFIG.noteModel`, as it always has. Applies to the outlined path; a forced template is unaffected.
    */
   noteModel?: NoteModel;
+  /**
+   * The canvas's note-taking mode (note-taking-modes plan Step 6): on an AI-managed canvas a plain linear flow section is
+   * drawn as one `FlowDiagram` card (`flowCards.ts`) instead of step shapes. Omitted or "manual": as before.
+   */
+  canvasNoteMode?: NoteMode;
   operationId: string;
   title: string;
   context: RenderContext;

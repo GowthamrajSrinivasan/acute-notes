@@ -15,7 +15,8 @@ import { BLOCK_SIZE, isEmptyContent, templateFor } from "@/domain/content/richCo
 import { newId, randomId } from "@/domain/ids";
 import { roomForGrownFrame } from "@/ai/changes/frameRoom";
 import type { Box } from "@/ai/changes/changeSet";
-import type { DocumentHome, ObjectMetadata, RichBlockType, RichContent } from "@/domain/types";
+import type { CardLayout, DocumentHome, ObjectMetadata, RichBlockType, RichContent } from "@/domain/types";
+import { layoutFor } from "@/ai/openui/cardLayout";
 import { getPersistence } from "@/persistence";
 import { cloneDocument } from "@/state/documentClone";
 import { getDocumentStore } from "@/state/documents";
@@ -108,19 +109,24 @@ export interface InsertOptions {
  * not yet shown by any element. Also used to give an existing block new
  * content undoably (F39): the element is re-pointed at a fresh document.
  */
-export function createBlockDocument(home: DocumentHome, content: RichContent, metadata?: ObjectMetadata): string {
+export function createBlockDocument(home: DocumentHome, content: RichContent, metadata?: ObjectMetadata, layout?: string | CardLayout): string {
   const documentId = newId("doc");
   const now = Date.now();
+  const title = "Untitled";
+  // A layout's Lang is stamped with this content's hash (current); a stored layout carried over from the document this
+  // one replaces keeps its own hash (stale once the text differs) — note-taking-modes plan §4.2.
+  const stored = typeof layout === "string" ? layoutFor({ title, snapshot: content }, layout, now) : layout;
   // Cache is updated synchronously; the IndexedDB write is not awaited.
   void getDocumentStore().put({
     id: documentId,
     ...home,
     kind: "block",
-    title: "Untitled",
+    title,
     snapshot: content,
     createdAt: now,
     updatedAt: now,
     metadata: metadata ?? { ai: { createdBy: "user" } },
+    ...(stored ? { layout: stored } : {}),
   });
   return documentId;
 }
@@ -141,11 +147,18 @@ export function createBlockElement(
     metadata?: ObjectMetadata;
     /** Cards only: fill colour (default white). */
     backgroundColor?: string;
+    /** Text blocks only: an OpenUI layout (Lang) to store with the content (`createBlockDocument`). */
+    layout?: string;
   },
 ): ExcalidrawElement {
   const style = options.style ?? CARD_STYLE;
   const frameless = style.frame === "none";
-  const documentId = createBlockDocument(home, options.content ?? (frameless && blockType === "text" ? TEXT_ITEM_TEMPLATE : templateFor(blockType)), options.metadata);
+  const documentId = createBlockDocument(
+    home,
+    options.content ?? (frameless && blockType === "text" ? TEXT_ITEM_TEMPLATE : templateFor(blockType)),
+    options.metadata,
+    blockType === "text" ? options.layout : undefined,
+  );
 
   const ref: AcuteEmbedRef = { kind: "rich-block", blockType, documentId, style };
   const { box } = options;

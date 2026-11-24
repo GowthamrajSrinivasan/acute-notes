@@ -47,10 +47,19 @@ export interface DocumentHome {
 }
 
 /** A canvas inside a workspace. */
+/**
+ * A canvas's note-taking mode (note-taking-modes plan §4.1). A DEFAULT, never a restriction (P1): every manual and every
+ * AI action works in both modes; the mode only decides what happens when nobody said otherwise. Absent = `manual`
+ * (`domain/noteMode.ts` `noteModeOf`), so canvases from before the field keep working unchanged.
+ */
+export type NoteMode = "manual" | "ai";
+
 export interface CanvasDocument {
   id: CanvasId;
   workspaceId: WorkspaceId;
   title: string;
+  /** See `NoteMode`; changing it rewrites no object, layout, provenance or study history. */
+  noteMode?: NoteMode;
   viewport?: Viewport;
   createdAt: number;
   updatedAt: number;
@@ -355,6 +364,27 @@ export interface DocumentRecord {
   createdAt: number;
   updatedAt: number;
   metadata?: ObjectMetadata;
+  /** A stored OpenUI layout for a text block (see `CardLayout`); absent on every record from before it. */
+  layout?: CardLayout;
+}
+
+/**
+ * How the Cards view draws one text block, written by whoever composed it (an MCP client, later in-app AI) —
+ * note-taking-modes plan §4.2. The rich text (`snapshot`) stays the source of truth (P2): search, export, the Notes view,
+ * Study and the update engine read it, never this. `contentHash` is the hash of the card's text the layout was composed
+ * from (`ai/openui/cardLayout.ts` `cardContentHash`); once the text changes the layout is stale and the card is drawn from
+ * its text instead. Descriptive only: no behaviour other than the Cards view's drawing branches on it.
+ */
+/** At most this many characters of Lang in a `CardLayout`: a layout never carries a large payload into the canvas. */
+export const CARD_LAYOUT_LANG_MAX = 16_000;
+
+export interface CardLayout {
+  format: "openui-lang";
+  version: 1;
+  /** OpenUI Lang, as the card library (`ai/openui/library.tsx`) reads it. */
+  lang: string;
+  contentHash: string;
+  writtenAt: number;
 }
 
 /** A page is a document record of kind "page". PageId === DocumentId. */

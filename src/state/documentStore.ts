@@ -7,7 +7,7 @@
  * only when a record of that kind changes. Snapshot writes are debounced per
  * document and never awaited by the editor.
  */
-import type { DocumentRecord, RichContent } from "@/domain/types";
+import type { CardLayout, DocumentRecord, RichContent } from "@/domain/types";
 import type { DocumentRepository } from "@/persistence";
 
 const WRITE_DELAY_MS = 400;
@@ -164,6 +164,24 @@ export class DocumentStore {
     const pending = this.dirty.get(id);
     if (pending) clearTimeout(pending);
     this.dirty.set(id, setTimeout(() => void this.write(id), WRITE_DELAY_MS));
+  }
+
+  /**
+   * Sets or removes a text block's stored layout (`CardLayout`), persisted at once. Only the layout changes: the text,
+   * title and metadata are kept exactly. Resolves false when the record isn't loaded.
+   */
+  async setLayout(id: string, layout: CardLayout | null): Promise<boolean> {
+    const current = this.records.get(id);
+    if (!current) return false;
+    const { layout: _previous, ...rest } = current;
+    const next: DocumentRecord = { ...rest, ...(layout ? { layout } : {}), updatedAt: Date.now() };
+    this.setRecord(id, next);
+    // A pending text edit is written with it (the record is one row).
+    const pending = this.dirty.get(id);
+    if (pending) clearTimeout(pending);
+    this.dirty.delete(id);
+    await this.repo.put(next);
+    return true;
   }
 
   updateSnapshot(id: string, snapshot: RichContent, title?: string): void {

@@ -55,6 +55,7 @@ import { KnowledgeReviewBar } from "@/components/review/KnowledgeReviewBar";
 import { DeletedConversationsPrompt } from "@/components/ai/DeletedConversationsPrompt";
 import { getArrowRelation, getEmbedRef, isAcuteLink, type SceneElement } from "@/domain/canvas/adapter";
 import { isCompositeShape } from "@/domain/canvas/compositeShapes";
+import { noteModeOf } from "@/domain/noteMode";
 import { diagramArrowInfo, diagramSelectionTarget, selectedDiagramObject } from "@/components/diagram/diagramSelection";
 import { DiagramOverlay } from "@/components/diagram/DiagramOverlay";
 import { LensPanelHost } from "@/components/lens/LensPanelHost";
@@ -63,7 +64,7 @@ import { CanvasCardsPublisher } from "@/components/openui/canvas/CanvasCardsPubl
 import { isOpenUiCanvasEnabled, isOpenUiNotesEnabled } from "@/config/openui";
 import { FlashOverlay } from "./FlashOverlay";
 import { getImportedHtml, isWebLink, withImportedHtml } from "@/domain/canvas/webEmbed";
-import type { CanvasDocument, DocumentHome } from "@/domain/types";
+import type { CanvasDocument, DocumentHome, NoteMode } from "@/domain/types";
 import { createPage } from "@/domain/pages/pageCommands";
 import { getPersistence } from "@/persistence";
 import { getDocumentStore } from "@/state/documents";
@@ -239,10 +240,21 @@ export function ExcalidrawCanvas({ canvas }: { canvas: CanvasDocument }) {
   }, [session]);
 
   if (!session) return <div className="absolute inset-0 bg-[var(--acute-bg)]" aria-busy="true" />;
-  return <SessionCanvas key={canvas.id} session={session} workspaceId={canvas.workspaceId} canvasId={canvas.id} />;
+  return <SessionCanvas key={canvas.id} session={session} workspaceId={canvas.workspaceId} canvasId={canvas.id} noteMode={noteModeOf(canvas)} />;
 }
 
-function SessionCanvas({ session, workspaceId, canvasId }: { session: CanvasSession; workspaceId: string; canvasId: string }) {
+function SessionCanvas({
+  session,
+  workspaceId,
+  canvasId,
+  noteMode,
+}: {
+  session: CanvasSession;
+  workspaceId: string;
+  canvasId: string;
+  /** The canvas's note-taking mode (a default only); the Cards view draws every text block as a card while it is "ai". */
+  noteMode: NoteMode;
+}) {
   const [api, setApi] = useState<ExcalidrawImperativeAPI | null>(null);
   const [blockMenuOpen, setBlockMenuOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
@@ -523,6 +535,8 @@ function SessionCanvas({ session, workspaceId, canvasId }: { session: CanvasSess
         conversations: getConversationStore(),
         /** Puts an AI change set up for review on this canvas (F19), as an AI action would. */
         proposeChanges: (set: unknown) => getPendingChanges().propose(home.canvasId, set),
+        /** The change set under review on this canvas (null when none), for diagnostics (note-taking modes replay). */
+        pending: () => getPendingChanges().get(home.canvasId),
         /** `acute://context/current` as the MCP server (F20) will serve it (F25). */
         currentContext: () => getCurrentContext(getPersistence()),
         /** An object's reconciliation link (F37) and its current content fingerprint, for tests. */
@@ -547,6 +561,19 @@ function SessionCanvas({ session, workspaceId, canvasId }: { session: CanvasSess
           }),
         /** A content source (F37) and its latest accepted version, for tests. */
         contentSource: (sourceId: string) => import("@/ai/content/sources").then((m) => m.loadLatest(getPersistence().contentSources, sourceId)),
+        /**
+         * Stores (or with null removes) an OpenUI layout on a text block, for tests (note-taking-modes plan Step 3; the MCP
+         * tools of Step 5 write the same field after review). Resolves false when the block isn't loaded.
+         */
+        setCardLayout: (documentId: string, lang: string | null) =>
+          Promise.all([import("@/ai/openui/cardLayout"), import("@/ai/openui/layoutCheck")]).then(([m, c]) => {
+            const store = getDocumentStore();
+            const rec = store.get(documentId);
+            if (!rec) return false;
+            // Structure only (no source passages here); the MCP tools of Step 5 run the full `checkLayout`.
+            if (lang !== null && !c.checkLayoutStructure(lang).ok) return false;
+            return store.setLayout(documentId, lang === null ? null : m.layoutFor(rec, lang));
+          }),
         /** Removes a content source and its versions from this device, as a canvas imported without its sources has none (U6). */
         deleteContentSource: (sourceId: string) => import("@/ai/study/cleanup").then((m) => m.deleteContentSource(getPersistence(), sourceId)),
         /**
@@ -958,7 +985,7 @@ function SessionCanvas({ session, workspaceId, canvasId }: { session: CanvasSess
       {/* OpenUI Notes view (openui-integration-plan Phases 2–3): reads the canvas; writes only when a note is pinned. */}
       {api && isOpenUiNotesEnabled() && <NotesViewHost api={api} home={home} history={history} />}
       {/* OpenUI canvas cards ("View → Cards"): feeds the source-citing AI cards' citations to their blocks; renders nothing. */}
-      {api && isOpenUiCanvasEnabled() && <CanvasCardsPublisher api={api} home={home} history={history} />}
+      {api && isOpenUiCanvasEnabled() && <CanvasCardsPublisher api={api} home={home} history={history} noteMode={noteMode} />}
       {api && <FlashOverlay api={api} />}
       {/* Everything AI (built-in and MCP review), absent from a build with the AI feature off. */}
       {api && isAIFeatureEnabled() && (

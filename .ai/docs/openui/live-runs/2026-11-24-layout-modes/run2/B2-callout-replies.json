@@ -1,0 +1,7 @@
+[
+  {
+    "task": "compose_card_layout",
+    "prompt": "Instruction: Put the deadline and the lock warning in a warning callout under a one-sentence summary.\n\nThe card cites no source; use no CitationChip or citations.\n\nCard Markdown:\n\nDatabase migration\n\nThe migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\n\n\nCurrent layout:\n\nroot = IdeaCard(\"Database migration\", \"The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\")",
+    "reply": "<markdown>\nDatabase migration\n\nMigrate the database.\n\n⚠️ The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\n</markdown>\n\n<layout>\nroot = IdeaCard(\"Database migration\", \"Migrate the database.\", null, null, null, [c1])\nc1 = Callout(\"warning\", \"The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\")\n</layout>"
+  }
+]

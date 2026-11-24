@@ -32,7 +32,7 @@ import type { VisualizeProgress } from "@/ai/visualize/types";
 import type { VisualTemplate } from "@/ai/visual-plan/types";
 import type { SceneElement } from "@/domain/canvas/adapter";
 import { newId } from "@/domain/ids";
-import type { DocumentRecord } from "@/domain/types";
+import type { DocumentRecord, NoteMode } from "@/domain/types";
 import type { ContentSourceRepository } from "@/persistence/repositories/types";
 
 /** The content source isn't on this device (e.g. the objects came in a workspace import). */
@@ -81,6 +81,8 @@ export type IngestRequest =
       title?: string;
       /** This run's note model (WP2.8: the dialog's "Keep full detail" choice, shown from R1). Omitted: `FIDELITY_CONFIG.noteModel`. */
       noteModel?: NoteModel;
+      /** The canvas's note-taking mode (note-taking-modes Step 6): "ai" draws plain flow sections as FlowDiagram cards. Omitted: manual. */
+      canvasNoteMode?: NoteMode;
     }
   | { mode: "update"; sourceId: string; text: string; title?: string; /** Section keys to analyse again with AI from their own text ("Re-visualize"); all others are left as they are. */ regenerate?: readonly string[] }
   | { mode: "merge"; sourceId: string; text: string; economy?: boolean; title?: string };
@@ -154,6 +156,7 @@ export async function ingestContent(request: IngestRequest, ports: IngestPorts, 
       template: request.template,
       forceLocalOnly: request.forceLocalOnly ?? false,
       ...(request.noteModel ? { noteModel: request.noteModel } : {}),
+      ...(request.canvasNoteMode === "ai" ? { canvasNoteMode: request.canvasNoteMode } : {}),
       operationId: newId("op"),
       title: request.title ?? "Visualize",
       context: ports.renderContext(),

@@ -52,6 +52,8 @@ describe("the View preference (Cards)", () => {
   it("round-trips cards through the meta store with the flag on", async () => {
     vi.stubEnv("NEXT_PUBLIC_OPENUI_CANVAS", "on");
     const first = await load();
+    // Cards is already the default with the flag on (D1), so switch away first: the round-trip is of a stored "cards".
+    first.setUiPref("blockDisplay", "editor");
     first.setUiPref("blockDisplay", "cards");
     expect(first.getUiPref("blockDisplay")).toBe("cards");
     await new Promise((r) => setTimeout(r, 0));
@@ -59,6 +61,31 @@ describe("the View preference (Cards)", () => {
 
     const reloaded = await load();
     expect(reloaded.getUiPref("blockDisplay")).toBe("cards");
+  });
+
+  it("defaults to Cards while the flag is on (note-taking modes D1, development only) and to Compact while it is off", async () => {
+    vi.stubEnv("NEXT_PUBLIC_OPENUI_CANVAS", "on");
+    expect((await load()).getUiPref("blockDisplay")).toBe("cards");
+    vi.stubEnv("NEXT_PUBLIC_OPENUI_CANVAS", "off");
+    expect((await load()).getUiPref("blockDisplay")).toBe("compact");
+    vi.unstubAllEnvs();
+    expect((await load()).getUiPref("blockDisplay")).toBe("compact");
+  });
+
+  it("a stored choice wins over the Cards default", async () => {
+    meta.set("ui.prefs", { blockDisplay: "compact" });
+    vi.stubEnv("NEXT_PUBLIC_OPENUI_CANVAS", "on");
+    expect((await load()).getUiPref("blockDisplay")).toBe("compact");
+  });
+
+  it("remembers the last note-taking mode picked for a new canvas; manual by default, unknown values ignored", async () => {
+    const first = await load();
+    expect(first.getUiPref("newCanvasNoteMode")).toBe("manual");
+    first.setUiPref("newCanvasNoteMode", "ai");
+    await new Promise((r) => setTimeout(r, 0));
+    expect((await load()).getUiPref("newCanvasNoteMode")).toBe("ai");
+    meta.set("ui.prefs", { newCanvasNoteMode: "robots" });
+    expect((await load()).getUiPref("newCanvasNoteMode")).toBe("manual");
   });
 
   it("falls back to Compact when the flag is off: a stored cards reads as compact, and cards can't be set", async () => {

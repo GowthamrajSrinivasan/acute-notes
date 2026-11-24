@@ -9,6 +9,8 @@ import { DEFAULT_RESPONSE_STYLE, setResponseStyleSource, type ResponseStyle } fr
 import { DEFAULT_CLEANUP, type CleanupOptions } from "@/ai/content/cleanup";
 import { DEFAULT_UPDATE_POLICY, setUpdatePolicySource, type UpdatePolicy } from "@/ai/reconcile/updatePolicy";
 import { isOpenUiCanvasEnabled } from "@/config/openui";
+import { DEFAULT_NOTE_MODE, isNoteMode } from "@/domain/noteMode";
+import type { NoteMode } from "@/domain/types";
 import { getPersistence } from "@/persistence";
 
 /**
@@ -37,7 +39,13 @@ export type AIChangeMarkers = "timed" | "until_clicked" | "off";
 export type ArrowTool = "excalidraw" | "architecture";
 
 export interface UiPrefs {
+  /**
+   * How inactive blocks are drawn. The default is Cards while the Cards flag is on (note-taking-modes plan §4.1, D1:
+   * development only) and Compact otherwise; a stored choice always wins.
+   */
   blockDisplay: BlockDisplay;
+  /** The note-taking mode a new canvas gets: the last one picked on this device (note-taking-modes plan, D2). */
+  newCanvasNoteMode: NoteMode;
   aiChangeMarkers: AIChangeMarkers;
   /** Width of the docked page side panel (px). */
   pagePanelWidth: number;
@@ -54,7 +62,8 @@ export interface UiPrefs {
 
 const KEY = "ui.prefs";
 const DEFAULTS: UiPrefs = {
-  blockDisplay: "compact",
+  blockDisplay: blockDisplayOf("cards"),
+  newCanvasNoteMode: DEFAULT_NOTE_MODE,
   aiChangeMarkers: "timed",
   pagePanelWidth: 560,
   lensPanelWidth: 640,
@@ -79,7 +88,7 @@ function ensureLoaded() {
     .meta.get<Partial<UiPrefs>>(KEY)
     .then((stored) => {
       if (stored) {
-        prefs = { ...DEFAULTS, ...stored, blockDisplay: blockDisplayOf(stored.blockDisplay ?? DEFAULTS.blockDisplay), aiStyle: { ...DEFAULTS.aiStyle, ...stored.aiStyle }, aiCleanup: { ...DEFAULTS.aiCleanup, ...stored.aiCleanup }, aiUpdate: { ...DEFAULTS.aiUpdate, ...stored.aiUpdate } };
+        prefs = { ...DEFAULTS, ...stored, blockDisplay: blockDisplayOf(stored.blockDisplay ?? DEFAULTS.blockDisplay), newCanvasNoteMode: isNoteMode(stored.newCanvasNoteMode) ? stored.newCanvasNoteMode : DEFAULTS.newCanvasNoteMode, aiStyle: { ...DEFAULTS.aiStyle, ...stored.aiStyle }, aiCleanup: { ...DEFAULTS.aiCleanup, ...stored.aiCleanup }, aiUpdate: { ...DEFAULTS.aiUpdate, ...stored.aiUpdate } };
         emit();
       }
     });

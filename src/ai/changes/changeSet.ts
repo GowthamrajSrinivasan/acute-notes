@@ -29,7 +29,7 @@ import { PLAN_SHAPES } from "@/ai/visual-plan/types";
 import { fingerprintContent, fingerprintShape } from "@/ai/content/fingerprint";
 import { baselineHolds, staleConflict, type LiveShape } from "./staleTarget";
 import { INSERT_BLOCK_TYPES, MAX_CLAIM_EDITS, MAX_CLAIM_TEXT, UPDATE_INTENTS, resolvePatch, type BlockInsert, type ClaimEdit, type PatchRejection, type PatchTarget, type UpdateIntent } from "./claimPatch";
-import { RELATION_TYPES, type AIMetadata, type ContentBlockType, type ObjectId, type RelationType, type RichBlockType, type RichContent, type ShapeKind, type SourceRef } from "@/domain/types";
+import { CARD_LAYOUT_LANG_MAX, RELATION_TYPES, type AIMetadata, type ContentBlockType, type ObjectId, type RelationType, type RichBlockType, type RichContent, type ShapeKind, type SourceRef } from "@/domain/types";
 
 export interface Box {
   x: number;
@@ -68,6 +68,8 @@ export type ProposedChange =
       sourceRefs?: SourceRef[];
       /** A card's architecture kind (Lens Phase 2: a Repo Map node's `kind`), in its `acuteNode`. */
       semantics?: NodeSemantics;
+      /** A text card's OpenUI layout (note-taking modes §4.3); the writer stamps it with this content's hash. */
+      layout?: { lang: string };
     }
   | {
       kind: "create_shape";
@@ -155,6 +157,11 @@ export type ProposedChange =
        * (a set built and committed in one step, an accepted patch's own write).
        */
       expectedFingerprint?: string;
+      /**
+       * A text block's OpenUI layout (note-taking modes §4.3): a new one for this content, `null` to remove it. Absent: the
+       * block's layout is carried to the new document as it is (stale once the text differs).
+       */
+      layout?: { lang: string } | null;
     }
   /**
    * Claim-level edits inside an existing block or page (intelligent-update-engine-plan Stage 1b): one or more edits
@@ -427,6 +434,12 @@ const key = z.string().min(1).max(200);
 const target = z.union([z.object({ existing: z.string().min(1) }).strict(), z.object({ created: key }).strict()]);
 const contentBlock = z.looseObject({ type: z.enum(CONTENT_BLOCK_TYPES) });
 const stableKey = z.string().min(1).max(300);
+/**
+ * A text card's OpenUI layout to store with it (note-taking-modes plan §4.3): only the Lang — the writer stamps the
+ * hash of the content it writes (`cardLayout.ts` `layoutFor`), so a layout is current exactly for the text it came with.
+ * Checked by the proposer (`ai/openui/layoutCheck.ts`) before it gets here; the writer applies it to text blocks only.
+ */
+const cardLayoutChange = z.object({ lang: z.string().min(1).max(CARD_LAYOUT_LANG_MAX) }).strict();
 const sourceRefs = z.array(z.object({ provider: z.string().min(1).max(200), externalId: z.string().max(500).optional(), url: z.string().max(2048).optional() })).max(20);
 const updateBlockSchema = z.object({
   kind: z.literal("update_block"),
@@ -437,6 +450,8 @@ const updateBlockSchema = z.object({
   sourceRefs: sourceRefs.optional(),
   userWording: z.literal(true).optional(),
   expectedFingerprint: z.string().min(1).max(100).optional(),
+  /** A text block's layout: a new one for this content, `null` to remove it; absent keeps the block's layout as it is. */
+  layout: z.union([cardLayoutChange, z.null()]).optional(),
 });
 const claimText = z.string().max(MAX_CLAIM_TEXT);
 const claimEditSchema = z.object({
@@ -534,6 +549,8 @@ const changeSchema = z.discriminatedUnion("kind", [
     stableNodeKey: stableKey.optional(),
     sourceRefs: sourceRefs.optional(),
     semantics: nodeSemanticsSchema.optional(),
+    /** A text card's layout, stored with it (text blocks only). */
+    layout: cardLayoutChange.optional(),
   }),
   z.object({
     kind: z.literal("create_frame"),

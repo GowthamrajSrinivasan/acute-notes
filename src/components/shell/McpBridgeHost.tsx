@@ -13,6 +13,7 @@ import type { BridgeStatus } from "@/mcp/bridge/tabBridge";
 import { getPersistence } from "@/persistence";
 import { hierarchy } from "@/state/hierarchy";
 import { getMcpAllowIngest } from "@/state/mcpIngest";
+import { getMcpAllowIntelligentUi } from "@/state/mcpIntelligentUi";
 import { createCanvas } from "@/workspaces/hierarchy";
 import { canvasPath } from "@/workspaces/paths";
 
@@ -128,6 +129,14 @@ export function McpBridgeHost({ workspaceId }: { workspaceId: string }) {
               repoMap: { services: { store: services.repoMaps, contentSources: services.contentSources } },
               // Content imports (AI, the user's credit): served to local sessions, and only while the user allows them for this workspace.
               ingest: { runtime: AIRuntime, contentSources: services.contentSources, allowed: () => getMcpAllowIngest(workspaceId) },
+              // Intelligent UI (note-taking modes, D6): the client's model composes card layouts; checked here, no model
+              // call, free; only while the user allows it for this workspace. The check and grammar load on first use.
+              layout: {
+                allowed: () => getMcpAllowIntelligentUi(workspaceId),
+                contentSources: services.contentSources,
+                check: (input) => import("@/ai/openui/layoutCheck").then((m) => { const check = m.checkLayout(input); return { check, lines: m.layoutReviewLines(check) }; }),
+                grammar: () => import("@/ai/openui/layoutGrammar").then((m) => ({ grammar: m.layoutGrammar(), examples: m.LAYOUT_EXAMPLES })),
+              },
               agentState: services.agentState,
               // Agent State (D46): each session's calls and characters returned, per tool.
               onToolCall: (call) => void import("@/state/agentLog").then((m) => m.recordUsage(workspaceId, call.session, call.agent, call.tool, call.chars)),

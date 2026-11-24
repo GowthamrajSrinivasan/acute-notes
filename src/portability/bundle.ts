@@ -24,7 +24,7 @@
  * Never included: UI preferences, AI settings, API keys or usage records.
  */
 import { z } from "zod";
-import { RELATION_TYPES } from "@/domain/types";
+import { CARD_LAYOUT_LANG_MAX, RELATION_TYPES } from "@/domain/types";
 import { BundleError } from "./bundleError";
 
 export const BUNDLE_FORMAT = "acute-notes";
@@ -95,6 +95,8 @@ export const bundleSchema = z.object({
       title: z.string(),
       createdAt: z.number(),
       updatedAt: z.number(),
+      /** Note-taking mode (`domain/noteMode.ts`); absent = manual. Unknown values are dropped on import, never failed. */
+      noteMode: z.enum(["manual", "ai"]).optional().catch(undefined),
       viewport: viewport.optional(),
       viewBackgroundColor: z.string().optional(),
       elements: z.array(element),
@@ -111,6 +113,17 @@ export const bundleSchema = z.object({
       createdAt: z.number(),
       updatedAt: z.number(),
       metadata,
+      /** A text block's stored OpenUI layout (`CardLayout`); one that doesn't fit the shape is dropped on import, never failed. */
+      layout: z
+        .object({
+          format: z.literal("openui-lang"),
+          version: z.literal(1),
+          lang: z.string().min(1).max(CARD_LAYOUT_LANG_MAX),
+          contentHash: z.string().min(1).max(64),
+          writtenAt: z.number(),
+        })
+        .optional()
+        .catch(undefined),
     }),
   ),
   relations: z.array(

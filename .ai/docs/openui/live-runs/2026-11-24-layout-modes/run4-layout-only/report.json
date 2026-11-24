@@ -1,0 +1,109 @@
+{
+  "B1-timeline.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00073,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3551,
+        "completionTokens": 334,
+        "ms": 6107
+      }
+    }
+  },
+  "approvedBy": "project owner (chat, 2026-11-24)",
+  "priceInPerM": 0.15,
+  "priceOutPerM": 0.6,
+  "cap": 0.3,
+  "spent.B": 0.0031,
+  "spentUsdEstimate": 0.0031,
+  "B1-timeline": {
+    "layoutOnly": true,
+    "requests": 1,
+    "outcome": "proposed",
+    "reply": "<layout>\nroot = Timeline(\"Onboarding a new engineer\", [e1, e2, e3])\ne1 = TimelineEvent(\"Day 1\", \"Get laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"Month 1\", \"Own a feature\")\n</layout>",
+    "flagged": "",
+    "stored": "root = Timeline(\"Onboarding a new engineer\", [e1, e2, e3])\ne1 = TimelineEvent(\"Day 1\", \"Get laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"Month 1\", \"Own a feature\")",
+    "drawsStored": true,
+    "textKept": true
+  },
+  "B2-callout.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00091,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3543,
+        "completionTokens": 638,
+        "ms": 4825
+      }
+    }
+  },
+  "B2-callout": {
+    "layoutOnly": true,
+    "requests": 1,
+    "outcome": "proposed",
+    "reply": "<layout>\nroot = IdeaCard(\"Database migration\", \"The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\", null, null, null, [c1])\nc1 = Callout(\"warning\", \"The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\")\n</layout>",
+    "flagged": "",
+    "stored": "root = IdeaCard(\"Database migration\", \"The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\", null, null, null, [c1])\nc1 = Callout(\"warning\", \"The migration must finish before 18 March. It locks the users table for about 5 minutes, so run it after 22:00.\")",
+    "drawsStored": true,
+    "textKept": true
+  },
+  "B3-table.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00065,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3534,
+        "completionTokens": 192,
+        "ms": 3225
+      }
+    }
+  },
+  "B3-table": {
+    "layoutOnly": true,
+    "requests": 1,
+    "outcome": "proposed",
+    "reply": "<layout>\nroot = ComparisonTable([\"\", \"Free\", \"Team\"], [[\"Storage\", \"5 GB\", \"200 GB\"], [\"Price\", \"$0\", \"$10 per user per month\"]])\n</layout>",
+    "flagged": "",
+    "stored": "root = ComparisonTable([\"\", \"Free\", \"Team\"], [[\"Storage\", \"5 GB\", \"200 GB\"], [\"Price\", \"$0\", \"$10 per user per month\"]])",
+    "drawsStored": true,
+    "textKept": true
+  },
+  "B4-refresh.calls": {
+    "calls": 1,
+    "failed": 0,
+    "usd": 0.00081,
+    "models": [
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "compose_card_layout": {
+        "calls": 1,
+        "promptTokens": 3619,
+        "completionTokens": 439,
+        "ms": 3244
+      }
+    }
+  },
+  "B4-refresh": {
+    "requests": 1,
+    "chip": "Refresh proposed — review it below\nRemove layout",
+    "reply": "<layout>\nroot = Timeline(\"Onboarding a new engineer\", [e1, e2, e3, e4])\ne1 = TimelineEvent(\"Day 1\", \"Get laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"Month 2\", \"Own a feature\")\ne4 = TimelineEvent(\"Month 3\", \"Join on-call rota\")\n</layout>",
+    "stored": "root = Timeline(\"Onboarding a new engineer\", [e1, e2, e3, e4])\ne1 = TimelineEvent(\"Day 1\", \"Get laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"Month 2\", \"Own a feature\")\ne4 = TimelineEvent(\"Month 3\", \"Join on-call rota\")",
+    "staleAfter": 0
+  }
+}

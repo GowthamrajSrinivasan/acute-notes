@@ -45,6 +45,7 @@ const LIMITS: Record<string, TaskLimits> = {
   generate_section_analysis: { maxTokens: 4_096, temperature: STRUCTURED },
   resend_cards: { maxTokens: 16_384, temperature: STRUCTURED },
   generate_openui_notes: { maxTokens: UNMEASURED_MAX_TOKENS, temperature: STRUCTURED },
+  compose_card_layout: { maxTokens: UNMEASURED_MAX_TOKENS, temperature: STRUCTURED },
   extract_content: { maxTokens: UNMEASURED_MAX_TOKENS, temperature: STRUCTURED },
   extract_entities: { maxTokens: UNMEASURED_MAX_TOKENS, temperature: STRUCTURED },
   extract_relationships: { maxTokens: UNMEASURED_MAX_TOKENS, temperature: STRUCTURED },

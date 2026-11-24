@@ -108,7 +108,8 @@ test.describe("OpenUI on the canvas: View → Cards (no AI)", () => {
     await openApp(page);
     await answerLocally(page);
     await connectFakeKey(page);
-    expect(await page.evaluate(() => (window as unknown as { __acuteDev: { setNoteModel(m: string): Promise<string> } }).__acuteDev.setNoteModel("distil"))).toBe("distil");
+    // Distil comes from the dialog's early-access choice (below), not the developer setting: the global model stays preserve.
+    expect(await page.evaluate(() => (window as unknown as { __acuteDev: { setNoteModel(m: string): Promise<string> } }).__acuteDev.setNoteModel(""))).toBe("preserve");
   });
   test.afterAll(async () => {
     await page?.context().close();
@@ -118,10 +119,18 @@ test.describe("OpenUI on the canvas: View → Cards (no AI)", () => {
     await page.getByRole("button", { name: "More", exact: true }).click();
     await page.getByRole("menuitem", { name: "Visualize content…" }).click();
     await visualizeDialog(page).getByRole("textbox").fill(SOURCE);
+    // Early access before R1: "Distil into key ideas" is offered, ticked by default in development only (note-taking modes
+    // D1, 2026-11-23: it follows the Cards flag); it distils this run only, and the global model stays preserve.
+    const distil = visualizeDialog(page).getByRole("checkbox", { name: /Distil into key ideas/ });
+    await expect(distil).toBeChecked();
+    await expect(visualizeDialog(page)).toContainText("more notes may be marked Needs review");
+    await distil.check();
     await visualizeDialog(page).getByRole("button", { name: "Visualize", exact: true }).click();
     await expect(reviewBar(page)).toBeVisible({ timeout: 60_000 });
     await reviewBar(page).getByRole("button", { name: /^Accept all/ }).click();
     await expect(reviewBar(page)).toBeHidden();
+    // In development the View starts on Cards (note-taking modes D1, 2026-11-23); start from Compact for the comparison.
+    await viewToggle(page).getByRole("radio", { name: "Compact" }).click();
     await expect(viewToggle(page).getByRole("radio", { name: "Compact" })).toHaveAttribute("aria-checked", "true");
     await expect(openUiCards(page)).toHaveCount(0);
     await shot(page, "01-compact.png");
@@ -198,7 +207,11 @@ test.describe("OpenUI on the canvas: View → Cards (no AI)", () => {
     await expect(openUiCards(page)).toHaveCount(0);
     const after = await canvasState(page);
     expect(after.docs).toEqual(before.docs);
-    expect(after.boxes, "switching Cards → Compact moved or resized nothing").toEqual(inCards.boxes);
+    // Switching moved or resized nothing — except the card edited in step 3: BlockNote's auto-height grew it while editing,
+    // the Cards view never re-measures (it keeps every box), and Compact fits it to its content again. Whether the editor
+    // had grown it by then is timing, so it is exempt here as it is below (race seen 2026-11-23, Step 4 of note-taking modes).
+    const resized = Object.keys(inCards.boxes).filter((k) => JSON.stringify(inCards.boxes[k]) !== JSON.stringify(after.boxes[k]));
+    expect(resized.filter((k) => k !== editedId), "switching Cards → Compact moved or resized nothing but the edited card").toEqual([]);
     // Since the start, only the card edited in step 3 may have changed size (BlockNote's auto-height, as in any view).
     const changed = Object.keys(before.boxes).filter((k) => JSON.stringify(before.boxes[k]) !== JSON.stringify(after.boxes[k]));
     expect(changed.filter((k) => k !== editedId), "only the edited card changed size").toEqual([]);

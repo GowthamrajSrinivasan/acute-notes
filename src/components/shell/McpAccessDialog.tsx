@@ -24,6 +24,7 @@ import {
 } from "@/mcp/bridge/access";
 import { MCP_ENDPOINT_PATH, MCP_SECRET_URL_PREFIX } from "@/mcp/bridge/protocol";
 import { setMcpAllowIngest, useMcpAllowIngest } from "@/state/mcpIngest";
+import { setMcpAllowIntelligentUi, useMcpAllowIntelligentUi } from "@/state/mcpIntelligentUi";
 import { useMcpBridgeStatus } from "./McpBridgeHost";
 
 const STATUS_TEXT = {
@@ -39,6 +40,7 @@ const LOOPBACK_HOST = /^(localhost|127\.0\.0\.1|\[::1\])$/;
 export function McpAccessDialog({ workspaceId, workspaceName, onClose }: { workspaceId: string; workspaceName: string; onClose: () => void }) {
   const { enabled, readOnly, token, secretUrl, publicUrl, server } = useMcpAccess(workspaceId);
   const allowIngest = useMcpAllowIngest(workspaceId);
+  const allowIntelligentUi = useMcpAllowIntelligentUi(workspaceId);
   const status = useMcpBridgeStatus();
   const [shown, setShown] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
@@ -116,6 +118,12 @@ export function McpAccessDialog({ workspaceId, workspaceName, onClose }: { works
               <label className="acute-dialog__row">
                 <input type="checkbox" checked={allowIngest} onChange={(e) => setMcpAllowIngest(workspaceId, e.target.checked)} />
                 <span>Allow AI imports (spends your AI credit; local clients only; you still review every change)</span>
+              </label>
+            )}
+            {!readOnly && (
+              <label className="acute-dialog__row">
+                <input type="checkbox" checked={allowIntelligentUi} onChange={(e) => setMcpAllowIntelligentUi(workspaceId, e.target.checked)} />
+                <span>Allow intelligent UI (clients compose card layouts with their own AI; free; you still review every change)</span>
               </label>
             )}
             <p className="acute-mcp-dialog__status" role="status" data-status={status}>

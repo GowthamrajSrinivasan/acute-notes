@@ -5,6 +5,7 @@ import {
   DISTIL_OPT_IN_LABEL,
   KEEP_FULL_DETAIL_HELP,
   KEEP_FULL_DETAIL_LABEL,
+  defaultNoteModelTicked,
   noteModelControl,
   runNoteModel,
   showsNoteModelChoice,
@@ -34,6 +35,16 @@ describe("Note model choice (WP2.8)", () => {
     expect(runNoteModel(false, config)).toBe("distil");
     expect(runNoteModel(true, config)).toBe("preserve");
     expect(noteModelControl(config)).toEqual({ label: KEEP_FULL_DETAIL_LABEL, help: KEEP_FULL_DETAIL_HELP });
+  });
+  it("the box starts ticked (distil) only before R1 and only while the Cards flag is on: development, never production (D1)", () => {
+    expect(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, true)).toBe(true);
+    expect(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, false)).toBe(false);
+    // From R1 the box is "Keep full detail": unticked already means distil.
+    expect(defaultNoteModelTicked({ noteModelChoice: "default" }, true)).toBe(false);
+    expect(defaultNoteModelTicked({ noteModelChoice: "hidden" }, true)).toBe(false);
+    // The run follows the box, so a ticked default is distil for that run only; the global model is untouched.
+    expect(runNoteModel(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, true), { noteModelChoice: "opt-in" })).toBe("distil");
+    expect(FIDELITY_CONFIG.noteModel).toBe("preserve");
   });
   it("labels and one short line of help each", () => {
     expect(KEEP_FULL_DETAIL_LABEL).toBe("Keep full detail");

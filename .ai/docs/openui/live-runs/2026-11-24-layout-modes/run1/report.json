@@ -1,0 +1,50 @@
+{
+  "approvedBy": "project owner (chat, 2026-11-24)",
+  "at": "2026-11-24T07:06:45.101Z",
+  "priceInPerM": 0.15,
+  "priceOutPerM": 0.6,
+  "cap": 0.3,
+  "distil": true,
+  "A1.calls": {
+    "calls": 9,
+    "failed": 0,
+    "usd": 0.00681,
+    "models": [
+      "google/gemini-2.5-flash-lite",
+      "openai/gpt-oss-120b"
+    ],
+    "byTask": {
+      "outline_document": {
+        "calls": 1,
+        "promptTokens": 1069,
+        "completionTokens": 310,
+        "ms": 1550
+      },
+      "generate_visual_plan": {
+        "calls": 4,
+        "promptTokens": 8220,
+        "completionTokens": 6551,
+        "ms": 369677
+      },
+      "check_card_meaning": {
+        "calls": 4,
+        "promptTokens": 2375,
+        "completionTokens": 1571,
+        "ms": 101322
+      }
+    }
+  },
+  "A1.newLayoutCardsInReview": 0,
+  "A1.flowCards": [],
+  "A1.nativeShapeTexts": [
+    "1 · Freeze main branch",
+    "2 · Build & test",
+    "3 · Review approval",
+    "4 · Deploy in three waves",
+    "5 · Monitor error rates",
+    "routing",
+    "roles",
+    "The process described\nin s1 is a result of\nthe issues described\nin s2."
+  ],
+  "spentUsdEstimate": 0.00681
+}

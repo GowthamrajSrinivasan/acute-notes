@@ -69,6 +69,10 @@ async function visualize(page: Page, text: string): Promise<void> {
   await page.getByRole("button", { name: "More", exact: true }).click();
   await page.getByRole("menuitem", { name: "Visualize content…" }).click();
   await visualizeDialog(page).getByRole("textbox").fill(text);
+  // The page's note model (`setNoteModel`) decides here: in development the dialog's "Distil into key ideas" starts ticked
+  // (note-taking modes D1, 2026-11-23) and would override it for the run, so untick it.
+  const distil = visualizeDialog(page).getByRole("checkbox", { name: /Distil into key ideas/ });
+  if ((await distil.count()) && (await distil.isChecked())) await distil.uncheck();
   await visualizeDialog(page).getByRole("button", { name: "Visualize", exact: true }).click();
   await expect(reviewBar(page)).toBeVisible({ timeout: 60_000 });
 }

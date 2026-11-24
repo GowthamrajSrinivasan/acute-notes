@@ -16,7 +16,8 @@ import { clearStudy } from "@/ai/study/store";
 import { canvasDocId } from "@/sync/docIds";
 import { getEmbedRef, type SceneElement } from "@/domain/canvas/adapter";
 import { newId } from "@/domain/ids";
-import type { CanvasDocument, DocumentRecord, Workspace } from "@/domain/types";
+import { DEFAULT_NOTE_MODE, noteModeOf } from "@/domain/noteMode";
+import type { CanvasDocument, DocumentRecord, NoteMode, Workspace } from "@/domain/types";
 import type { PersistenceServices } from "@/persistence/repositories/types";
 import { richDocKey } from "@/state/documentClone";
 
@@ -116,10 +117,19 @@ export async function createCanvas(
   services: PersistenceServices,
   workspaceId: string,
   title = DEFAULT_CANVAS_TITLE,
+  /** The note-taking mode (`domain/noteMode.ts`); left off the document when it is the default, as older canvases have it. */
+  noteMode?: NoteMode,
 ): Promise<CanvasDocument> {
   const workspace = await requireWorkspace(services, workspaceId);
   const now = Date.now();
-  const canvas: CanvasDocument = { id: newId("cv"), workspaceId, title: clean(title, DEFAULT_CANVAS_TITLE), createdAt: now, updatedAt: now };
+  const canvas: CanvasDocument = {
+    id: newId("cv"),
+    workspaceId,
+    title: clean(title, DEFAULT_CANVAS_TITLE),
+    ...(noteMode && noteMode !== DEFAULT_NOTE_MODE ? { noteMode } : {}),
+    createdAt: now,
+    updatedAt: now,
+  };
   await services.canvases.put(canvas);
   await services.workspaces.put({ ...workspace, canvasIds: [...workspace.canvasIds, canvas.id], updatedAt: now });
   return canvas;
@@ -128,6 +138,19 @@ export async function createCanvas(
 export async function renameCanvas(services: PersistenceServices, id: string, title: string): Promise<CanvasDocument> {
   const canvas = await requireCanvas(services, id);
   const next = { ...canvas, title: clean(title, DEFAULT_CANVAS_TITLE), updatedAt: Date.now() };
+  await services.canvases.put(next);
+  return next;
+}
+
+/**
+ * Sets a canvas's note-taking mode. Only the canvas document changes: no scene object, card layout, provenance or
+ * study history is read or written (note-taking-modes plan, approval conditions). Setting the default removes the field.
+ */
+export async function setCanvasNoteMode(services: PersistenceServices, id: string, noteMode: NoteMode): Promise<CanvasDocument> {
+  const canvas = await requireCanvas(services, id);
+  if (noteModeOf(canvas) === noteMode) return canvas;
+  const { noteMode: _previous, ...rest } = canvas;
+  const next: CanvasDocument = { ...rest, ...(noteMode === DEFAULT_NOTE_MODE ? {} : { noteMode }), updatedAt: Date.now() };
   await services.canvases.put(next);
   return next;
 }

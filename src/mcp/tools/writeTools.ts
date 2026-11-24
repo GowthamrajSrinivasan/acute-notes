@@ -228,7 +228,7 @@ export async function proposeChangeSet(
 }
 
 /** A raw plan through F29 validation and F30 rendering against the live canvas. */
-async function renderPlan(deps: WriteToolDeps, live: LiveCanvasActions, operationId: string, rawPlan: unknown, setTitle: string, metadata: ChangeSet["metadata"]) {
+export async function renderPlan(deps: WriteToolDeps, live: LiveCanvasActions, operationId: string, rawPlan: unknown, setTitle: string, metadata: ChangeSet["metadata"]) {
   const { plan, warnings } = validateVisualPlan(rawPlan);
   const set = await renderVisualPlan(plan, {
     operationId,
@@ -241,7 +241,7 @@ async function renderPlan(deps: WriteToolDeps, live: LiveCanvasActions, operatio
 }
 
 /** A one-node plan (the `action_plan` template takes text, page, table and todo nodes). */
-const onePlan = (node: Record<string, unknown>) => ({ version: 1, template: "action_plan", nodes: [node], relationships: [] });
+export const onePlan = (node: Record<string, unknown>) => ({ version: 1, template: "action_plan", nodes: [node], relationships: [] });
 
 export function registerWriteTools(server: McpServer, deps: WriteToolDeps): void {
   const client = () => sanitizeClientName(deps.clientName?.());

@@ -212,7 +212,7 @@ const Timeline = defineComponent({
 
 // ── FlowDiagram ─────────────────────────────────────────────────────────────
 
-function FlowDiagramView({ title, steps, details }: { title: string; steps: string[]; details: string[] }) {
+function FlowDiagramView({ title, steps, details, citations }: { title: string; steps: string[]; details: string[]; citations: string[] }) {
   const [active, setActive] = useState<number | null>(null);
   const detailId = useId();
   const detail = active !== null ? details[active] : undefined;
@@ -248,19 +248,22 @@ function FlowDiagramView({ title, steps, details }: { title: string; steps: stri
           {detail}
         </p>
       )}
+      <UnitChips units={citations} />
     </article>
   );
 }
 
 const FlowDiagram = defineComponent({
   name: "FlowDiagram",
-  description: "A short process as connected steps, left to right. `details[i]` explains step i and shows when the reader selects it. Keep to 2–7 steps.",
+  description:
+    "A short process as connected steps, left to right. `details[i]` explains step i and shows when the reader selects it. Keep to 2–7 steps. `citations` are source unit ids.",
   props: z.object({
     title: z.string(),
     steps: z.array(z.string()).min(1),
     details: z.array(z.string()).optional(),
+    citations: z.array(z.string()).optional().describe("Source unit ids, e.g. [\"u4\"]."),
   }),
-  component: ({ props }) => <FlowDiagramView title={props.title} steps={props.steps ?? []} details={props.details ?? []} />,
+  component: ({ props }) => <FlowDiagramView title={props.title} steps={props.steps ?? []} details={props.details ?? []} citations={props.citations ?? []} />,
 });
 
 // ── QuizCard ────────────────────────────────────────────────────────────────

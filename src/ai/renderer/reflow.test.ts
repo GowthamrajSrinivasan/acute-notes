@@ -176,3 +176,29 @@ function blockers(x = STEP_X): SceneObject[] {
   for (let r = 0; r < 12; r++) for (let c = 0; c < 8; c++) out.push(obj(`b${r}_${c}`, x + c * STEP_X, r * STEP_Y));
   return out;
 }
+
+describe("joining a frame (`within`, update placement 2026-11-24)", () => {
+  const A: Box = { x: 0, y: 0, width: 1000, height: 600 };
+  const B: Box = { x: 1100, y: 0, width: 600, height: 600 };
+
+  it("growsOver: a frame grown over a neighbour it didn't cover counts; its own members and what it already overlaps don't", async () => {
+    const { growsOver } = await import("./reflow");
+    // Beside A, far right: A grown to hold it covers B.
+    expect(growsOver(A, { x: 1800, y: 100, width: 400, height: 100 }, [B])).toBe(true);
+    // Below A, in its column: B isn't covered.
+    expect(growsOver(A, { x: 40, y: 664, width: 400, height: 100 }, [B])).toBe(false);
+    // Just right of A, short of B: still clear (a flow growing by one step).
+    expect(growsOver(A, { x: 1000, y: 100, width: 60, height: 100 }, [B])).toBe(false);
+    // A member inside A, or something A already overlaps, never counts.
+    expect(growsOver(A, { x: 1800, y: 100, width: 400, height: 100 }, [{ x: 100, y: 100, width: 50, height: 50 }, { x: 900, y: 500, width: 300, height: 300 }])).toBe(false);
+  });
+
+  it("with `within`, a placement that pushes nothing over the neighbour is the same as without", () => {
+    const objects = [obj("card", 40, 40, { unit: "A", box: { x: 40, y: 40, width: 700, height: 500 } }), obj("A", 0, 0, { unit: "A", box: A }), obj("B", 1100, 0, { unit: "B", box: B })];
+    const layout = { x: 0, y: 0, width: 400, height: 100 };
+    const base = { viewport, existing: [], objects, anchor: objects[0]!.box, anchorSide: "below" as const, anchorIds: ["card"] };
+    const plain = placeWithReflow(layout, base);
+    const joined = placeWithReflow(layout, { ...base, within: A });
+    expect(joined).toEqual(plain);
+  });
+});

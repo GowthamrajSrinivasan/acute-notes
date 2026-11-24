@@ -12,6 +12,7 @@
 import { COMPOSITE_SHAPES, compositeLabelRoom, isCompositeShape, type CompositeShapeKind } from "@/domain/canvas/compositeShapes";
 import { parseChart } from "@/domain/content/chartData";
 import { PAGE_PREVIEW_SIZE } from "@/domain/content/richContent";
+import { FLOW_CARD_ROLE } from "@/ai/visual-plan/flowCards";
 import type { PlanShape, VisualNode } from "@/ai/visual-plan/types";
 import type { Box } from "./types";
 
@@ -77,6 +78,8 @@ const LINE = 24;
 const TITLE_HEIGHT = 34;
 const TEXT_MIN_WIDTH = 200;
 const TEXT_MAX_WIDTH = 460;
+/** A flow card (`flowCards.ts`) draws its steps in a row: wider than a text card, so a few steps fit on one line. */
+const FLOW_CARD_WIDTH = 720;
 const TEXT_MAX_HEIGHT = 560;
 const TODO_ROW = 28;
 const TODO_CHECKBOX = 26;
@@ -192,7 +195,8 @@ function sizeOf(node: VisualNode): Omit<Box, "x" | "y"> {
       return shapeSize(node.content.shape, node.content.label);
     case "text": {
       const lines = node.content.markdown.split("\n").map((l) => l.replace(/^\s*([-*+]|\d+\.|#+)\s+/, "   "));
-      const width = Math.max(widthFor(lines, PAD_X, TEXT_MIN_WIDTH, TEXT_MAX_WIDTH), Math.min(titleWidth, TEXT_MAX_WIDTH));
+      const textWidth = Math.max(widthFor(lines, PAD_X, TEXT_MIN_WIDTH, TEXT_MAX_WIDTH), Math.min(titleWidth, TEXT_MAX_WIDTH));
+      const width = node.role === FLOW_CARD_ROLE ? FLOW_CARD_WIDTH : textWidth;
       return { width, height: clamp(PAD_Y + title + wrappedLines(lines.join("\n"), width - PAD_X) * LINE, 60, TEXT_MAX_HEIGHT) };
     }
     case "todo": {

@@ -32,6 +32,8 @@ import type { ChangeSet, ConflictItem, ProposedChange } from "@/ai/changes/chang
 import { analyzeContent } from "@/ai/content/analyze";
 import { AIError } from "@/ai/errors";
 import { loadDefaultParser, renderVisualPlan, type Box, type RenderContext } from "@/ai/renderer/render";
+import { growsOver } from "@/ai/renderer/reflow";
+import { boundsOf } from "@/ai/renderer/place";
 import type { ParseMarkdown } from "@/ai/renderer/mapNode";
 import { NO_PROVIDER_CONFIGURED_MESSAGE, type AIRuntime, type ProviderRole } from "@/ai/runtime";
 import { templateFor, type LayoutStrategyId } from "@/ai/visual-plan/templates";
@@ -45,6 +47,8 @@ import type { VisualNode, VisualPlan, VisualTemplate } from "@/ai/visual-plan/ty
 import type { GenerateVisualPlanInput } from "@/ai/visualize/tasks";
 import { NoProviderConfiguredError, NothingToVisualizeLocallyError, type VisualizeProgress } from "@/ai/visualize/types";
 import { provenanceMetadata } from "@/ai/visualize/visualize";
+import { withRenamedIdeas } from "@/ai/visualize/flowRun";
+import { collapseFlowsLike, hasFlowCards } from "@/ai/visual-plan/flowCards";
 import type { ContentSource, ContentSourceVersion } from "@/domain/types";
 import { reconcile, reviewItems, type ExistingObject, type ReconciliationPlan } from "./classify";
 import type { ExistingConnection } from "./existing";
@@ -316,7 +320,11 @@ export async function updateFromNewContent(original: UpdateInput, runtime: AIRun
   const typed = input.source.tier === "ai" ? typeExplanations(keyed, new Set(previousPlan.nodes.flatMap((n) => (n.stableKey ? [n.stableKey] : [])))) : keyed;
   const guarded = options.appendOnly ? appendOnly(typed, previousPlan) : typed;
   // The choices, as the full text has them now (any earlier ones the plan reused are replaced).
-  const plan = ai ? withChoiceNodes(guarded, choicesInText(original.text, ids.next), revisions.map((r) => ({ ...r, unit: rekey(r.unit, ids.next) }))) : guarded;
+  const unflowed = ai ? withChoiceNodes(guarded, choicesInText(original.text, ids.next), revisions.map((r) => ({ ...r, unit: rekey(r.unit, ids.next) }))) : guarded;
+  // Note-taking modes Step 6: a section that was one FlowDiagram card stays one, so its card is updated in place. Inert unless the
+  // stored plan has a flow card (`flowCards.ts`), so every other source updates exactly as before.
+  const flows = outlinedSections && hasFlowCards(previousGrouped) ? collapseFlowsLike(unflowed, regroupSections(unflowed, outlinedSections, previousGrouped), previousGrouped) : null;
+  const plan = flows?.flat ?? unflowed;
   throwIfAborted(signal);
 
   const parseMarkdown = options.parseMarkdown ?? (await loadDefaultParser());
@@ -344,9 +352,11 @@ export async function updateFromNewContent(original: UpdateInput, runtime: AIRun
   const { reconciliation, skippedLocked } = preserveLocked ? withoutLockedSections(reconciled, existing, plan, grouped, previousPlan, (n) => nodeFingerprint(n, parseMarkdown)) : { reconciliation: reconciled, skippedLocked: 0 };
   // Connectors may be rewired only where the plan was actually re-derived: the whole plan on the local tier, re-analysed sections on the AI tier.
   const rewirable = input.source.tier === "local" ? null : new Set(reanalyzedUnits);
-  const stored = outlinedSections ? regroupSections(plan, outlinedSections, previousGrouped) : plan;
+  const stored = flows ? flows.grouped : outlinedSections ? regroupSections(plan, outlinedSections, previousGrouped) : plan;
   // Distil (WP1.10): the cards this update generated cite the next version's units; their citations, review and the report v2 ride on the set.
-  const knowledge = knowledgeOfUpdate(identity, knowledgeRun, plan, original.source.id, cardsMode);
+  // A collapsed flow's ideas are its card's (Step 6).
+  const flowRun = flows?.rename.size && knowledgeRun ? { ...knowledgeRun, sections: withRenamedIdeas(knowledgeRun.sections, flows.rename) } : knowledgeRun;
+  const knowledge = knowledgeOfUpdate(identity, flowRun, plan, original.source.id, cardsMode);
   const changeSet = await buildChangeSet({ ...original, existing }, plan, grouped, reconciliation, parseMarkdown, provenance, rewirable, ids.next, stored, revisions, organisation, {
     extra: cardsMode?.extra ?? [],
     ...(knowledge ? { knowledge } : {}),
@@ -1123,6 +1133,17 @@ async function placeAdds(
   const moved = new Map<string, { x: number; y: number }>();
   const boxNow = (o: ExistingObject): Box => objectById.get(o.objectId)?.box ?? o.box!;
   const out: ProposedChange[] = [];
+  // Joining an existing frame: what this update has placed in it so far (later groups go below them, not beside them), and
+  // the frame's box, whose column the adds stay in (the frame grows down; it never grows across a neighbouring frame).
+  const placedIn = new Map<string, { id: string; box: Box }[]>();
+  const frameBox = (frameId: string): Box | undefined => objectById.get(frameId)?.box;
+  /** The frame's lowest member: an existing one, or one this update already placed there. */
+  const lowestIn = (frameId: string): { id: string; box: Box } | null =>
+    [
+      ...[...matched.values()].filter((o) => o.frameId === frameId && o.box).map((o) => ({ id: o.objectId, box: boxNow(o) })),
+      ...(placedIn.get(frameId) ?? []),
+    ].reduce<{ id: string; box: Box } | null>((a, m) => (!a || m.box.y + m.box.height > a.box.y + a.box.height ? m : a), null);
+
 
   let g = 0;
   for (const [key, nodes] of groups) {
@@ -1133,18 +1154,29 @@ async function placeAdds(
     // The existing section frame these objects join, if any.
     let anchored = groupAnchor(key, plan, groupIds, matched, boxNow);
     const joins = sectionId ? null : frameToJoin(nodes, sectionOf, matched, plan, anchored.anchorIds?.[0]);
-    if (joins && !anchored.anchor) {
-      const bottom = (o: ExistingObject) => boxNow(o).y + boxNow(o).height;
-      const lowest = [...matched.values()]
-        .filter((o) => o.frameId === joins.frameId && o.box)
-        .reduce<ExistingObject | null>((a, o) => (!a || bottom(o) > bottom(a) ? o : a), null);
-      if (lowest) anchored = { anchor: boxNow(lowest), anchorSide: "below", anchorIds: [lowest.objectId] };
-    }
+    const belowLowest = (frameId: string): Pick<RenderContext, "anchor" | "anchorSide" | "anchorIds"> | null => {
+      const lowest = lowestIn(frameId);
+      return lowest ? { anchor: lowest.box, anchorSide: "below", anchorIds: [lowest.id] } : null;
+    };
+    if (joins && !anchored.anchor) anchored = belowLowest(joins.frameId) ?? anchored;
+    const within = joins ? frameBox(joins.frameId) : undefined;
     // Room is made only beside a specific object; a group beside the whole diagram just looks for free space.
-    const context: RenderContext = anchored.anchor
-      ? { ...anchored, viewport: input.context.viewport, existing, ...(objects ? { objects } : {}) }
-      : { viewport: input.context.viewport, existing, ...(input.context.anchor ? { anchor: input.context.anchor } : {}) };
-    const rendered = await renderVisualPlan(sub, { operationId: input.operationId, title: input.title, metadata, context, parseMarkdown, ...(organisation === "v2" ? { organisation } : {}) });
+    const contextFor = (a: typeof anchored): RenderContext =>
+      a.anchor
+        ? { ...a, viewport: input.context.viewport, existing, ...(objects ? { objects } : {}), ...(within ? { within } : {}) }
+        : { viewport: input.context.viewport, existing, ...(input.context.anchor ? { anchor: input.context.anchor } : {}) };
+    const render = (a: typeof anchored) =>
+      renderVisualPlan(sub, { operationId: input.operationId, title: input.title, metadata, context: contextFor(a), parseMarkdown, ...(organisation === "v2" ? { organisation } : {}) });
+    let rendered = await render(anchored);
+    // A group placed beside its anchor that would still make its frame grow over a neighbouring frame (no room beside the
+    // anchor: the objects this update placed are walls) goes below the frame's lowest member instead, so the frame grows down.
+    if (joins && within && anchored.anchor) {
+      const boxes = rendered.changes.flatMap((c) => ("box" in c && c.kind !== "create_frame" ? [c.box] : []));
+      const bounds = boxes.length ? boundsOf(boxes) : null;
+      const otherFrames = [...frameIdsOf(objects ?? [])].filter((id) => id !== joins.frameId).flatMap((id) => (frameBox(id) ? [frameBox(id)!] : []));
+      const below = bounds && growsOver(within, bounds, otherFrames) ? belowLowest(joins.frameId) : null;
+      if (below && below.anchorIds?.[0] !== anchored.anchorIds?.[0]) rendered = await render(below);
+    }
     const createdKeys: string[] = [];
     for (const c of rendered.changes) {
       if (c.kind === "move") {
@@ -1161,6 +1193,7 @@ async function placeAdds(
       if ("box" in c) {
         existing.push(c.box);
         objects?.push({ id: `new:${c.key}`, box: c.box, unit: `new:${c.key}`, locked: true, placedByAcute: true });
+        if (joins && c.kind !== "create_frame") placedIn.set(joins.frameId, [...(placedIn.get(joins.frameId) ?? []), { id: `new:${c.key}`, box: c.box }]);
       }
     }
     if (joins && createdKeys.length) out.push({ kind: "update_frame", target: joins.frameId, add: createdKeys, ...(joins.section ? { section: joins.section } : {}) });
@@ -1234,6 +1267,11 @@ function sectionPlan(plan: VisualPlan, grouped: VisualPlan | null, titleId: stri
   const explained = new Set(relationships.filter((r) => r.type === "explained_by").map((r) => r.to));
   const members = nodes.filter((n) => n.id !== titleId).map((n) => (explained.has(n.id) ? n : ({ ...n, parent: titleId } as VisualNode)));
   return { ...plan, template: "sectioned", nodes: [group as VisualNode, ...members], relationships };
+}
+
+/** The frames among the scene's objects: every unit some other object belongs to. */
+function frameIdsOf(objects: readonly { id: string; unit: string }[]): Set<string> {
+  return new Set(objects.flatMap((o) => (o.unit !== o.id && !o.unit.startsWith("new:") ? [o.unit] : [])));
 }
 
 /** The kind of a one-section plan's group, for its frame's label. */

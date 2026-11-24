@@ -44,7 +44,7 @@ import { ContentTooLargeError } from "@/ai/content/parser";
 import { NoProviderConfiguredError, NothingToVisualizeLocallyError, ReadsFineAsTextError, type VisualizeProgress } from "@/ai/visualize/types";
 import { ingestContent, prepareProposal, SourceUnavailableError, sceneSourceObjects, type IngestPorts } from "@/ai/ingest/ingest";
 import { ECONOMY_LABEL, ECONOMY_NOTICE } from "./economyOption";
-import { noteModelControl, runNoteModel, showsNoteModelChoice } from "./noteModelOption";
+import { defaultNoteModelTicked, noteModelControl, runNoteModel, showsNoteModelChoice } from "./noteModelOption";
 import { isTopicMergeEnabled } from "@/config/features";
 import type { SceneElement } from "@/domain/canvas/adapter";
 import { getPersistence } from "@/persistence";
@@ -58,6 +58,7 @@ import { SharedChatsPanel } from "./SharedChatsPanel";
 import { TemplatePicker,type TemplateChoice } from "./TemplatePicker";
 import { visualizeDialog, useVisualizeDialog } from "./visualizeStore";
 import { chooseMergeTarget, findMergeTargets, type MergeTarget } from "./mergeTargets";
+import { canvasCards } from "@/components/openui/canvas/canvasCardsStore";
 
 const ACCESS_LABEL: Record<AIConnectionAccessType, string> = { subscription: "your subscription", api_key: "your API key", local: "local" };
 
@@ -114,8 +115,8 @@ export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; h
   const [targetId, setTargetId] = useState<string | null>(null);
   /** "Add new text as plain cards, no AI": per import, never remembered, off for every new open. */
   const [economy, setEconomy] = useState(false);
-  /** The note-model box (WP2.8): per run, never remembered, unticked for every new open. */
-  const [noteModelTicked, setNoteModelTicked] = useState(false);
+  /** The note-model box (WP2.8): per run, never remembered, reset to `defaultNoteModelTicked()` on every open (distil in development, D1). */
+  const [noteModelTicked, setNoteModelTicked] = useState(defaultNoteModelTicked);
   const requestRef = useRef<AbortController | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
   /** The open request an auto-run (G3 "Use this option") last started for, so each starts once. */
@@ -133,7 +134,7 @@ export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; h
     setMode("new");
     setTargetId(null);
     setEconomy(false);
-    setNoteModelTicked(false);
+    setNoteModelTicked(defaultNoteModelTicked());
   }
 
   // Merge is offered when the canvas already has notes; suggested by default (D7), except for a selection's own content.
@@ -220,6 +221,8 @@ export function VisualizeDialog({ api, home }: { api: ExcalidrawImperativeAPI; h
             title: store.label ? `Visualize: ${store.label}` : "Visualize",
             // Hidden (until R1): nothing passed, the run uses the configured note model as before.
             ...withNoteModel(runNoteModel(noteModelTicked)),
+            // The open canvas's note-taking mode (Step 6): on an AI-managed canvas plain flows become FlowDiagram cards.
+            ...(canvasCards.noteMode() === "ai" ? { canvasNoteMode: "ai" as const } : {}),
           },
           ports(),
           { signal: controller.signal, onProgress: setRunning },

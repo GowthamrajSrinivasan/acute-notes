@@ -10,6 +10,7 @@
  */
 import type { NoteModel } from "@/ai/fidelity/contracts";
 import { FIDELITY_CONFIG, type FidelityConfig } from "@/config/fidelity";
+import { isOpenUiCanvasEnabled } from "@/config/openui";
 
 export const KEEP_FULL_DETAIL_LABEL = "Keep full detail";
 export const KEEP_FULL_DETAIL_HELP = "Notes keep the source's wording nearly word for word. Use it for specs, legal text and the like.";
@@ -35,6 +36,16 @@ export function noteModelControl(config: ChoiceConfig = FIDELITY_CONFIG): { labe
  * The note model a new Visualize run is started with. Hidden: `undefined`, so the run uses `FIDELITY_CONFIG.noteModel`.
  * Opt-in: `distil` when ticked, else `undefined` (the configured model). Default: `preserve` when ticked ("Keep full detail"), else `distil`.
  */
+/**
+ * Whether the dialog's note-model box starts ticked (note-taking-modes plan §4.1, D1: distil is the Visualize default
+ * in development only). Opt-in: ticked ("Distil into key ideas") while the Cards flag is on — the flag is set only in
+ * `.env.development`, so production keeps `preserve` until R1. Default (R1): "Keep full detail" starts unticked, so the
+ * run is distil. Hidden: nothing to tick. The user can untick it on every open; nothing is remembered.
+ */
+export function defaultNoteModelTicked(config: ChoiceConfig = FIDELITY_CONFIG, cardsEnabled: boolean = isOpenUiCanvasEnabled()): boolean {
+  return config.noteModelChoice === "opt-in" && cardsEnabled;
+}
+
 export function runNoteModel(ticked: boolean, config: ChoiceConfig = FIDELITY_CONFIG): NoteModel | undefined {
   if (config.noteModelChoice === "opt-in") return ticked ? "distil" : undefined;
   if (config.noteModelChoice === "default") return ticked ? "preserve" : "distil";

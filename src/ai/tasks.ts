@@ -34,6 +34,8 @@ export type AITask =
   | "match_statements"
   // OpenUI Notes view (openui-integration-plan Phase 2): a source distilled into OpenUI Lang idea cards, streamed into the reading view.
   | "generate_openui_notes"
+  // Note-taking modes Step 7: "Ask AI to change" / "Ask AI to refresh" one layout card (its Markdown and OpenUI Lang), reviewed before it applies.
+  | "compose_card_layout"
   // Update engine Stage 2d: where content with no source belongs, among the router's candidate cards — or a question back.
   | "route_content"
   // Update engine Stage 4f: whether pairs of statements the rules left "possible" contradict — evidence for the user only (not active).

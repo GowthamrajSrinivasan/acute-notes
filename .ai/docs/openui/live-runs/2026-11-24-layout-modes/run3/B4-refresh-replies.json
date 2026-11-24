@@ -1,0 +1,7 @@
+[
+  {
+    "task": "compose_card_layout",
+    "prompt": "Instruction: The card's text changed after its layout was made. Redo the layout so it shows the card's text as it is now, keeping the current layout's structure where it still fits. Do not change the Markdown.\n\nThe card cites no source; use no CitationChip or citations.\n\nCard Markdown:\n\nOnboarding a new engineer\n\nOn day one they get a laptop and accounts. In week one they pair with a mentor on a small bug. By the end of month two they own a feature, and in month three they join the on-call rota.\n\n\nCurrent layout:\n\nroot = Timeline(\"Onboarding a new engineer\", [e1, e2, e3])\ne1 = TimelineEvent(\"Day 1\", \"Laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"End of month 1\", \"Own a feature\")",
+    "reply": "<markdown>\nOnboarding a new engineer\n\nOn day one they get a laptop and accounts. In week one they pair with a mentor on a small bug. By the end of month two they own a feature, and in month three they join the on-call rota.\n</markdown>\n<layout>\nroot = Timeline(\"Onboarding a new engineer\", [e1, e2, e3, e4])\ne1 = TimelineEvent(\"Day 1\", \"Laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"End of month 2\", \"Own a feature\")\ne4 = TimelineEvent(\"Month 3\", \"Join the on-call rota\")\n</layout>"
+  }
+]

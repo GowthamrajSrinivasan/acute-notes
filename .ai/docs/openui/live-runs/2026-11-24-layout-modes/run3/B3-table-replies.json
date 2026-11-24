@@ -1,0 +1,7 @@
+[
+  {
+    "task": "compose_card_layout",
+    "prompt": "Instruction: Show the two plans as a comparison table.\n\nThe card cites no source; use no CitationChip or citations.\n\nCard Markdown:\n\nPlans\n\nThe Free plan has 5 GB of storage and costs $0. The Team plan has 200 GB of storage and costs $10 per user per month.\n\n\nCurrent layout:\n\nroot = IdeaCard(\"Plans\", \"The Free plan has 5 GB of storage and costs $0. The Team plan has 200 GB of storage and costs $10 per user per month.\")",
+    "reply": "<markdown>\nPlans\n\nThe Free plan has 5 GB of storage and costs $0. The Team plan has 200 GB of storage and costs $10 per user per month.\n</markdown>\n\n<layout>\nroot = ComparisonTable([\"\", \"Free\", \"Team\"], [[\"Storage\", \"5 GB\", \"200 GB\"], [\"Cost\", \"$0\", \"$10 per user per month\"]])\n</layout>"
+  }
+]

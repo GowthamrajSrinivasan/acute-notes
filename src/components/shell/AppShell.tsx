@@ -20,6 +20,9 @@ import { pagePanel } from "@/state/pagePanel";
 import { documentRegistry } from "@/sync/documentRegistry";
 import { settlePendingWork } from "@/sync/pendingWork";
 import * as ops from "@/workspaces/hierarchy";
+import { noteModeOf } from "@/domain/noteMode";
+import type { NoteMode } from "@/domain/types";
+import { getUiPref, setUiPref } from "@/state/uiPrefs";
 import { canvasPath } from "@/workspaces/paths";
 import { Navigator, type NavigatorCommands } from "./Navigator";
 import { McpBridgeHost } from "./McpBridgeHost";
@@ -191,8 +194,9 @@ export function AppShell({ workspaceId, canvasId }: AppShellProps) {
         });
       },
 
-      createCanvas: async (wsId) => {
-        const canvas = await change(false, "Couldn't create the canvas", () => ops.createCanvas(services(), wsId), (p) =>
+      createCanvas: async (wsId, noteMode) => {
+        const mode = noteMode ?? getUiPref("newCanvasNoteMode");
+        const canvas = await change(false, "Couldn't create the canvas", () => ops.createCanvas(services(), wsId, undefined, mode), (p) =>
           goTo(wsId, p.id),
         );
         return canvas?.id;
@@ -201,6 +205,12 @@ export function AppShell({ workspaceId, canvasId }: AppShellProps) {
         void change(false, "Couldn't rename the canvas", () => ops.renameCanvas(services(), id, title), (canvas) =>
           setOpened((o) => (o?.canvas.id === id ? { ...o, canvas } : o)),
         ),
+      // Only the canvas document changes, so the open canvas stays open (no scene object is touched).
+      setCanvasNoteMode: (id, noteMode) =>
+        void change(false, "Couldn't change the note-taking mode", () => ops.setCanvasNoteMode(services(), id, noteMode), (canvas) => {
+          setUiPref("newCanvasNoteMode", noteMode);
+          setOpened((o) => (o?.canvas.id === id ? { ...o, canvas } : o));
+        }),
       deleteCanvas: async (id) => {
         const isOpen = id === openCanvasId;
         const next = siblingOf(id);
@@ -232,6 +242,11 @@ export function AppShell({ workspaceId, canvasId }: AppShellProps) {
     (title: string) => openCanvasId && commands.renameCanvas(openCanvasId, title),
     [commands, openCanvasId],
   );
+  const setOpenCanvasNoteMode = useCallback(
+    (noteMode: NoteMode) => openCanvasId && commands.setCanvasNoteMode(openCanvasId, noteMode),
+    [commands, openCanvasId],
+  );
+  const openNoteMode = opened && opened.canvas.id === openCanvasId ? noteModeOf(opened.canvas) : null;
 
   // Live names for the breadcrumb (renames apply at once).
   const node = nodes.find((n) => n.workspace.id === workspaceId);
@@ -247,6 +262,8 @@ export function AppShell({ workspaceId, canvasId }: AppShellProps) {
         onToggleSidebar={toggleSidebar}
         onRenameWorkspace={renameOpenWorkspace}
         onRenameCanvas={renameOpenCanvas}
+        noteMode={openNoteMode}
+        onSetNoteMode={setOpenCanvasNoteMode}
         onCreateDemoCanvas={process.env.NODE_ENV === "production" || !isAIFeatureEnabled() ? undefined : createDemoCanvas}
         workspaceId={workspaceId}
       />

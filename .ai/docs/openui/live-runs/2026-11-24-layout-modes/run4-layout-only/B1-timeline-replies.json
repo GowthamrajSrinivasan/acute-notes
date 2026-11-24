@@ -1,0 +1,7 @@
+[
+  {
+    "task": "compose_card_layout",
+    "prompt": "Instruction: Show this as a timeline.\n\nLayout only: the card's text is fixed. Reply with only the <layout> part, built from the text as it is; do not include <markdown>.\n\nThe card cites no source; use no CitationChip or citations.\n\nCard Markdown:\n\nOnboarding a new engineer\n\nOn day one they get a laptop and accounts. In week one they pair with a mentor on a small bug. By the end of month one they own a feature.\n\n\nCurrent layout:\n\nroot = IdeaCard(\"Onboarding a new engineer\", \"On day one they get a laptop and accounts. In week one they pair with a mentor on a small bug. By the end of month one they own a feature.\")",
+    "reply": "<layout>\nroot = Timeline(\"Onboarding a new engineer\", [e1, e2, e3])\ne1 = TimelineEvent(\"Day 1\", \"Get laptop and accounts\")\ne2 = TimelineEvent(\"Week 1\", \"Pair with mentor on a small bug\")\ne3 = TimelineEvent(\"Month 1\", \"Own a feature\")\n</layout>"
+  }
+]

@@ -192,7 +192,15 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
       const base: BlockStyle =
         c.frame === "none" ? { ...TEXT_ITEM_STYLE, ...(c.textAlign ? { textAlign: c.textAlign, autoWidth: false } : {}) } : { ...CARD_STYLE, autoHeight: true };
       const style: BlockStyle = { ...base, ...(c.fontSize ? { fontSize: c.fontSize } : {}) };
-      const el = createBlockElement(home, c.blockType, { box: c.box, style, content: c.content, backgroundColor: c.backgroundColor, metadata: withRefs(metadataFor(c.stableNodeKey, fingerprintContent(c.content)), c.sourceRefs) });
+      const el = createBlockElement(home, c.blockType, {
+        box: c.box,
+        style,
+        content: c.content,
+        backgroundColor: c.backgroundColor,
+        metadata: withRefs(metadataFor(c.stableNodeKey, fingerprintContent(c.content)), c.sourceRefs),
+        // A text card's OpenUI layout (note-taking modes, MCP `create_layout_card`), stamped with this content's hash.
+        ...(c.layout ? { layout: c.layout.lang } : {}),
+      });
       // A card's kind (Lens Phase 2) in its own acuteNode, as a shape's.
       if (c.semantics) (el as Mutable<ExcalidrawElement>).customData = withNodeSemantics(el.customData, c.semantics);
       ids.set(c.key, el.id);
@@ -399,8 +407,13 @@ function writeChanges(api: ExcalidrawImperativeAPI, home: DocumentHome, set: Cha
     const ref = getEmbedRef(el);
     if (c.kind === "update_block") {
       if (ref?.kind === "rich-block") {
-        const previous = getDocumentStore().get(ref.documentId)?.metadata;
-        const documentId = createBlockDocument(home, c.content, withWording(withRefs(updatedMetadata(c.stableNodeKey, fingerprintContent(c.content), previous), c.sourceRefs), c.userWording));
+        const previousRecord = getDocumentStore().get(ref.documentId);
+        const previous = previousRecord?.metadata;
+        // The new document replaces the old one (undo points the block back at it). Its layout: a new one for this
+        // content, none when the change removes it, else the old one carried over — stale once the text differs, so the
+        // card is drawn from its new text with "Layout out of date" (note-taking-modes plan §4.2). Text blocks only.
+        const layout = ref.blockType !== "text" ? undefined : c.layout === null ? undefined : c.layout ? c.layout.lang : previousRecord?.layout;
+        const documentId = createBlockDocument(home, c.content, withWording(withRefs(updatedMetadata(c.stableNodeKey, fingerprintContent(c.content), previous), c.sourceRefs), c.userWording), layout);
         replaced.set(el.id, newElementWith(el, { link: blockLink(documentId), customData: { ...el.customData, acute: { ...ref, documentId } } }));
       } else if (ref?.kind === "page-preview") {
         const old = getDocumentStore().get(ref.pageId);

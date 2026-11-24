@@ -57,7 +57,7 @@ import { denseBlocks, useDenseBlocks } from "@/components/ai/denseBlocksStore";
 import { labelFontsReady, loadLabelFonts, preloadLabelFont } from "@/components/canvas/changeSetWriter";
 import { ChevronDownIcon, SparkleIcon } from "@/components/common/icons";
 import { AnalysisRow } from "@/components/ai/AnalysisRow";
-import { BlockUpdateDiffs, blockUpdateDiffs } from "@/components/ai/BlockUpdateDiffs";
+import { BlockUpdateDiffs, blockUpdateDiffs, newLayoutCards } from "@/components/ai/BlockUpdateDiffs";
 import { CoverageRow } from "@/components/ai/CoverageRow";
 import { SectionChips } from "@/components/ai/SectionChips";
 import { RearrangeRow } from "@/components/ai/RearrangeRow";
@@ -623,7 +623,12 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
         {/* Decision 2: every clean whole-block update shows its before/after (collapsed), visible before Accept. */}
         <BlockUpdateDiffs
           key={set.operationId}
-          diffs={blockUpdateDiffs(resolved.changes, (target) => currentText(api.getSceneElements() as unknown as readonly SceneElement[], (id) => getDocumentStore().get(id), target))}
+          diffs={blockUpdateDiffs(
+            resolved.changes,
+            (target) => currentText(api.getSceneElements() as unknown as readonly SceneElement[], (id) => getDocumentStore().get(id), target),
+            (target) => currentLayoutLang(api.getSceneElements() as unknown as readonly SceneElement[], target),
+          )}
+          created={newLayoutCards(resolved.changes)}
           onShow={(target) => {
             const b = boxOf(target);
             if (b) focusBox(api, b);
@@ -981,4 +986,11 @@ function focusBox(api: ExcalidrawImperativeAPI, b: Box): void {
       scrollY: s.height / 2 / zoom - (b.y + b.height / 2),
     },
   });
+}
+
+/** The stored layout of the text card `target` now (its Lang), or null when it has none (note-taking modes: the review's layout preview). */
+function currentLayoutLang(scene: readonly SceneElement[], target: string): string | null {
+  const el = scene.find((e) => e.id === target && !e.isDeleted);
+  const ref = el ? getEmbedRef(el) : null;
+  return ref?.kind === "rich-block" ? (getDocumentStore().get(ref.documentId)?.layout?.lang ?? null) : null;
 }
