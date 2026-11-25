@@ -59,7 +59,7 @@ describe("/api/ai/embed", () => {
   it.runIf(cached)("with the cached MiniLM-L6 weights: the model's id, and quantised vectors that rank a paraphrase above an unrelated line", async () => {
     switchOn(CACHE);
     const info = (await (await GET()).json()) as { embedder: string; dims: number };
-    expect(info).toMatchObject({ embedder: "local-minilm-l6-q8-v1", dims: 384 });
+    expect(info).toMatchObject({ embedder: "local-minilm-l6-q8-v1", dims: 384, claim: { same: 0.6, other: 0.55 } });
     const res = await POST(post({ texts: ["Requests are retried up to five times.", "A failed call is attempted again five times.", "The office closes at six."] }));
     expect(res.status).toBe(200);
     const body = (await res.json()) as { embedder: string; vectors: { q: string; scale: number }[] };

@@ -4,7 +4,7 @@
  * publicly exposed** (`ACUTE_HTTP_EXPOSURE=public`): the text is embedded on the user's own machine, never elsewhere.
  * No model API is called and nothing is spent: the model runs in this process (`serverEmbedding.ts`).
  *
- * - GET: 200 `{ embedder, dims, related }` when the model is loaded, 503 when it can't be (no weights), 404 when off.
+ * - GET: 200 `{ embedder, dims, related, claim? }` (`claim`: the same-claim thresholds, #14) when the model is loaded, 503 when it can't be (no weights), 404 when off.
  * - POST `{ texts: string[] }`: 200 `{ embedder, dims, related, vectors: [{ q, scale }] }` — one quantised vector per text.
  */
 import { NextResponse } from "next/server";

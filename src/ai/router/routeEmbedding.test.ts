@@ -13,10 +13,10 @@ const vec = (seed: number) => {
 };
 const b64 = (q: Int8Array) => Buffer.from(q.buffer, q.byteOffset, q.byteLength).toString("base64");
 
-function fakeRoute(status = 200) {
+function fakeRoute(status = 200, claim?: unknown) {
   const posts: string[][] = [];
   const fetcher = vi.fn(async (_url: string, init?: RequestInit) => {
-    if (init?.method === "GET") return status === 200 ? Response.json({ embedder: "local-minilm-l6-q8-v1", dims: 4, related: 0.3 }) : new Response("no", { status });
+    if (init?.method === "GET") return status === 200 ? Response.json({ embedder: "local-minilm-l6-q8-v1", dims: 4, related: 0.3, ...(claim ? { claim } : {}) }) : new Response("no", { status });
     const texts = (JSON.parse(String(init!.body)) as { texts: string[] }).texts;
     posts.push(texts);
     return Response.json({ embedder: "local-minilm-l6-q8-v1", dims: 4, related: 0.3, vectors: texts.map((t) => ({ q: b64(vec(t.length).q), scale: vec(t.length).scale })) });
@@ -40,6 +40,16 @@ describe("RouteEmbeddingProvider", () => {
     expect(a[0]!.dense).toEqual(a[2]!.dense);
     await p.embed(["three", "four"]);
     expect(posts).toEqual([["one", "three"], ["four"]]);
+  });
+
+  it("takes the server's same-claim thresholds (#14) only when both are numbers", async () => {
+    const claim = { same: 0.6, other: 0.55 };
+    const p = new RouteEmbeddingProvider(fakeRoute(200, claim).fetcher);
+    await p.ready();
+    expect(p.thresholds).toEqual({ related: 0.3, claim });
+    const partial = new RouteEmbeddingProvider(fakeRoute(200, { same: 0.65, other: "x" }).fetcher);
+    await partial.ready();
+    expect(partial.thresholds).toEqual({ related: 0.3 });
   });
 
   it("off (404) or no weights (503): unavailable, and the shared embedder falls back to hashed — which the dialog doesn't use", async () => {

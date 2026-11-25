@@ -21,9 +21,9 @@
  * another section, that card is right), cards the set already changes, cards opted out of AI updates, and locked cards
  * (counted into `skipped.locked` when they repeat the fact, unless "Preserve locked sections" is off).
  *
- * Lexical, deterministic, no model call. The local embedder (Stage 2a) can't tell paraphrases apart reliably, so "same
- * claim" is the router's word-overlap test plus exact placement of the changed words; a real embedding model plugs in at
- * the `Embedder` seam to widen "related".
+ * Lexical, deterministic, no model call: "same claim" is the router's word-overlap test plus exact placement of the changed
+ * words. When the local embedding model is running (semantic placement, §18), `impactMeaning.ts` checks what this finds
+ * for meaning and reads the sentences it skipped (#14): `scanImpact` → meaning pass → `assembleImpact`.
  */
 import { applyClaimEdits, blockPlainText, describeClaimEdit, type ClaimEdit } from "@/ai/changes/claimPatch";
 import type { ChangeSet, ConflictItem, ProposedChange, RelatedCard } from "@/ai/changes/changeSet";
@@ -83,15 +83,37 @@ const WORD = /[\p{L}\p{N}_]/u;
 
 /** Finds what the update changes and where else on the canvas it is said (see module doc). Pure. */
 export function discoverImpact(input: ImpactInput): ImpactResult {
+  const { claims, cards } = scanImpact(input);
+  return assembleImpact(claims, cards, input.limit ?? MAX_IMPACT);
+}
+
+/** One other card that may repeat a changed fact, as the word-overlap scan found it (`matchesIn`). */
+export interface CardScan {
+  el: SceneElement;
+  content: ObjectContent;
+  name: string;
+  /** Locked (or in a locked section) with "Preserve locked sections" on: never edited, only counted. */
+  locked: boolean;
+  restates: Restatement[];
+  related: LexicalRelated[];
+  /** Drawn linked to a card whose fact changed and sharing a word of it: listed only when nothing else is found. */
+  linked: (RelatedCard & { score: number }) | null;
+  /** Its sentences that share too few words with every claim to be compared: what the meaning pass (#14) reads. */
+  unmatched: { sentence: string; overlap: number }[];
+  /** Added by the meaning pass: the card says a changed fact in other words. */
+  meaning?: (RelatedCard & { score: number }) | null;
+}
+
+/** The changed claims and every other card that may repeat one (see module doc). Pure. */
+export function scanImpact(input: ImpactInput): { claims: ChangedClaim[]; cards: CardScan[] } {
   const { set, elements, getDocument } = input;
-  const limit = input.limit ?? MAX_IMPACT;
   const preserveLocked = input.preserveLockedSections !== false;
   const live = elements.filter((e) => !e.isDeleted);
   const byId = new Map(live.map((e) => [e.id, e] as const));
   const labels = labelsByContainer(live);
 
   const claims = dedupe(set.changes.flatMap((c) => claimsOf(c, byId, labels, getDocument)));
-  if (!claims.length) return { claims, conflicts: [], related: [], locked: 0 };
+  if (!claims.length) return { claims, cards: [] };
 
   const touched = new Set<string>([...set.changes.flatMap((c) => ("target" in c ? [c.target] : [])), ...(set.conflicts ?? []).map((c) => c.target)]);
   const lockedFrames = new Set(live.flatMap((el) => (el.type === "frame" && isLocked(el) ? [el.id] : [])));
@@ -105,9 +127,7 @@ export function discoverImpact(input: ImpactInput): ImpactResult {
     if (from.has(a)) linked.set(b, (linked.get(b) ?? new Set()).add(a));
   }
 
-  const offers: { item: ConflictItem; score: number }[] = [];
-  const related: (RelatedCard & { score: number })[] = [];
-  let locked = 0;
+  const cards: CardScan[] = [];
   for (const el of live) {
     if (touched.has(el.id) || el.type === "frame" || el.type === "arrow" || (el.type === "text" && el.containerId)) continue;
     const content = objectContent(el, labels, getDocument);
@@ -118,15 +138,35 @@ export function discoverImpact(input: ImpactInput): ImpactResult {
     if (link && optedOutBesidesLock(el, link.excludeFromReconciliation)) continue; // opted out of AI updates (a passage card, "Don't update")
     const name = nameOf(content);
     const found = matchesIn(content, claims);
-    if (lockedHere && preserveLocked) {
-      if (found.restates.length) locked++;
+    let linkedRef: CardScan["linked"] = null;
+    // Drawn linked to a card whose fact changed, and about the same thing (shares a word of it): a reference, not a repeat.
+    for (const f of linked.get(el.id) ?? []) {
+      const claim = claims.find((c) => c.from === f);
+      if (!claim || !shares(plainOf(content), claim.before)) continue;
+      linkedRef = { target: el.id, name, reason: `linked to ${quote(nameOf(objectContent(byId.get(f)!, labels, getDocument)), 40)}, which this update changes — not edited`, score: 0 };
+      break;
+    }
+    cards.push({ el, content, name, locked: lockedHere && preserveLocked, restates: found.restates, related: found.related, linked: linkedRef, unmatched: found.unmatched });
+  }
+  return { claims, cards };
+}
+
+/** The offers, related cards and locked count from scanned cards (after the meaning pass, when it ran). Pure. */
+export function assembleImpact(claims: ChangedClaim[], cards: readonly CardScan[], limit: number = MAX_IMPACT): ImpactResult {
+  const offers: { item: ConflictItem; score: number }[] = [];
+  const related: (RelatedCard & { score: number })[] = [];
+  let locked = 0;
+  for (const card of cards) {
+    const { el, content, name } = card;
+    if (card.locked) {
+      if (card.restates.length) locked++;
       continue;
     }
-    if (found.restates.length) {
-      const edits = found.restates.map((r) => r.edit);
+    if (card.restates.length) {
+      const edits = card.restates.map((r) => r.edit);
       const applied = content.kind === "shape" ? null : applyClaimEdits(content.content, edits);
       if (applied?.ok && content.kind !== "shape") {
-        const top = best(found.restates);
+        const top = best(card.restates);
         const body = canonicalContent(applied.content);
         const proposed = content.kind === "page" ? `# ${content.title}\n\n${body}`.trim() : body;
         offers.push({
@@ -146,22 +186,16 @@ export function discoverImpact(input: ImpactInput): ImpactResult {
         continue;
       }
       // The edits can't all be made at once (two of them overlap): the card is pointed out, not edited.
-      related.push({ target: el.id, name, reason: `repeats ${quote(best(found.restates).claim.before)} — the edit couldn't be placed exactly; check it`, score: best(found.restates).overlap });
+      related.push({ target: el.id, name, reason: `repeats ${quote(best(card.restates).claim.before)} — the edit couldn't be placed exactly; check it`, score: best(card.restates).overlap });
       continue;
     }
-    if (found.related.length) {
-      const top = found.related.reduce((a, b) => (b.score > a.score ? b : a));
+    if (card.related.length) {
+      const top = card.related.reduce((a, b) => (b.score > a.score ? b : a));
       related.push({ target: el.id, name, reason: top.reason, score: top.score });
       continue;
     }
-    // Drawn linked to a card whose fact changed, and about the same thing (shares a word of it): a reference, not a repeat.
-    for (const f of linked.get(el.id) ?? []) {
-      const claim = claims.find((c) => c.from === f);
-      const text = plainOf(content);
-      if (!claim || !shares(text, claim.before)) continue;
-      related.push({ target: el.id, name, reason: `linked to ${quote(nameOf(objectContent(byId.get(f)!, labels, getDocument)), 40)}, which this update changes — not edited`, score: 0 });
-      break;
-    }
+    if (card.linked) related.push(card.linked);
+    else if (card.meaning) related.push(card.meaning);
   }
   offers.sort((a, b) => b.score - a.score || (a.item.target < b.item.target ? -1 : 1));
   related.sort((a, b) => b.score - a.score || (a.target < b.target ? -1 : 1));
@@ -242,40 +276,53 @@ function dedupe(claims: ChangedClaim[]): ChangedClaim[] {
 // ---------------------------------------------------------------------------
 // Where else it is said
 
-interface Restatement {
+export interface Restatement {
   claim: ChangedClaim;
   edit: ClaimEdit;
   overlap: number;
+  /** The card's sentence that repeats the claim. */
+  sentence: string;
+}
+
+/** A sentence that holds a claim but can't take the same edit: listed, never edited. */
+export interface LexicalRelated {
+  reason: string;
+  score: number;
+  claim: ChangedClaim;
+  sentence: string;
 }
 
 /** A card's sentences against the changed claims: the ones that repeat a claim (with their edit), and why others relate. */
-function matchesIn(content: ObjectContent, claims: readonly ChangedClaim[]): { restates: Restatement[]; related: { reason: string; score: number }[] } {
+function matchesIn(content: ObjectContent, claims: readonly ChangedClaim[]): { restates: Restatement[]; related: LexicalRelated[]; unmatched: CardScan["unmatched"] } {
   const restates: Restatement[] = [];
-  const related: { reason: string; score: number }[] = [];
+  const related: LexicalRelated[] = [];
+  const unmatched: CardScan["unmatched"] = [];
   const blocks = content.kind === "shape" ? [content.label] : content.content.map((b) => blockPlainText(b));
   blocks.forEach((text, blockIndex) => {
     if (!text) return;
     for (const span of sentenceSpans(text, { start: 0, end: text.length })) {
       const sentence = text.slice(span.start, span.end);
+      let closest = 0;
       for (const claim of claims) {
         const overlap = wordOverlap(sentence, claim.before);
+        closest = Math.max(closest, overlap);
         if (overlap < IMPACT_OVERLAP) continue;
         const at = wholeWordIndexes(sentence, claim.old);
         if (at.length === 0) {
           // Says it already the new way: nothing to do. Otherwise it holds the claim in other words.
           if (wholeWordIndexes(sentence, claim.replacement).length || wordOverlap(sentence, claim.after) > overlap) continue;
-          related.push({ reason: `holds ${quote(claim.before)} in other words — not edited; check it`, score: overlap });
+          related.push({ reason: `holds ${quote(claim.before)} in other words — not edited; check it`, score: overlap, claim, sentence });
           continue;
         }
         if (at.length > 1) {
-          related.push({ reason: `repeats ${quote(claim.before)}, but the changed words appear more than once — not edited; check it`, score: overlap });
+          related.push({ reason: `repeats ${quote(claim.before)}, but the changed words appear more than once — not edited; check it`, score: overlap, claim, sentence });
           continue;
         }
         const i = at[0]!;
         const edited = sentence.slice(0, i) + claim.replacement + sentence.slice(i + claim.old.length);
         const verdict = classifyClaimChange(sentence, edited).intent;
         if (content.kind === "shape" || (verdict !== "SUPERSEDES" && verdict !== "EXTENDS")) {
-          related.push({ reason: content.kind === "shape" ? `its label repeats ${quote(claim.before)} — a shape's label isn't edited here` : `repeats ${quote(claim.before)}, but the same edit wouldn't read as the same change here — not edited`, score: overlap });
+          related.push({ reason: content.kind === "shape" ? `its label repeats ${quote(claim.before)} — a shape's label isn't edited here` : `repeats ${quote(claim.before)}, but the same edit wouldn't read as the same change here — not edited`, score: overlap, claim, sentence });
           continue;
         }
         const start = span.start + i;
@@ -283,14 +330,16 @@ function matchesIn(content: ObjectContent, claims: readonly ChangedClaim[]): { r
         restates.push({
           claim,
           overlap,
+          sentence,
           edit: { blockIndex, ...(block.id ? { blockId: block.id } : {}), match: { range: { start, end: start + claim.old.length }, text: claim.old }, replacement: claim.replacement, intent: verdict },
         });
       }
+      if (closest < IMPACT_OVERLAP) unmatched.push({ sentence, overlap: closest });
     }
   });
   // One edit per place: two claims with the same words in one sentence would overlap.
   const unique = restates.filter((r, k) => restates.findIndex((o) => o.edit.blockIndex === r.edit.blockIndex && rangeOf(o.edit).start === rangeOf(r.edit).start) === k);
-  return { restates: unique, related };
+  return { restates: unique, related, unmatched };
 }
 
 const rangeOf = (e: ClaimEdit) => ("range" in e.match ? e.match.range : { start: -1, end: -1 });

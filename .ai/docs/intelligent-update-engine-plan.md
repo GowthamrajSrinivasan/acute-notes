@@ -4483,3 +4483,51 @@ are saved; a failing store doesn't stop the others) and `CanvasSession.test.ts` 
 tree's dev server): `stage1Gate.local.spec.ts` **10/10 on four runs with gate 4c's immediate reload** (it failed every time before);
 the 11 other local specs that accept and reload: 53 passed, 1 skipped, 1 failed — U4's 300 ms panel budget (328 ms) under load,
 3/3 alone (#5).
+
+### 19.6 #14: impact discovery reads meaning when the local model is on (2026-11-24, offline, no AI call)
+
+**Asked (product owner, 2026-11-24):** "commit and push, then go ahead with #14" (#34 committed first, `725c15e`).
+
+**Problem (§11 limits):** "Where else is this said" is word overlap (≥ 0.5 of significant words) plus the changed words found exactly
+once. A card that shares the changed value and a few words but says something else — "Deploys happen five times a week" when
+"Retries happen five times" changes to three — is offered "Update this too" with the same edit; and a card that says the fact in
+other words ("Failed jobs get five retries", overlap 0.4) is not found at all.
+
+**Fix — a meaning pass after the scan, only when the local model runs** (the semantic placement switches, §18; off by default):
+- `reconcile/impact.ts` split into `scanImpact` (the word-overlap scan, unchanged rules) and `assembleImpact` (offers, related,
+  locked count); `discoverImpact` = the two, so behaviour without the model is byte-for-byte the same (all 13 Stage 3 tests unchanged).
+- `reconcile/impactMeaning.ts` `discoverImpactByMeaning`: one embedding request (each sentence and claim once) through the same
+  embedder as semantic placement, then per sentence the cosine with the claim:
+  - an offer or a related card **below `other`** (about something else) is **dropped**; the model only vetoes — an offer never
+    becomes anything else;
+  - on a card the scan found nothing on, a sentence **at or above `same`** is **listed** as related ("seems to say … in other
+    words — not edited; check it"), never offered: meaning can't say where the changed words are. Up to 400 such sentences per
+    update (closest in words first); a sentence that already says the new value is skipped;
+  - a locked card counts as "locked, not updated" only if its match survives.
+- Thresholds belong to the embedder (`EmbeddingThresholds.claim`, `{ same, other }`), set for **MiniLM-L6 only** (`same` 0.60,
+  `other` 0.55); the route's GET passes them to the browser. An embedder without them (the hashed one, the other spike models)
+  keeps word overlap. Any failure, or 3 s without an answer, keeps the scan's result; it never blocks an update.
+- `ingest/ingest.ts`: the update path uses it when `impactEmbedder()` finds the model running and calibrated (option
+  `impactEmbedder` for tests). The MCP ingest tools get it the same way, unchanged.
+
+**How the rule was set (and changed once).** First rule: two cosines — the sentences, and the words each has that the other lacks
+(to catch subject swaps such as "Logs / Backups are kept for 14 days") — with an "unsure" band that demoted offers to related.
+Read off 22 hand-written DEV pairs; on 20 TEST pairs written before its run: no true restatement dropped, 7 of 7 false
+word-overlap offers removed. **The in-app check then failed it:** with short claims ("Retries happen five times.") the
+differing words are filler ("worker giving" / "happen"), so the true restatement "Our worker retries five times before giving up"
+scored 0.12 on them and was demoted, and the paraphrase scored 0.626, under 0.65. Subject swaps read as close as true
+restatements to this model (0.57–0.69 vs 0.63–0.80), so the second cosine was dropped and the model kept to a veto. TEST is no
+longer held out. **HELD** (20 new pairs, written before the final rule's single run, pinned in `impactMeaning.model.test.ts`):
+10/10 true restatements kept (none dropped); of 10 different claims sharing the changed value, **7 dropped**, 3 left as word
+overlap had them. DEV: 12/12 kept, 6/10 dropped; TEST: 10/10 kept, 3/10 dropped (mostly subject swaps).
+
+**Not caught:** a claim with only its subject swapped ("Timeouts happen five times") stays an offer, as before — the 5e relate call
+(#20). Other-words finds are only listed, never offered. With the switches off (the default) nothing changes.
+
+**Verification:** `impactMeaning.test.ts` 8 (a topic-vector stand-in for the model: veto, listing, locked count, cap, fallback on
+no calibration / failure / time budget, through `ingestContent`); `impactMeaning.model.test.ts` 3 on the cached MiniLM-L6 weights
+through the route's one-byte quantisation (skipped without them); route and browser-provider tests for the thresholds. `src/ai`,
+`components/ai`, `app/api/ai`: 2,942 passed (6 expected failures); `tsc`, `eslint` clean; no frozen file touched. **In the app**
+(new `e2e/local/impactMeaning.local.spec.ts`, gated on `ACUTE_SEMANTIC_URL`; a worktree of HEAD plus these files on :3107 with
+both switches on, removed after): only "Our worker retries five times…" offered, "Deploys happen five times a week" not offered,
+"Failed jobs get five retries" listed in other words; `impactReview.local.spec.ts` on the same server 2/2 — 4/4 passed.

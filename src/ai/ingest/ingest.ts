@@ -24,6 +24,9 @@ import type { ExistingObject } from "@/ai/reconcile/classify";
 import { existingConnections, existingObjects } from "@/ai/reconcile/existing";
 import { updateFromNewContent, type UpdateInput } from "@/ai/reconcile/update";
 import { discoverImpact, withImpact } from "@/ai/reconcile/impact";
+import { discoverImpactByMeaning } from "@/ai/reconcile/impactMeaning";
+import type { EmbeddingProvider } from "@/ai/router/embeddingProvider";
+import { semanticEmbedder } from "@/ai/router/routeEmbedding";
 import type { AIRuntime } from "@/ai/runtime";
 import type { ParseMarkdown } from "@/ai/renderer/mapNode";
 import type { RenderContext } from "@/ai/renderer/render";
@@ -94,6 +97,23 @@ export interface IngestOptions {
   parseMarkdown?: ParseMarkdown;
   /** How an update or merge treats locked and edited cards (Stage 1e); AI settings → Update behaviour when absent. */
   updatePolicy?: UpdatePolicy;
+  /**
+   * The embedder impact discovery reads meaning with (#14), or null for word overlap only. When absent: the local model
+   * when semantic placement is on and its embedder is calibrated for it (`impactEmbedder`), else word overlap.
+   */
+  impactEmbedder?: () => Promise<EmbeddingProvider | null>;
+}
+
+/** The local model behind semantic placement, when it is running and calibrated for same-claim checks (#14); else null. Never throws. */
+export async function impactEmbedder(): Promise<EmbeddingProvider | null> {
+  try {
+    const provider = semanticEmbedder();
+    if ((await provider.ready()).state !== "ready") return null;
+    const active = provider.active();
+    return active.thresholds.claim ? active : null;
+  } catch {
+    return null;
+  }
 }
 
 export interface IngestResult {
@@ -139,10 +159,13 @@ export async function ingestContent(request: IngestRequest, ports: IngestPorts, 
     // Stage 3: the same changed facts, where else the canvas says them — offered as decisions, never applied by "Accept all".
     // Not for "Re-visualize" on a selection, which must touch only its own sections.
     const scene = policy.suggestElsewhere !== false && !request.regenerate?.length && result.changeSet ? ports.scene?.() : undefined;
-    const changeSet =
-      scene && result.changeSet
-        ? withImpact(result.changeSet, discoverImpact({ set: result.changeSet, sourceId: request.sourceId, ...scene, preserveLockedSections: policy.preserveLockedSections }))
-        : result.changeSet;
+    // #14: read for meaning too when the local model is running (the semantic placement switch); word overlap otherwise.
+    let changeSet = result.changeSet;
+    if (scene && result.changeSet) {
+      const input = { set: result.changeSet, sourceId: request.sourceId, ...scene, preserveLockedSections: policy.preserveLockedSections };
+      const embedder = await (options.impactEmbedder ?? impactEmbedder)();
+      changeSet = withImpact(result.changeSet, embedder ? await discoverImpactByMeaning(input, embedder) : discoverImpact(input));
+    }
     return { changeSet, notices: result.notices, choices: [] };
   }
   if (request.mode === "merge") {

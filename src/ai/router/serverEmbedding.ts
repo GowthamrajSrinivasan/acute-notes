@@ -13,7 +13,7 @@
  * - Vectors go over the wire quantised (one byte per dimension, `quantize`), base64.
  */
 import path from "node:path";
-import { createEmbeddingProvider, embeddingConfigFrom, hashedProvider, quantize, type EmbeddingProvider } from "./embeddingProvider";
+import { createEmbeddingProvider, embeddingConfigFrom, hashedProvider, quantize, type ClaimThresholds, type EmbeddingProvider } from "./embeddingProvider";
 
 /** What one request may carry: the dialog embeds a note, its sections and the canvas's changed items. */
 export const EMBED_LIMITS = { texts: 512, charsPerText: 2_000, totalChars: 400_000 } as const;
@@ -22,6 +22,8 @@ export interface EmbedInfo {
   embedder: string;
   dims: number;
   related: number;
+  /** The embedder's same-claim thresholds (impact discovery, #14), when it has them. */
+  claim?: ClaimThresholds;
 }
 
 export interface EmbedReply extends EmbedInfo {
@@ -51,7 +53,7 @@ export async function serverEmbedding(env: NodeJS.ProcessEnv = process.env): Pro
     loaded = null; // tried again on the next request (weights may have arrived)
     return { state: "unavailable", reason };
   }
-  const info: EmbedInfo = { embedder: provider.id, dims: provider.dims, related: provider.thresholds.related };
+  const info: EmbedInfo = { embedder: provider.id, dims: provider.dims, related: provider.thresholds.related, ...(provider.thresholds.claim ? { claim: provider.thresholds.claim } : {}) };
   return {
     state: "ready",
     info,

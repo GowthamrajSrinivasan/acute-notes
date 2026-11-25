@@ -10,7 +10,7 @@
  * - Batched: one request per `BATCH` texts.
  */
 import { isSemanticPlacementUiEnabled } from "@/config/features";
-import { dequantize, EmbeddingProviderUnavailableError, hashedProvider, withFallback, type EmbeddingProvider, type EmbeddingReadiness, type EmbeddingThresholds, type EmbeddingVector, type QuantizedVector } from "./embeddingProvider";
+import { dequantize, EmbeddingProviderUnavailableError, hashedProvider, withFallback, type ClaimThresholds, type EmbeddingProvider, type EmbeddingReadiness, type EmbeddingThresholds, type EmbeddingVector, type QuantizedVector } from "./embeddingProvider";
 import { indexedDbVectorStore, type VectorStore } from "./vectorStore";
 
 const BATCH = 128;
@@ -28,7 +28,7 @@ function fromBase64(s: string): Int8Array {
 /** See module doc. */
 export class RouteEmbeddingProvider implements EmbeddingProvider {
   readonly kind = "local" as const;
-  private info: { embedder: string; dims: number; related: number } | null = null;
+  private info: { embedder: string; dims: number; related: number; claim?: ClaimThresholds } | null = null;
   private loading?: Promise<EmbeddingReadiness>;
   private readonly cache = new Map<string, EmbeddingVector>();
 
@@ -47,7 +47,7 @@ export class RouteEmbeddingProvider implements EmbeddingProvider {
     return this.info?.dims ?? 0;
   }
   get thresholds(): EmbeddingThresholds {
-    return { related: this.info?.related ?? 0.3 };
+    return { related: this.info?.related ?? 0.3, ...(this.info?.claim ? { claim: this.info.claim } : {}) };
   }
 
   ready(): Promise<EmbeddingReadiness> {
@@ -58,9 +58,10 @@ export class RouteEmbeddingProvider implements EmbeddingProvider {
     try {
       const res = await this.fetcher(this.url, { method: "GET", cache: "no-store" });
       if (!res.ok) return { state: "unavailable", reason: res.status === 404 ? "semantic placement is off on this server" : `the local model isn't available (${res.status})` };
-      const info = (await res.json()) as { embedder?: unknown; dims?: unknown; related?: unknown };
+      const info = (await res.json()) as { embedder?: unknown; dims?: unknown; related?: unknown; claim?: unknown };
       if (typeof info.embedder !== "string" || typeof info.dims !== "number") return { state: "unavailable", reason: "unexpected answer from the embedding route" };
-      this.info = { embedder: info.embedder, dims: info.dims, related: typeof info.related === "number" ? info.related : 0.3 };
+      const claim = claimThresholds(info.claim);
+      this.info = { embedder: info.embedder, dims: info.dims, related: typeof info.related === "number" ? info.related : 0.3, ...(claim ? { claim } : {}) };
       return { state: "ready" };
     } catch (e) {
       return { state: "unavailable", reason: e instanceof Error ? e.message : String(e) };
@@ -94,6 +95,13 @@ export class RouteEmbeddingProvider implements EmbeddingProvider {
     if (this.cache.size >= CACHE) this.cache.delete(this.cache.keys().next().value!);
     this.cache.set(text, v);
   }
+}
+
+/** The route's same-claim thresholds, only when both are numbers (else impact discovery stays lexical). */
+function claimThresholds(v: unknown): ClaimThresholds | null {
+  if (!v || typeof v !== "object") return null;
+  const { same, other } = v as Record<string, unknown>;
+  return typeof same === "number" && typeof other === "number" ? { same, other } : null;
 }
 
 let shared: (EmbeddingProvider & { active(): EmbeddingProvider }) | null = null;

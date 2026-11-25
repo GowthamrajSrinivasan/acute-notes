@@ -35,9 +35,13 @@ export interface LocalModelSpec {
  * `thresholds.related` was checked in the spike for **minilm-l6 only** (0.3: 95 % of blind paraphrases pass, 0 % of
  * unrelated pairs). The others score unrelated text high (arctic-xs 0.69, e5 0.79, bge 0.44 on average), so 0.3 lets
  * everything through: calibrate before using any of them.
+ *
+ * `thresholds.claim` (impact discovery, #14) was set for **minilm-l6 only**, on hand-written sentence pairs, and checked once
+ * on a set written before that run (plan §19.6; `impactMeaning.model.test.ts`). The others have none, so impact discovery
+ * stays lexical with them.
  */
 export const LOCAL_MODELS = {
-  "minilm-l6": { hub: "Xenova/all-MiniLM-L6-v2", dims: 384, pooling: "mean", prefix: "", languages: "en", weightBytes: 22_972_370, thresholds: { related: 0.3 } },
+  "minilm-l6": { hub: "Xenova/all-MiniLM-L6-v2", dims: 384, pooling: "mean", prefix: "", languages: "en", weightBytes: 22_972_370, thresholds: { related: 0.3, claim: { same: 0.6, other: 0.55 } } },
   "arctic-xs": { hub: "Snowflake/snowflake-arctic-embed-xs", dims: 384, pooling: "cls", prefix: "", languages: "en", weightBytes: 22_972_992, thresholds: { related: 0.3 } },
   "bge-small-en": { hub: "Xenova/bge-small-en-v1.5", dims: 384, pooling: "cls", prefix: "", languages: "en", weightBytes: 34_014_426, thresholds: { related: 0.3 } },
   "e5-small-multi": { hub: "Xenova/multilingual-e5-small", dims: 384, pooling: "mean", prefix: "query: ", languages: "multilingual", weightBytes: 118_308_185, thresholds: { related: 0.3 } },

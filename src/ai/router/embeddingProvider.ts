@@ -36,6 +36,17 @@ export interface EmbeddingVector {
 export interface EmbeddingThresholds {
   /** At or above this, two texts are about the same thing (recall-first: only the clearly unrelated fall below). */
   readonly related: number;
+  /** Whether two sentences state the same claim (impact discovery, #14). Only on embedders calibrated for it. */
+  readonly claim?: ClaimThresholds;
+}
+
+/**
+ * Same claim or not, from the cosine of two sentences (impact discovery, #14, intelligent-update-engine-plan §19.6). Below
+ * `other`: about something else. At or above `same`: the same claim, even in other words. Between: unsure.
+ */
+export interface ClaimThresholds {
+  readonly same: number;
+  readonly other: number;
 }
 
 export type EmbeddingReadiness = { state: "ready" } | { state: "unavailable"; reason: string };

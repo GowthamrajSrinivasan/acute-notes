@@ -40,7 +40,7 @@ The intelligent update engine makes new content update the notes and cards alrea
 | 22 | Latency and perceived-speed rules R1–R22: proposed, not built or measured. R21 "learn to skip" is deferred because it changes routing weights and risks a feedback loop. | Offline, alongside 5a–5e | Open |
 | 23 | §13.8 Q4: should consistency checking eventually move into the relate call? | Decision (after Phase 2) | Open |
 | 24 | "Belongs nowhere" framing: make it the dialog's first suggestion while still offering the top card; never create a new section silently. | Offline, with the 5c wiring | **Built 2026-11-22** with the 5c wiring (plan §18) |
-| 14 | Impact discovery is word-overlap only, so it makes false matches (e.g. "timeouts" vs "retries five times"). The meaning-based version waits for Stage 5 embeddings; also review its gating once it runs on real canvases. | Offline, after #17/#18 | Open (blocked on Stage 5) |
+| 14 | Impact discovery is word-overlap only, so it makes false matches (e.g. "timeouts" vs "retries five times"). The meaning-based version waits for Stage 5 embeddings; also review its gating once it runs on real canvases. | Offline, after #17/#18 | **Done 2026-11-24** (plan §19.6), with the semantic placement switches on: the local model drops offers about something else (7/10 on a held-out set, no true one lost) and lists cards that say it in other words. Left: subject swaps ("Timeouts happen five times") stay offers (#20); gating on real canvases |
 | 15 | Router weight tuning: wait for real canvases and the 5f locate set. `route_content` is non-deterministic, so it stays a preselection the user confirms. | Real-canvas data + 5f | Open (blocked) |
 
 ## 3. Consistency check and AI check (dormant while the panel is off)
