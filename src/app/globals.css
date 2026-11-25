@@ -555,7 +555,8 @@ html {
 .acute-block .acute-openui-card,
 /* OpenUI's Renderer wraps the card in elements of its own: they fill the box too, so the card's column layout (text
    shrinking, chips and actions pinned) works, and nothing scrolls inside the block. */
-.acute-block .acute-openui-card :has(.openui-idea-card) {
+.acute-block .acute-openui-card :has(.openui-idea-card),
+.acute-block .acute-openui-card :has(.openui-flow) {
   height: 100%;
   overflow: hidden;
 }
@@ -751,6 +752,61 @@ html {
   overflow: auto;
   overscroll-behavior: contain;
   pointer-events: auto;
+}
+/* A flow card (note-taking modes Step 6) fills its block like an idea card: the block's frame is its only border (no
+   second one inside it), the steps sit under the title, a selected step's detail takes the room left (scrolling when
+   long) and the chips stay at the bottom. Its box is measured from this drawing (`renderer/measure.ts` flowCardSize). */
+.acute-block .acute-openui-card .openui-flow {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-family: var(--acute-block-font, inherit);
+}
+.acute-block .acute-openui-card .openui-flow__title {
+  flex: none;
+  margin: 0 0 8px;
+}
+.acute-block .acute-openui-card .openui-flow__steps {
+  flex: none;
+}
+.acute-block .acute-openui-card .openui-flow__detail {
+  flex: 0 1 auto;
+  min-height: 0;
+  margin-top: 10px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;
+}
+.acute-block .acute-openui-card .openui-flow > .openui-idea-card__citations {
+  margin-top: auto;
+  padding-top: 6px;
+}
+/* A layout that is just a Callout (an MCP-composed card, Ask AI's "warning callout"): it fills its block, its tone a stripe
+   on the left like an idea card's accent, so the block's frame is its only border. A callout inside an idea card (its
+   Needs review note) keeps its own look. */
+.acute-block .acute-openui-card :has(.openui-callout):not(.openui-idea-card, .openui-idea-card *) {
+  height: 100%;
+  overflow: hidden;
+}
+.acute-block .acute-openui-card .openui-callout:not(.openui-idea-card .openui-callout) {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: hidden;
+  border: 0;
+  border-left: 3px solid var(--acute-border, #e4e4e8);
+  border-radius: 0;
+}
+.acute-block .acute-openui-card .openui-callout[data-tone="warning"]:not(.openui-idea-card .openui-callout) {
+  border-left-color: var(--acute-warning, #b9770e);
+}
+.acute-block .acute-openui-card .openui-callout[data-tone="success"]:not(.openui-idea-card .openui-callout) {
+  border-left-color: var(--acute-success, #1d6b3c);
 }
 .acute-block .acute-openui-card button {
   pointer-events: auto;

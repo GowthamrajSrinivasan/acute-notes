@@ -25,7 +25,9 @@ import { keepFormatting } from "@/ai/changes/keepFormatting";
 import { cardContentHash } from "@/ai/openui/cardLayout";
 import type { LayoutCheck, LayoutCheckInput } from "@/ai/openui/layoutCheck";
 import { fingerprintOf, labelsByContainer, objectContent } from "@/ai/reconcile/objects";
+import { calloutHeight, flowDiagramHeight } from "@/ai/renderer/measure";
 import { loadDefaultParser } from "@/ai/renderer/render";
+import { FLOW_CARD_ROLE } from "@/ai/visual-plan/flowCards";
 import { TEXT_LIMITS } from "@/ai/visual-plan/schema";
 import { getEmbedRef } from "@/domain/canvas/adapter";
 import { CARD_LAYOUT_LANG_MAX, type RichContent } from "@/domain/types";
@@ -65,6 +67,31 @@ export const LAYOUT_MESSAGES = {
 /** A created card's height for its layout: room for its visible text (Cards view never resizes a block). */
 export function layoutCardHeight(textChars: number): number {
   return Math.min(560, Math.max(180, 120 + Math.ceil(textChars / 45) * 18));
+}
+
+/** The literal arguments of a one-statement layout `root = Kind(…)` (strings, arrays of strings, null), or null. */
+function rootLiterals(lang: string, kind: string): unknown[] | null {
+  const m = new RegExp(`^root\\s*=\\s*${kind}\\(([\\s\\S]*)\\)$`).exec(lang.trim());
+  if (!m) return null;
+  try {
+    const args: unknown = JSON.parse(`[${m[1]}]`);
+    return Array.isArray(args) ? args : null;
+  } catch {
+    return null;
+  }
+}
+const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
+
+/**
+ * A created card's box height, kept at the width it was placed with (so it can't grow over a neighbour): a FlowDiagram
+ * or a Callout measured as drawn — sized from the card's text they were mostly empty — and any other layout as before.
+ */
+export function layoutBoxHeight(lang: string, textChars: number, box: { width: number; height: number }): number {
+  const flow = rootLiterals(lang, "FlowDiagram");
+  if (flow && typeof flow[0] === "string" && strings(flow[1]).length) return flowDiagramHeight({ title: flow[0], labels: strings(flow[1]), details: strings(flow[2]) }, box.width);
+  const callout = rootLiterals(lang, "Callout");
+  if (callout && typeof callout[1] === "string") return calloutHeight(callout[1], box.width);
+  return Math.max(box.height, layoutCardHeight(textChars));
 }
 
 const sourceIdArg = z.string().trim().min(1).max(200).optional().describe("A content source on the open canvas whose passages the layout cites (CitationChip unit ids). Without it the card cites nothing.");
@@ -135,12 +162,15 @@ export function registerLayoutTools(server: McpServer, deps: LayoutToolDeps): vo
     },
     gated((args: { markdown: string; lang: string; title?: string; sourceId?: string; canvasId?: string }) =>
       proposeChangeSet(deps, args, async (live, operationId) => {
-        const node = { id: "card", type: "text", ...(args.title ? { title: args.title } : {}), content: { markdown: args.markdown } };
+        // A FlowDiagram card is placed at its flow's width (its steps in a row), as Visualize's flow cards are; the layout
+        // sent replaces the one mapNode builds from the text.
+        const flowRole = rootLiterals(args.lang, "FlowDiagram") ? { role: FLOW_CARD_ROLE } : {};
+        const node = { id: "card", type: "text", ...flowRole, ...(args.title ? { title: args.title } : {}), content: { markdown: args.markdown } };
         const { set, warnings } = await renderPlan(deps, live, operationId, onePlan(node), title("Add layout card"), meta("create_layout_card"));
         const card = set.changes.find((c): c is Extract<ProposedChange, { kind: "create_block" }> => c.kind === "create_block" && c.blockType === "text");
         if (!card) throw new ToolFailure("The Markdown didn't make a text card; nothing was proposed.");
         const { check, lines } = await checked(live, args.lang, card.content, args.sourceId);
-        const changes = set.changes.map((c) => (c === card ? { ...card, layout: { lang: args.lang }, box: { ...card.box, height: Math.max(card.box.height, layoutCardHeight(check.stats.textChars)) } } : c));
+        const changes = set.changes.map((c) => (c === card ? { ...card, layout: { lang: args.lang }, box: { ...card.box, height: layoutBoxHeight(args.lang, check.stats.textChars, card.box) } } : c));
         const notes = check.notes.map((n) => n.message);
         return { set: { ...set, changes }, warnings: [...warnings, ...notes], extra: { layoutCheck: { lines, cites: check.cites, notes } } };
       }),

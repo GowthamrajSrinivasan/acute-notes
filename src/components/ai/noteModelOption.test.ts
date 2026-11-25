@@ -37,13 +37,17 @@ describe("Note model choice (WP2.8)", () => {
     expect(noteModelControl(config)).toEqual({ label: KEEP_FULL_DETAIL_LABEL, help: KEEP_FULL_DETAIL_HELP });
   });
   it("the box starts ticked (distil) only before R1 and only while the Cards flag is on: development, never production (D1)", () => {
-    expect(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, true)).toBe(true);
-    expect(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, false)).toBe(false);
+    expect(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, true, true)).toBe(true);
+    expect(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, false, true)).toBe(false);
+    // The Cards flag turned on in a production build (hosted or desktop) keeps preserve as the default (D1).
+    expect(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, true, false)).toBe(false);
+    // Under the test runner NODE_ENV is "test", not "development": the default is unticked.
+    expect(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, true)).toBe(false);
     // From R1 the box is "Keep full detail": unticked already means distil.
-    expect(defaultNoteModelTicked({ noteModelChoice: "default" }, true)).toBe(false);
-    expect(defaultNoteModelTicked({ noteModelChoice: "hidden" }, true)).toBe(false);
+    expect(defaultNoteModelTicked({ noteModelChoice: "default" }, true, true)).toBe(false);
+    expect(defaultNoteModelTicked({ noteModelChoice: "hidden" }, true, true)).toBe(false);
     // The run follows the box, so a ticked default is distil for that run only; the global model is untouched.
-    expect(runNoteModel(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, true), { noteModelChoice: "opt-in" })).toBe("distil");
+    expect(runNoteModel(defaultNoteModelTicked({ noteModelChoice: "opt-in" }, true, true), { noteModelChoice: "opt-in" })).toBe("distil");
     expect(FIDELITY_CONFIG.noteModel).toBe("preserve");
   });
   it("labels and one short line of help each", () => {

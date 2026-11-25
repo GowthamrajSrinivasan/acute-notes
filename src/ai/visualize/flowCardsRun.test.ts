@@ -88,7 +88,9 @@ describe("Visualize on an AI-managed canvas: a flow section is one FlowDiagram c
     const card = cards[0]!;
     expect(card.layout!.lang).toBe(`root = FlowDiagram("Pipeline", ["Build", "QA sign-off", "Deploy"], ["CI runs 1200 tests.", "", ""])`);
     expect(flowOfContent({ title: "Untitled", snapshot: card.content })?.steps.map((s) => s.label)).toEqual(["Build", "QA sign-off", "Deploy"]);
-    expect(card.box.width).toBe(720);
+    // Sized from its FlowDiagram (three short steps in one row), not from its text: narrower than 720, and short.
+    expect(card.box.width).toBeLessThan(720);
+    expect(card.box.height).toBeLessThan(200);
     expect(blocks(changeSet).some((c) => JSON.stringify(c.content).includes("What Pipeline means."))).toBe(true);
     // The stored plan is the collapsed one (so an update finds the same card); nothing connects to the card.
     const stored = changeSet.contentSource!.plan as VisualPlan;

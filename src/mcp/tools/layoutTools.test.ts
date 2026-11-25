@@ -22,7 +22,7 @@ import { context, parse } from "@/testUtils/reconcileHarness";
 import { createAcuteMcpServer, type AcuteMcpServerDeps } from "../server";
 import type { ToolPolicy } from "./common";
 import { availableToolNames } from "./index";
-import { LAYOUT_MESSAGES, LAYOUT_TOOL_NAMES, type LayoutToolOptions } from "./layoutTools";
+import { LAYOUT_MESSAGES, LAYOUT_TOOL_NAMES, layoutBoxHeight, type LayoutToolOptions } from "./layoutTools";
 import type { LiveCanvasActions } from "./liveCanvas";
 import { MESSAGES } from "./writeTools";
 
@@ -180,6 +180,26 @@ describe("create_layout_card", () => {
     const card = set.changes.find((c) => c.kind === "create_block")!;
     expect(card).toMatchObject({ blockType: "text", layout: { lang: LANG } });
     expect((card as { box: { height: number } }).box.height).toBeGreaterThanOrEqual(180);
+  });
+
+  it("a FlowDiagram or a Callout card is as tall as it is drawn, at the width it was placed with (not its text's height)", async () => {
+    const { client, proposed } = await connect();
+    const flowMd = "### Release\n\n1. **Build**\n\n   CI builds and tests\n\n2. **QA sign-off**\n\n   A QA engineer signs off\n\n3. **Deploy**\n\n   The release manager deploys";
+    const flowLang = `root = FlowDiagram("Release", ["Build", "QA sign-off", "Deploy"], ["CI builds and tests", "A QA engineer signs off", "The release manager deploys"])`;
+    const calloutLang = `root = Callout("warning", "Jobs retry 5 times, then give up after 30 seconds.")`;
+    for (const [markdown, lang] of [
+      [flowMd, flowLang],
+      ["Retry policy\n\nJobs retry 5 times, then give up after 30 seconds.", calloutLang],
+    ] as const) {
+      const r = await call(client, "create_layout_card", { markdown, lang });
+      expect(r.isError, text(r)).toBeFalsy();
+    }
+    const [flow, callout] = proposed.map((s) => s.changes.find((c) => c.kind === "create_block") as unknown as { box: { width: number; height: number } });
+    expect(flow!.box.height).toBeLessThan(200);
+    expect(callout!.box.height).toBeLessThan(110);
+    expect(layoutBoxHeight(flowLang, 80, { width: flow!.box.width, height: 999 })).toBe(flow!.box.height);
+    // Anything else keeps the text-based room.
+    expect(layoutBoxHeight(LANG, 50, { width: 300, height: 100 })).toBeGreaterThanOrEqual(180);
   });
 
   it("refuses a layout that isn't static, invents a number, or cites without a source — and proposes nothing", async () => {

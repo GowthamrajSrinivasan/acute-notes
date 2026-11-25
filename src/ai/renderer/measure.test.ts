@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { VisualNode } from "@/ai/visual-plan/types";
+import { flowMarkdown } from "@/ai/openui/flowLayout";
+import { FLOW_CARD_ROLE } from "@/ai/visual-plan/flowCards";
 import { measureNode } from "./measure";
 
 const shape = (label: string, importance?: VisualNode["importance"]): VisualNode => ({ id: "n", type: "shape", importance, content: { shape: "rectangle", label } });
@@ -91,5 +93,38 @@ describe("measureNode", () => {
   it("is deterministic", () => {
     const node: VisualNode = { id: "n", type: "text", importance: "high", content: { markdown: "Some content here." } };
     expect(measureNode(node)).toEqual(measureNode(node));
+  });
+});
+
+describe("a flow card is sized from its FlowDiagram, not its text", () => {
+  const flow = (labels: string[], detail = "") =>
+    measureNode({ id: "f", type: "text", role: FLOW_CARD_ROLE, title: "Release process", content: { markdown: flowMarkdown(labels.map((label) => ({ label, markdown: detail }))) } });
+  const text = (labels: string[], detail = "") => measureNode({ id: "t", type: "text", title: "Release process", content: { markdown: flowMarkdown(labels.map((label) => ({ label, markdown: detail }))) } });
+
+  it("five steps with details: one short card, far shorter than the same text drawn as text", () => {
+    const steps = ["Freeze main branch", "Build and test", "Approve candidate", "Deploy", "Monitor"];
+    const detail = "The release manager freezes the branch at 10:00 on Tuesday.";
+    const card = flow(steps, detail);
+    expect(card.width).toBeLessThanOrEqual(720);
+    // Two rows of steps at most, a detail and the chips: no taller than ~260 px; the text sizing gave ~400+.
+    expect(card.height).toBeLessThan(260);
+    expect(card.height).toBeLessThan(text(steps, detail).height);
+  });
+
+  it("a few short steps: the card is only as wide as its row (never under the text minimum)", () => {
+    const card = flow(["Plan", "Do", "Check"]);
+    expect(card.width).toBeLessThan(500);
+    expect(card.width).toBeGreaterThanOrEqual(200);
+  });
+
+  it("more steps wrap onto more rows: taller, never wider than 720", () => {
+    const few = flow(["Collect the data", "Clean it", "Train"]);
+    const many = flow(Array.from({ length: 12 }, (_, i) => `A longer step label ${i + 1}`));
+    expect(many.width).toBe(720);
+    expect(many.height).toBeGreaterThan(few.height + 40);
+  });
+
+  it("room for a step's detail only when a step has one", () => {
+    expect(flow(["A", "B"], "Some detail.").height).toBeGreaterThan(flow(["A", "B"]).height);
   });
 });

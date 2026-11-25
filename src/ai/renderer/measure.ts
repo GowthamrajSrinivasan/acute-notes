@@ -78,8 +78,96 @@ const LINE = 24;
 const TITLE_HEIGHT = 34;
 const TEXT_MIN_WIDTH = 200;
 const TEXT_MAX_WIDTH = 460;
-/** A flow card (`flowCards.ts`) draws its steps in a row: wider than a text card, so a few steps fit on one line. */
-const FLOW_CARD_WIDTH = 720;
+/**
+ * A flow card (`flowCards.ts`) is drawn as a FlowDiagram (`interactions.css`, flattened into the block by `globals.css`):
+ * its steps in a row, wrapping, under its title, then the selected step's detail and the citation chips. Its box is sized
+ * from that drawing, not from its text (one line per step and detail), which left the card mostly empty.
+ */
+const FLOW_CARD_MAX_WIDTH = 720;
+const FLOW_FONT = 13.5;
+/** The block's padding inside the card (10 px top and bottom, 12 px each side). */
+const FLOW_PAD_X = 24;
+const FLOW_PAD_Y = 20;
+/** The title (15 px) and its margin. */
+const FLOW_TITLE = 32;
+/** A step's button: 8 px padding, 1 px border, a 20 px line. */
+const FLOW_NODE_HEIGHT = 40;
+/** A step's button without its label: padding, border, the number disc and its margin, the space after it. */
+const FLOW_NODE_CHROME = 24 + 2 + 18 + 4 + 5;
+/** The arrow between two steps, with the gaps either side. */
+const FLOW_ARROW = 26;
+const FLOW_ROW_GAP = 6;
+/** Room for one step's detail (shown when the step is selected; a longer one scrolls), and the chips row. */
+const FLOW_DETAIL_LINE = 20;
+const FLOW_DETAIL_MAX_LINES = 3;
+const FLOW_DETAIL_MARGIN = 12;
+const FLOW_CHIPS = 30;
+
+/** A flow card's step labels and details, read back from its Markdown (`flowMarkdown`: numbered bold labels, detail indented under each). */
+function flowOfMarkdown(markdown: string): { labels: string[]; details: string[] } {
+  const labels: string[] = [];
+  const details: string[] = [];
+  for (const line of markdown.split("\n")) {
+    const step = /^\d+\.\s+(.*)$/.exec(line);
+    if (step) {
+      labels.push(step[1]!.replace(/\*/g, "").trim());
+      details.push("");
+    } else if (line.trim() && details.length) details[details.length - 1] = `${details.at(-1)} ${line.trim()}`.trim();
+  }
+  return { labels, details };
+}
+
+/** A FlowDiagram's steps as drawn: each step's button width with its arrow (the last has none). */
+function flowItems(labels: readonly string[]): number[] {
+  const maxInner = FLOW_CARD_MAX_WIDTH - FLOW_PAD_X;
+  const nodes = labels.map((l) => Math.min(maxInner, Math.ceil(charWidth(l, FLOW_FONT) + FLOW_NODE_CHROME)));
+  return nodes.map((w, i) => w + (i < nodes.length - 1 ? FLOW_ARROW : 0));
+}
+
+/**
+ * A flow card's box: as wide as its steps in one row (up to 720 px), as tall as the rows they wrap into, plus detail and
+ * chips. Null when its text isn't numbered steps (an MCP client's own Markdown may not be): it is then sized as text.
+ */
+export function flowCardSize(markdown: string, title: string | undefined): Omit<Box, "x" | "y"> | null {
+  const { labels, details } = flowOfMarkdown(markdown);
+  if (labels.length < 2) return null;
+  const items = flowItems(labels);
+  const oneRow = items.reduce((a, b) => a + b, 0) + FLOW_ROW_GAP * Math.max(0, items.length - 1);
+  const titleWidth = title ? charWidth(title, 15) : 0;
+  const width = Math.round(clamp(Math.max(oneRow, titleWidth) + FLOW_PAD_X, TEXT_MIN_WIDTH, FLOW_CARD_MAX_WIDTH));
+  return { width, height: flowDiagramHeight({ title, labels, details }, width) };
+}
+
+/** A FlowDiagram's height drawn at `width` (an MCP-composed flow card keeps the width it was placed with). */
+export function flowDiagramHeight(flow: { title?: string | undefined; labels: readonly string[]; details: readonly string[] }, width: number): number {
+  const { title, labels, details } = flow;
+  const items = flowItems(labels);
+  const inner = Math.max(80, width - FLOW_PAD_X);
+  let rows = items.length ? 1 : 0;
+  let used = 0;
+  for (const w of items) {
+    if (used && used + FLOW_ROW_GAP + w > inner) {
+      rows++;
+      used = w;
+    } else used += (used ? FLOW_ROW_GAP : 0) + w;
+  }
+  const perLine = Math.max(8, Math.floor(inner / (FLOW_FONT * 0.55)));
+  const detailLines = Math.min(FLOW_DETAIL_MAX_LINES, Math.max(0, ...details.map((d) => (d ? Math.ceil(d.length / perLine) : 0))));
+  return (
+    FLOW_PAD_Y +
+    (title ? FLOW_TITLE : 0) +
+    rows * FLOW_NODE_HEIGHT +
+    Math.max(0, rows - 1) * FLOW_ROW_GAP +
+    (detailLines ? FLOW_DETAIL_MARGIN + detailLines * FLOW_DETAIL_LINE : 0) +
+    FLOW_CHIPS
+  );
+}
+
+/** A Callout drawn as a whole card (13 px text, a 3 px tone stripe, 10/12 px padding) at `width`. */
+export function calloutHeight(text: string, width: number): number {
+  const perLine = Math.max(8, Math.floor((width - FLOW_PAD_X - 3) / (13 * 0.55)));
+  return Math.max(60, FLOW_PAD_Y + Math.ceil(text.length / perLine) * FLOW_DETAIL_LINE + 8);
+}
 const TEXT_MAX_HEIGHT = 560;
 const TODO_ROW = 28;
 const TODO_CHECKBOX = 26;
@@ -194,9 +282,10 @@ function sizeOf(node: VisualNode): Omit<Box, "x" | "y"> {
     case "shape":
       return shapeSize(node.content.shape, node.content.label);
     case "text": {
+      const flow = node.role === FLOW_CARD_ROLE ? flowCardSize(node.content.markdown, node.title) : null;
+      if (flow) return flow;
       const lines = node.content.markdown.split("\n").map((l) => l.replace(/^\s*([-*+]|\d+\.|#+)\s+/, "   "));
-      const textWidth = Math.max(widthFor(lines, PAD_X, TEXT_MIN_WIDTH, TEXT_MAX_WIDTH), Math.min(titleWidth, TEXT_MAX_WIDTH));
-      const width = node.role === FLOW_CARD_ROLE ? FLOW_CARD_WIDTH : textWidth;
+      const width = Math.max(widthFor(lines, PAD_X, TEXT_MIN_WIDTH, TEXT_MAX_WIDTH), Math.min(titleWidth, TEXT_MAX_WIDTH));
       return { width, height: clamp(PAD_Y + title + wrappedLines(lines.join("\n"), width - PAD_X) * LINE, 60, TEXT_MAX_HEIGHT) };
     }
     case "todo": {

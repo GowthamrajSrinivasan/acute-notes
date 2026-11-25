@@ -38,12 +38,17 @@ export function noteModelControl(config: ChoiceConfig = FIDELITY_CONFIG): { labe
  */
 /**
  * Whether the dialog's note-model box starts ticked (note-taking-modes plan §4.1, D1: distil is the Visualize default
- * in development only). Opt-in: ticked ("Distil into key ideas") while the Cards flag is on — the flag is set only in
- * `.env.development`, so production keeps `preserve` until R1. Default (R1): "Keep full detail" starts unticked, so the
- * run is distil. Hidden: nothing to tick. The user can untick it on every open; nothing is remembered.
+ * in development only). Opt-in: ticked ("Distil into key ideas") while the Cards flag is on AND in a development build —
+ * not tied to the flag alone, so turning the Cards view on in production (or the desktop app) keeps `preserve` as the
+ * default until R1. Default (R1): "Keep full detail" starts unticked, so the run is distil. Hidden: nothing to tick. The
+ * user can untick it on every open; nothing is remembered.
  */
-export function defaultNoteModelTicked(config: ChoiceConfig = FIDELITY_CONFIG, cardsEnabled: boolean = isOpenUiCanvasEnabled()): boolean {
-  return config.noteModelChoice === "opt-in" && cardsEnabled;
+export function defaultNoteModelTicked(
+  config: ChoiceConfig = FIDELITY_CONFIG,
+  cardsEnabled: boolean = isOpenUiCanvasEnabled(),
+  developmentBuild: boolean = process.env.NODE_ENV === "development",
+): boolean {
+  return config.noteModelChoice === "opt-in" && cardsEnabled && developmentBuild;
 }
 
 export function runNoteModel(ticked: boolean, config: ChoiceConfig = FIDELITY_CONFIG): NoteModel | undefined {

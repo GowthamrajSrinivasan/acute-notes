@@ -509,6 +509,40 @@ nothing is grown over). Unit suite 4,110 passed, 0 failed; renderer/reconcile/vi
 it (`outline_document` skipped since the 2026-11-22 performance change). MCP launch gate open (dev server restarted
 loopback-only, `npx next dev -H 127.0.0.1`).
 
+## 6j. Production readiness: Step 8, distil default, flow card look (2026-11-24, committed 2026-11-25; owner's go-ahead)
+
+Owner asked (2026-11-24) for items 1, 3 and 4 of the production-readiness list, and approved the paid part of Step 8 "when
+needed".
+
+- **Distil default decoupled from the Cards flag (D1).** `defaultNoteModelTicked` (`components/ai/noteModelOption.ts`, R1
+  lane's file) now also needs a development build (`NODE_ENV === "development"`): turning `NEXT_PUBLIC_OPENUI_CANVAS` on in
+  production or the desktop app leaves "Distil into key ideas" unticked, so production keeps `preserve` until R1. Test
+  updated (`noteModelOption.test.ts`).
+- **Flow card look.** Boxes were sized from the card's text (one line per step and detail: ~290 px for a 5-step flow);
+  `renderer/measure.ts` `flowCardSize` now measures the FlowDiagram as drawn (steps packed into rows at up to 720 px,
+  room for one step's detail, the chips row): the replay's flow card went ~290 → ~130 px and its frame shrank with it.
+  `globals.css` flattens a FlowDiagram into its block like an idea card (no second border; detail scrolls; chips at the
+  bottom). Same for a layout that is just a **Callout** (tone as a left stripe). `create_layout_card` (MCP) places a
+  FlowDiagram card at its flow's width and sizes FlowDiagram/Callout cards as drawn (`layoutBoxHeight`); other layouts keep
+  the text-based room. Tests: `measure.test.ts` (+4), `layoutTools.test.ts` (+1), `flowCardsRun.test.ts` (box assertion).
+- **Step 8, local** (`e2e/local/mcpLayoutNoSpend.local.spec.ts`, free): the SDK's MCP client, with an AI provider connected
+  (fake key, every AI request answered and counted, provider hosts counted and aborted), on an AI-managed canvas: grammar,
+  3 cards (IdeaCard, FlowDiagram, Callout), 2 updates (layout-only with get_block's contentHash; text + layout), each
+  accepted → **0 `/api/ai` requests, 0 model calls in `callStats`**; "Allow intelligent UI" off → refused; a control test
+  proves both counters see an in-app "Ask AI to change" request. 7/7.
+- **Step 8, paid** (`e2e/ai/mcpLayoutClient.spec.ts`, guarded by `MCP_CLIENT_RUN_APPROVED_BY`): the **Claude Code CLI**
+  (signed-in subscription; empty working folder, `--strict-mcp-config`) as the client, the spec accepting each proposal.
+  Result: 12 turns, 62 s, CLI-reported cost $0.73 (API-price equivalent; billed to the subscription), tool calls grammar → 3×
+  `create_layout_card` → `list_blocks` → 2× `get_block` → 2× `update_layout_card`, **no layout refused**; final layouts: a
+  warning Callout (retry policy, text kept), a 5-step FlowDiagram with Monitor added, an info Callout; **0 in-app AI
+  requests, 0 model calls, 0 console errors**. Evidence: `live-runs/2026-11-24-step8-mcp-client/` (report, client stream,
+  screenshots). The token never left `test-results/` and MCP access was switched off after.
+- **Checks:** unit 4,134 passed (one run had `canvasCards.test.tsx` time out under full-suite load; passes alone and on
+  rerun — flaky, not a failure of this change); 34 local e2e across the layout/flow/card specs; tsc + eslint clean. MCP
+  launch gate re-verified on loopback (restricted: 13 e2e, 158/158; fingerprint `2e60fc96…`).
+- **Known limits left:** an update never resizes a card (an IdeaCard changed to a Callout keeps its taller box); the
+  trailing arrow after the last step of a wrapped row; flow details show on click only.
+
 ## 7. Out of scope here
 
 - Any production flag flip; `apphosting.yaml` changes need separate approval.
