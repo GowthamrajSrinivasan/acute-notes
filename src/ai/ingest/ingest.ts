@@ -116,6 +116,19 @@ export async function impactEmbedder(): Promise<EmbeddingProvider | null> {
   }
 }
 
+/**
+ * Stage 3, for an update or a merge: the facts the set changes, where else the canvas says them — offered as decisions, never
+ * applied by "Accept all". Read for meaning too when the local model is running (#14); word overlap otherwise. Unchanged when
+ * the set is empty, the caller gives no scene, or AI settings → "Suggest updates elsewhere" is off.
+ */
+async function elsewhere(changeSet: ChangeSet | null, sourceId: string, ports: IngestPorts, policy: UpdatePolicy, options: IngestOptions): Promise<ChangeSet | null> {
+  const scene = changeSet && policy.suggestElsewhere !== false ? ports.scene?.() : undefined;
+  if (!changeSet || !scene) return changeSet;
+  const input = { set: changeSet, sourceId, ...scene, preserveLockedSections: policy.preserveLockedSections };
+  const embedder = await (options.impactEmbedder ?? impactEmbedder)();
+  return withImpact(changeSet, embedder ? await discoverImpactByMeaning(input, embedder) : discoverImpact(input));
+}
+
 export interface IngestResult {
   /** Null when the canvas already matches the content: nothing to propose. */
   changeSet: ChangeSet | null;
@@ -156,22 +169,16 @@ export async function ingestContent(request: IngestRequest, ports: IngestPorts, 
   const passed = { signal, onProgress, ...(parseMarkdown ? { parseMarkdown } : {}), preserveLockedSections: policy.preserveLockedSections, preserveEditedCards: policy.preserveEditedCards };
   if (request.mode === "update") {
     const result = await updateFromNewContent(await sourceInput(ports, request.sourceId, request.text, request.title ?? "Update from new content"), ports.runtime, request.regenerate?.length ? { ...passed, regenerate: request.regenerate } : passed);
-    // Stage 3: the same changed facts, where else the canvas says them — offered as decisions, never applied by "Accept all".
     // Not for "Re-visualize" on a selection, which must touch only its own sections.
-    const scene = policy.suggestElsewhere !== false && !request.regenerate?.length && result.changeSet ? ports.scene?.() : undefined;
-    // #14: read for meaning too when the local model is running (the semantic placement switch); word overlap otherwise.
-    let changeSet = result.changeSet;
-    if (scene && result.changeSet) {
-      const input = { set: result.changeSet, sourceId: request.sourceId, ...scene, preserveLockedSections: policy.preserveLockedSections };
-      const embedder = await (options.impactEmbedder ?? impactEmbedder)();
-      changeSet = withImpact(result.changeSet, embedder ? await discoverImpactByMeaning(input, embedder) : discoverImpact(input));
-    }
+    const changeSet = request.regenerate?.length ? result.changeSet : await elsewhere(result.changeSet, request.sourceId, ports, policy, options);
     return { changeSet, notices: result.notices, choices: [] };
   }
   if (request.mode === "merge") {
     const input = withEconomy(await sourceInput(ports, request.sourceId, request.text, request.title ?? "Merge into existing notes"), !!request.economy);
     const result = await mergeIntoSource(input, ports.runtime, passed);
-    return { changeSet: result.changeSet, notices: result.notices, choices: [...(result.report?.choices ?? [])] };
+    // A merge updates the notes in place (§17.6): a statement it revises is a changed fact like any update's.
+    const changeSet = await elsewhere(result.changeSet, request.sourceId, ports, policy, options);
+    return { changeSet, notices: result.notices, choices: [...(result.report?.choices ?? [])] };
   }
   const result = await visualizeContent(
     {

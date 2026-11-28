@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-22 · **For:** the product owner and engineers picking up the work ·
 **Source of truth:** [intelligent-update-engine-plan.md](../intelligent-update-engine-plan.md) (§14, §15.4, §16.4, §16.5, §17.4, §17.5).
-Item numbers are the plan's own (1–37, E1–E6, U1–U6), so they cross-reference.
+Item numbers are the plan's own (1–37, E1–E6, U1–U7), so they cross-reference.
 
 The intelligent update engine makes new content update the notes and cards already on a canvas instead of adding a second copy.
 
@@ -26,6 +26,7 @@ The intelligent update engine makes new content update the notes and cards alrea
 | U4 | `match_statements` adds one decision-model call per merge that touches existing notes, and has no typed (Jev) recording yet. Its cost is unmeasured. | Paid (measure on the chat-import cost benchmark) | Open |
 | 13 | `classify.ts` rule 2 raises a spurious conflict on user-worded cards after two source moves. Safe, but noise; tracked as a `test.fail` "known gap" in `stage1Gate.local.spec.ts`. | Offline | **Fixed 2026-11-24** (plan §19.4): a user-worded card counts as edited for "source silent"; gate spec 10/10 on committed code |
 | 34 | **A reload right after Accept loses the accepted change and the last edits** (found 2026-11-24 by gate 4c, committed code): deferred writes (400 ms debounce, Yjs buffer) aren't awaited on `pagehide`; the source moves on, the canvas doesn't. | Offline (save path; `commitOnCanvas.ts` has other sessions' work) | **Fixed 2026-11-24** (plan §19.5): Accept saves at once (`saveAfterAccept.ts`, `CanvasSession.flush`); gate 4c 10/10 with its immediate reload. Promote and knowledge review actions (other lanes) can call `saveNow()` too |
+| U7 | **"Merge into existing notes" didn't offer a changed fact elsewhere** (found 2026-11-24 while building #14): since U1 a merge replaces a statement in place, but impact discovery ran only for "Update from new content", so another source's card repeating the old value was never offered the change. | Offline | **Done 2026-11-25** (plan §19.7): the merge's change set gets the same Stage 3 step (and the #14 meaning pass when the switches are on); unit +2, in-app 3/3. |
 | 16 | Router destinations must be canvas elements only. The off-canvas document bug found live in Stage 2 was fixed and tested (§10); §14 asks only to re-verify it stays closed. | Offline check | **Confirmed 2026-11-24** (plan §19.3): Stage 2 test still passes; the semantic path tested too |
 
 ## 2. Stage 5: meaning-based targeting (semantic locate and anchor)

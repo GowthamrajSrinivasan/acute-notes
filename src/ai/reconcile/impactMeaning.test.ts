@@ -167,21 +167,7 @@ describe("#14 — impact discovery by meaning", () => {
 
   it("through the ingest service: the embedder it is given is used; without one, word overlap", async () => {
     const a = await setup();
-    const repo: ContentSourceRepository = {
-      get: async (id) => (id === a.source.id ? a.source : null),
-      getVersion: async (id, version) => (id === a.source.id && version === a.previous.version ? a.previous : null),
-      append: async () => undefined,
-      listByCanvas: async () => [a.source],
-      delete: async () => undefined,
-    };
-    const s = scene(a);
-    const ports: IngestPorts = {
-      runtime,
-      contentSources: repo,
-      renderContext: () => context,
-      sourceObjects: () => ({ existing: a.existing, connections: [] }),
-      scene: () => ({ elements: s.elements, getDocument: s.getDocument }),
-    };
+    const ports = portsFor(a, scene(a));
     const offered = async (embedder: EmbeddingProvider | null) => {
       const r = await ingestContent({ mode: "update", sourceId: a.source.id, text: FIVE_TO_THREE }, ports, { parseMarkdown: parse, updatePolicy: DEFAULT_UPDATE_POLICY, impactEmbedder: async () => embedder });
       return (r.changeSet!.conflicts ?? []).filter((c) => c.impact).map((c) => c.target).sort();
@@ -192,7 +178,52 @@ describe("#14 — impact discovery by meaning", () => {
     const r = await ingestContent({ mode: "update", sourceId: a.source.id, text: FIVE_TO_THREE }, ports, { parseMarkdown: parse, updatePolicy: DEFAULT_UPDATE_POLICY });
     expect((r.changeSet!.conflicts ?? []).filter((c) => c.impact).map((c) => c.target).sort()).toEqual(["u_deploys", "u_mixed", "u_same"]);
   }, 60_000);
+
+  it("a merge that revises a statement offers the same edit elsewhere, as an update does (it updates in place, §17.6)", async () => {
+    const a = await setup();
+    const ports = portsFor(a, scene(a));
+    // New content about the same topic: it replaces "five times" where the notes say it, so it is a changed fact.
+    const merged = (policy = DEFAULT_UPDATE_POLICY, embedder: EmbeddingProvider | null = null) =>
+      ingestContent({ mode: "merge", sourceId: a.source.id, text: "# Service\n\n## Limits\n\nRetries happen three times.\n" }, ports, { parseMarkdown: parse, updatePolicy: policy, impactEmbedder: async () => embedder });
+    const offered = (r: Awaited<ReturnType<typeof merged>>) => (r.changeSet!.conflicts ?? []).filter((c) => c.impact).map((c) => c.target).sort();
+
+    const r = await merged();
+    expect(offered(r)).toEqual(["u_deploys", "u_mixed", "u_same"]);
+    expect(r.changeSet!.conflicts!.find((c) => c.target === "u_same")!.impact!.proposed).toBe("Our worker retries three times before giving up.");
+    // By meaning when the model runs, as for an update.
+    expect(offered(await merged(DEFAULT_UPDATE_POLICY, topicEmbedder()))).toEqual(["u_mixed", "u_same"]);
+    // "Suggest updates elsewhere" off: only the source's own cards.
+    expect(offered(await merged({ ...DEFAULT_UPDATE_POLICY, suggestElsewhere: false }))).toEqual([]);
+  }, 60_000);
+
+  it("a merge that only adds new statements changes no fact, so nothing elsewhere is offered", async () => {
+    const a = await setup();
+    const r = await ingestContent({ mode: "merge", sourceId: a.source.id, text: "# Service\n\n## Limits\n\nUploads are capped at ten megabytes.\n" }, portsFor(a, scene(a)), {
+      parseMarkdown: parse,
+      updatePolicy: DEFAULT_UPDATE_POLICY,
+      impactEmbedder: async () => null,
+    });
+    expect((r.changeSet?.conflicts ?? []).filter((c) => c.impact)).toEqual([]);
+    expect(r.changeSet?.related ?? []).toEqual([]);
+  }, 60_000);
 });
+
+function portsFor(a: Accepted, s: Scene): IngestPorts {
+  const repo: ContentSourceRepository = {
+    get: async (id) => (id === a.source.id ? a.source : null),
+    getVersion: async (id, version) => (id === a.source.id && version === a.previous.version ? a.previous : null),
+    append: async () => undefined,
+    listByCanvas: async () => [a.source],
+    delete: async () => undefined,
+  };
+  return {
+    runtime,
+    contentSources: repo,
+    renderContext: () => context,
+    sourceObjects: () => ({ existing: a.existing, connections: [] }),
+    scene: () => ({ elements: s.elements, getDocument: s.getDocument }),
+  };
+}
 
 describe("#14 — same claim or not", () => {
   it("the verdict from the cosine", async () => {

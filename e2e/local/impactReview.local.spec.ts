@@ -89,6 +89,38 @@ test("a fact changed at one source is offered, as a decision, where another sour
   expect(await block(page, "Our worker retries three times before giving up.")).toBe(worker);
 });
 
+test("a merge that revises a fact offers the same edit where another source repeats it (it updates in place, §17.6)", async ({ page }, info) => {
+  await openApp(page);
+  await visualize(page, GATEWAY);
+  await visualize(page, WORKER);
+  const worker = await block(page, "Our worker retries five times");
+
+  await page.getByRole("button", { name: "More", exact: true }).click();
+  await page.getByRole("menuitem", { name: "Visualize content…" }).click();
+  const dialog = visualizeDialog(page);
+  await dialog.getByRole("textbox").first().fill("# Gateway\n\n## Limits\n\nRetries happen three times.\n");
+  await dialog.getByRole("radio", { name: /Merge into existing notes/ }).check();
+  await dialog.getByRole("combobox", { name: "Notes to merge into" }).selectOption({ label: "Gateway" });
+  await dialog.getByRole("button", { name: "Merge", exact: true }).click();
+
+  const bar = reviewBar(page);
+  await expect(bar).toContainText("↗ 1 elsewhere to check");
+  const offers = bar.getByRole("list", { name: "Changes that need your input" });
+  const offer = offers.getByRole("listitem", { name: /^Elsewhere: Our worker retries five times/ });
+  await expect(offer).toContainText("The same edit here: replaces “five” → “three”");
+  await expect(bar.getByRole("list", { name: "Related cards, not changed" })).toContainText("Retries happen up to 5 times per job.");
+  await bar.getByRole("button", { name: "Review", exact: true }).click();
+  await page.screenshot({ path: info.outputPath("merge-impact-review.png") });
+  console.log(`[ui-check] merge review: ${(await bar.innerText()).replace(/\s+/g, " ")}`);
+
+  await offer.getByRole("button", { name: "Update this too" }).click();
+  await bar.getByRole("button", { name: "Accept all clean changes" }).click();
+  await expect(bar).toBeHidden();
+  await block(page, "Retries happen three times");
+  expect(await block(page, "Our worker retries three times before giving up.")).toBe(worker);
+  await block(page, "Retries happen up to 5 times per job."); // related: never edited
+});
+
 test("AI settings show Suggest updates elsewhere, on by default", async ({ page }, info) => {
   await openApp(page);
   const settings = await openAISettings(page);

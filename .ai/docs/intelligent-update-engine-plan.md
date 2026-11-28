@@ -734,7 +734,7 @@ first, at most 20 offers and 20 related.
 (the Visualize dialog and the MCP ingest tools pass it), the set isn't empty, the request isn't a
 "Re-visualize" of a selection (that must touch only its sections), and AI settings → Update behaviour →
 **Suggest updates elsewhere** is on (new `UpdatePolicy.suggestElsewhere`, default on). Merges are append-only
-and don't run it.
+and don't run it. *(Superseded 2026-11-25, §19.7: merges update in place since §17.6, so they run it too.)*
 
 **Review UI** (`ChangeSetReview.tsx`): the bar counts "↗ N elsewhere to check" apart from "⚠ N need your
 input"; an offer reads *"↗ Our worker retries five times… — Says the same as “Retries happen five
@@ -4531,3 +4531,26 @@ through the route's one-byte quantisation (skipped without them); route and brow
 (new `e2e/local/impactMeaning.local.spec.ts`, gated on `ACUTE_SEMANTIC_URL`; a worktree of HEAD plus these files on :3107 with
 both switches on, removed after): only "Our worker retries five times…" offered, "Deploys happen five times a week" not offered,
 "Failed jobs get five retries" listed in other words; `impactReview.local.spec.ts` on the same server 2/2 — 4/4 passed.
+
+### 19.7 Impact discovery on merges (U7, 2026-11-25, offline, no AI call)
+
+**Problem.** Stage 3 ran only for "Update from new content" (§ Stage 3 wiring: "Merges are append-only and don't run it").
+Since §17.6 a merge updates the notes in place: a statement the new content revises replaces the old one on its card. So
+"Merge into existing notes" (the dialog's default when notes exist, and every shared-chat import) changed a fact on the
+source's card while another source's card that repeats it was never offered the change. The update path offered it.
+
+**Fix** (`src/ai/ingest/ingest.ts`). The Stage 3 step is one helper, `elsewhere()`, run on the update's and the merge's change
+set alike, under the same conditions: a scene port given, the set not empty, AI settings → **Suggest updates elsewhere** on,
+and for an update not a "Re-visualize" of a selection. A merge's set is an update's set (`mergeIntoSource` ends in
+`updateFromNewContent` on the merged text), so `discoverImpact` reads its changed claims unchanged. With the semantic
+placement switches on, the meaning pass (#14, §19.6) applies to merges too. A merge that only adds statements, or an economy
+import (which appends), changes no claim, so nothing is offered. No model call is added.
+
+**Verification.** `impactMeaning.test.ts` +2 (10): a merge that revises "five times" → "three times" offers the same three
+cards an update does, proposes "Our worker retries three times before giving up.", narrows to two by meaning, offers nothing
+with the switch off; a merge that only adds offers nothing. The merge test fails on the previous `ingest.ts` (checked).
+`src/ai/ingest` + the file: 37 passed; `tsc`, `eslint` clean. **In the app** (`impactReview.local.spec.ts` +1, local tier,
+no AI; a worktree of HEAD plus these files on :3107, removed after): merging "## Limits / Retries happen three times." into
+Gateway shows "Merge into existing notes · ~1 updated · ↗ 1 elsewhere to check", the worker card offered with the same edit,
+the runbook card listed in other words; "Update this too" edits the worker card in place. 3/3 passed with the update and
+settings tests.
