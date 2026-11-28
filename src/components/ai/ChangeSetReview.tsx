@@ -640,7 +640,7 @@ export function ChangeSetReview({ api, home, history }: { api: ExcalidrawImperat
               <ConflictCard
                 key={c.target}
                 conflict={c}
-                fromName={c.impact ? (nameOf(c.impact.from) ?? "a card") : undefined}
+                fromName={c.impact ? quoteClaim(c.impact.claim) : undefined}
                 current={currentText(api.getSceneElements() as unknown as readonly SceneElement[], (id) => getDocumentStore().get(id), c.target)}
                 decision={decisions.get(c.target)}
                 onDecide={(d) => decide(c.target, d)}
@@ -714,9 +714,18 @@ function acceptedMessage(applied: readonly ProposedChange[]): string {
   return `${added ? "Added" : "Applied"} ${describeChanges(applied)}.`;
 }
 
+/** A changed fact as the review quotes it: “…”, clipped. */
+function quoteClaim(claim: string): string {
+  const s = claim.replace(/\s+/g, " ").trim();
+  return `“${s.length > 80 ? `${s.slice(0, 79)}…` : s}”`;
+}
+
 function ConflictCard(props: {
   conflict: ConflictItem;
-  /** An impact offer's (Stage 3): the name of the source's card where the update changes the fact. */
+  /**
+   * An impact offer's (Stage 3): the fact the update changes, quoted — not the name of the card it changes it on, which
+   * on model-written notes can be a title such as "Notes" (U7 live run, update-engine plan §19.7).
+   */
   fromName?: string | undefined;
   current: string | null;
   decision: ConflictDecision | undefined;

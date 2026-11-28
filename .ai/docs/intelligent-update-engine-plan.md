@@ -4554,3 +4554,37 @@ no AI; a worktree of HEAD plus these files on :3107, removed after): merging "##
 Gateway shows "Merge into existing notes · ~1 updated · ↗ 1 elsewhere to check", the worker card offered with the same edit,
 the runbook card listed in other words; "Update this too" edits the worker card in place. 3/3 passed with the update and
 settings tests.
+
+**Live run (2026-11-28, owner-approved, AICredits `openai/gpt-oss-120b`, decision model `google/gemini-2.5-flash-lite`).**
+New `e2e/ai/mergeImpact.spec.ts` against a worktree of `8034d0c` on :3107: the user's own cards pasted in known words (one
+repeating the fact, one in other words, one about the gateway's timeouts), notes with enough prose that "Auto" sends them
+to the model (a first attempt with short notes stayed on the local plan and tested nothing new — the spec now requires
+`tier: "ai"`). Notes outlined by the model (`outline_document`, 2 × `generate_visual_plan`, 2 × `check_card_meaning`;
+`sectioned`, both sections "annotated"); merge answered by it (`assign_to_topics`, `match_statements`, 1 ×
+`generate_visual_plan`): "Merge into existing notes · ~2 updated · ↗ 1 elsewhere to check"; the worker card offered
+"five" → "three", nothing else offered, the timeouts card untouched, the other-words card listed; "Update this too" edited it
+in place. **Passed (2/2 with the preflight).**
+
+**What the live run showed that the local one couldn't.** The model wrote the Limits section as an *annotated* card: a
+marker right after each sentence's full stop ("traffic.¹ Retries happen five times.² Timeouts…") and a "Notes" card with
+one "² <note>" line per marker.
+- **The sentence splitter doesn't split on ".¹ "**, so the prose card was one sentence and its changed fact one long
+  "claim" no other card shares half the words of; and a marker after a full stop glues onto the last word ("times.¹" —
+  word overlap 0.5 instead of 0.75). The offer came only through the "Notes" card's own line. **Fixed** (`impact.ts`):
+  note markers (¹ ² ³ ⁰ ⁴–⁹) are read as spaces before splitting and matching — the same offsets, so an edit still lands
+  on the card's own text and keeps its markers; quoted claims carry none.
+- **The offer named the card, not the fact:** "Says the same as “Notes”, which this update changes", and the related line
+  quoted "“² Retries happen five times.”". **Fixed** (`ChangeSetReview.tsx`): the offer quotes the changed fact
+  ("Says the same as “Retries happen five times.”").
+- **Not U7 — the section's model-written summary goes stale** (pending U8): the frame's summary line "Gateway enforces
+  three explicit limits: burst protection, 5 retries, 10-second timeout." still said "5 retries" after the merge, and
+  after accepting it. The merge changed the prose and Notes cards only; impact discovery leaves the source's own cards to
+  the source's own update by design. Recorded, not fixed here (the update path, `update.ts`, has another lane's work).
+
+**Verification of the fixes (offline, no AI call):** `impactMeaning.test.ts` +1 (13 with U7's): the model's exact
+annotated text — the fact is the one sentence, quoted without its marker; a card with a marker glued after the full stop
+and a notes-card line are both offered, each edit keeping its markers (fails on the previous `impact.ts`, checked).
+`src/ai/{reconcile,ingest,merge,changes}`, `components/ai`: 870 passed (6 expected failures); `tsc`, `eslint` clean.
+In the app (local tier, the same worktree server with the two files): `impactReview.local.spec.ts` 3/3, the offers read
+"Says the same as “Retries happen five times.”". The live spec now also checks (soft) that the offer quotes the fact and
+no marker. Not re-run live: the model chooses the annotated layout only sometimes, and the unit test uses its exact text.

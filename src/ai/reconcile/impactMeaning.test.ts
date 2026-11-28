@@ -225,6 +225,40 @@ function portsFor(a: Accepted, s: Scene): IngestPorts {
   };
 }
 
+describe("U7 live run — an annotated card's note markers are not words", () => {
+  // As the model wrote it (2026-11-28, AICredits gpt-oss-120b, "annotated" section): a marker right after each sentence's full
+  // stop, and a notes card with one "² <note>" line per marker.
+  const MARKED = "The gateway protects the payment providers from bursts of traffic.¹ Retries happen five times.² Timeouts last ten seconds.³";
+  const MARKED_DOC = `# Service\n\n## Limits\n\n${MARKED}\n\n## Owners\n\nPayments team.\n`;
+
+  async function markedSetup(): Promise<Accepted> {
+    const a = accepted(await firstRun(MARKED_DOC, runtime));
+    const limits = a.existing.find((o) => o.stableNodeKey === LIMITS)!;
+    expect(fingerprintContent(para(MARKED))).toBe(limits.baseline);
+    limits.rich = { content: para(MARKED) };
+    return a;
+  }
+
+  it("the changed fact is the one sentence, quoted without its marker; a marked card elsewhere takes the edit and keeps its markers", async () => {
+    const a = await markedSetup();
+    const r = await updateFromNewContent({ ...a, text: MARKED_DOC.replace("five times", "three times"), operationId: "op_2", title: "Update from new content", context }, runtime, { parseMarkdown: parse });
+    const s = new Scene()
+      .card(idOf(a, LIMITS), MARKED, { ai: sourceAI(a, LIMITS) })
+      .card("u_prose", "Our worker retries five times.¹ Then it gives up.²") // a marker glued after the full stop
+      .card("u_note", "² Retries happen five times.") // a notes card's line
+      .card("u_timeouts", "Gateway timeouts last ten seconds.³");
+    const impact = discoverImpact(input(a, r.changeSet!, s));
+
+    expect(impact.claims.map((c) => c.before)).toEqual(["Retries happen five times."]);
+    const offered = Object.fromEntries(impact.conflicts.map((c) => [c.target, c.impact!]));
+    expect(Object.keys(offered).sort()).toEqual(["u_note", "u_prose"]);
+    expect(offered.u_prose!.claim).toBe("Retries happen five times.");
+    // The edit lands on the card's own text, markers and all.
+    expect(offered.u_prose!.proposed).toBe("Our worker retries three times.¹ Then it gives up.²");
+    expect(offered.u_note!.proposed).toBe("² Retries happen three times.");
+  });
+});
+
 describe("#14 — same claim or not", () => {
   it("the verdict from the cosine", async () => {
     const t: ClaimThresholds = { same: 0.6, other: 0.55 };

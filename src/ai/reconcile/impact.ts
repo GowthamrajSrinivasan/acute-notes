@@ -21,6 +21,9 @@
  * another section, that card is right), cards the set already changes, cards opted out of AI updates, and locked cards
  * (counted into `skipped.locked` when they repeat the fact, unless "Preserve locked sections" is off).
  *
+ * Note markers are not words: an annotated card's small numbered markers ("traffic.¹ Retries happen five times.²", "² <the
+ * note>") are read as spaces, so sentences split where the card's do and a quoted claim carries none (U7 live run, §19.7).
+ *
  * Lexical, deterministic, no model call: "same claim" is the router's word-overlap test plus exact placement of the changed
  * words. When the local embedding model is running (semantic placement, §18), `impactMeaning.ts` checks what this finds
  * for meaning and reads the sentences it skipped (#14): `scanImpact` → meaning pass → `assembleImpact`.
@@ -80,6 +83,13 @@ export const MAX_IMPACT = 20;
 const MAX_PROPOSED = 20_000;
 
 const WORD = /[\p{L}\p{N}_]/u;
+
+/** The small numbered markers an annotated card puts after a phrase (¹ ² ³ ⁰ ⁴–⁹): not words, and no sentence ends on one. */
+const NOTE_MARK = /[\u00B9\u00B2\u00B3\u2070\u2074-\u2079]/g;
+/** `text` with each note marker read as a space: the same length, so a range found in it is the same range in the card. */
+export const unmark = (text: string): string => text.replace(NOTE_MARK, " ");
+/** A sentence as it is quoted and compared: no markers, single spaces. */
+const tidy = (text: string): string => unmark(text).replace(/\s+/g, " ").trim();
 
 /** Finds what the update changes and where else on the canvas it is said (see module doc). Pure. */
 export function discoverImpact(input: ImpactInput): ImpactResult {
@@ -248,8 +258,8 @@ function claimsOf(
 
 function sentenceClaims(from: string, was: string, now: string): ChangedClaim[] {
   if (was.startsWith("\u0000") || now.startsWith("\u0001")) return [];
-  const os = sentencesOf(was);
-  const ns = sentencesOf(now);
+  const os = sentencesOf(unmark(was)).map(tidy).filter(Boolean);
+  const ns = sentencesOf(unmark(now)).map(tidy).filter(Boolean);
   return alignSentences(os, ns).flatMap((op) => {
     if (op.kind !== "change") return [];
     const before = os[op.o]!;
@@ -298,10 +308,13 @@ function matchesIn(content: ObjectContent, claims: readonly ChangedClaim[]): { r
   const related: LexicalRelated[] = [];
   const unmatched: CardScan["unmatched"] = [];
   const blocks = content.kind === "shape" ? [content.label] : content.content.map((b) => blockPlainText(b));
-  blocks.forEach((text, blockIndex) => {
-    if (!text) return;
+  blocks.forEach((marked, blockIndex) => {
+    if (!marked) return;
+    // Markers read as spaces: the same offsets, so an edit's range is the card's own.
+    const text = unmark(marked);
     for (const span of sentenceSpans(text, { start: 0, end: text.length })) {
       const sentence = text.slice(span.start, span.end);
+      const said = tidy(sentence);
       let closest = 0;
       for (const claim of claims) {
         const overlap = wordOverlap(sentence, claim.before);
@@ -311,18 +324,18 @@ function matchesIn(content: ObjectContent, claims: readonly ChangedClaim[]): { r
         if (at.length === 0) {
           // Says it already the new way: nothing to do. Otherwise it holds the claim in other words.
           if (wholeWordIndexes(sentence, claim.replacement).length || wordOverlap(sentence, claim.after) > overlap) continue;
-          related.push({ reason: `holds ${quote(claim.before)} in other words — not edited; check it`, score: overlap, claim, sentence });
+          related.push({ reason: `holds ${quote(claim.before)} in other words — not edited; check it`, score: overlap, claim, sentence: said });
           continue;
         }
         if (at.length > 1) {
-          related.push({ reason: `repeats ${quote(claim.before)}, but the changed words appear more than once — not edited; check it`, score: overlap, claim, sentence });
+          related.push({ reason: `repeats ${quote(claim.before)}, but the changed words appear more than once — not edited; check it`, score: overlap, claim, sentence: said });
           continue;
         }
         const i = at[0]!;
         const edited = sentence.slice(0, i) + claim.replacement + sentence.slice(i + claim.old.length);
         const verdict = classifyClaimChange(sentence, edited).intent;
         if (content.kind === "shape" || (verdict !== "SUPERSEDES" && verdict !== "EXTENDS")) {
-          related.push({ reason: content.kind === "shape" ? `its label repeats ${quote(claim.before)} — a shape's label isn't edited here` : `repeats ${quote(claim.before)}, but the same edit wouldn't read as the same change here — not edited`, score: overlap, claim, sentence });
+          related.push({ reason: content.kind === "shape" ? `its label repeats ${quote(claim.before)} — a shape's label isn't edited here` : `repeats ${quote(claim.before)}, but the same edit wouldn't read as the same change here — not edited`, score: overlap, claim, sentence: said });
           continue;
         }
         const start = span.start + i;
@@ -330,11 +343,11 @@ function matchesIn(content: ObjectContent, claims: readonly ChangedClaim[]): { r
         restates.push({
           claim,
           overlap,
-          sentence,
+          sentence: said,
           edit: { blockIndex, ...(block.id ? { blockId: block.id } : {}), match: { range: { start, end: start + claim.old.length }, text: claim.old }, replacement: claim.replacement, intent: verdict },
         });
       }
-      if (closest < IMPACT_OVERLAP) unmatched.push({ sentence, overlap: closest });
+      if (closest < IMPACT_OVERLAP && said) unmatched.push({ sentence: said, overlap: closest });
     }
   });
   // One edit per place: two claims with the same words in one sentence would overlap.
@@ -363,7 +376,7 @@ function sentencesOf(text: string): string[] {
 }
 
 function plainOf(content: ObjectContent): string {
-  return content.kind === "shape" ? content.label : content.content.map((b) => blockPlainText(b) ?? "").join("\n");
+  return unmark(content.kind === "shape" ? content.label : content.content.map((b) => blockPlainText(b) ?? "").join("\n"));
 }
 
 function shares(a: string, b: string): boolean {
@@ -374,10 +387,10 @@ function shares(a: string, b: string): boolean {
 /** A card's name for the review: a page's title, else its first line (a shape's label). */
 function nameOf(content: ObjectContent | null): string {
   if (!content) return "a card";
-  if (content.kind === "shape") return clip(content.label.replace(/\s+/g, " ").trim(), 60) || "Shape";
-  if (content.kind === "page" && content.title) return clip(content.title, 60);
-  const first = canonicalContent(content.content).split("\n").find((l) => l.trim()) ?? "";
-  return clip(first.replace(/^#+\s*/, "").replace(/^[-*]\s+(\[[ x]\]\s+)?/, "").trim(), 60) || "Card";
+  if (content.kind === "shape") return clip(tidy(content.label), 60) || "Shape";
+  if (content.kind === "page" && content.title) return clip(tidy(content.title), 60);
+  const first = canonicalContent(content.content).split("\n").find((l) => tidy(l)) ?? "";
+  return clip(tidy(first.replace(/^#+\s*/, "").replace(/^[-*]\s+(\[[ x]\]\s+)?/, "")), 60) || "Card";
 }
 
 const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
